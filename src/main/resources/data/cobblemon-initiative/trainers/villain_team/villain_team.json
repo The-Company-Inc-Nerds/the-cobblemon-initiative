@@ -1,0 +1,146 @@
+[
+  {
+    "id": "villain_grunt_1",
+    "name": "Team Shadow Grunt",
+    "displayName": "Shadow Grunt",
+    "category": "villain_team",
+    "location": "Shadow Hideout",
+    "coordinates": [0, 0, 0],
+    "trainerType": "grunt",
+    "prerequisites": [],
+    "achievementOnDefeat": null,
+    "rewards": [{ "type": "item", "item": "cobblemon:great_ball", "count": 3 }],
+    "battleFormat": "GEN_9_SINGLES",
+    "ai": { "type": "rct", "data": { "maxSelectMargin": 0.5 } },
+    "bag": [{ "item": "cobblemon:potion", "quantity": 1 }],
+    "team": {
+      "pokemon": [
+        {
+          "species": "cobblemon:zubat",
+          "level": 15,
+          "gender": "MALE",
+          "nature": "jolly",
+          "ability": "innerfocus",
+          "moveset": ["bite", "wingattack", "confuseray", "supersonic"],
+          "ivs": {
+            "hp": 10,
+            "atk": 10,
+            "def": 10,
+            "spa": 10,
+            "spd": 10,
+            "spe": 10
+          }
+        },
+        {
+          "species": "cobblemon:rattata",
+          "level": 14,
+          "gender": "MALE",
+          "nature": "adamant",
+          "ability": "guts",
+          "moveset": ["bite", "quickattack", "tailwhip", "hyperfang"],
+          "ivs": {
+            "hp": 10,
+            "atk": 10,
+            "def": 10,
+            "spa": 10,
+            "spd": 10,
+            "spe": 10
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "villain_admin",
+    "name": "Team Shadow Admin",
+    "displayName": "Shadow Admin Shade",
+    "category": "villain_team",
+    "location": "Shadow Hideout",
+    "coordinates": [0, 0, 0],
+    "trainerType": "admin",
+    "prerequisites": ["villain_grunt_1"],
+    "achievementOnDefeat": null,
+    "rewards": [{ "type": "item", "item": "cobblemon:ultra_ball", "count": 5 }],
+    "battleFormat": "GEN_9_SINGLES",
+    "ai": { "type": "rct", "data": { "maxSelectMargin": 0.2 } },
+    "bag": [{ "item": "cobblemon:super_potion", "quantity": 2 }],
+    "team": {
+      "pokemon": [
+        {
+          "species": "cobblemon:golbat",
+          "level": 35,
+          "gender": "MALE",
+          "nature": "jolly",
+          "ability": "innerfocus",
+          "moveset": ["crosspoison", "airslash", "confuseray", "meanlook"],
+          "ivs": {
+            "hp": 20,
+            "atk": 20,
+            "def": 20,
+            "spa": 20,
+            "spd": 20,
+            "spe": 20
+          },
+          "evs": { "atk": 100, "spe": 100 }
+        },
+        {
+          "species": "cobblemon:weezing",
+          "level": 36,
+          "gender": "MALE",
+          "nature": "bold",
+          "ability": "levitate",
+          "moveset": ["sludgebomb", "willowisp", "painsplit", "toxic"],
+          "ivs": {
+            "hp": 20,
+            "atk": 20,
+            "def": 20,
+            "spa": 20,
+            "spd": 20,
+            "spe": 20
+          },
+          "evs": { "hp": 100, "def": 100 }
+        },
+        {
+          "species": "cobblemon:muk",
+          "level": 36,
+          "gender": "MALE",
+          "nature": "adamant",
+          "ability": "stench",
+          "moveset": ["gunkshot", "shadowsneak", "icepunch", "explosion"],
+          "ivs": {
+            "hp": 20,
+            "atk": 20,
+            "def": 20,
+            "spa": 20,
+            "spd": 20,
+            "spe": 20
+          },
+          "evs": { "atk": 100, "hp": 100 }
+        }
+      ]
+    }
+  },
+  {
+    "id": "villain_boss",
+    "name": "Team Shadow Boss",
+    "displayName": "Shadow Boss Giovanni",
+    "category": "villain_team",
+    "location": "Shadow Hideout",
+    "coordinates": [0, 0, 0],
+    "trainerType": "boss",
+    "prerequisites": ["villain_admin"],
+    "achievementOnDefeat": null,
+    "rewards": [
+      { "type": "item", "item": "cobblemon:master_ball", "count": 1 }
+    ],
+    "battleFormat": "GEN_9_SINGLES",
+    "ai": { "type": "rct", "data": { "maxSelectMargin": 0.1 } },
+    "bag": [{ "item": "cobblemon:full_restore", "quantity": 2 }],
+    "spawnOnDefeat": {
+      "species": "entei",
+      "level": 55,
+      "shiny": true,
+      "message": "§a§lA mystical Celebi appeared from the flowers!"
+    }
+  }
+]

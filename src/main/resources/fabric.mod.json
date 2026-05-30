@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "id": "cobblemon-initiative",
+  "version": "${version}",
+  "name": "The Cobblemon Initiative",
+  "description": "A combined Cobblemon mod featuring gym badge achievements, Nuzlocke-style death mechanics, and NPC line-of-sight detection.",
+  "authors": ["The Company, Inc."],
+  "contact": {},
+  "license": "MIT",
+  "icon": "assets/cobblemon-initiative/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.thecompanyinc.cobblemoninitiative.AchievementsInit",
+      "com.thecompanyinc.cobblemoninitiative.DeathMechanicsInit"
+    ],
+    "client": [
+      "com.thecompanyinc.cobblemoninitiative.DeathMechanicsClientInit"
+    ],
+    "modmenu": [
+      "com.thecompanyinc.cobblemoninitiative.ModMenuIntegration"
+    ]
+  },
+  "mixins": ["cobblemon-initiative.mixins.json"],
+  "depends": {
+    "fabricloader": ">=0.16.0",
+    "fabric-api": "*",
+    "minecraft": "~1.21.1",
+    "cobblemon": ">=1.7.0"
+  },
+  "suggests": {
+    "rctapi": ">=0.10.0",
+    "modmenu": "*",
+    "cloth-config": "*"
+  }
+}
