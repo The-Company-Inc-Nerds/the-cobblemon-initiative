@@ -1,6 +1,8 @@
 package com.thecompanyinc.cobblemoninitiative.config;
 
 import com.thecompanyinc.cobblemoninitiative.DeathMechanicsInit;
+import com.thecompanyinc.cobblemoninitiative.npcsight.NpcSightConfig;
+import com.thecompanyinc.cobblemoninitiative.npcsight.NpcSightInit;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
@@ -224,9 +226,73 @@ public class DeathModConfigScreen {
         .build()
     );
 
+    // -------------------------------------------------------------------------
+    // NPC Sight settings
+    // -------------------------------------------------------------------------
+    NpcSightConfig sightConfig = NpcSightConfig.load();
+    NpcSightConfig sightDefaults = new NpcSightConfig();
+
+    ConfigCategory npcSight = builder.getOrCreateCategory(
+      Component.literal("NPC Sight")
+    );
+
+    npcSight.addEntry(
+      entryBuilder
+        .startIntSlider(
+          Component.literal("Default Sight Range"),
+          sightConfig.getDefaultSightRange(),
+          1,
+          256
+        )
+        .setDefaultValue(sightDefaults.getDefaultSightRange())
+        .setTooltip(
+          Component.literal(
+            "Default sight range (blocks) for NPCs that don't have a per-entity override."
+          )
+        )
+        .setSaveConsumer(sightConfig::setDefaultSightRange)
+        .build()
+    );
+
+    npcSight.addEntry(
+      entryBuilder
+        .startBooleanToggle(
+          Component.literal("Debug Mode"),
+          sightConfig.isDebugMode()
+        )
+        .setDefaultValue(sightDefaults.isDebugMode())
+        .setTooltip(
+          Component.literal(
+            "Show colored dust particles along NPC raycasts (green = clear, red = blocked)."
+          )
+        )
+        .setSaveConsumer(sightConfig::setDebugMode)
+        .build()
+    );
+
+    npcSight.addEntry(
+      entryBuilder
+        .startIntSlider(
+          Component.literal("Dialog Trigger Range"),
+          (int) sightConfig.getDialogRange(),
+          1,
+          20
+        )
+        .setDefaultValue((int) sightDefaults.getDialogRange())
+        .setTooltip(
+          Component.literal(
+            "Player must be within this many blocks for the NPC dialog to open (when the NPC can see them)."
+          )
+        )
+        .setSaveConsumer(v -> sightConfig.setDialogRange(v.doubleValue()))
+        .build()
+    );
+
     builder.setSavingRunnable(() -> {
       config.save();
+      sightConfig.save();
       DeathMechanicsInit.reloadConfig();
+      NpcSightInit.reloadConfig();
     });
 
     return builder.build();

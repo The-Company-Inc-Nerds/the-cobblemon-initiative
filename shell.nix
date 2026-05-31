@@ -59,11 +59,13 @@ in
       (inputs.zed-editor.packages.x86_64-linux.default zedSettings)
       pkgs.jdk21
       pkgs.gradle
+      pkgs.claude-code
       pkgs.kotlin
     ];
 
     JAVA_HOME = "${pkgs.jdk21}";
     GRADLE_USER_HOME = ".gradle";
+
 
     shellHook = ''
       echo "Using wrapped local zed: ./.direnv/.config/zed"

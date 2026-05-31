@@ -213,7 +213,7 @@ public class SacrificeSelectionScreen extends Screen {
         this.displayName =
           name.length() > 10 ? name.substring(0, 9) + "…" : name;
         this.displayLevel = "Lv. " + level;
-        this.displayHp = pokemon.getCurrentHealth() + "/" + pokemon.getHp();
+        this.displayHp = pokemon.getCurrentHealth() + "/" + pokemon.getMaxHealth();
       }
     }
 
