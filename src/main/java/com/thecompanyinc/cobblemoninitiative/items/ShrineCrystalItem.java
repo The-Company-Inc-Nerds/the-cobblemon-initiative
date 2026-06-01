@@ -1,6 +1,6 @@
 package com.thecompanyinc.cobblemoninitiative.items;
 
-import com.thecompanyinc.cobblemoninitiative.AchievementsInit;
+import com.thecompanyinc.cobblemoninitiative.InitiativeInit;
 import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -186,7 +186,7 @@ public class ShrineCrystalItem extends Item {
       command
     );
 
-    AchievementsInit.LOGGER.info("Spawning legendary: {}", fullCommand);
+    InitiativeInit.LOGGER.info("Spawning legendary: {}", fullCommand);
 
     level
       .getServer()

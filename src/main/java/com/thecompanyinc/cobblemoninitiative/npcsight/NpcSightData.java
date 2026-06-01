@@ -6,9 +6,6 @@ public class NpcSightData {
 
   public UUID uuid;
 
-  /** How this NPC behaves regarding player detection. */
-  public SightMode mode = SightMode.STATIONARY;
-
   /**
    * Per-entity sight range in blocks. -1 means fall back to the global
    * default configured in {@link NpcSightConfig}.
@@ -27,21 +24,16 @@ public class NpcSightData {
   /** True when the NPC can see at least one player this tick cycle. */
   public transient boolean canSeePlayer = false;
 
-  /** Epoch-ms timestamp of the last dialog open, used for cooldown. */
-  public transient long lastDialogTriggerMs = 0L;
-
-  public enum SightMode {
-    /** NPC looks in a fixed direction; sight detection uses its current yaw. */
-    STATIONARY,
-    /** NPC head rotates to track the nearest in-range player. */
-    TRACKING
-  }
+  /**
+   * True once the dialog has been triggered for the current "seen session".
+   * Resets to false when the NPC loses sight, allowing one trigger per session.
+   */
+  public transient boolean dialogFiredThisSession = false;
 
   public NpcSightData() {}
 
-  public NpcSightData(UUID uuid, SightMode mode, int sightRange, String dialogName) {
+  public NpcSightData(UUID uuid, int sightRange, String dialogName) {
     this.uuid = uuid;
-    this.mode = mode;
     this.sightRange = sightRange;
     this.dialogName = dialogName;
   }

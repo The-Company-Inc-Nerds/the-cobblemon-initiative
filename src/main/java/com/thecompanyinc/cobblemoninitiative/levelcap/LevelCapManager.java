@@ -1,6 +1,6 @@
 package com.thecompanyinc.cobblemoninitiative.levelcap;
 
-import com.thecompanyinc.cobblemoninitiative.AchievementsInit;
+import com.thecompanyinc.cobblemoninitiative.InitiativeInit;
 import com.thecompanyinc.cobblemoninitiative.config.ConfigLoader;
 import com.thecompanyinc.cobblemoninitiative.config.LevelCapConfig;
 import com.thecompanyinc.cobblemoninitiative.data.PlayerProgress;
@@ -18,13 +18,13 @@ public class LevelCapManager {
 
   public int getLevelCap(ServerPlayer player) {
     PlayerProgress progress =
-      AchievementsInit.getProgressManager().getProgress(player);
+      InitiativeInit.getProgressManager().getProgress(player);
     return progress.getCurrentLevelCap();
   }
 
   public void updateLevelCap(ServerPlayer player) {
     PlayerProgress progress =
-      AchievementsInit.getProgressManager().getProgress(player);
+      InitiativeInit.getProgressManager().getProgress(player);
     List<LevelCapConfig> levelCaps = configLoader.getLevelCaps();
 
     int newCap = 20;
@@ -47,7 +47,7 @@ public class LevelCapManager {
 
   public int getNextLevelCap(ServerPlayer player) {
     PlayerProgress progress =
-      AchievementsInit.getProgressManager().getProgress(player);
+      InitiativeInit.getProgressManager().getProgress(player);
     int currentCap = progress.getCurrentLevelCap();
 
     for (LevelCapConfig cap : configLoader.getLevelCaps()) {
@@ -64,7 +64,7 @@ public class LevelCapManager {
 
   public String getNextLevelCapRequirement(ServerPlayer player) {
     PlayerProgress progress =
-      AchievementsInit.getProgressManager().getProgress(player);
+      InitiativeInit.getProgressManager().getProgress(player);
     int currentCap = progress.getCurrentLevelCap();
 
     for (LevelCapConfig cap : configLoader.getLevelCaps()) {

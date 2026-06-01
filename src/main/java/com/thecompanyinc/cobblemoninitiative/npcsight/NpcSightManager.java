@@ -1,6 +1,5 @@
 package com.thecompanyinc.cobblemoninitiative.npcsight;
 
-import com.thecompanyinc.cobblemoninitiative.AchievementsInit;
 import java.util.ArrayList;
 import java.util.List;
 import net.fabricmc.loader.api.FabricLoader;
@@ -11,8 +10,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.BlockHitResult;
@@ -29,15 +26,12 @@ public class NpcSightManager {
   // Scoreboard objective shared with legacy datapack consumers
   private static final String SCOREBOARD_OBJ = "can_see_player";
 
-  // NPC must be within this dot-product threshold to "see" in stationary mode.
+  // NPC must be within this dot-product threshold to see the player.
   // cos(60°) = 0.5  →  120° total FOV
-  private static final double STATIONARY_FOV_DOT = 0.5;
+  private static final double FOV_DOT = 0.5;
 
   // Run full sight check every N server ticks (~4×/sec at 20 TPS)
   private static final int TICK_INTERVAL = 5;
-
-  // Minimum milliseconds between dialog opens for the same NPC
-  private static final long DIALOG_COOLDOWN_MS = 5_000L;
 
   private final NpcSightStorage storage;
   private NpcSightConfig config;
@@ -89,18 +83,10 @@ public class NpcSightManager {
     ServerLevel level = (ServerLevel) npc.level();
     int range = data.getEffectiveSightRange(config.getDefaultSightRange());
 
-    ServerPlayer nearestPlayer = findNearestPlayer(level, npc, range);
+    // +1 so the NPC's own standing block is not counted against the range
+    ServerPlayer nearestPlayer = findNearestPlayer(level, npc, range + 1);
 
-    boolean canSee;
-    if (nearestPlayer == null) {
-      canSee = false;
-    } else if (data.mode == NpcSightData.SightMode.STATIONARY) {
-      canSee = checkStationaryLOS(npc, nearestPlayer);
-    } else {
-      // TRACKING: rotate head toward player, then check LOS from current pos
-      rotateToward(npc, nearestPlayer);
-      canSee = checkLOS(level, npc, nearestPlayer);
-    }
+    boolean canSee = nearestPlayer != null && checkSight(npc, nearestPlayer);
 
     data.canSeePlayer = canSee;
 
@@ -110,13 +96,22 @@ public class NpcSightManager {
       drawDebugRay(level, npc, nearestPlayer, canSee);
     }
 
-    if (canSee && nearestPlayer != null && data.hasDialog()) {
-      double dist = npc.distanceTo(nearestPlayer);
-      if (dist <= config.getDialogRange()) {
-        long now = System.currentTimeMillis();
-        if (now - data.lastDialogTriggerMs >= DIALOG_COOLDOWN_MS) {
-          data.lastDialogTriggerMs = now;
-          triggerDialog(server, npc, nearestPlayer, data.dialogName);
+    // Reset session flag when the NPC loses sight so the next session can fire
+    if (!canSee) {
+      data.dialogFiredThisSession = false;
+    }
+
+    if (canSee && nearestPlayer != null && !data.dialogFiredThisSession) {
+      // Per-entity dialog takes priority; fall back to the global default
+      String effectiveDialog = data.hasDialog()
+        ? data.dialogName
+        : config.getDefaultDialogName();
+      if (effectiveDialog != null && !effectiveDialog.isBlank()) {
+        double dist = npc.distanceTo(nearestPlayer);
+        // +1 so the NPC's own standing block is not counted against the range
+        if (dist <= config.getDialogRange() + 1) {
+          data.dialogFiredThisSession = true;
+          triggerDialog(server, npc, nearestPlayer, effectiveDialog);
         }
       }
     }
@@ -157,13 +152,13 @@ public class NpcSightManager {
   // ---------------------------------------------------------------------------
 
   /**
-   * STATIONARY mode: player must be inside the NPC's forward 120° FOV AND
-   * there must be an unobstructed line between their eye positions.
+   * Player must be inside the NPC's forward 120° FOV AND have an unobstructed
+   * line of sight between their eye positions.
    */
-  private boolean checkStationaryLOS(Entity npc, Player player) {
+  private boolean checkSight(Entity npc, Player player) {
     Vec3 forward = npc.getViewVector(1.0f);
     Vec3 toPlayer = player.getEyePosition().subtract(npc.getEyePosition()).normalize();
-    if (forward.dot(toPlayer) < STATIONARY_FOV_DOT) return false;
+    if (forward.dot(toPlayer) < FOV_DOT) return false;
     return checkLOS((ServerLevel) npc.level(), npc, player);
   }
 
@@ -178,36 +173,6 @@ public class NpcSightManager {
       new ClipContext(from, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, npc)
     );
     return result.getType() == HitResult.Type.MISS;
-  }
-
-  // ---------------------------------------------------------------------------
-  // Head tracking
-  // ---------------------------------------------------------------------------
-
-  /**
-   * Points the NPC toward the target player.
-   * Prefers the Mob look-control (smooth, AI-friendly); falls back to direct
-   * yaw/pitch assignment for non-Mob LivingEntities.
-   */
-  private void rotateToward(Entity npc, Player player) {
-    if (npc instanceof Mob mob) {
-      mob.getLookControl().setLookAt(player);
-      // Also snap body so the NPC doesn't stand sideways
-      Vec3 dir = player.position().subtract(npc.position());
-      if (dir.horizontalDistanceSqr() > 0.001) {
-        float yaw = (float) Math.toDegrees(Math.atan2(-dir.x, dir.z));
-        npc.setYRot(yaw);
-      }
-    } else if (npc instanceof LivingEntity living) {
-      Vec3 from = living.getEyePosition();
-      Vec3 to = player.getEyePosition();
-      Vec3 dir = to.subtract(from);
-      double hDist = Math.sqrt(dir.x * dir.x + dir.z * dir.z);
-      float yaw = (float) Math.toDegrees(Math.atan2(-dir.x, dir.z));
-      float pitch = (float) -Math.toDegrees(Math.atan2(dir.y, hDist));
-      living.setYRot(yaw);
-      living.setXRot(pitch);
-    }
   }
 
   // ---------------------------------------------------------------------------
@@ -233,7 +198,7 @@ public class NpcSightManager {
         obj
       ).set(canSee ? 1 : 0);
     } catch (Exception e) {
-      AchievementsInit.LOGGER.debug(
+      NpcSightInit.LOGGER.debug(
         "[NPC Sight] Scoreboard update failed: {}",
         e.getMessage()
       );
@@ -299,7 +264,7 @@ public class NpcSightManager {
         .withSuppressedOutput();
       server.getCommands().performPrefixedCommand(src, cmd);
     } catch (Exception e) {
-      AchievementsInit.LOGGER.debug(
+      NpcSightInit.LOGGER.debug(
         "[NPC Sight] Dialog trigger failed for {}: {}",
         npc.getUUID(), e.getMessage()
       );

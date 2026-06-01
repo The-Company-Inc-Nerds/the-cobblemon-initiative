@@ -3,7 +3,7 @@ package com.thecompanyinc.cobblemoninitiative.screen;
 import com.cobblemon.mod.common.client.CobblemonClient;
 import com.cobblemon.mod.common.client.storage.ClientParty;
 import com.cobblemon.mod.common.pokemon.Pokemon;
-import com.thecompanyinc.cobblemoninitiative.DeathMechanicsInit;
+import com.thecompanyinc.cobblemoninitiative.NuzlockeInit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -23,7 +23,7 @@ public class SacrificeSelectionScreen extends Screen {
 
   public SacrificeSelectionScreen() {
     super(Component.literal("Choose a Pokémon to Sacrifice"));
-    this.mysteryMode = DeathMechanicsInit.getConfig().isMysterySacrifice();
+    this.mysteryMode = NuzlockeInit.getConfig().isMysterySacrifice();
   }
 
   @Override
@@ -140,6 +140,7 @@ public class SacrificeSelectionScreen extends Screen {
   private void confirmSacrifice() {
     if (
       selectedSlot < 0 ||
+      selectedSlot >= pokemonSlots.size() ||
       this.minecraft == null ||
       this.minecraft.player == null
     ) {
@@ -151,7 +152,7 @@ public class SacrificeSelectionScreen extends Screen {
     UUID playerUuid = this.minecraft.player.getUUID();
     UUID pokemonUuid = pokemon.getUuid();
 
-    DeathMechanicsInit.sacrificePokemon(playerUuid, pokemonUuid);
+    NuzlockeInit.sacrificePokemon(playerUuid, pokemonUuid);
 
     this.minecraft.setScreen(null);
   }

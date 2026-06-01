@@ -4,22 +4,17 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
-import com.mojang.brigadier.suggestion.SuggestionProvider;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import java.util.List;
-import java.util.Optional;
+import com.thecompanyinc.cobblemoninitiative.util.EntityLookup;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
 
 public class NpcSightCommand {
 
@@ -39,7 +34,7 @@ public class NpcSightCommand {
       Commands.literal("npcsight")
         .requires(src -> src.hasPermission(2))
 
-        // /npcsight add <uuid>
+        // /npcsight add <uuid> [range] [dialog]
         .then(
           Commands.literal("add")
             .then(
@@ -47,29 +42,18 @@ public class NpcSightCommand {
                 .suggests(NpcSightCommand::suggestLookedAt)
                 .executes(ctx -> cmdAdd(ctx,
                   StringArgumentType.getString(ctx, "uuid"),
-                  NpcSightData.SightMode.STATIONARY, -1, null))
+                  -1, null))
                 .then(
-                  Commands.argument("mode", StringArgumentType.word())
-                    .suggests((c, b) -> SharedSuggestionProvider.suggest(
-                      new String[]{ "stationary", "tracking" }, b))
+                  Commands.argument("range", IntegerArgumentType.integer(1, 512))
                     .executes(ctx -> cmdAdd(ctx,
                       StringArgumentType.getString(ctx, "uuid"),
-                      parseMode(StringArgumentType.getString(ctx, "mode")),
-                      -1, null))
+                      IntegerArgumentType.getInteger(ctx, "range"), null))
                     .then(
-                      Commands.argument("range", IntegerArgumentType.integer(1, 512))
+                      Commands.argument("dialog", StringArgumentType.word())
                         .executes(ctx -> cmdAdd(ctx,
                           StringArgumentType.getString(ctx, "uuid"),
-                          parseMode(StringArgumentType.getString(ctx, "mode")),
-                          IntegerArgumentType.getInteger(ctx, "range"), null))
-                        .then(
-                          Commands.argument("dialog", StringArgumentType.word())
-                            .executes(ctx -> cmdAdd(ctx,
-                              StringArgumentType.getString(ctx, "uuid"),
-                              parseMode(StringArgumentType.getString(ctx, "mode")),
-                              IntegerArgumentType.getInteger(ctx, "range"),
-                              StringArgumentType.getString(ctx, "dialog")))
-                        )
+                          IntegerArgumentType.getInteger(ctx, "range"),
+                          StringArgumentType.getString(ctx, "dialog")))
                     )
                 )
             )
@@ -83,23 +67,6 @@ public class NpcSightCommand {
                 .suggests(NpcSightCommand::suggestRegistered)
                 .executes(ctx -> cmdRemove(ctx,
                   StringArgumentType.getString(ctx, "uuid")))
-            )
-        )
-
-        // /npcsight mode <uuid> <stationary|tracking>
-        .then(
-          Commands.literal("mode")
-            .then(
-              Commands.argument("uuid", StringArgumentType.word())
-                .suggests(NpcSightCommand::suggestRegistered)
-                .then(
-                  Commands.argument("mode", StringArgumentType.word())
-                    .suggests((c, b) -> SharedSuggestionProvider.suggest(
-                      new String[]{ "stationary", "tracking" }, b))
-                    .executes(ctx -> cmdSetMode(ctx,
-                      StringArgumentType.getString(ctx, "uuid"),
-                      StringArgumentType.getString(ctx, "mode")))
-                )
             )
         )
 
@@ -166,7 +133,6 @@ public class NpcSightCommand {
   private static int cmdAdd(
     CommandContext<CommandSourceStack> ctx,
     String uuidStr,
-    NpcSightData.SightMode mode,
     int range,
     String dialog
   ) {
@@ -180,13 +146,12 @@ public class NpcSightCommand {
       return 0;
     }
 
-    NpcSightData data = new NpcSightData(uuid, mode, range, dialog);
+    NpcSightData data = new NpcSightData(uuid, range, dialog);
     storage.put(data);
 
     ctx.getSource().sendSuccess(
       () -> Component.literal(
         "[NPC Sight] Registered " + uuidStr
-          + " | mode=" + mode.name().toLowerCase()
           + " | range=" + (range < 0 ? "default" : range)
           + " | dialog=" + (dialog == null ? "none" : dialog)
       ), true
@@ -194,9 +159,7 @@ public class NpcSightCommand {
     return 1;
   }
 
-  private static int cmdRemove(
-    CommandContext<CommandSourceStack> ctx, String uuidStr
-  ) {
+  private static int cmdRemove(CommandContext<CommandSourceStack> ctx, String uuidStr) {
     UUID uuid = parseUUID(ctx, uuidStr);
     if (uuid == null) return 0;
 
@@ -210,32 +173,6 @@ public class NpcSightCommand {
       Component.literal("[NPC Sight] UUID not found: " + uuidStr)
     );
     return 0;
-  }
-
-  private static int cmdSetMode(
-    CommandContext<CommandSourceStack> ctx, String uuidStr, String modeStr
-  ) {
-    UUID uuid = parseUUID(ctx, uuidStr);
-    if (uuid == null) return 0;
-
-    NpcSightData data = storage.get(uuid);
-    if (data == null) {
-      ctx.getSource().sendFailure(
-        Component.literal("[NPC Sight] UUID not registered: " + uuidStr)
-      );
-      return 0;
-    }
-
-    NpcSightData.SightMode mode = parseMode(modeStr);
-    data.mode = mode;
-    storage.put(data);
-
-    ctx.getSource().sendSuccess(
-      () -> Component.literal(
-        "[NPC Sight] " + uuidStr + " mode → " + mode.name().toLowerCase()
-      ), true
-    );
-    return 1;
   }
 
   private static int cmdSetRange(
@@ -300,7 +237,6 @@ public class NpcSightCommand {
     StringBuilder sb = new StringBuilder("[NPC Sight] Registered NPCs:\n");
     for (NpcSightData d : storage.getAll()) {
       sb.append("  ").append(d.uuid)
-        .append(" | mode=").append(d.mode.name().toLowerCase())
         .append(" | range=").append(d.sightRange < 0 ? "default" : d.sightRange)
         .append(" | dialog=").append(d.dialogName == null ? "none" : d.dialogName)
         .append(" | seeing=").append(d.canSeePlayer)
@@ -326,9 +262,8 @@ public class NpcSightCommand {
     }
 
     String info = String.format(
-      "[NPC Sight] %s\n  mode=%s\n  range=%s\n  dialog=%s\n  canSeePlayer=%b",
+      "[NPC Sight] %s\n  range=%s\n  dialog=%s\n  canSeePlayer=%b",
       data.uuid,
-      data.mode.name().toLowerCase(),
       data.sightRange < 0 ? "default (" + manager.getConfig().getDefaultSightRange() + ")" : data.sightRange,
       data.dialogName == null ? "none" : data.dialogName,
       data.canSeePlayer
@@ -359,7 +294,7 @@ public class NpcSightCommand {
   ) {
     try {
       ServerPlayer player = ctx.getSource().getPlayerOrException();
-      Entity target = getEntityLookedAt(player, 10.0);
+      Entity target = EntityLookup.getEntityLookedAt(player, 10.0);
       if (target != null) {
         builder.suggest(
           target.getUUID().toString(),
@@ -384,39 +319,6 @@ public class NpcSightCommand {
   // Helpers
   // ---------------------------------------------------------------------------
 
-  /**
-   * Ray-marches from the player's eye position and returns the first
-   * non-player entity whose bounding box the ray intersects.
-   */
-  private static Entity getEntityLookedAt(ServerPlayer player, double maxRange) {
-    Vec3 start = player.getEyePosition();
-    Vec3 look = player.getViewVector(1.0f);
-    Vec3 end = start.add(look.scale(maxRange));
-
-    AABB searchBox = player.getBoundingBox()
-      .expandTowards(look.scale(maxRange))
-      .inflate(1.0);
-
-    List<Entity> candidates = player.level().getEntities(
-      player, searchBox, e -> !e.isSpectator() && e.isAlive()
-    );
-
-    Entity closest = null;
-    double closestSq = Double.MAX_VALUE;
-
-    for (Entity e : candidates) {
-      Optional<Vec3> hit = e.getBoundingBox().inflate(0.2).clip(start, end);
-      if (hit.isPresent()) {
-        double sq = start.distanceToSqr(hit.get());
-        if (sq < closestSq) {
-          closestSq = sq;
-          closest = e;
-        }
-      }
-    }
-    return closest;
-  }
-
   private static UUID parseUUID(CommandContext<CommandSourceStack> ctx, String str) {
     try {
       return UUID.fromString(str);
@@ -428,8 +330,4 @@ public class NpcSightCommand {
     }
   }
 
-  private static NpcSightData.SightMode parseMode(String str) {
-    if ("tracking".equalsIgnoreCase(str)) return NpcSightData.SightMode.TRACKING;
-    return NpcSightData.SightMode.STATIONARY;
-  }
 }

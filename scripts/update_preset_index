@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+# update_preset_index — regenerate default_preset.index for the cobblemon_initiative
+# Easy NPC namespace. Run this after adding or removing any .npc.snbt preset files.
+#
+# Usage: update_preset_index
+
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+PRESET_DIR="$PROJECT_ROOT/src/main/resources/data/cobblemon_initiative/easy_npc/default_preset"
+INDEX_FILE="$PRESET_DIR/default_preset.index"
+
+if [[ ! -d "$PRESET_DIR" ]]; then
+  echo "update_preset_index: preset directory not found: $PRESET_DIR" >&2
+  exit 1
+fi
+
+# Collect all .npc.snbt files, sorted, relative to PRESET_DIR
+mapfile -t presets < <(
+  find "$PRESET_DIR" -name "*.npc.snbt" | sort | sed "s|$PRESET_DIR/||"
+)
+
+{
+  for p in "${presets[@]}"; do
+    echo "$p"
+  done
+} > "$INDEX_FILE"
+
+count="${#presets[@]}"
+echo "update_preset_index: wrote $count preset(s) to $INDEX_FILE"
+if [[ $count -gt 0 ]]; then
+  for p in "${presets[@]}"; do
+    echo "  $p"
+  done
+fi

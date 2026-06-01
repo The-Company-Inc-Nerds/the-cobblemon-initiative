@@ -3,9 +3,10 @@ package com.thecompanyinc.cobblemoninitiative.command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
-import com.thecompanyinc.cobblemoninitiative.AchievementsInit;
+import com.thecompanyinc.cobblemoninitiative.InitiativeInit;
 import com.thecompanyinc.cobblemoninitiative.config.TrainerConfig;
 import com.thecompanyinc.cobblemoninitiative.data.PlayerProgress;
+import java.util.Arrays;
 import java.util.List;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -21,66 +22,6 @@ public class CobblemonInitiativeCommands {
     dispatcher.register(
       Commands.literal("cobblemon-initiative")
         .requires(source -> source.hasPermission(2))
-        .then(
-          Commands.literal("spawn").then(
-            Commands.argument("trainer", StringArgumentType.string())
-              .suggests((context, builder) ->
-                SharedSuggestionProvider.suggest(
-                  AchievementsInit.getConfigLoader().getTrainerIds(),
-                  builder
-                )
-              )
-              .executes(CobblemonInitiativeCommands::spawnTrainer)
-          )
-        )
-        .then(
-          Commands.literal("autospawn")
-            .then(
-              Commands.argument("group", StringArgumentType.string())
-                .suggests((context, builder) ->
-                  SharedSuggestionProvider.suggest(
-                    AchievementsInit.getConfigLoader().getAvailableGroups(),
-                    builder
-                  )
-                )
-                .executes(CobblemonInitiativeCommands::autospawnGroup)
-            )
-            .then(
-              Commands.literal("all").executes(
-                CobblemonInitiativeCommands::autospawnAll
-              )
-            )
-        )
-        .then(
-          Commands.literal("despawn")
-            .then(
-              Commands.argument("group", StringArgumentType.string())
-                .suggests((context, builder) ->
-                  SharedSuggestionProvider.suggest(
-                    AchievementsInit.getConfigLoader().getAvailableGroups(),
-                    builder
-                  )
-                )
-                .executes(CobblemonInitiativeCommands::despawnGroup)
-            )
-            .then(
-              Commands.literal("all").executes(
-                CobblemonInitiativeCommands::despawnAll
-              )
-            )
-        )
-        .then(
-          Commands.literal("battle").then(
-            Commands.argument("trainer", StringArgumentType.string())
-              .suggests((context, builder) ->
-                SharedSuggestionProvider.suggest(
-                  AchievementsInit.getConfigLoader().getTrainerIds(),
-                  builder
-                )
-              )
-              .executes(CobblemonInitiativeCommands::startBattle)
-          )
-        )
         .then(
           Commands.literal("progress").executes(
             CobblemonInitiativeCommands::showProgress
@@ -101,7 +42,7 @@ public class CobblemonInitiativeCommands {
             Commands.argument("trainer", StringArgumentType.string())
               .suggests((context, builder) ->
                 SharedSuggestionProvider.suggest(
-                  AchievementsInit.getConfigLoader().getTrainerIds(),
+                  InitiativeInit.getConfigLoader().getTrainerIds(),
                   builder
                 )
               )
@@ -132,11 +73,51 @@ public class CobblemonInitiativeCommands {
             Commands.argument("trainer", StringArgumentType.string())
               .suggests((context, builder) ->
                 SharedSuggestionProvider.suggest(
-                  AchievementsInit.getConfigLoader().getTrainerIds(),
+                  InitiativeInit.getConfigLoader().getTrainerIds(),
                   builder
                 )
               )
               .executes(CobblemonInitiativeCommands::markDefeated)
+          )
+        )
+        .then(
+          Commands.literal("shrine").then(
+            Commands.argument("shrine", StringArgumentType.word())
+              .suggests((context, builder) ->
+                SharedSuggestionProvider.suggest(
+                  Arrays.asList(
+                    InitiativeInit.getShrineChallengeManager().getShrineIds()
+                  ),
+                  builder
+                )
+              )
+              .then(
+                Commands.literal("start").executes(
+                  CobblemonInitiativeCommands::shrineStart
+                )
+              )
+              .then(
+                Commands.literal("stop").executes(
+                  CobblemonInitiativeCommands::shrineStop
+                )
+              )
+              .then(
+                Commands.literal("test").then(
+                  Commands.argument("testName", StringArgumentType.word())
+                    .suggests((context, builder) ->
+                      SharedSuggestionProvider.suggest(
+                        List.of("friendship", "fullness", "nickname", "shiny", "resolve"),
+                        builder
+                      )
+                    )
+                    .executes(CobblemonInitiativeCommands::shrineTest)
+                )
+              )
+              .then(
+                Commands.literal("complete").executes(
+                  CobblemonInitiativeCommands::shrineComplete
+                )
+              )
           )
         )
     );
@@ -148,190 +129,6 @@ public class CobblemonInitiativeCommands {
     );
   }
 
-  private static int autospawnGroup(
-    CommandContext<CommandSourceStack> context
-  ) {
-    CommandSourceStack source = context.getSource();
-    String group = StringArgumentType.getString(context, "group");
-
-    List<TrainerConfig> trainers =
-      AchievementsInit.getConfigLoader().getTrainersByGroup(group);
-
-    if (trainers.isEmpty()) {
-      source.sendFailure(
-        Component.literal("§cNo trainers found for group: " + group)
-      );
-      return 0;
-    }
-
-    int spawned = 0;
-    int skipped = 0;
-
-    for (TrainerConfig trainer : trainers) {
-      int[] coords = trainer.getCoordinates();
-      if (coords == null || coords.length != 3) {
-        AchievementsInit.LOGGER.warn(
-          "Trainer {} has no valid coordinates, skipping",
-          trainer.getId()
-        );
-        skipped++;
-        continue;
-      }
-
-      String spawnCommand = String.format(
-        "give @p rctmod:trainer_spawner[minecraft:custom_name='{\"text\":\"%s Spawner\"}',minecraft:block_entity_data={id:\"rctmod:trainer_spawner\",TrainerIds:[\"%s\"]}]",
-        trainer.getDisplayName(),
-        trainer.getId()
-      );
-
-      source
-        .getServer()
-        .getCommands()
-        .performPrefixedCommand(source.withPermission(4), spawnCommand);
-
-      spawned++;
-      AchievementsInit.LOGGER.info(
-        "Autospawned {} at {}, {}, {}",
-        trainer.getId(),
-        coords[0],
-        coords[1],
-        coords[2]
-      );
-    }
-
-    final int finalSpawned = spawned;
-    final int finalSkipped = skipped;
-    source.sendSuccess(
-      () ->
-        Component.literal(
-          "§aAutospawned §e" +
-            finalSpawned +
-            "§a trainers from group §e" +
-            group +
-            (finalSkipped > 0
-              ? " §7(" + finalSkipped + " skipped - no coordinates)"
-              : "")
-        ),
-      true
-    );
-
-    return spawned;
-  }
-
-  private static int autospawnAll(CommandContext<CommandSourceStack> context) {
-    CommandSourceStack source = context.getSource();
-
-    int spawned = 0;
-    int skipped = 0;
-
-    for (TrainerConfig trainer : AchievementsInit.getConfigLoader().getAllTrainers()) {
-      int[] coords = trainer.getCoordinates();
-      if (coords == null || coords.length != 3) {
-        skipped++;
-        continue;
-      }
-
-      String spawnCommand = String.format(
-        "rctmod trainer summon_persistent %s %d %d %d {HomePos:[I;%d,%d,%d]}",
-        trainer.getId(),
-        coords[0],
-        coords[1],
-        coords[2],
-        coords[0],
-        coords[1],
-        coords[2]
-      );
-
-      source
-        .getServer()
-        .getCommands()
-        .performPrefixedCommand(source.withPermission(4), spawnCommand);
-
-      spawned++;
-    }
-
-    final int finalSpawned = spawned;
-    final int finalSkipped = skipped;
-    source.sendSuccess(
-      () ->
-        Component.literal(
-          "§aAutospawned §e" +
-            finalSpawned +
-            "§a trainers" +
-            (finalSkipped > 0
-              ? " §7(" + finalSkipped + " skipped - no coordinates)"
-              : "")
-        ),
-      true
-    );
-
-    return spawned;
-  }
-
-  private static int despawnGroup(CommandContext<CommandSourceStack> context) {
-    CommandSourceStack source = context.getSource();
-    String group = StringArgumentType.getString(context, "group");
-
-    List<TrainerConfig> trainers =
-      AchievementsInit.getConfigLoader().getTrainersByGroup(group);
-
-    if (trainers.isEmpty()) {
-      source.sendFailure(
-        Component.literal("§cNo trainers found for group: " + group)
-      );
-      return 0;
-    }
-
-    int despawned = 0;
-
-    for (TrainerConfig trainer : trainers) {
-      String despawnCommand = String.format(
-        "rctmod trainer remove %s",
-        trainer.getId()
-      );
-
-      source
-        .getServer()
-        .getCommands()
-        .performPrefixedCommand(source.withPermission(4), despawnCommand);
-
-      despawned++;
-    }
-
-    final int finalDespawned = despawned;
-    source.sendSuccess(
-      () ->
-        Component.literal(
-          "§aDespawned §e" +
-            finalDespawned +
-            "§a trainers from group §e" +
-            group
-        ),
-      true
-    );
-
-    return despawned;
-  }
-
-  private static int despawnAll(CommandContext<CommandSourceStack> context) {
-    CommandSourceStack source = context.getSource();
-
-    source
-      .getServer()
-      .getCommands()
-      .performPrefixedCommand(
-        source.withPermission(4),
-        "rctmod trainer removeall"
-      );
-
-    source.sendSuccess(
-      () -> Component.literal("§aDespawned all RCT trainers"),
-      true
-    );
-
-    return 1;
-  }
-
   private static int listGroups(CommandContext<CommandSourceStack> context) {
     CommandSourceStack source = context.getSource();
 
@@ -340,9 +137,9 @@ public class CobblemonInitiativeCommands {
       false
     );
 
-    for (String group : AchievementsInit.getConfigLoader().getAvailableGroups()) {
+    for (String group : InitiativeInit.getConfigLoader().getAvailableGroups()) {
       List<TrainerConfig> trainers =
-        AchievementsInit.getConfigLoader().getTrainersByGroup(group);
+        InitiativeInit.getConfigLoader().getTrainersByGroup(group);
       source.sendSuccess(
         () ->
           Component.literal(
@@ -351,131 +148,6 @@ public class CobblemonInitiativeCommands {
         false
       );
     }
-
-    return 1;
-  }
-
-  private static int spawnTrainer(CommandContext<CommandSourceStack> context) {
-    CommandSourceStack source = context.getSource();
-    String trainerId = StringArgumentType.getString(context, "trainer");
-
-    TrainerConfig trainer = AchievementsInit.getConfigLoader().getTrainer(
-      trainerId
-    );
-    if (trainer == null) {
-      source.sendFailure(Component.literal("Unknown trainer: " + trainerId));
-      return 0;
-    }
-
-    ServerPlayer player = source.getPlayer();
-    if (player == null) {
-      source.sendFailure(
-        Component.literal("This command must be run by a player")
-      );
-      return 0;
-    }
-
-    int x = player.getBlockX();
-    int y = player.getBlockY();
-    int z = player.getBlockZ();
-
-    String spawnCommand = String.format(
-      "rctmod trainer summon_persistent %s %d %d %d {HomePos:[I;%d,%d,%d]}",
-      trainerId,
-      x,
-      y,
-      z,
-      x,
-      y,
-      z
-    );
-
-    AchievementsInit.LOGGER.info("Executing spawn command: {}", spawnCommand);
-
-    source
-      .getServer()
-      .getCommands()
-      .performPrefixedCommand(source.withPermission(4), spawnCommand);
-
-    source.sendSuccess(
-      () ->
-        Component.literal(
-          "§aSpawned trainer §e" +
-            trainer.getDisplayName() +
-            " §aat your location!"
-        ),
-      true
-    );
-
-    return 1;
-  }
-
-  private static int startBattle(CommandContext<CommandSourceStack> context) {
-    CommandSourceStack source = context.getSource();
-    String trainerId = StringArgumentType.getString(context, "trainer");
-
-    ServerPlayer player = source.getPlayer();
-    if (player == null) {
-      source.sendFailure(
-        Component.literal("This command must be run by a player")
-      );
-      return 0;
-    }
-
-    TrainerConfig trainer = AchievementsInit.getConfigLoader().getTrainer(
-      trainerId
-    );
-    if (trainer == null) {
-      source.sendFailure(Component.literal("Unknown trainer: " + trainerId));
-      return 0;
-    }
-
-    if (
-      !AchievementsInit.getProgressManager().canBattleTrainer(
-        player,
-        trainerId
-      )
-    ) {
-      List<String> missing =
-        AchievementsInit.getProgressManager().getMissingPrerequisites(
-          player,
-          trainerId
-        );
-      source.sendFailure(
-        Component.literal("§cYou must defeat the following trainers first:")
-      );
-      for (String prereq : missing) {
-        source.sendFailure(Component.literal("§7- " + prereq));
-      }
-      return 0;
-    }
-
-    int x = player.getBlockX() + 2;
-    int y = player.getBlockY();
-    int z = player.getBlockZ();
-
-    String spawnCommand = String.format(
-      "rctmod trainer summon %s %d %d %d",
-      trainerId,
-      x,
-      y,
-      z
-    );
-
-    source
-      .getServer()
-      .getCommands()
-      .performPrefixedCommand(source.withPermission(4), spawnCommand);
-
-    source.sendSuccess(
-      () ->
-        Component.literal(
-          "§aSpawned §e" +
-            trainer.getDisplayName() +
-            "§a! Right-click to battle."
-        ),
-      false
-    );
 
     return 1;
   }
@@ -492,7 +164,7 @@ public class CobblemonInitiativeCommands {
     }
 
     PlayerProgress progress =
-      AchievementsInit.getProgressManager().getProgress(player);
+      InitiativeInit.getProgressManager().getProgress(player);
 
     source.sendSuccess(
       () -> Component.literal("§6=== Your Progress ==="),
@@ -521,28 +193,17 @@ public class CobblemonInitiativeCommands {
     );
 
     source.sendSuccess(() -> Component.literal("§6--- Gym Badges ---"), false);
-    String[] gymLeaders = {
-      "hua_zhan_leader",
-      "takehara_leader",
-      "mystic_leader",
-      "deepcore_leader",
-      "gaviota_leader",
-      "kalahar_leader",
-      "cyber_leader",
-      "ryujin_leader",
-      "nifl_leader",
-      "scorchspire_leader",
-    };
-
-    int badges = 0;
-    for (String leader : gymLeaders) {
-      if (progress.hasDefeatedTrainer(leader)) {
-        badges++;
-      }
-    }
+    List<TrainerConfig> gymLeaders =
+      InitiativeInit.getConfigLoader().getTrainersByCategory("gym").stream()
+        .filter(t -> "leader".equals(t.getTrainerType()))
+        .toList();
+    int badges = (int) gymLeaders.stream()
+      .filter(t -> progress.hasDefeatedTrainer(t.getId()))
+      .count();
+    final int totalGymBadges = gymLeaders.size();
     final int finalBadges = badges;
     source.sendSuccess(
-      () -> Component.literal("§eBadges: §f" + finalBadges + "/10"),
+      () -> Component.literal("§eBadges: §f" + finalBadges + "/" + totalGymBadges),
       false
     );
 
@@ -560,7 +221,7 @@ public class CobblemonInitiativeCommands {
       return 0;
     }
 
-    int levelCap = AchievementsInit.getLevelCapManager().getLevelCap(player);
+    int levelCap = InitiativeInit.getLevelCapManager().getLevelCap(player);
     source.sendSuccess(
       () -> Component.literal("§eYour current level cap is: §f" + levelCap),
       false
@@ -581,13 +242,13 @@ public class CobblemonInitiativeCommands {
     }
 
     PlayerProgress progress =
-      AchievementsInit.getProgressManager().getProgress(player);
+      InitiativeInit.getProgressManager().getProgress(player);
     progress.getDefeatedTrainers().clear();
     progress.getEarnedAchievements().clear();
     progress.setCurrentLevelCap(20);
 
     if (player.getServer() != null) {
-      AchievementsInit.getProgressManager().saveProgress(player.getServer());
+      InitiativeInit.getProgressManager().saveProgress(player.getServer());
     }
 
     source.sendSuccess(
@@ -604,7 +265,7 @@ public class CobblemonInitiativeCommands {
     CommandSourceStack source = context.getSource();
     String trainerId = StringArgumentType.getString(context, "trainer");
 
-    TrainerConfig trainer = AchievementsInit.getConfigLoader().getTrainer(
+    TrainerConfig trainer = InitiativeInit.getConfigLoader().getTrainer(
       trainerId
     );
     if (trainer == null) {
@@ -661,7 +322,7 @@ public class CobblemonInitiativeCommands {
       source.sendSuccess(() -> Component.literal("§ePrerequisites:"), false);
       for (String prereq : trainer.getPrerequisites()) {
         TrainerConfig prereqTrainer =
-          AchievementsInit.getConfigLoader().getTrainer(prereq);
+          InitiativeInit.getConfigLoader().getTrainer(prereq);
         String name =
           prereqTrainer != null ? prereqTrainer.getDisplayName() : prereq;
         source.sendSuccess(() -> Component.literal("§7  - " + name), false);
@@ -713,7 +374,7 @@ public class CobblemonInitiativeCommands {
       false
     );
 
-    for (TrainerConfig trainer : AchievementsInit.getConfigLoader().getAllTrainers()) {
+    for (TrainerConfig trainer : InitiativeInit.getConfigLoader().getAllTrainers()) {
       if (category == null || trainer.getCategory().contains(category)) {
         source.sendSuccess(
           () ->
@@ -740,7 +401,7 @@ public class CobblemonInitiativeCommands {
       return 0;
     }
 
-    TrainerConfig trainer = AchievementsInit.getConfigLoader().getTrainer(
+    TrainerConfig trainer = InitiativeInit.getConfigLoader().getTrainer(
       trainerId
     );
     if (trainer == null) {
@@ -748,10 +409,7 @@ public class CobblemonInitiativeCommands {
       return 0;
     }
 
-    AchievementsInit.getProgressManager().onTrainerDefeated(
-      player,
-      trainerId
-    );
+    InitiativeInit.getProgressManager().onTrainerDefeated(player, trainerId);
     source.sendSuccess(
       () ->
         Component.literal(
@@ -761,5 +419,82 @@ public class CobblemonInitiativeCommands {
     );
 
     return 1;
+  }
+
+  // ── Shrine challenge commands ─────────────────────────────────────────────────
+
+  /**
+   * /cobblemon-initiative shrine <id> start
+   * Intended to be triggered from an Easy NPC dialog or a pressure plate.
+   */
+  private static int shrineStart(CommandContext<CommandSourceStack> context) {
+    CommandSourceStack source = context.getSource();
+    ServerPlayer player = source.getPlayer();
+    if (player == null) {
+      source.sendFailure(Component.literal("Must be run by a player."));
+      return 0;
+    }
+    String shrineId = StringArgumentType.getString(context, "shrine");
+    boolean started = InitiativeInit.getShrineChallengeManager().startChallenge(
+      player,
+      shrineId
+    );
+    return started ? 1 : 0;
+  }
+
+  /**
+   * /cobblemon-initiative shrine <id> stop
+   * Aborts the active challenge (no penalty). Also registered as /shrine-abort.
+   */
+  private static int shrineStop(CommandContext<CommandSourceStack> context) {
+    CommandSourceStack source = context.getSource();
+    ServerPlayer player = source.getPlayer();
+    if (player == null) {
+      source.sendFailure(Component.literal("Must be run by a player."));
+      return 0;
+    }
+    InitiativeInit.getShrineChallengeManager().stopChallenge(player);
+    return 1;
+  }
+
+  /**
+   * /cobblemon-initiative shrine fairy test <testName>
+   * Runs an individual Fairy shrine test on the player's lead Pokémon.
+   * testName: friendship | fullness | nickname | shiny | resolve
+   * Triggered from an Easy NPC altar dialog or command block.
+   */
+  private static int shrineTest(CommandContext<CommandSourceStack> context) {
+    CommandSourceStack source = context.getSource();
+    ServerPlayer player = source.getPlayer();
+    if (player == null) {
+      source.sendFailure(Component.literal("Must be run by a player."));
+      return 0;
+    }
+    String testName = StringArgumentType.getString(context, "testName");
+    boolean passed = InitiativeInit.getShrineChallengeManager().runFairyTest(player, testName);
+    return passed ? 1 : 0;
+  }
+
+  /**
+   * /cobblemon-initiative shrine <id> complete
+   * Called by a command block at the parkour finish line:
+   *   execute as @a[distance=..3] run cobblemon-initiative shrine fire complete
+   */
+  private static int shrineComplete(
+    CommandContext<CommandSourceStack> context
+  ) {
+    CommandSourceStack source = context.getSource();
+    ServerPlayer player = source.getPlayer();
+    if (player == null) {
+      source.sendFailure(Component.literal("Must be run by a player."));
+      return 0;
+    }
+    String shrineId = StringArgumentType.getString(context, "shrine");
+    boolean completed =
+      InitiativeInit.getShrineChallengeManager().completeParkour(
+        player,
+        shrineId
+      );
+    return completed ? 1 : 0;
   }
 }

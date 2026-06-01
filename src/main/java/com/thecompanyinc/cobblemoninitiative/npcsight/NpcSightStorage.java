@@ -1,17 +1,21 @@
 package com.thecompanyinc.cobblemoninitiative.npcsight;
 
 import com.google.gson.*;
+import com.thecompanyinc.cobblemoninitiative.util.UuidGsonAdapter;
 import java.io.*;
-import java.lang.reflect.Type;
 import java.util.*;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.storage.LevelResource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class NpcSightStorage {
 
+  private static final Logger LOGGER = LoggerFactory.getLogger("cobblemon-initiative");
+
   private static final Gson GSON = new GsonBuilder()
     .setPrettyPrinting()
-    .registerTypeHierarchyAdapter(UUID.class, new UuidAdapter())
+    .registerTypeHierarchyAdapter(UUID.class, UuidGsonAdapter.INSTANCE)
     .create();
 
   private final Map<UUID, NpcSightData> npcDataMap = new LinkedHashMap<>();
@@ -40,7 +44,7 @@ public class NpcSightStorage {
         }
       }
     } catch (IOException e) {
-      System.out.println("[NPC Sight] Error loading data: " + e.getMessage());
+      LOGGER.error("[NPC Sight] Error loading data: {}", e.getMessage());
     }
   }
 
@@ -58,7 +62,7 @@ public class NpcSightStorage {
         GSON.toJson(root, writer);
       }
     } catch (IOException e) {
-      System.out.println("[NPC Sight] Error saving data: " + e.getMessage());
+      LOGGER.error("[NPC Sight] Error saving data: {}", e.getMessage());
     }
   }
 
@@ -93,26 +97,4 @@ public class NpcSightStorage {
     return npcDataMap.size();
   }
 
-  // ---------------------------------------------------------------------------
-  // UUID GSON adapter
-  // ---------------------------------------------------------------------------
-
-  private static class UuidAdapter
-    implements JsonSerializer<UUID>, JsonDeserializer<UUID> {
-
-    @Override
-    public JsonElement serialize(UUID src, Type type, JsonSerializationContext ctx) {
-      return new JsonPrimitive(src.toString());
-    }
-
-    @Override
-    public UUID deserialize(JsonElement json, Type type, JsonDeserializationContext ctx)
-      throws JsonParseException {
-      try {
-        return UUID.fromString(json.getAsString());
-      } catch (IllegalArgumentException e) {
-        throw new JsonParseException("Invalid UUID: " + json.getAsString(), e);
-      }
-    }
-  }
 }

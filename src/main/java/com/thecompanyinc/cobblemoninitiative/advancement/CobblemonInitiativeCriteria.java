@@ -1,6 +1,6 @@
 package com.thecompanyinc.cobblemoninitiative.advancement;
 
-import com.thecompanyinc.cobblemoninitiative.AchievementsInit;
+import com.thecompanyinc.cobblemoninitiative.InitiativeInit;
 import net.minecraft.advancements.CriteriaTriggers;
 
 public class CobblemonInitiativeCriteria {
@@ -9,10 +9,10 @@ public class CobblemonInitiativeCriteria {
 
   public static void register() {
     TRAINER_DEFEATED = CriteriaTriggers.register(
-      AchievementsInit.MOD_ID + ":trainer_defeated",
+      InitiativeInit.MOD_ID + ":trainer_defeated",
       new TrainerDefeatedCriterion()
     );
 
-    AchievementsInit.LOGGER.info("Registered custom advancement criteria");
+    InitiativeInit.LOGGER.info("Registered custom advancement criteria");
   }
 }

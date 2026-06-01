@@ -1,6 +1,6 @@
 package com.thecompanyinc.cobblemoninitiative.mixin;
 
-import com.thecompanyinc.cobblemoninitiative.DeathMechanicsInit;
+import com.thecompanyinc.cobblemoninitiative.NuzlockeInit;
 import com.thecompanyinc.cobblemoninitiative.screen.PokeballDeathScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.DeathScreen;
@@ -17,7 +17,7 @@ public class DeathScreenMixin {
   private void onSetScreen(Screen screen, CallbackInfo ci) {
     if (
       screen instanceof DeathScreen &&
-      DeathMechanicsInit.consumePendingWhiteoutDeath()
+      NuzlockeInit.consumePendingWhiteoutDeath()
     ) {
       Minecraft client = (Minecraft) (Object) this;
       client.setScreen(new PokeballDeathScreen());

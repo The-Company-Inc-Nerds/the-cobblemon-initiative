@@ -19,7 +19,6 @@ public class PokeballDeathScreen extends Screen {
   private static final int SHATTER_TICKS = 60;
   private static final int SHOW_DEATH_SCREEN_TICKS = 100;
 
-  private boolean shattered = false;
   private float pokeballScale = 0.0f;
 
   public PokeballDeathScreen() {
@@ -42,8 +41,7 @@ public class PokeballDeathScreen extends Screen {
       pokeballScale = Math.min(1.0f, ticksOnScreen / (float) FADE_IN_TICKS);
     }
 
-    if (ticksOnScreen == SHATTER_TICKS && !shattered) {
-      shattered = true;
+    if (ticksOnScreen == SHATTER_TICKS) {
       createShards();
     }
 
@@ -90,7 +88,7 @@ public class PokeballDeathScreen extends Screen {
     int centerX = this.width / 2;
     int centerY = this.height / 2;
 
-    if (!shattered && pokeballScale > 0) {
+    if (ticksOnScreen < SHATTER_TICKS && pokeballScale > 0) {
       int radius = (int) (50 * pokeballScale);
       drawPokeball(graphics, centerX, centerY, radius);
     }

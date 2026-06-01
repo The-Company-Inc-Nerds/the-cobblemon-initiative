@@ -3,7 +3,7 @@ package com.thecompanyinc.cobblemoninitiative.config;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import com.thecompanyinc.cobblemoninitiative.AchievementsInit;
+import com.thecompanyinc.cobblemoninitiative.InitiativeInit;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
@@ -26,24 +26,25 @@ public class ConfigLoader {
 
   private void loadTrainers() {
     String[] trainerPaths = {
-      "data/cobblemon-initiative/trainers/gyms/hua_zhan_city.json",
-      "data/cobblemon-initiative/trainers/gyms/gaviota_port.json",
-      "data/cobblemon-initiative/trainers/gyms/cyber_city.json",
-      "data/cobblemon-initiative/trainers/gyms/mystic_marsh.json",
-      "data/cobblemon-initiative/trainers/gyms/takehara_falls.json",
-      "data/cobblemon-initiative/trainers/gyms/nifl_town.json",
-      "data/cobblemon-initiative/trainers/gyms/deepcore_city.json",
-      "data/cobblemon-initiative/trainers/gyms/kalahar_reach.json",
-      "data/cobblemon-initiative/trainers/gyms/scorchspire.json",
-      "data/cobblemon-initiative/trainers/gyms/ryujin_keep.json",
-      "data/cobblemon-initiative/trainers/shrines/fire_shrine.json",
-      "data/cobblemon-initiative/trainers/shrines/ground_shrine.json",
-      "data/cobblemon-initiative/trainers/shrines/ice_shrine.json",
-      "data/cobblemon-initiative/trainers/shrines/dragon_shrine.json",
-      "data/cobblemon-initiative/trainers/shrines/fairy_shrine.json",
-      "data/cobblemon-initiative/trainers/royal_league/royal_league.json",
-      "data/cobblemon-initiative/trainers/battle_frontier/battle_frontier.json",
-      "data/cobblemon-initiative/trainers/villain_team/villain_team.json",
+      "data/cobblemon_initiative/trainers/gyms/hua_zhan_city.json",
+      "data/cobblemon_initiative/trainers/gyms/gaviota_port.json",
+      "data/cobblemon_initiative/trainers/gyms/cyber_city.json",
+      "data/cobblemon_initiative/trainers/gyms/mystic_marsh.json",
+      "data/cobblemon_initiative/trainers/gyms/takehara_falls.json",
+      "data/cobblemon_initiative/trainers/gyms/nifl_town.json",
+      "data/cobblemon_initiative/trainers/gyms/deepcore_city.json",
+      "data/cobblemon_initiative/trainers/gyms/kalahar_reach.json",
+      "data/cobblemon_initiative/trainers/gyms/scorchspire.json",
+      "data/cobblemon_initiative/trainers/gyms/ryujin_keep.json",
+      "data/cobblemon_initiative/trainers/shrines/fire_shrine.json",
+      "data/cobblemon_initiative/trainers/shrines/ground_shrine.json",
+      "data/cobblemon_initiative/trainers/shrines/ice_shrine.json",
+      "data/cobblemon_initiative/trainers/shrines/dragon_shrine.json",
+      "data/cobblemon_initiative/trainers/shrines/fairy_shrine.json",
+      "data/cobblemon_initiative/trainers/royal_league/royal_league.json",
+      "data/cobblemon_initiative/trainers/battle_frontier/battle_frontier.json",
+      "data/cobblemon_initiative/trainers/villain_team/villain_team.json",
+      "data/cobblemon_initiative/trainers/shrine_challenges/dragon_hydra.json",
     };
 
     for (String path : trainerPaths) {
@@ -62,7 +63,7 @@ public class ConfigLoader {
           if (trainerList != null) {
             for (TrainerConfig trainer : trainerList) {
               trainers.put(trainer.getId(), trainer);
-              AchievementsInit.LOGGER.debug(
+              InitiativeInit.LOGGER.debug(
                 "Loaded trainer: {}",
                 trainer.getId()
               );
@@ -71,7 +72,7 @@ public class ConfigLoader {
           reader.close();
         }
       } catch (Exception e) {
-        AchievementsInit.LOGGER.error(
+        InitiativeInit.LOGGER.error(
           "Failed to load trainer config: {}",
           path,
           e
@@ -79,7 +80,7 @@ public class ConfigLoader {
       }
     }
 
-    AchievementsInit.LOGGER.info("Loaded {} trainers", trainers.size());
+    InitiativeInit.LOGGER.info("Loaded {} trainers", trainers.size());
   }
 
   private void loadLevelCaps() {
@@ -87,7 +88,7 @@ public class ConfigLoader {
       InputStream stream = getClass()
         .getClassLoader()
         .getResourceAsStream(
-          "data/cobblemon-initiative/levelcaps/levelcaps.json"
+          "data/cobblemon_initiative/levelcaps/levelcaps.json"
         );
       if (stream != null) {
         InputStreamReader reader = new InputStreamReader(
@@ -104,10 +105,10 @@ public class ConfigLoader {
         reader.close();
       }
     } catch (Exception e) {
-      AchievementsInit.LOGGER.error("Failed to load level caps config", e);
+      InitiativeInit.LOGGER.error("Failed to load level caps config", e);
     }
 
-    AchievementsInit.LOGGER.info(
+    InitiativeInit.LOGGER.info(
       "Loaded {} level cap stages",
       levelCaps.size()
     );

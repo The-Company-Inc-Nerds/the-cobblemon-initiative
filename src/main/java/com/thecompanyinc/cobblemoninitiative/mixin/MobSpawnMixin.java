@@ -1,7 +1,7 @@
 package com.thecompanyinc.cobblemoninitiative.mixin;
 
-import com.thecompanyinc.cobblemoninitiative.DeathMechanicsInit;
-import com.thecompanyinc.cobblemoninitiative.config.DeathModConfig;
+import com.thecompanyinc.cobblemoninitiative.NuzlockeInit;
+import com.thecompanyinc.cobblemoninitiative.config.NuzlockeConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.MobCategory;
@@ -29,11 +29,11 @@ public class MobSpawnMixin {
     NaturalSpawner.AfterSpawnCallback callback,
     CallbackInfo ci
   ) {
-    DeathModConfig config = DeathMechanicsInit.getConfig();
+    NuzlockeConfig config = NuzlockeInit.getConfig();
     if (!config.isEnableSafeZones()) return;
 
     String dimension = level.dimension().location().toString();
-    DeathModConfig.SafeZone zone = config.getSafeZoneAt(
+    NuzlockeConfig.SafeZone zone = config.getSafeZoneAt(
       dimension,
       pos.getX(),
       pos.getY(),

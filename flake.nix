@@ -1,5 +1,5 @@
 {
-  description = "The Cobblemon Initiative - a combined Fabric mod featuring Cobblemon achievements, Nuzlocke death mechanics, and NPC line-of-sight detection.";
+  description = "The Cobblemon Initiative - a cobblemon mod.";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
@@ -14,7 +14,7 @@
     system = "x86_64-linux";
     pkgs = import nixpkgs {
       system = system;
-      config.allUnfree = true;
+      config.allowUnfree = true;
     };
   in {
     devShells.${system}.default = import ./shell.nix {

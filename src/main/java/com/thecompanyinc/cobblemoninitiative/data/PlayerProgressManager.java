@@ -3,7 +3,7 @@ package com.thecompanyinc.cobblemoninitiative.data;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import com.thecompanyinc.cobblemoninitiative.AchievementsInit;
+import com.thecompanyinc.cobblemoninitiative.InitiativeInit;
 import com.thecompanyinc.cobblemoninitiative.config.TrainerConfig;
 import java.io.*;
 import java.lang.reflect.Type;
@@ -29,27 +29,6 @@ public class PlayerProgressManager {
   private static final String PROGRESS_FILE_NAME =
     "cobblemon_initiative_progress.json";
   private final Map<UUID, PlayerProgress> playerProgress = new HashMap<>();
-
-  private static final String[] ALL_GYM_LEADERS = {
-    "hua_zhan_leader",
-    "takehara_leader",
-    "mystic_leader",
-    "deepcore_leader",
-    "gaviota_leader",
-    "kalahar_leader",
-    "cyber_leader",
-    "ryujin_leader",
-    "nifl_leader",
-    "scorchspire_leader",
-  };
-
-  private static final String[] ALL_SHRINE_LEADERS = {
-    "fire_shrine_leader",
-    "ground_shrine_leader",
-    "ice_shrine_leader",
-    "dragon_shrine_leader",
-    "fairy_shrine_leader",
-  };
 
   public PlayerProgress getProgress(UUID playerId) {
     return playerProgress.computeIfAbsent(playerId, PlayerProgress::new);
@@ -92,12 +71,12 @@ public class PlayerProgressManager {
             playerProgress.put(uuid, progress);
           }
         }
-        AchievementsInit.LOGGER.info(
+        InitiativeInit.LOGGER.info(
           "Loaded progress for {} players",
           playerProgress.size()
         );
       } catch (Exception e) {
-        AchievementsInit.LOGGER.error("Failed to load player progress", e);
+        InitiativeInit.LOGGER.error("Failed to load player progress", e);
       }
     }
   }
@@ -128,17 +107,17 @@ public class PlayerProgressManager {
       ) {
         GSON.toJson(data, writer);
       }
-      AchievementsInit.LOGGER.debug(
+      InitiativeInit.LOGGER.debug(
         "Saved progress for {} players",
         data.size()
       );
     } catch (Exception e) {
-      AchievementsInit.LOGGER.error("Failed to save player progress", e);
+      InitiativeInit.LOGGER.error("Failed to save player progress", e);
     }
   }
 
   public boolean canBattleTrainer(ServerPlayer player, String trainerId) {
-    TrainerConfig trainer = AchievementsInit.getConfigLoader().getTrainer(
+    TrainerConfig trainer = InitiativeInit.getConfigLoader().getTrainer(
       trainerId
     );
     if (trainer == null) return false;
@@ -158,7 +137,7 @@ public class PlayerProgressManager {
     ServerPlayer player,
     String trainerId
   ) {
-    TrainerConfig trainer = AchievementsInit.getConfigLoader().getTrainer(
+    TrainerConfig trainer = InitiativeInit.getConfigLoader().getTrainer(
       trainerId
     );
     if (trainer == null) return Collections.emptyList();
@@ -169,7 +148,7 @@ public class PlayerProgressManager {
     for (String prereq : trainer.getPrerequisites()) {
       if (!progress.hasDefeatedTrainer(prereq)) {
         TrainerConfig prereqTrainer =
-          AchievementsInit.getConfigLoader().getTrainer(prereq);
+          InitiativeInit.getConfigLoader().getTrainer(prereq);
         if (prereqTrainer != null) {
           missing.add(prereqTrainer.getDisplayName());
         } else {
@@ -185,7 +164,7 @@ public class PlayerProgressManager {
     PlayerProgress progress = getProgress(player);
 
     if (progress.hasDefeatedTrainer(trainerId)) {
-      AchievementsInit.LOGGER.debug(
+      InitiativeInit.LOGGER.debug(
         "Player {} already defeated {}",
         player.getName().getString(),
         trainerId
@@ -194,13 +173,13 @@ public class PlayerProgressManager {
     }
 
     progress.addDefeatedTrainer(trainerId);
-    AchievementsInit.LOGGER.info(
+    InitiativeInit.LOGGER.info(
       "Player {} defeated trainer {}",
       player.getName().getString(),
       trainerId
     );
 
-    TrainerConfig trainer = AchievementsInit.getConfigLoader().getTrainer(
+    TrainerConfig trainer = InitiativeInit.getConfigLoader().getTrainer(
       trainerId
     );
     if (trainer != null) {
@@ -215,7 +194,15 @@ public class PlayerProgressManager {
 
     checkMultiTrainerAchievements(player);
 
-    AchievementsInit.getLevelCapManager().updateLevelCap(player);
+    InitiativeInit.getLevelCapManager().updateLevelCap(player);
+
+    // Notify shrine challenge manager — advances hydra stages, completes dark gauntlet
+    if (InitiativeInit.getShrineChallengeManager() != null) {
+      InitiativeInit.getShrineChallengeManager().onTrainerDefeated(
+        player,
+        trainerId
+      );
+    }
 
     if (player.getServer() != null) {
       saveProgress(player.getServer());
@@ -235,7 +222,7 @@ public class PlayerProgressManager {
             reward.getCount()
           );
           executeCommand(player, command);
-          AchievementsInit.LOGGER.debug(
+          InitiativeInit.LOGGER.debug(
             "Granted {} x{} to {}",
             reward.getItem(),
             reward.getCount(),
@@ -251,7 +238,7 @@ public class PlayerProgressManager {
           executeCommand(player, command);
         }
       } catch (Exception e) {
-        AchievementsInit.LOGGER.error(
+        InitiativeInit.LOGGER.error(
           "Failed to grant reward: {}",
           reward,
           e
@@ -261,29 +248,18 @@ public class PlayerProgressManager {
   }
 
   private void grantShrineCrystal(ServerPlayer player, String trainerId) {
-    String crystalItem = switch (trainerId) {
-      case "fire_shrine_leader" -> "cobblemon-initiative:fire_shrine_crystal";
-      case "ground_shrine_leader" -> "cobblemon-initiative:ground_shrine_crystal";
-      case "ice_shrine_leader" -> "cobblemon-initiative:ice_shrine_crystal";
-      case "dragon_shrine_leader" -> "cobblemon-initiative:dragon_shrine_crystal";
-      case "fairy_shrine_leader" -> "cobblemon-initiative:fairy_shrine_crystal";
-      default -> null;
+    boolean isShrine = switch (trainerId) {
+      case "fire_shrine_leader", "ground_shrine_leader", "ice_shrine_leader",
+           "dragon_shrine_leader", "fairy_shrine_leader" -> true;
+      default -> false;
     };
 
-    if (crystalItem != null) {
-      String command =
-        "give " + player.getName().getString() + " " + crystalItem + " 1";
-      executeCommand(player, command);
-
+    if (isShrine) {
+      // Crystal item is granted via TrainerConfig rewards; only send the flavour message here.
       player.sendSystemMessage(
         Component.literal(
           "§d§l[Shrine Crystal Obtained!] §r§7Place it to summon the legendary guardian!"
         )
-      );
-      AchievementsInit.LOGGER.info(
-        "Granted {} to {}",
-        crystalItem,
-        player.getName().getString()
       );
     }
   }
@@ -346,7 +322,7 @@ public class PlayerProgressManager {
       commandBuilder.toString()
     );
 
-    AchievementsInit.LOGGER.info("Spawning defeat Pokemon: {}", fullCommand);
+    InitiativeInit.LOGGER.info("Spawning defeat Pokemon: {}", fullCommand);
     executeCommand(player, fullCommand);
 
     String message = spawnConfig.getMessage();
@@ -407,22 +383,22 @@ public class PlayerProgressManager {
     String trainerId
   ) {
     String advancementPath = switch (trainerId) {
-      case "hua_zhan_leader" -> "cobblemon-initiative:gyms/badge_grass";
-      case "takehara_leader" -> "cobblemon-initiative:gyms/badge_bug";
-      case "mystic_leader" -> "cobblemon-initiative:gyms/badge_fairy";
-      case "deepcore_leader" -> "cobblemon-initiative:gyms/badge_fighting";
-      case "gaviota_leader" -> "cobblemon-initiative:gyms/badge_water";
-      case "kalahar_leader" -> "cobblemon-initiative:gyms/badge_ground";
-      case "cyber_leader" -> "cobblemon-initiative:gyms/badge_electric";
-      case "ryujin_leader" -> "cobblemon-initiative:gyms/badge_dragon";
-      case "nifl_leader" -> "cobblemon-initiative:gyms/badge_ice";
-      case "scorchspire_leader" -> "cobblemon-initiative:gyms/badge_fire";
-      case "fire_shrine_leader" -> "cobblemon-initiative:shrines/fire_shrine";
-      case "ground_shrine_leader" -> "cobblemon-initiative:shrines/ground_shrine";
-      case "ice_shrine_leader" -> "cobblemon-initiative:shrines/ice_shrine";
-      case "dragon_shrine_leader" -> "cobblemon-initiative:shrines/dragon_shrine";
-      case "fairy_shrine_leader" -> "cobblemon-initiative:shrines/fairy_shrine";
-      case "royal_champion" -> "cobblemon-initiative:royal_league/champion";
+      case "hua_zhan_leader" -> "cobblemon_initiative:gyms/badge_grass";
+      case "takehara_leader" -> "cobblemon_initiative:gyms/badge_bug";
+      case "mystic_leader" -> "cobblemon_initiative:gyms/badge_fairy";
+      case "deepcore_leader" -> "cobblemon_initiative:gyms/badge_fighting";
+      case "gaviota_leader" -> "cobblemon_initiative:gyms/badge_water";
+      case "kalahar_leader" -> "cobblemon_initiative:gyms/badge_ground";
+      case "cyber_leader" -> "cobblemon_initiative:gyms/badge_electric";
+      case "ryujin_leader" -> "cobblemon_initiative:gyms/badge_dragon";
+      case "nifl_leader" -> "cobblemon_initiative:gyms/badge_ice";
+      case "scorchspire_leader" -> "cobblemon_initiative:gyms/badge_fire";
+      case "fire_shrine_leader" -> "cobblemon_initiative:shrines/fire_shrine";
+      case "ground_shrine_leader" -> "cobblemon_initiative:shrines/ground_shrine";
+      case "ice_shrine_leader" -> "cobblemon_initiative:shrines/ice_shrine";
+      case "dragon_shrine_leader" -> "cobblemon_initiative:shrines/dragon_shrine";
+      case "fairy_shrine_leader" -> "cobblemon_initiative:shrines/fairy_shrine";
+      case "royal_champion" -> "cobblemon_initiative:royal_league/champion";
       default -> null;
     };
 
@@ -435,26 +411,25 @@ public class PlayerProgressManager {
     PlayerProgress progress = getProgress(player);
 
     if (!progress.hasAchievement("all_badges")) {
-      boolean hasAllBadges = true;
-      for (String leader : ALL_GYM_LEADERS) {
-        if (!progress.hasDefeatedTrainer(leader)) {
-          hasAllBadges = false;
-          break;
-        }
-      }
+      List<com.thecompanyinc.cobblemoninitiative.config.TrainerConfig> gymLeaders =
+        InitiativeInit.getConfigLoader().getTrainersByCategory("gym").stream()
+          .filter(t -> "leader".equals(t.getTrainerType()))
+          .toList();
+      boolean hasAllBadges = !gymLeaders.isEmpty() &&
+        gymLeaders.stream().allMatch(t -> progress.hasDefeatedTrainer(t.getId()));
 
       if (hasAllBadges) {
         progress.addAchievement("all_badges");
-        grantAdvancement(player, "cobblemon-initiative:gyms/all_badges");
+        grantAdvancement(player, "cobblemon_initiative:gyms/all_badges");
         player.sendSystemMessage(
           Component.literal(
             "§6§l[Achievement Unlocked] §r§ePokemon League Qualified!"
           )
         );
         player.sendSystemMessage(
-          Component.literal("§7You have collected all 10 Gym Badges!")
+          Component.literal("§7You have collected all " + gymLeaders.size() + " Gym Badges!")
         );
-        AchievementsInit.LOGGER.info(
+        InitiativeInit.LOGGER.info(
           "Player {} earned all_badges achievement",
           player.getName().getString()
         );
@@ -462,24 +437,23 @@ public class PlayerProgressManager {
     }
 
     if (!progress.hasAchievement("all_shrines")) {
-      boolean hasAllShrines = true;
-      for (String leader : ALL_SHRINE_LEADERS) {
-        if (!progress.hasDefeatedTrainer(leader)) {
-          hasAllShrines = false;
-          break;
-        }
-      }
+      List<com.thecompanyinc.cobblemoninitiative.config.TrainerConfig> shrineLeaders =
+        InitiativeInit.getConfigLoader().getTrainersByCategory("shrine").stream()
+          .filter(t -> "cult_leader".equals(t.getTrainerType()))
+          .toList();
+      boolean hasAllShrines = !shrineLeaders.isEmpty() &&
+        shrineLeaders.stream().allMatch(t -> progress.hasDefeatedTrainer(t.getId()));
 
       if (hasAllShrines) {
         progress.addAchievement("all_shrines");
-        grantAdvancement(player, "cobblemon-initiative:shrines/all_shrines");
+        grantAdvancement(player, "cobblemon_initiative:shrines/all_shrines");
         player.sendSystemMessage(
           Component.literal("§6§l[Achievement Unlocked] §r§eLegendary Seeker!")
         );
         player.sendSystemMessage(
-          Component.literal("§7You have conquered all 5 Legendary Shrines!")
+          Component.literal("§7You have conquered all " + shrineLeaders.size() + " Legendary Shrines!")
         );
-        AchievementsInit.LOGGER.info(
+        InitiativeInit.LOGGER.info(
           "Player {} earned all_shrines achievement",
           player.getName().getString()
         );
@@ -494,7 +468,7 @@ public class PlayerProgressManager {
       advancementPath
     );
     executeCommand(player, command);
-    AchievementsInit.LOGGER.debug(
+    InitiativeInit.LOGGER.debug(
       "Granted advancement {} to {}",
       advancementPath,
       player.getName().getString()

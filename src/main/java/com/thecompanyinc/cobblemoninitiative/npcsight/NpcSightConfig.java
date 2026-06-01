@@ -6,9 +6,12 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class NpcSightConfig {
 
+  private static final Logger LOGGER = LoggerFactory.getLogger("cobblemon-initiative");
   private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
   private static final File CONFIG_FILE = new File(
     "config/cobblemon-initiative-npcsight.json"
@@ -23,6 +26,12 @@ public class NpcSightConfig {
   /** Distance within which canSeePlayer AND proximity triggers the Easy NPC dialog. */
   private double dialogRange = 3.0;
 
+  /**
+   * Default Easy NPC dialog identifier used when an NPC has no per-entity dialog set.
+   * Blank string disables the fallback entirely.
+   */
+  private String defaultDialogName = "npc_sight_trigger";
+
   public static NpcSightConfig load() {
     try {
       if (CONFIG_FILE.exists()) {
@@ -32,9 +41,7 @@ public class NpcSightConfig {
         }
       }
     } catch (IOException e) {
-      System.out.println(
-        "[NPC Sight] Error loading config, using defaults: " + e.getMessage()
-      );
+      LOGGER.warn("[NPC Sight] Error loading config, using defaults: {}", e.getMessage());
     }
     NpcSightConfig cfg = new NpcSightConfig();
     cfg.save();
@@ -48,7 +55,7 @@ public class NpcSightConfig {
         GSON.toJson(this, writer);
       }
     } catch (IOException e) {
-      System.out.println("[NPC Sight] Error saving config: " + e.getMessage());
+      LOGGER.error("[NPC Sight] Error saving config: {}", e.getMessage());
     }
   }
 
@@ -74,5 +81,13 @@ public class NpcSightConfig {
 
   public void setDialogRange(double v) {
     this.dialogRange = v;
+  }
+
+  public String getDefaultDialogName() {
+    return defaultDialogName;
+  }
+
+  public void setDefaultDialogName(String v) {
+    this.defaultDialogName = v;
   }
 }

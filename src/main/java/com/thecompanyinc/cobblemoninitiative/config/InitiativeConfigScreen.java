@@ -1,6 +1,6 @@
 package com.thecompanyinc.cobblemoninitiative.config;
 
-import com.thecompanyinc.cobblemoninitiative.DeathMechanicsInit;
+import com.thecompanyinc.cobblemoninitiative.NuzlockeInit;
 import com.thecompanyinc.cobblemoninitiative.npcsight.NpcSightConfig;
 import com.thecompanyinc.cobblemoninitiative.npcsight.NpcSightInit;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
@@ -9,18 +9,21 @@ import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
-public class DeathModConfigScreen {
+public class InitiativeConfigScreen {
 
   public static Screen create(Screen parent) {
-    DeathModConfig config = DeathModConfig.load();
-    DeathModConfig defaults = new DeathModConfig();
+    NuzlockeConfig config = NuzlockeConfig.load();
+    NuzlockeConfig defaults = new NuzlockeConfig();
 
     ConfigBuilder builder = ConfigBuilder.create()
       .setParentScreen(parent)
-      .setTitle(Component.literal("Cobblemon Initiative Config"));
+      .setTitle(Component.literal("The Cobblemon Initiative"));
 
     ConfigEntryBuilder entryBuilder = builder.entryBuilder();
 
+    // -------------------------------------------------------------------------
+    // General Settings
+    // -------------------------------------------------------------------------
     ConfigCategory general = builder.getOrCreateCategory(
       Component.literal("General Settings")
     );
@@ -32,9 +35,7 @@ public class DeathModConfigScreen {
           config.isScaleDamageByPartySize()
         )
         .setDefaultValue(defaults.isScaleDamageByPartySize())
-        .setTooltip(
-          Component.literal("If enabled, damage = maxHealth / partySize")
-        )
+        .setTooltip(Component.literal("If enabled, damage = maxHealth / partySize."))
         .setSaveConsumer(config::setScaleDamageByPartySize)
         .build()
     );
@@ -47,9 +48,7 @@ public class DeathModConfigScreen {
         )
         .setDefaultValue(defaults.isUseMaxHealth())
         .setTooltip(
-          Component.literal(
-            "Use max health instead of current health for damage calculation"
-          )
+          Component.literal("Use max health instead of current health for damage calculation.")
         )
         .setSaveConsumer(config::setUseMaxHealth)
         .build()
@@ -65,14 +64,32 @@ public class DeathModConfigScreen {
         .setMin(0.0f)
         .setMax(1.0f)
         .setTooltip(
-          Component.literal(
-            "Minimum damage as a percentage of max health (0.0 - 1.0)"
-          )
+          Component.literal("Minimum damage as a percentage of max health (0.0 - 1.0).")
         )
         .setSaveConsumer(config::setMinimumDamagePercent)
         .build()
     );
 
+    general.addEntry(
+      entryBuilder
+        .startBooleanToggle(
+          Component.literal("Enable Safe Zones"),
+          config.isEnableSafeZones()
+        )
+        .setDefaultValue(defaults.isEnableSafeZones())
+        .setTooltip(
+          Component.literal(
+            "Enable protection zones where mob spawning is restricted. "
+            + "Use /safezone add to create zones."
+          )
+        )
+        .setSaveConsumer(config::setEnableSafeZones)
+        .build()
+    );
+
+    // -------------------------------------------------------------------------
+    // Nuzlocke Rules
+    // -------------------------------------------------------------------------
     ConfigCategory nuzlocke = builder.getOrCreateCategory(
       Component.literal("Nuzlocke Rules")
     );
@@ -85,9 +102,7 @@ public class DeathModConfigScreen {
         )
         .setDefaultValue(defaults.isRemoveFaintedPokemon())
         .setTooltip(
-          Component.literal(
-            "Permanently remove Pokémon from party when they faint"
-          )
+          Component.literal("Permanently remove Pokémon from party when they faint.")
         )
         .setSaveConsumer(config::setRemoveFaintedPokemon)
         .build()
@@ -101,7 +116,7 @@ public class DeathModConfigScreen {
         )
         .setDefaultValue(defaults.isSacrificeOnFlee())
         .setTooltip(
-          Component.literal("Must sacrifice a Pokémon when fleeing from battle")
+          Component.literal("Must sacrifice a Pokémon when fleeing from battle.")
         )
         .setSaveConsumer(config::setSacrificeOnFlee)
         .build()
@@ -116,13 +131,16 @@ public class DeathModConfigScreen {
         .setDefaultValue(defaults.isMysterySacrifice())
         .setTooltip(
           Component.literal(
-            "Obfuscate Pokémon names when choosing sacrifice (like enchantment text)"
+            "Obfuscate Pokémon names when choosing a sacrifice (like enchantment text)."
           )
         )
         .setSaveConsumer(config::setMysterySacrifice)
         .build()
     );
 
+    // -------------------------------------------------------------------------
+    // Capture Rules
+    // -------------------------------------------------------------------------
     ConfigCategory capture = builder.getOrCreateCategory(
       Component.literal("Capture Rules")
     );
@@ -135,9 +153,7 @@ public class DeathModConfigScreen {
         )
         .setDefaultValue(defaults.isSendCaughtToPC())
         .setTooltip(
-          Component.literal(
-            "Send caught Pokémon directly to PC instead of party"
-          )
+          Component.literal("Send caught Pokémon directly to PC instead of party.")
         )
         .setSaveConsumer(config::setSendCaughtToPC)
         .build()
@@ -150,7 +166,7 @@ public class DeathModConfigScreen {
           config.isSetCaughtToZeroHP()
         )
         .setDefaultValue(defaults.isSetCaughtToZeroHP())
-        .setTooltip(Component.literal("Set caught Pokémon to 0 HP (fainted)"))
+        .setTooltip(Component.literal("Set caught Pokémon to 0 HP (fainted)."))
         .setSaveConsumer(config::setSetCaughtToZeroHP)
         .build()
     );
@@ -159,19 +175,24 @@ public class DeathModConfigScreen {
       entryBuilder
         .startEnumSelector(
           Component.literal("Duplicate Handling"),
-          DeathModConfig.DuplicateHandling.class,
+          NuzlockeConfig.DuplicateHandling.class,
           config.getDuplicateHandling()
         )
         .setDefaultValue(defaults.getDuplicateHandling())
         .setTooltip(
           Component.literal(
-            "OFF: Keep all\nRELEASE_IF_OWNED: Release if species in party or PC\nRELEASE_IF_EVER_CAUGHT: Release if ever caught before"
+            "OFF: Keep all\n"
+            + "RELEASE_IF_OWNED: Release if species in party or PC\n"
+            + "RELEASE_IF_EVER_CAUGHT: Release if ever caught before"
           )
         )
         .setSaveConsumer(config::setDuplicateHandling)
         .build()
     );
 
+    // -------------------------------------------------------------------------
+    // Battle Types
+    // -------------------------------------------------------------------------
     ConfigCategory battleTypes = builder.getOrCreateCategory(
       Component.literal("Battle Types")
     );
@@ -184,7 +205,7 @@ public class DeathModConfigScreen {
         )
         .setDefaultValue(defaults.isApplyInWildBattles())
         .setTooltip(
-          Component.literal("Take damage when Pokémon faint in wild battles")
+          Component.literal("Take damage when Pokémon faint in wild battles.")
         )
         .setSaveConsumer(config::setApplyInWildBattles)
         .build()
@@ -198,14 +219,15 @@ public class DeathModConfigScreen {
         )
         .setDefaultValue(defaults.isApplyInTrainerBattles())
         .setTooltip(
-          Component.literal(
-            "Take damage when Pokémon faint in NPC trainer battles"
-          )
+          Component.literal("Take damage when Pokémon faint in NPC trainer battles.")
         )
         .setSaveConsumer(config::setApplyInTrainerBattles)
         .build()
     );
 
+    // -------------------------------------------------------------------------
+    // Messages
+    // -------------------------------------------------------------------------
     ConfigCategory messages = builder.getOrCreateCategory(
       Component.literal("Messages")
     );
@@ -227,7 +249,7 @@ public class DeathModConfigScreen {
     );
 
     // -------------------------------------------------------------------------
-    // NPC Sight settings
+    // NPC Sight
     // -------------------------------------------------------------------------
     NpcSightConfig sightConfig = NpcSightConfig.load();
     NpcSightConfig sightDefaults = new NpcSightConfig();
@@ -247,7 +269,7 @@ public class DeathModConfigScreen {
         .setDefaultValue(sightDefaults.getDefaultSightRange())
         .setTooltip(
           Component.literal(
-            "Default sight range (blocks) for NPCs that don't have a per-entity override."
+            "Default sight range (blocks) for NPCs without a per-entity override."
           )
         )
         .setSaveConsumer(sightConfig::setDefaultSightRange)
@@ -272,6 +294,23 @@ public class DeathModConfigScreen {
 
     npcSight.addEntry(
       entryBuilder
+        .startStrField(
+          Component.literal("Default Dialog Name"),
+          sightConfig.getDefaultDialogName()
+        )
+        .setDefaultValue(sightDefaults.getDefaultDialogName())
+        .setTooltip(
+          Component.literal(
+            "Easy NPC dialog opened when an NPC sees a player and has no per-entity dialog set. "
+            + "Leave blank to disable the fallback."
+          )
+        )
+        .setSaveConsumer(sightConfig::setDefaultDialogName)
+        .build()
+    );
+
+    npcSight.addEntry(
+      entryBuilder
         .startIntSlider(
           Component.literal("Dialog Trigger Range"),
           (int) sightConfig.getDialogRange(),
@@ -291,7 +330,7 @@ public class DeathModConfigScreen {
     builder.setSavingRunnable(() -> {
       config.save();
       sightConfig.save();
-      DeathMechanicsInit.reloadConfig();
+      NuzlockeInit.reloadConfig();
       NpcSightInit.reloadConfig();
     });
 
