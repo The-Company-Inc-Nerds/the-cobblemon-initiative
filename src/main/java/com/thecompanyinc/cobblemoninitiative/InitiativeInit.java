@@ -8,6 +8,7 @@ import com.cobblemon.mod.common.battles.actor.PlayerBattleActor;
 import com.thecompanyinc.cobblemoninitiative.command.CobblemonInitiativeCommands;
 import com.thecompanyinc.cobblemoninitiative.install.InstallCommand;
 import com.thecompanyinc.cobblemoninitiative.config.ConfigLoader;
+import com.thecompanyinc.cobblemoninitiative.mapfrontiers.MapFrontiersIntegration;
 import com.thecompanyinc.cobblemoninitiative.config.TrainerConfig;
 import com.thecompanyinc.cobblemoninitiative.data.PlayerProgressManager;
 import com.thecompanyinc.cobblemoninitiative.items.ModItems;
@@ -63,6 +64,10 @@ public class InitiativeInit implements ModInitializer {
 
     shrineChallengeManager = new ShrineChallengeManager();
     shrineChallengeManager.loadChallenges();
+
+    if (FabricLoader.getInstance().isModLoaded("mapfrontiers")) {
+      MapFrontiersIntegration.registerAndSetBridge();
+    }
 
     registerBattleEvents();
 

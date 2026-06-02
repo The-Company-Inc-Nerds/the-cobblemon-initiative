@@ -31,11 +31,23 @@ public class NuzlockeConfig {
   private Set<String> caughtSpecies = new HashSet<>();
   private boolean enableSafeZones = true;
   private List<SafeZone> safeZones = new ArrayList<>();
+  private boolean enableAreaAnnouncements = true;
+  private AnnouncementStyle announcementStyle = AnnouncementStyle.TITLE;
+  private int announcementFadeIn = 20;
+  private int announcementStay = 70;
+  private int announcementFadeOut = 20;
+  private boolean announceOnExit = false;
 
   public enum DuplicateHandling {
     OFF,
     RELEASE_IF_OWNED,
     RELEASE_IF_EVER_CAUGHT,
+  }
+
+  public enum AnnouncementStyle {
+    TITLE,
+    ACTIONBAR,
+    CHAT
   }
 
   public static class SafeZone {
@@ -48,6 +60,12 @@ public class NuzlockeConfig {
     public int radius;
     public boolean preventHostileOnly;
     public boolean cylindrical;
+    /** If true, fires an area announcement when the player enters this zone. */
+    public boolean announce = false;
+    /** Optional subtitle shown beneath the zone name (TITLE style only). */
+    public String subtitle = "";
+    /** Hex color for map labelling, e.g. "#7AAAD0". */
+    public String color = "";
 
     public SafeZone() {}
 
@@ -140,6 +158,12 @@ public class NuzlockeConfig {
   public Set<String> getCaughtSpecies() { return caughtSpecies; }
   public boolean isEnableSafeZones() { return enableSafeZones; }
   public List<SafeZone> getSafeZones() { return safeZones; }
+  public boolean isEnableAreaAnnouncements() { return enableAreaAnnouncements; }
+  public AnnouncementStyle getAnnouncementStyle() { return announcementStyle; }
+  public int getAnnouncementFadeIn() { return announcementFadeIn; }
+  public int getAnnouncementStay() { return announcementStay; }
+  public int getAnnouncementFadeOut() { return announcementFadeOut; }
+  public boolean isAnnounceOnExit() { return announceOnExit; }
 
   // -------------------------------------------------------------------------
   // Setters
@@ -159,6 +183,12 @@ public class NuzlockeConfig {
   public void setDuplicateHandling(DuplicateHandling v) { this.duplicateHandling = v; }
   public void setEnableSafeZones(boolean v) { this.enableSafeZones = v; }
   public void setSafeZones(List<SafeZone> v) { this.safeZones = v; }
+  public void setEnableAreaAnnouncements(boolean v) { this.enableAreaAnnouncements = v; }
+  public void setAnnouncementStyle(AnnouncementStyle v) { this.announcementStyle = v; }
+  public void setAnnouncementFadeIn(int v) { this.announcementFadeIn = v; }
+  public void setAnnouncementStay(int v) { this.announcementStay = v; }
+  public void setAnnouncementFadeOut(int v) { this.announcementFadeOut = v; }
+  public void setAnnounceOnExit(boolean v) { this.announceOnExit = v; }
 
   // -------------------------------------------------------------------------
   // Utility
@@ -195,6 +225,14 @@ public class NuzlockeConfig {
   public SafeZone getSafeZoneAt(String dimension, int x, int y, int z) {
     for (SafeZone zone : safeZones) {
       if (zone.contains(dimension, x, y, z)) return zone;
+    }
+    return null;
+  }
+
+  /** Returns the first announce-enabled zone containing the position, or null. */
+  public SafeZone getAnnouncedZoneAt(String dimension, int x, int y, int z) {
+    for (SafeZone zone : safeZones) {
+      if (zone.announce && zone.contains(dimension, x, y, z)) return zone;
     }
     return null;
   }

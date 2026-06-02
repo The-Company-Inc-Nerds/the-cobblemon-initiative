@@ -17,12 +17,22 @@ import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.thecompanyinc.cobblemoninitiative.config.NuzlockeConfig;
+import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import kotlin.Unit;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
+import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
+import net.minecraft.network.protocol.game.ClientboundSetSubtitleTextPacket;
+import net.minecraft.network.protocol.game.ClientboundSetTitleTextPacket;
+import net.minecraft.network.protocol.game.ClientboundSetTitlesAnimationPacket;
 import net.minecraft.server.level.ServerPlayer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +44,8 @@ public class NuzlockeInit implements ModInitializer {
   private static NuzlockeConfig config;
   private static boolean pendingWhiteoutDeath = false;
   private static boolean pendingSacrifice = false;
+  private static final Map<UUID, String> playerZones = new ConcurrentHashMap<>();
+  private static int announceTick = 0;
 
   @Override
   public void onInitialize() {
@@ -46,6 +58,13 @@ public class NuzlockeInit implements ModInitializer {
     CobblemonEvents.BATTLE_FLED.subscribe(Priority.NORMAL, NuzlockeInit::handleBattleFled);
     CobblemonEvents.BATTLE_VICTORY.subscribe(Priority.NORMAL, NuzlockeInit::handleBattleVictory);
     CobblemonEvents.POKEMON_CAPTURED.subscribe(Priority.NORMAL, NuzlockeInit::handlePokemonCaptured);
+
+    ServerTickEvents.END_SERVER_TICK.register(server -> {
+      if (++announceTick % 20 != 0) return;
+      for (ServerPlayer player : server.getPlayerList().getPlayers()) {
+        checkZoneTransition(player);
+      }
+    });
 
     registerCommands();
 
@@ -493,10 +512,94 @@ public class NuzlockeInit implements ModInitializer {
 
   public static void reloadConfig() {
     config = NuzlockeConfig.load();
+    playerZones.clear();
     LOGGER.info("Nuzlocke config reloaded.");
   }
 
   public static NuzlockeConfig getConfig() {
     return config;
+  }
+
+  // ---------------------------------------------------------------------------
+  // Zone entry / exit announcements
+  // ---------------------------------------------------------------------------
+
+  private static void checkZoneTransition(ServerPlayer player) {
+    if (!config.isEnableAreaAnnouncements()) return;
+
+    String dim = player.level().dimension().location().toString();
+    int x = player.getBlockX();
+    int y = player.getBlockY();
+    int z = player.getBlockZ();
+
+    NuzlockeConfig.SafeZone zone = config.getAnnouncedZoneAt(dim, x, y, z);
+    String zoneName = zone != null ? zone.name : null;
+    String prevName = playerZones.get(player.getUUID());
+
+    if (Objects.equals(zoneName, prevName)) return;
+
+    if (zoneName != null) {
+      playerZones.put(player.getUUID(), zoneName);
+      sendZoneEntry(player, zone);
+    } else {
+      playerZones.remove(player.getUUID());
+      if (config.isAnnounceOnExit() && prevName != null) {
+        sendZoneExit(player, prevName);
+      }
+    }
+  }
+
+  private static void sendZoneEntry(ServerPlayer player, NuzlockeConfig.SafeZone zone) {
+    NuzlockeConfig.AnnouncementStyle style = config.getAnnouncementStyle();
+    Component title = buildTitleComponent(zone.name, zone.color);
+
+    if (style == NuzlockeConfig.AnnouncementStyle.TITLE) {
+      player.connection.send(new ClientboundSetTitlesAnimationPacket(
+        config.getAnnouncementFadeIn(),
+        config.getAnnouncementStay(),
+        config.getAnnouncementFadeOut()
+      ));
+      player.connection.send(new ClientboundSetTitleTextPacket(title));
+      if (zone.subtitle != null && !zone.subtitle.isEmpty()) {
+        player.connection.send(new ClientboundSetSubtitleTextPacket(
+          Component.literal("§7" + zone.subtitle)
+        ));
+      }
+    } else if (style == NuzlockeConfig.AnnouncementStyle.ACTIONBAR) {
+      String label = zone.name
+        + (zone.subtitle != null && !zone.subtitle.isEmpty() ? " §8— §7" + zone.subtitle : "");
+      player.connection.send(new ClientboundSetActionBarTextPacket(
+        Component.literal("§e▶ ").append(title).append(Component.literal(
+          zone.subtitle != null && !zone.subtitle.isEmpty() ? " §8— §7" + zone.subtitle : ""
+        ))
+      ));
+    } else {
+      player.sendSystemMessage(
+        Component.literal("§6[Area] §eEntering: ").append(title)
+      );
+    }
+  }
+
+  private static void sendZoneExit(ServerPlayer player, String zoneName) {
+    NuzlockeConfig.AnnouncementStyle style = config.getAnnouncementStyle();
+    if (style == NuzlockeConfig.AnnouncementStyle.ACTIONBAR) {
+      player.connection.send(new ClientboundSetActionBarTextPacket(
+        Component.literal("§8◀ Left: §7" + zoneName)
+      ));
+    } else if (style == NuzlockeConfig.AnnouncementStyle.CHAT) {
+      player.sendSystemMessage(Component.literal("§7[Area] Left: " + zoneName));
+    }
+  }
+
+  private static Component buildTitleComponent(String name, String hexColor) {
+    if (hexColor != null && hexColor.startsWith("#")) {
+      try {
+        int rgb = Integer.parseInt(hexColor.substring(1), 16);
+        return Component.literal(name).withStyle(
+          Style.EMPTY.withColor(TextColor.fromRgb(rgb))
+        );
+      } catch (NumberFormatException ignored) {}
+    }
+    return Component.literal("§e" + name);
   }
 }

@@ -4,12 +4,17 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
+import com.thecompanyinc.cobblemoninitiative.NuzlockeInit;
+import com.thecompanyinc.cobblemoninitiative.config.NuzlockeConfig;
+import com.thecompanyinc.cobblemoninitiative.mapfrontiers.MapFrontiersBridge;
 import com.thecompanyinc.cobblemoninitiative.npcmap.NpcMapEntry;
 import com.thecompanyinc.cobblemoninitiative.npcmap.NpcMapInit;
 import com.thecompanyinc.cobblemoninitiative.npcmap.NpcMapStorage;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.Set;
+import java.util.stream.Collectors;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
@@ -83,6 +88,25 @@ public class InstallCommand {
       .append("  Run '/cobblemon-initiative npc-map apply' to apply them,\n")
       .append("  or '/function cobblemon_initiative:update_npc_presets' after running generate_npc_function.");
 
+    int zoneCount = config.zones != null ? config.zones.size() : 0;
+    sb.append("\n\n  Zones: ").append(zoneCount).append(" zone(s) defined in install.json.\n");
+    if (zoneCount > 0) {
+      for (InstallZone z : config.zones) {
+        sb.append("    [").append(z.type).append("] ").append(z.name);
+        if (z.hasVertices()) {
+          sb.append(" polygon(").append(z.vertices.size()).append(" pts)"
+            + " cx=").append(z.derivedCenterX()).append(" cz=").append(z.derivedCenterZ())
+            .append(" r=").append(z.derivedRadius());
+        } else {
+          sb.append(" at ").append(z.centerX).append(", ").append(z.centerY)
+            .append(", ").append(z.centerZ).append(" r=").append(z.radius);
+        }
+        if (z.announce) sb.append(" [announces]");
+        sb.append("\n");
+      }
+      sb.append("  Run 'install run' to apply as safe zones and write Map Frontiers frontier file.");
+    }
+
     String msg = sb.toString().trim();
     ctx.getSource().sendSuccess(() -> Component.literal(msg), false);
     return 1;
@@ -112,6 +136,59 @@ public class InstallCommand {
         ctx.getSource().sendSuccess(
           () -> Component.literal("[Install] gamerule " + rule + " = " + value), true
         );
+      }
+    }
+
+    // Apply zones as safe zones + write Map Frontiers frontier file
+    if (config.zones != null && !config.zones.isEmpty()) {
+      NuzlockeConfig nzConfig = NuzlockeInit.getConfig();
+      if (nzConfig == null) {
+        ctx.getSource().sendFailure(
+          Component.literal("[Install] Nuzlocke config not loaded — cannot apply zones.")
+        );
+      } else {
+        Set<String> existing = nzConfig.getSafeZones().stream()
+          .map(z -> z.name.toLowerCase())
+          .collect(Collectors.toSet());
+
+        int added = 0;
+        int skipped = 0;
+        for (InstallZone iz : config.zones) {
+          if (existing.contains(iz.name.toLowerCase())) {
+            skipped++;
+            continue;
+          }
+          NuzlockeConfig.SafeZone sz = new NuzlockeConfig.SafeZone(
+            iz.name, iz.dimension,
+            iz.derivedCenterX(), iz.centerY, iz.derivedCenterZ(),
+            iz.derivedRadius(), iz.hostileOnly, iz.cylindrical
+          );
+          sz.announce = iz.announce;
+          sz.subtitle = iz.subtitle != null ? iz.subtitle : "";
+          sz.color = iz.color != null ? iz.color : "";
+          nzConfig.getSafeZones().add(sz);
+          added++;
+        }
+        nzConfig.save();
+
+        final int a = added, s = skipped;
+        ctx.getSource().sendSuccess(
+          () -> Component.literal("[Install] Zones: " + a + " added, " + s + " skipped (name collision)."),
+          true
+        );
+
+        if (MapFrontiersBridge.isAvailable()) {
+          MapFrontiersBridge.createFrontiers(config.zones);
+          ctx.getSource().sendSuccess(
+            () -> Component.literal("[Install] Map Frontiers frontiers created."),
+            true
+          );
+        } else {
+          ctx.getSource().sendSuccess(
+            () -> Component.literal("[Install] Map Frontiers not loaded — skipping frontier creation."),
+            false
+          );
+        }
       }
     }
 

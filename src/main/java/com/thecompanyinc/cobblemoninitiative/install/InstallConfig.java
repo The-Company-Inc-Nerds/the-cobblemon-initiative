@@ -1,14 +1,15 @@
 package com.thecompanyinc.cobblemoninitiative.install;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
  * Deserialized form of {@code data/cobblemon_initiative/install.json}.
  *
- * <p>Only gamerules live here. Mod dependencies belong in {@code fabric.mod.json}
- * (the launcher resolves them). NPC preset application is handled by
- * {@code /cobblemon-initiative npc-map apply} (backed by {@code npc_preset_map.json})
+ * <p>Mod dependencies belong in {@code fabric.mod.json} (the launcher resolves them).
+ * NPC preset application is handled by {@code /cobblemon-initiative npc-map apply}
  * or by running {@code /function cobblemon_initiative:update_npc_presets} after
  * regenerating the mcfunction with {@code generate_npc_function}.
  */
@@ -21,4 +22,10 @@ public class InstallConfig {
    * Special key {@code "_difficulty"} sets server difficulty instead.
    */
   public Map<String, String> gamerules = new LinkedHashMap<>();
+
+  /**
+   * Named zones applied as SafeZones and written to the Map Frontiers frontier file
+   * when running {@code /cobblemon-initiative install run}.
+   */
+  public List<InstallZone> zones = new ArrayList<>();
 }

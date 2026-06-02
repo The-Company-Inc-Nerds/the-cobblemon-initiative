@@ -18,6 +18,7 @@ loom {
 
 repositories {
     mavenCentral()
+    mavenLocal() // mapfrontiers-api SNAPSHOT — see setup note below
     maven("https://artefacts.cobblemon.com/releases/")
     maven("https://maven.shedaniel.me/")
     maven("https://maven.terraformersmc.com/releases/")
@@ -32,6 +33,7 @@ dependencies {
     modImplementation(fabricApi.module("fabric-command-api-v2", "0.116.6+1.21.1"))
     modImplementation(fabricApi.module("fabric-lifecycle-events-v1", "0.116.6+1.21.1"))
     modImplementation(fabricApi.module("fabric-resource-loader-v0", "0.116.6+1.21.1"))
+    modImplementation(fabricApi.module("fabric-events-interaction-v0", "0.116.6+1.21.1"))
     modImplementation("com.cobblemon:mod:1.7.3+1.21.1") { isTransitive = false }
     modImplementation("com.cobblemon:fabric:1.7.3+1.21.1")
     implementation("com.google.code.gson:gson:2.10.1")
@@ -41,6 +43,12 @@ dependencies {
         exclude(group = "net.fabricmc.fabric-api")
     }
     modApi("com.terraformersmc:modmenu:11.0.3")
+    // Map Frontiers API — optional at runtime; compile-only so it is not bundled.
+    // The API is not yet on public Maven. One-time setup:
+    //   git clone https://github.com/alejandrocoria/MapFrontiers-API.git /tmp/mapfrontiers-api
+    //   cd /tmp/mapfrontiers-api && ./gradlew publishToMavenLocal
+    // Then 'mavenLocal()' above resolves it as games.alejandrocoria:mapfrontiers-api:0.1.0-SNAPSHOT
+    modCompileOnly("games.alejandrocoria:mapfrontiers-api:0.1.0-SNAPSHOT")
 }
 
 tasks {

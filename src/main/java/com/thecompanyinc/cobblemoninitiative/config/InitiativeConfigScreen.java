@@ -249,6 +249,103 @@ public class InitiativeConfigScreen {
     );
 
     // -------------------------------------------------------------------------
+    // Area Announcements
+    // -------------------------------------------------------------------------
+    ConfigCategory announce = builder.getOrCreateCategory(
+      Component.literal("Area Announcements")
+    );
+
+    announce.addEntry(
+      entryBuilder
+        .startBooleanToggle(
+          Component.literal("Enable Area Announcements"),
+          config.isEnableAreaAnnouncements()
+        )
+        .setDefaultValue(defaults.isEnableAreaAnnouncements())
+        .setTooltip(
+          Component.literal(
+            "Show a notification when entering a named safe zone with 'announce' enabled. "
+            + "Zones are configured via /safezone add or /cobblemon-initiative install run."
+          )
+        )
+        .setSaveConsumer(config::setEnableAreaAnnouncements)
+        .build()
+    );
+
+    announce.addEntry(
+      entryBuilder
+        .startEnumSelector(
+          Component.literal("Announcement Style"),
+          NuzlockeConfig.AnnouncementStyle.class,
+          config.getAnnouncementStyle()
+        )
+        .setDefaultValue(defaults.getAnnouncementStyle())
+        .setTooltip(
+          Component.literal(
+            "TITLE: Large screen title with optional subtitle\n"
+            + "ACTIONBAR: Small text above the hotbar\n"
+            + "CHAT: Message in the chat log"
+          )
+        )
+        .setSaveConsumer(config::setAnnouncementStyle)
+        .build()
+    );
+
+    announce.addEntry(
+      entryBuilder
+        .startBooleanToggle(
+          Component.literal("Announce on Exit"),
+          config.isAnnounceOnExit()
+        )
+        .setDefaultValue(defaults.isAnnounceOnExit())
+        .setTooltip(Component.literal("Also announce when leaving a zone (ACTIONBAR and CHAT only)."))
+        .setSaveConsumer(config::setAnnounceOnExit)
+        .build()
+    );
+
+    announce.addEntry(
+      entryBuilder
+        .startIntSlider(
+          Component.literal("Title Fade In (ticks)"),
+          config.getAnnouncementFadeIn(),
+          5,
+          40
+        )
+        .setDefaultValue(defaults.getAnnouncementFadeIn())
+        .setTooltip(Component.literal("How long the title fades in (TITLE style only). 20 ticks = 1 second."))
+        .setSaveConsumer(config::setAnnouncementFadeIn)
+        .build()
+    );
+
+    announce.addEntry(
+      entryBuilder
+        .startIntSlider(
+          Component.literal("Title Stay (ticks)"),
+          config.getAnnouncementStay(),
+          20,
+          200
+        )
+        .setDefaultValue(defaults.getAnnouncementStay())
+        .setTooltip(Component.literal("How long the title stays on screen (TITLE style only)."))
+        .setSaveConsumer(config::setAnnouncementStay)
+        .build()
+    );
+
+    announce.addEntry(
+      entryBuilder
+        .startIntSlider(
+          Component.literal("Title Fade Out (ticks)"),
+          config.getAnnouncementFadeOut(),
+          5,
+          40
+        )
+        .setDefaultValue(defaults.getAnnouncementFadeOut())
+        .setTooltip(Component.literal("How long the title fades out (TITLE style only)."))
+        .setSaveConsumer(config::setAnnouncementFadeOut)
+        .build()
+    );
+
+    // -------------------------------------------------------------------------
     // NPC Sight
     // -------------------------------------------------------------------------
     NpcSightConfig sightConfig = NpcSightConfig.load();
