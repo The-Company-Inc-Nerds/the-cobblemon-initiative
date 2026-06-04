@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "com.thecompanyinc"
-version = "0.1.0-alpha"
+version = "0.1.1-alpha"
 
 architectury {
     platformSetupLoomIde()
@@ -18,7 +18,7 @@ loom {
 
 repositories {
     mavenCentral()
-    mavenLocal() // mapfrontiers-api SNAPSHOT — see setup note below
+    mavenLocal()
     maven("https://artefacts.cobblemon.com/releases/")
     maven("https://maven.shedaniel.me/")
     maven("https://maven.terraformersmc.com/releases/")
@@ -44,10 +44,10 @@ dependencies {
     }
     modApi("com.terraformersmc:modmenu:11.0.3")
     // Map Frontiers API — optional at runtime; compile-only so it is not bundled.
-    // The API is not yet on public Maven. One-time setup:
+    // Not on any public Maven; resolved via mavenLocal(). One-time dev setup:
     //   git clone https://github.com/alejandrocoria/MapFrontiers-API.git /tmp/mapfrontiers-api
     //   cd /tmp/mapfrontiers-api && ./gradlew publishToMavenLocal
-    // Then 'mavenLocal()' above resolves it as games.alejandrocoria:mapfrontiers-api:0.1.0-SNAPSHOT
+    // CI replicates this in the workflow before running gradle build.
     modCompileOnly("games.alejandrocoria:mapfrontiers-api:0.1.0-SNAPSHOT")
 }
 
