@@ -34,7 +34,7 @@ jobs:
       - name: Build MapFrontiers API
         run: |
           git clone --depth=1 https://github.com/alejandrocoria/MapFrontiers-API.git /tmp/mapfrontiers-api
-          cd /tmp/mapfrontiers-api && ./gradlew publishToMavenLocal
+          cd /tmp/mapfrontiers-api && chmod +x gradlew && ./gradlew publishToMavenLocal
 
       - name: Build
         run: gradle build -Pversion=${{ steps.vars.outputs.version }}
