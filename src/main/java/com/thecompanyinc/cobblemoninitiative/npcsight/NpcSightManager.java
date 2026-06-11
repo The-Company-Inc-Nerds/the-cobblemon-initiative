@@ -96,25 +96,108 @@ public class NpcSightManager {
       drawDebugRay(level, npc, nearestPlayer, canSee);
     }
 
+    switch (data.effectiveMode()) {
+      case NpcSightData.MODE_PURSUE -> handlePursue(server, npc, nearestPlayer, canSee, data);
+      case NpcSightData.MODE_APPROACH_ONCE -> handleApproachOnce(server, npc, nearestPlayer, canSee, data);
+      default -> handleDialog(server, npc, nearestPlayer, canSee, data);
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // Behaviour modes
+  // ---------------------------------------------------------------------------
+
+  /** DIALOG (default): open the configured dialog once per "seen session". */
+  private void handleDialog(
+    MinecraftServer server, Entity npc, ServerPlayer nearestPlayer, boolean canSee, NpcSightData data
+  ) {
+    // Safety net: if this NPC was switched out of PURSUE/APPROACH_ONCE while following,
+    // drop the lingering FOLLOW_PLAYER objective.
+    if (data.pursuing) {
+      stopFollow(server, npc);
+      data.pursuing = false;
+    }
+
     // Reset session flag when the NPC loses sight so the next session can fire
     if (!canSee) {
       data.dialogFiredThisSession = false;
+      return;
+    }
+    if (nearestPlayer == null || data.dialogFiredThisSession) return;
+
+    // Per-entity dialog takes priority; fall back to the global default
+    String effectiveDialog = data.hasDialog() ? data.dialogName : config.getDefaultDialogName();
+    if (effectiveDialog == null || effectiveDialog.isBlank()) return;
+
+    // +1 so the NPC's own standing block is not counted against the range
+    if (npc.distanceTo(nearestPlayer) <= config.getDialogRange() + 1) {
+      data.dialogFiredThisSession = true;
+      triggerDialog(server, npc, nearestPlayer, effectiveDialog);
+    }
+  }
+
+  /**
+   * PURSUE: walk toward the player while in sight (sight-gated FOLLOW_PLAYER objective). The
+   * battle itself is the preset's {@code ON_DISTANCE_TOUCH} action — no Java battle trigger.
+   */
+  private void handlePursue(
+    MinecraftServer server, Entity npc, ServerPlayer nearestPlayer, boolean canSee, NpcSightData data
+  ) {
+    boolean shouldPursue = canSee && nearestPlayer != null && !standDown(data, nearestPlayer);
+    if (shouldPursue) {
+      if (!data.pursuing) {
+        startFollow(server, npc, nearestPlayer);
+        data.pursuing = true;
+      }
+    } else if (data.pursuing) {
+      stopFollow(server, npc);
+      data.pursuing = false;
+    }
+  }
+
+  /**
+   * APPROACH_ONCE: the first time it ever sees the player, walk up and open the dialog once,
+   * tag the player (so the preset can switch to post-meeting dialog), then never auto-approach
+   * again. The one-shot latch ({@link NpcSightData#fired}) is persisted immediately.
+   */
+  private void handleApproachOnce(
+    MinecraftServer server, Entity npc, ServerPlayer nearestPlayer, boolean canSee, NpcSightData data
+  ) {
+    if (data.fired || !canSee || nearestPlayer == null || standDown(data, nearestPlayer)) {
+      if (data.pursuing) {
+        stopFollow(server, npc);
+        data.pursuing = false;
+      }
+      return;
     }
 
-    if (canSee && nearestPlayer != null && !data.dialogFiredThisSession) {
-      // Per-entity dialog takes priority; fall back to the global default
-      String effectiveDialog = data.hasDialog()
-        ? data.dialogName
-        : config.getDefaultDialogName();
-      if (effectiveDialog != null && !effectiveDialog.isBlank()) {
-        double dist = npc.distanceTo(nearestPlayer);
-        // +1 so the NPC's own standing block is not counted against the range
-        if (dist <= config.getDialogRange() + 1) {
-          data.dialogFiredThisSession = true;
-          triggerDialog(server, npc, nearestPlayer, effectiveDialog);
-        }
-      }
+    // Has sight and not yet fired → walk up to the player
+    if (!data.pursuing) {
+      startFollow(server, npc, nearestPlayer);
+      data.pursuing = true;
     }
+
+    // Arrived? (+1 so the NPC's own standing block is not counted against the range)
+    if (npc.distanceTo(nearestPlayer) <= config.getDialogRange() + 1) {
+      String effectiveDialog = data.hasDialog() ? data.dialogName : config.getDefaultDialogName();
+      if (effectiveDialog != null && !effectiveDialog.isBlank()) {
+        // Open the (intro) dialog first, then add the meet-tag so the *next* interaction
+        // resolves to the post-meeting dialog via its PLAYER_TAG condition.
+        triggerDialog(server, npc, nearestPlayer, effectiveDialog);
+      }
+      if (data.hasMeetTag()) {
+        runCommand(server, "tag " + playerName(nearestPlayer) + " add " + data.meetTag);
+      }
+      data.fired = true;
+      stopFollow(server, npc);
+      data.pursuing = false;
+      storage.put(data); // persist the one-shot latch immediately
+    }
+  }
+
+  /** True when the nearest player carries this NPC's configured stand-down tag. */
+  private boolean standDown(NpcSightData data, ServerPlayer player) {
+    return data.hasStopTag() && player != null && player.getTags().contains(data.stopTag);
   }
 
   // ---------------------------------------------------------------------------
@@ -252,22 +335,43 @@ public class NpcSightManager {
     MinecraftServer server, Entity npc, ServerPlayer player, String dialogName
   ) {
     if (!isEasyNpcPresent()) return;
+    runCommand(server, String.format(
+      "easy_npc dialog open %s %s %s", npc.getUUID(), playerName(player), dialogName));
+  }
 
+  // ---------------------------------------------------------------------------
+  // Sight-gated pursuit (Easy NPC FOLLOW_PLAYER objective toggled at runtime)
+  // ---------------------------------------------------------------------------
+
+  /** Add a FOLLOW_PLAYER objective so the NPC paths toward the (named) player. */
+  private void startFollow(MinecraftServer server, Entity npc, ServerPlayer player) {
+    if (!isEasyNpcPresent()) return;
+    runCommand(server, String.format(
+      "easy_npc objective %s set follow player %s", npc.getUUID(), playerName(player)));
+  }
+
+  /** Remove the FOLLOW_PLAYER objective and halt any in-progress path. */
+  private void stopFollow(MinecraftServer server, Entity npc) {
+    if (!isEasyNpcPresent()) return;
+    runCommand(server, String.format("easy_npc objective %s remove follow player", npc.getUUID()));
+    runCommand(server, String.format("easy_npc navigation reset %s", npc.getUUID()));
+  }
+
+  /** The player's account name — what FOLLOW_PLAYER resolves against and a valid command target. */
+  private static String playerName(ServerPlayer player) {
+    return player.getGameProfile().getName();
+  }
+
+  /** Runs a server command at permission level 4 with output suppressed; logs failures at debug. */
+  private void runCommand(MinecraftServer server, String cmd) {
     try {
-      String cmd = String.format(
-        "easy_npc dialog open %s %s %s",
-        npc.getUUID(), player.getName().getString(), dialogName
-      );
       CommandSourceStack src = server
         .createCommandSourceStack()
         .withPermission(4)
         .withSuppressedOutput();
       server.getCommands().performPrefixedCommand(src, cmd);
     } catch (Exception e) {
-      NpcSightInit.LOGGER.debug(
-        "[NPC Sight] Dialog trigger failed for {}: {}",
-        npc.getUUID(), e.getMessage()
-      );
+      NpcSightInit.LOGGER.debug("[NPC Sight] Command failed '{}': {}", cmd, e.getMessage());
     }
   }
 }

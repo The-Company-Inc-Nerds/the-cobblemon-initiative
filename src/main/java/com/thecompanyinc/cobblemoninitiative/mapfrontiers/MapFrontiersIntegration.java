@@ -1,126 +1,178 @@
 package com.thecompanyinc.cobblemoninitiative.mapfrontiers;
 
 import com.thecompanyinc.cobblemoninitiative.install.InstallZone;
-import games.alejandrocoria.mapfrontiers.api.MapFrontiersAPI;
-import games.alejandrocoria.mapfrontiers.api.model.DimensionId;
-import games.alejandrocoria.mapfrontiers.api.model.FrontierCreateRequest;
-import games.alejandrocoria.mapfrontiers.api.model.FrontierShape;
-import games.alejandrocoria.mapfrontiers.api.model.FrontierVisibilityFlag;
-import games.alejandrocoria.mapfrontiers.api.model.Point2i;
-import games.alejandrocoria.mapfrontiers.api.model.UserRef;
-import games.alejandrocoria.mapfrontiers.api.plugin.IMapFrontiersServerPlugin;
-import games.alejandrocoria.mapfrontiers.api.server.IMapFrontiersServerAPI;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.UUID;
+import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Map Frontiers server plugin — creates labelled frontier regions from the zones
- * defined in {@code install.json} when {@code /cobblemon-initiative install run} is used.
+ * Creates labelled Map Frontiers regions from the zones in {@code install.json}, driven by
+ * {@code /cobblemon-initiative install run}.
  *
- * <p><b>This class is only loaded when Map Frontiers is installed.</b> It is always
- * accessed through the import-free {@link MapFrontiersBridge} so the rest of the mod
- * never touches Map Frontiers classes directly.
+ * <p><b>Why reflection instead of the Map Frontiers plugin API?</b> The public plugin API
+ * (the {@code games.alejandrocoria.mapfrontiers.api} package) only ships in Map Frontiers
+ * builds for Minecraft 1.21.7+. Cobblemon is hard-locked to 1.21.1, whose newest Map
+ * Frontiers release ({@code 2.7.0-beta.18}) contains no {@code api} package at all — so the
+ * API can never be present at runtime on this modpack. Its internal {@code FrontiersManager}
+ * <i>is</i> reachable, though: it is a public class with a public static {@code instance} and
+ * public create/update methods, and only the API <i>bootstrap</i> is guarded by a trusted-caller
+ * check. We share the JVM and class loader with Map Frontiers, so we call the manager directly.
+ *
+ * <p>This class references <b>no</b> Map Frontiers types at compile time — every Map Frontiers
+ * symbol is resolved reflectively — so it adds no compile dependency and can never throw
+ * {@code NoClassDefFoundError}. It is reached only through the import-free {@link MapFrontiersBridge}.
+ *
+ * <p><b>Caveat:</b> this couples us to Map Frontiers internals, which is unsupported. The 1.21.1
+ * line is frozen at {@code 2.7.0-beta.18} (the author moved new work, including the API, to newer
+ * Minecraft versions), so the surface is effectively stable for this modpack. {@link #warnIfUntestedVersion}
+ * logs if a different build is ever installed, so a surprise update that breaks reflection is diagnosable.
  */
-public class MapFrontiersIntegration implements IMapFrontiersServerPlugin {
+public final class MapFrontiersIntegration {
 
   private static final Logger LOGGER = LoggerFactory.getLogger("cobblemon-initiative");
 
-  // Nil UUID used as "server" owner — no real player UUID needed for global frontiers.
-  private static final UserRef SERVER_OWNER = new UserRef(
-    new UUID(0L, 0L), "server"
-  );
+  private static final String MF_MOD_ID = "mapfrontiers";
+  /** The Map Frontiers build this reflection bridge was written and tested against. */
+  private static final String TESTED_VERSION = "2.7.0-beta.18";
 
-  private IMapFrontiersServerAPI pluginApi;
+  private static final String FRONTIERS_MANAGER =
+    "games.alejandrocoria.mapfrontiers.common.FrontiersManager";
+  private static final String FRONTIER_DATA =
+    "games.alejandrocoria.mapfrontiers.common.FrontierData";
+  private static final String VISIBILITY_ENUM =
+    "games.alejandrocoria.mapfrontiers.common.FrontierData$VisibilityData$Visibility";
+
+  /** Visibility flags forced on so the zone label shows on both the fullscreen map and minimap. */
+  private static final String[] VISIBILITY_ON = { "Frontier", "FullscreenName", "MinimapName" };
+
+  private static boolean versionWarned = false;
+
+  private MapFrontiersIntegration() {}
 
   /**
-   * Called once during mod init from inside a {@code FabricLoader.isModLoaded("mapfrontiers")}
-   * guard. Registers this instance as a Map Frontiers plugin and wires the bridge so
-   * {@link MapFrontiersBridge#createFrontiers} routes here.
+   * Creates one global frontier per zone via reflection into the Map Frontiers manager.
+   * Map Frontiers persists each frontier to {@code <world>/mapfrontiers/frontiers.dat} itself.
+   *
+   * @param zones zones to draw (from install.json)
+   * @param owner player to register as creator/owner (global frontiers are server-wide regardless)
+   * @return the number of frontiers successfully created
    */
-  public static void registerAndSetBridge() {
-    MapFrontiersIntegration integration = new MapFrontiersIntegration();
-    MapFrontiersAPI.registerServerPlugin(integration);
-    MapFrontiersBridge.setHandler(integration::createFrontiers);
-    LOGGER.info("[CobblemonInitiative] Map Frontiers plugin registered.");
-  }
+  static int createGlobalFrontiers(List<InstallZone> zones, ServerPlayer owner) {
+    if (owner == null) {
+      LOGGER.warn("[CobblemonInitiative] Map Frontiers: no player available as frontier owner — skipping.");
+      return 0;
+    }
+    warnIfUntestedVersion();
 
-  // ── IMapFrontiersServerPlugin ─────────────────────────────────────────────
+    final Object manager;
+    final Class<?> visEnum;
+    final Method createMethod;
+    final Method updateMethod;
+    final Method setName1;
+    final Method setName2;
+    final Method setColor;
+    final Method setVisibility;
+    try {
+      Class<?> fmClass = Class.forName(FRONTIERS_MANAGER);
+      Class<?> fdClass = Class.forName(FRONTIER_DATA);
+      visEnum = Class.forName(VISIBILITY_ENUM);
 
-  @Override
-  public String getModId() {
-    return "cobblemon-initiative";
-  }
+      Field instanceField = fmClass.getField("instance");
+      manager = instanceField.get(null);
+      if (manager == null) {
+        LOGGER.warn("[CobblemonInitiative] Map Frontiers manager not initialized yet — skipping frontier creation.");
+        return 0;
+      }
 
-  @Override
-  public void initialize(IMapFrontiersServerAPI api) {
-    this.pluginApi = api;
-    LOGGER.info("[CobblemonInitiative] Map Frontiers API initialized.");
-  }
-
-  @Override
-  public void shutdown(IMapFrontiersServerAPI api) {
-    this.pluginApi = null;
-  }
-
-  // ── Frontier creation ─────────────────────────────────────────────────────
-
-  void createFrontiers(List<InstallZone> zones) {
-    if (pluginApi == null) {
-      LOGGER.warn("[CobblemonInitiative] Map Frontiers API not yet initialized — cannot create frontiers.");
-      return;
+      // MC param types remap to the same intermediary classes Map Frontiers compiled against,
+      // since this mod is remapped too — so reflecting with Mojmap types resolves correctly.
+      createMethod = fmClass.getMethod("createNewGlobalFrontier",
+        ResourceKey.class, ServerPlayer.class, List.class, List.class);
+      updateMethod = fmClass.getMethod("updateGlobalFrontier", fdClass);
+      setName1 = fdClass.getMethod("setName1", String.class);
+      setName2 = fdClass.getMethod("setName2", String.class);
+      setColor = fdClass.getMethod("setColor", int.class);
+      setVisibility = fdClass.getMethod("setVisibility", visEnum, boolean.class);
+    } catch (ReflectiveOperationException e) {
+      LOGGER.warn("[CobblemonInitiative] Map Frontiers internals not found (incompatible build?); "
+        + "frontier creation disabled.", e);
+      return 0;
     }
 
-    var service = pluginApi.frontiers();
     int created = 0;
-
     for (InstallZone zone : zones) {
       try {
-        List<Point2i> vertices = zone.hasVertices()
-          ? zone.vertices.stream().map(v -> new Point2i(v.x, v.z)).collect(Collectors.toList())
-          : octagonVertices(zone.derivedCenterX(), zone.derivedCenterZ(), zone.derivedRadius());
+        ResourceKey<Level> dim = ResourceKey.create(
+          Registries.DIMENSION, ResourceLocation.parse(zone.dimension));
 
-        var builder = FrontierCreateRequest
-          .builder(new DimensionId(zone.dimension), FrontierShape.vertex(vertices))
-          .name1(zone.name)
-          .color(parseHexColor(zone.color))
-          .visibility(Set.of(
-            FrontierVisibilityFlag.Frontier,
-            FrontierVisibilityFlag.FullscreenName,
-            FrontierVisibilityFlag.Minimap,
-            FrontierVisibilityFlag.MinimapName
-          ));
-
-        if (zone.subtitle != null && !zone.subtitle.isEmpty()) {
-          builder = builder.name2(zone.subtitle);
+        // Chunks MUST be null, not an empty list. createNewFrontier sets the frontier to Vertex
+        // mode when vertices is non-null, then UNCONDITIONALLY overwrites mode to Chunk when the
+        // chunks arg is non-null — even when it is empty. A non-null empty list therefore yields a
+        // Chunk-mode frontier with zero chunks, which stores the vertices but renders nothing (the
+        // "chunks:0, invisible on the map" symptom). Passing null keeps it in Vertex mode.
+        Object frontier = createMethod.invoke(manager, dim, owner, verticesFor(zone), null);
+        if (frontier == null) {
+          LOGGER.warn("[CobblemonInitiative] Map Frontiers returned no frontier for zone '{}'.", zone.name);
+          continue;
         }
 
-        service.createGlobalFrontier(SERVER_OWNER, builder.build());
+        setName1.invoke(frontier, zone.name);
+        setName2.invoke(frontier, zone.subtitle != null ? zone.subtitle : "");
+        setColor.invoke(frontier, parseHexColor(zone.color));
+        for (String flag : VISIBILITY_ON) {
+          try {
+            setVisibility.invoke(frontier, enumConst(visEnum, flag), true);
+          } catch (IllegalArgumentException | ReflectiveOperationException ignored) {
+            // Unknown flag name on this build — non-fatal; defaults still apply.
+          }
+        }
+        updateMethod.invoke(manager, frontier); // persists name/color/visibility to frontiers.dat
         created++;
 
-      } catch (Exception e) {
-        LOGGER.warn("[CobblemonInitiative] Failed to create frontier '{}': {}", zone.name, e.getMessage());
+      } catch (InvocationTargetException e) {
+        LOGGER.warn("[CobblemonInitiative] Failed to create frontier '{}': {}",
+          zone.name, e.getCause() != null ? e.getCause() : e);
+      } catch (ReflectiveOperationException e) {
+        LOGGER.warn("[CobblemonInitiative] Failed to create frontier '{}': {}", zone.name, e);
       }
     }
 
     LOGGER.info("[CobblemonInitiative] Created {}/{} Map Frontiers frontier(s).", created, zones.size());
+    return created;
   }
 
-  // ── Helpers ───────────────────────────────────────────────────────────────
+  @SuppressWarnings({ "unchecked", "rawtypes" })
+  private static Object enumConst(Class<?> enumClass, String name) {
+    return Enum.valueOf((Class) enumClass, name);
+  }
 
-  /** 8-point approximation of a circular zone boundary. */
-  private static List<Point2i> octagonVertices(int cx, int cz, int radius) {
-    List<Point2i> verts = new ArrayList<>(8);
-    for (int i = 0; i < 8; i++) {
-      double angle = Math.toRadians(i * 45.0);
-      verts.add(new Point2i(
-        cx + (int)(radius * Math.cos(angle)),
-        cz + (int)(radius * Math.sin(angle))
-      ));
+  /** Builds the frontier outline: the traced polygon if present, else an 8-point circle. */
+  private static List<BlockPos> verticesFor(InstallZone zone) {
+    List<BlockPos> verts = new ArrayList<>();
+    int y = zone.centerY;
+    if (zone.hasVertices()) {
+      for (InstallZone.Vertex v : zone.vertices) {
+        verts.add(new BlockPos(v.x, y, v.z));
+      }
+    } else {
+      int cx = zone.derivedCenterX();
+      int cz = zone.derivedCenterZ();
+      int r = zone.derivedRadius();
+      for (int i = 0; i < 8; i++) {
+        double a = Math.toRadians(i * 45.0);
+        verts.add(new BlockPos(cx + (int) (r * Math.cos(a)), y, cz + (int) (r * Math.sin(a))));
+      }
     }
     return verts;
   }
@@ -132,5 +184,20 @@ public class MapFrontiersIntegration implements IMapFrontiersServerPlugin {
     } catch (NumberFormatException e) {
       return 0x808080;
     }
+  }
+
+  private static void warnIfUntestedVersion() {
+    if (versionWarned) return;
+    versionWarned = true;
+    FabricLoader.getInstance().getModContainer(MF_MOD_ID).ifPresent(c -> {
+      String v = c.getMetadata().getVersion().getFriendlyString();
+      if (!v.contains(TESTED_VERSION)) {
+        LOGGER.warn(
+          "[CobblemonInitiative] Map Frontiers {} detected; the reflection bridge was written against {}. "
+            + "Frontier creation may misbehave if internals changed.",
+          v, TESTED_VERSION
+        );
+      }
+    });
   }
 }

@@ -1,0 +1,75 @@
+DialogData: {
+    Type: "CUSTOM",
+    DialogDataSet: [
+        {
+            Buttons: [
+                {
+                    Name: "Battle me",
+                    Actions: [
+                        {
+                            Type: "COMMAND",
+                            Cmd: "tbcs attach %%TRAINER_ID%% @s"
+                        },
+                        {
+                            Type: "COMMAND",
+                            ExecAsUser: 1b,
+                            Cmd: "tbcs battle %%BATTLE_FORMAT:GEN_9_SINGLES|GEN_9_DOUBLES=GEN_9_SINGLES%% @s vs %%TRAINER_ID%% onwin {1: ['cobbledollars add @1 %%PRIZE=200%%', 'tag @1 add defeated_%%TRAINER_ID%%', '@2 say %%WIN_LINE=You listened. That is rarer than talent.%%'], 2: ['@2 say %%LOSE_LINE=Type matters. Go think on it.%%']}"
+                        },
+                        {
+                            Type: "CLOSE_DIALOG"
+                        }
+                    ],
+                    Label: "battle_button"
+                },
+                {
+                    Name: "Any advice?",
+                    Actions: [
+                        {
+                            Type: "OPEN_NAMED_DIALOG",
+                            Cmd: "tip"
+                        }
+                    ],
+                    Label: "tip_button"
+                },
+                {
+                    Name: "Leave",
+                    Actions: [
+                        {
+                            Type: "CLOSE_DIALOG"
+                        }
+                    ],
+                    Label: "leave_button"
+                }
+            ],
+            Priority: 10,
+            Texts: [
+                {
+                    Text: "I run a %%GYM_TYPE:Bug|Grass|Fairy|Fighting|Water|Ground|Electric|Dragon|Ice|Fire=Bug%%-type team. Want the matchup, or do you want to learn the hard way?"
+                }
+            ],
+            Name: "Specialist Greeting",
+            Label: "question"
+        },
+        {
+            Buttons: [
+                {
+                    Name: "Back",
+                    Actions: [
+                        {
+                            Type: "OPEN_NAMED_DIALOG",
+                            Cmd: "question"
+                        }
+                    ],
+                    Label: "back_button"
+                }
+            ],
+            Texts: [
+                {
+                    Text: "%%TIP_LINE=Lead with the type that beats mine and you control the tempo. Lead wrong and you will be switching all match.%%"
+                }
+            ],
+            Name: "Matchup Tip",
+            Label: "tip"
+        }
+    ]
+}

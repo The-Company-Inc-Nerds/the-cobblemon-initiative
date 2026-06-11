@@ -1,0 +1,69 @@
+DialogData: {
+    Type: "YES_NO",
+    DialogDataSet: [
+        {
+            Buttons: [
+                {
+                    Name: "Accept Battle",
+                    Actions: [
+                        {
+                            Type: "COMMAND",
+                            Cmd: "execute if entity @p[tag=defeated_%%TRAINER_ID%%] run say %%BEATEN_LINE=You already balanced these books. We are done here.%%"
+                        },
+                        {
+                            Type: "COMMAND",
+                            Cmd: "execute unless entity @p[tag=defeated_%%TRAINER_ID%%] run tbcs attach %%TRAINER_ID%% @s"
+                        },
+                        {
+                            Type: "COMMAND",
+                            ExecAsUser: 1b,
+                            Cmd: "execute unless entity @s[tag=defeated_%%TRAINER_ID%%] run tbcs battle %%BATTLE_FORMAT:GEN_9_SINGLES|GEN_9_DOUBLES=GEN_9_SINGLES%% @s vs %%TRAINER_ID%% onwin {1: ['cobbledollars add @1 %%PRIZE=200%%', 'tag @1 add defeated_%%TRAINER_ID%%', '@2 say %%WIN_LINE=Noted. The ledger never lies.%%'], 2: ['@2 say %%LOSE_LINE=As projected.%%']}"
+                        },
+                        {
+                            Type: "CLOSE_DIALOG"
+                        }
+                    ],
+                    Label: "yes_button"
+                },
+                {
+                    Name: "Decline Battle",
+                    Actions: [
+                        {
+                            Type: "OPEN_NAMED_DIALOG",
+                            Cmd: "no_answer"
+                        }
+                    ],
+                    Label: "no_button"
+                }
+            ],
+            Priority: 10,
+            Texts: [
+                {
+                    Text: "%%CHALLENGE_LINE=One battle. One outcome. Shall we?%%"
+                }
+            ],
+            Name: "Challenge",
+            Label: "question"
+        },
+        {
+            Buttons: [
+                {
+                    Name: "Leave",
+                    Actions: [
+                        {
+                            Type: "CLOSE_DIALOG"
+                        }
+                    ],
+                    Label: "leave_button"
+                }
+            ],
+            Texts: [
+                {
+                    Text: "%%DECLINE_LINE=Walk away then. The offer stands.%%"
+                }
+            ],
+            Name: "Declined",
+            Label: "no_answer"
+        }
+    ]
+}

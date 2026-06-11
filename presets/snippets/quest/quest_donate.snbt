@@ -1,0 +1,76 @@
+DialogData: {
+    Type: "YES_NO",
+    DialogDataSet: [
+        {
+            Buttons: [
+                {
+                    Name: "Contribute %%AMOUNT=500%% CobbleDollars",
+                    Actions: [
+                        {
+                            Type: "COMMAND",
+                            Cmd: "execute as @p[tag=quest_%%QUEST_KEY%%_done] run tellraw @s {\"text\":\"You have already given more than your share. Keep the rest.\",\"color\":\"gray\",\"italic\":true}"
+                        },
+                        {
+                            Type: "COMMAND",
+                            Cmd: "execute as @p[tag=!quest_%%QUEST_KEY%%_done] run cobbledollars remove @s %%AMOUNT=500%%"
+                        },
+                        {
+                            Type: "COMMAND",
+                            Cmd: "execute as @p[tag=!quest_%%QUEST_KEY%%_done] run loot give @s loot %%REWARD_TABLE:cobblemon_initiative:npc_gift/common|cobblemon_initiative:npc_gift/uncommon|cobblemon_initiative:npc_gift/rare=cobblemon_initiative:npc_gift/uncommon%%"
+                        },
+                        {
+                            Type: "COMMAND",
+                            Cmd: "execute as @p[tag=!quest_%%QUEST_KEY%%_done] run tellraw @s {\"text\":\"You have no idea what this buys us. Thank you.\",\"color\":\"green\",\"italic\":true}"
+                        },
+                        {
+                            Type: "COMMAND",
+                            Cmd: "execute as @p[tag=!quest_%%QUEST_KEY%%_done] run tag @s add quest_%%QUEST_KEY%%_done"
+                        },
+                        {
+                            Type: "CLOSE_DIALOG"
+                        }
+                    ],
+                    Label: "yes_button"
+                },
+                {
+                    Name: "Keep my coin",
+                    Actions: [
+                        {
+                            Type: "OPEN_NAMED_DIALOG",
+                            Cmd: "no_answer"
+                        }
+                    ],
+                    Label: "no_button"
+                }
+            ],
+            Priority: 10,
+            Texts: [
+                {
+                    Text: "%%PITCH_LINE=Some of us are not waiting for a hero. We are pooling what we can to fight the Company the only way it understands - money. Care to contribute?%%"
+                }
+            ],
+            Name: "Donation Request",
+            Label: "question"
+        },
+        {
+            Buttons: [
+                {
+                    Name: "Leave",
+                    Actions: [
+                        {
+                            Type: "CLOSE_DIALOG"
+                        }
+                    ],
+                    Label: "leave_button"
+                }
+            ],
+            Texts: [
+                {
+                    Text: "%%DECLINE_LINE=No judgment. Coin is tight for everyone these days.%%"
+                }
+            ],
+            Name: "Declined",
+            Label: "no_answer"
+        }
+    ]
+}

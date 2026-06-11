@@ -1,0 +1,64 @@
+DialogData: {
+    Type: "YES_NO",
+    DialogDataSet: [
+        {
+            Buttons: [
+                {
+                    Name: "Heal my team",
+                    Actions: [
+                        {
+                            Type: "COMMAND",
+                            Cmd: "healpokemon @p"
+                        },
+                        {
+                            Type: "COMMAND",
+                            Cmd: "execute at @p run playsound minecraft:block.beacon.power_select player @p"
+                        },
+                        {
+                            Type: "OPEN_NAMED_DIALOG",
+                            Cmd: "no_answer"
+                        }
+                    ],
+                    Label: "yes_button"
+                },
+                {
+                    Name: "We're fine, thanks",
+                    Actions: [
+                        {
+                            Type: "CLOSE_DIALOG"
+                        }
+                    ],
+                    Label: "no_button"
+                }
+            ],
+            Priority: 10,
+            Texts: [
+                {
+                    Text: "%%OFFER_LINE=Your team looks worn down. Let me patch them up — no charge. Out here we look after each other.%%"
+                }
+            ],
+            Name: "Heal Offer",
+            Label: "question"
+        },
+        {
+            Buttons: [
+                {
+                    Name: "Thanks",
+                    Actions: [
+                        {
+                            Type: "CLOSE_DIALOG"
+                        }
+                    ],
+                    Label: "leave_button"
+                }
+            ],
+            Texts: [
+                {
+                    Text: "%%DONE_LINE=Good as new. Be careful out there — not every faint ends well these days.%%"
+                }
+            ],
+            Name: "Healed",
+            Label: "no_answer"
+        }
+    ]
+}

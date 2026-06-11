@@ -1,0 +1,86 @@
+DialogData: {
+    Type: "CUSTOM",
+    DialogDataSet: [
+        {
+            Buttons: [
+                {
+                    Name: "Go on...",
+                    Actions: [
+                        {
+                            Type: "OPEN_NAMED_DIALOG",
+                            Cmd: "page_2"
+                        }
+                    ],
+                    Label: "next_button"
+                },
+                {
+                    Name: "Leave",
+                    Actions: [
+                        {
+                            Type: "CLOSE_DIALOG"
+                        }
+                    ],
+                    Label: "leave_button"
+                }
+            ],
+            Priority: 10,
+            Texts: [
+                {
+                    Text: "%%LORE_PAGE_1=You want to know about the old days? Sit down. This takes a moment.%%"
+                }
+            ],
+            Name: "Lore Page 1",
+            Label: "question"
+        },
+        {
+            Buttons: [
+                {
+                    Name: "And then?",
+                    Actions: [
+                        {
+                            Type: "OPEN_NAMED_DIALOG",
+                            Cmd: "page_3"
+                        }
+                    ],
+                    Label: "next_button"
+                },
+                {
+                    Name: "Leave",
+                    Actions: [
+                        {
+                            Type: "CLOSE_DIALOG"
+                        }
+                    ],
+                    Label: "leave_button"
+                }
+            ],
+            Texts: [
+                {
+                    Text: "%%LORE_PAGE_2=The Company was not always like this. It built the roads. It backed the currency with nether stars — real value, they said. Then the founder vanished, and the suits moved in.%%"
+                }
+            ],
+            Name: "Lore Page 2",
+            Label: "page_2"
+        },
+        {
+            Buttons: [
+                {
+                    Name: "Thank you",
+                    Actions: [
+                        {
+                            Type: "CLOSE_DIALOG"
+                        }
+                    ],
+                    Label: "leave_button"
+                }
+            ],
+            Texts: [
+                {
+                    Text: "%%LORE_PAGE_3=Nobody knows what happened to the founder. Some say the board buried them. Some say they are still out there, walking the routes, not even knowing their own name. Superstition, probably.%%"
+                }
+            ],
+            Name: "Lore Page 3",
+            Label: "page_3"
+        }
+    ]
+}

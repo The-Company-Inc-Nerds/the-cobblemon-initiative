@@ -1,0 +1,72 @@
+DialogData: {
+    Type: "YES_NO",
+    DialogDataSet: [
+        {
+            Buttons: [
+                {
+                    Name: "I'll deliver it",
+                    Actions: [
+                        {
+                            Type: "COMMAND",
+                            Cmd: "execute as @p[tag=gift_%%QUEST_KEY%%_claimed] run tellraw @s {\"text\":\"You already have the package. Deliver it.\",\"color\":\"gray\",\"italic\":true}"
+                        },
+                        {
+                            Type: "COMMAND",
+                            Cmd: "execute as @p[tag=!gift_%%QUEST_KEY%%_claimed] run give @s %%PACKAGE_ITEM=minecraft:paper%% 1"
+                        },
+                        {
+                            Type: "COMMAND",
+                            Cmd: "execute as @p[tag=!gift_%%QUEST_KEY%%_claimed] run tellraw @s {\"text\":\"Package received. Best not to dawdle.\",\"color\":\"green\",\"italic\":true}"
+                        },
+                        {
+                            Type: "COMMAND",
+                            Cmd: "execute as @p[tag=!gift_%%QUEST_KEY%%_claimed] run tag @s add gift_%%QUEST_KEY%%_claimed"
+                        },
+                        {
+                            Type: "CLOSE_DIALOG"
+                        }
+                    ],
+                    Label: "yes_button"
+                },
+                {
+                    Name: "Not my problem",
+                    Actions: [
+                        {
+                            Type: "OPEN_NAMED_DIALOG",
+                            Cmd: "no_answer"
+                        }
+                    ],
+                    Label: "no_button"
+                }
+            ],
+            Priority: 10,
+            Texts: [
+                {
+                    Text: "%%PITCH_LINE=I need this delivered, quietly. The recipient will make it worth your trouble. No reading it on the way — Company auditors read everything already.%%"
+                }
+            ],
+            Name: "Delivery Request",
+            Label: "question"
+        },
+        {
+            Buttons: [
+                {
+                    Name: "Leave",
+                    Actions: [
+                        {
+                            Type: "CLOSE_DIALOG"
+                        }
+                    ],
+                    Label: "leave_button"
+                }
+            ],
+            Texts: [
+                {
+                    Text: "%%DECLINE_LINE=Forget I asked. And forget you saw the envelope.%%"
+                }
+            ],
+            Name: "Declined",
+            Label: "no_answer"
+        }
+    ]
+}

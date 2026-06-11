@@ -543,8 +543,14 @@ public class NuzlockeInit implements ModInitializer {
       sendZoneEntry(player, zone);
     } else {
       playerZones.remove(player.getUUID());
-      if (config.isAnnounceOnExit() && prevName != null) {
-        sendZoneExit(player, prevName);
+      // Only meaningful as a transition *out of* a named zone; prevName == null means the
+      // player spawned/relogged in the wild, which we don't announce (avoids login spam).
+      if (prevName != null) {
+        if (config.isAnnounceWilderness()) {
+          sendWilderness(player);
+        } else if (config.isAnnounceOnExit()) {
+          sendZoneExit(player, prevName);
+        }
       }
     }
   }
@@ -578,6 +584,19 @@ public class NuzlockeInit implements ModInitializer {
         Component.literal("§6[Area] §eEntering: ").append(title)
       );
     }
+  }
+
+  /**
+   * Announces undefined territory ("Wilderness") using the same styling as zone entry.
+   * Builds a transient {@link NuzlockeConfig.SafeZone} so the global announcement style
+   * (TITLE / ACTIONBAR / CHAT) and timing are honoured without duplicating that logic.
+   */
+  private static void sendWilderness(ServerPlayer player) {
+    NuzlockeConfig.SafeZone wild = new NuzlockeConfig.SafeZone();
+    wild.name = config.getWildernessName();
+    wild.subtitle = config.getWildernessSubtitle();
+    wild.color = config.getWildernessColor();
+    sendZoneEntry(player, wild);
   }
 
   private static void sendZoneExit(ServerPlayer player, String zoneName) {

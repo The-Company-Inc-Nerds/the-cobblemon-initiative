@@ -1,0 +1,86 @@
+DialogData: {
+    Type: "CUSTOM",
+    DialogDataSet: [
+        {
+            Buttons: [
+                {
+                    Name: "It's done",
+                    Actions: [
+                        {
+                            Type: "COMMAND",
+                            Cmd: "execute as @p[tag=quest_%%QUEST_KEY%%_done] run tellraw @s {\"text\":\"You have already settled this account.\",\"color\":\"gray\",\"italic\":true}"
+                        },
+                        {
+                            Type: "COMMAND",
+                            Cmd: "execute as @p[tag=!quest_%%QUEST_KEY%%_done,tag=!defeated_%%TARGET_TRAINER_ID%%] run tellraw @s {\"text\":\"It is not done yet. Come back when it is.\",\"color\":\"gray\",\"italic\":true}"
+                        },
+                        {
+                            Type: "COMMAND",
+                            Cmd: "execute as @p[tag=!quest_%%QUEST_KEY%%_done,tag=defeated_%%TARGET_TRAINER_ID%%] run loot give @s loot %%REWARD_TABLE:cobblemon_initiative:npc_gift/common|cobblemon_initiative:npc_gift/uncommon|cobblemon_initiative:npc_gift/rare=cobblemon_initiative:npc_gift/uncommon%%"
+                        },
+                        {
+                            Type: "COMMAND",
+                            Cmd: "execute as @p[tag=!quest_%%QUEST_KEY%%_done,tag=defeated_%%TARGET_TRAINER_ID%%] run tellraw @s {\"text\":\"Quest complete. They will not trouble anyone for a while.\",\"color\":\"green\",\"italic\":true}"
+                        },
+                        {
+                            Type: "COMMAND",
+                            Cmd: "execute as @p[tag=!quest_%%QUEST_KEY%%_done,tag=defeated_%%TARGET_TRAINER_ID%%] run tag @s add quest_%%QUEST_KEY%%_done"
+                        },
+                        {
+                            Type: "CLOSE_DIALOG"
+                        }
+                    ],
+                    Label: "turn_in_button"
+                },
+                {
+                    Name: "Who am I looking for?",
+                    Actions: [
+                        {
+                            Type: "OPEN_NAMED_DIALOG",
+                            Cmd: "details"
+                        }
+                    ],
+                    Label: "details_button"
+                },
+                {
+                    Name: "Leave",
+                    Actions: [
+                        {
+                            Type: "CLOSE_DIALOG"
+                        }
+                    ],
+                    Label: "leave_button"
+                }
+            ],
+            Priority: 10,
+            Texts: [
+                {
+                    Text: "%%PITCH_LINE=Someone has been causing trouble around here, and I am not strong enough to stop them. You look like you might be.%%"
+                }
+            ],
+            Name: "Quest Pitch",
+            Label: "question"
+        },
+        {
+            Buttons: [
+                {
+                    Name: "Back",
+                    Actions: [
+                        {
+                            Type: "OPEN_NAMED_DIALOG",
+                            Cmd: "question"
+                        }
+                    ],
+                    Label: "back_button"
+                }
+            ],
+            Texts: [
+                {
+                    Text: "%%DETAILS_LINE=You will know them when you see them. Beat them in a battle and come back — I pay my debts.%%"
+                }
+            ],
+            Name: "Quest Details",
+            Label: "details"
+        }
+    ]
+}

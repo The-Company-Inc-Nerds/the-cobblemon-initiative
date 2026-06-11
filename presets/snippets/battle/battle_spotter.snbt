@@ -1,0 +1,29 @@
+ObjectiveData: {
+    HasObjectives: 1b,
+    HasTravelTarget: 0b,
+    ObjectiveDataSet: [
+        {Type: "LOOK_AT_PLAYER", Prio: 9, Id: "spotter_look_player", LookDistance: 16.0f},
+        {Type: "LOOK_RANDOM_AROUND", Prio: 10, Id: "spotter_look_random"},
+        {Type: "LOOK_AT_RESET", Prio: 9, Id: "spotter_look_reset"}
+    ]
+}
+ActionData: {
+    ActionEventSet: {
+        ON_INTERACTION: [
+            {
+                Type: "OPEN_DEFAULT_DIALOG"
+            }
+        ],
+        ON_DISTANCE_TOUCH: [
+            {
+                Type: "COMMAND",
+                Cmd: "execute unless entity @p[tag=defeated_%%TRAINER_ID%%] run tbcs attach %%TRAINER_ID%% @s"
+            },
+            {
+                Type: "COMMAND",
+                ExecAsUser: 1b,
+                Cmd: "execute unless entity @s[tag=defeated_%%TRAINER_ID%%] run tbcs battle %%BATTLE_FORMAT:GEN_9_SINGLES|GEN_9_DOUBLES=GEN_9_SINGLES%% @s vs %%TRAINER_ID%% onwin {1: ['cobbledollars add @1 %%PRIZE=200%%', 'tag @1 add defeated_%%TRAINER_ID%%', '@2 say %%WIN_LINE=You actually caught me. Quotas be damned.%%'], 2: ['@2 say %%LOSE_LINE=Heh. Should have watched where you were walking.%%']}"
+            }
+        ]
+    }
+}

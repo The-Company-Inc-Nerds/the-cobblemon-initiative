@@ -1,0 +1,43 @@
+DialogData: {
+    Type: "YES_NO",
+    DialogDataSet: [
+        {
+            Buttons: [
+                {
+                    Name: "Confront them",
+                    Actions: [
+                        {
+                            Type: "COMMAND",
+                            Cmd: "execute if entity @p[tag=defeated_%%TRAINER_ID%%] run say %%BEATEN_LINE=The board already has my report on you. We are finished here.%%"
+                        },
+                        {
+                            Type: "COMMAND",
+                            Cmd: "execute unless entity @p[tag=%%PREREQ_TAG=company_management_cleared%%] run say %%LOCKED_LINE=You have not earned an audience. Clear the floor below me first.%%"
+                        },
+                        {
+                            Type: "COMMAND",
+                            Cmd: "execute if entity @p[tag=%%PREREQ_TAG=company_management_cleared%%] unless entity @p[tag=defeated_%%TRAINER_ID%%] run tbcs attach %%TRAINER_ID%% @s"
+                        },
+                        {
+                            Type: "COMMAND",
+                            ExecAsUser: 1b,
+                            Cmd: "execute if entity @s[tag=%%PREREQ_TAG=company_management_cleared%%] unless entity @s[tag=defeated_%%TRAINER_ID%%] run tbcs battle %%BATTLE_FORMAT:GEN_9_SINGLES|GEN_9_DOUBLES=GEN_9_SINGLES%% @s vs %%TRAINER_ID%% onwin {1: ['cobbledollars add @1 %%PRIZE=5000%%', 'tag @1 add defeated_%%TRAINER_ID%%', 'tag @1 add %%CLEAR_TAG=company_floor_cleared%%', 'execute as @1 run function cobblemon_initiative:rewards/badge_reward_combo {badges:%%BADGE_TIER:1|2|3|4|5|6|7|8|9|10=8%%}', '@2 say %%WIN_LINE=Impossible. I had projections for everything but you.%%', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 %%LOSS_FEE=300%%', '@2 say %%LOSE_LINE=Security will see you out. Mind the gap in your accounts.%%']}"
+                        },
+                        {
+                            Type: "CLOSE_DIALOG"
+                        }
+                    ],
+                    Label: "yes_button"
+                }
+            ],
+            Priority: 10,
+            Texts: [
+                {
+                    Text: "%%CHALLENGE_LINE=So the ghost climbs another floor. You should not have made it this far. There is no withdrawing now — this is the end of the line.%%"
+                }
+            ],
+            Name: "Boss Challenge",
+            Label: "question"
+        }
+    ]
+}

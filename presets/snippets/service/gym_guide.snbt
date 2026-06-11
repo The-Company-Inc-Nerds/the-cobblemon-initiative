@@ -1,0 +1,56 @@
+DialogData: {
+    Type: "CUSTOM",
+    DialogDataSet: [
+        {
+            Buttons: [
+                {
+                    Name: "Tell me about the gym",
+                    Actions: [
+                        {
+                            Type: "OPEN_NAMED_DIALOG",
+                            Cmd: "gym_info"
+                        }
+                    ],
+                    Label: "info_button"
+                },
+                {
+                    Name: "Leave",
+                    Actions: [
+                        {
+                            Type: "CLOSE_DIALOG"
+                        }
+                    ],
+                    Label: "leave_button"
+                }
+            ],
+            Priority: 10,
+            Texts: [
+                {
+                    Text: "%%GREETING_LINE=Welcome, challenger! I am this gym's guide. First time here?%%"
+                }
+            ],
+            Name: "Guide Greeting",
+            Label: "question"
+        },
+        {
+            Buttons: [
+                {
+                    Name: "Got it",
+                    Actions: [
+                        {
+                            Type: "CLOSE_DIALOG"
+                        }
+                    ],
+                    Label: "leave_button"
+                }
+            ],
+            Texts: [
+                {
+                    Text: "Leader %%LEADER_NAME%% runs a %%GYM_TYPE:Bug|Grass|Fairy|Fighting|Water|Ground|Electric|Dragon|Ice|Fire%%-type gym. Win, and your level cap rises to %%LEVEL_CAP:30|38|45|52|58|63|68|73|78|100%%. Lose, and... well, train and try again. No shame in preparation."
+                }
+            ],
+            Name: "Gym Info",
+            Label: "gym_info"
+        }
+    ]
+}

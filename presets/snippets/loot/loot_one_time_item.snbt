@@ -1,0 +1,72 @@
+DialogData: {
+    Type: "YES_NO",
+    DialogDataSet: [
+        {
+            Buttons: [
+                {
+                    Name: "Accept",
+                    Actions: [
+                        {
+                            Type: "COMMAND",
+                            Cmd: "execute as @p[tag=gift_%%GIFT_KEY%%_claimed] run tellraw @s {\"text\":\"You already have what they offered.\",\"color\":\"gray\",\"italic\":true}"
+                        },
+                        {
+                            Type: "COMMAND",
+                            Cmd: "execute as @p[tag=!gift_%%GIFT_KEY%%_claimed] run give @s %%ITEM=cobblemon:rare_candy%% %%COUNT=1%%"
+                        },
+                        {
+                            Type: "COMMAND",
+                            Cmd: "execute as @p[tag=!gift_%%GIFT_KEY%%_claimed] run tellraw @s {\"text\":\"Received an item.\",\"color\":\"green\",\"italic\":true}"
+                        },
+                        {
+                            Type: "COMMAND",
+                            Cmd: "execute as @p[tag=!gift_%%GIFT_KEY%%_claimed] run tag @s add gift_%%GIFT_KEY%%_claimed"
+                        },
+                        {
+                            Type: "CLOSE_DIALOG"
+                        }
+                    ],
+                    Label: "yes_button"
+                },
+                {
+                    Name: "Not now",
+                    Actions: [
+                        {
+                            Type: "OPEN_NAMED_DIALOG",
+                            Cmd: "no_answer"
+                        }
+                    ],
+                    Label: "no_button"
+                }
+            ],
+            Priority: 10,
+            Texts: [
+                {
+                    Text: "%%OFFER_LINE=Here — I want you to have this. No strings attached. Almost nothing here comes without strings anymore.%%"
+                }
+            ],
+            Name: "Item Gift",
+            Label: "question"
+        },
+        {
+            Buttons: [
+                {
+                    Name: "Leave",
+                    Actions: [
+                        {
+                            Type: "CLOSE_DIALOG"
+                        }
+                    ],
+                    Label: "leave_button"
+                }
+            ],
+            Texts: [
+                {
+                    Text: "%%LATER_LINE=Ask me again sometime.%%"
+                }
+            ],
+            Name: "Later",
+            Label: "no_answer"
+        }
+    ]
+}

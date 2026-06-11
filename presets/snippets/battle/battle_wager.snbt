@@ -1,0 +1,65 @@
+DialogData: {
+    Type: "YES_NO",
+    DialogDataSet: [
+        {
+            Buttons: [
+                {
+                    Name: "Stake %%WAGER=500%% CobbleDollars",
+                    Actions: [
+                        {
+                            Type: "COMMAND",
+                            Cmd: "tbcs attach %%TRAINER_ID%% @s"
+                        },
+                        {
+                            Type: "COMMAND",
+                            ExecAsUser: 1b,
+                            Cmd: "tbcs battle %%BATTLE_FORMAT:GEN_9_SINGLES|GEN_9_DOUBLES=GEN_9_SINGLES%% @s vs %%TRAINER_ID%% onwin {1: ['cobbledollars add @1 %%WAGER=500%%', 'tag @1 add defeated_%%TRAINER_ID%%', '@2 say %%WIN_LINE=Take it. Money always changes hands — that is the only rule.%%'], 2: ['cobbledollars remove @1 %%WAGER=500%%', '@2 say %%LOSE_LINE=The house thanks you for your contribution.%%']}"
+                        },
+                        {
+                            Type: "CLOSE_DIALOG"
+                        }
+                    ],
+                    Label: "yes_button"
+                },
+                {
+                    Name: "Too rich for me",
+                    Actions: [
+                        {
+                            Type: "OPEN_NAMED_DIALOG",
+                            Cmd: "no_answer"
+                        }
+                    ],
+                    Label: "no_button"
+                }
+            ],
+            Priority: 10,
+            Texts: [
+                {
+                    Text: "%%CHALLENGE_LINE=High stakes, real money. Winner takes the whole stake. In or out?%%"
+                }
+            ],
+            Name: "Wager",
+            Label: "question"
+        },
+        {
+            Buttons: [
+                {
+                    Name: "Leave",
+                    Actions: [
+                        {
+                            Type: "CLOSE_DIALOG"
+                        }
+                    ],
+                    Label: "leave_button"
+                }
+            ],
+            Texts: [
+                {
+                    Text: "%%DECLINE_LINE=Smart. Most people cannot afford to lose twice.%%"
+                }
+            ],
+            Name: "Declined",
+            Label: "no_answer"
+        }
+    ]
+}

@@ -1,0 +1,60 @@
+DialogData: {
+    Type: "YES_NO",
+    DialogDataSet: [
+        {
+            Buttons: [
+                {
+                    Name: "Browse wares",
+                    Actions: [
+                        {
+                            Type: "COMMAND",
+                            Cmd: "%%SHOP_OPEN_CMD=cobbledollars openShop @p%%"
+                        },
+                        {
+                            Type: "CLOSE_DIALOG"
+                        }
+                    ],
+                    Label: "yes_button"
+                },
+                {
+                    Name: "Just looking",
+                    Actions: [
+                        {
+                            Type: "OPEN_NAMED_DIALOG",
+                            Cmd: "no_answer"
+                        }
+                    ],
+                    Label: "no_button"
+                }
+            ],
+            Priority: 10,
+            Texts: [
+                {
+                    Text: "%%SHOP_LINE=Welcome in! Best stock in town — and I still take CobbleDollars, whatever the rumors say.%%"
+                }
+            ],
+            Name: "Shop Greeting",
+            Label: "question"
+        },
+        {
+            Buttons: [
+                {
+                    Name: "Leave",
+                    Actions: [
+                        {
+                            Type: "CLOSE_DIALOG"
+                        }
+                    ],
+                    Label: "leave_button"
+                }
+            ],
+            Texts: [
+                {
+                    Text: "%%BROWSE_LINE=Take your time. Inventory moves fast since The Company started bulk-buying.%%"
+                }
+            ],
+            Name: "Browsing",
+            Label: "no_answer"
+        }
+    ]
+}

@@ -37,6 +37,14 @@ public class NuzlockeConfig {
   private int announcementStay = 70;
   private int announcementFadeOut = 20;
   private boolean announceOnExit = false;
+  /** If true, announces "the wild" when the player leaves a named zone into undefined territory. */
+  private boolean announceWilderness = true;
+  /** Display name for undefined territory. */
+  private String wildernessName = "Wilderness";
+  /** Optional subtitle shown beneath the wilderness name (TITLE style only). */
+  private String wildernessSubtitle = "";
+  /** Hex color for the wilderness announcement, e.g. "#88AA88". */
+  private String wildernessColor = "#88AA88";
 
   public enum DuplicateHandling {
     OFF,
@@ -164,6 +172,10 @@ public class NuzlockeConfig {
   public int getAnnouncementStay() { return announcementStay; }
   public int getAnnouncementFadeOut() { return announcementFadeOut; }
   public boolean isAnnounceOnExit() { return announceOnExit; }
+  public boolean isAnnounceWilderness() { return announceWilderness; }
+  public String getWildernessName() { return wildernessName; }
+  public String getWildernessSubtitle() { return wildernessSubtitle; }
+  public String getWildernessColor() { return wildernessColor; }
 
   // -------------------------------------------------------------------------
   // Setters
@@ -189,6 +201,10 @@ public class NuzlockeConfig {
   public void setAnnouncementStay(int v) { this.announcementStay = v; }
   public void setAnnouncementFadeOut(int v) { this.announcementFadeOut = v; }
   public void setAnnounceOnExit(boolean v) { this.announceOnExit = v; }
+  public void setAnnounceWilderness(boolean v) { this.announceWilderness = v; }
+  public void setWildernessName(String v) { this.wildernessName = v; }
+  public void setWildernessSubtitle(String v) { this.wildernessSubtitle = v; }
+  public void setWildernessColor(String v) { this.wildernessColor = v; }
 
   // -------------------------------------------------------------------------
   // Utility

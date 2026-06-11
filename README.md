@@ -365,32 +365,19 @@ All rules are individually toggleable in the Mod Menu config screen.
 
 ### NPC Line-of-Sight Detection
 
-Server-side sight detection for [Easy NPC](https://www.curseforge.com/minecraft/mc-mods/easy-npc) entities.
+Server-side sight detection for [Easy NPC](https://www.curseforge.com/minecraft/mc-mods/easy-npc) entities. Each tick, every registered NPC raycasts toward nearby players. A player is "seen" when they are:
 
-**Registering an NPC:**
+- inside the NPC's **forward 120° field of view** (relative to the NPC's facing direction),
+- within the NPC's configured **range**, and
+- in **unobstructed line of sight** (no solid blocks between the NPC's eyes and the player).
 
-```
-/npcsight add <uuid> [stationary|tracking] [range] [dialog]
-```
+On detection, the NPC acts according to its **mode** (`/npcsight mode`):
 
-When typing the UUID, tab-complete suggests the entity you are currently looking at.
+- **`dialog`** (default) — fire an Easy NPC dialog (a per-NPC dialog if one is set, otherwise the global default), once per detection session.
+- **`pursue`** — walk toward the player while it can see them, by toggling an Easy NPC `FOLLOW_PLAYER` objective on (and off when sight is lost). Combined with a preset `ON_DISTANCE_TOUCH` battle action, this is the classic "trainer spots you, walks up, and battles on contact" (also used for unavoidable Company route-blockers).
+- **`approach_once`** — the first time it ever sees the player, walk up and open its dialog once, optionally tagging the player (`meettag`), then never auto-approach again (persisted). Used for one-time story moments (e.g. Mom).
 
-**Other commands:**
-
-```
-/npcsight remove <uuid>
-/npcsight mode <uuid> <stationary|tracking>
-/npcsight range <uuid> <blocks>
-/npcsight dialog <uuid> <name|clear>
-/npcsight list
-/npcsight info <uuid>
-/npcsight reload
-```
-
-**Modes:**
-
-- `stationary` — NPC looks in a fixed direction; detects players within its forward 120° field of view
-- `tracking` — NPC head rotates to follow the nearest player in range
+Register and tune NPCs with the `/npcsight` commands; when typing a UUID, tab-complete suggests the entity you are currently looking at. See the full syntax in the [Command Reference](#command-reference), and `presets/README.md` for the matching preset snippets/recipes (`battle_spotter`, `battle_villain_forced`, `dialog_first_meeting`).
 
 **Scoreboard interop:** the `can_see_player` scoreboard objective is updated each cycle so commands and other datapacks can check `@e[scores={can_see_player=1}]`.
 
@@ -411,22 +398,18 @@ Run `/cobblemon-initiative install run` to apply all zones, gamerules, and NPC p
 
 ### Zone-Trace Tool
 
-A dev-only command for tracing polygon zone boundaries to add to `install.json`.
+A dev-only tool for tracing polygon zone boundaries in-world and turning them into `install.json` zones. Tracing happens in two stages: you build a **live session** by walking the boundary and dropping vertices, then `finish` **saves** that session into a persistent saved-zones store, and `export` emits all saved zones as JSON to paste into `install.json`.
 
-```
-/cobblemon-initiative zone-trace begin <name>   — start tracing; receive a wand item
-/cobblemon-initiative zone-trace point          — record player's foot position as a vertex
-/cobblemon-initiative zone-trace undo           — remove last vertex
-/cobblemon-initiative zone-trace type <value>   — set zone category (TOWN, ROUTE, SHRINE, …)
-/cobblemon-initiative zone-trace color <hex>    — set hex color for map display
-/cobblemon-initiative zone-trace subtitle <text>
-/cobblemon-initiative zone-trace announce <bool>
-/cobblemon-initiative zone-trace hostile <bool>
-/cobblemon-initiative zone-trace finish         — save trace (min. 3 vertices required)
-/cobblemon-initiative zone-trace export         — export all saved zones as JSON to server log
-```
+**Workflow:**
 
-Right-clicking blocks with the wand also records vertices. Exported JSON matches the `InstallZone` structure and can be pasted directly into `install.json`.
+1. **Start a trace** — `/cobblemon-initiative zone-trace begin <name>`. You receive a tracing wand and an in-memory session is opened for you.
+2. **Mark the corners** — walk the zone's perimeter and drop a vertex at each corner with `/cobblemon-initiative zone-trace point`, or simply **right-click a block with the wand** (same effect). Use `zone-trace undo` to drop the last vertex and `zone-trace status` to review the session (vertex list + current settings) at any time.
+3. **Set metadata** — `zone-trace type <TOWN|ROUTE|SHRINE|VILLAIN|BATTLE_FRONTIER|LANDMARK>`, `zone-trace color <hex>`, `zone-trace subtitle <text>`, `zone-trace announce <true|false>`, `zone-trace hostile <true|false>`. These can be set in any order before finishing.
+4. **Save the trace** — `/cobblemon-initiative zone-trace finish` (needs **≥ 3 vertices**). This moves the session into the saved-zones store and removes the wand. Use `zone-trace list` to see all saved zones and `zone-trace delete <name>` to remove one.
+5. **Export to JSON** — `/cobblemon-initiative zone-trace export` writes every saved zone as an `install.json`-ready JSON array to the **server console/log** (not chat). The shape matches `InstallZone`, with explicit `vertices`; `centerX`/`centerZ`/`radius` are intentionally omitted because `install run` derives them from the polygon.
+6. **Add to `install.json`** — copy the JSON from the console into the `"zones"` array of `data/cobblemon_initiative/install.json`, then apply it in-game with `/cobblemon-initiative install run`.
+
+> The live session (steps 1–3) is per-player and transient; `finish` is what actually persists a zone. Saved zones survive until you `delete` them, so you can trace several zones, then `export` them all at once.
 
 ### Map Frontiers Integration
 
@@ -444,6 +427,181 @@ Maps Easy NPC entity UUIDs to preset names so NPC appearances can be applied in 
 ```
 
 Tab-completing the UUID field suggests the entity you are looking at. `npc-map apply` is called automatically by `install run`.
+
+---
+
+## Command Reference
+
+A complete list of every command the mod registers. Unless noted otherwise, admin commands require **OP level 2**. Arguments in `<angle brackets>` are required; `[square brackets]` are optional. Booleans are `true`/`false`.
+
+### `/cobblemon-initiative` (alias `/ca`) — OP 2
+
+The root command for progression, trainers, shrines, install, and the dev tools. `/ca` is a full alias — anything below also works as `/ca …`.
+
+**Progression & info**
+
+| Command | Description |
+| ------- | ----------- |
+| `/cobblemon-initiative progress` | Show your gym badges, defeated trainers, and current level cap. Player-only. |
+| `/cobblemon-initiative levelcap` | Show your current Pokémon level cap. Player-only. |
+| `/cobblemon-initiative reset` | Reset *your* progress — badges, trainer defeats, and level cap. Player-only. |
+| `/cobblemon-initiative info <trainer>` | Show a trainer's details: category, location, type, group, prerequisites, and whether you've defeated them. `<trainer>` is a trainer ID (tab-completes). |
+| `/cobblemon-initiative list gyms` | List all gym trainers. |
+| `/cobblemon-initiative list shrines` | List all shrine trainers. |
+| `/cobblemon-initiative list groups` | List all trainer groups. |
+| `/cobblemon-initiative list all` | List every registered trainer. |
+| `/cobblemon-initiative defeat <trainer>` | Manually mark a trainer as defeated (admin/testing — also runs the normal unlock logic). |
+
+**Shrine challenges**
+
+| Command | Description |
+| ------- | ----------- |
+| `/cobblemon-initiative shrine <id> start` | Start the shrine challenge `<id>` (e.g. `fairy`, `ground`, `dragon`, `ice`, `fire`). |
+| `/cobblemon-initiative shrine <id> stop` | Stop/abort the active challenge for shrine `<id>`. |
+| `/cobblemon-initiative shrine <id> test <name>` | Run a specific test step. Fairy shrine uses `friendship`, `fullness`, `nickname`, `shiny`, `resolve`. |
+| `/cobblemon-initiative shrine <id> complete` | Mark the challenge complete — typically fired by the finish-line command block: `execute as @a[distance=..3] run cobblemon-initiative shrine <id> complete`. |
+
+Players can also abort any active shrine challenge with **`/shrine-abort`** (no permission required).
+
+**Install / setup**
+
+| Command | Description |
+| ------- | ----------- |
+| `/cobblemon-initiative install check` | Report gamerule/difficulty drift vs. `install.json`, how many NPC preset mappings are registered, and the zones defined. Changes nothing. |
+| `/cobblemon-initiative install run` | Apply everything from `install.json` in one step: gamerules + difficulty, register zones as safe zones, create Map Frontiers frontiers (if Map Frontiers is present), and apply all stored NPC presets. |
+
+**NPC preset mapping** (`npc-map`)
+
+| Command | Description |
+| ------- | ----------- |
+| `/cobblemon-initiative npc-map add <uuid> <preset> [label]` | Register a UUID → Easy NPC preset mapping. UUID tab-completes to the entity you're looking at. |
+| `/cobblemon-initiative npc-map remove <uuid>` | Remove a mapping. |
+| `/cobblemon-initiative npc-map list` | List all stored mappings. |
+| `/cobblemon-initiative npc-map apply` | Apply every stored preset to its in-world NPC (also run automatically by `install run`). |
+
+**Zone tracing** (`zone-trace`) — dev tool for authoring `install.json` polygon zones
+
+| Command | Description |
+| ------- | ----------- |
+| `/cobblemon-initiative zone-trace begin <name>` | Start a trace and receive a tracing wand item. |
+| `/cobblemon-initiative zone-trace point` | Record your current foot position as a vertex (right-clicking a block with the wand does the same). |
+| `/cobblemon-initiative zone-trace undo` | Remove the last recorded vertex. |
+| `/cobblemon-initiative zone-trace type <value>` | Set the zone category (`TOWN`, `ROUTE`, `SHRINE`, `VILLAIN`, `BATTLE_FRONTIER`, `LANDMARK`). |
+| `/cobblemon-initiative zone-trace color <hex>` | Set the map display color, e.g. `#7AAAD0`. |
+| `/cobblemon-initiative zone-trace subtitle <text>` | Set the zone subtitle line. |
+| `/cobblemon-initiative zone-trace announce <bool>` | Toggle whether entering the zone announces to the player. |
+| `/cobblemon-initiative zone-trace hostile <bool>` | Toggle hostile-only spawn suppression for the zone. |
+| `/cobblemon-initiative zone-trace status` | Show the active trace session (vertex count + settings). |
+| `/cobblemon-initiative zone-trace finish` | Save the current trace (minimum 3 vertices). |
+| `/cobblemon-initiative zone-trace list` | List all saved traced zones. |
+| `/cobblemon-initiative zone-trace delete <name>` | Delete a saved zone by name. |
+| `/cobblemon-initiative zone-trace export` | Export all saved zones as `install.json`-ready JSON to the server log. |
+
+### `/npcsight` — OP 2 (`reload` requires OP 3)
+
+| Command | Description |
+| ------- | ----------- |
+| `/npcsight add <uuid> [range] [dialog]` | Register an NPC for sight detection. `range` defaults to the config default (omit, or pass `-1`); `dialog` is the Easy NPC dialog to open on detection. UUID tab-completes to the entity you're looking at. |
+| `/npcsight remove <uuid>` | Unregister an NPC. |
+| `/npcsight range <uuid> <blocks>` | Set detection range (`-1`–`512`; `-1` = use the config default). |
+| `/npcsight dialog <uuid> <name\|clear>` | Set the dialog fired on detection, or `clear` to remove it. |
+| `/npcsight mode <uuid> <dialog\|pursue\|approach_once>` | Set the sight behaviour. `dialog` = fire a dialog once per session (default); `pursue` = walk toward the player while in sight (Easy NPC `FOLLOW_PLAYER` toggled on/off), for trainers/forced villains that battle on contact; `approach_once` = walk up and open the dialog the first time it ever sees the player, then never again. |
+| `/npcsight meettag <uuid> <tag\|clear>` | Player tag added when an `approach_once` NPC completes its one-time approach (e.g. `met_mom`, to switch its dialog afterward). |
+| `/npcsight stoptag <uuid> <tag\|clear>` | Stand-down tag: when the nearest player has it, the NPC stops pursuing/engaging (e.g. `defeated_<trainer_id>` so a beaten trainer stops chasing). |
+| `/npcsight reset <uuid>` | Clear the `approach_once` one-shot latch so the one-time approach can fire again (testing). |
+| `/npcsight list` | List all registered NPCs (with mode). |
+| `/npcsight info <uuid>` | Show one NPC's settings. |
+| `/npcsight reload` | Reload the NPC Sight config from disk. **OP 3.** |
+
+### `/nuzlocke`
+
+| Command | Description |
+| ------- | ----------- |
+| `/nuzlocke deathscreen` | (Testing) Trigger the Pokéball death screen. Player-accessible. |
+| `/nuzlocke sacrifice` | (Testing) Trigger the sacrifice-selection screen. Player-accessible. |
+| `/nuzlocke reload` | Reload the Nuzlocke config from disk. **OP 2.** |
+
+Nuzlocke *mechanics* (player damage, release, sacrifice-on-flee, duplicate handling, etc.) are toggled in the **Mod Menu config screen**, not via command.
+
+### `/safezone` — OP 2
+
+| Command | Description |
+| ------- | ----------- |
+| `/safezone add <name> <radius> <hostileOnly> <cylindrical>` | Create a safe zone centered on your current position. `radius` is `1`–`500`; `hostileOnly` and `cylindrical` are booleans. |
+| `/safezone remove <name>` | Delete a safe zone. |
+| `/safezone list` | List all defined safe zones. |
+
+### `/shrine-abort`
+
+| Command | Description |
+| ------- | ----------- |
+| `/shrine-abort` | Abort your own active shrine challenge. No permission required (player-facing). |
+
+---
+
+## Developer Scripts
+
+Out-of-game tooling lives in `scripts/`. The Python scripts target Python 3; the Nix dev shell (`nix develop`) provides a suitable interpreter. Run them from the repository root.
+
+### `generate_npc_function`
+
+Generates the `update_npc_presets.mcfunction` that re-applies Easy NPC presets to already-placed in-world NPCs by UUID. Reads `npc_presets.json` and writes a function an admin runs with `/function cobblemon_initiative:update_npc_presets`.
+
+```bash
+scripts/generate_npc_function                       # read ./npc_presets.json, write the default function
+scripts/generate_npc_function path/to/map.json      # use a specific mapping file
+scripts/generate_npc_function --map FILE --out FILE  # explicit input/output paths
+scripts/generate_npc_function --dry-run             # print the function without writing
+```
+
+Options: `--map/-m FILE`, `--out/-o FILE`, `--world/-w DIR`, `--namespace NS`, `--entity-type TYPE`, `--dry-run`. Preset values resolve to Easy NPC resource locations (e.g. `cyber_leader` → `cobblemon_initiative:humanoid/cyber_leader`; fully-qualified IDs are used as-is).
+
+### `npc_preset_builder`
+
+Interactive composer that splices `presets/snippets/` fragments into a template (or an in-world NPC export), prompts for any `%%PLACEHOLDER%%` values, writes the preset, regenerates the index, and optionally maps the preset to an in-world NPC UUID. See `presets/README.md` for the full snippet/recipe catalog.
+
+```bash
+scripts/npc_preset_builder                           # fully interactive — pick a recipe and answer prompts
+scripts/npc_preset_builder --list                    # list available templates and snippets
+scripts/npc_preset_builder --list-recipes            # list pre-bundled archetype recipes
+scripts/npc_preset_builder --recipe shopkeeper --name gaviota_clerk
+scripts/npc_preset_builder --recipe gym_leader --name takehara_leader_npc \
+    --set TRAINER_ID=takehara_leader --set BADGE_TIER=1 --defaults
+scripts/npc_preset_builder \
+    --target _battle_trainer_base \
+    --snippets battle/battle_basic,ambient/ambient_stationary_look \
+    --name takehara_bug_catcher \
+    --set TRAINER_ID=takehara_trainer_1 --set PRIZE=200 --defaults
+```
+
+Options: `--recipe/-r NAME`, `--target/-t PRESET`, `--snippets/-s LIST`, `--name/-n NAME`, `--display-name TEXT`, `--description TEXT`, `--set KEY=VALUE` (repeatable), `--defaults` (accept placeholder defaults non-interactively), `--out/-o FILE`, `--map QUERY` (map to a UUID from the dev NPC CSV), `--no-index` (skip index regen), `--dry-run`, `--list`, `--list-recipes`.
+
+Placeholder forms: `%%KEY%%` (free text), `%%KEY=default%%` (free text w/ default), `%%KEY:opt1|opt2%%` (choice menu), `%%KEY:opt1|opt2=opt1%%` (choice w/ default). The same `KEY` is asked once and substituted everywhere.
+
+### `update_preset_index`
+
+Regenerates `default_preset.index` for the `cobblemon_initiative` Easy NPC namespace by scanning all `*.npc.snbt` files. Run it after adding or removing any preset file.
+
+```bash
+scripts/update_preset_index
+```
+
+### `snbt_merge.py`
+
+Splices a keyed section from one SNBT file into another — used for surgical edits to Easy NPC presets and world SNBT (e.g. replacing a preset's `DialogData` with a snippet).
+
+```bash
+# Replace data.DialogData in a full preset with a fragment snippet
+scripts/snbt_merge.py dialog_snippet.snbt data.DialogData full_preset.snbt
+
+# Deep-merge a source's ActionData into the target's ActionData
+scripts/snbt_merge.py snippet.snbt data.ActionData preset.snbt --mode merge
+
+# Print to stdout instead of overwriting in place
+scripts/snbt_merge.py snippet.snbt data.DialogData preset.snbt -o -
+```
+
+Positional args: `SOURCE KEY TARGET`. Options: `-o/--out FILE` (default: overwrite `TARGET`; `-` for stdout), `-m/--mode replace|merge` (default `replace`), `--src-key PATH` (key path inside `SOURCE`; `.` = whole file), `--indent N` (default 4), `--compact` (single-line output).
 
 ---
 

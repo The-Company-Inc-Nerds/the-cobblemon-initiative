@@ -1,0 +1,899 @@
+#!/usr/bin/env python3
+"""
+npc_preset_builder — interactively compose Easy NPC presets from templates
+and partial snippets, prompting for any %%PLACEHOLDER%% values.
+
+Typical use (fully interactive):
+    scripts/npc_preset_builder
+    # then choose an archetype recipe (or "manual") and answer the prompts
+
+Recipe use (one archetype = base + the right snippets, pre-bundled):
+    scripts/npc_preset_builder --list-recipes
+    scripts/npc_preset_builder --recipe shopkeeper --name gaviota_clerk
+    scripts/npc_preset_builder --recipe gym_leader --name takehara_leader_npc \
+        --set TRAINER_ID=takehara_leader --set BADGE_TIER=1 --defaults
+
+Batch use (explicit base + snippets, no recipe):
+    scripts/npc_preset_builder \
+        --target _battle_trainer_base \
+        --snippets battle/battle_basic,ambient/ambient_stationary_look \
+        --name takehara_bug_catcher \
+        --set TRAINER_ID=takehara_trainer_1 --set PRIZE=200 \
+        --defaults
+
+Workflow:
+  1. Pick a TARGET — a full preset template (humanoid/_*.npc.snbt) or an
+     in-world NPC export you pulled with `/easy_npc preset export ...`.
+  2. Pick one or more SNIPPETS from presets/snippets/. Each snippet is an
+     SNBT fragment whose top-level keys (DialogData, ActionData,
+     ObjectiveData, TradingData, EntityAttribute, ...) are spliced into
+     `data.<Key>` of the target. A `PresetMetadata` key, if present, is
+     deep-merged into the preset's metadata instead.
+  3. Every %%PLACEHOLDER%% in the composed preset is prompted for:
+        %%KEY%%                      free text
+        %%KEY=default%%              free text with default
+        %%KEY:opt1|opt2|opt3%%       numbered choice menu
+        %%KEY:opt1|opt2=opt1%%       choice menu with default
+     The same KEY is asked once and substituted everywhere.
+     (Option lists and defaults may not contain `%` or `=`.)
+  4. The result is validated (re-parsed) and written to
+     easy_npc/default_preset/humanoid/<name>.npc.snbt,
+     default_preset.index is regenerated, and you can optionally map the
+     preset to an in-world NPC UUID (searched from the dev NPC CSV) in
+     npc_presets.json — then regenerate the apply function with
+     scripts/generate_npc_function.
+
+Run with --list to see all available templates and snippets.
+"""
+
+from __future__ import annotations
+
+import argparse
+import csv
+import json
+import re
+import sys
+from collections import OrderedDict
+from pathlib import Path
+
+SCRIPT_DIR = Path(__file__).resolve().parent
+PROJECT_ROOT = SCRIPT_DIR.parent
+
+sys.path.insert(0, str(SCRIPT_DIR))
+import snbt_merge as sm  # noqa: E402  (shared SNBT parser/serializer)
+
+PRESET_ROOT = (PROJECT_ROOT
+               / "src/main/resources/data/cobblemon_initiative/easy_npc/default_preset")
+HUMANOID_DIR = PRESET_ROOT / "humanoid"
+INDEX_FILE = PRESET_ROOT / "default_preset.index"
+SNIPPET_DIR = PROJECT_ROOT / "presets/snippets"
+NPC_PRESETS_JSON = PROJECT_ROOT / "npc_presets.json"
+NAMESPACE = "cobblemon_initiative"
+
+# Inner syntax: KEY[:opt1|opt2|...][=default]   (no '%' inside)
+PLACEHOLDER_RE = re.compile(r"%%([A-Z][A-Z0-9_]*(?::[^%]*?)?(?:=[^%]*?)?)%%")
+KEY_RE = re.compile(r"^([A-Z][A-Z0-9_]*)")
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Archetype recipes — named (target + snippets) bundles for one-pick composition
+#
+# A recipe is just a shortcut: it pre-selects a base template and the snippets
+# that make a given kind of NPC, so you answer placeholder prompts instead of
+# hand-picking parts. `--snippets`/`--target` still override a recipe's choices,
+# and the fully manual flow is always available.
+#
+# Rule of thumb honoured here: a recipe bundles AT MOST ONE dialog-bearing
+# snippet (battle/quest/loot/service-dialog/dialog), because two snippets that
+# both define DialogData would deep-merge into a tangle. Movement (ObjectiveData),
+# equipment, trading offers and ambient ActionData are orthogonal and stack
+# freely on top.
+# ─────────────────────────────────────────────────────────────────────────────
+
+RECIPES: "OrderedDict[str, dict]" = OrderedDict()
+
+
+def _recipe(name, title, group, snippets, description, target="_civilian_base"):
+    RECIPES[name] = {
+        "name": name, "title": title, "group": group, "target": target,
+        "snippets": snippets, "description": description,
+    }
+
+
+# — Townsfolk & ambient —
+_recipe("civilian", "Civilian", "Townsfolk",
+        ["dialog/dialog_flavor", "ambient/ambient_wander"],
+        "Wandering townsperson with rotating idle flavor lines.")
+_recipe("rumor_monger", "Rumor-monger", "Townsfolk",
+        ["dialog/dialog_rumor_mill", "ambient/ambient_wander"],
+        "Townsperson who spreads plot/economy rumors while strolling.")
+_recipe("lore_keeper", "Lore-keeper", "Townsfolk",
+        ["dialog/dialog_lore_pages", "ambient/ambient_stationary_look"],
+        "Stationary NPC with a multi-page lore conversation.")
+_recipe("statue", "Protected statue", "Townsfolk",
+        ["attributes/attributes_protected"],
+        "Makes a raw builder NPC invulnerable/non-pushable; keeps its dialog.")
+_recipe("first_meeting", "First-meeting character", "Townsfolk",
+        ["dialog/dialog_first_meeting", "ambient/ambient_stationary_look"],
+        "One-time approach-and-talk (e.g. Mom): register with `/npcsight ... "
+        "mode approach_once` + `meettag <MEET_TAG>`. Walks up the first time it "
+        "sees the player, talks, then switches to post-meeting dialog forever.")
+
+# — Trainers (RCT battles via tbcs) —
+_recipe("trainer_basic", "Trainer (repeatable)", "Trainers",
+        ["battle/battle_basic", "ambient/ambient_stationary_look"],
+        "Rebattleable trainer: prize + defeated_<id> tag on win.")
+_recipe("trainer_one_time", "Trainer (one-time)", "Trainers",
+        ["battle/battle_one_time", "ambient/ambient_stationary_look"],
+        "Battles once, then refuses rematches.")
+_recipe("trainer_paid_decline", "Trainer (pay to pass)", "Trainers",
+        ["battle/battle_paid_decline"],
+        "Fight, or pay a CobbleDollar fee to walk past.")
+_recipe("trainer_wager", "Trainer (wager)", "Trainers",
+        ["battle/battle_wager"],
+        "Stake CobbleDollars; winner takes the whole stake.")
+_recipe("trainer_rematch", "Sparring partner", "Trainers",
+        ["battle/battle_rematch", "ambient/ambient_stationary_look"],
+        "Unlimited rematches, but only after you have beaten them once.")
+_recipe("type_specialist", "Type specialist", "Trainers",
+        ["battle/battle_type_tip"],
+        "Trainer who offers a type-matchup tip before battling.")
+_recipe("gym_leader", "Gym leader", "Trainers",
+        ["battle/battle_gym_leader", "ambient/ambient_stationary_look"],
+        "One-time league match paying badge-tier loot via badge_reward_combo.")
+_recipe("gym_guide", "Gym guide", "Trainers",
+        ["service/gym_guide"],
+        "Explains the local gym type and level cap.")
+_recipe("royal_league", "Royal League member", "Trainers",
+        ["battle/battle_elite"],
+        "Elite Four / Champion gated behind all ten gym-leader defeats.")
+_recipe("trainer_spotter", "Trainer (spots & pursues)", "Trainers",
+        ["battle/battle_spotter", "dialog/dialog_flavor"],
+        "Classic 'spotted!' trainer: register with `/npcsight ... mode pursue` "
+        "(+ `stoptag defeated_<TRAINER_ID>`). Walks up when it sees the player "
+        "and starts the battle on contact; stands down once defeated.")
+
+# — Villains (The Company, Inc.) —
+_recipe("villain_grunt", "Company grunt", "Villains",
+        ["battle/battle_villain_grunt", "ambient/ambient_stationary_look"],
+        "Fight the Company grunt — no buy-out; losing also costs you. Despawns on defeat.")
+_recipe("villain_management", "Company management", "Villains",
+        ["battle/battle_villain_management"],
+        "One-time mid-boss; sets a story flag and half-recognizes you.")
+_recipe("villain_boss", "Company boss (gated)", "Villains",
+        ["battle/battle_gauntlet_boss"],
+        "Story boss gated behind a prerequisite tag; sets a clear flag.")
+_recipe("villain_forced", "Company blocker (unavoidable)", "Villains",
+        ["battle/battle_villain_forced"],
+        "Route blocker with no escape: register with `/npcsight ... mode pursue`. "
+        "Pursues on sight, shouts a threat as it closes, and forces the battle on "
+        "contact (no dialog, no decline); despawns when defeated.")
+_recipe("town_crier", "Company crier", "Villains",
+        ["ambient/ambient_crier", "dialog/dialog_company_propaganda"],
+        "Shouts propaganda when you approach; preaches it on interaction.")
+_recipe("threatener", "Company informant", "Villains",
+        ["dialog/dialog_threat", "ambient/ambient_stationary_look"],
+        "A higher-up who recognizes the protagonist and threatens them.")
+
+# — Melee duelists (PVP-style brawls) —
+_recipe("melee_enforcer", "Melee enforcer", "Duelists",
+        ["duel/duel_melee", "duel/duel_taunt", "equipment/equipment_weapon"],
+        "Hostile NPC that draws a weapon and fights the player in melee.")
+_recipe("armored_brute", "Armored brute", "Duelists",
+        ["duel/duel_melee", "duel/duel_taunt",
+         "equipment/equipment_weapon", "equipment/equipment_armor"],
+        "Tankier melee enforcer in full armor.")
+
+# — Merchants (vanilla-merchant trading) —
+_recipe("shopkeeper", "Poke Mart clerk", "Merchants",
+        ["service/shop_trade_dialog", "trade/trade_pokemart",
+         "ambient/ambient_stationary_look"],
+        "Greets, then opens a balls/potions trade screen.")
+_recipe("apothecary", "Apothecary", "Merchants",
+        ["service/shop_trade_dialog", "trade/trade_apothecary"],
+        "Sells healing items for currency.")
+_recipe("berry_vendor", "Berry vendor", "Merchants",
+        ["service/shop_trade_dialog", "trade/trade_berry_stand"],
+        "Sells berries and apricorns.")
+_recipe("black_market", "Black-market dealer", "Merchants",
+        ["service/shop_trade_dialog", "trade/trade_black_market"],
+        "Sells rare contraband at a premium.")
+_recipe("grain_buyer", "Company grain buyer", "Merchants",
+        ["service/shop_trade_dialog", "trade/trade_buyer"],
+        "Buys the player's wheat/produce for currency.")
+
+# — Services (Cobblemon) —
+_recipe("healer", "Healer", "Services",
+        ["service/healer", "ambient/ambient_stationary_look"],
+        "Heals the player's party for free.")
+_recipe("professor", "Professor (starter)", "Services",
+        ["service/starter_selection", "ambient/ambient_stationary_look"],
+        "Opens the Cobblemon starter-selection screen.")
+_recipe("pc_keeper", "PC terminal keeper", "Services",
+        ["service/pc_access", "ambient/ambient_stationary_look"],
+        "Opens the player's Cobblemon PC.")
+_recipe("shop_cobbledollars", "CobbleDollars shop", "Services",
+        ["service/shop_cobbledollars"],
+        "Opens the CobbleDollars mod shop via command.")
+
+# — Gifts & side-quests —
+_recipe("daily_gift", "Daily gift NPC", "Quests & gifts",
+        ["loot/loot_daily", "ambient/ambient_stationary_look"],
+        "Hands out a loot table once per Minecraft day.")
+_recipe("gift_once", "One-time gift NPC", "Quests & gifts",
+        ["loot/loot_one_time"],
+        "Hands out a loot table exactly once, ever.")
+_recipe("gift_item_once", "One-time item gift", "Quests & gifts",
+        ["loot/loot_one_time_item"],
+        "Hands out a specific item stack exactly once.")
+_recipe("quest_fetch", "Fetch-quest giver", "Quests & gifts",
+        ["quest/quest_fetch"],
+        "Bring N of an item for a reward table.")
+_recipe("quest_defeat", "Defeat-quest giver", "Quests & gifts",
+        ["quest/quest_defeat"],
+        "Beat a target trainer for a reward table.")
+_recipe("quest_bounty", "Bounty board", "Quests & gifts",
+        ["quest/quest_bounty"],
+        "Beat a target trainer for a CobbleDollar bounty.")
+_recipe("quest_delivery", "Delivery giver", "Quests & gifts",
+        ["quest/quest_delivery"],
+        "Hands the player a package to deliver to another NPC.")
+_recipe("resistance_donor", "Resistance fundraiser", "Quests & gifts",
+        ["quest/quest_donate"],
+        "Take a one-time CobbleDollar donation for a reward.")
+
+
+def find_recipe(name: str) -> dict:
+    r = RECIPES.get(name)
+    if r is not None:
+        return r
+    hits = [v for k, v in RECIPES.items() if name.lower() in k.lower()]
+    if len(hits) == 1:
+        return hits[0]
+    die(f"unknown recipe: {name!r} (try --list-recipes)")
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Small console helpers
+# ─────────────────────────────────────────────────────────────────────────────
+
+def info(msg: str) -> None:
+    print(msg, file=sys.stderr)
+
+
+def die(msg: str) -> None:
+    print(f"npc_preset_builder: error: {msg}", file=sys.stderr)
+    sys.exit(1)
+
+
+def ask(prompt: str, default: str | None = None) -> str:
+    """Prompt for free text; empty input returns the default (if any)."""
+    suffix = f" [{default}]" if default not in (None, "") else ""
+    while True:
+        try:
+            raw = input(f"{prompt}{suffix}: ").strip()
+        except EOFError:
+            die("stdin closed while a prompt was pending (use --set/--defaults for batch use)")
+        if raw:
+            return raw
+        if default is not None:
+            return default
+        info("  a value is required.")
+
+
+def ask_yes_no(prompt: str, default: bool = False) -> bool:
+    suffix = "[Y/n]" if default else "[y/N]"
+    try:
+        raw = input(f"{prompt} {suffix}: ").strip().lower()
+    except EOFError:
+        return default
+    if not raw:
+        return default
+    return raw in ("y", "yes")
+
+
+def pick_one(title: str, items: list[str], labels: list[str] | None = None) -> int:
+    """Numbered single-choice menu; returns the selected index."""
+    labels = labels or items
+    info(f"\n{title}")
+    for i, label in enumerate(labels, 1):
+        info(f"  {i:>2}) {label}")
+    while True:
+        raw = ask("Choose")
+        if raw.isdigit() and 1 <= int(raw) <= len(items):
+            return int(raw) - 1
+        # allow choosing by (unique) name/label fragment
+        hits = [i for i in range(len(items))
+                if raw.lower() in items[i].lower() or raw.lower() in labels[i].lower()]
+        if len(hits) == 1:
+            return hits[0]
+        info(f"  enter a number 1-{len(items)} (or a unique name fragment).")
+
+
+def pick_many(title: str, items: list[str]) -> list[int]:
+    """Numbered multi-choice menu (comma/space separated); returns indices.
+    Items shaped 'category/name' are grouped under category headers."""
+    info(f"\n{title}")
+    last_cat = None
+    for i, label in enumerate(items, 1):
+        cat, _, name = label.partition("/")
+        if not name:
+            cat, name = "", label
+        if cat != last_cat:
+            info(f"  — {cat or 'other'} —")
+            last_cat = cat
+        info(f"  {i:>2}) {name}")
+    while True:
+        raw = ask("Choose one or more (e.g. 1,3,5)")
+        picks: list[int] = []
+        ok = True
+        for part in re.split(r"[\s,]+", raw.strip()):
+            if not part:
+                continue
+            if part.isdigit() and 1 <= int(part) <= len(items):
+                picks.append(int(part) - 1)
+                continue
+            hits = [i for i, it in enumerate(items) if part.lower() in it.lower()]
+            if len(hits) == 1:
+                picks.append(hits[0])
+                continue
+            ok = False
+            info(f"  {part!r} is not a valid number or unique name fragment.")
+            break
+        if ok and picks:
+            return list(dict.fromkeys(picks))   # dedupe, keep order
+
+
+def pick_recipe() -> dict:
+    """Grouped numbered picker over the recipe registry; returns a recipe dict."""
+    names = list(RECIPES.keys())
+    info("\nArchetype recipes:")
+    last_group = None
+    for i, name in enumerate(names, 1):
+        r = RECIPES[name]
+        if r["group"] != last_group:
+            info(f"  — {r['group']} —")
+            last_group = r["group"]
+        info(f"  {i:>2}) {r['title']:<22} {r['description']}")
+    while True:
+        raw = ask("Choose a recipe (number or name)")
+        if raw.isdigit() and 1 <= int(raw) <= len(names):
+            return RECIPES[names[int(raw) - 1]]
+        hits = [nm for nm in names
+                if raw.lower() in nm.lower() or raw.lower() in RECIPES[nm]["title"].lower()]
+        if len(hits) == 1:
+            return RECIPES[hits[0]]
+        info(f"  enter a number 1-{len(names)} or a unique recipe name.")
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Placeholder parsing / prompting / substitution
+# ─────────────────────────────────────────────────────────────────────────────
+
+class Placeholder:
+    __slots__ = ("key", "options", "default", "contexts")
+
+    def __init__(self, key: str):
+        self.key = key
+        self.options: list[str] | None = None
+        self.default: str | None = None
+        self.contexts: list[str] = []
+
+
+def parse_placeholder_spec(inner: str) -> tuple[str, list[str] | None, str | None]:
+    """Split 'KEY[:opt|opt][=default]' into parts."""
+    m = KEY_RE.match(inner)
+    if not m:
+        return inner, None, None
+    key = m.group(1)
+    rest = inner[m.end():]
+    options: list[str] | None = None
+    default: str | None = None
+    if rest.startswith(":"):
+        body = rest[1:]
+        if "=" in body:
+            body, default = body.rsplit("=", 1)
+        options = [o.strip() for o in body.split("|") if o.strip()]
+    elif rest.startswith("="):
+        default = rest[1:]
+    return key, options or None, default
+
+
+def collect_placeholders(text: str) -> "OrderedDict[str, Placeholder]":
+    """Find every placeholder, in order of first appearance, with context lines."""
+    found: OrderedDict[str, Placeholder] = OrderedDict()
+    for line in text.splitlines():
+        for m in PLACEHOLDER_RE.finditer(line):
+            key, options, default = parse_placeholder_spec(m.group(1))
+            ph = found.get(key)
+            if ph is None:
+                ph = found[key] = Placeholder(key)
+            # Last spec with options/default wins (specs should agree anyway)
+            if options:
+                ph.options = options
+            if default is not None:
+                ph.default = default
+            ctx = line.strip()
+            if len(ctx) > 110:
+                ctx = ctx[:107] + "..."
+            if ctx not in ph.contexts and len(ph.contexts) < 3:
+                ph.contexts.append(ctx)
+    return found
+
+
+def prompt_placeholder(ph: Placeholder) -> str:
+    info(f"\n── {ph.key} ──")
+    for ctx in ph.contexts:
+        info(f"   ctx: {ctx}")
+    if ph.options:
+        labels = [o + ("   (default)" if o == ph.default else "") for o in ph.options]
+        info("   options:")
+        for i, label in enumerate(labels, 1):
+            info(f"     {i}) {label}")
+        while True:
+            raw = ask(f"   {ph.key}", ph.default)
+            if raw.isdigit() and 1 <= int(raw) <= len(ph.options):
+                return ph.options[int(raw) - 1]
+            if raw in ph.options:
+                return raw
+            hits = [o for o in ph.options if raw.lower() in o.lower()]
+            if len(hits) == 1:
+                return hits[0]
+            # free text is allowed as an escape hatch, but confirm it
+            if ask_yes_no(f"   use custom value {raw!r}?", default=False):
+                return raw
+    return ask(f"   {ph.key}", ph.default)
+
+
+def resolve_placeholders(
+    text: str,
+    presets: dict[str, str],
+    use_defaults: bool,
+    interactive: bool,
+) -> str:
+    """Prompt for (or look up) every placeholder and substitute all of them."""
+    placeholders = collect_placeholders(text)
+    if not placeholders:
+        return text, {}
+
+    values: dict[str, str] = {}
+    unresolved: list[str] = []
+    for key, ph in placeholders.items():
+        if key in presets:
+            values[key] = presets[key]
+        elif use_defaults and ph.default is not None:
+            values[key] = ph.default
+        elif interactive:
+            values[key] = prompt_placeholder(ph)
+        else:
+            unresolved.append(key)
+
+    if unresolved:
+        die("unresolved placeholders in batch mode: " + ", ".join(unresolved)
+            + "  (provide --set KEY=VALUE or --defaults)")
+
+    def repl(m: re.Match) -> str:
+        key, _, _ = parse_placeholder_spec(m.group(1))
+        return values.get(key, m.group(0))
+
+    out = PLACEHOLDER_RE.sub(repl, text)
+
+    leftovers = collect_placeholders(out)
+    if leftovers:
+        die("placeholders survived substitution: " + ", ".join(leftovers))
+    return out, values
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Catalog discovery
+# ─────────────────────────────────────────────────────────────────────────────
+
+def list_templates() -> list[Path]:
+    if not HUMANOID_DIR.is_dir():
+        return []
+    return sorted(HUMANOID_DIR.glob("_*.npc.snbt"))
+
+
+def list_snippets() -> list[Path]:
+    if not SNIPPET_DIR.is_dir():
+        return []
+    return sorted(SNIPPET_DIR.rglob("*.snbt"))
+
+
+def snippet_label(path: Path) -> str:
+    return str(path.relative_to(SNIPPET_DIR)).removesuffix(".snbt")
+
+
+def resolve_snippet_arg(arg: str) -> Path:
+    """Accept 'battle/battle_basic', 'battle_basic', or a real path."""
+    p = Path(arg).expanduser()
+    if p.is_file():
+        return p
+    cand = SNIPPET_DIR / arg
+    for c in (cand, cand.with_suffix(".snbt")):
+        if c.is_file():
+            return c
+    hits = [s for s in list_snippets() if s.stem == arg or snippet_label(s) == arg]
+    if len(hits) == 1:
+        return hits[0]
+    die(f"snippet not found: {arg!r} (try --list)")
+
+
+def resolve_target_arg(arg: str) -> Path:
+    p = Path(arg).expanduser()
+    if p.is_file():
+        return p
+    cand = HUMANOID_DIR / arg
+    for c in (cand, cand.with_suffix(".npc.snbt"),
+              HUMANOID_DIR / f"{arg}.npc.snbt", HUMANOID_DIR / f"_{arg}.npc.snbt"):
+        if c.is_file():
+            return c
+    die(f"target preset not found: {arg!r} (try --list)")
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Composition
+# ─────────────────────────────────────────────────────────────────────────────
+
+def apply_snippet(tree, snippet_path: Path, touched: set[str]):
+    """Splice a snippet's top-level keys into the preset tree."""
+    src_tree, is_fragment = sm.load_source(str(snippet_path))
+    if not isinstance(src_tree, OrderedDict):
+        die(f"snippet {snippet_path} is not an SNBT compound/fragment")
+
+    for key, value in src_tree.items():
+        if key == "PresetMetadata":
+            existing = tree.get("PresetMetadata", OrderedDict())
+            tree = sm.set_path(tree, ["PresetMetadata"],
+                               sm.merge_nodes(existing, value))
+            continue
+        path = ["data", key]
+        if key in touched:
+            info(f"  note: {key} set by an earlier snippet — deep-merging {snippet_path.name}")
+            try:
+                existing = sm.get_path(tree, path)
+            except KeyError:
+                existing = OrderedDict()
+            value = sm.merge_nodes(existing, value)
+        tree = sm.set_path(tree, path, value)
+        touched.add(key)
+    return tree
+
+
+def set_metadata(tree, file_stem: str, display_name: str | None,
+                 description: str | None):
+    meta = tree.get("PresetMetadata", OrderedDict())
+    if not isinstance(meta, OrderedDict):
+        meta = OrderedDict()
+    if display_name:
+        meta["name"] = f'"{display_name}"'
+    elif "name" not in meta:
+        meta["name"] = f'"{file_stem.replace("_", " ").title()}"'
+    if description:
+        meta["description"] = f'"{description}"'
+    return sm.set_path(tree, ["PresetMetadata"], meta)
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Index + UUID mapping
+# ─────────────────────────────────────────────────────────────────────────────
+
+def regenerate_index() -> int:
+    presets = sorted(
+        str(p.relative_to(PRESET_ROOT))
+        for p in PRESET_ROOT.rglob("*.npc.snbt")
+    )
+    INDEX_FILE.write_text("\n".join(presets) + ("\n" if presets else ""))
+    return len(presets)
+
+
+def find_npc_csv() -> Path | None:
+    dev = PROJECT_ROOT / "dev"
+    if not dev.is_dir():
+        return None
+    hits = sorted(dev.glob("*npc_list*.csv*"))
+    return hits[0] if hits else None
+
+
+def load_npc_rows(csv_path: Path) -> list[dict]:
+    with csv_path.open(newline="") as f:
+        return [row for row in csv.DictReader(f) if row.get("UUID")]
+
+
+def map_preset_to_npc(preset_name: str, search: str | None,
+                      interactive: bool) -> None:
+    csv_path = find_npc_csv()
+    if csv_path is None:
+        info("  (no dev NPC CSV found — skipping UUID mapping)")
+        return
+    rows = load_npc_rows(csv_path)
+
+    while True:
+        query = search or ask("  search NPC by name/town")
+        hits = [r for r in rows
+                if query.lower() in r.get("Name", "").lower()
+                or query.lower() in r.get("Town", "").lower()]
+        if not hits:
+            info(f"  no NPC matches {query!r}")
+            if not interactive:
+                return
+            search = None
+            continue
+        if len(hits) > 25:
+            info(f"  {len(hits)} matches — be more specific")
+            if not interactive:
+                return
+            search = None
+            continue
+        labels = [f'{r["Name"]} — {r["Town"]} ({r["Type"]}) @ {r["X"]},{r["Y"]},{r["Z"]}'
+                  for r in hits]
+        idx = pick_one("Matching NPCs:", [r["UUID"] for r in hits], labels)
+        chosen = hits[idx]
+        break
+
+    mappings: dict = {}
+    if NPC_PRESETS_JSON.is_file():
+        try:
+            data = json.loads(NPC_PRESETS_JSON.read_text())
+            mappings = data.get("mappings", {})
+        except json.JSONDecodeError as e:
+            die(f"cannot parse {NPC_PRESETS_JSON}: {e}")
+
+    uuid = chosen["UUID"].strip()
+    if uuid in mappings:
+        old = mappings[uuid]
+        old_label = old.get("preset") if isinstance(old, dict) else old
+        if not ask_yes_no(f"  {chosen['Name']} already mapped to {old_label!r} — overwrite?",
+                          default=False):
+            return
+
+    mappings[uuid] = {
+        "preset": preset_name,
+        "label": f'{chosen["Name"]} — {chosen["Town"]}',
+    }
+    NPC_PRESETS_JSON.write_text(json.dumps({"mappings": mappings}, indent=2) + "\n")
+    info(f"  mapped {chosen['Name']} ({uuid}) → {preset_name} in {NPC_PRESETS_JSON.name}")
+    info("  run scripts/generate_npc_function to refresh update_npc_presets.mcfunction")
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Main flow
+# ─────────────────────────────────────────────────────────────────────────────
+
+def cmd_list() -> None:
+    templates = list_templates()
+    print("Templates (full presets — start here for newly spawned NPCs):")
+    if templates:
+        for t in templates:
+            print(f"  {t.stem.removesuffix('.npc')}")
+    else:
+        print("  (none)")
+    print("\nSnippets (splice into a template or an in-world NPC export):")
+    snippets = list_snippets()
+    last_cat = None
+    for s in snippets:
+        cat = s.parent.relative_to(SNIPPET_DIR)
+        if cat != last_cat:
+            print(f"  [{cat}]")
+            last_cat = cat
+        text = s.read_text()
+        keys = ", ".join(collect_placeholders(text)) or "no placeholders"
+        print(f"    {s.stem}  ({keys})")
+    if not snippets:
+        print("  (none)")
+
+
+def cmd_list_recipes() -> None:
+    print("Archetype recipes — pass one with --recipe NAME, "
+          "or pick interactively:\n")
+    last_group = None
+    for name, r in RECIPES.items():
+        if r["group"] != last_group:
+            print(f"[{r['group']}]")
+            last_group = r["group"]
+        print(f"  {name:<20} {r['title']} — {r['description']}")
+        print(f"  {'':<20} base {r['target']}; snippets: {', '.join(r['snippets'])}")
+
+
+def main() -> None:
+    ap = argparse.ArgumentParser(
+        prog="npc_preset_builder",
+        description="Compose Easy NPC presets from templates + snippets, "
+                    "prompting for %%PLACEHOLDER%% values.",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog=__doc__.split("Workflow:")[1] if __doc__ else "")
+    ap.add_argument("--recipe", "-r", metavar="NAME", default=None,
+                    help="archetype recipe to seed target+snippets "
+                         "(e.g. shopkeeper, gym_leader, melee_enforcer); "
+                         "see --list-recipes. --target/--snippets override it")
+    ap.add_argument("--target", "-t", metavar="PRESET",
+                    help="template name or path to a full .npc.snbt "
+                         "(e.g. an in-world export); interactive picker if omitted")
+    ap.add_argument("--snippets", "-s", metavar="LIST", default=None,
+                    help="comma-separated snippet names/paths "
+                         "(e.g. battle/battle_basic,service/healer)")
+    ap.add_argument("--name", "-n", metavar="NAME",
+                    help="output preset file name (snake_case, no extension)")
+    ap.add_argument("--display-name", metavar="TEXT",
+                    help="PresetMetadata.name (default: derived from --name)")
+    ap.add_argument("--description", metavar="TEXT",
+                    help="PresetMetadata.description")
+    ap.add_argument("--set", action="append", default=[], metavar="KEY=VALUE",
+                    dest="sets", help="pre-answer a placeholder (repeatable)")
+    ap.add_argument("--defaults", action="store_true",
+                    help="accept declared defaults without prompting")
+    ap.add_argument("--out", "-o", metavar="FILE",
+                    help="explicit output path (default: humanoid/<name>.npc.snbt)")
+    ap.add_argument("--map", metavar="QUERY", default=None,
+                    help="map the preset to an in-world NPC UUID matching QUERY "
+                         "in npc_presets.json")
+    ap.add_argument("--no-index", action="store_true",
+                    help="skip regenerating default_preset.index")
+    ap.add_argument("--dry-run", action="store_true",
+                    help="print the composed preset to stdout; write nothing")
+    ap.add_argument("--list", action="store_true",
+                    help="list available templates and snippets, then exit")
+    ap.add_argument("--list-recipes", action="store_true",
+                    help="list available archetype recipes, then exit")
+    args = ap.parse_args()
+
+    if args.list:
+        cmd_list()
+        return
+
+    if args.list_recipes:
+        cmd_list_recipes()
+        return
+
+    interactive = sys.stdin.isatty()
+
+    presets: dict[str, str] = {}
+    for kv in args.sets:
+        if "=" not in kv:
+            die(f"--set expects KEY=VALUE, got {kv!r}")
+        k, v = kv.split("=", 1)
+        presets[k.strip()] = v
+
+    # ── 0. recipe (optional shortcut for target + snippets) ────────────────────
+    recipe = None
+    if args.recipe:
+        recipe = find_recipe(args.recipe)
+    elif interactive and not args.target and args.snippets is None:
+        mode = pick_one(
+            "How do you want to build this NPC?",
+            ["recipe", "manual"],
+            ["Start from an archetype recipe (fast: pick one, then answer prompts)",
+             "Manual: choose a base template and snippets yourself"])
+        if mode == 0:
+            recipe = pick_recipe()
+    if recipe:
+        info(f"recipe: {recipe['title']}  →  base {recipe['target']}; "
+             f"snippets: {', '.join(recipe['snippets'])}")
+
+    # --target / --snippets always win over the recipe's defaults.
+    target_arg = args.target or (recipe["target"] if recipe else None)
+    snippets_arg = (args.snippets if args.snippets is not None
+                    else (",".join(recipe["snippets"]) if recipe else None))
+
+    # ── 1. target ────────────────────────────────────────────────────────────
+    if target_arg:
+        target_path = resolve_target_arg(target_arg)
+    else:
+        if not interactive:
+            die("--target (or --recipe) is required in batch mode")
+        templates = list_templates()
+        if not templates:
+            die(f"no templates found in {HUMANOID_DIR}")
+        choices = [t.stem.removesuffix(".npc") for t in templates]
+        choices.append("<path to an exported .npc.snbt>")
+        idx = pick_one("Target preset (base to build on):", choices)
+        if idx == len(templates):
+            target_path = Path(ask("  path to .npc.snbt")).expanduser()
+            if not target_path.is_file():
+                die(f"not a file: {target_path}")
+        else:
+            target_path = templates[idx]
+    info(f"target: {target_path}")
+
+    try:
+        tree = sm.parse_snbt(target_path.read_text())
+    except SyntaxError as e:
+        die(f"parse error in {target_path}: {e}")
+    if not isinstance(tree, OrderedDict):
+        die(f"{target_path} is not a compound SNBT preset")
+
+    # ── 2. snippets ──────────────────────────────────────────────────────────
+    if snippets_arg is not None:
+        snippet_paths = [resolve_snippet_arg(s.strip())
+                         for s in snippets_arg.split(",") if s.strip()]
+    elif interactive:
+        available = list_snippets()
+        if available:
+            labels = [snippet_label(s) for s in available]
+            if ask_yes_no("Splice snippets into the target?", default=True):
+                picks = pick_many("Snippets:", labels)
+                snippet_paths = [available[i] for i in picks]
+            else:
+                snippet_paths = []
+        else:
+            info(f"(no snippets found under {SNIPPET_DIR})")
+            snippet_paths = []
+    else:
+        snippet_paths = []
+
+    touched: set[str] = set()
+    for sp in snippet_paths:
+        info(f"splicing: {snippet_label(sp) if sp.is_relative_to(SNIPPET_DIR) else sp}")
+        tree = apply_snippet(tree, sp, touched)
+
+    # ── 3. output name + metadata ────────────────────────────────────────────
+    if args.name:
+        name = args.name
+    elif interactive:
+        name = ask("Output preset name (snake_case)")
+    else:
+        die("--name is required in batch mode")
+    name = name.removesuffix(".npc.snbt").removesuffix(".snbt")
+    if not re.fullmatch(r"[a-z0-9_]+", name):
+        die(f"preset name must be snake_case ([a-z0-9_]+): {name!r}")
+
+    tree = set_metadata(tree, name, args.display_name,
+                        args.description or (recipe["description"] if recipe else None))
+
+    # ── 4. placeholders ──────────────────────────────────────────────────────
+    text = sm.serialize(tree, indent_size=4)
+    text, resolved_values = resolve_placeholders(text, presets, args.defaults, interactive)
+
+    # Validate: result must still parse as SNBT
+    try:
+        sm.parse_snbt(text)
+    except SyntaxError as e:
+        die(f"composed preset is not valid SNBT after substitution: {e}\n"
+            "  (check the values you entered for unbalanced quotes/braces)")
+
+    # ── 5. summary + write ───────────────────────────────────────────────────
+    out_path = Path(args.out) if args.out else HUMANOID_DIR / f"{name}.npc.snbt"
+
+    if interactive and not args.dry_run:
+        info("\n── Summary ──")
+        if recipe:
+            info(f"   recipe:   {recipe['title']}")
+        info(f"   target:   {target_path.name}")
+        sn = ", ".join(
+            snippet_label(sp) if sp.is_relative_to(SNIPPET_DIR) else sp.name
+            for sp in snippet_paths) or "(none)"
+        info(f"   snippets: {sn}")
+        if resolved_values:
+            info("   values:")
+            for k, v in resolved_values.items():
+                vv = v if len(v) <= 60 else v[:57] + "..."
+                info(f"       {k} = {vv}")
+        info(f"   output:   {out_path}")
+        if not ask_yes_no("Write this preset?", default=True):
+            die("aborted — nothing written")
+
+    if args.dry_run:
+        print(text)
+        return
+
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_text(text + "\n")
+    info(f"\nwrote {out_path}")
+
+    if not args.no_index and out_path.is_relative_to(PRESET_ROOT):
+        count = regenerate_index()
+        info(f"regenerated {INDEX_FILE.name} ({count} presets)")
+
+    resource = f"{NAMESPACE}:humanoid/{name}"
+    info(f"in-game apply: /easy_npc preset import data <uuid> {resource}")
+
+    # ── 6. optional UUID mapping ─────────────────────────────────────────────
+    if args.map is not None:
+        map_preset_to_npc(resource, args.map, interactive)
+    elif interactive and ask_yes_no("Map this preset to an in-world NPC now?",
+                                    default=False):
+        map_preset_to_npc(resource, None, interactive)
+
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,69 @@
+DialogData: {
+    Type: "YES_NO",
+    DialogDataSet: [
+        {
+            Buttons: [
+                {
+                    Name: "Challenge the Gym",
+                    Actions: [
+                        {
+                            Type: "COMMAND",
+                            Cmd: "execute if entity @p[tag=defeated_%%TRAINER_ID%%] run say %%BEATEN_LINE=The badge is yours. Wear it where The Company can see it.%%"
+                        },
+                        {
+                            Type: "COMMAND",
+                            Cmd: "execute unless entity @p[tag=defeated_%%TRAINER_ID%%] run tbcs attach %%TRAINER_ID%% @s"
+                        },
+                        {
+                            Type: "COMMAND",
+                            ExecAsUser: 1b,
+                            Cmd: "execute unless entity @s[tag=defeated_%%TRAINER_ID%%] run tbcs battle %%BATTLE_FORMAT:GEN_9_SINGLES|GEN_9_DOUBLES=GEN_9_SINGLES%% @s vs %%TRAINER_ID%% onwin {1: ['cobbledollars add @1 %%PRIZE=2000%%', 'tag @1 add defeated_%%TRAINER_ID%%', 'execute as @1 run function cobblemon_initiative:rewards/badge_reward_combo {badges:%%BADGE_TIER:1|2|3|4|5|6|7|8|9|10=1%%}', '@2 say %%WIN_LINE=Earned, not given. Take the badge.%%'], 2: ['@2 say %%LOSE_LINE=Train harder. The cap exists for a reason.%%']}"
+                        },
+                        {
+                            Type: "CLOSE_DIALOG"
+                        }
+                    ],
+                    Label: "yes_button"
+                },
+                {
+                    Name: "Not yet",
+                    Actions: [
+                        {
+                            Type: "OPEN_NAMED_DIALOG",
+                            Cmd: "no_answer"
+                        }
+                    ],
+                    Label: "no_button"
+                }
+            ],
+            Priority: 10,
+            Texts: [
+                {
+                    Text: "%%CHALLENGE_LINE=This is an official league match. Bring your best — I will bring mine.%%"
+                }
+            ],
+            Name: "Gym Challenge",
+            Label: "question"
+        },
+        {
+            Buttons: [
+                {
+                    Name: "Leave",
+                    Actions: [
+                        {
+                            Type: "CLOSE_DIALOG"
+                        }
+                    ],
+                    Label: "leave_button"
+                }
+            ],
+            Texts: [
+                {
+                    Text: "%%DECLINE_LINE=The gym is open when you are. Preparation is respect.%%"
+                }
+            ],
+            Name: "Declined",
+            Label: "no_answer"
+        }
+    ]
+}

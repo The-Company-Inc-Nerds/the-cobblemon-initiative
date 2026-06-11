@@ -43,12 +43,9 @@ dependencies {
         exclude(group = "net.fabricmc.fabric-api")
     }
     modApi("com.terraformersmc:modmenu:11.0.3")
-    // Map Frontiers API — optional at runtime; compile-only so it is not bundled.
-    // Not on any public Maven; resolved via mavenLocal(). One-time dev setup:
-    //   git clone https://github.com/alejandrocoria/MapFrontiers-API.git /tmp/mapfrontiers-api
-    //   cd /tmp/mapfrontiers-api && ./gradlew publishToMavenLocal
-    // CI replicates this in the workflow before running gradle build.
-    modCompileOnly("games.alejandrocoria:mapfrontiers-api:0.1.0-SNAPSHOT")
+    // Map Frontiers integration needs no compile dependency: its plugin API does not exist
+    // on the 1.21.1 line (Cobblemon is locked to 1.21.1), so MapFrontiersIntegration reaches
+    // the mod's internal FrontiersManager reflectively. See that class for the rationale.
 }
 
 tasks {

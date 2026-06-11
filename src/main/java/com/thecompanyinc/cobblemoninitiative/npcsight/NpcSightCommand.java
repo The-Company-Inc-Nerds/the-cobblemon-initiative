@@ -100,6 +100,63 @@ public class NpcSightCommand {
             )
         )
 
+        // /npcsight mode <uuid> <dialog|pursue|approach_once>
+        .then(
+          Commands.literal("mode")
+            .then(
+              Commands.argument("uuid", StringArgumentType.word())
+                .suggests(NpcSightCommand::suggestRegistered)
+                .then(
+                  Commands.argument("mode", StringArgumentType.word())
+                    .suggests(NpcSightCommand::suggestModes)
+                    .executes(ctx -> cmdSetMode(ctx,
+                      StringArgumentType.getString(ctx, "uuid"),
+                      StringArgumentType.getString(ctx, "mode")))
+                )
+            )
+        )
+
+        // /npcsight meettag <uuid> <tag|clear>
+        .then(
+          Commands.literal("meettag")
+            .then(
+              Commands.argument("uuid", StringArgumentType.word())
+                .suggests(NpcSightCommand::suggestRegistered)
+                .then(
+                  Commands.argument("tag", StringArgumentType.word())
+                    .executes(ctx -> cmdSetTag(ctx,
+                      StringArgumentType.getString(ctx, "uuid"),
+                      StringArgumentType.getString(ctx, "tag"), true))
+                )
+            )
+        )
+
+        // /npcsight stoptag <uuid> <tag|clear>
+        .then(
+          Commands.literal("stoptag")
+            .then(
+              Commands.argument("uuid", StringArgumentType.word())
+                .suggests(NpcSightCommand::suggestRegistered)
+                .then(
+                  Commands.argument("tag", StringArgumentType.word())
+                    .executes(ctx -> cmdSetTag(ctx,
+                      StringArgumentType.getString(ctx, "uuid"),
+                      StringArgumentType.getString(ctx, "tag"), false))
+                )
+            )
+        )
+
+        // /npcsight reset <uuid>  (clears the APPROACH_ONCE one-shot latch)
+        .then(
+          Commands.literal("reset")
+            .then(
+              Commands.argument("uuid", StringArgumentType.word())
+                .suggests(NpcSightCommand::suggestRegistered)
+                .executes(ctx -> cmdReset(ctx,
+                  StringArgumentType.getString(ctx, "uuid")))
+            )
+        )
+
         // /npcsight list
         .then(
           Commands.literal("list")
@@ -226,6 +283,94 @@ public class NpcSightCommand {
     return 1;
   }
 
+  private static int cmdSetMode(
+    CommandContext<CommandSourceStack> ctx, String uuidStr, String modeStr
+  ) {
+    UUID uuid = parseUUID(ctx, uuidStr);
+    if (uuid == null) return 0;
+
+    NpcSightData data = storage.get(uuid);
+    if (data == null) {
+      ctx.getSource().sendFailure(
+        Component.literal("[NPC Sight] UUID not registered: " + uuidStr)
+      );
+      return 0;
+    }
+
+    String mode = modeStr.toUpperCase(java.util.Locale.ROOT);
+    if (!mode.equals(NpcSightData.MODE_DIALOG)
+      && !mode.equals(NpcSightData.MODE_PURSUE)
+      && !mode.equals(NpcSightData.MODE_APPROACH_ONCE)) {
+      ctx.getSource().sendFailure(Component.literal(
+        "[NPC Sight] Unknown mode '" + modeStr + "' (expected: dialog | pursue | approach_once)"
+      ));
+      return 0;
+    }
+
+    data.mode = mode;
+    data.pursuing = false; // re-evaluate on the next sight tick
+    storage.put(data);
+
+    ctx.getSource().sendSuccess(
+      () -> Component.literal("[NPC Sight] " + uuidStr + " mode → " + mode), true
+    );
+    return 1;
+  }
+
+  /** Sets either the meet-tag ({@code isMeet}) or the stand-down stop-tag; "clear"/"none" disables. */
+  private static int cmdSetTag(
+    CommandContext<CommandSourceStack> ctx, String uuidStr, String value, boolean isMeet
+  ) {
+    UUID uuid = parseUUID(ctx, uuidStr);
+    if (uuid == null) return 0;
+
+    NpcSightData data = storage.get(uuid);
+    if (data == null) {
+      ctx.getSource().sendFailure(
+        Component.literal("[NPC Sight] UUID not registered: " + uuidStr)
+      );
+      return 0;
+    }
+
+    boolean clearing = value.equalsIgnoreCase("clear") || value.equalsIgnoreCase("none");
+    String tag = clearing ? null : value;
+    if (isMeet) {
+      data.meetTag = tag;
+    } else {
+      data.stopTag = tag;
+    }
+    storage.put(data);
+
+    String label = isMeet ? "meetTag" : "stopTag";
+    String display = clearing ? "disabled" : value;
+    ctx.getSource().sendSuccess(
+      () -> Component.literal("[NPC Sight] " + uuidStr + " " + label + " → " + display), true
+    );
+    return 1;
+  }
+
+  private static int cmdReset(CommandContext<CommandSourceStack> ctx, String uuidStr) {
+    UUID uuid = parseUUID(ctx, uuidStr);
+    if (uuid == null) return 0;
+
+    NpcSightData data = storage.get(uuid);
+    if (data == null) {
+      ctx.getSource().sendFailure(
+        Component.literal("[NPC Sight] UUID not registered: " + uuidStr)
+      );
+      return 0;
+    }
+
+    data.fired = false;
+    data.pursuing = false;
+    storage.put(data);
+
+    ctx.getSource().sendSuccess(
+      () -> Component.literal("[NPC Sight] " + uuidStr + " one-shot reset (fired=false)"), true
+    );
+    return 1;
+  }
+
   private static int cmdList(CommandContext<CommandSourceStack> ctx) {
     if (storage.size() == 0) {
       ctx.getSource().sendSuccess(
@@ -237,6 +382,8 @@ public class NpcSightCommand {
     StringBuilder sb = new StringBuilder("[NPC Sight] Registered NPCs:\n");
     for (NpcSightData d : storage.getAll()) {
       sb.append("  ").append(d.uuid)
+        .append(" | mode=").append(d.effectiveMode())
+        .append(NpcSightData.MODE_APPROACH_ONCE.equals(d.effectiveMode()) && d.fired ? "(fired)" : "")
         .append(" | range=").append(d.sightRange < 0 ? "default" : d.sightRange)
         .append(" | dialog=").append(d.dialogName == null ? "none" : d.dialogName)
         .append(" | seeing=").append(d.canSeePlayer)
@@ -262,10 +409,14 @@ public class NpcSightCommand {
     }
 
     String info = String.format(
-      "[NPC Sight] %s\n  range=%s\n  dialog=%s\n  canSeePlayer=%b",
+      "[NPC Sight] %s\n  mode=%s\n  range=%s\n  dialog=%s\n  meetTag=%s\n  stopTag=%s\n  fired=%b\n  canSeePlayer=%b",
       data.uuid,
+      data.effectiveMode(),
       data.sightRange < 0 ? "default (" + manager.getConfig().getDefaultSightRange() + ")" : data.sightRange,
       data.dialogName == null ? "none" : data.dialogName,
+      data.meetTag == null ? "none" : data.meetTag,
+      data.stopTag == null ? "none" : data.stopTag,
+      data.fired,
       data.canSeePlayer
     );
     ctx.getSource().sendSuccess(() -> Component.literal(info), false);
@@ -312,6 +463,16 @@ public class NpcSightCommand {
     for (NpcSightData data : storage.getAll()) {
       builder.suggest(data.uuid.toString());
     }
+    return builder.buildFuture();
+  }
+
+  /** Suggests the three behaviour modes. */
+  private static CompletableFuture<Suggestions> suggestModes(
+    CommandContext<CommandSourceStack> ctx, SuggestionsBuilder builder
+  ) {
+    builder.suggest("dialog");
+    builder.suggest("pursue");
+    builder.suggest("approach_once");
     return builder.buildFuture();
   }
 

@@ -1,0 +1,34 @@
+DialogData: {
+    Type: "BASIC",
+    DialogDataSet: [
+        {
+            Priority: 10,
+            Texts: [
+                {
+                    Text: "%%INTRO_LINE_1=There you are! I have been worried sick — you walked out without a word.%%"
+                },
+                {
+                    Text: "%%INTRO_LINE_2=People in grey suits have been by the house, asking after you by name. They knew things they should not. Promise me you will be careful out there.%%"
+                }
+            ],
+            Name: "First Meeting",
+            Label: "default"
+        },
+        {
+            Priority: 20,
+            Conditions: [
+                {Type: "PLAYER_TAG", Operation: "EQUALS", Name: "%%MEET_TAG=met_mom%%"}
+            ],
+            Texts: [
+                {
+                    Text: "%%AFTER_LINE_1=Back already? Good. Eat something before you run off again.%%"
+                },
+                {
+                    Text: "%%AFTER_LINE_2=Those grey-suited ones came by once more. I told them I had never seen you. I am not sure they believed me.%%"
+                }
+            ],
+            Name: "After First Meeting",
+            Label: "after_meeting"
+        }
+    ]
+}

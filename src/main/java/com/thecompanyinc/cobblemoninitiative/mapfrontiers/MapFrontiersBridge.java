@@ -2,37 +2,38 @@ package com.thecompanyinc.cobblemoninitiative.mapfrontiers;
 
 import com.thecompanyinc.cobblemoninitiative.install.InstallZone;
 import java.util.List;
-import java.util.function.Consumer;
+import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.server.level.ServerPlayer;
 
 /**
- * Thin bridge between install-time code and the Map Frontiers integration.
+ * Public entry point for the Map Frontiers integration.
  *
- * <p>This class has <b>no Map Frontiers imports</b>, so it is safe to reference from
- * anywhere in the mod regardless of whether Map Frontiers is installed. The actual
- * integration is in {@link MapFrontiersIntegration}, which is only loaded when the
- * mod is present (guarded by a {@code FabricLoader.isModLoaded} check).
+ * <p>This class touches <b>no</b> Map Frontiers types, so it is safe to reference from install
+ * code regardless of whether Map Frontiers is present. The actual work is done reflectively in
+ * {@link MapFrontiersIntegration} (which also has no Map Frontiers compile-time symbols), so on
+ * the 1.21.1 Cobblemon line — where the Map Frontiers plugin API does not exist — frontier
+ * regions are still created by calling the mod's internal manager directly. See
+ * {@link MapFrontiersIntegration} for why reflection is used here.
  */
 public final class MapFrontiersBridge {
 
-  private static Consumer<List<InstallZone>> handler;
-
   private MapFrontiersBridge() {}
 
-  /** Called by {@link MapFrontiersIntegration} once the plugin is registered. */
-  public static void setHandler(Consumer<List<InstallZone>> h) {
-    handler = h;
+  /** True when Map Frontiers is installed. Frontier creation is a no-op otherwise. */
+  public static boolean isAvailable() {
+    return FabricLoader.getInstance().isModLoaded("mapfrontiers");
   }
 
   /**
-   * Returns {@code true} if Map Frontiers is loaded and the plugin has been
-   * initialized (i.e., the server has started at least once).
+   * Creates one global frontier per zone. No-op (returns 0) when Map Frontiers is absent,
+   * the zone list is empty, or no owner player is available.
+   *
+   * @param zones zones to draw, from install.json
+   * @param owner player to register as creator/owner of the (server-wide) frontiers
+   * @return the number of frontiers successfully created
    */
-  public static boolean isAvailable() {
-    return handler != null;
-  }
-
-  /** Creates one global frontier per zone. No-op when Map Frontiers is absent. */
-  public static void createFrontiers(List<InstallZone> zones) {
-    if (handler != null) handler.accept(zones);
+  public static int createFrontiers(List<InstallZone> zones, ServerPlayer owner) {
+    if (!isAvailable() || zones == null || zones.isEmpty()) return 0;
+    return MapFrontiersIntegration.createGlobalFrontiers(zones, owner);
   }
 }

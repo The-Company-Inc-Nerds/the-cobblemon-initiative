@@ -24,6 +24,15 @@ public class InstallConfig {
   public Map<String, String> gamerules = new LinkedHashMap<>();
 
   /**
+   * When true, {@code /cobblemon-initiative install run} promotes the world to hardcore
+   * (permadeath + difficulty locked to hard) via a runtime flip of the world's
+   * {@code hardcore} flag. The client applies the hardcore UI on the next rejoin. Hardcore
+   * already forces hard difficulty, so the {@code "_difficulty"} gamerule is a fallback for
+   * worlds that aren't run in hardcore.
+   */
+  public boolean hardcore = false;
+
+  /**
    * Named zones applied as SafeZones and written to the Map Frontiers frontier file
    * when running {@code /cobblemon-initiative install run}.
    */

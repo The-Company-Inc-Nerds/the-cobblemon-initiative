@@ -1,0 +1,98 @@
+DialogData: {
+    Type: "CUSTOM",
+    DialogDataSet: [
+        {
+            Buttons: [
+                {
+                    Name: "I have what you need",
+                    Actions: [
+                        {
+                            Type: "COMMAND",
+                            Cmd: "scoreboard objectives add npc_quest dummy"
+                        },
+                        {
+                            Type: "COMMAND",
+                            Cmd: "execute as @p[tag=quest_%%QUEST_KEY%%_done] run tellraw @s {\"text\":\"You have already settled this account.\",\"color\":\"gray\",\"italic\":true}"
+                        },
+                        {
+                            Type: "COMMAND",
+                            Cmd: "execute as @p[tag=!quest_%%QUEST_KEY%%_done] store result score #have npc_quest run clear @s %%ITEM=minecraft:wheat%% 0"
+                        },
+                        {
+                            Type: "COMMAND",
+                            Cmd: "execute as @p[tag=!quest_%%QUEST_KEY%%_done] unless score #have npc_quest matches %%ITEM_COUNT=16%%.. run tellraw @s {\"text\":\"You do not have enough yet.\",\"color\":\"gray\",\"italic\":true}"
+                        },
+                        {
+                            Type: "COMMAND",
+                            Cmd: "execute as @p[tag=!quest_%%QUEST_KEY%%_done] if score #have npc_quest matches %%ITEM_COUNT=16%%.. run clear @s %%ITEM=minecraft:wheat%% %%ITEM_COUNT=16%%"
+                        },
+                        {
+                            Type: "COMMAND",
+                            Cmd: "execute as @p[tag=!quest_%%QUEST_KEY%%_done] if score #have npc_quest matches %%ITEM_COUNT=16%%.. run loot give @s loot %%REWARD_TABLE:cobblemon_initiative:npc_gift/common|cobblemon_initiative:npc_gift/uncommon|cobblemon_initiative:npc_gift/rare=cobblemon_initiative:npc_gift/uncommon%%"
+                        },
+                        {
+                            Type: "COMMAND",
+                            Cmd: "execute as @p[tag=!quest_%%QUEST_KEY%%_done] if score #have npc_quest matches %%ITEM_COUNT=16%%.. run tellraw @s {\"text\":\"Quest complete. Payment rendered in full.\",\"color\":\"green\",\"italic\":true}"
+                        },
+                        {
+                            Type: "COMMAND",
+                            Cmd: "execute as @p[tag=!quest_%%QUEST_KEY%%_done] if score #have npc_quest matches %%ITEM_COUNT=16%%.. run tag @s add quest_%%QUEST_KEY%%_done"
+                        },
+                        {
+                            Type: "CLOSE_DIALOG"
+                        }
+                    ],
+                    Label: "turn_in_button"
+                },
+                {
+                    Name: "What exactly do you need?",
+                    Actions: [
+                        {
+                            Type: "OPEN_NAMED_DIALOG",
+                            Cmd: "details"
+                        }
+                    ],
+                    Label: "details_button"
+                },
+                {
+                    Name: "Leave",
+                    Actions: [
+                        {
+                            Type: "CLOSE_DIALOG"
+                        }
+                    ],
+                    Label: "leave_button"
+                }
+            ],
+            Priority: 10,
+            Texts: [
+                {
+                    Text: "%%PITCH_LINE=I need supplies, and the usual channels are... unreliable since The Company started buying up shipments. Help me out?%%"
+                }
+            ],
+            Name: "Quest Pitch",
+            Label: "question"
+        },
+        {
+            Buttons: [
+                {
+                    Name: "Back",
+                    Actions: [
+                        {
+                            Type: "OPEN_NAMED_DIALOG",
+                            Cmd: "question"
+                        }
+                    ],
+                    Label: "back_button"
+                }
+            ],
+            Texts: [
+                {
+                    Text: "%%DETAILS_LINE=Bring me the goods and I will make it worth your while. Check your pack — you might have some already.%%"
+                }
+            ],
+            Name: "Quest Details",
+            Label: "details"
+        }
+    ]
+}

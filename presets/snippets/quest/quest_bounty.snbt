@@ -1,0 +1,86 @@
+DialogData: {
+    Type: "CUSTOM",
+    DialogDataSet: [
+        {
+            Buttons: [
+                {
+                    Name: "Collect the bounty",
+                    Actions: [
+                        {
+                            Type: "COMMAND",
+                            Cmd: "execute as @p[tag=quest_%%QUEST_KEY%%_done] run tellraw @s {\"text\":\"This bounty is already paid out.\",\"color\":\"gray\",\"italic\":true}"
+                        },
+                        {
+                            Type: "COMMAND",
+                            Cmd: "execute as @p[tag=!quest_%%QUEST_KEY%%_done,tag=!defeated_%%TARGET_TRAINER_ID%%] run tellraw @s {\"text\":\"They are still out there. No catch, no coin.\",\"color\":\"gray\",\"italic\":true}"
+                        },
+                        {
+                            Type: "COMMAND",
+                            Cmd: "execute as @p[tag=!quest_%%QUEST_KEY%%_done,tag=defeated_%%TARGET_TRAINER_ID%%] run cobbledollars add @s %%BOUNTY=400%%"
+                        },
+                        {
+                            Type: "COMMAND",
+                            Cmd: "execute as @p[tag=!quest_%%QUEST_KEY%%_done,tag=defeated_%%TARGET_TRAINER_ID%%] run tellraw @s {\"text\":\"Bounty paid. Quietly, the way we like it.\",\"color\":\"green\",\"italic\":true}"
+                        },
+                        {
+                            Type: "COMMAND",
+                            Cmd: "execute as @p[tag=!quest_%%QUEST_KEY%%_done,tag=defeated_%%TARGET_TRAINER_ID%%] run tag @s add quest_%%QUEST_KEY%%_done"
+                        },
+                        {
+                            Type: "CLOSE_DIALOG"
+                        }
+                    ],
+                    Label: "turn_in_button"
+                },
+                {
+                    Name: "Who is the mark?",
+                    Actions: [
+                        {
+                            Type: "OPEN_NAMED_DIALOG",
+                            Cmd: "details"
+                        }
+                    ],
+                    Label: "details_button"
+                },
+                {
+                    Name: "Leave",
+                    Actions: [
+                        {
+                            Type: "CLOSE_DIALOG"
+                        }
+                    ],
+                    Label: "leave_button"
+                }
+            ],
+            Priority: 10,
+            Texts: [
+                {
+                    Text: "%%PITCH_LINE=There is coin on the table for anyone who can put a certain troublemaker in their place. You look the type.%%"
+                }
+            ],
+            Name: "Bounty Pitch",
+            Label: "question"
+        },
+        {
+            Buttons: [
+                {
+                    Name: "Back",
+                    Actions: [
+                        {
+                            Type: "OPEN_NAMED_DIALOG",
+                            Cmd: "question"
+                        }
+                    ],
+                    Label: "back_button"
+                }
+            ],
+            Texts: [
+                {
+                    Text: "%%DETAILS_LINE=Beat them in a battle and the bounty is yours. No questions, no paperwork. The Company has enough of both.%%"
+                }
+            ],
+            Name: "Bounty Details",
+            Label: "details"
+        }
+    ]
+}

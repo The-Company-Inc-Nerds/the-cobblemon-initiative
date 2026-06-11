@@ -1,0 +1,60 @@
+DialogData: {
+    Type: "YES_NO",
+    DialogDataSet: [
+        {
+            Buttons: [
+                {
+                    Name: "Choose a partner",
+                    Actions: [
+                        {
+                            Type: "COMMAND",
+                            Cmd: "openstarterscreen @p"
+                        },
+                        {
+                            Type: "CLOSE_DIALOG"
+                        }
+                    ],
+                    Label: "yes_button"
+                },
+                {
+                    Name: "Not yet",
+                    Actions: [
+                        {
+                            Type: "OPEN_NAMED_DIALOG",
+                            Cmd: "no_answer"
+                        }
+                    ],
+                    Label: "no_button"
+                }
+            ],
+            Priority: 10,
+            Texts: [
+                {
+                    Text: "%%OFFER_LINE=Every journey starts with one partner. The Company would have you believe it starts with capital. Choose - and prove them wrong.%%"
+                }
+            ],
+            Name: "Starter Offer",
+            Label: "question"
+        },
+        {
+            Buttons: [
+                {
+                    Name: "Leave",
+                    Actions: [
+                        {
+                            Type: "CLOSE_DIALOG"
+                        }
+                    ],
+                    Label: "leave_button"
+                }
+            ],
+            Texts: [
+                {
+                    Text: "%%LATER_LINE=Take your time. The right partner is worth the wait.%%"
+                }
+            ],
+            Name: "Later",
+            Label: "no_answer"
+        }
+    ]
+}
