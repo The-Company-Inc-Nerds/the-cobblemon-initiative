@@ -250,7 +250,11 @@
     "trainerType": "leader",
     "prerequisites": ["gaviota_apprentice"],
     "achievementOnDefeat": "badge_water",
-    "rewards": [{ "type": "item", "item": "minecraft:emerald", "count": 5 }],
+    "rewards": [
+      { "type": "item", "item": "minecraft:emerald", "count": 5 },
+      { "type": "command", "command": "execute as {player} run function cobblemon_initiative:memory/gym/frag_5" },
+      { "type": "command", "command": "execute as {player} run function cobblemon_initiative:economy/gym_destabilize" }
+    ],
     "battleFormat": "GEN_9_SINGLES",
     "ai": { "type": "rct", "data": { "maxSelectMargin": 0.1 } },
     "bag": [{ "item": "cobblemon:full_restore", "quantity": 3 }],

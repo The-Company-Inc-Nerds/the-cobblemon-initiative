@@ -1,0 +1,162 @@
+DialogData: {
+    Type: "STANDARD",
+    DialogDataSet: [
+        {
+            Conditions: [
+                {Type: "PLAYER_TAG", Operation: "EQUALS", Name: "%%AMBUSH_TAG=wheat_trader_hostile%%"}
+            ],
+            Priority: 30,
+            Buttons: [
+                {
+                    Name: "Trade",
+                    Actions: [
+                        {Type: "OPEN_TRADING_SCREEN"},
+                        {
+                            Type: "COMMAND",
+                            Cmd: "execute unless entity @p[tag=defeated_%%TRAINER_ID%%] run scoreboard players set @p wheat_ambush_armed 1"
+                        }
+                    ],
+                    Label: "yes_button"
+                },
+                {
+                    Name: "Walk away",
+                    Actions: [
+                        {Type: "OPEN_NAMED_DIALOG", Cmd: "ambush_decline"}
+                    ],
+                    Label: "no_button"
+                }
+            ],
+            Texts: [
+                {
+                    Text: "%%AMBUSH_LINE=...It IS you. I cashed your severance with my own hands. Go on — trade. Make your final transaction. Then we settle the account The Company opened on your life.%%"
+                }
+            ],
+            Name: "Ambush Greeting",
+            Label: "question"
+        },
+        {
+            Conditions: [
+                {Type: "PLAYER_TAG", Operation: "EQUALS", Name: "%%RECOG_TAG=wheat_trader_suspicious%%"}
+            ],
+            Priority: 20,
+            Buttons: [
+                {
+                    Name: "Trade",
+                    Actions: [
+                        {Type: "OPEN_TRADING_SCREEN"},
+                        {Type: "CLOSE_DIALOG"}
+                    ],
+                    Label: "yes_button"
+                },
+                {
+                    Name: "Just looking",
+                    Actions: [
+                        {Type: "OPEN_NAMED_DIALOG", Cmd: "no_answer"}
+                    ],
+                    Label: "no_button"
+                }
+            ],
+            Texts: [
+                {
+                    Text: "%%RECOG_LINE=The wheat-backed note holds while the CobbleDollar slides. Smart customers switch early. ...Have we done business before? You count coins the way the old founder did. Careful — not everyone selling these notes will be glad to see that face.%%"
+                }
+            ],
+            Name: "Recognition Greeting",
+            Label: "question"
+        },
+        {
+            Priority: 10,
+            Buttons: [
+                {
+                    Name: "Trade",
+                    Actions: [
+                        {Type: "OPEN_TRADING_SCREEN"},
+                        {Type: "CLOSE_DIALOG"}
+                    ],
+                    Label: "yes_button"
+                },
+                {
+                    Name: "Just looking",
+                    Actions: [
+                        {Type: "OPEN_NAMED_DIALOG", Cmd: "no_answer"}
+                    ],
+                    Label: "no_button"
+                }
+            ],
+            Texts: [
+                {
+                    Text: "%%TRADE_LINE=Wheat-backed notes, friend. Hard currency you can hold and eat. The CobbleDollar is paper backed by promises — ours is backed by the field. Care to trade?%%"
+                }
+            ],
+            Name: "Trade Greeting",
+            Label: "question"
+        },
+        {
+            Texts: [
+                {
+                    Text: "%%BROWSE_LINE=Suit yourself. The note only gets stronger from here.%%"
+                }
+            ],
+            Buttons: [
+                {Name: "Leave", Actions: [{Type: "CLOSE_DIALOG"}], Label: "leave_button"}
+            ],
+            Name: "Browsing",
+            Label: "no_answer"
+        },
+        {
+            Texts: [
+                {
+                    Text: "%%DECLINE_LINE=Running already? The Company keeps its books either way. Pay the toll or face the audit.%%"
+                }
+            ],
+            Buttons: [
+                {
+                    Name: "Pay %%DECLINE_FEE=200%% to walk away",
+                    Actions: [
+                        {Type: "COMMAND", Cmd: "cobbledollars remove @p %%DECLINE_FEE=200%%"},
+                        {Type: "COMMAND", Cmd: "scoreboard players set @p wheat_ambush_armed 0"},
+                        {Type: "CLOSE_DIALOG"}
+                    ],
+                    Label: "yes_button"
+                },
+                {
+                    Name: "Stand and fight",
+                    Actions: [
+                        {Type: "COMMAND", Cmd: "scoreboard players set @p wheat_ambush_armed 1"},
+                        {Type: "OPEN_NAMED_DIALOG", Cmd: "ambush_battle"}
+                    ],
+                    Label: "no_button"
+                }
+            ],
+            Name: "Ambush Decline",
+            Label: "ambush_decline"
+        },
+        {
+            Texts: [
+                {
+                    Text: "%%FIGHT_LINE=Then the account closes the hard way.%%"
+                }
+            ],
+            Buttons: [
+                {
+                    Name: "Battle",
+                    Actions: [
+                        {
+                            Type: "COMMAND",
+                            Cmd: "execute unless entity @p[tag=defeated_%%TRAINER_ID%%] run tbcs attach %%TRAINER_ID%% @s"
+                        },
+                        {
+                            Type: "COMMAND",
+                            ExecAsUser: 1b,
+                            Cmd: "execute unless entity @s[tag=defeated_%%TRAINER_ID%%] run tbcs battle %%BATTLE_FORMAT:GEN_9_SINGLES|GEN_9_DOUBLES=GEN_9_SINGLES%% @s vs %%TRAINER_ID%% onwin {1: ['cobbledollars add @1 %%PRIZE=300%%', 'tag @1 add defeated_%%TRAINER_ID%%', 'scoreboard players set @1 wheat_ambush_armed 0', '@2 say %%WIN_LINE=The note... it was never worth the field. Neither was The Company. Neither were we.%%', 'easy_npc delete @2'], 2: ['scoreboard players set @1 wheat_ambush_armed 0', '@2 say %%LOSE_LINE=Asset recovered. The ledger balances. It always does.%%']}"
+                        },
+                        {Type: "CLOSE_DIALOG"}
+                    ],
+                    Label: "yes_button"
+                }
+            ],
+            Name: "Ambush Battle",
+            Label: "ambush_battle"
+        }
+    ]
+}

@@ -17,8 +17,10 @@ import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.thecompanyinc.cobblemoninitiative.config.NuzlockeConfig;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import kotlin.Unit;
@@ -34,6 +36,8 @@ import net.minecraft.network.protocol.game.ClientboundSetSubtitleTextPacket;
 import net.minecraft.network.protocol.game.ClientboundSetTitleTextPacket;
 import net.minecraft.network.protocol.game.ClientboundSetTitlesAnimationPacket;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,6 +50,8 @@ public class NuzlockeInit implements ModInitializer {
   private static boolean pendingSacrifice = false;
   private static final Map<UUID, String> playerZones = new ConcurrentHashMap<>();
   private static int announceTick = 0;
+  private static final Random URGE_RANDOM = new Random();
+  private static final Map<UUID, Long> lastUrgeTick = new ConcurrentHashMap<>();
 
   @Override
   public void onInitialize() {
@@ -409,7 +415,65 @@ public class NuzlockeInit implements ModInitializer {
     }
 
     applyDamageToPlayer(player, damageAmount, pokemonName, remainingAfterThis == 0);
+    maybeFireDarkUrgeWhisper(player);
     return Unit.INSTANCE;
+  }
+
+  // ---------------------------------------------------------------------------
+  // Dark Urge whispers
+  // ---------------------------------------------------------------------------
+
+  /**
+   * On a Pokémon faint outside a safe zone, occasionally surfaces an intrusive
+   * "shadow self" whisper. Pure flavour — never touches the faint/damage rules.
+   * Chance- and cooldown-gated; tier escalates with the player's level cap.
+   */
+  private static void maybeFireDarkUrgeWhisper(ServerPlayer player) {
+    if (config == null || !config.isEnableDarkUrgeWhispers()) return;
+
+    // Never intrude inside a safe zone (towns/shrines) — the run is "at rest" there.
+    String dim = player.level().dimension().location().toString();
+    if (config.isInSafeZone(dim, player.getBlockX(), player.getBlockY(), player.getBlockZ())) return;
+
+    // Per-player cooldown (in-memory; harmlessly resets on relog).
+    long now = player.level().getGameTime();
+    Long last = lastUrgeTick.get(player.getUUID());
+    if (last != null && now - last < config.getDarkUrgeCooldownTicks()) return;
+
+    if (URGE_RANDOM.nextFloat() >= config.getDarkUrgeChance()) return;
+
+    List<List<String>> pool = config.getDarkUrgeMessages();
+    if (pool == null || pool.isEmpty()) return;
+    int tier = darkUrgeTier(player);
+    if (tier < 0 || tier >= pool.size()) return;
+    List<String> lines = pool.get(tier);
+    if (lines == null || lines.isEmpty()) return;
+
+    String line = lines.get(URGE_RANDOM.nextInt(lines.size()));
+    lastUrgeTick.put(player.getUUID(), now);
+
+    player.sendSystemMessage(
+      Component.literal(line).setStyle(
+        Style.EMPTY.withColor(TextColor.fromRgb(0x8B0000)).withItalic(true)
+      )
+    );
+    player.level().playSound(
+      null, player.blockPosition(), SoundEvents.SCULK_CLICKING, SoundSource.MASTER, 0.6f, 0.5f
+    );
+  }
+
+  /** Whisper escalation tier from the player's current level cap. */
+  private static int darkUrgeTier(ServerPlayer player) {
+    int cap = 20;
+    try {
+      cap = InitiativeInit.getLevelCapManager().getLevelCap(player);
+    } catch (Exception ignored) {
+      // Initiative subsystem not ready / no progress yet — treat as the starting cap.
+    }
+    if (cap >= 73) return 3; // gym 8+ — only after the gym-7 "charter" fragment
+    if (cap >= 52) return 2; // gyms 4-7
+    if (cap >= 30) return 1; // gyms 1-3
+    return 0;                // pre-first-badge
   }
 
   // ---------------------------------------------------------------------------

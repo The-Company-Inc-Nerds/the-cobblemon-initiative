@@ -1,10 +1,44 @@
 DialogData: {
-    Type: "YES_NO",
+    Type: "STANDARD",
     DialogDataSet: [
         {
+            Conditions: [
+                {Type: "PLAYER_TAG", Operation: "EQUALS", Name: "memory_fragment_7"}
+            ],
+            Priority: 20,
+            Buttons: [
+                {Name: "Confront", Actions: [{Type: "OPEN_NAMED_DIALOG", Cmd: "do_battle"}], Label: "yes_button"}
+            ],
+            Texts: [
+                {
+                    Text: "%%LATE_LINE=The board meets about you now. Emergency sessions, the door sealed. They say the founder is back and the founder remembers. I should be terrified of you. Instead I am terrified of what they do to me if I let you pass. So I cannot.%%"
+                }
+            ],
+            Name: "Management Panics",
+            Label: "question"
+        },
+        {
+            Priority: 10,
+            Buttons: [
+                {Name: "Confront", Actions: [{Type: "OPEN_NAMED_DIALOG", Cmd: "do_battle"}], Label: "yes_button"}
+            ],
+            Texts: [
+                {
+                    Text: "%%CHALLENGE_LINE=Middle management does not get paid to recognize faces. But yours... yours is on a memo I was told to burn. No, you are not walking away from this one.%%"
+                }
+            ],
+            Name: "Management Challenge",
+            Label: "question"
+        },
+        {
+            Texts: [
+                {
+                    Text: "%%FIGHT_PROMPT=Then we do this by the book. My book.%%"
+                }
+            ],
             Buttons: [
                 {
-                    Name: "Confront",
+                    Name: "Battle",
                     Actions: [
                         {
                             Type: "COMMAND",
@@ -26,14 +60,8 @@ DialogData: {
                     Label: "yes_button"
                 }
             ],
-            Priority: 10,
-            Texts: [
-                {
-                    Text: "%%CHALLENGE_LINE=Middle management does not get paid to recognize faces. But yours... yours is on a memo I was told to burn. No, you are not walking away from this one.%%"
-                }
-            ],
-            Name: "Management Challenge",
-            Label: "question"
+            Name: "Management Battle",
+            Label: "do_battle"
         }
     ]
 }

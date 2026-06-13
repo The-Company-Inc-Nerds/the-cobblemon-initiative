@@ -46,6 +46,22 @@ public class NuzlockeConfig {
   /** Hex color for the wilderness announcement, e.g. "#88AA88". */
   private String wildernessColor = "#88AA88";
 
+  // -------------------------------------------------------------------------
+  // Dark Urge whispers (intrusive shadow-self lines on Pokémon faint)
+  // -------------------------------------------------------------------------
+  /** Master toggle for the Dark Urge whisper-on-faint flavour. */
+  private boolean enableDarkUrgeWhispers = true;
+  /** Chance (0..1) that an eligible faint fires a whisper. */
+  private float darkUrgeChance = 0.12f;
+  /** Per-player cooldown between whispers, in game ticks (6000 = 5 min). */
+  private int darkUrgeCooldownTicks = 6000;
+  /**
+   * Whisper pool indexed by escalation tier 0..3. Tier rises with the player's level
+   * cap, so tier 3 (the founder speaking plainly) only appears post-gym-8 — after the
+   * gym-7 "charter" memory fragment has already landed.
+   */
+  private List<List<String>> darkUrgeMessages = defaultDarkUrgeMessages();
+
   public enum DuplicateHandling {
     OFF,
     RELEASE_IF_OWNED,
@@ -123,6 +139,8 @@ public class NuzlockeConfig {
           if (config != null) {
             if (config.caughtSpecies == null) config.caughtSpecies = new HashSet<>();
             if (config.safeZones == null) config.safeZones = new ArrayList<>();
+            if (config.darkUrgeMessages == null || config.darkUrgeMessages.isEmpty())
+              config.darkUrgeMessages = defaultDarkUrgeMessages();
             return config;
           }
         }
@@ -176,6 +194,10 @@ public class NuzlockeConfig {
   public String getWildernessName() { return wildernessName; }
   public String getWildernessSubtitle() { return wildernessSubtitle; }
   public String getWildernessColor() { return wildernessColor; }
+  public boolean isEnableDarkUrgeWhispers() { return enableDarkUrgeWhispers; }
+  public float getDarkUrgeChance() { return darkUrgeChance; }
+  public int getDarkUrgeCooldownTicks() { return darkUrgeCooldownTicks; }
+  public List<List<String>> getDarkUrgeMessages() { return darkUrgeMessages; }
 
   // -------------------------------------------------------------------------
   // Setters
@@ -209,6 +231,46 @@ public class NuzlockeConfig {
   // -------------------------------------------------------------------------
   // Utility
   // -------------------------------------------------------------------------
+
+  /**
+   * Default Dark Urge whisper pool, indexed by escalation tier 0..3. Written in the
+   * voice of the protagonist's shadow self — the founder who built the CobbleDollar
+   * ledger and treats loss as a line item. Keep lines free of double-quotes.
+   */
+  private static List<List<String>> defaultDarkUrgeMessages() {
+    List<List<String>> tiers = new ArrayList<>();
+    // Tier 0 — pre-first-badge: formless unease.
+    tiers.add(Arrays.asList(
+      "...that one mattered to you. Curious.",
+      "You flinched. I never used to flinch.",
+      "Something in you keeps score. It is almost done counting."
+    ));
+    // Tier 1 — gyms 1-3: the cold logic starts to speak.
+    tiers.add(Arrays.asList(
+      "Assets fail. You replace them. You know this.",
+      "Sentiment is a line item, and you always balanced the books.",
+      "It served its purpose. So did the last one. So will the next.",
+      "You grieve like someone learning the word for the first time."
+    ));
+    // Tier 2 — gyms 4-7: unmistakably the founder's voice.
+    tiers.add(Arrays.asList(
+      "We do not mourn inventory. We audit it.",
+      "Every empire stands on something expendable. You taught me that.",
+      "They trusted you to verify. You verified them into the ledger.",
+      "One more entry in red. You were always good with red.",
+      "You built a machine that runs on loss. Why be surprised it took one?"
+    ));
+    // Tier 3 — gym 8+: the shadow stops pretending the two of you are different.
+    tiers.add(Arrays.asList(
+      "There it is. The face I wore the day I signed them away.",
+      "You and I keep the same books. You only forgot whose name is on them.",
+      "I never lost a thing I could not write off. Neither did you.",
+      "Hold the grief if you like. It does not move the balance.",
+      "Every name you bury brings you one step closer to your own.",
+      "Welcome back. The Company missed your hand on the pen."
+    ));
+    return tiers;
+  }
 
   public void addCaughtSpecies(String species) {
     caughtSpecies.add(species.toLowerCase());

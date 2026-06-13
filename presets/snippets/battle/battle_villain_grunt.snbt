@@ -1,10 +1,60 @@
 DialogData: {
-    Type: "YES_NO",
+    Type: "STANDARD",
     DialogDataSet: [
         {
+            Conditions: [
+                {Type: "PLAYER_TAG", Operation: "EQUALS", Name: "memory_fragment_7"}
+            ],
+            Priority: 30,
+            Buttons: [
+                {Name: "Face them", Actions: [{Type: "OPEN_NAMED_DIALOG", Cmd: "do_battle"}], Label: "yes_button"}
+            ],
+            Texts: [
+                {
+                    Text: "%%LATE_LINE=...It is you. The founder, walking the routes like a rookie. They swore you were a story told to scare new hires. I have orders. I have a family paid in Company scrip. Do not make me do this. ...But I am going to.%%"
+                }
+            ],
+            Name: "Grunt Recognizes",
+            Label: "question"
+        },
+        {
+            Conditions: [
+                {Type: "PLAYER_TAG", Operation: "EQUALS", Name: "memory_fragment_3"}
+            ],
+            Priority: 20,
+            Buttons: [
+                {Name: "Fight", Actions: [{Type: "OPEN_NAMED_DIALOG", Cmd: "do_battle"}], Label: "yes_button"}
+            ],
+            Texts: [
+                {
+                    Text: "%%MID_LINE=Your face is on a memo. The kind with a black bar over the name and the words do not engage, report immediately. You are supposed to be a closed file. Closed files do not get to walk away.%%"
+                }
+            ],
+            Name: "Grunt Suspicious",
+            Label: "question"
+        },
+        {
+            Priority: 10,
+            Buttons: [
+                {Name: "Fight", Actions: [{Type: "OPEN_NAMED_DIALOG", Cmd: "do_battle"}], Label: "yes_button"}
+            ],
+            Texts: [
+                {
+                    Text: "%%EARLY_LINE=Company business. This route is closed for restructuring, and there is no walking away from it. We settle this the old way. ...Wait. Do I know you from somewhere?%%"
+                }
+            ],
+            Name: "Grunt Challenge",
+            Label: "question"
+        },
+        {
+            Texts: [
+                {
+                    Text: "%%FIGHT_PROMPT=No more talk. The ledger opens.%%"
+                }
+            ],
             Buttons: [
                 {
-                    Name: "Fight",
+                    Name: "Battle",
                     Actions: [
                         {
                             Type: "COMMAND",
@@ -26,14 +76,8 @@ DialogData: {
                     Label: "yes_button"
                 }
             ],
-            Priority: 10,
-            Texts: [
-                {
-                    Text: "%%CHALLENGE_LINE=Company business. This route is closed for... restructuring, and there is no walking away from it. We settle this the old way. Wait — do I know you from somewhere?%%"
-                }
-            ],
-            Name: "Grunt Challenge",
-            Label: "question"
+            Name: "Grunt Battle",
+            Label: "do_battle"
         }
     ]
 }
