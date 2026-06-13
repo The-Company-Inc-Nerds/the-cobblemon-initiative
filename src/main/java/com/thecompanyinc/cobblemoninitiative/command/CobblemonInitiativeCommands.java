@@ -120,6 +120,12 @@ public class CobblemonInitiativeCommands {
               )
           )
         )
+        .then(
+          Commands.literal("quest")
+            .then(Commands.literal("show").executes(CobblemonInitiativeCommands::questShow))
+            .then(Commands.literal("hide").executes(CobblemonInitiativeCommands::questHide))
+            .then(Commands.literal("refresh").executes(CobblemonInitiativeCommands::questRefresh))
+        )
     );
 
     dispatcher.register(
@@ -127,6 +133,29 @@ public class CobblemonInitiativeCommands {
         .requires(source -> source.hasPermission(2))
         .redirect(dispatcher.getRoot().getChild("cobblemon-initiative"))
     );
+  }
+
+  // Quest HUD toggle — thin wrappers that dispatch the datapack quest functions
+  // (the boss bar + sidebar logic lives in data/.../function/quest/).
+  private static int questDispatch(
+    CommandContext<CommandSourceStack> context, String fn
+  ) {
+    context.getSource().getServer().getCommands().performPrefixedCommand(
+      context.getSource(), "function cobblemon_initiative:quest/" + fn
+    );
+    return 1;
+  }
+
+  private static int questShow(CommandContext<CommandSourceStack> context) {
+    return questDispatch(context, "show");
+  }
+
+  private static int questHide(CommandContext<CommandSourceStack> context) {
+    return questDispatch(context, "hide");
+  }
+
+  private static int questRefresh(CommandContext<CommandSourceStack> context) {
+    return questDispatch(context, "refresh");
   }
 
   private static int listGroups(CommandContext<CommandSourceStack> context) {
