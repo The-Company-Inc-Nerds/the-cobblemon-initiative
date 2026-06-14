@@ -128,7 +128,7 @@ flowchart TD
 
 # Post-game — leave the map, beat the Ender Dragon
 
-The story does not end at the credits. With the Company overthrown, the reclaimed founder walks out of the curated **UPM map** into **generated Minecraft terrain** and attempts to beat **vanilla Minecraft — the Ender Dragon — still hardcore + Nuzlocke.** No safe zones out there; no script. The final image is the founder, finally whole, walking into the unknown.
+The story does not end at the credits. With the Company overthrown, the reclaimed founder walks out of the curated **UPM 2** world into **generated Minecraft terrain** and attempts to beat **vanilla Minecraft — the Ender Dragon — still hardcore + Nuzlocke.** No safe zones out there; no script. The final image is the founder, finally whole, walking into the unknown.
 
 ### Battle Frontier
 

@@ -1,4 +1,4 @@
-_The Cobblemon Initiative_ is a single-player Fabric mod for Minecraft 1.21.1 + Cobblemon 1.7.3, built exclusively for the hand-made UPM custom map and played as a live hardcore + Nuzlocke production. This page maps the codebase at altitude: the eight subsystems, how Fabric boots them, how the mod leans on co-installed runtime mods, and the four design patterns that recur throughout.
+_The Cobblemon Initiative_ is a single-player Fabric mod for Minecraft 1.21.1 + Cobblemon 1.7.3, built exclusively for the hand-made UPM 2 map and played as a live hardcore + Nuzlocke production. This page maps the codebase at altitude: the eight subsystems, how Fabric boots them, how the mod leans on co-installed runtime mods, and the four design patterns that recur throughout.
 
 For the actual event-driven workflows (battle victory, faint, NPC sight, economy), see [[Architecture Data Flows]]. For the full command surface, see [[Commands]]. To get oriented, start at [[Home]].
 
@@ -138,7 +138,7 @@ Configuration is environment-independent; **player and NPC state is per-world**,
 
 ## Runtime Mod Integrations
 
-These mods ship with the UPM modpack and are assumed present at runtime, but they are **`suggests`, not `depends`** in `fabric.mod.json` — the mod compiles and loads without them, and integrations degrade gracefully (e.g. a failed CobbleDollars command logs and continues).
+These mods ship with UPM 2 and are assumed present at runtime, but they are **`suggests`, not `depends`** in `fabric.mod.json` — the mod compiles and loads without them, and integrations degrade gracefully (e.g. a failed CobbleDollars command logs and continues).
 
 | Mod | How this mod uses it |
 |---|---|

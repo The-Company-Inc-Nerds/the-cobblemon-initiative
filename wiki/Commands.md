@@ -3,7 +3,7 @@
 Complete command reference for **The Cobblemon Initiative**. Every command below is verified against the mod source. For how these commands fit into the wider mod, see [[Architecture Overview]]. To return to the landing page, see [[Home]].
 
 > [!NOTE]
-> This is a **single-player** mod built for the UPM custom map. "Admin" simply means the command requires operator privileges (permission level 2+), which the host player has in their own world. "Player-facing" commands need no permission.
+> This is a **single-player** mod built for UPM 2. "Admin" simply means the command requires operator privileges (permission level 2+), which the host player has in their own world. "Player-facing" commands need no permission.
 
 ---
 

@@ -6,7 +6,7 @@ _Optional side-content for the brave. Five elemental shrines, five trials, five 
 
 ## What the shrines are
 
-Scattered across the UPM map are **five elemental shrines** — Dragon, Fairy, Ice, Fire, and Ground. Each is guarded by a small cult (four cultists and a robed leader) and wrapped around a **single self-contained challenge**. They are **pure side-content**: nothing in the main story gates on them, and the gym route never demands you clear one.
+Scattered across the UPM 2 map are **five elemental shrines** — Dragon, Fairy, Ice, Fire, and Ground. Each is guarded by a small cult (four cultists and a robed leader) and wrapped around a **single self-contained challenge**. They are **pure side-content**: nothing in the main story gates on them, and the gym route never demands you clear one.
 
 Why bother?
 
