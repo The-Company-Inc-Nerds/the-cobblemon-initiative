@@ -14,6 +14,7 @@ economy, and elemental shrine challenges onto a curated journey through ten gyms
 
 ## 📖 Guidebook — the campaign, route by route
 - **[[Guidebook Overview]]** — how the campaign is structured, the route table, and the three-act arc.
+- **[[Guidebook Route Map]]** — the full sequential walkthrough: every town, route, and shrine in order.
 - **[[Guidebook Act I]]** — Sango Town + gyms 1–3 (Bug · Grass · Fairy).
 - **[[Guidebook Act II]]** — gyms 4–7 (Fighting · Water · Ground · Electric) and the Company HQ raid.
 - **[[Guidebook Act III]]** — gyms 8–10 (Dragon · Ice · Fire), the Royal League, the Board of Directors, and the Founder.

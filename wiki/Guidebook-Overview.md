@@ -4,12 +4,13 @@
 
 This Overview frames the whole campaign: who you are, the route you walk, the discipline that keeps you alive, and the systems you will meet along the way. The act-by-act pages go deeper:
 
+- [[Guidebook Route Map]] — the linear walkthrough: every town, route, and shrine in the order you walk them.
 - [[Guidebook Act I]] — Infiltration: gyms 1–7, the destabilizing economy, the wheat traders.
 - [[Guidebook Act II]] — The HQ Raid and the turn of the currency.
 - [[Guidebook Act III]] — The Royal League, the Board, the mirror, and what lies past the map.
 - [[Guidebook Shrines]] — The five elemental trials, optional but pointed.
 
-> **Note on detail.** This Overview and the act pages tell you *what to expect* at each town, route, and shrine — the story beats, the gym type and cap, the systems you will trip over there. **Detailed, turn-by-turn pathing will be added later.** For now, treat this as the map of the journey, not the footstep-by-footstep route.
+> **Note on detail.** This Overview and the act pages tell you *what to expect* at each town, route, and shrine — the story beats, the gym type and cap, the systems you will trip over there. For the **linear order — which town/route/shrine comes next** — see the [[Guidebook Route Map]].
 
 ---
 
