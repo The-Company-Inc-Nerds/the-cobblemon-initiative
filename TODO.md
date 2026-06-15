@@ -8,7 +8,8 @@ done, Claude removes it **and** any release-removal it unblocks.
 
 **Already landed** (not tracked here): level caps, Memory Fragments + re-reader, Dark Urge
 whispers, Wheat War economy core (P3), villain recognition dialogue, quest-tracker HUD,
-field-mark dev tool. See `GIT_COMMIT_MSG` / `docs/LORE_BIBLE.md`.
+field-mark dev tool, and the docs set (the GitHub wiki, the `publish-wiki` dev command, and
+the slimmed README + UPM 2 disclaimer). See `GIT_COMMIT_MSG` / `docs/LORE_BIBLE.md` / the wiki.
 
 ---
 
@@ -34,7 +35,7 @@ field-mark dev tool. See `GIT_COMMIT_MSG` / `docs/LORE_BIBLE.md`.
   - [ ] `NuzlockeConfig.SafeZone.activeWhenScore` (world-data-gated safe farm — required for the config-leak)
   - [ ] `wheat_war_active` flag (lights up the HUD wheat-fields line + the trader poller)
   - [ ] Wire `wheat_trader/load` + `wheat_trader/tick` into the function tags
-- [ ] **P5 — Wheat traders full wiring**: placement + post-trade ambush trigger; Granary `sell_wheat` (batches-first, CD); per-region `wheat_price_<region>`
+- [ ] **P5 — Wheat traders full wiring** — _done: the trade→recognize→ambush dialogue, `minecraft:paper` currency, and 2/4 recognition/ambush thresholds._ Remaining: in-world placement + the post-trade ambush trigger; Granary `sell_wheat` (batches-first, CD); per-region `wheat_price_<region>`
 - [ ] **Smoke-test `cobbledollars add @s`** inside `execute as` before P4 relies on the payout macro
 - [ ] *(Designed, optional)* Founder name de-obfuscation as the Board falls; propaganda-decay dialog registers
 
@@ -49,6 +50,10 @@ field-mark dev tool. See `GIT_COMMIT_MSG` / `docs/LORE_BIBLE.md`.
 ### D. Per-run hardcore setup 🧱 (every fresh world — see `docs/HARDCORE_RUNBOOK.md`)
 - [ ] Wipe/empty `config/cobblemon-initiative.json` `safeZones`, then `/cobblemon-initiative install run`
 - [ ] Confirm hardcore flag + relog
+
+### E. Docs & wiki 💻/🧱
+- [ ] **Publish the wiki** — initialize the GitHub wiki once (create any page in the repo's *Wiki* tab), then run `publish-wiki` to push `wiki/` (it link-checks first; URL defaults to `<origin>.wiki.git`).
+- [ ] After editing `wiki/` pages, re-run `publish-wiki` to keep the live wiki in sync.
 
 ---
 
