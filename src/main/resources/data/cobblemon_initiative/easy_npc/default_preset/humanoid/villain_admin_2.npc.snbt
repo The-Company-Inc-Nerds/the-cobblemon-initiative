@@ -1,0 +1,268 @@
+{
+    PresetMetadata: {
+        author: "TheCompanyInc",
+        category: "Villain",
+        created: 0L,
+        description: "villain_management at Company Operations Center (act 2). Compiled from dialog-src.",
+        entityTypeId: "easy_npc:humanoid",
+        modified: 0L,
+        name: "Senior Director Vex",
+        variantType: "STEVE",
+        version: "1.0.0"
+    },
+    data: {
+        ActionData: {
+            ActionEventSet: {
+                ON_INTERACTION: [
+                    {
+                        Type: "OPEN_DEFAULT_DIALOG"
+                    }
+                ]
+            }
+        },
+        ArmorDropChances: [0.085f, 0.085f, 0.085f, 0.085f],
+        ArmorItems: [
+            {},
+            {},
+            {},
+            {}
+        ],
+        Brain: {
+            memories: {}
+        },
+        CanPickUpLoot: 0b,
+        CustomNameVisible: 1b,
+        DialogData: {
+            Type: "STANDARD",
+            DialogDataSet: [
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "defeated_villain_admin_2"
+                        }
+                    ],
+                    Priority: 30,
+                    Buttons: [
+                        {
+                            Name: "I will tell him",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "You are real. I keep checking and you are still real. Do you have any idea what that does to a man who signed the paperwork that said you were not."
+                        },
+                        {
+                            Text: "Go to the top floor. Tell DJ the dead came back to read his numbers. Tell him I said the audit is overdue."
+                        }
+                    ],
+                    Name: "Vex — after defeat",
+                    Label: "after"
+                },
+                {
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "Then unbalance it",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "execute if entity @p[tag=defeated_villain_admin_2] run say I have stopped pretending you are a clerical error. The stairs are clear. Go ruin his day instead of mine."
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "execute unless entity @p[tag=defeated_villain_admin_2] run tbcs attach villain_admin_2 @s"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "execute unless entity @s[tag=defeated_villain_admin_2] run tbcs battle GEN_9_DOUBLES @s vs villain_admin_2 onwin {1: ['cobbledollars add @1 4500', 'tag @1 add defeated_villain_admin_2', '@2 say Reconciled. The numbers were always going to find you. They are very patient. So were you, once.', 'easy_npc delete @2'], 2: ['@2 say Variance contained. Asset re-secured. Please do not make me file that memo a second time.']}"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "yes_button"
+                        },
+                        {
+                            Name: "Catch your breath",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "No. No, the badge reader is wrong, it has to be wrong. That face was retired. That face was settled. We have a memo. We have a settlement."
+                        },
+                        {
+                            Text: "You are supposed to be dead. I do not mean fired, I do not mean reassigned, I mean a line item we zeroed out years ago. I balanced that column myself."
+                        },
+                        {
+                            Text: "And now the column will not balance. The whole Operations Center will not balance with you standing in it. I cannot let you go further. I cannot. Do you understand what is on the floors above me."
+                        },
+                        {
+                            Text: "Prices are simply adjusting. That is normal. That is healthy. Please do not hoard."
+                        },
+                        {
+                            Text: "The CobbleDollar is fine. The CobbleDollar has always been fine. Who told you otherwise."
+                        },
+                        {
+                            Text: "A temporary recalibration of value. The Company is on top of it. The Company is always on top of it."
+                        }
+                    ],
+                    Name: "Vex — you are supposed to be dead",
+                    Label: "default"
+                }
+            ]
+        },
+        DisplayAttribute: [
+            {
+                Bool: 1b,
+                Type: "VISIBLE"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_AT_DAY"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_AT_NIGHT"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_IN_CREATIVE"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_IN_SPECTATOR"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_IN_STANDARD"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_TO_OWNER"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_TO_TEAM"
+            },
+            {
+                Int: 7,
+                Type: "LIGHT_LEVEL"
+            },
+            {
+                Text: "ALWAYS",
+                Type: "NAME_VISIBILITY"
+            }
+        ],
+        EasyNPCVersion: 3,
+        EntityAttribute: {
+            CanBeHitByProjectile: 0b,
+            CanBeLeashed: 0b,
+            CanBreatheUnderwater: 0b,
+            CanCloseDoor: 0b,
+            CanFloat: 0b,
+            CanOpenDoor: 0b,
+            CanPassDoor: 0b,
+            CanUseNetherPortal: 0b,
+            Freefall: 0b,
+            HealthRegeneration: 0.0d,
+            IsAttackableByMonsters: 0b,
+            IsAttackableByPlayers: 0b,
+            IsInvulnerable: 1b,
+            IsPushable: 0b,
+            NoGravity: 0b,
+            PushEntities: 0b
+        },
+        HandDropChances: [0.085f, 0.085f],
+        HandItems: [
+            {},
+            {}
+        ],
+        Invulnerable: 0b,
+        LeftHanded: 0b,
+        ModelData: {
+            DefaultPose: "STANDING",
+            Pose: "VANILLA",
+            Position: {},
+            Rotation: {},
+            Scale: {},
+            Visible: {
+                Boots: 1b
+            }
+        },
+        Navigation: {
+            Home: {
+                X: 0,
+                Y: 0,
+                Z: 0
+            }
+        },
+        ObjectiveData: {
+            HasObjectives: 0b,
+            HasTravelTarget: 0b,
+            ObjectiveDataSet: []
+        },
+        OnGround: 1b,
+        PersistenceRequired: 0b,
+        PresetUUID: [I; 0, 0, 0, 0],
+        Profession: "NONE",
+        Progression: {
+            AttributeScalingEnabled: 0b,
+            EntityExperience: 1,
+            EntityExperienceLevel: 1
+        },
+        RenderData: {},
+        SkinData: {
+            Content: "",
+            DisableLayers: 0b,
+            Name: "",
+            Timestamp: 0L,
+            Type: "DEFAULT",
+            URL: "",
+            UUID: [I; 0, 0, 0, 0]
+        },
+        SoundData: {
+            SoundDataSet: [
+                {
+                    Name: "minecraft:entity.player.death",
+                    Type: "DEATH"
+                },
+                {
+                    Name: "minecraft:entity.player.hurt",
+                    Type: "HURT"
+                }
+            ]
+        },
+        Status: {
+            finalized: 0b,
+            npc_data_last_saved: 0L,
+            npc_data_last_update: 0L
+        },
+        VariantType: "STEVE",
+        attributes: [
+            {
+                base: 20.0d,
+                id: "minecraft:generic.max_health"
+            },
+            {
+                base: 0.5d,
+                id: "minecraft:generic.movement_speed"
+            }
+        ],
+        id: "easy_npc:humanoid"
+    }
+}

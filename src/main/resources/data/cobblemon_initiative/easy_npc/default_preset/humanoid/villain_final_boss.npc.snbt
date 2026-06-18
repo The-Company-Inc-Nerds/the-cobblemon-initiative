@@ -1,0 +1,298 @@
+{
+    PresetMetadata: {
+        author: "TheCompanyInc",
+        category: "Villain",
+        created: 0L,
+        description: "villain_final_boss at The Boardroom (act 3). Compiled from dialog-src.",
+        entityTypeId: "easy_npc:humanoid",
+        modified: 0L,
+        name: "C§kaaa",
+        variantType: "STEVE",
+        version: "1.0.0"
+    },
+    data: {
+        ActionData: {
+            ActionEventSet: {
+                ON_INTERACTION: [
+                    {
+                        Type: "OPEN_DEFAULT_DIALOG"
+                    }
+                ]
+            }
+        },
+        ArmorDropChances: [0.085f, 0.085f, 0.085f, 0.085f],
+        ArmorItems: [
+            {},
+            {},
+            {},
+            {}
+        ],
+        Brain: {
+            memories: {}
+        },
+        CanPickUpLoot: 0b,
+        CustomNameVisible: 1b,
+        DialogData: {
+            Type: "STANDARD",
+            DialogDataSet: [
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "company_overthrown"
+                        }
+                    ],
+                    Priority: 30,
+                    Buttons: [
+                        {
+                            Name: "I will",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "So that is what it feels like from the other chair. I spent so long deciding what people were worth. I never once let anyone decide it about me. You just did."
+                        },
+                        {
+                            Text: "The chair is yours. The name is yours. The debt is yours too. I built all of it. So did you. We are not going to keep pretending those are two different sentences."
+                        },
+                        {
+                            Text: "Go on out the door I came in. There is a whole world past the edge of this one that I never bothered to walk. Walk it. Be the part of us that does the walking."
+                        }
+                    ],
+                    Name: "The Founder — after defeat",
+                    Label: "after"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "defeated_board_madeline"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "defeated_board_matt"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "defeated_board_micah"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "defeated_board_lauren"
+                        }
+                    ],
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "Face myself",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "execute unless entity @p[tag=company_overthrown] run tbcs attach villain_final_boss @s"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "execute unless entity @s[tag=company_overthrown] run tbcs battle GEN_9_SINGLES @s vs villain_final_boss onwin {1: ['tag @1 add company_overthrown', '@2 say There it is. The thing I was missing and you were not. You held the line I would have sold. Take it all. You finally earned the right to be the one of us who stays.', 'title @1 times 20 80 30', 'title @1 subtitle [{text:The founder, reclaimed.,color:gold,italic:true}]', 'tellraw @1 [{text:The Company is overthrown. The name on the chair is finally yours.,color:gold}]', 'easy_npc delete @2'], 2: ['@2 say Of course. Assets fail. You replace them. I have been replacing us for years and I am not tired yet. Get up and try again, or do not, and let me have the chair back.']}"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "yes_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "You climbed the whole tower to get to me and you still have not worked it out, have you. There is no one behind this desk but the two of us, and we have the same face. Sit down. Or do not. I never could."
+                        },
+                        {
+                            Text: "I am the part they could not erase. They took the chair, the name, the years, and they emptied the rest of you out onto a road like spoiled stock. But the founder is not a memory. The founder is a way of looking at a person and seeing a number. They could not cut that out. They did not know where it lived. It lived in here, waiting for you to walk back up the stairs."
+                        },
+                        {
+                            Text: "Every partner you lost on the route. Every one you buried instead of replacing. I felt you grieve them and I did not understand it, because I am the one who taught us they were inventory. You came all this way to fight the Company. The Company is a building. I am what is actually wrong, and I have your hands, and I am very, very good at this. Let us find out which of us you become."
+                        },
+                        {
+                            Text: "No grand speech. I do not have one for you. You already know everything I would say, because you would say it. Pick up your team. Look me in the eye. It is the only honest mirror you will ever stand in front of."
+                        }
+                    ],
+                    Name: "The Founder — the mirror",
+                    Label: "default"
+                },
+                {
+                    Priority: 5,
+                    Buttons: [
+                        {
+                            Name: "I will clear the room",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Not yet. The table is not empty. I do not take meetings until the room is cleared, and you have left chairs full."
+                        },
+                        {
+                            Text: "Finish the board. Send them all home. Then come back and find out who is left sitting here. You will not like the answer. You have never liked the answer."
+                        }
+                    ],
+                    Name: "The Founder — board still seated",
+                    Label: "not_ready"
+                }
+            ]
+        },
+        DisplayAttribute: [
+            {
+                Bool: 1b,
+                Type: "VISIBLE"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_AT_DAY"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_AT_NIGHT"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_IN_CREATIVE"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_IN_SPECTATOR"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_IN_STANDARD"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_TO_OWNER"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_TO_TEAM"
+            },
+            {
+                Int: 7,
+                Type: "LIGHT_LEVEL"
+            },
+            {
+                Text: "ALWAYS",
+                Type: "NAME_VISIBILITY"
+            }
+        ],
+        EasyNPCVersion: 3,
+        EntityAttribute: {
+            CanBeHitByProjectile: 0b,
+            CanBeLeashed: 0b,
+            CanBreatheUnderwater: 0b,
+            CanCloseDoor: 0b,
+            CanFloat: 0b,
+            CanOpenDoor: 0b,
+            CanPassDoor: 0b,
+            CanUseNetherPortal: 0b,
+            Freefall: 0b,
+            HealthRegeneration: 0.0d,
+            IsAttackableByMonsters: 0b,
+            IsAttackableByPlayers: 0b,
+            IsInvulnerable: 1b,
+            IsPushable: 0b,
+            NoGravity: 0b,
+            PushEntities: 0b
+        },
+        HandDropChances: [0.085f, 0.085f],
+        HandItems: [
+            {},
+            {}
+        ],
+        Invulnerable: 0b,
+        LeftHanded: 0b,
+        ModelData: {
+            DefaultPose: "STANDING",
+            Pose: "VANILLA",
+            Position: {},
+            Rotation: {},
+            Scale: {},
+            Visible: {
+                Boots: 1b
+            }
+        },
+        Navigation: {
+            Home: {
+                X: 0,
+                Y: 0,
+                Z: 0
+            }
+        },
+        ObjectiveData: {
+            HasObjectives: 0b,
+            HasTravelTarget: 0b,
+            ObjectiveDataSet: []
+        },
+        OnGround: 1b,
+        PersistenceRequired: 0b,
+        PresetUUID: [I; 0, 0, 0, 0],
+        Profession: "NONE",
+        Progression: {
+            AttributeScalingEnabled: 0b,
+            EntityExperience: 1,
+            EntityExperienceLevel: 1
+        },
+        RenderData: {},
+        SkinData: {
+            Content: "",
+            DisableLayers: 0b,
+            Name: "",
+            Timestamp: 0L,
+            Type: "DEFAULT",
+            URL: "",
+            UUID: [I; 0, 0, 0, 0]
+        },
+        SoundData: {
+            SoundDataSet: [
+                {
+                    Name: "minecraft:entity.player.death",
+                    Type: "DEATH"
+                },
+                {
+                    Name: "minecraft:entity.player.hurt",
+                    Type: "HURT"
+                }
+            ]
+        },
+        Status: {
+            finalized: 0b,
+            npc_data_last_saved: 0L,
+            npc_data_last_update: 0L
+        },
+        VariantType: "STEVE",
+        attributes: [
+            {
+                base: 20.0d,
+                id: "minecraft:generic.max_health"
+            },
+            {
+                base: 0.5d,
+                id: "minecraft:generic.movement_speed"
+            }
+        ],
+        id: "easy_npc:humanoid"
+    }
+}

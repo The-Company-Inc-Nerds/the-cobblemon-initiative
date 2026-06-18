@@ -1,0 +1,721 @@
+#!/usr/bin/env python3
+"""
+content_compile — compile dialog-src/ JSON content into Easy NPC SNBT presets.
+
+The authoring layer under dialog-src/ (character / dialog / register / lore JSON)
+is the writer-facing source; this tool lowers it into the shipped pipeline:
+
+  dialog-src/characters/**/*.json
+      -> src/main/resources/.../easy_npc/default_preset/humanoid/<id>.npc.snbt
+  character "uuid"            -> npc_presets.json  (merged, never clobbered)
+  numeric/recognition gates   -> function/dialog/band_tags.mcfunction  (derived PLAYER_TAGs)
+  character "sight"           -> function/dialog/register_sight.mcfunction
+  (then) default_preset.index + update_npc_presets.mcfunction are refreshed.
+
+It REUSES the existing engine rather than reinventing it:
+  - snbt_merge        : parse_snbt / serialize / set_path / merge_nodes
+  - npc_preset_builder: resolve_placeholders / regenerate_index (imported as a module)
+
+Gate lowering uses DERIVED BAND-TAGS (see dialog-src/schema/README.md, Open Q1): the
+only dialog Condition type proven in this repo is PLAYER_TAG, so numeric gates
+(badges / cd_instability / fields_liberated / recognition) compile to threshold tags
+maintained by the generated band_tags tick — the same pattern wheat_trader/tick uses.
+
+Usage:
+    scripts/content_compile                 # compile everything
+    scripts/content_compile --character nalia_mom acting_ceo_dj
+    scripts/content_compile --dry-run       # validate + report, write nothing
+    scripts/content_compile --no-generate   # skip index + update_npc_presets refresh
+"""
+
+from __future__ import annotations
+import argparse
+import importlib.util
+import json
+import re
+import subprocess
+import sys
+from collections import OrderedDict
+from pathlib import Path
+
+# ─── Paths ────────────────────────────────────────────────────────────────────
+
+SCRIPT_DIR   = Path(__file__).resolve().parent
+PROJECT_ROOT = SCRIPT_DIR.parent
+sys.path.insert(0, str(SCRIPT_DIR))
+
+import snbt_merge as sm  # noqa: E402  (shared SNBT parser/serializer)
+
+# npc_preset_builder has no .py suffix — load it as a module (explicit loader) to reuse its seams.
+from importlib.machinery import SourceFileLoader  # noqa: E402
+_loader = SourceFileLoader("npc_preset_builder", str(SCRIPT_DIR / "npc_preset_builder"))
+_spec = importlib.util.spec_from_loader("npc_preset_builder", _loader)
+npb = importlib.util.module_from_spec(_spec)
+_loader.exec_module(npb)  # type: ignore
+
+DIALOG_SRC   = PROJECT_ROOT / "dialog-src"
+PRESET_ROOT  = (PROJECT_ROOT
+                / "src/main/resources/data/cobblemon_initiative/easy_npc/default_preset")
+HUMANOID_DIR = PRESET_ROOT / "humanoid"
+SNIPPET_DIR  = PROJECT_ROOT / "presets/snippets"
+NPC_PRESETS  = PROJECT_ROOT / "npc_presets.json"
+FUNCTION_DIR = PROJECT_ROOT / "src/main/resources/data/cobblemon_initiative/function"
+BAND_TAGS_FN = FUNCTION_DIR / "dialog" / "band_tags.mcfunction"
+SIGHT_FN     = FUNCTION_DIR / "dialog" / "register_sight.mcfunction"
+NS           = "cobblemon_initiative"
+
+# Candidate datapack tick tags to auto-wire band_tags into (1.21 uses .../function/).
+TICK_TAGS = [
+    PROJECT_ROOT / "src/main/resources/data/minecraft/tags/function/tick.json",
+    PROJECT_ROOT / "src/main/resources/data/minecraft/tags/functions/tick.json",
+]
+
+
+# ─── Errors / warnings ──────────────────────────────────────────────────────
+
+class CompileError(Exception):
+    pass
+
+WARNINGS: list[str] = []
+
+def warn(msg: str) -> None:
+    WARNINGS.append(msg)
+
+
+# ─── SNBT node builders ──────────────────────────────────────────────────────
+# snbt_merge stores a quoted string as its RAW form *including* the outer quotes,
+# so s("hi") must return the Python string '"hi"'.
+
+def s(value) -> str:
+    esc = str(value).replace("\\", "\\\\").replace('"', '\\"')
+    return '"' + esc + '"'
+
+def i(n) -> tuple:
+    return ("num", str(int(n)))
+
+def execasuser() -> tuple:
+    return ("num", "1b")
+
+def lst(items) -> tuple:
+    return ("list", list(items))
+
+def comp(pairs) -> OrderedDict:
+    d: OrderedDict = OrderedDict()
+    for k, v in pairs:
+        if v is not None:
+            d[k] = v
+    return d
+
+
+# ─── Text / command safety ───────────────────────────────────────────────────
+
+def check_text(t: str, where: str) -> None:
+    if '"' in t:
+        raise CompileError(f'double-quote in {where}: {t[:60]!r}')
+
+def check_command(c: str, where: str) -> None:
+    if '"' in c:
+        raise CompileError(f'double-quote in {where} (use do:announce for tellraw/title): {c[:60]!r}')
+
+def check_onwin(c: str, where: str) -> None:
+    if '"' in c or "'" in c or '%' in c:
+        raise CompileError(f"quote/apostrophe/percent in {where} (onwin lists are single-quoted): {c[:60]!r}")
+    if "[{" in c:
+        warn(f"{where}: raw text-component command {c[:50]!r} likely needs quotes that the macro layer "
+             f"cannot carry — prefer a do:announce action or a wrapper function (schema README Open Q7).")
+
+
+# ─── Gate lowering -> Conditions[] (band-tags for numeric) ───────────────────
+
+OP_NBT = {"eq": "EQUALS", "ne": "NOT_EQUALS", "gt": "GREATER_THAN",
+          "lt": "LESS_THAN", "gte": "GREATER_THAN_OR_EQUAL", "lte": "LESS_THAN_OR_EQUAL"}
+# logical gate name -> the scoreboard objective the runtime actually maintains
+LOGICAL_OBJ = {"badges": "memory_fragment", "cd_instability": "cd_instability",
+               "fields_liberated": "fields_liberated"}
+# recognition tier -> (logical, op, value); 'early' is unconditional (lowest tier)
+RECOG_BAND = {"early": None, "mid": ("badges", "gte", 3), "late": ("badges", "gte", 7)}
+
+# (objective, op, value) tuples that need a derived band-tag, keyed by tag name.
+BAND_REGISTRY: dict[str, tuple] = {}
+
+def band_tag(label: str, objective: str, op: str, value) -> str:
+    value = int(value)
+    tag = f"{label}_{op}_{value}"
+    BAND_REGISTRY[tag] = (objective, op, value)
+    return tag
+
+def player_tag(name: str, eq: bool = True) -> OrderedDict:
+    return comp([("Type", s("PLAYER_TAG")),
+                 ("Operation", s("EQUALS" if eq else "NOT_EQUALS")),
+                 ("Name", s(name))])
+
+def gate_conditions(gate: dict) -> tuple[list, list | None]:
+    """Return (conditions, fanout_tags). fanout (from any_tags) needs entry duplication."""
+    conds: list = []
+    fanout = None
+    for k, v in gate.items():
+        if k == "tag":
+            conds.append(player_tag(v, True))
+        elif k == "not_tag":
+            conds.append(player_tag(v, False))
+        elif k == "all_tags":
+            conds += [player_tag(t, True) for t in v]
+        elif k == "any_tags":
+            fanout = v
+        elif k == "defeated":
+            conds.append(player_tag(f"defeated_{v}", True))
+        elif k == "met":
+            conds.append(player_tag(f"met_{v}", True))
+        elif k == "champion":
+            if v:
+                conds.append(player_tag("royal_league_champion", True))
+        elif k == "wheat_trader":
+            conds.append(player_tag(f"wheat_trader_{v}", True))
+        elif k == "recognition":
+            band = RECOG_BAND.get(v)
+            if band:
+                lab, op, val = band
+                conds.append(player_tag(band_tag(lab, LOGICAL_OBJ[lab], op, val), True))
+        elif k in ("badges", "cd_instability", "fields_liberated"):
+            conds.append(player_tag(band_tag(k, LOGICAL_OBJ[k], v["op"], v["value"]), True))
+        elif k == "score":
+            conds.append(player_tag(band_tag(v["objective"], v["objective"], v["op"], v["value"]), True))
+        elif k == "has_item":
+            conds.append(comp([("Type", s("HAS_ITEM_IN_INVENTORY")), ("Operation", s("EQUALS")),
+                               ("Item", s(v["item"])), ("Quantity", i(v.get("quantity", 1)))]))
+            warn("has_item condition is EXPERIMENTAL (field shape unverified vs installed Easy NPC).")
+        elif k == "advancement":
+            conds.append(comp([("Type", s("ADVANCEMENT")), ("Operation", s("EQUALS")), ("Name", s(v))]))
+            warn("advancement condition is EXPERIMENTAL.")
+        elif k == "xp_level":
+            conds.append(comp([("Type", s("EXPERIENCE_LEVEL")), ("Operation", s(OP_NBT[v["op"]])),
+                               ("Value", i(v["value"]))]))
+            warn("xp_level condition is EXPERIMENTAL.")
+        elif k == "fallback":
+            pass  # handled in priority
+        else:
+            raise CompileError(f"unknown gate key: {k!r}")
+    return conds, fanout
+
+def mc_range(op: str, value: int) -> str:
+    if op == "gte": return f"{value}.."
+    if op == "lte": return f"..{value}"
+    if op == "gt":  return f"{value + 1}.."
+    if op == "lt":  return f"..{value - 1}"
+    if op == "eq":  return f"{value}"
+    raise CompileError(f"op {op!r} not range-able")
+
+def gen_band_tags() -> str:
+    out = [
+        "# band_tags — derive threshold PLAYER_TAGs from scoreboards for Easy NPC dialog gates.",
+        "# Auto-generated by scripts/content_compile. Add to your tick function tag.",
+        "# Easy NPC dialog Conditions only reliably support PLAYER_TAG, so numeric gates",
+        "# (badges/cd_instability/fields_liberated/recognition) are lowered to these tags.",
+        "# Single-player: @a == the player; idempotent add/remove keeps it relog-safe.",
+        "",
+    ]
+    if not BAND_REGISTRY:
+        out.append("# (no numeric gates in the current content — nothing to maintain)")
+        return "\n".join(out) + "\n"
+    for tag in sorted(BAND_REGISTRY):
+        obj, op, val = BAND_REGISTRY[tag]
+        if op == "ne":
+            out.append(f"execute as @a unless score @s {obj} matches {val} run tag @s add {tag}")
+            out.append(f"execute as @a if score @s {obj} matches {val} run tag @s remove {tag}")
+        else:
+            rng = mc_range(op, val)
+            out.append(f"execute as @a if score @s {obj} matches {rng} run tag @s add {tag}")
+            out.append(f"execute as @a unless score @s {obj} matches {rng} run tag @s remove {tag}")
+        out.append("")
+    return "\n".join(out) + "\n"
+
+
+# ─── References (register: / lore:) ──────────────────────────────────────────
+
+def resolve_ref_lines(ref: str, registers: dict, lore: dict) -> list[str]:
+    kind, _, rest = ref.partition(":")
+    rid, _, key = rest.partition("#")
+    table = registers if kind == "register" else lore if kind == "lore" else None
+    if table is None:
+        raise CompileError(f"bad reference prefix: {ref!r}")
+    if rid not in table:
+        raise CompileError(f"reference {ref!r}: no {kind} file {rid!r}")
+    entry = table[rid].get("entries", {}).get(key)
+    if entry is None:
+        raise CompileError(f"reference {ref!r}: no entry {key!r} in {rid}")
+    lines = list(entry.get("lines", []))
+    for tier in entry.get("tiered", []):       # flatten tiers (lossy; gating is left to the entry)
+        lines += tier.get("lines", [])
+    if entry.get("tiered"):
+        warn(f"say_ref {ref!r} points at a tiered register entry — tiers were flattened; "
+             f"author per-tier dialog entries for true band gating.")
+    return lines
+
+
+# ─── Actions ─────────────────────────────────────────────────────────────────
+
+def command_action(cmd: str, as_player: bool, gate: dict | None, where: str) -> OrderedDict:
+    check_command(cmd, where)
+    pairs = [("Type", s("COMMAND"))]
+    if as_player:
+        pairs.append(("ExecAsUser", execasuser()))
+    if gate:
+        conds, _ = gate_conditions(gate)
+        if conds:
+            pairs.append(("Conditions", lst(conds)))
+    pairs.append(("Cmd", s(cmd)))
+    return comp(pairs)
+
+def announce_action(a: dict, where: str) -> OrderedDict:
+    text = a["text"]; check_text(text, where)
+    color = a.get("color")
+    component = '{"text":"%s"%s}' % (text, (',"color":"%s"' % color) if color else "")
+    mode = a.get("as", "chat")
+    if mode == "chat":
+        cmd = f"tellraw @p [{component}]"
+    elif mode == "actionbar":
+        cmd = f"title @p actionbar [{component}]"
+    elif mode in ("title", "subtitle"):
+        cmd = f"title @p {mode} [{component}]"
+    else:
+        raise CompileError(f"unknown announce target: {mode!r}")
+    # built deterministically from quote-free text; the inner quotes are escaped by s().
+    pairs = [("Type", s("COMMAND"))]
+    if a.get("gate"):
+        conds, _ = gate_conditions(a["gate"])
+        if conds:
+            pairs.append(("Conditions", lst(conds)))
+    pairs.append(("Cmd", s(cmd)))
+    return comp(pairs)
+
+def build_onwin(win: list[str], lose: list[str], where: str) -> str:
+    def side(cmds):
+        for c in cmds:
+            check_onwin(c, where)
+        return "[" + ", ".join("'%s'" % c for c in cmds) + "]"
+    return "{1: %s, 2: %s}" % (side(win), side(lose))
+
+def battle_actions(ch: dict, where: str) -> list:
+    b = ch.get("battle")
+    if not b:
+        raise CompileError(f"{where}: do:battle but character has no 'battle' block")
+    trainer = b.get("trainer") or ch.get("trainer")
+    if not trainer:
+        raise CompileError(f"{where}: battle has no trainer")
+    fmt = b.get("format", "GEN_9_SINGLES")
+    dt = b.get("defeat_tag", f"defeated_{trainer}")
+    acts = []
+    if b.get("already_beaten_line"):
+        check_text(b["already_beaten_line"], where)
+        acts.append(command_action(
+            f"execute if entity @p[tag={dt}] run say {b['already_beaten_line']}", False, None, where))
+    acts.append(command_action(
+        f"execute unless entity @p[tag={dt}] run tbcs attach {trainer} @s", False, None, where))
+    win = []
+    if b.get("prize"):
+        win.append(f"cobbledollars add @1 {int(b['prize'])}")
+    win.append(f"tag @1 add {dt}")
+    if b.get("win_line"):
+        win.append(f"@2 say {b['win_line']}")
+    win += list(b.get("on_win", []))
+    despawn = b.get("despawn_on_win",
+                    b.get("type") in ("villain_grunt", "villain_management", "gauntlet_boss", "villain_forced"))
+    if despawn:
+        win.append("easy_npc delete @2")
+    lose = []
+    if b.get("loss_fee"):
+        lose.append(f"cobbledollars remove @1 {int(b['loss_fee'])}")
+    if b.get("lose_line"):
+        lose.append(f"@2 say {b['lose_line']}")
+    lose += list(b.get("on_lose", []))
+    onwin = build_onwin(win, lose, where)
+    acts.append(command_action(
+        f"execute unless entity @s[tag={dt}] run tbcs battle {fmt} @s vs {trainer} onwin {onwin}",
+        True, None, where))
+    acts.append(comp([("Type", s("CLOSE_DIALOG"))]))
+    return acts
+
+def give_actions(ch: dict, where: str) -> list:
+    loot = ch.get("loot")
+    if not loot:
+        raise CompileError(f"{where}: do:give but character has no 'loot' block")
+    table = loot["table"]; key = loot.get("key", "gift")
+    if loot["type"] == "one_time":
+        return [command_action(f"execute unless entity @p[tag=gift_{key}_claimed] run loot give @p loot {table}", False, None, where),
+                command_action(f"tag @p add gift_{key}_claimed", False, None, where)]
+    # daily / one_time_item — minimal v1 (daily-uniqueness left to a future quest expansion)
+    warn(f"{where}: loot.type {loot['type']!r} compiled as an unguarded `loot give` (v1 limitation).")
+    return [command_action(f"loot give @p loot {table}", False, None, where)]
+
+def lower_action(a: dict, ch: dict, where: str) -> list:
+    do = a["do"]
+    if do == "close":        return [comp([("Type", s("CLOSE_DIALOG"))])]
+    if do == "open_default": return [comp([("Type", s("OPEN_DEFAULT_DIALOG"))])]
+    if do == "open_dialog":  return [comp([("Type", s("OPEN_NAMED_DIALOG")), ("Cmd", s(a["label"]))])]
+    if do == "trade":        return [comp([("Type", s("OPEN_TRADING_SCREEN"))])]
+    if do == "command":      return [command_action(a["cmd"], a.get("as_player", False), a.get("gate"), where)]
+    if do == "announce":     return [announce_action(a, where)]
+    if do == "heal":         return [command_action("healpokemon @p", False, a.get("gate"), where)]
+    if do == "battle":       return battle_actions(ch, where)
+    if do == "give":         return give_actions(ch, where)
+    raise CompileError(f"{where}: unknown action {do!r}")
+
+
+# ─── Dialog tree -> DialogData ───────────────────────────────────────────────
+
+PRIORITY_DEFAULT = {"default": 10, "start": 10, "main": 10,
+                    "help": 5, "question": 5, "bye": 1, "idle": 1, "thanks": 1}
+
+def entry_priority(e: dict) -> int:
+    if "priority" in e:
+        return e["priority"]
+    if (e.get("gate") or {}).get("fallback"):
+        return 0
+    return PRIORITY_DEFAULT.get(e["label"], 5)
+
+def build_button(b: dict, ch: dict, where: str) -> OrderedDict:
+    check_text(b["text"], f"{where} button {b['label']}")
+    acts: list = []
+    for a in b.get("actions", []):
+        acts += lower_action(a, ch, f"{where} button {b['label']}")
+    pairs = [("Name", s(b["text"]))]
+    if acts:
+        pairs.append(("Actions", lst(acts)))
+    if b.get("gate"):
+        conds, _ = gate_conditions(b["gate"])
+        if conds:
+            pairs.append(("Conditions", lst(conds)))
+    pairs.append(("Label", s(b["label"])))
+    return comp(pairs)
+
+def entry_texts(e: dict, registers: dict, lore: dict, where: str) -> list[str]:
+    texts = list(e.get("say", []))
+    if e.get("say_ref"):
+        texts += resolve_ref_lines(e["say_ref"], registers, lore)
+    for t in texts:
+        check_text(t, where)
+    return texts
+
+def build_entry(e: dict, conds: list, ch: dict, registers: dict, lore: dict,
+                label_suffix: str, where: str) -> OrderedDict:
+    pairs: list = []
+    if conds:
+        pairs.append(("Conditions", lst(conds)))
+    pairs.append(("Priority", i(entry_priority(e))))
+    if e.get("buttons"):
+        pairs.append(("Buttons", lst([build_button(b, ch, where) for b in e["buttons"]])))
+    texts = entry_texts(e, registers, lore, where)
+    if texts:
+        pairs.append(("Texts", lst([comp([("Text", s(t))]) for t in texts])))
+    pairs.append(("Name", s(e.get("name", e["label"].replace("_", " ").title()))))
+    pairs.append(("Label", s(e["label"] + label_suffix)))
+    return comp(pairs)
+
+def compile_dialog(tree: dict, ch: dict, registers: dict, lore: dict, where: str) -> OrderedDict:
+    entries_out = []
+    seen_labels: set = set()
+    for e in tree.get("entries", []):
+        if e["label"] in seen_labels:
+            raise CompileError(f"{where}: duplicate entry label {e['label']!r}")
+        seen_labels.add(e["label"])
+        conds, fanout = ([], None)
+        if e.get("gate"):
+            conds, fanout = gate_conditions(e["gate"])
+        if fanout:
+            for idx, t in enumerate(fanout):
+                ec = list(conds) + [player_tag(t, True)]
+                suffix = "" if idx == 0 else f"__or{idx}"
+                entries_out.append(build_entry(e, ec, ch, registers, lore, suffix, where))
+        else:
+            entries_out.append(build_entry(e, conds, ch, registers, lore, "", where))
+    return comp([("Type", s(tree["type"])), ("DialogDataSet", lst(entries_out))])
+
+
+# ─── Non-dialog data (metadata / triggers / movement / trade) ────────────────
+
+ROLE_CATEGORY = {
+    "gym_leader": "Gym Leader", "gym_trainer": "Trainer", "gym_guide": "Gym Guide",
+    "elite_four": "Royal League", "champion": "Royal League", "frontier_brain": "Battle Frontier",
+    "villain_grunt": "Villain", "villain_management": "Villain", "villain_board": "Villain",
+    "villain_boss": "Villain", "villain_final_boss": "Villain", "wheat_trader": "Villain",
+    "shrine_leader": "Shrine", "shrine_cultist": "Shrine", "civilian": "Civilian",
+    "elder": "Civilian", "lore_keeper": "Civilian", "merchant": "Merchant", "healer": "Service",
+    "professor": "Service", "duelist": "Duelist", "quest_giver": "Quest",
+}
+
+def fill_snippet(rel: str, presets: dict | None = None):
+    """Load a snippet, resolve placeholders with defaults, return its parsed tree."""
+    path = SNIPPET_DIR / (rel + ".snbt")
+    if not path.is_file():
+        raise CompileError(f"snippet not found: {rel}")
+    raw = path.read_text()
+    out, _ = npb.resolve_placeholders(raw, presets or {}, use_defaults=True, interactive=False)
+    text = out.strip().rstrip(",")
+    if sm._FRAGMENT_RE.match(text):
+        text = "{" + text + "}"
+    return sm.parse_snbt(text)
+
+def apply_nondialog_snippet(tree, rel: str, presets: dict | None = None):
+    """Splice a snippet's top-level keys into data.* (skipping DialogData)."""
+    try:
+        src = fill_snippet(rel, presets)
+    except SystemExit:                # resolve_placeholders calls die() on missing defaults
+        warn(f"snippet {rel!r} has unresolved placeholders — skipped (set them in a future pass).")
+        return tree
+    except CompileError as e:
+        warn(str(e)); return tree
+    for key, value in src.items():
+        if key in ("DialogData", "PresetMetadata"):
+            continue
+        path = ["data", key]
+        if key == "ActionData":
+            try:
+                existing = sm.get_path(tree, path)
+            except KeyError:
+                existing = OrderedDict()
+            value = sm.merge_nodes(existing, value)
+        tree = sm.set_path(tree, path, value)
+    return tree
+
+def apply_triggers(tree, ch: dict):
+    for tr in ch.get("triggers", []) or []:
+        acts = []
+        for a in tr["actions"]:
+            acts += lower_action(a, ch, f"{ch['id']} trigger {tr['on']}")
+        tree = sm.set_path(tree, ["data", "ActionData", "ActionEventSet", tr["on"]], lst(acts))
+    return tree
+
+def apply_movement(tree, mv: dict | None):
+    if not mv:
+        return tree
+    if mv.get("objective"):
+        tree = apply_nondialog_snippet(tree, "ambient/" + mv["objective"]) \
+            if (SNIPPET_DIR / ("ambient/" + mv["objective"] + ".snbt")).is_file() \
+            else apply_nondialog_snippet(tree, mv["objective"])
+    if mv.get("home"):
+        h = mv["home"]
+        tree = sm.set_path(tree, ["data", "Navigation", "Home"],
+                           comp([("X", i(h["x"])), ("Y", i(h["y"])), ("Z", i(h["z"]))]))
+    return tree
+
+
+# ─── Character compile ───────────────────────────────────────────────────────
+
+def base_for(ch: dict) -> Path:
+    return HUMANOID_DIR / ("_battle_trainer_base.npc.snbt" if "battle" in ch
+                           else "_civilian_base.npc.snbt")
+
+def compile_character(ch: dict, dialogs: dict, registers: dict, lore: dict):
+    cid = ch["id"]
+    if "dialog_inline" in ch:
+        tree = ch["dialog_inline"]
+    else:
+        ref = ch["dialog"].split(":", 1)[1]
+        if ref not in dialogs:
+            raise CompileError(f"{cid}: dialog {ref!r} not found")
+        tree = dialogs[ref]
+
+    base_tree, _ = sm.load_source(str(base_for(ch)))
+    dlg = compile_dialog(tree, ch, registers, lore, where=f"{cid}/{tree.get('id', 'inline')}")
+    out = sm.set_path(base_tree, ["data", "DialogData"], dlg)
+
+    meta = OrderedDict(out.get("PresetMetadata", OrderedDict()))
+    meta["name"] = s(ch["display_name"])
+    meta["category"] = s(ROLE_CATEGORY.get(ch["role"], "NPC"))
+    meta["description"] = s(f"{ch['role']} at {ch['location']} (act {ch['act']}). Compiled from dialog-src.")
+    out = sm.set_path(out, ["PresetMetadata"], meta)
+
+    out = apply_triggers(out, ch)
+    out = apply_movement(out, ch.get("movement"))
+    if ch.get("trade"):
+        out = apply_nondialog_snippet(out, "trade/" + ch["trade"]["snippet"])
+    return out
+
+
+# ─── npc_presets.json / sight manifest ───────────────────────────────────────
+
+def merge_mapping(mappings: dict, ch: dict) -> None:
+    if not ch.get("uuid"):
+        return
+    mappings[ch["uuid"].strip()] = {"preset": ch["id"], "label": ch["display_name"]}
+
+def sight_lines_for(ch: dict) -> list[str]:
+    sg = ch.get("sight")
+    if not sg:
+        return []
+    if not ch.get("uuid"):
+        warn(f"{ch['id']}: has 'sight' but no 'uuid' — cannot emit npcsight registration.")
+        return []
+    u = ch["uuid"].strip(); rng = sg.get("range", 5)
+    out = [f"# {ch['display_name']} ({ch['id']})"]
+    add = f"npcsight add {u} {rng}"
+    if sg.get("dialog_label"):
+        add += f" {sg['dialog_label']}"
+    out.append(add)
+    out.append(f"npcsight mode {u} {sg['mode']}")
+    if sg.get("meet_tag"):
+        out.append(f"npcsight meettag {u} {sg['meet_tag']}")
+    if sg.get("stop_tag"):
+        out.append(f"npcsight stoptag {u} {sg['stop_tag']}")
+    return out
+
+
+# ─── Content loading ─────────────────────────────────────────────────────────
+
+def load_kind(folder: str, kinds: tuple) -> dict:
+    out = {}
+    root = DIALOG_SRC / folder
+    for p in sorted(root.rglob("*.json")):
+        d = json.loads(p.read_text())
+        if d.get("kind") in kinds:
+            out[d["id"]] = d
+    return out
+
+def load_characters(only: list[str] | None) -> list[dict]:
+    chars = []
+    for p in sorted((DIALOG_SRC / "characters").rglob("*.json")):
+        d = json.loads(p.read_text())
+        if d.get("kind") != "character":
+            continue
+        if only and d["id"] not in only:
+            continue
+        d["_path"] = str(p)
+        chars.append(d)
+    return chars
+
+
+# ─── tick.json wiring ────────────────────────────────────────────────────────
+
+def wire_tick() -> str | None:
+    fn = f"{NS}:dialog/band_tags"
+    for tag in TICK_TAGS:
+        if tag.is_file():
+            data = json.loads(tag.read_text())
+            vals = data.setdefault("values", [])
+            if fn in vals or any(isinstance(v, dict) and v.get("id") == fn for v in vals):
+                return f"{fn} already in {tag.relative_to(PROJECT_ROOT)}"
+            vals.append(fn)
+            tag.write_text(json.dumps(data, indent=2) + "\n")
+            return f"added {fn} to {tag.relative_to(PROJECT_ROOT)}"
+    return None
+
+
+# ─── Main ────────────────────────────────────────────────────────────────────
+
+def main() -> None:
+    ap = argparse.ArgumentParser(prog="content_compile",
+                                 description="Compile dialog-src/ JSON into Easy NPC presets.")
+    ap.add_argument("--character", "-c", nargs="*", default=None,
+                    help="only compile these character ids (default: all)")
+    ap.add_argument("--dry-run", action="store_true", help="validate + report, write nothing")
+    ap.add_argument("--no-generate", action="store_true",
+                    help="skip index + update_npc_presets.mcfunction refresh")
+    ap.add_argument("--prune", action="store_true",
+                    help="remove generated humanoid presets (and their npc_presets mappings) "
+                         "no longer backed by a dialog-src character (full runs only)")
+    args = ap.parse_args()
+
+    if not DIALOG_SRC.is_dir():
+        print(f"content_compile: no dialog-src/ at {DIALOG_SRC}", file=sys.stderr)
+        sys.exit(1)
+
+    dialogs   = load_kind("dialog", ("dialog",))
+    registers = load_kind("registers", ("register", "lore"))
+    lore      = load_kind("lore", ("lore", "register"))
+    chars     = load_characters(args.character)
+
+    compiled: list[tuple[str, str]] = []   # (id, serialized)
+    mappings: dict = {}
+    sight: list[str] = []
+    errors: list[str] = []
+
+    if NPC_PRESETS.is_file():
+        try:
+            mappings = json.loads(NPC_PRESETS.read_text()).get("mappings", {})
+        except json.JSONDecodeError:
+            mappings = {}
+
+    for ch in chars:
+        try:
+            tree = compile_character(ch, dialogs, registers, lore)
+            text = sm.serialize(tree, indent_size=4)
+            sm.parse_snbt(text)                # round-trip safety check
+            compiled.append((ch["id"], text))
+            merge_mapping(mappings, ch)
+            sight += sight_lines_for(ch)
+        except (CompileError, KeyError, SystemExit) as e:
+            errors.append(f"{ch['id']}: {e}")
+
+    # Orphans: generated presets no longer backed by a current character (full runs only).
+    current_ids = {cid for cid, _ in compiled}
+    orphans: list[str] = []
+    if args.prune and not args.character:
+        for p in sorted(HUMANOID_DIR.glob("*.npc.snbt")):
+            if p.name.startswith("_"):
+                continue
+            pid = p.name[:-len(".npc.snbt")]
+            if pid not in current_ids:
+                orphans.append(pid)
+
+    print(f"Characters: {len(chars)} | compiled: {len(compiled)} | errors: {len(errors)} "
+          f"| band-tags: {len(BAND_REGISTRY)} | uuid maps: {sum(1 for c in chars if c.get('uuid'))}"
+          + (f" | prune: {len(orphans)}" if args.prune else ""))
+    for e in errors:
+        print("  ERROR", e)
+    for w in dict.fromkeys(WARNINGS):          # dedup, keep order
+        print("  warn ", w)
+    if orphans:
+        print("  prune ", ", ".join(orphans))
+    if errors:
+        sys.exit(1)
+
+    if args.dry_run:
+        print("\n(dry-run: nothing written)")
+        return
+
+    # Write presets
+    HUMANOID_DIR.mkdir(parents=True, exist_ok=True)
+    for cid, text in compiled:
+        (HUMANOID_DIR / f"{cid}.npc.snbt").write_text(text + "\n")
+
+    # Prune orphaned presets + their UUID mappings
+    for pid in orphans:
+        (HUMANOID_DIR / f"{pid}.npc.snbt").unlink(missing_ok=True)
+    if orphans:
+        orphan_set = set(orphans)
+        mappings = {u: v for u, v in mappings.items()
+                    if not (isinstance(v, dict) and v.get("preset") in orphan_set)}
+
+    # Band-tags tick fn + sight manifest
+    BAND_TAGS_FN.parent.mkdir(parents=True, exist_ok=True)
+    BAND_TAGS_FN.write_text(gen_band_tags())
+    SIGHT_FN.write_text(
+        "# register_sight — NPC Sight registrations for dialog-src NPCs.\n"
+        "# Auto-generated by scripts/content_compile. Run AFTER update_npc_presets.\n"
+        f"# /function {NS}:dialog/register_sight   (OP level 2)\n\n"
+        + "\n".join(sight) + ("\n" if sight else ""))
+
+    # npc_presets.json (merged)
+    NPC_PRESETS.write_text(json.dumps({"mappings": mappings}, indent=2) + "\n")
+
+    wired = wire_tick()
+
+    print(f"\nWrote {len(compiled)} preset(s) to {HUMANOID_DIR.relative_to(PROJECT_ROOT)}")
+    print(f"Wrote {BAND_TAGS_FN.relative_to(PROJECT_ROOT)} ({len(BAND_REGISTRY)} band-tags)")
+    print(f"Wrote {SIGHT_FN.relative_to(PROJECT_ROOT)} ({sum(1 for c in chars if c.get('sight') and c.get('uuid'))} NPCs)")
+    print(f"Merged UUID mappings into {NPC_PRESETS.name}")
+    print(f"tick wiring: {wired or 'no tick.json found — add ' + NS + ':dialog/band_tags to your tick tag manually'}")
+
+    if not args.no_generate:
+        n = npb.regenerate_index()
+        print(f"Regenerated default_preset.index ({n} presets)")
+        subprocess.run([sys.executable, str(SCRIPT_DIR / "generate_npc_function")], check=False)
+
+    print("\nNext in-game (OP 2):")
+    print(f"  /reload")
+    print(f"  /function {NS}:update_npc_presets     # import presets onto placed NPCs")
+    print(f"  /function {NS}:dialog/register_sight   # register sight-driven NPCs")
+
+
+if __name__ == "__main__":
+    main()

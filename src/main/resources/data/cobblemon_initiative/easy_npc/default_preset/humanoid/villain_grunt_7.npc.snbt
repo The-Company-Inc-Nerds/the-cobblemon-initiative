@@ -1,0 +1,275 @@
+{
+    PresetMetadata: {
+        author: "TheCompanyInc",
+        category: "Villain",
+        created: 0L,
+        description: "villain_grunt at Company Operations Center (act 1). Compiled from dialog-src.",
+        entityTypeId: "easy_npc:humanoid",
+        modified: 0L,
+        name: "Market Analyst",
+        variantType: "STEVE",
+        version: "1.0.0"
+    },
+    data: {
+        ActionData: {
+            ActionEventSet: {
+                ON_INTERACTION: [
+                    {
+                        Type: "OPEN_DEFAULT_DIALOG"
+                    }
+                ]
+            }
+        },
+        ArmorDropChances: [0.085f, 0.085f, 0.085f, 0.085f],
+        ArmorItems: [
+            {},
+            {},
+            {},
+            {}
+        ],
+        Brain: {
+            memories: {}
+        },
+        CanPickUpLoot: 0b,
+        CustomNameVisible: 1b,
+        DialogData: {
+            Type: "STANDARD",
+            DialogDataSet: [
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "cd_instability_gte_40"
+                        }
+                    ],
+                    Priority: 30,
+                    Buttons: [
+                        {
+                            Name: "Audit them",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "execute if entity @p[tag=defeated_villain_grunt_7] run say I have already priced in your victory. There is no further upside in fighting you. Move along."
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "execute unless entity @p[tag=defeated_villain_grunt_7] run tbcs attach villain_grunt_7 @s"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "execute unless entity @s[tag=defeated_villain_grunt_7] run tbcs battle GEN_9_SINGLES @s vs villain_grunt_7 onwin {1: ['cobbledollars add @1 380', 'tag @1 add defeated_villain_grunt_7', '@2 say The model did not account for you. I will adjust the model. I always adjust the model.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 250', '@2 say Volatility resolved. The CobbleDollar is fine. The CobbleDollar has always been fine.']}"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "yes_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Look at the exchange board. Go on, look. It flickers like it is ashamed of itself. That is my work. That is the model performing."
+                        },
+                        {
+                            Text: "Prices change while you stand in the shop. I watched it happen. The CobbleDollar is fine. The CobbleDollar has always been fine. Who told you otherwise."
+                        },
+                        {
+                            Text: "Wait. I have run your face against the closed accounts. The numbers do not balance. You should not exist, and yet here is your loss event."
+                        },
+                        {
+                            Text: "Prices are simply adjusting. That is normal. That is healthy. Please do not hoard."
+                        },
+                        {
+                            Text: "The CobbleDollar is fine. The CobbleDollar has always been fine. Who told you otherwise."
+                        },
+                        {
+                            Text: "A temporary recalibration of value. The Company is on top of it. The Company is always on top of it."
+                        }
+                    ],
+                    Name: "Market Analyst — money is slipping",
+                    Label: "unstable"
+                },
+                {
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "Challenge the figures",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "execute if entity @p[tag=defeated_villain_grunt_7] run say I have already priced in your victory. There is no further upside in fighting you. Move along."
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "execute unless entity @p[tag=defeated_villain_grunt_7] run tbcs attach villain_grunt_7 @s"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "execute unless entity @s[tag=defeated_villain_grunt_7] run tbcs battle GEN_9_SINGLES @s vs villain_grunt_7 onwin {1: ['cobbledollars add @1 380', 'tag @1 add defeated_villain_grunt_7', '@2 say The model did not account for you. I will adjust the model. I always adjust the model.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 250', '@2 say Volatility resolved. The CobbleDollar is fine. The CobbleDollar has always been fine.']}"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "yes_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The CobbleDollar is a number people agree to believe in. My job is to adjust the number while keeping the belief. A temporary recalibration of value, nothing more."
+                        },
+                        {
+                            Text: "Back your savings in something you can hold. Something you can eat. When the paper money fails, and it will, the people with the fields will be the only people who matter."
+                        },
+                        {
+                            Text: "Please do not hoard. Hoarding distorts the figures, and I do so hate a distorted figure."
+                        }
+                    ],
+                    Name: "Market Analyst — the model holds",
+                    Label: "default"
+                }
+            ]
+        },
+        DisplayAttribute: [
+            {
+                Bool: 1b,
+                Type: "VISIBLE"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_AT_DAY"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_AT_NIGHT"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_IN_CREATIVE"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_IN_SPECTATOR"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_IN_STANDARD"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_TO_OWNER"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_TO_TEAM"
+            },
+            {
+                Int: 7,
+                Type: "LIGHT_LEVEL"
+            },
+            {
+                Text: "ALWAYS",
+                Type: "NAME_VISIBILITY"
+            }
+        ],
+        EasyNPCVersion: 3,
+        EntityAttribute: {
+            CanBeHitByProjectile: 0b,
+            CanBeLeashed: 0b,
+            CanBreatheUnderwater: 0b,
+            CanCloseDoor: 0b,
+            CanFloat: 0b,
+            CanOpenDoor: 0b,
+            CanPassDoor: 0b,
+            CanUseNetherPortal: 0b,
+            Freefall: 0b,
+            HealthRegeneration: 0.0d,
+            IsAttackableByMonsters: 0b,
+            IsAttackableByPlayers: 0b,
+            IsInvulnerable: 1b,
+            IsPushable: 0b,
+            NoGravity: 0b,
+            PushEntities: 0b
+        },
+        HandDropChances: [0.085f, 0.085f],
+        HandItems: [
+            {},
+            {}
+        ],
+        Invulnerable: 0b,
+        LeftHanded: 0b,
+        ModelData: {
+            DefaultPose: "STANDING",
+            Pose: "VANILLA",
+            Position: {},
+            Rotation: {},
+            Scale: {},
+            Visible: {
+                Boots: 1b
+            }
+        },
+        Navigation: {
+            Home: {
+                X: 0,
+                Y: 0,
+                Z: 0
+            }
+        },
+        ObjectiveData: {
+            HasObjectives: 0b,
+            HasTravelTarget: 0b,
+            ObjectiveDataSet: []
+        },
+        OnGround: 1b,
+        PersistenceRequired: 0b,
+        PresetUUID: [I; 0, 0, 0, 0],
+        Profession: "NONE",
+        Progression: {
+            AttributeScalingEnabled: 0b,
+            EntityExperience: 1,
+            EntityExperienceLevel: 1
+        },
+        RenderData: {},
+        SkinData: {
+            Content: "",
+            DisableLayers: 0b,
+            Name: "",
+            Timestamp: 0L,
+            Type: "DEFAULT",
+            URL: "",
+            UUID: [I; 0, 0, 0, 0]
+        },
+        SoundData: {
+            SoundDataSet: [
+                {
+                    Name: "minecraft:entity.player.death",
+                    Type: "DEATH"
+                },
+                {
+                    Name: "minecraft:entity.player.hurt",
+                    Type: "HURT"
+                }
+            ]
+        },
+        Status: {
+            finalized: 0b,
+            npc_data_last_saved: 0L,
+            npc_data_last_update: 0L
+        },
+        VariantType: "STEVE",
+        attributes: [
+            {
+                base: 20.0d,
+                id: "minecraft:generic.max_health"
+            },
+            {
+                base: 0.5d,
+                id: "minecraft:generic.movement_speed"
+            }
+        ],
+        id: "easy_npc:humanoid"
+    }
+}
