@@ -46,7 +46,7 @@ The villain organisation **shares its name with the real production company on p
 a deliberate meta-joke that the audience is in on.
 
 ### What it is
-Not a crime syndicate — a **financial institution**. The Company is the trusted
+Not a crime syndicate — a **business**. The Company is the trusted
 **third-party verifier** of the region's currency. It is the auditor / central bank, the
 neutral party everyone relied on to keep the money honest. That trust is its weapon.
 
@@ -62,10 +62,10 @@ neutral party everyone relied on to keep the money honest. That trust is its wea
   alone control** — because **they occupy and monopolise the wheat fields.** Whoever owns
   the new commodity owns the region.
 - This is a deliberate nod to the **YouTube community debate about the best item to anchor
-  a Minecraft economy** (diamonds vs emeralds vs nether stars vs wheat). The Company's
+  a Minecraft economy** (diamonds vs emeralds vs nether stars vs wheat, etc.). The Company's
   answer is "whatever *we* control."
 
-The protagonist built the honest version of this system. The Company is corrupting their
+The protagonist built this system to control it, now he is part of this system. The Company is corrupting their
 creation. Reclaiming the org is reclaiming the economy.
 
 ### Player-facing economy voice — three registers (gate on `cd_instability` / villain progress)
@@ -179,9 +179,18 @@ back down — the tug-of-war. Numbers are the current tuning, not gospel.)*
 - **DO** keep CobbleDollars feeling subtly broken in Act 2 (it's the plot, not a bug).
 - **DON'T** name the protagonist as the Founder before Act 3. Fragments 7–9 circle it;
   they never close it.
-- **DON'T** promise (in any on-stream copy) that the native CobbleDollars shop GUI prices
-  swing — the mod can only skew payouts it routes itself. The "instability" is sold via
-  the per-payout rate line, the per-gym actionbar, and (later) a town exchange board.
-- **DON'T** call the act-2 boss "Midas." It's **DJ**.
+- **DO** swing the native CobbleDollars shop prices — and grow its stock — across the journey.
+  The mod ships a per-badge shop catalog (`scripts/shop_tiers/master_shop.json` →
+  `cobbledollars_tiers/*.json`); each gym leader and Acting CEO DJ fire a
+  `cobblemon-initiative shop <tier>` reward that overwrites `config/cobbledollars/default_shop.json`
+  and runs `cobbledollars reload`, which updates the live shop GUI (verified against CobbleDollars
+  2.0.0+Beta-5.1). Prices climb with `cd_instability` (≈+4%/gym, peak +28% at gym 7) and ease to
+  +12.5% after DJ falls. New item categories unlock as badges are earned, Pokémart-style.
+- **DON'T** promise the shop prices drift *continuously* with the instability index, or that they
+  swing on a *custom-shop* merchant. The swing is **stepped** between authored tiers (config files
+  can't be written by datapacks, only by the mod at badge boundaries), and the live reload only
+  reaches merchants using the **default** shop. The fine-grained instability is still sold via the
+  per-payout rate line, the per-gym actionbar, and (later) a town exchange board.
+- **DON'T** call the name the act-2 boss until act-2, It's **DJ**.
 - Macro-delivered text (memory fragments, economy lines) must contain **no double-quotes**
   and avoid apostrophes — the datapack macro layer has no escaping.

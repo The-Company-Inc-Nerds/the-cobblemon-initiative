@@ -6,6 +6,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.thecompanyinc.cobblemoninitiative.InitiativeInit;
 import com.thecompanyinc.cobblemoninitiative.config.TrainerConfig;
 import com.thecompanyinc.cobblemoninitiative.data.PlayerProgress;
+import com.thecompanyinc.cobblemoninitiative.economy.ShopTierManager;
 import java.util.Arrays;
 import java.util.List;
 import net.minecraft.commands.CommandSourceStack;
@@ -126,6 +127,15 @@ public class CobblemonInitiativeCommands {
             .then(Commands.literal("hide").executes(CobblemonInitiativeCommands::questHide))
             .then(Commands.literal("refresh").executes(CobblemonInitiativeCommands::questRefresh))
         )
+        .then(
+          Commands.literal("shop").then(
+            Commands.argument("tier", StringArgumentType.word())
+              .suggests((context, builder) ->
+                SharedSuggestionProvider.suggest(ShopTierManager.TIERS, builder)
+              )
+              .executes(CobblemonInitiativeCommands::applyShopTier)
+          )
+        )
     );
 
     dispatcher.register(
@@ -156,6 +166,30 @@ public class CobblemonInitiativeCommands {
 
   private static int questRefresh(CommandContext<CommandSourceStack> context) {
     return questDispatch(context, "refresh");
+  }
+
+  /**
+   * /cobblemon-initiative shop &lt;tier&gt;
+   * Swaps the CobbleDollars default shop to a pre-baked tier and hot-reloads it. Invoked from gym
+   * leader / Acting CEO DJ reward commands as the badge progresses; also a manual admin/test lever.
+   */
+  private static int applyShopTier(CommandContext<CommandSourceStack> context) {
+    String tier = StringArgumentType.getString(context, "tier");
+    boolean ok = ShopTierManager.applyTier(context.getSource().getServer(), tier);
+    if (ok) {
+      context.getSource().sendSuccess(
+        () ->
+          Component.literal(
+            "§a[Shop] Applied tier §e" + tier + " §aand reloaded CobbleDollars."
+          ),
+        true
+      );
+      return 1;
+    }
+    context.getSource().sendFailure(
+      Component.literal("§cUnknown or unreadable shop tier: " + tier)
+    );
+    return 0;
   }
 
   private static int listGroups(CommandContext<CommandSourceStack> context) {

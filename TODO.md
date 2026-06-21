@@ -8,8 +8,11 @@ done, Claude removes it **and** any release-removal it unblocks.
 
 **Already landed** (not tracked here): level caps, Memory Fragments + re-reader, Dark Urge
 whispers, Wheat War economy core (P3), villain recognition dialogue, quest-tracker HUD,
-field-mark dev tool, and the docs set (the GitHub wiki, the `publish-wiki` dev command, and
-the slimmed README + UPM 2 disclaimer). See `GIT_COMMIT_MSG` / `docs/LORE_BIBLE.md` / the wiki.
+field-mark dev tool, the **per-badge CobbleDollars shop** (`scripts/generate_shop_tiers` →
+`cobbledollars_tiers/*.json`, `ShopTierManager`, `/cobblemon-initiative shop <tier>`, wired into all
+10 gym leaders + DJ, seeded `badge_0` at install), the **bank re-theme** (`nether_star` 25k backing
++ `hay_block`/`wheat` commons), and the docs set (the GitHub wiki, the `publish-wiki` dev command,
+and the slimmed README + UPM 2 disclaimer). See `GIT_COMMIT_MSG` / `docs/LORE_BIBLE.md` / the wiki.
 
 ---
 
@@ -24,7 +27,9 @@ the slimmed README + UPM 2 disclaimer). See `GIT_COMMIT_MSG` / `docs/LORE_BIBLE.
   - [ ] 4 Board members + The Founder (post-Royal-League, The Boardroom)
 - [ ] **Wheat fields** — mark with `/cobblemon-initiative field-mark add <id> <region>` (6 set-piece + scattered minor), `export`, send Claude the JSON. → *unblocks P4 and removing Field Mark (§2)*
 - [ ] **Wheat-trader NPCs** — place (trade→recognize→ambush) from `wheat_trader_gate` + `trade_wheat_trader` + `dialog_wheat_pitch`
-- [ ] **Granary buyer NPC** per town (sell wheat → CobbleDollars; P5)
+- [ ] **Granary buyer NPC** per town (sell wheat → CobbleDollars; P5). The default **bank** now
+  buys wheat at a deliberate Company lowball (`wheat` 25 / `hay_block` 225 CD); granaries should
+  **beat** that rate so liberating fields feels like escaping the monopoly.
 - [ ] **Memory re-reader (Archivist) NPC** per town (`dialog_memory_rereader`)
 - [ ] **Reserved farm plots** — griefing-safe plots for liberated-field safe-farm conversion
 - [ ] *(Optional)* civilian NPCs: Mom in Sango (`dialog_first_meeting`), rumor mill, Company propaganda
@@ -45,6 +50,7 @@ the slimmed README + UPM 2 disclaimer). See `GIT_COMMIT_MSG` / `docs/LORE_BIBLE.
 - [ ] **Memory fragment** title fires once per leader; no re-fire on relog
 - [ ] **Dark Urge** whisper fires outside safe zones, silent inside
 - [ ] **Economy beats**: gyms 1-7 tick `cd_instability` up; Acting CEO → "CURRENCY STABILIZED"
+- [ ] **Shop-tier smoke-test (GATE)**: edit `config/cobbledollars/default_shop.json`, `/cobbledollars reload` with the shop GUI open → prices change live? If a Pokémart merchant does NOT update, it uses a **custom per-entity shop** (re-provision it to the default shop, or the swap won't reach it). Then confirm `/cobblemon-initiative shop badge_3` swaps + reloads, and a gym-leader defeat advances the tier.
 - [ ] **Level caps** applied correctly (30 → 85 → 100)
 
 ### D. Per-run hardcore setup 🧱 (every fresh world — see `docs/HARDCORE_RUNBOOK.md`)

@@ -1,0 +1,91 @@
+{
+  "_comment": "Source of truth for the per-badge CobbleDollars shop. Edit this, then run scripts/generate_shop_tiers to rebuild src/main/resources/cobbledollars_tiers/*.json. Each item declares the badge count at which it first appears (unlockBadge 0-10) and its STABLE Act-1 price (basePrice). The generator bakes the instability price-swing per tier: price = basePrice * (1 + instability * swingPerPoint), rounded clean. Item IDs here are the existing, known-valid shop items; validate any NEW id against the Cobblemon jar before adding (see memory reference_item_id_validation).",
+
+  "swingPerPoint": 0.005,
+
+  "_tiers_comment": "name = tier file / shop-tier argument; unlock = highest unlockBadge included; instability = cd_instability index baked into prices. Rises +8/gym to a peak of 56 at gym 7, drops to 25 after the HQ raid (Acting CEO DJ) and stays there. post_hq keeps gym-7 stock at the stabilised price.",
+  "tiers": [
+    { "name": "badge_0",  "unlock": 0,  "instability": 0  },
+    { "name": "badge_1",  "unlock": 1,  "instability": 8  },
+    { "name": "badge_2",  "unlock": 2,  "instability": 16 },
+    { "name": "badge_3",  "unlock": 3,  "instability": 24 },
+    { "name": "badge_4",  "unlock": 4,  "instability": 32 },
+    { "name": "badge_5",  "unlock": 5,  "instability": 40 },
+    { "name": "badge_6",  "unlock": 6,  "instability": 48 },
+    { "name": "badge_7",  "unlock": 7,  "instability": 56 },
+    { "name": "post_hq",  "unlock": 7,  "instability": 25 },
+    { "name": "badge_8",  "unlock": 8,  "instability": 25 },
+    { "name": "badge_9",  "unlock": 9,  "instability": 25 },
+    { "name": "badge_10", "unlock": 10, "instability": 25 }
+  ],
+
+  "categories": ["Poké Balls", "Exp"],
+
+  "items": [
+    { "item": "cobblemon:poke_ball",     "category": "Poké Balls", "unlockBadge": 0,  "basePrice": 2000 },
+    { "item": "cobblemon:citrine_ball",  "category": "Poké Balls", "unlockBadge": 0,  "basePrice": 2000 },
+    { "item": "cobblemon:verdant_ball",  "category": "Poké Balls", "unlockBadge": 0,  "basePrice": 2000 },
+    { "item": "cobblemon:azure_ball",    "category": "Poké Balls", "unlockBadge": 0,  "basePrice": 2000 },
+    { "item": "cobblemon:roseate_ball",  "category": "Poké Balls", "unlockBadge": 0,  "basePrice": 2000 },
+    { "item": "cobblemon:slate_ball",    "category": "Poké Balls", "unlockBadge": 0,  "basePrice": 2000 },
+    { "item": "cobblemon:premier_ball",  "category": "Poké Balls", "unlockBadge": 0,  "basePrice": 2000 },
+    { "item": "cobblemon:cherish_ball",  "category": "Poké Balls", "unlockBadge": 0,  "basePrice": 2000 },
+    { "item": "cobblemon:heal_ball",     "category": "Poké Balls", "unlockBadge": 0,  "basePrice": 3000 },
+
+    { "item": "cobblemon:great_ball",    "category": "Poké Balls", "unlockBadge": 1,  "basePrice": 6000 },
+    { "item": "cobblemon:safari_ball",   "category": "Poké Balls", "unlockBadge": 1,  "basePrice": 6000 },
+    { "item": "cobblemon:net_ball",      "category": "Poké Balls", "unlockBadge": 1,  "basePrice": 10000 },
+    { "item": "cobblemon:nest_ball",     "category": "Poké Balls", "unlockBadge": 1,  "basePrice": 10000 },
+
+    { "item": "cobblemon:ultra_ball",    "category": "Poké Balls", "unlockBadge": 2,  "basePrice": 8000 },
+    { "item": "cobblemon:dusk_ball",     "category": "Poké Balls", "unlockBadge": 2,  "basePrice": 10000 },
+    { "item": "cobblemon:quick_ball",    "category": "Poké Balls", "unlockBadge": 2,  "basePrice": 10000 },
+    { "item": "cobblemon:timer_ball",    "category": "Poké Balls", "unlockBadge": 2,  "basePrice": 10000 },
+    { "item": "cobblemon:repeat_ball",   "category": "Poké Balls", "unlockBadge": 2,  "basePrice": 10000 },
+    { "item": "cobblemon:dive_ball",     "category": "Poké Balls", "unlockBadge": 2,  "basePrice": 10000 },
+
+    { "item": "cobblemon:fast_ball",     "category": "Poké Balls", "unlockBadge": 3,  "basePrice": 6000 },
+    { "item": "cobblemon:level_ball",    "category": "Poké Balls", "unlockBadge": 3,  "basePrice": 6000 },
+    { "item": "cobblemon:lure_ball",     "category": "Poké Balls", "unlockBadge": 3,  "basePrice": 6000 },
+    { "item": "cobblemon:heavy_ball",    "category": "Poké Balls", "unlockBadge": 3,  "basePrice": 6000 },
+    { "item": "cobblemon:love_ball",     "category": "Poké Balls", "unlockBadge": 3,  "basePrice": 6000 },
+    { "item": "cobblemon:friend_ball",   "category": "Poké Balls", "unlockBadge": 3,  "basePrice": 6000 },
+    { "item": "cobblemon:moon_ball",     "category": "Poké Balls", "unlockBadge": 3,  "basePrice": 6000 },
+
+    { "item": "cobblemon:sport_ball",    "category": "Poké Balls", "unlockBadge": 4,  "basePrice": 6000 },
+    { "item": "cobblemon:park_ball",     "category": "Poké Balls", "unlockBadge": 4,  "basePrice": 6000 },
+    { "item": "cobblemon:dream_ball",    "category": "Poké Balls", "unlockBadge": 4,  "basePrice": 6000 },
+
+    { "item": "cobblemon:ancient_poke_ball",     "category": "Poké Balls", "unlockBadge": 5, "basePrice": 2000 },
+    { "item": "cobblemon:ancient_citrine_ball",  "category": "Poké Balls", "unlockBadge": 5, "basePrice": 2000 },
+    { "item": "cobblemon:ancient_verdant_ball",  "category": "Poké Balls", "unlockBadge": 5, "basePrice": 2000 },
+    { "item": "cobblemon:ancient_azure_ball",    "category": "Poké Balls", "unlockBadge": 5, "basePrice": 2000 },
+    { "item": "cobblemon:ancient_roseate_ball",  "category": "Poké Balls", "unlockBadge": 5, "basePrice": 2000 },
+    { "item": "cobblemon:ancient_slate_ball",    "category": "Poké Balls", "unlockBadge": 5, "basePrice": 2000 },
+    { "item": "cobblemon:ancient_ivory_ball",    "category": "Poké Balls", "unlockBadge": 5, "basePrice": 2000 },
+    { "item": "cobblemon:ancient_feather_ball",  "category": "Poké Balls", "unlockBadge": 5, "basePrice": 2000 },
+    { "item": "cobblemon:ancient_heavy_ball",    "category": "Poké Balls", "unlockBadge": 5, "basePrice": 2000 },
+
+    { "item": "cobblemon:luxury_ball",   "category": "Poké Balls", "unlockBadge": 5,  "basePrice": 30000 },
+
+    { "item": "cobblemon:ancient_great_ball",    "category": "Poké Balls", "unlockBadge": 6, "basePrice": 6000 },
+    { "item": "cobblemon:ancient_ultra_ball",    "category": "Poké Balls", "unlockBadge": 6, "basePrice": 8000 },
+    { "item": "cobblemon:ancient_wing_ball",     "category": "Poké Balls", "unlockBadge": 6, "basePrice": 6000 },
+    { "item": "cobblemon:ancient_jet_ball",      "category": "Poké Balls", "unlockBadge": 6, "basePrice": 8000 },
+    { "item": "cobblemon:ancient_leaden_ball",   "category": "Poké Balls", "unlockBadge": 6, "basePrice": 6000 },
+    { "item": "cobblemon:ancient_gigaton_ball",  "category": "Poké Balls", "unlockBadge": 6, "basePrice": 8000 },
+
+    { "item": "cobblemon:beast_ball",    "category": "Poké Balls", "unlockBadge": 7,  "basePrice": 50000 },
+
+    { "item": "cobblemon:master_ball",          "category": "Poké Balls", "unlockBadge": 10, "basePrice": 500000 },
+    { "item": "cobblemon:ancient_origin_ball",  "category": "Poké Balls", "unlockBadge": 10, "basePrice": 500000 },
+
+    { "item": "cobblemon:exp_candy_xs",  "category": "Exp", "unlockBadge": 2,  "basePrice": 500 },
+    { "item": "cobblemon:exp_candy_s",   "category": "Exp", "unlockBadge": 2,  "basePrice": 4000 },
+    { "item": "cobblemon:exp_candy_m",   "category": "Exp", "unlockBadge": 4,  "basePrice": 15000 },
+    { "item": "cobblemon:exp_candy_l",   "category": "Exp", "unlockBadge": 6,  "basePrice": 50000 },
+    { "item": "cobblemon:exp_share",     "category": "Exp", "unlockBadge": 6,  "basePrice": 250000 },
+    { "item": "cobblemon:exp_candy_xl",  "category": "Exp", "unlockBadge": 8,  "basePrice": 150000 },
+    { "item": "cobblemon:rare_candy",    "category": "Exp", "unlockBadge": 8,  "basePrice": 100000 }
+  ]
+}

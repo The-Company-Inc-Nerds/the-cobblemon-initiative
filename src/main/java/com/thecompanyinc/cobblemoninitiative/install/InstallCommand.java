@@ -6,6 +6,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.thecompanyinc.cobblemoninitiative.NuzlockeInit;
 import com.thecompanyinc.cobblemoninitiative.config.NuzlockeConfig;
+import com.thecompanyinc.cobblemoninitiative.economy.ShopTierManager;
 import com.thecompanyinc.cobblemoninitiative.mapfrontiers.MapFrontiersBridge;
 import com.thecompanyinc.cobblemoninitiative.mixin.LevelSettingsAccessor;
 import com.thecompanyinc.cobblemoninitiative.mixin.PrimaryLevelDataAccessor;
@@ -194,6 +195,21 @@ public class InstallCommand {
     boolean hardcoreFlipped = false;
     if (config.hardcore) {
       hardcoreFlipped = applyHardcore(server, ctx);
+    }
+
+    // Seed the CobbleDollars shop to its opening (0-badge) catalog. The per-badge unlock
+    // progression GROWS from here as gym leaders / Acting CEO DJ fire their shop-tier rewards;
+    // without this the world would start on the full catalog and the first badge would shrink it.
+    if (ShopTierManager.applyTier(server, "badge_0")) {
+      ctx
+        .getSource()
+        .sendSuccess(
+          () ->
+            Component.literal(
+              "[Install] CobbleDollars shop seeded to opening catalog (badge_0)."
+            ),
+          true
+        );
     }
 
     // Apply zones as safe zones + write Map Frontiers frontier file

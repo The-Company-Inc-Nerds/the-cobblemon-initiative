@@ -1,0 +1,86 @@
+#!/usr/bin/env python3
+"""Generate the per-badge CobbleDollars default_shop tier files from the master catalog.
+
+Usage:
+    scripts/generate_shop_tiers          # rebuild every tier resource from the master
+
+Reads:  scripts/shop_tiers/master_shop.json
+            The single source of truth — items, unlock badges, stable base prices, and the
+            tier/instability table. Edit this file to change what the shop sells or costs.
+
+Writes: src/main/resources/cobbledollars_tiers/<tier>.json
+            Committed mod resources. At runtime ShopTierManager copies the active tier over
+            <gameDir>/config/cobbledollars/default_shop.json and runs `cobbledollars reload`
+            when the matching gym / HQ raid is cleared.
+
+Each tier file is a valid CobbleDollars default_shop config holding only the items unlocked at
+that tier, priced at  basePrice * (1 + instability * swingPerPoint)  rounded to a clean step.
+Empty categories are omitted. Categories keep the master's declared order.
+"""
+
+import json
+import os
+
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+MASTER = os.path.join(ROOT, "scripts", "shop_tiers", "master_shop.json")
+OUT_DIR = os.path.join(ROOT, "src", "main", "resources", "cobbledollars_tiers")
+
+
+def nice(price):
+    """Round to a clean, Pokemart-looking step scaled to the magnitude."""
+    price = float(price)
+    if price < 1000:
+        step = 10
+    elif price < 10000:
+        step = 100
+    elif price < 100000:
+        step = 500
+    else:
+        step = 1000
+    return int(round(price / step) * step)
+
+
+def main():
+    with open(MASTER, encoding="utf-8") as fh:
+        master = json.load(fh)
+
+    swing = master["swingPerPoint"]
+    tiers = master["tiers"]
+    categories = master["categories"]
+    items = master["items"]
+
+    os.makedirs(OUT_DIR, exist_ok=True)
+    summary = []
+
+    for tier in tiers:
+        name = tier["name"]
+        unlock = tier["unlock"]
+        idx = tier["instability"]
+        mult = 1.0 + idx * swing
+
+        shop = []
+        for category in categories:
+            entries = [
+                {"item": it["item"], "price": nice(it["basePrice"] * mult)}
+                for it in items
+                if it["category"] == category and it["unlockBadge"] <= unlock
+            ]
+            if entries:
+                shop.append({category: entries})
+
+        out_path = os.path.join(OUT_DIR, name + ".json")
+        with open(out_path, "w", encoding="utf-8") as fh:
+            json.dump({"defaultShop": shop}, fh, ensure_ascii=False, indent=2)
+            fh.write("\n")
+
+        count = sum(len(next(iter(c.values()))) for c in shop)
+        summary.append((name, count, idx, mult))
+
+    rel = os.path.relpath(OUT_DIR, ROOT)
+    print(f"Wrote {len(summary)} tier files to {rel}/")
+    for name, count, idx, mult in summary:
+        print(f"  {name:9s}  {count:3d} items   instability {idx:>2}   x{mult:.3f}")
+
+
+if __name__ == "__main__":
+    main()

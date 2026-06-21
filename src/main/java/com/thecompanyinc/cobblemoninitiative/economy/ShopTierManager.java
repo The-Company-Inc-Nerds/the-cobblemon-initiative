@@ -1,0 +1,80 @@
+package com.thecompanyinc.cobblemoninitiative.economy;
+
+import com.thecompanyinc.cobblemoninitiative.InitiativeInit;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.util.List;
+import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.server.MinecraftServer;
+
+/**
+ * Swaps the CobbleDollars default shop catalog to a pre-baked tier and hot-reloads it live.
+ *
+ * <p>Tier resources live at {@code /cobbledollars_tiers/<tier>.json} in the mod jar and are
+ * regenerated from {@code scripts/shop_tiers/master_shop.json} by {@code scripts/generate_shop_tiers}.
+ * Each is a complete CobbleDollars {@code default_shop} config: the items unlocked at that tier,
+ * priced to the tier's {@code cd_instability}. {@link #applyTier} copies the chosen resource over
+ * {@code <gameDir>/config/cobbledollars/default_shop.json} and runs {@code cobbledollars reload},
+ * which CobbleDollars re-reads from disk and pushes to the live shop GUI (verified against
+ * CobbleDollars 2.0.0+Beta-5.1: reload calls {@code ShopConfig.load()} then broadcasts the new shop).
+ *
+ * <p><b>Scope:</b> this only affects the DEFAULT shop. A {@code CobbleMerchant} carrying a custom
+ * per-entity shop is served from its own NBT and is NOT touched by reload — in-world Pokémart
+ * merchants must use the default shop for the swap to be visible.
+ */
+public final class ShopTierManager {
+
+  private ShopTierManager() {}
+
+  /** Tier ids in journey order. Mirrors the {@code tiers} list in {@code master_shop.json}. */
+  public static final List<String> TIERS = List.of(
+    "badge_0", "badge_1", "badge_2", "badge_3", "badge_4", "badge_5",
+    "badge_6", "badge_7", "post_hq", "badge_8", "badge_9", "badge_10"
+  );
+
+  private static final String RESOURCE_PREFIX = "/cobbledollars_tiers/";
+
+  /**
+   * Copy the given tier over the CobbleDollars default shop config and reload it live.
+   *
+   * @return {@code true} if the tier resource was found and written; {@code false} on an unknown
+   *     tier id or an IO failure (the shop is left unchanged).
+   */
+  public static boolean applyTier(MinecraftServer server, String tier) {
+    Path target = FabricLoader.getInstance()
+      .getConfigDir()
+      .resolve("cobbledollars")
+      .resolve("default_shop.json");
+
+    try (
+      InputStream in =
+        ShopTierManager.class.getResourceAsStream(RESOURCE_PREFIX + tier + ".json")
+    ) {
+      if (in == null) {
+        InitiativeInit.LOGGER.warn("Shop tier resource not found: {}", tier);
+        return false;
+      }
+      Files.createDirectories(target.getParent());
+      Files.copy(in, target, StandardCopyOption.REPLACE_EXISTING);
+    } catch (Exception e) {
+      InitiativeInit.LOGGER.error("Failed to write shop tier {}", tier, e);
+      return false;
+    }
+
+    if (server != null) {
+      // CobbleDollars is a runtime modpack mod, not a compile dependency. If it is absent the
+      // command simply fails to parse and is logged by the source — it does not throw here.
+      server.getCommands().performPrefixedCommand(
+        server.createCommandSourceStack().withPermission(2),
+        "cobbledollars reload"
+      );
+      InitiativeInit.LOGGER.info(
+        "Applied shop tier {} and reloaded CobbleDollars.",
+        tier
+      );
+    }
+    return true;
+  }
+}
