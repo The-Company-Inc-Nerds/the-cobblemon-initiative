@@ -329,6 +329,14 @@ public class InstallCommand {
       }
     }
 
+    // Force survival — this is a survival/hardcore experience. `defaultgamemode` also
+    // persists to the world data, so the reloaded world starts new joins in survival.
+    server.getCommands().performPrefixedCommand(silentOp, "defaultgamemode survival");
+    server.getCommands().performPrefixedCommand(silentOp, "gamemode survival @a");
+    ctx
+      .getSource()
+      .sendSuccess(() -> Component.literal("[Install] Game mode set to survival."), true);
+
     // Promote the world to hardcore (after gamerules, since hardcore locks difficulty to hard)
     boolean hardcoreFlipped = false;
     if (config.hardcore) {
