@@ -567,21 +567,40 @@ public class InitiativeConfigScreen {
     lootChests.addEntry(
       entryBuilder
         .startIntSlider(
-          Component.literal("Loot Multiplier"),
-          (int) Math.round(lootChestConfig.getLootMultiplier() * 10),
+          Component.literal("Loot Stacks (×)"),
+          (int) Math.round(lootChestConfig.getStackMultiplier() * 10),
           0,
           30
         )
-        .setDefaultValue((int) Math.round(lootChestDefaults.getLootMultiplier() * 10))
+        .setDefaultValue((int) Math.round(lootChestDefaults.getStackMultiplier() * 10))
         .setTextGetter(v -> Component.literal(String.format("%.1f×", v / 10.0)))
         .setTooltip(
           Component.literal(
-            "Scales how much loot an unplaced chest is stocked with. 1.0× = the "
-            + "loot tables' default amount, 0× = none, 3.0× = triple. Item counts "
-            + "scale (overflowing into extra stacks); the base stack list stays default."
+            "Scales the NUMBER of item stacks an unplaced chest is stocked with. "
+            + "1.0× = the loot tables' default, 0.5× = half, 0× = none, 3.0× = triple."
           )
         )
-        .setSaveConsumer(v -> lootChestConfig.setLootMultiplier(v / 10.0))
+        .setSaveConsumer(v -> lootChestConfig.setStackMultiplier(v / 10.0))
+        .build()
+    );
+
+    lootChests.addEntry(
+      entryBuilder
+        .startIntSlider(
+          Component.literal("Items Per Stack (×)"),
+          (int) Math.round(lootChestConfig.getItemMultiplier() * 10),
+          0,
+          30
+        )
+        .setDefaultValue((int) Math.round(lootChestDefaults.getItemMultiplier() * 10))
+        .setTextGetter(v -> Component.literal(String.format("%.1f×", v / 10.0)))
+        .setTooltip(
+          Component.literal(
+            "Scales the number of ITEMS within each stack. 1.0× = the loot tables' "
+            + "default counts, 0.5× = half. Capped at each item's max stack size."
+          )
+        )
+        .setSaveConsumer(v -> lootChestConfig.setItemMultiplier(v / 10.0))
         .build()
     );
 

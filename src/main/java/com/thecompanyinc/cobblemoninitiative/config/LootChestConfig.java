@@ -48,12 +48,20 @@ public class LootChestConfig {
   private boolean oneTimePerChest = true;
 
   /**
-   * Scales how much loot a chest is stocked with, relative to the loot tables'
-   * default output. 1.0 = default (stacks + counts as the tables roll), 0 = none,
-   * 3.0 = triple. Item counts are multiplied (overflowing into extra stacks);
-   * clamped to 0.0..3.0.
+   * Scales the NUMBER of item stacks stocked into a chest, relative to what the
+   * loot tables roll. 1.0 = the tables' default count of stacks, 0.5 = half,
+   * 0 = none, up to 3.0 = triple (extra stacks come from re-rolling the tables).
+   * Clamped to 0.0..3.0. Default 0.5.
    */
-  private double lootMultiplier = 1.0;
+  private double stackMultiplier = 0.5;
+
+  /**
+   * Scales the number of ITEMS within each stack, relative to the loot tables'
+   * counts. 1.0 = default, 0.5 = half, up to 3.0 — capped at each item's max
+   * stack size, so it never spills into extra stacks (independent of the stack
+   * multiplier). Clamped to 0.0..3.0. Default 0.5.
+   */
+  private double itemMultiplier = 0.5;
 
   // ── Singleton / lifecycle ─────────────────────────────────────────────────────
 
@@ -99,11 +107,18 @@ public class LootChestConfig {
   public boolean isGiveMinecraftPool() { return giveMinecraftPool; }
   public boolean isGiveCobblemonPool() { return giveCobblemonPool; }
   public boolean isOneTimePerChest() { return oneTimePerChest; }
-  public double getLootMultiplier() { return lootMultiplier; }
+  // Getters clamp too: Gson loads a hand-edited config straight into the fields
+  // (bypassing the setters), so clamping on read keeps the documented 0.0..3.0
+  // range — and bounds the per-open loot roll — even for out-of-range edits.
+  public double getStackMultiplier() { return clamp(stackMultiplier); }
+  public double getItemMultiplier() { return clamp(itemMultiplier); }
 
   public void setEnabled(boolean v) { this.enabled = v; }
   public void setGiveMinecraftPool(boolean v) { this.giveMinecraftPool = v; }
   public void setGiveCobblemonPool(boolean v) { this.giveCobblemonPool = v; }
   public void setOneTimePerChest(boolean v) { this.oneTimePerChest = v; }
-  public void setLootMultiplier(double v) { this.lootMultiplier = Math.max(0.0, Math.min(3.0, v)); }
+  public void setStackMultiplier(double v) { this.stackMultiplier = clamp(v); }
+  public void setItemMultiplier(double v) { this.itemMultiplier = clamp(v); }
+
+  private static double clamp(double v) { return Math.max(0.0, Math.min(3.0, v)); }
 }

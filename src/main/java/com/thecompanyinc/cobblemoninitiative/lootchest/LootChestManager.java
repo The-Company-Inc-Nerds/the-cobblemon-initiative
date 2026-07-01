@@ -184,7 +184,11 @@ public class LootChestManager {
     }
   }
 
-  /** Items rolled from the enabled pools for the player's tier, scaled by the multiplier. */
+  /**
+   * Items for the player's tier: the enabled pools rolled and scaled by two
+   * independent multipliers — one for the number of stacks, one for the item
+   * count within each stack.
+   */
   private List<ItemStack> rollLoot(ServerPlayer player) {
     MinecraftServer server = player.getServer();
     if (server == null) return List.of();
@@ -192,32 +196,44 @@ public class LootChestManager {
     ServerLevel level = player.serverLevel();
     int tier = badgeTier(player);
     LootChestConfig config = LootChestConfig.get();
+    double stackMult = config.getStackMultiplier();
+    double itemMult = config.getItemMultiplier();
 
-    List<ItemStack> rolled = new ArrayList<>();
-    if (config.isGiveMinecraftPool()) {
-      rolled.addAll(rollTable(server, level, player, "badge_reward/minecraft/tier_" + tier));
-    }
-    if (config.isGiveCobblemonPool()) {
-      rolled.addAll(rollTable(server, level, player, "badge_reward/cobblemon/tier_" + tier));
-    }
-
-    // Scale each stack's count by the multiplier (1.0 = default). Counts above a
-    // stack's max size overflow into additional stacks; a 0 multiplier yields none.
-    double mult = config.getLootMultiplier();
-    List<ItemStack> scaled = new ArrayList<>();
-    for (ItemStack stack : rolled) {
-      if (stack.isEmpty()) continue;
-      long count = Math.round(stack.getCount() * mult);
-      int maxSize = stack.getMaxStackSize();
-      while (count > 0) {
-        int take = (int) Math.min(count, maxSize);
-        ItemStack copy = stack.copy();
-        copy.setCount(take);
-        scaled.add(copy);
-        count -= take;
+    // One "pass" = one roll of each enabled pool. Roll enough passes to cover a
+    // stack multiplier above 1.0 (extra stacks come from re-rolling the tables).
+    int passes = Math.max(1, (int) Math.ceil(stackMult));
+    List<ItemStack> pool = new ArrayList<>();
+    int perPass = 0;
+    for (int i = 0; i < passes; i++) {
+      if (config.isGiveMinecraftPool()) {
+        pool.addAll(rollTable(server, level, player, "badge_reward/minecraft/tier_" + tier));
       }
+      if (config.isGiveCobblemonPool()) {
+        pool.addAll(rollTable(server, level, player, "badge_reward/cobblemon/tier_" + tier));
+      }
+      if (i == 0) perPass = pool.size(); // stacks the tables yield in one pass
     }
-    return scaled;
+
+    // Keep round(perPass * stackMultiplier) stacks, chosen at random.
+    int targetStacks = (int) Math.round(perPass * stackMult);
+    Collections.shuffle(pool);
+    List<ItemStack> kept = new ArrayList<>(
+      pool.subList(0, Math.min(Math.max(targetStacks, 0), pool.size()))
+    );
+
+    // Scale each kept stack's item count, capped at its max size — this never
+    // splits into more stacks, so it stays independent of the stack multiplier.
+    List<ItemStack> out = new ArrayList<>();
+    for (ItemStack stack : kept) {
+      if (stack.isEmpty()) continue;
+      int count = (int) Math.round(stack.getCount() * itemMult);
+      count = Math.min(count, stack.getMaxStackSize());
+      if (itemMult > 0.0 && count < 1) count = 1; // wanted some items → keep at least one
+      if (count <= 0) continue;
+      stack.setCount(count);
+      out.add(stack);
+    }
+    return out;
   }
 
   private List<ItemStack> rollTable(
