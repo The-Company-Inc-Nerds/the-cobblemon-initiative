@@ -62,6 +62,17 @@ public class NuzlockeConfig {
    */
   private List<List<String>> darkUrgeMessages = defaultDarkUrgeMessages();
 
+  // Level-cap breakpoints that raise the Dark Urge whisper escalation tier.
+  private int darkUrgeTier1LevelCap = 30;
+  private int darkUrgeTier2LevelCap = 52;
+  private int darkUrgeTier3LevelCap = 73;
+
+  /** Killing-blow damage on the last-Pokémon faint / forced whiteout (kept ≥ max HP to guarantee death). */
+  private float whiteoutDeathDamage = 20.0f;
+
+  /** How often (ticks) zone-transition announcements are polled. 20 = 1s. */
+  private int zoneCheckCadenceTicks = 20;
+
   public enum DuplicateHandling {
     OFF,
     RELEASE_IF_OWNED,
@@ -198,6 +209,11 @@ public class NuzlockeConfig {
   public float getDarkUrgeChance() { return darkUrgeChance; }
   public int getDarkUrgeCooldownTicks() { return darkUrgeCooldownTicks; }
   public List<List<String>> getDarkUrgeMessages() { return darkUrgeMessages; }
+  public int getDarkUrgeTier1LevelCap() { return darkUrgeTier1LevelCap; }
+  public int getDarkUrgeTier2LevelCap() { return darkUrgeTier2LevelCap; }
+  public int getDarkUrgeTier3LevelCap() { return darkUrgeTier3LevelCap; }
+  public float getWhiteoutDeathDamage() { return whiteoutDeathDamage; }
+  public int getZoneCheckCadenceTicks() { return zoneCheckCadenceTicks; }
 
   // -------------------------------------------------------------------------
   // Setters
@@ -227,6 +243,14 @@ public class NuzlockeConfig {
   public void setWildernessName(String v) { this.wildernessName = v; }
   public void setWildernessSubtitle(String v) { this.wildernessSubtitle = v; }
   public void setWildernessColor(String v) { this.wildernessColor = v; }
+  public void setEnableDarkUrgeWhispers(boolean v) { this.enableDarkUrgeWhispers = v; }
+  public void setDarkUrgeChance(float v) { this.darkUrgeChance = v; }
+  public void setDarkUrgeCooldownTicks(int v) { this.darkUrgeCooldownTicks = v; }
+  public void setDarkUrgeTier1LevelCap(int v) { this.darkUrgeTier1LevelCap = v; }
+  public void setDarkUrgeTier2LevelCap(int v) { this.darkUrgeTier2LevelCap = v; }
+  public void setDarkUrgeTier3LevelCap(int v) { this.darkUrgeTier3LevelCap = v; }
+  public void setWhiteoutDeathDamage(float v) { this.whiteoutDeathDamage = v; }
+  public void setZoneCheckCadenceTicks(int v) { this.zoneCheckCadenceTicks = v; }
 
   // -------------------------------------------------------------------------
   // Utility

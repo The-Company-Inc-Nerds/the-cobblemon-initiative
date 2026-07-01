@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.thecompanyinc.cobblemoninitiative.InitiativeInit;
+import com.thecompanyinc.cobblemoninitiative.config.ProgressionConfig;
 import com.thecompanyinc.cobblemoninitiative.config.TrainerConfig;
 import java.io.*;
 import java.lang.reflect.Type;
@@ -282,7 +283,7 @@ public class PlayerProgressManager {
         (offset != null && offset.length > 0 ? offset[0] : 0);
       spawnY =
         trainerCoords[1] +
-        (offset != null && offset.length > 1 ? offset[1] : 1);
+        (offset != null && offset.length > 1 ? offset[1] : ProgressionConfig.get().getSpawnOnDefeatYOffset());
       spawnZ =
         trainerCoords[2] +
         (offset != null && offset.length > 2 ? offset[2] : 0);
@@ -292,7 +293,7 @@ public class PlayerProgressManager {
         (offset != null && offset.length > 0 ? offset[0] : 0);
       spawnY =
         player.getBlockY() +
-        (offset != null && offset.length > 1 ? offset[1] : 1);
+        (offset != null && offset.length > 1 ? offset[1] : ProgressionConfig.get().getSpawnOnDefeatYOffset());
       spawnZ =
         player.getBlockZ() +
         (offset != null && offset.length > 2 ? offset[2] : 0);

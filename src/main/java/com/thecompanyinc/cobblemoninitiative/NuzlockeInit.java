@@ -17,6 +17,7 @@ import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.thecompanyinc.cobblemoninitiative.config.NuzlockeConfig;
+import com.thecompanyinc.cobblemoninitiative.config.ProgressionConfig;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -66,7 +67,7 @@ public class NuzlockeInit implements ModInitializer {
     CobblemonEvents.POKEMON_CAPTURED.subscribe(Priority.NORMAL, NuzlockeInit::handlePokemonCaptured);
 
     ServerTickEvents.END_SERVER_TICK.register(server -> {
-      if (++announceTick % 20 != 0) return;
+      if (++announceTick % Math.max(1, config.getZoneCheckCadenceTicks()) != 0) return;
       for (ServerPlayer player : server.getPlayerList().getPlayers()) {
         checkZoneTransition(player);
       }
@@ -87,7 +88,7 @@ public class NuzlockeInit implements ModInitializer {
                 var player = context.getSource().getPlayerOrException();
                 player.sendSystemMessage(Component.literal("§4Triggering death screen..."));
                 pendingWhiteoutDeath = true;
-                player.hurt(player.damageSources().generic(), 20.0f);
+                player.hurt(player.damageSources().generic(), config.getWhiteoutDeathDamage());
                 return 1;
               })
             )
@@ -102,7 +103,7 @@ public class NuzlockeInit implements ModInitializer {
                     Component.literal("§4You only have one Pokémon! Triggering death instead...")
                   );
                   pendingWhiteoutDeath = true;
-                  player.hurt(player.damageSources().generic(), 20.0f);
+                  player.hurt(player.damageSources().generic(), config.getWhiteoutDeathDamage());
                 } else {
                   player.sendSystemMessage(Component.literal("§cTriggering sacrifice selection..."));
                   pendingSacrifice = true;
@@ -306,7 +307,7 @@ public class NuzlockeInit implements ModInitializer {
         Component.literal("§4You fled with only one Pokémon! There is no escape...")
       );
       pendingWhiteoutDeath = true;
-      player.hurt(player.damageSources().generic(), 20.0f);
+      player.hurt(player.damageSources().generic(), config.getWhiteoutDeathDamage());
       LOGGER.info("Player {} fled with only one Pokemon - killed", player.getName().getString());
       return Unit.INSTANCE;
     }
@@ -356,7 +357,7 @@ public class NuzlockeInit implements ModInitializer {
             Component.literal("§4You forfeited with only one Pokémon! There is no escape...")
           );
           pendingWhiteoutDeath = true;
-          player.hurt(player.damageSources().generic(), 20.0f);
+          player.hurt(player.damageSources().generic(), config.getWhiteoutDeathDamage());
         } else {
           player.sendSystemMessage(
             Component.literal("§cYou forfeited the battle! You must sacrifice a Pokémon...")
@@ -464,16 +465,16 @@ public class NuzlockeInit implements ModInitializer {
 
   /** Whisper escalation tier from the player's current level cap. */
   private static int darkUrgeTier(ServerPlayer player) {
-    int cap = 20;
+    int cap = ProgressionConfig.get().getBaseLevelCap();
     try {
       cap = InitiativeInit.getLevelCapManager().getLevelCap(player);
     } catch (Exception ignored) {
       // Initiative subsystem not ready / no progress yet — treat as the starting cap.
     }
-    if (cap >= 73) return 3; // gym 8+ — only after the gym-7 "charter" fragment
-    if (cap >= 52) return 2; // gyms 4-7
-    if (cap >= 30) return 1; // gyms 1-3
-    return 0;                // pre-first-badge
+    if (cap >= config.getDarkUrgeTier3LevelCap()) return 3; // gym 8+ — only after the gym-7 "charter" fragment
+    if (cap >= config.getDarkUrgeTier2LevelCap()) return 2; // gyms 4-7
+    if (cap >= config.getDarkUrgeTier1LevelCap()) return 1; // gyms 1-3
+    return 0;                                               // pre-first-badge
   }
 
   // ---------------------------------------------------------------------------
@@ -520,7 +521,7 @@ public class NuzlockeInit implements ModInitializer {
   }
 
   private static float calculateDamage(ServerPlayer player, int totalPartySize, int remainingPokemon) {
-    if (remainingPokemon == 0) return 20.0f;
+    if (remainingPokemon == 0) return config.getWhiteoutDeathDamage();
 
     float healthBase = config.isUseMaxHealth() ? player.getMaxHealth() : player.getHealth();
 

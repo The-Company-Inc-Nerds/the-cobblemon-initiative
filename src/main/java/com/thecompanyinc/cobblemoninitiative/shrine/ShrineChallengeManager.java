@@ -5,19 +5,26 @@ import com.cobblemon.mod.common.api.storage.party.PlayerPartyStore;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.google.gson.Gson;
 import com.thecompanyinc.cobblemoninitiative.InitiativeInit;
+import com.thecompanyinc.cobblemoninitiative.config.ShrineConfig;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetSubtitleTextPacket;
 import net.minecraft.network.protocol.game.ClientboundSetTitleTextPacket;
 import net.minecraft.network.protocol.game.ClientboundSetTitlesAnimationPacket;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class ShrineChallengeManager {
 
@@ -33,6 +40,16 @@ public class ShrineChallengeManager {
 
   private final Map<UUID, ShrineChallengeState> activeStates = new HashMap<>();
   private final Map<String, ShrineChallengeConfig> challenges = new HashMap<>();
+
+  /** Per-world recorded safe-path positions (writable; ships with the map save). */
+  private final ShrinePathStorage pathStorage = new ShrinePathStorage();
+  /** shrineId -> baked safe positions from the config JSON (packed BlockPos). */
+  private final Map<String, Set<Long>> bakedSafe = new HashMap<>();
+  /** Players currently recording a safe path (dev). playerId -> shrineId. */
+  private final Map<UUID, String> recordingPlayers = new HashMap<>();
+  /** Periodic-flush bookkeeping for active recording (bounds crash-loss). */
+  private int recordFlushTicks = 0;
+  private boolean recordDirty = false;
 
   // ── Loading ───────────────────────────────────────────────────────────────────
 
@@ -58,6 +75,19 @@ public class ShrineChallengeManager {
             ShrineChallengeConfig.class
           );
           challenges.put(shrine, config);
+
+          // Pre-pack any baked safe-path positions for O(1) tick lookups.
+          int[][] baked = config.getSafePositions();
+          if (baked != null && baked.length > 0) {
+            Set<Long> set = new HashSet<>();
+            for (int[] xyz : baked) {
+              if (xyz.length == 3) {
+                set.add(BlockPos.asLong(xyz[0], xyz[1], xyz[2]));
+              }
+            }
+            bakedSafe.put(shrine, set);
+          }
+
           InitiativeInit.LOGGER.info(
             "Loaded shrine challenge: {} ({})",
             shrine,
@@ -72,6 +102,16 @@ public class ShrineChallengeManager {
         );
       }
     }
+  }
+
+  /** Load recorded safe-path positions from the world directory (SERVER_STARTED). */
+  public void loadPaths(MinecraftServer server) {
+    pathStorage.load(server);
+  }
+
+  /** Persist recorded safe-path positions to the world directory (SERVER_STOPPING). */
+  public void savePaths() {
+    pathStorage.save();
   }
 
   // ── Command entry points ─────────────────────────────────────────────────────
@@ -96,6 +136,23 @@ public class ShrineChallengeManager {
       shrineId
     );
     activeStates.put(player.getUUID(), state);
+
+    // Ice floor: capture the point we yank the player back to on a misstep.
+    // Use the pinned start if the config provides one, else where they began.
+    if (config.isIceFloorEnabled()) {
+      ShrineChallengeConfig.Vec s = config.getStart();
+      if (s != null) {
+        state.setResetPoint(s.x, s.y, s.z, s.yaw, s.pitch);
+      } else {
+        state.setResetPoint(
+          player.getX(),
+          player.getY(),
+          player.getZ(),
+          player.getYRot(),
+          player.getXRot()
+        );
+      }
+    }
 
     // Title splash
     sendTitle(
@@ -138,11 +195,18 @@ public class ShrineChallengeManager {
               " seconds. §7Reach the finish!"
           )
         );
+        if (iceFloorActive(config)) {
+          player.sendSystemMessage(
+            Component.literal(
+              "§b❄ §7Stay on the safe path — touching the wrong ice will hurt you and send you back to the start!"
+            )
+          );
+        }
       }
       case "dark_gauntlet" -> {
-        // Half health
+        // Reduced starting health (fraction configurable in ModMenu)
         float maxHp = player.getMaxHealth();
-        player.setHealth(maxHp / 2.0f);
+        player.setHealth(maxHp * ShrineConfig.get().getDarkGauntletStartHealthFraction());
         // Immediate blindness
         applyBlindness(player);
         player.sendSystemMessage(
@@ -490,6 +554,49 @@ public class ShrineChallengeManager {
     }
 
     expired.forEach(activeStates::remove);
+
+    tickRecording(server);
+  }
+
+  /** Captures every block a recording dev walks over as a safe-path position. */
+  private void tickRecording(MinecraftServer server) {
+    if (recordingPlayers.isEmpty()) return;
+
+    Iterator<Map.Entry<UUID, String>> it = recordingPlayers
+      .entrySet()
+      .iterator();
+    while (it.hasNext()) {
+      Map.Entry<UUID, String> entry = it.next();
+      ServerPlayer player = server.getPlayerList().getPlayer(entry.getKey());
+      if (player == null) {
+        it.remove();
+        continue;
+      }
+      BlockPos foot = footBlock(player);
+      if (pathStorage.addDeferred(entry.getValue(), foot)) {
+        recordDirty = true;
+        // New block captured — flash a marker so the dev sees the trail grow.
+        player.serverLevel().sendParticles(
+          ParticleTypes.HAPPY_VILLAGER,
+          foot.getX() + 0.5,
+          foot.getY() + 1.05,
+          foot.getZ() + 0.5,
+          4,
+          0.3,
+          0.1,
+          0.3,
+          0.0
+        );
+      }
+    }
+
+    // Flush at most every 5s while recording, so a crash loses only seconds of
+    // route rather than rewriting the whole file on every footstep.
+    if (recordDirty && ++recordFlushTicks >= 100) {
+      pathStorage.save();
+      recordFlushTicks = 0;
+      recordDirty = false;
+    }
   }
 
   private void tickParkour(
@@ -527,6 +634,92 @@ public class ShrineChallengeManager {
         Component.literal(colour + remaining + " seconds remaining!")
       );
     }
+
+    // Optional floor hazard layered on top of the timer (e.g. the ice trial).
+    if (iceFloorActive(config)) {
+      tickIceFloor(player, state, config);
+    }
+  }
+
+  /**
+   * The floor hazard is live only when the shrine is structurally a floor trial
+   * (per-shrine JSON) AND the global master toggle is on (ModMenu / ShrineConfig).
+   */
+  private boolean iceFloorActive(ShrineChallengeConfig config) {
+    return config.isIceFloorEnabled() && ShrineConfig.get().isIceFloorEnabled();
+  }
+
+  /**
+   * Floor hazard: if the player is standing on a hazard block that was NOT
+   * recorded as part of the safe path, deal damage and yank them to the start.
+   */
+  private void tickIceFloor(
+    ServerPlayer player,
+    ShrineChallengeState state,
+    ShrineChallengeConfig config
+  ) {
+    if (state.getIceHitCooldown() > 0) {
+      state.decrementIceHitCooldown();
+      return;
+    }
+
+    BlockPos foot = footBlock(player);
+
+    // The start/reset tile is always implicitly safe. Otherwise, if the captured
+    // start happens to sit on hazard ice, the player would be re-punished every
+    // cooldown cycle after each teleport — a death loop (run-ending in hardcore).
+    BlockPos resetFoot = BlockPos.containing(
+      state.getResetX(),
+      state.getResetY() - 0.05,
+      state.getResetZ()
+    );
+    if (foot.equals(resetFoot)) return;
+
+    ServerLevel level = player.serverLevel();
+    BlockState below = level.getBlockState(foot);
+    ResourceLocation blockId = BuiltInRegistries.BLOCK.getKey(below.getBlock());
+
+    // Not a hazard block → safe to stand here.
+    if (!config.getIceHazardBlocks().contains(blockId.toString())) return;
+
+    // A recorded (or baked) safe block → no penalty.
+    if (isSafe(state.getShrineId(), foot)) return;
+
+    punishIce(player, state, config);
+  }
+
+  private void punishIce(
+    ServerPlayer player,
+    ShrineChallengeState state,
+    ShrineChallengeConfig config
+  ) {
+    ShrineConfig tuning = ShrineConfig.get();
+    player.hurt(player.damageSources().freeze(), tuning.getIceFloorDamage());
+
+    // Halt momentum so the player doesn't keep sliding/falling after the yank.
+    player.setDeltaMovement(0, 0, 0);
+    player.resetFallDistance();
+    player.connection.teleport(
+      state.getResetX(),
+      state.getResetY(),
+      state.getResetZ(),
+      state.getResetYaw(),
+      state.getResetPitch()
+    );
+
+    player.serverLevel().playSound(
+      null,
+      player.blockPosition(),
+      SoundEvents.GLASS_BREAK,
+      SoundSource.BLOCKS,
+      tuning.getIceCrackSoundVolume(),
+      tuning.getIceCrackSoundPitch()
+    );
+    player.sendSystemMessage(
+      Component.literal("§b❄ §7The ice cracks beneath you — back to the start!")
+    );
+
+    state.setIceHitCooldown(tuning.getIceFloorHitCooldownTicks());
   }
 
   private void tickDarkGauntlet(
@@ -537,7 +730,7 @@ public class ShrineChallengeManager {
   ) {
     // Re-apply blindness every 5 seconds (100 ticks) so it never fades
     state.incrementBlindnessTicks();
-    if (state.getBlindnessRefreshTicks() >= 100) {
+    if (state.getBlindnessRefreshTicks() >= ShrineConfig.get().getDarkGauntletBlindnessRefreshTicks()) {
       applyBlindness(player);
       state.setBlindnessRefreshTicks(0);
     }
@@ -631,27 +824,38 @@ public class ShrineChallengeManager {
   }
 
   private void applyBlindness(ServerPlayer player) {
-    // 200 ticks = 10 seconds; refreshed every 5 s so it never fades
+    // Duration configurable; refreshed on an interval so it never fades.
     player.addEffect(
-      new MobEffectInstance(MobEffects.BLINDNESS, 200, 0, false, false)
+      new MobEffectInstance(
+        MobEffects.BLINDNESS,
+        ShrineConfig.get().getDarkGauntletBlindnessDurationTicks(),
+        0,
+        false,
+        false
+      )
     );
   }
 
   private void triggerEarthquake(ServerPlayer player, int radius) {
+    ShrineConfig cfg = ShrineConfig.get();
+
     // Sound
     player.serverLevel().playSound(
       null,
       player.blockPosition(),
       SoundEvents.GENERIC_EXPLODE.value(),
       SoundSource.BLOCKS,
-      0.6f,
-      0.4f
+      cfg.getEarthquakeSoundVolume(),
+      cfg.getEarthquakeSoundPitch()
     );
 
-    // Brief nausea to sell the disorientation
-    player.addEffect(
-      new MobEffectInstance(MobEffects.CONFUSION, 60, 0, false, false)
-    );
+    // Brief nausea to sell the disorientation (0 disables)
+    int nauseaTicks = cfg.getEarthquakeNauseaTicks();
+    if (nauseaTicks > 0) {
+      player.addEffect(
+        new MobEffectInstance(MobEffects.CONFUSION, nauseaTicks, 0, false, false)
+      );
+    }
 
     // Random displacement
     Random rng = new Random();
@@ -671,6 +875,141 @@ public class ShrineChallengeManager {
     player.sendSystemMessage(
       Component.literal("§6§lThe earth trembles — you are thrown!")
     );
+  }
+
+  // ── Safe-path authoring (dev) ─────────────────────────────────────────────────
+
+  /**
+   * Toggle continuous safe-path recording for a shrine. While active, every
+   * block the player walks over is saved as a safe position.
+   * @return true if recording is now ON, false if it was just turned OFF.
+   */
+  public boolean toggleRecording(ServerPlayer player, String shrineId) {
+    UUID id = player.getUUID();
+    if (shrineId.equals(recordingPlayers.get(id))) {
+      recordingPlayers.remove(id);
+      // Persist immediately on stop (the recording loop only flushes periodically).
+      pathStorage.save();
+      recordDirty = false;
+      player.sendSystemMessage(
+        Component.literal(
+          "§e[Path] §7Recording stopped for §e" + shrineId + "§7 — " +
+            pathStorage.count(shrineId) + " safe blocks saved."
+        )
+      );
+      return false;
+    }
+    recordingPlayers.put(id, shrineId);
+    player.sendSystemMessage(
+      Component.literal(
+        "§a[Path] §7Recording the §a" + shrineId + "§7 safe path — walk the route. " +
+          "Every block you step on is saved. Run the command again to stop."
+      )
+    );
+    return true;
+  }
+
+  /** Add the single block under the player's feet to the safe path. */
+  public void recordHere(ServerPlayer player, String shrineId) {
+    BlockPos foot = footBlock(player);
+    boolean added = pathStorage.add(shrineId, foot);
+    player.sendSystemMessage(
+      Component.literal(
+        added
+          ? "§a[Path] §7Added safe block §a" + foot.getX() + " " + foot.getY() +
+            " " + foot.getZ() + " §7(" + pathStorage.count(shrineId) + " total)."
+          : "§7[Path] That block is already part of the " + shrineId + " safe path."
+      )
+    );
+  }
+
+  /** Wipe all recorded safe positions for a shrine and stop recording. */
+  public void clearPath(ServerPlayer player, String shrineId) {
+    recordingPlayers.remove(player.getUUID());
+    int removed = pathStorage.clear(shrineId);
+    player.sendSystemMessage(
+      Component.literal(
+        "§c[Path] §7Cleared §c" + removed + "§7 safe blocks for §e" + shrineId + "§7."
+      )
+    );
+  }
+
+  /** Particle-highlight nearby safe blocks (recorded + baked) for the player. */
+  public void showPath(ServerPlayer player, String shrineId) {
+    Set<Long> all = new HashSet<>(pathStorage.get(shrineId));
+    Set<Long> baked = bakedSafe.get(shrineId);
+    if (baked != null) all.addAll(baked);
+
+    ServerLevel level = player.serverLevel();
+    BlockPos origin = player.blockPosition();
+    int shown = 0;
+    for (long packed : all) {
+      BlockPos pos = BlockPos.of(packed);
+      if (pos.distSqr(origin) > 64 * 64) continue; // nearby only
+      level.sendParticles(
+        ParticleTypes.END_ROD,
+        pos.getX() + 0.5,
+        pos.getY() + 1.05,
+        pos.getZ() + 0.5,
+        6,
+        0.2,
+        0.05,
+        0.2,
+        0.0
+      );
+      shown++;
+    }
+    player.sendSystemMessage(
+      Component.literal(
+        "§b[Path] §7Highlighted §b" + shown + "§7 nearby safe blocks (of " +
+          all.size() + " total)."
+      )
+    );
+  }
+
+  /** Print the recorded safe path as a {@code "safePositions"} JSON snippet. */
+  public void exportPath(ServerPlayer player, String shrineId) {
+    // Union recorded (world) positions with any already baked into the config,
+    // so re-exporting after a partial commit never drops earlier positions.
+    Set<Long> union = new HashSet<>(pathStorage.get(shrineId));
+    Set<Long> baked = bakedSafe.get(shrineId);
+    if (baked != null) union.addAll(baked);
+
+    String json = ShrinePathStorage.toJsonString(union);
+    int count = union.size();
+    player.sendSystemMessage(
+      Component.literal(
+        "§6[Path] §7Exported §6" + count + "§7 safe blocks for §e" + shrineId + "§7."
+      )
+    );
+    player.sendSystemMessage(
+      Component.literal(
+        "§7Paste into §f" + shrineId + ".json§7 as §f\"safePositions\"§7 " +
+          "(also written to the server log):"
+      )
+    );
+    player.sendSystemMessage(Component.literal("§8\"safePositions\": " + json));
+    InitiativeInit.LOGGER.info(
+      "[Shrine Path] Export for {} -> \"safePositions\": {}",
+      shrineId,
+      json
+    );
+  }
+
+  /** The block directly supporting the player's feet (bottom of the bounding box). */
+  private static BlockPos footBlock(ServerPlayer player) {
+    return BlockPos.containing(
+      player.getX(),
+      player.getBoundingBox().minY - 0.05,
+      player.getZ()
+    );
+  }
+
+  /** True if the position is a safe block (recorded in the world or baked in config). */
+  private boolean isSafe(String shrineId, BlockPos pos) {
+    if (pathStorage.isSafe(shrineId, pos)) return true;
+    Set<Long> baked = bakedSafe.get(shrineId);
+    return baked != null && baked.contains(pos.asLong());
   }
 
   // ── Query helpers ─────────────────────────────────────────────────────────────

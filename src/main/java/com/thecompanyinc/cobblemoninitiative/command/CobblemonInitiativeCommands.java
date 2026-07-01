@@ -119,6 +119,34 @@ public class CobblemonInitiativeCommands {
                   CobblemonInitiativeCommands::shrineComplete
                 )
               )
+              .then(
+                Commands.literal("path")
+                  .then(
+                    Commands.literal("record").executes(
+                      CobblemonInitiativeCommands::shrinePathRecord
+                    )
+                  )
+                  .then(
+                    Commands.literal("here").executes(
+                      CobblemonInitiativeCommands::shrinePathHere
+                    )
+                  )
+                  .then(
+                    Commands.literal("clear").executes(
+                      CobblemonInitiativeCommands::shrinePathClear
+                    )
+                  )
+                  .then(
+                    Commands.literal("show").executes(
+                      CobblemonInitiativeCommands::shrinePathShow
+                    )
+                  )
+                  .then(
+                    Commands.literal("export").executes(
+                      CobblemonInitiativeCommands::shrinePathExport
+                    )
+                  )
+              )
           )
         )
         .then(
@@ -559,5 +587,61 @@ public class CobblemonInitiativeCommands {
         shrineId
       );
     return completed ? 1 : 0;
+  }
+
+  // ── Safe-path authoring (dev) ─────────────────────────────────────────────────
+
+  /** Resolves the player + shrine id shared by every path subcommand. */
+  private static ServerPlayer pathPlayer(CommandContext<CommandSourceStack> context) {
+    ServerPlayer player = context.getSource().getPlayer();
+    if (player == null) {
+      context.getSource().sendFailure(Component.literal("Must be run by a player."));
+    }
+    return player;
+  }
+
+  /** /cobblemon-initiative shrine <id> path record — toggle continuous recording. */
+  private static int shrinePathRecord(CommandContext<CommandSourceStack> context) {
+    ServerPlayer player = pathPlayer(context);
+    if (player == null) return 0;
+    String shrineId = StringArgumentType.getString(context, "shrine");
+    InitiativeInit.getShrineChallengeManager().toggleRecording(player, shrineId);
+    return 1;
+  }
+
+  /** /cobblemon-initiative shrine <id> path here — add the block underfoot. */
+  private static int shrinePathHere(CommandContext<CommandSourceStack> context) {
+    ServerPlayer player = pathPlayer(context);
+    if (player == null) return 0;
+    String shrineId = StringArgumentType.getString(context, "shrine");
+    InitiativeInit.getShrineChallengeManager().recordHere(player, shrineId);
+    return 1;
+  }
+
+  /** /cobblemon-initiative shrine <id> path clear — wipe the recorded path. */
+  private static int shrinePathClear(CommandContext<CommandSourceStack> context) {
+    ServerPlayer player = pathPlayer(context);
+    if (player == null) return 0;
+    String shrineId = StringArgumentType.getString(context, "shrine");
+    InitiativeInit.getShrineChallengeManager().clearPath(player, shrineId);
+    return 1;
+  }
+
+  /** /cobblemon-initiative shrine <id> path show — particle-highlight safe blocks. */
+  private static int shrinePathShow(CommandContext<CommandSourceStack> context) {
+    ServerPlayer player = pathPlayer(context);
+    if (player == null) return 0;
+    String shrineId = StringArgumentType.getString(context, "shrine");
+    InitiativeInit.getShrineChallengeManager().showPath(player, shrineId);
+    return 1;
+  }
+
+  /** /cobblemon-initiative shrine <id> path export — print a safePositions snippet. */
+  private static int shrinePathExport(CommandContext<CommandSourceStack> context) {
+    ServerPlayer player = pathPlayer(context);
+    if (player == null) return 0;
+    String shrineId = StringArgumentType.getString(context, "shrine");
+    InitiativeInit.getShrineChallengeManager().exportPath(player, shrineId);
+    return 1;
   }
 }

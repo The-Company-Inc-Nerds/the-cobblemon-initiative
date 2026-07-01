@@ -34,6 +34,18 @@ public class ShrineChallengeState {
    */
   private UUID fairyTestPokemonUuid = null;
 
+  // ── ice floor hazard ─────────────────────────────────────────────────────────
+
+  /** Ticks of immunity remaining after a hazard hit (debounces a single misstep). */
+  private int iceHitCooldown = 0;
+
+  /** Reset point the ice floor teleports the player back to. Captured on start. */
+  private double resetX;
+  private double resetY;
+  private double resetZ;
+  private float resetYaw;
+  private float resetPitch;
+
   // ── Constructor ──────────────────────────────────────────────────────────────
 
   public ShrineChallengeState(UUID playerId, String shrineId) {
@@ -66,4 +78,22 @@ public class ShrineChallengeState {
 
   public UUID getFairyTestPokemonUuid() { return fairyTestPokemonUuid; }
   public void setFairyTestPokemonUuid(UUID uuid) { this.fairyTestPokemonUuid = uuid; }
+
+  public int getIceHitCooldown() { return iceHitCooldown; }
+  public void setIceHitCooldown(int ticks) { this.iceHitCooldown = ticks; }
+  public void decrementIceHitCooldown() { if (this.iceHitCooldown > 0) this.iceHitCooldown--; }
+
+  public double getResetX() { return resetX; }
+  public double getResetY() { return resetY; }
+  public double getResetZ() { return resetZ; }
+  public float getResetYaw() { return resetYaw; }
+  public float getResetPitch() { return resetPitch; }
+
+  public void setResetPoint(double x, double y, double z, float yaw, float pitch) {
+    this.resetX = x;
+    this.resetY = y;
+    this.resetZ = z;
+    this.resetYaw = yaw;
+    this.resetPitch = pitch;
+  }
 }

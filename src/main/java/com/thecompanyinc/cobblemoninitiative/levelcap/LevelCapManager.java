@@ -3,6 +3,7 @@ package com.thecompanyinc.cobblemoninitiative.levelcap;
 import com.thecompanyinc.cobblemoninitiative.InitiativeInit;
 import com.thecompanyinc.cobblemoninitiative.config.ConfigLoader;
 import com.thecompanyinc.cobblemoninitiative.config.LevelCapConfig;
+import com.thecompanyinc.cobblemoninitiative.config.ProgressionConfig;
 import com.thecompanyinc.cobblemoninitiative.data.PlayerProgress;
 import java.util.List;
 import net.minecraft.network.chat.Component;
@@ -27,7 +28,7 @@ public class LevelCapManager {
       InitiativeInit.getProgressManager().getProgress(player);
     List<LevelCapConfig> levelCaps = configLoader.getLevelCaps();
 
-    int newCap = 20;
+    int newCap = ProgressionConfig.get().getBaseLevelCap();
 
     for (LevelCapConfig cap : levelCaps) {
       if (progress.hasAchievement(cap.getAchievementId())) {
@@ -59,7 +60,7 @@ public class LevelCapManager {
       }
     }
 
-    return 100;
+    return ProgressionConfig.get().getChampionLevelCap();
   }
 
   public String getNextLevelCapRequirement(ServerPlayer player) {

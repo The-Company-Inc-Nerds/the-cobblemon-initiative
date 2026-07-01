@@ -37,4 +37,30 @@ public class InstallConfig {
    * when running {@code /cobblemon-initiative install run}.
    */
   public List<InstallZone> zones = new ArrayList<>();
+
+  /**
+   * Mods the {@code install verify} report checks for. Presence is resolved via
+   * FabricLoader; an entry is satisfied if its {@code modId} OR any {@code alias}
+   * is loaded. {@code required} reflects the intended UPM 2 experience, not what
+   * the loader enforces (only Cobblemon + Fabric are hard {@code depends}).
+   */
+  public List<ExpectedMod> expectedMods = new ArrayList<>();
+
+  /** Datapack id fragments {@code install verify} checks for (matched case-insensitively). */
+  public List<String> expectedDatapacks = new ArrayList<>();
+
+  /** Resource packs surfaced as recommendations (name only — client packs aren't auto-detected). */
+  public List<String> recommendedResourcePacks = new ArrayList<>();
+
+  /** Shader packs surfaced as recommendations (name only — the active pack isn't auto-detected). */
+  public List<String> recommendedShaders = new ArrayList<>();
+
+  /** One expected mod for the verify report. */
+  public static class ExpectedMod {
+    public String modId;
+    public String name;
+    public boolean required = false;
+    public List<String> aliases = new ArrayList<>();
+    public String note = "";
+  }
 }

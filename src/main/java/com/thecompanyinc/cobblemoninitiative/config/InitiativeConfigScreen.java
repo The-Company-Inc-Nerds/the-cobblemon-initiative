@@ -424,11 +424,411 @@ public class InitiativeConfigScreen {
         .build()
     );
 
+    // -------------------------------------------------------------------------
+    // Ice Trial (shrine floor hazard)
+    // -------------------------------------------------------------------------
+    ShrineConfig shrineConfig = ShrineConfig.load();
+    ShrineConfig shrineDefaults = new ShrineConfig();
+
+    ConfigCategory iceTrial = builder.getOrCreateCategory(
+      Component.literal("Ice Trial")
+    );
+
+    iceTrial.addEntry(
+      entryBuilder
+        .startBooleanToggle(
+          Component.literal("Enable Ice Floor Hazard"),
+          shrineConfig.isIceFloorEnabled()
+        )
+        .setDefaultValue(shrineDefaults.isIceFloorEnabled())
+        .setTooltip(
+          Component.literal(
+            "Master switch for the ice trial's floor hazard. When off, touching ice "
+            + "off the safe path no longer hurts or teleports you (the timed parkour "
+            + "still runs). Useful for accessibility or testing the layout."
+          )
+        )
+        .setSaveConsumer(shrineConfig::setIceFloorEnabled)
+        .build()
+    );
+
+    iceTrial.addEntry(
+      entryBuilder
+        .startFloatField(
+          Component.literal("Ice Floor Damage"),
+          shrineConfig.getIceFloorDamage()
+        )
+        .setDefaultValue(shrineDefaults.getIceFloorDamage())
+        .setMin(0.0f)
+        .setMax(40.0f)
+        .setTooltip(
+          Component.literal(
+            "Damage taken when stepping on the wrong ice (2 = 1 heart). "
+            + "Lower this if the trial feels too lethal for a hardcore run; 0 = no damage "
+            + "(still teleports you back to the start)."
+          )
+        )
+        .setSaveConsumer(shrineConfig::setIceFloorDamage)
+        .build()
+    );
+
+    iceTrial.addEntry(
+      entryBuilder
+        .startIntSlider(
+          Component.literal("Ice Hit Cooldown (ticks)"),
+          shrineConfig.getIceFloorHitCooldownTicks(),
+          0,
+          100
+        )
+        .setDefaultValue(shrineDefaults.getIceFloorHitCooldownTicks())
+        .setTooltip(
+          Component.literal(
+            "Immunity window after a hit so a single misstep only fires once. "
+            + "20 ticks = 1 second."
+          )
+        )
+        .setSaveConsumer(shrineConfig::setIceFloorHitCooldownTicks)
+        .build()
+    );
+
+    // -------------------------------------------------------------------------
+    // Unplaced Chests (loot dispensers)
+    // -------------------------------------------------------------------------
+    LootChestConfig lootChestConfig = LootChestConfig.load();
+    LootChestConfig lootChestDefaults = new LootChestConfig();
+
+    ConfigCategory lootChests = builder.getOrCreateCategory(
+      Component.literal("Unplaced Chests")
+    );
+
+    lootChests.addEntry(
+      entryBuilder
+        .startBooleanToggle(
+          Component.literal("Enable Unplaced-Chest Loot"),
+          lootChestConfig.isEnabled()
+        )
+        .setDefaultValue(lootChestDefaults.isEnabled())
+        .setTooltip(
+          Component.literal(
+            "When on, opening a chest you did NOT place yourself (map / structure "
+            + "chests) grants random items scaled to your badge count instead of "
+            + "opening the chest. Chests you place by hand open normally."
+          )
+        )
+        .setSaveConsumer(lootChestConfig::setEnabled)
+        .build()
+    );
+
+    lootChests.addEntry(
+      entryBuilder
+        .startBooleanToggle(
+          Component.literal("Give Minecraft Pool"),
+          lootChestConfig.isGiveMinecraftPool()
+        )
+        .setDefaultValue(lootChestDefaults.isGiveMinecraftPool())
+        .setTooltip(
+          Component.literal("Include the Minecraft-resource loot pool (metals / naturals / minerals).")
+        )
+        .setSaveConsumer(lootChestConfig::setGiveMinecraftPool)
+        .build()
+    );
+
+    lootChests.addEntry(
+      entryBuilder
+        .startBooleanToggle(
+          Component.literal("Give Cobblemon Pool"),
+          lootChestConfig.isGiveCobblemonPool()
+        )
+        .setDefaultValue(lootChestDefaults.isGiveCobblemonPool())
+        .setTooltip(
+          Component.literal("Include the Cobblemon-resource loot pool (apricorns / evo & held items / healing).")
+        )
+        .setSaveConsumer(lootChestConfig::setGiveCobblemonPool)
+        .build()
+    );
+
+    lootChests.addEntry(
+      entryBuilder
+        .startBooleanToggle(
+          Component.literal("One-Time Per Chest"),
+          lootChestConfig.isOneTimePerChest()
+        )
+        .setDefaultValue(lootChestDefaults.isOneTimePerChest())
+        .setTooltip(
+          Component.literal(
+            "Each unplaced chest dispenses loot only once, then behaves as a normal "
+            + "chest. Turn off to re-roll on every open (loot-table testing)."
+          )
+        )
+        .setSaveConsumer(lootChestConfig::setOneTimePerChest)
+        .build()
+    );
+
+    // -------------------------------------------------------------------------
+    // Dark Urge (whisper-on-faint flavour)
+    // -------------------------------------------------------------------------
+    ConfigCategory darkUrge = builder.getOrCreateCategory(Component.literal("Dark Urge"));
+
+    darkUrge.addEntry(
+      entryBuilder
+        .startBooleanToggle(Component.literal("Enable Dark Urge Whispers"), config.isEnableDarkUrgeWhispers())
+        .setDefaultValue(defaults.isEnableDarkUrgeWhispers())
+        .setTooltip(Component.literal("Intrusive shadow-self lines on Pokémon faint. Disable for a lore-free / spoiler-free run."))
+        .setSaveConsumer(config::setEnableDarkUrgeWhispers)
+        .build()
+    );
+    darkUrge.addEntry(
+      entryBuilder
+        .startFloatField(Component.literal("Whisper Chance"), config.getDarkUrgeChance())
+        .setDefaultValue(defaults.getDarkUrgeChance())
+        .setMin(0.0f).setMax(1.0f)
+        .setTooltip(Component.literal("Probability (0.0-1.0) that an eligible faint fires a whisper."))
+        .setSaveConsumer(config::setDarkUrgeChance)
+        .build()
+    );
+    darkUrge.addEntry(
+      entryBuilder
+        .startIntSlider(Component.literal("Whisper Cooldown (ticks)"), config.getDarkUrgeCooldownTicks(), 0, 24000)
+        .setDefaultValue(defaults.getDarkUrgeCooldownTicks())
+        .setTooltip(Component.literal("Minimum gap between whispers per player. 20 ticks = 1s (6000 = 5 min)."))
+        .setSaveConsumer(config::setDarkUrgeCooldownTicks)
+        .build()
+    );
+    darkUrge.addEntry(
+      entryBuilder
+        .startIntSlider(Component.literal("Tier 1 Level-Cap Threshold"), config.getDarkUrgeTier1LevelCap(), 1, 100)
+        .setDefaultValue(defaults.getDarkUrgeTier1LevelCap())
+        .setTooltip(Component.literal("Level cap at which whispers escalate to tier 1 (gyms 1-3)."))
+        .setSaveConsumer(config::setDarkUrgeTier1LevelCap)
+        .build()
+    );
+    darkUrge.addEntry(
+      entryBuilder
+        .startIntSlider(Component.literal("Tier 2 Level-Cap Threshold"), config.getDarkUrgeTier2LevelCap(), 1, 100)
+        .setDefaultValue(defaults.getDarkUrgeTier2LevelCap())
+        .setTooltip(Component.literal("Level cap at which whispers escalate to tier 2 (gyms 4-7)."))
+        .setSaveConsumer(config::setDarkUrgeTier2LevelCap)
+        .build()
+    );
+    darkUrge.addEntry(
+      entryBuilder
+        .startIntSlider(Component.literal("Tier 3 Level-Cap Threshold"), config.getDarkUrgeTier3LevelCap(), 1, 100)
+        .setDefaultValue(defaults.getDarkUrgeTier3LevelCap())
+        .setTooltip(Component.literal("Level cap at which the founder speaks plainly (tier 3, gym 8+)."))
+        .setSaveConsumer(config::setDarkUrgeTier3LevelCap)
+        .build()
+    );
+
+    // Wilderness announcements (Area Announcements category)
+    announce.addEntry(
+      entryBuilder
+        .startBooleanToggle(Component.literal("Announce Wilderness"), config.isAnnounceWilderness())
+        .setDefaultValue(defaults.isAnnounceWilderness())
+        .setTooltip(Component.literal("Announce 'the wild' when leaving a named zone into undefined territory."))
+        .setSaveConsumer(config::setAnnounceWilderness)
+        .build()
+    );
+    announce.addEntry(
+      entryBuilder
+        .startStrField(Component.literal("Wilderness Name"), config.getWildernessName())
+        .setDefaultValue(defaults.getWildernessName())
+        .setTooltip(Component.literal("Display name for undefined territory."))
+        .setSaveConsumer(config::setWildernessName)
+        .build()
+    );
+    announce.addEntry(
+      entryBuilder
+        .startStrField(Component.literal("Wilderness Subtitle"), config.getWildernessSubtitle())
+        .setDefaultValue(defaults.getWildernessSubtitle())
+        .setTooltip(Component.literal("Optional subtitle beneath the wilderness name (TITLE style only)."))
+        .setSaveConsumer(config::setWildernessSubtitle)
+        .build()
+    );
+    announce.addEntry(
+      entryBuilder
+        .startStrField(Component.literal("Wilderness Color"), config.getWildernessColor())
+        .setDefaultValue(defaults.getWildernessColor())
+        .setTooltip(Component.literal("Hex color for the wilderness announcement, e.g. #88AA88."))
+        .setSaveConsumer(config::setWildernessColor)
+        .build()
+    );
+
+    // Whiteout death damage (Nuzlocke Rules category)
+    nuzlocke.addEntry(
+      entryBuilder
+        .startFloatField(Component.literal("Whiteout Death Damage"), config.getWhiteoutDeathDamage())
+        .setDefaultValue(defaults.getWhiteoutDeathDamage())
+        .setMin(20.0f).setMax(1000.0f)
+        .setTooltip(Component.literal("Killing blow when the last Pokémon faints. Keep >= 20 (max HP) so a whiteout stays lethal."))
+        .setSaveConsumer(config::setWhiteoutDeathDamage)
+        .build()
+    );
+
+    // Zone-check cadence (General Settings category)
+    general.addEntry(
+      entryBuilder
+        .startIntSlider(Component.literal("Zone Check Cadence (ticks)"), config.getZoneCheckCadenceTicks(), 1, 100)
+        .setDefaultValue(defaults.getZoneCheckCadenceTicks())
+        .setTooltip(Component.literal("How often zone-transition announcements are polled. 20 = 1s."))
+        .setSaveConsumer(config::setZoneCheckCadenceTicks)
+        .build()
+    );
+
+    // NPC Sight internals (NPC Sight category)
+    npcSight.addEntry(
+      entryBuilder
+        .startIntSlider(Component.literal("Field of View (degrees)"), sightConfig.getFovDegrees(), 30, 360)
+        .setDefaultValue(sightDefaults.getFovDegrees())
+        .setTooltip(Component.literal("Vision cone an NPC can see. 120 = default; 360 = omnidirectional."))
+        .setSaveConsumer(sightConfig::setFovDegrees)
+        .build()
+    );
+    npcSight.addEntry(
+      entryBuilder
+        .startIntSlider(Component.literal("Sight Check Interval (ticks)"), sightConfig.getTickInterval(), 1, 40)
+        .setDefaultValue(sightDefaults.getTickInterval())
+        .setTooltip(Component.literal("Run the full line-of-sight sweep every N ticks. Higher = cheaper, less responsive."))
+        .setSaveConsumer(sightConfig::setTickInterval)
+        .build()
+    );
+    npcSight.addEntry(
+      entryBuilder
+        .startDoubleField(Component.literal("Debug Ray Step"), sightConfig.getDebugRayStep())
+        .setDefaultValue(sightDefaults.getDebugRayStep())
+        .setMin(0.1).setMax(2.0)
+        .setTooltip(Component.literal("Debug mode: block spacing between raycast particles."))
+        .setSaveConsumer(sightConfig::setDebugRayStep)
+        .build()
+    );
+    npcSight.addEntry(
+      entryBuilder
+        .startIntSlider(Component.literal("Debug Ray Max Particles"), sightConfig.getDebugRayMaxSteps(), 32, 2048)
+        .setDefaultValue(sightDefaults.getDebugRayMaxSteps())
+        .setTooltip(Component.literal("Debug mode: cap on particles drawn per ray."))
+        .setSaveConsumer(sightConfig::setDebugRayMaxSteps)
+        .build()
+    );
+
+    // Ice crack SFX (Ice Trial category)
+    iceTrial.addEntry(
+      entryBuilder
+        .startFloatField(Component.literal("Ice Crack Sound Volume"), shrineConfig.getIceCrackSoundVolume())
+        .setDefaultValue(shrineDefaults.getIceCrackSoundVolume())
+        .setMin(0.0f).setMax(1.0f)
+        .setTooltip(Component.literal("Volume of the glass-break sound on a floor-hazard hit."))
+        .setSaveConsumer(shrineConfig::setIceCrackSoundVolume)
+        .build()
+    );
+    iceTrial.addEntry(
+      entryBuilder
+        .startFloatField(Component.literal("Ice Crack Sound Pitch"), shrineConfig.getIceCrackSoundPitch())
+        .setDefaultValue(shrineDefaults.getIceCrackSoundPitch())
+        .setMin(0.5f).setMax(2.0f)
+        .setTooltip(Component.literal("Pitch of the glass-break sound on a floor-hazard hit."))
+        .setSaveConsumer(shrineConfig::setIceCrackSoundPitch)
+        .build()
+    );
+
+    // -------------------------------------------------------------------------
+    // Ground Shrine (The Buried Maze — dark gauntlet)
+    // -------------------------------------------------------------------------
+    ConfigCategory groundShrine = builder.getOrCreateCategory(Component.literal("Ground Shrine"));
+
+    groundShrine.addEntry(
+      entryBuilder
+        .startFloatField(Component.literal("Start Health Fraction"), shrineConfig.getDarkGauntletStartHealthFraction())
+        .setDefaultValue(shrineDefaults.getDarkGauntletStartHealthFraction())
+        .setMin(0.1f).setMax(1.0f)
+        .setTooltip(Component.literal("Fraction of max health the player starts the ground shrine at (0.5 = half)."))
+        .setSaveConsumer(shrineConfig::setDarkGauntletStartHealthFraction)
+        .build()
+    );
+    groundShrine.addEntry(
+      entryBuilder
+        .startIntSlider(Component.literal("Blindness Duration (ticks)"), shrineConfig.getDarkGauntletBlindnessDurationTicks(), 20, 400)
+        .setDefaultValue(shrineDefaults.getDarkGauntletBlindnessDurationTicks())
+        .setTooltip(Component.literal("How long each blindness application lasts. 20 = 1s."))
+        .setSaveConsumer(shrineConfig::setDarkGauntletBlindnessDurationTicks)
+        .build()
+    );
+    groundShrine.addEntry(
+      entryBuilder
+        .startIntSlider(Component.literal("Blindness Refresh (ticks)"), shrineConfig.getDarkGauntletBlindnessRefreshTicks(), 20, 200)
+        .setDefaultValue(shrineDefaults.getDarkGauntletBlindnessRefreshTicks())
+        .setTooltip(Component.literal("How often blindness is re-applied so it never fades. Keep below the duration."))
+        .setSaveConsumer(shrineConfig::setDarkGauntletBlindnessRefreshTicks)
+        .build()
+    );
+    groundShrine.addEntry(
+      entryBuilder
+        .startIntSlider(Component.literal("Earthquake Nausea (ticks)"), shrineConfig.getEarthquakeNauseaTicks(), 0, 200)
+        .setDefaultValue(shrineDefaults.getEarthquakeNauseaTicks())
+        .setTooltip(Component.literal("Nausea applied on each earthquake teleport. 0 disables (viewer comfort)."))
+        .setSaveConsumer(shrineConfig::setEarthquakeNauseaTicks)
+        .build()
+    );
+    groundShrine.addEntry(
+      entryBuilder
+        .startFloatField(Component.literal("Earthquake Sound Volume"), shrineConfig.getEarthquakeSoundVolume())
+        .setDefaultValue(shrineDefaults.getEarthquakeSoundVolume())
+        .setMin(0.0f).setMax(1.0f)
+        .setTooltip(Component.literal("Volume of the earthquake rumble."))
+        .setSaveConsumer(shrineConfig::setEarthquakeSoundVolume)
+        .build()
+    );
+    groundShrine.addEntry(
+      entryBuilder
+        .startFloatField(Component.literal("Earthquake Sound Pitch"), shrineConfig.getEarthquakeSoundPitch())
+        .setDefaultValue(shrineDefaults.getEarthquakeSoundPitch())
+        .setMin(0.5f).setMax(2.0f)
+        .setTooltip(Component.literal("Pitch of the earthquake rumble."))
+        .setSaveConsumer(shrineConfig::setEarthquakeSoundPitch)
+        .build()
+    );
+
+    // -------------------------------------------------------------------------
+    // Progression
+    // -------------------------------------------------------------------------
+    ProgressionConfig progressionConfig = ProgressionConfig.load();
+    ProgressionConfig progressionDefaults = new ProgressionConfig();
+    ConfigCategory progression = builder.getOrCreateCategory(Component.literal("Progression"));
+
+    progression.addEntry(
+      entryBuilder
+        .startIntSlider(Component.literal("Base Level Cap"), progressionConfig.getBaseLevelCap(), 5, 50)
+        .setDefaultValue(progressionDefaults.getBaseLevelCap())
+        .setTooltip(Component.literal("Starting level cap before any gym badge is earned."))
+        .setSaveConsumer(progressionConfig::setBaseLevelCap)
+        .build()
+    );
+    progression.addEntry(
+      entryBuilder
+        .startIntSlider(Component.literal("Champion Level Cap"), progressionConfig.getChampionLevelCap(), 50, 100)
+        .setDefaultValue(progressionDefaults.getChampionLevelCap())
+        .setTooltip(Component.literal("Cap reported once every badge/champion milestone is earned."))
+        .setSaveConsumer(progressionConfig::setChampionLevelCap)
+        .build()
+    );
+    progression.addEntry(
+      entryBuilder
+        .startIntSlider(Component.literal("Spawn-on-Defeat Y Offset"), progressionConfig.getSpawnOnDefeatYOffset(), -5, 5)
+        .setDefaultValue(progressionDefaults.getSpawnOnDefeatYOffset())
+        .setTooltip(Component.literal("Default vertical offset for a Pokémon spawned when a trainer is defeated."))
+        .setSaveConsumer(progressionConfig::setSpawnOnDefeatYOffset)
+        .build()
+    );
+
     builder.setSavingRunnable(() -> {
       config.save();
       sightConfig.save();
+      shrineConfig.save();
+      lootChestConfig.save();
+      progressionConfig.save();
       NuzlockeInit.reloadConfig();
       NpcSightInit.reloadConfig();
+      ShrineConfig.reload();
+      LootChestConfig.reload();
+      ProgressionConfig.reload();
     });
 
     return builder.build();

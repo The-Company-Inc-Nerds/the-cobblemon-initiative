@@ -16,8 +16,14 @@ import com.thecompanyinc.cobblemoninitiative.npcmap.NpcMapStorage;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.Collection;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.ModContainer;
+import net.minecraft.server.packs.repository.Pack;
+import net.minecraft.server.packs.repository.PackRepository;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
@@ -61,6 +67,7 @@ public class InstallCommand {
         Commands.literal("install")
           .requires(src -> src.hasPermission(2))
           .then(Commands.literal("check").executes(InstallCommand::cmdCheck))
+          .then(Commands.literal("verify").executes(InstallCommand::cmdVerify))
           .then(Commands.literal("run").executes(InstallCommand::cmdRun))
       )
     );
@@ -158,6 +165,125 @@ public class InstallCommand {
   }
 
   // ---------------------------------------------------------------------------
+  // /cobblemon-initiative install verify
+  // ---------------------------------------------------------------------------
+
+  /** Reports which expected mods / datapacks are present and recommends packs. */
+  private static int cmdVerify(CommandContext<CommandSourceStack> ctx) {
+    InstallConfig config = loadConfig(ctx);
+    if (config == null) return 0;
+
+    MinecraftServer server = ctx.getSource().getServer();
+    StringBuilder sb = new StringBuilder("[Install] Modpack verification:\n\n");
+    boolean allRequired = appendVerifyReport(sb, server, config);
+
+    String msg = sb.toString().trim();
+    ctx.getSource().sendSuccess(() -> Component.literal(msg), false);
+    return allRequired ? 1 : 0;
+  }
+
+  /**
+   * Appends the four-section modpack report to {@code sb}.
+   * @return true if every {@code required} mod is present.
+   */
+  private static boolean appendVerifyReport(
+    StringBuilder sb,
+    MinecraftServer server,
+    InstallConfig config
+  ) {
+    FabricLoader loader = FabricLoader.getInstance();
+
+    // --- Mods (split required / optional) ---
+    int reqPresent = 0, reqTotal = 0, optPresent = 0, optTotal = 0;
+    StringBuilder reqSb = new StringBuilder();
+    StringBuilder optSb = new StringBuilder();
+
+    for (InstallConfig.ExpectedMod m : config.expectedMods) {
+      ModContainer found = resolveMod(loader, m);
+      boolean present = found != null;
+      String label = (m.name != null && !m.name.isBlank()) ? m.name : m.modId;
+      StringBuilder target = m.required ? reqSb : optSb;
+      target.append("    [").append(present ? "OK" : "MISSING").append("] ").append(label);
+      if (present) {
+        target.append("  ").append(found.getMetadata().getVersion().getFriendlyString());
+      } else if (m.note != null && !m.note.isBlank()) {
+        target.append("  — ").append(m.note);
+      }
+      target.append("\n");
+      if (m.required) { reqTotal++; if (present) reqPresent++; }
+      else { optTotal++; if (present) optPresent++; }
+    }
+
+    sb.append("  Mods (required):\n").append(reqTotal == 0 ? "    (none listed)\n" : reqSb);
+    sb.append("  Mods (optional / integrations):\n").append(optTotal == 0 ? "    (none listed)\n" : optSb);
+
+    // --- Datapacks ---
+    sb.append("\n  Datapacks:\n");
+    if (config.expectedDatapacks.isEmpty()) {
+      sb.append("    (none listed)\n");
+    } else {
+      PackRepository repo = server.getPackRepository();
+      Collection<String> selected = repo.getSelectedIds();
+      Collection<Pack> available = repo.getAvailablePacks();
+      for (String want : config.expectedDatapacks) {
+        String needle = want.toLowerCase();
+        Pack match = null;
+        for (Pack p : available) {
+          if (p.getId().toLowerCase().contains(needle)) { match = p; break; }
+        }
+        if (match == null) {
+          sb.append("    [MISSING] ").append(want).append("\n");
+        } else if (selected.contains(match.getId())) {
+          sb.append("    [OK] ").append(match.getId()).append(" (enabled)\n");
+        } else {
+          sb.append("    [DISABLED] ").append(match.getId()).append(" (available, not selected)\n");
+        }
+      }
+    }
+
+    // --- Resource packs (recommend only; client packs aren't read server-side) ---
+    sb.append("\n  Resource packs:\n");
+    sb.append("    [SHIPPED] trainer_textures (bundled with this mod, default-enabled)\n");
+    for (String rp : config.recommendedResourcePacks) {
+      sb.append("    recommend: ").append(rp).append(" (not verified — client-side)\n");
+    }
+
+    // --- Shaders (loader presence + recommend) ---
+    sb.append("\n  Shaders (optional, cosmetic):\n");
+    boolean iris = loader.isModLoaded("iris");
+    boolean sodium = loader.isModLoaded("sodium");
+    sb.append("    [").append(iris ? "OK" : "--").append("] Iris ")
+      .append(iris ? "installed" : "not installed").append("\n");
+    sb.append("    [").append(sodium ? "OK" : "--").append("] Sodium ")
+      .append(sodium ? "installed" : "not installed").append("\n");
+    for (String s : config.recommendedShaders) {
+      sb.append("    recommend: ").append(s).append(" (selection not verified)\n");
+    }
+
+    // --- Summary ---
+    sb.append("\n  Summary: ")
+      .append(reqPresent).append("/").append(reqTotal).append(" required present, ")
+      .append(optPresent).append("/").append(optTotal).append(" optional present.");
+
+    return reqPresent == reqTotal;
+  }
+
+  /** Resolve a mod by its id or any alias; null if none is loaded. */
+  private static ModContainer resolveMod(FabricLoader loader, InstallConfig.ExpectedMod m) {
+    if (m.modId != null) {
+      Optional<ModContainer> c = loader.getModContainer(m.modId);
+      if (c.isPresent()) return c.get();
+    }
+    if (m.aliases != null) {
+      for (String alias : m.aliases) {
+        Optional<ModContainer> c = loader.getModContainer(alias);
+        if (c.isPresent()) return c.get();
+      }
+    }
+    return null;
+  }
+
+  // ---------------------------------------------------------------------------
   // /cobblemon-initiative install run
   // ---------------------------------------------------------------------------
 
@@ -170,6 +296,18 @@ public class InstallCommand {
       .createCommandSourceStack()
       .withPermission(4)
       .withSuppressedOutput();
+
+    // Pre-flight modpack check (informational, non-blocking — never abort the install)
+    try {
+      StringBuilder preflight = new StringBuilder("[Install] Pre-flight modpack check:\n\n");
+      appendVerifyReport(preflight, server, config);
+      ctx.getSource().sendSuccess(
+        () -> Component.literal(preflight.toString().trim()),
+        false
+      );
+    } catch (Exception e) {
+      LOGGER.warn("[Install] Pre-flight modpack check failed (continuing): {}", e.getMessage());
+    }
 
     // Apply gamerules / difficulty
     for (var entry : config.gamerules.entrySet()) {

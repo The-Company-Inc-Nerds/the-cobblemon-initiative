@@ -12,12 +12,15 @@ import com.thecompanyinc.cobblemoninitiative.config.TrainerConfig;
 import com.thecompanyinc.cobblemoninitiative.data.PlayerProgressManager;
 import com.thecompanyinc.cobblemoninitiative.items.ModItems;
 import com.thecompanyinc.cobblemoninitiative.levelcap.LevelCapManager;
+import com.thecompanyinc.cobblemoninitiative.lootchest.LootChestManager;
 import com.thecompanyinc.cobblemoninitiative.shrine.ShrineChallengeManager;
 import kotlin.Unit;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
+import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
 import net.fabricmc.loader.api.FabricLoader;
@@ -37,6 +40,7 @@ public class InitiativeInit implements ModInitializer {
   private static PlayerProgressManager progressManager;
   private static LevelCapManager levelCapManager;
   private static ShrineChallengeManager shrineChallengeManager;
+  private static LootChestManager lootChestManager;
 
   @Override
   public void onInitialize() {
@@ -64,6 +68,8 @@ public class InitiativeInit implements ModInitializer {
     shrineChallengeManager = new ShrineChallengeManager();
     shrineChallengeManager.loadChallenges();
 
+    lootChestManager = new LootChestManager();
+
     // Map Frontiers integration is applied lazily at /cobblemon-initiative install run
     // (see MapFrontiersBridge); no init-time registration is needed.
 
@@ -72,6 +78,12 @@ public class InitiativeInit implements ModInitializer {
     // Server tick — drives parkour timers and ground-gauntlet effects
     ServerTickEvents.END_SERVER_TICK.register(server ->
       shrineChallengeManager.tick(server)
+    );
+
+    // Unplaced-chest loot: intercept chest opens; track hand-placed chests.
+    UseBlockCallback.EVENT.register(lootChestManager::onChestUse);
+    PlayerBlockBreakEvents.AFTER.register((level, player, pos, state, blockEntity) ->
+      lootChestManager.onBlockBroken(state, pos)
     );
 
     CommandRegistrationCallback.EVENT.register(
@@ -94,11 +106,15 @@ public class InitiativeInit implements ModInitializer {
 
     ServerLifecycleEvents.SERVER_STARTED.register(server -> {
       progressManager.loadProgress(server);
+      shrineChallengeManager.loadPaths(server);
+      lootChestManager.load(server);
       LOGGER.info("Loaded player progress data.");
     });
 
     ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
       progressManager.saveProgress(server);
+      shrineChallengeManager.savePaths();
+      lootChestManager.save();
       LOGGER.info("Saved player progress data.");
     });
 
@@ -163,5 +179,9 @@ public class InitiativeInit implements ModInitializer {
 
   public static ShrineChallengeManager getShrineChallengeManager() {
     return shrineChallengeManager;
+  }
+
+  public static LootChestManager getLootChestManager() {
+    return lootChestManager;
   }
 }

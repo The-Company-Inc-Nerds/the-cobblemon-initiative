@@ -32,6 +32,18 @@ public class NpcSightConfig {
    */
   private String defaultDialogName = "npc_sight_trigger";
 
+  /** Field-of-view cone (degrees) an NPC can see; 120 = cos(60°). 360 = omnidirectional. */
+  private int fovDegrees = 120;
+
+  /** Run the full sight check every N server ticks (5 ≈ 4×/sec at 20 TPS). */
+  private int tickInterval = 5;
+
+  /** Debug raycast: block step between particles. */
+  private double debugRayStep = 0.5;
+
+  /** Debug raycast: cap on particles drawn per ray. */
+  private int debugRayMaxSteps = 512;
+
   public static NpcSightConfig load() {
     try {
       if (CONFIG_FILE.exists()) {
@@ -90,4 +102,14 @@ public class NpcSightConfig {
   public void setDefaultDialogName(String v) {
     this.defaultDialogName = v;
   }
+
+  public int getFovDegrees() { return fovDegrees; }
+  public int getTickInterval() { return tickInterval; }
+  public double getDebugRayStep() { return debugRayStep; }
+  public int getDebugRayMaxSteps() { return debugRayMaxSteps; }
+
+  public void setFovDegrees(int v) { this.fovDegrees = v; }
+  public void setTickInterval(int v) { this.tickInterval = v; }
+  public void setDebugRayStep(double v) { this.debugRayStep = v; }
+  public void setDebugRayMaxSteps(int v) { this.debugRayMaxSteps = v; }
 }

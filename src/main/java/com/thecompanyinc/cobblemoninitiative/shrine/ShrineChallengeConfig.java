@@ -44,6 +44,42 @@ public class ShrineChallengeConfig {
   /** Max horizontal displacement (blocks) for each earthquake teleport. */
   private int earthquakeRadius = 20;
 
+  // ── ice floor hazard (overlays timed_parkour) ────────────────────────────────
+  /**
+   * When true, this parkour also punishes stepping on un-recorded ice (structural /
+   * level-design flag — marks which shrine uses the floor). The numeric tuning
+   * (damage, cooldown) and a global master toggle live in {@code ShrineConfig}
+   * (ModMenu), since this JSON is jar-baked and can't be retuned at runtime.
+   */
+  private boolean iceFloorEnabled = false;
+  /** Block IDs treated as deadly ice unless the position is a recorded safe block. */
+  private List<String> iceHazardBlocks = List.of(
+    "minecraft:ice",
+    "minecraft:packed_ice",
+    "minecraft:blue_ice",
+    "minecraft:frosted_ice"
+  );
+  /**
+   * Optional pinned reset point. When omitted, the player's position at the
+   * moment they start the trial is captured and used instead.
+   */
+  private Vec start;
+  /**
+   * Baked safe-path positions (version-controlled source of truth), produced by
+   * {@code /cobblemon-initiative shrine <id> path export}. Each entry is [x, y, z].
+   * Unioned at runtime with any positions recorded into the world save.
+   */
+  private int[][] safePositions;
+
+  /** Simple position-with-facing holder for {@link #start}. */
+  public static class Vec {
+    public double x;
+    public double y;
+    public double z;
+    public float yaw;
+    public float pitch;
+  }
+
   // ── Getters ─────────────────────────────────────────────────────────────────
 
   public String getId() { return id; }
@@ -59,4 +95,9 @@ public class ShrineChallengeConfig {
   public String getTargetTrainerId() { return targetTrainerId; }
   public int getEarthquakeIntervalSeconds() { return earthquakeIntervalSeconds; }
   public int getEarthquakeRadius() { return earthquakeRadius; }
+
+  public boolean isIceFloorEnabled() { return iceFloorEnabled; }
+  public List<String> getIceHazardBlocks() { return iceHazardBlocks; }
+  public Vec getStart() { return start; }
+  public int[][] getSafePositions() { return safePositions; }
 }

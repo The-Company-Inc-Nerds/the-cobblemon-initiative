@@ -26,13 +26,6 @@ public class NpcSightManager {
   // Scoreboard objective shared with legacy datapack consumers
   private static final String SCOREBOARD_OBJ = "can_see_player";
 
-  // NPC must be within this dot-product threshold to see the player.
-  // cos(60°) = 0.5  →  120° total FOV
-  private static final double FOV_DOT = 0.5;
-
-  // Run full sight check every N server ticks (~4×/sec at 20 TPS)
-  private static final int TICK_INTERVAL = 5;
-
   private final NpcSightStorage storage;
   private NpcSightConfig config;
   private int tickCounter = 0;
@@ -58,7 +51,7 @@ public class NpcSightManager {
   // ---------------------------------------------------------------------------
 
   public void tick(MinecraftServer server) {
-    if (++tickCounter < TICK_INTERVAL) return;
+    if (++tickCounter < config.getTickInterval()) return;
     tickCounter = 0;
 
     // Snapshot to a list so storage can be mutated safely from commands
@@ -241,7 +234,8 @@ public class NpcSightManager {
   private boolean checkSight(Entity npc, Player player) {
     Vec3 forward = npc.getViewVector(1.0f);
     Vec3 toPlayer = player.getEyePosition().subtract(npc.getEyePosition()).normalize();
-    if (forward.dot(toPlayer) < FOV_DOT) return false;
+    double fovDot = Math.cos(Math.toRadians(config.getFovDegrees() / 2.0));
+    if (forward.dot(toPlayer) < fovDot) return false;
     return checkLOS((ServerLevel) npc.level(), npc, player);
   }
 
@@ -310,8 +304,9 @@ public class NpcSightManager {
       : new Vector3f(1.0f, 0.2f, 0.2f);  // red
     DustParticleOptions dust = new DustParticleOptions(color, 0.5f);
 
-    Vec3 stepVec = delta.normalize().scale(0.5);
-    int steps = Math.min((int) (len / 0.5) + 1, 512);
+    double rayStep = Math.max(0.1, config.getDebugRayStep());
+    Vec3 stepVec = delta.normalize().scale(rayStep);
+    int steps = Math.min((int) (len / rayStep) + 1, config.getDebugRayMaxSteps());
     Vec3 pos = from;
     for (int i = 0; i < steps; i++) {
       level.sendParticles(dust, pos.x, pos.y, pos.z, 1, 0, 0, 0, 0);
