@@ -14,9 +14,9 @@ import org.slf4j.LoggerFactory;
  *
  * When a player opens a chest they did NOT place themselves (i.e. a chest that
  * ships with the map / was placed via structure or command rather than by the
- * player's own hand), the normal chest screen is suppressed and they instead
- * receive a few random items from the {@code badge_reward} loot tables, scaled
- * to how many gym badges they have earned.
+ * player's own hand), it is stocked in place with a few random items from the
+ * {@code badge_reward} loot tables — scaled to how many gym badges the player
+ * has earned — and then opened normally so they can take what they want.
  *
  * Cached singleton read pattern (per {@link ShrineConfig}); the interaction
  * handler queries {@link #get()} on every chest open, so it must not touch disk.
@@ -46,6 +46,14 @@ public class LootChestConfig {
    * (useful for testing loot tables).
    */
   private boolean oneTimePerChest = true;
+
+  /**
+   * Scales how much loot a chest is stocked with, relative to the loot tables'
+   * default output. 1.0 = default (stacks + counts as the tables roll), 0 = none,
+   * 3.0 = triple. Item counts are multiplied (overflowing into extra stacks);
+   * clamped to 0.0..3.0.
+   */
+  private double lootMultiplier = 1.0;
 
   // ── Singleton / lifecycle ─────────────────────────────────────────────────────
 
@@ -91,9 +99,11 @@ public class LootChestConfig {
   public boolean isGiveMinecraftPool() { return giveMinecraftPool; }
   public boolean isGiveCobblemonPool() { return giveCobblemonPool; }
   public boolean isOneTimePerChest() { return oneTimePerChest; }
+  public double getLootMultiplier() { return lootMultiplier; }
 
   public void setEnabled(boolean v) { this.enabled = v; }
   public void setGiveMinecraftPool(boolean v) { this.giveMinecraftPool = v; }
   public void setGiveCobblemonPool(boolean v) { this.giveCobblemonPool = v; }
   public void setOneTimePerChest(boolean v) { this.oneTimePerChest = v; }
+  public void setLootMultiplier(double v) { this.lootMultiplier = Math.max(0.0, Math.min(3.0, v)); }
 }

@@ -32,6 +32,11 @@ overrides:
 - **`datapacks/`** → each bundled world's `datapacks/` (needs `--with-map`)
 - **`maps/`** → world staging (see its README); drop a world folder in and it
   bundles into `overrides/saves/` with `--with-map`.
+- **`overrides/`** → copied verbatim into the pack's `overrides/` root, for
+  instance-root files: **`options.txt`** (keybinds / video / audio settings),
+  a `config/` folder, `servers.dat`, etc. Unlike the folders above, this one's
+  contents are **tracked** (small, curated pack config) — drop
+  `mrpack/overrides/options.txt` here and it ships as `overrides/options.txt`.
 
 Always bundled automatically: this mod's own jar → `overrides/mods/`.
 

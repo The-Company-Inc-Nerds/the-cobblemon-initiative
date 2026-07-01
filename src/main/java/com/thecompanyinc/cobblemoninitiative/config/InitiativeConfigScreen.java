@@ -511,8 +511,8 @@ public class InitiativeConfigScreen {
         .setTooltip(
           Component.literal(
             "When on, opening a chest you did NOT place yourself (map / structure "
-            + "chests) grants random items scaled to your badge count instead of "
-            + "opening the chest. Chests you place by hand open normally."
+            + "chests) stocks it with random items scaled to your badge count, then "
+            + "opens it. Chests you place by hand open normally."
           )
         )
         .setSaveConsumer(lootChestConfig::setEnabled)
@@ -561,6 +561,27 @@ public class InitiativeConfigScreen {
           )
         )
         .setSaveConsumer(lootChestConfig::setOneTimePerChest)
+        .build()
+    );
+
+    lootChests.addEntry(
+      entryBuilder
+        .startIntSlider(
+          Component.literal("Loot Multiplier"),
+          (int) Math.round(lootChestConfig.getLootMultiplier() * 10),
+          0,
+          30
+        )
+        .setDefaultValue((int) Math.round(lootChestDefaults.getLootMultiplier() * 10))
+        .setTextGetter(v -> Component.literal(String.format("%.1f×", v / 10.0)))
+        .setTooltip(
+          Component.literal(
+            "Scales how much loot an unplaced chest is stocked with. 1.0× = the "
+            + "loot tables' default amount, 0× = none, 3.0× = triple. Item counts "
+            + "scale (overflowing into extra stacks); the base stack list stays default."
+          )
+        )
+        .setSaveConsumer(v -> lootChestConfig.setLootMultiplier(v / 10.0))
         .build()
     );
 

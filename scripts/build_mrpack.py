@@ -269,6 +269,19 @@ def main():
 
         copy_into(mod_jar, os.path.join(overrides, "mods"))
 
+        # Verbatim passthrough: mrpack/overrides/ -> the pack's overrides/ root, for
+        # instance-root files not on Modrinth — e.g. options.txt (keybinds / video /
+        # audio settings), a config/ folder, servers.dat. Merges into existing dirs.
+        for e in staged_entries("overrides"):
+            rel = os.path.basename(e)
+            print(f"  override: {rel}")
+            dst = os.path.join(overrides, rel)
+            if os.path.isdir(e):
+                shutil.copytree(e, dst, dirs_exist_ok=True)
+            else:
+                os.makedirs(overrides, exist_ok=True)
+                shutil.copy2(e, dst)
+
         # Locally-staged packs (things not on Modrinth) -> overrides/<sub>/.
         for sub in ("resourcepacks", "shaderpacks"):
             for e in staged_entries(sub):
