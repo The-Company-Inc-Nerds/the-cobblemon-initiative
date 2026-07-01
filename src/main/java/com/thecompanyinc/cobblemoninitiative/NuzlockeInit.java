@@ -88,7 +88,7 @@ public class NuzlockeInit implements ModInitializer {
                 var player = context.getSource().getPlayerOrException();
                 player.sendSystemMessage(Component.literal("§4Triggering death screen..."));
                 pendingWhiteoutDeath = true;
-                player.hurt(player.damageSources().generic(), config.getWhiteoutDeathDamage());
+                player.kill();
                 return 1;
               })
             )
@@ -103,7 +103,7 @@ public class NuzlockeInit implements ModInitializer {
                     Component.literal("§4You only have one Pokémon! Triggering death instead...")
                   );
                   pendingWhiteoutDeath = true;
-                  player.hurt(player.damageSources().generic(), config.getWhiteoutDeathDamage());
+                  player.kill();
                 } else {
                   player.sendSystemMessage(Component.literal("§cTriggering sacrifice selection..."));
                   pendingSacrifice = true;
@@ -307,7 +307,7 @@ public class NuzlockeInit implements ModInitializer {
         Component.literal("§4You fled with only one Pokémon! There is no escape...")
       );
       pendingWhiteoutDeath = true;
-      player.hurt(player.damageSources().generic(), config.getWhiteoutDeathDamage());
+      player.kill();
       LOGGER.info("Player {} fled with only one Pokemon - killed", player.getName().getString());
       return Unit.INSTANCE;
     }
@@ -357,7 +357,7 @@ public class NuzlockeInit implements ModInitializer {
             Component.literal("§4You forfeited with only one Pokémon! There is no escape...")
           );
           pendingWhiteoutDeath = true;
-          player.hurt(player.damageSources().generic(), config.getWhiteoutDeathDamage());
+          player.kill();
         } else {
           player.sendSystemMessage(
             Component.literal("§cYou forfeited the battle! You must sacrifice a Pokémon...")
@@ -521,7 +521,7 @@ public class NuzlockeInit implements ModInitializer {
   }
 
   private static float calculateDamage(ServerPlayer player, int totalPartySize, int remainingPokemon) {
-    if (remainingPokemon == 0) return config.getWhiteoutDeathDamage();
+    if (remainingPokemon == 0) return 0.0f; // unused — whiteout forces death via player.kill()
 
     float healthBase = config.isUseMaxHealth() ? player.getMaxHealth() : player.getHealth();
 
@@ -552,7 +552,12 @@ public class NuzlockeInit implements ModInitializer {
       }
     }
     player.sendSystemMessage(Component.literal(message));
-    player.hurt(player.damageSources().generic(), damage);
+    if (isWhiteOut) {
+      // Guaranteed, unblockable death — bypasses armor / absorption / Resistance.
+      player.kill();
+    } else {
+      player.hurt(player.damageSources().generic(), damage);
+    }
   }
 
   // ---------------------------------------------------------------------------

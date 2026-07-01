@@ -147,6 +147,31 @@
     git push
     echo "Published wiki to $remote"
   '';
+  run-client = pkgs.writeShellScriptBin "run-client" ''
+    set -euo pipefail
+    root="$(git rev-parse --show-toplevel)"
+    cd "$root"
+    # Link any staged world(s) into the dev run dir so you boot on the real map.
+    if [ -d mrpack/maps ]; then
+      mkdir -p run/saves
+      for w in mrpack/maps/*/; do
+        [ -d "$w" ] || continue
+        name="$(basename "$w")"
+        if [ ! -e "run/saves/$name" ]; then
+          ln -s "$root/$w" "run/saves/$name" && echo "Linked map: run/saves/$name -> $w"
+        fi
+      done
+    fi
+    echo "Launching Fabric dev client (gradle runClient) — run dir: ./run"
+    echo "Tip: after editing resources, run 'gradle processResources' + '/cobblemon-initiative reload' in-game (no relaunch)."
+    exec gradle runClient "$@"
+  '';
+  build-mrpack = pkgs.writeShellScriptBin "build-mrpack" ''
+    set -euo pipefail
+    root="$(git rev-parse --show-toplevel)"
+    cd "$root"
+    exec ${pkgs.python3}/bin/python3 "$root/scripts/build_mrpack.py" "$@"
+  '';
 in
   pkgs.mkShell {
     buildInputs = [
@@ -155,9 +180,12 @@ in
       pkgs.gradle
       pkgs.claude-code
       pkgs.kotlin
+      pkgs.python3
       snbt-merge
       gcommit
       publish-wiki
+      run-client
+      build-mrpack
     ];
 
     JAVA_HOME = "${pkgs.jdk21}";
@@ -171,6 +199,8 @@ in
       echo "JAVA_HOME: $JAVA_HOME"
       echo "Use 'zeditor .' for custom editor for repository."
       echo "Use 'gradle build' to build repository. If that fails try removing the '.gradle' directory."
+      echo "Use 'run-client' to launch the Fabric dev client (gradle runClient) for live testing."
+      echo "Use 'build-mrpack' to assemble a Modrinth .mrpack (add --with-map to bundle the UPM 2 world)."
       echo "Use 'snbt-merge --help' to splice sections between SNBT files."
       echo "Use 'update_preset_index' after adding presets to regenerate the Easy NPC index."
       echo "Use 'generate_npc_function' to rebuild update_npc_presets.mcfunction from npc_presets.json."

@@ -1,6 +1,6 @@
 plugins {
     id("java")
-    id("dev.architectury.loom") version "1.11-SNAPSHOT"
+    id("dev.architectury.loom") version "1.14.476"
     id("architectury-plugin") version "3.4-SNAPSHOT"
 }
 
@@ -23,6 +23,7 @@ repositories {
     maven("https://maven.shedaniel.me/")
     maven("https://maven.terraformersmc.com/releases/")
     maven("https://cursemaven.com")
+    maven("https://api.modrinth.com/maven") // Easy NPC (opted out of CurseForge distribution)
 }
 
 dependencies {
@@ -43,6 +44,20 @@ dependencies {
         exclude(group = "net.fabricmc.fabric-api")
     }
     modApi("com.terraformersmc:modmenu:11.0.3")
+
+    // ── Dev-only runtime companions for `run-client` ────────────────────────────
+    // NOT compile deps — they complete the stack when launching from source. These
+    // use Loom 1.14, which is why the loom plugin above was bumped 1.11 -> 1.14.476
+    // (older Loom refuses to remap a mod built by a newer Loom).
+    // Easy NPC opted out of CurseForge distribution and its Modrinth version NUMBERS
+    // collide with Forge/1.20.1, so it is pinned by Modrinth VERSION ID; the others
+    // resolve via cursemaven. (The api.modrinth.com/maven repo above serves Easy NPC.)
+    modRuntimeOnly("maven.modrinth:easy-npc:ocaFsuHW")          // 6.25.0 fabric 1.21.1 (bundles Core + Config UI)
+    modRuntimeOnly("curse.maven:cobbledollars-859232:6604561")  // CobbleDollars-fabric-2.0.0+Beta-5.1+1.21.1.jar
+    modRuntimeOnly("curse.maven:journeymap-32274:8325589")      // journeymap-fabric-1.21.1-6.0.0.jar
+    modRuntimeOnly("curse.maven:mapfrontiers-366783:7099826")   // MapFrontiers-1.21.1-2.7.0-beta.18-fabric.jar (matches the 2.7.0-beta.18 integration target)
+    // Then `run-client` (run dir = ./run); copy/symlink your UPM 2 world into ./run/saves/.
+
     // Map Frontiers integration needs no compile dependency: its plugin API does not exist
     // on the 1.21.1 line (Cobblemon is locked to 1.21.1), so MapFrontiersIntegration reaches
     // the mod's internal FrontiersManager reflectively. See that class for the rationale.

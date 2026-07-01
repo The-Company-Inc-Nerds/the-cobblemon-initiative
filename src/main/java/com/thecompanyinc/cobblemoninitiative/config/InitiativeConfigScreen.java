@@ -653,17 +653,6 @@ public class InitiativeConfigScreen {
         .build()
     );
 
-    // Whiteout death damage (Nuzlocke Rules category)
-    nuzlocke.addEntry(
-      entryBuilder
-        .startFloatField(Component.literal("Whiteout Death Damage"), config.getWhiteoutDeathDamage())
-        .setDefaultValue(defaults.getWhiteoutDeathDamage())
-        .setMin(20.0f).setMax(1000.0f)
-        .setTooltip(Component.literal("Killing blow when the last Pokémon faints. Keep >= 20 (max HP) so a whiteout stays lethal."))
-        .setSaveConsumer(config::setWhiteoutDeathDamage)
-        .build()
-    );
-
     // Zone-check cadence (General Settings category)
     general.addEntry(
       entryBuilder

@@ -41,3 +41,20 @@ dialog-src/
 
 # Cloned reference material — reference only, never committed
 tmp/
+
+# Local map staging — drop world folders in mrpack/maps/ (untracked); used by
+# run-client + build-mrpack. Keep the README, ignore the world folders.
+/mrpack/maps/*
+!/mrpack/maps/README.md
+
+# Modpack build output (.mrpack)
+/dist/
+
+# mrpack build inputs: keep the folder skeleton + modpack.json (tracked), but the
+# resource/data/shader packs dropped inside are untracked (folders kept via .gitkeep).
+/mrpack/resourcepacks/*
+!/mrpack/resourcepacks/.gitkeep
+/mrpack/shaderpacks/*
+!/mrpack/shaderpacks/.gitkeep
+/mrpack/datapacks/*
+!/mrpack/datapacks/.gitkeep

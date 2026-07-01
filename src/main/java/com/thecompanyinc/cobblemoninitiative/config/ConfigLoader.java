@@ -20,6 +20,10 @@ public class ConfigLoader {
   private final List<LevelCapConfig> levelCaps = new ArrayList<>();
 
   public void loadAllConfigs() {
+    // Clear first so this is safe to call again as a live reload — otherwise
+    // levelCaps.addAll would duplicate and removed trainers would linger.
+    trainers.clear();
+    levelCaps.clear();
     loadTrainers();
     loadLevelCaps();
   }

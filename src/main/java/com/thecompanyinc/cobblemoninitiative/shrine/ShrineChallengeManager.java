@@ -54,6 +54,10 @@ public class ShrineChallengeManager {
   // ── Loading ───────────────────────────────────────────────────────────────────
 
   public void loadChallenges() {
+    // Clear so a live reload doesn't leave stale challenge / baked-path entries.
+    // (Does NOT touch activeStates or recordingPlayers — live player state.)
+    challenges.clear();
+    bakedSafe.clear();
     for (String shrine : SHRINE_IDS) {
       String path =
         "data/cobblemon_initiative/shrine_challenges/" + shrine + ".json";

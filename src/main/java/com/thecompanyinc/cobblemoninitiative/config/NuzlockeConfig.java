@@ -67,9 +67,6 @@ public class NuzlockeConfig {
   private int darkUrgeTier2LevelCap = 52;
   private int darkUrgeTier3LevelCap = 73;
 
-  /** Killing-blow damage on the last-Pokémon faint / forced whiteout (kept ≥ max HP to guarantee death). */
-  private float whiteoutDeathDamage = 20.0f;
-
   /** How often (ticks) zone-transition announcements are polled. 20 = 1s. */
   private int zoneCheckCadenceTicks = 20;
 
@@ -212,7 +209,6 @@ public class NuzlockeConfig {
   public int getDarkUrgeTier1LevelCap() { return darkUrgeTier1LevelCap; }
   public int getDarkUrgeTier2LevelCap() { return darkUrgeTier2LevelCap; }
   public int getDarkUrgeTier3LevelCap() { return darkUrgeTier3LevelCap; }
-  public float getWhiteoutDeathDamage() { return whiteoutDeathDamage; }
   public int getZoneCheckCadenceTicks() { return zoneCheckCadenceTicks; }
 
   // -------------------------------------------------------------------------
@@ -249,7 +245,6 @@ public class NuzlockeConfig {
   public void setDarkUrgeTier1LevelCap(int v) { this.darkUrgeTier1LevelCap = v; }
   public void setDarkUrgeTier2LevelCap(int v) { this.darkUrgeTier2LevelCap = v; }
   public void setDarkUrgeTier3LevelCap(int v) { this.darkUrgeTier3LevelCap = v; }
-  public void setWhiteoutDeathDamage(float v) { this.whiteoutDeathDamage = v; }
   public void setZoneCheckCadenceTicks(int v) { this.zoneCheckCadenceTicks = v; }
 
   // -------------------------------------------------------------------------
