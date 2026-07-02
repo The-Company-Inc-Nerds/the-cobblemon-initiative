@@ -212,6 +212,8 @@ cd "&lt;export dir&gt;" &amp;&amp; python3 -m http.server 8099
       </div>
       <label class="field" id="f-routewidth-wrap" style="display:none;"><span>Route width (blocks)</span>
         <input type="number" id="f-routewidth" min="1"></label>
+      <label class="field" id="f-gate-wrap" style="display:none;"><span>Liberation field id — occupied until freed (blank = always safe)</span>
+        <input type="text" id="f-gatefield" placeholder="e.g. hua_zhan_1"></label>
       <div class="checks" style="margin-top:8px;">
         <label><input type="checkbox" id="f-cyl"> cylindrical</label>
         <label><input type="checkbox" id="f-announce"> announce</label>
@@ -563,6 +565,11 @@ cd "&lt;export dir&gt;" &amp;&amp; python3 -m http.server 8099
     z.cylindrical = !!m.cylindrical;
     z.announce = !!m.announce;
     z.priority = (m.priority != null ? m.priority : 5);
+    if (m.activeWhenObjective) {   // FARM liberation gate — see SafeZone.activeWhenObjective
+      z.activeWhenObjective = m.activeWhenObjective;
+      z.activeWhenHolder = m.activeWhenHolder || "";
+      z.activeWhenMin = (m.activeWhenMin != null ? m.activeWhenMin : 1);
+    }
     z.color = m.color || "#AAAAAA";
     if (!isCircle) {
       const cr = clipEnabled ? f.get("_clipRing") : null;   // priority-clipped border, if any
@@ -594,6 +601,9 @@ cd "&lt;export dir&gt;" &amp;&amp; python3 -m http.server 8099
       cylindrical: z.cylindrical !== false,
       announce: z.announce !== false,
       priority: (z.priority != null ? z.priority : 5),
+      activeWhenObjective: z.activeWhenObjective || null,
+      activeWhenHolder: z.activeWhenHolder || null,
+      activeWhenMin: (z.activeWhenMin != null ? z.activeWhenMin : 1),
       color: z.color || TYPE_COLORS[z.type] || "#AAAAAA",
     });
     return f;
@@ -646,6 +656,9 @@ cd "&lt;export dir&gt;" &amp;&amp; python3 -m http.server 8099
     const rww = $("f-routewidth-wrap");
     if (m.routeLine) { rww.style.display = ""; $("f-routewidth").value = (m.routeWidth || 16); }
     else { rww.style.display = "none"; }
+    const gw = $("f-gate-wrap");
+    if ((m.type || "") === "FARM") { gw.style.display = ""; $("f-gatefield").value = m.activeWhenHolder || ""; }
+    else { gw.style.display = "none"; }
     $("f-cyl").checked = !!m.cylindrical;
     $("f-announce").checked = !!m.announce;
     const g = selected.getGeometry();
@@ -715,6 +728,8 @@ cd "&lt;export dir&gt;" &amp;&amp; python3 -m http.server 8099
     if (!selected) return;
     const m = selected.get("meta");
     m.type = $("f-type").value;
+    $("f-gate-wrap").style.display = (m.type === "FARM") ? "" : "none";
+    if (m.type === "FARM") $("f-gatefield").value = m.activeWhenHolder || "";
     // if colour was still the type default, follow the new type
     if (!$("f-color").value || $("f-color").value.toUpperCase() === (TYPE_COLORS[$("f-type").value] || "").toUpperCase()) {
       m.color = TYPE_COLORS[m.type] || m.color;
@@ -726,6 +741,15 @@ cd "&lt;export dir&gt;" &amp;&amp; python3 -m http.server 8099
   $("f-color-pick").addEventListener("input", () => {
     $("f-color").value = $("f-color-pick").value;
     $("f-color").dispatchEvent(new Event("input"));
+  });
+  $("f-gatefield").addEventListener("input", () => {   // FARM liberation gate -> activeWhen*
+    if (!selected) return;
+    const m = selected.get("meta");
+    const id = $("f-gatefield").value.trim();
+    if (id) { m.activeWhenObjective = "field_freed"; m.activeWhenHolder = id; m.activeWhenMin = 1; }
+    else { m.activeWhenObjective = null; m.activeWhenHolder = null; }
+    selected.set("meta", m);
+    refreshExport();
   });
 
   // ---- tools ----
