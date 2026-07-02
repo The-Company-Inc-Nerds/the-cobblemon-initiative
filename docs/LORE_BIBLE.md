@@ -38,6 +38,20 @@ Writing the protagonist's internal voice (memory fragments, Dark Urge): first pe
 spare, unsettled. Early = confusion and unease. Late = dawning, dreadful recognition.
 **Never** state "you are the Founder" outright before the post-Royal-League beat.
 
+### Mom (Sango Town) — the quiet tragedy
+- They were **slightly estranged**. The founder compartmentalised everything: Mom knew a
+  distant, evasive kid who never explained the work, never wrote, never brought anyone
+  home. She has **no idea** her child ran The Company — and **she never finds out.**
+- The amnesia is invisible to her at first — her kid was always vague — but she notices
+  the *wrong* gaps: they do not remember the kitchen, the recipes, her birthday. She
+  decides not to push. That choice is the tragedy.
+- **The arc she does get:** across the run, the visits keep happening. The kid who never
+  wrote now shows up between badges. By the end, **she gets her child back into her
+  life** — not the CEO, not the Founder, just her kid at her table. She never learns who
+  they were out there, and in her kitchen it does not matter.
+- Writing her: warm, unhurried, a little guarded early. Never expository. She is the one
+  room in the story where the plot is not allowed in.
+
 ---
 
 ## 3. The Company, Inc.
@@ -98,15 +112,36 @@ creation. Reclaiming the org is reclaiming the economy.
 - **The Founder** (`villain_final_boss`): name shown as `§k` static until earned. The
   player's shadow self. Beating them grants `company_overthrown`.
 
-### The recognition arc (how NPCs treat the protagonist)
-The Company's people **increasingly recognise the protagonist's face** — because he used
-to run the place. The progression (to be written into villain dialogue, gated by
-badge/liberation progress):
-- Early: confused double-takes. "Have we met?"
-- Mid: alarm. "You're supposed to be dead."
-- Late: some grunts **stand down** rather than raise a hand against the founder; others
-  panic. The wheat traders, after enough fields are liberated, **recognise him mid-trade
-  and turn hostile.**
+### The scrubbing (why nobody recognises the founder) — canon
+The founder **was a known public figure** — portraits in every branch office, a signature
+on every charter, ribbon-cuttings, the face of "Verified Trust." Non-recognition is not
+because he was hidden; it is because **the coup is actively erasing him**:
+
+1. **The erasure.** After the usurping, DJ and the Board scrubbed the record — portraits
+   taken down, ledger signatures re-verified under new names, org charts revised, the
+   story managed in stages: *"the founder retired"* → *"there was never a founder."*
+   (Already seeded in the corrupted propaganda register.) The scrubbing is **incomplete**
+   — old-timers remember the face, deep offices still have the portrait — and that
+   incompleteness is what the recognition arc runs on.
+2. **The slander.** Internally, the Company brands the interfering amnesiac trainer a
+   **saboteur / impostor** — DJ's memos warn of "a face from the old company." Low-rank
+   grunts never met the founder and believe the memo: they are **angry**, not reverent.
+   The higher someone sits (or the longer they served), the more likely they knew the
+   real face — and the worse the moment when they place it.
+3. **The amnesia.** The protagonist cannot assert an identity he does not remember. The
+   world forgot him as he forgot himself; the run is both remembering at once.
+
+**The gradient (rank × proximity, gated by badge/liberation progress):**
+- Grunts (early): the memo made flesh. Confused hostility. "You match a description we
+  were told to forget."
+- Veterans / management (mid): alarm — they saw the portrait come down. "You are supposed
+  to be *filed*."
+- Late: some **stand down** rather than raise a hand against the founder; others panic
+  and double down on the official line ("there was never a founder — so you are no one").
+- The wheat traders / Granary keepers, after enough fields are liberated, **recognise him
+  mid-trade and turn hostile** — commerce curdling into the cover-up.
+- **Civilians never recognise him** (the public scrubbing worked); they only know the
+  propaganda decayed. Mom recognises her *kid* — never the CEO.
 
 ---
 
@@ -192,5 +227,11 @@ back down — the tug-of-war. Numbers are the current tuning, not gospel.)*
   reaches merchants using the **default** shop. The fine-grained instability is still sold via the
   per-payout rate line, the per-gym actionbar, and (later) a town exchange board.
 - **DON'T** call the name the act-2 boss until act-2, It's **DJ**.
+- **DO** litter the world with **scrubbing artifacts**: brighter rectangles where portraits
+  hung, re-verified ledger pages, revised org charts, memos about "the impostor." The
+  erasure being *visible* is how the audience reads the cover-up before the reveal.
+- **DON'T** ever let Mom learn the truth. No NPC tells her, no letter, no overheard scene.
+  Her arc resolves on *presence* (her kid keeps coming back), not *revelation*. If a line
+  gestures at it, she deflects it — deliberately or obliviously, writer's choice per scene.
 - Macro-delivered text (memory fragments, economy lines) must contain **no double-quotes**
   and avoid apostrophes — the datapack macro layer has no escaping.

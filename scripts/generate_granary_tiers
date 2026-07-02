@@ -1,0 +1,153 @@
+#!/usr/bin/env python3
+"""Generate the per-badge Granary trade presets from the master catalog.
+
+Usage:
+    scripts/generate_granary_tiers      # rebuild every granary tier preset + apply function
+
+Reads:  scripts/granary_tiers/master_granary.json
+            The single source of truth — offers, unlock badges, base wheat costs (at the
+            instability peak), and the tier table (mirrors master_shop.json).
+        src/main/resources/.../easy_npc/default_preset/humanoid/granary_keeper.npc.snbt
+            The compiled base preset (from dialog-src via content_compile) — dialog, skin,
+            and recognition gates. This generator only swaps its trade Offers per tier.
+        npc_presets.json (repo root, if present)
+            In-world UUID mappings. Entries whose preset starts with "humanoid/granary_keeper"
+            get an import line in each apply_<tier> function.
+
+Writes: src/main/resources/.../easy_npc/default_preset/humanoid/granary_keeper_<tier>.npc.snbt
+            One full preset per tier — the base preset with its Recipes array replaced by the
+            tier's offers, priced on the wheat bell curve:
+                cost = baseWheat * (1 + (peakInstability - instability) * wheatSwingPerPoint)
+            clamped to 1..64. Wheat buys the most at the gym-7 instability peak and less on
+            either side of it — the wheat-backed currency rising and falling with the plot.
+        src/main/resources/data/cobblemon_initiative/function/granary/apply_<tier>.mcfunction
+            Retier function per tier: re-imports the tier preset onto every recorded Granary
+            NPC. ShopTierManager fires this after each CobbleDollars shop tier swap, so the
+            Granary and the shop move in lockstep. Empty (comment-only) until Granary NPC
+            UUIDs are recorded in npc_presets.json.
+
+Run scripts/update_preset_index afterwards (or content_compile, which does it) so the new
+presets appear in default_preset.index.
+"""
+
+import json
+import os
+import re
+
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+MASTER = os.path.join(ROOT, "scripts", "granary_tiers", "master_granary.json")
+PRESET_DIR = os.path.join(
+    ROOT, "src", "main", "resources", "data", "cobblemon_initiative",
+    "easy_npc", "default_preset", "humanoid",
+)
+BASE_PRESET = os.path.join(PRESET_DIR, "granary_keeper.npc.snbt")
+FN_DIR = os.path.join(
+    ROOT, "src", "main", "resources", "data", "cobblemon_initiative", "function", "granary",
+)
+NPC_MAP = os.path.join(ROOT, "npc_presets.json")
+
+RECIPE_TMPL = (
+    '{buy: {id: "minecraft:wheat", count: %(cost)d}, '
+    'sell: {id: "%(item)s", count: %(count)d}, '
+    "uses: 0, maxUses: %(stock)d, rewardExp: 0b, specialPrice: 0, demand: 0, "
+    "priceMultiplier: 0.0f, xp: 0}"
+)
+
+
+def wheat_cost(base, instability, peak, swing):
+    cost = base * (1.0 + (peak - instability) * swing)
+    return max(1, min(64, int(round(cost))))
+
+
+def replace_recipes(snbt, recipes_snbt):
+    """Replace the first `Recipes: [ ... ]` array (bracket-matched) inside the preset."""
+    m = re.search(r"Recipes:\s*\[", snbt)
+    if not m:
+        raise SystemExit("granary_keeper.npc.snbt has no Recipes array — was the trade snippet compiled in?")
+    start = m.end() - 1  # at the '['
+    depth = 0
+    for i in range(start, len(snbt)):
+        if snbt[i] == "[":
+            depth += 1
+        elif snbt[i] == "]":
+            depth -= 1
+            if depth == 0:
+                return snbt[: m.end()] + recipes_snbt + snbt[i:]
+    raise SystemExit("unbalanced Recipes array in granary_keeper.npc.snbt")
+
+
+def granary_uuids():
+    if not os.path.exists(NPC_MAP):
+        return []
+    with open(NPC_MAP, encoding="utf-8") as fh:
+        data = json.load(fh)
+    out = []
+    for uuid, entry in (data.get("mappings") or {}).items():
+        if str(entry.get("preset", "")).startswith("humanoid/granary_keeper"):
+            out.append((uuid, entry.get("label", "Granary Keeper")))
+    return sorted(out)
+
+
+def main():
+    with open(MASTER, encoding="utf-8") as fh:
+        master = json.load(fh)
+    with open(BASE_PRESET, encoding="utf-8") as fh:
+        base = fh.read()
+
+    swing = master["wheatSwingPerPoint"]
+    peak = master["peakInstability"]
+    offers = master["offers"]
+    uuids = granary_uuids()
+
+    os.makedirs(FN_DIR, exist_ok=True)
+    summary = []
+
+    for tier in master["tiers"]:
+        name, unlock, idx = tier["name"], tier["unlock"], tier["instability"]
+        rows = [o for o in offers if o["unlockBadge"] <= unlock]
+        recipes = ",\n            ".join(
+            RECIPE_TMPL % {
+                "cost": wheat_cost(o["baseWheat"], idx, peak, swing),
+                "item": o["item"],
+                "count": o["count"],
+                "stock": o["stock"],
+            }
+            for o in rows
+        )
+        snbt = replace_recipes(base, "\n            " + recipes + "\n        ")
+        with open(os.path.join(PRESET_DIR, f"granary_keeper_{name}.npc.snbt"), "w", encoding="utf-8") as fh:
+            fh.write(snbt)
+
+        fn_lines = [
+            f"# granary/apply_{name} — retier every Granary NPC to the {name} trade preset.",
+            "# Auto-generated by scripts/generate_granary_tiers — do not hand-edit.",
+            "# Fired by ShopTierManager after the matching CobbleDollars shop tier swap",
+            f"# (or manually: /function cobblemon_initiative:granary/apply_{name}).",
+        ]
+        if uuids:
+            fn_lines.append("")
+            for uuid, label in uuids:
+                fn_lines.append(f"# {label}")
+                fn_lines.append(
+                    f"easy_npc preset import data {uuid} cobblemon_initiative:humanoid/granary_keeper_{name}"
+                )
+        else:
+            fn_lines += [
+                "#",
+                "# (no Granary NPCs recorded yet — place one, map its UUID to preset",
+                '#  "humanoid/granary_keeper" in npc_presets.json, then re-run',
+                "#  scripts/generate_granary_tiers to fill these functions in)",
+            ]
+        with open(os.path.join(FN_DIR, f"apply_{name}.mcfunction"), "w", encoding="utf-8") as fh:
+            fh.write("\n".join(fn_lines) + "\n")
+
+        mult = 1.0 + (peak - idx) * swing
+        summary.append((name, len(rows), idx, mult))
+
+    print(f"Wrote {len(summary)} granary tier presets + apply functions ({len(uuids)} NPC(s) mapped)")
+    for name, count, idx, mult in summary:
+        print(f"  {name:9s}  {count:3d} offers   instability {idx:>2}   wheat x{mult:.3f}")
+
+
+if __name__ == "__main__":
+    main()

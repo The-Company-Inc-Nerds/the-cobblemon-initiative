@@ -1,0 +1,51 @@
+{
+  "_comment": "Source of truth for the Company Granary (goods sold FOR WHEAT, item-for-item). Edit this, then run scripts/generate_granary_tiers to rebuild the per-tier Easy NPC presets (granary_keeper_<tier>.npc.snbt) from the compiled granary_keeper preset. Wheat pricing is the BELL CURVE: baseWheat is the cost at PEAK instability (56, gym 7 — wheat at its strongest buys the most), and the generator bakes cost = baseWheat * (1 + (peakInstability - instability) * wheatSwingPerPoint) per tier, clamped to 1..64 (a single wheat stack). So goods cost MORE wheat early (stable money, wheat weak), the LEAST at the gym-7 peak, and more again after the HQ raid re-stabilises the CobbleDollar — wheat's purchasing power rises and falls with the plot. No restocks: maxUses is the total stock per tier (TradingData reset is effectively never). Item IDs validated against the Cobblemon 1.7.3 jar (no shiny_charm / bottle_cap / oval_charm on this version).",
+
+  "wheatSwingPerPoint": 0.012,
+  "peakInstability": 56,
+
+  "_tiers_comment": "Mirrors scripts/shop_tiers/master_shop.json exactly — same names, unlocks, instability values — so the Granary retiers in lockstep with the CobbleDollars shop (ShopTierManager fires function cobblemon_initiative:granary/apply_<tier> after each shop swap).",
+  "tiers": [
+    { "name": "badge_0",  "unlock": 0,  "instability": 0  },
+    { "name": "badge_1",  "unlock": 1,  "instability": 8  },
+    { "name": "badge_2",  "unlock": 2,  "instability": 16 },
+    { "name": "badge_3",  "unlock": 3,  "instability": 24 },
+    { "name": "badge_4",  "unlock": 4,  "instability": 32 },
+    { "name": "badge_5",  "unlock": 5,  "instability": 40 },
+    { "name": "badge_6",  "unlock": 6,  "instability": 48 },
+    { "name": "badge_7",  "unlock": 7,  "instability": 56 },
+    { "name": "post_hq",  "unlock": 7,  "instability": 25 },
+    { "name": "badge_8",  "unlock": 8,  "instability": 25 },
+    { "name": "badge_9",  "unlock": 9,  "instability": 25 },
+    { "name": "badge_10", "unlock": 10, "instability": 25 }
+  ],
+
+  "_offers_comment": "count = items per purchase; stock = total purchases available at that tier (no restock). baseWheat = wheat cost at the instability peak.",
+  "offers": [
+    { "item": "cobblemon:rare_candy",      "count": 1, "unlockBadge": 0,  "baseWheat": 12, "stock": 4 },
+    { "item": "cobblemon:exp_share",       "count": 1, "unlockBadge": 1,  "baseWheat": 24, "stock": 1 },
+    { "item": "cobblemon:link_cable",      "count": 1, "unlockBadge": 2,  "baseWheat": 20, "stock": 2 },
+    { "item": "cobblemon:kings_rock",      "count": 1, "unlockBadge": 2,  "baseWheat": 16, "stock": 1 },
+    { "item": "cobblemon:metal_coat",      "count": 1, "unlockBadge": 2,  "baseWheat": 16, "stock": 1 },
+    { "item": "cobblemon:lucky_egg",       "count": 1, "unlockBadge": 3,  "baseWheat": 28, "stock": 1 },
+    { "item": "cobblemon:dragon_scale",    "count": 1, "unlockBadge": 3,  "baseWheat": 16, "stock": 1 },
+    { "item": "cobblemon:upgrade",         "count": 1, "unlockBadge": 3,  "baseWheat": 16, "stock": 1 },
+    { "item": "cobblemon:everstone",       "count": 1, "unlockBadge": 4,  "baseWheat": 8,  "stock": 2 },
+    { "item": "cobblemon:razor_claw",      "count": 1, "unlockBadge": 4,  "baseWheat": 20, "stock": 1 },
+    { "item": "cobblemon:razor_fang",      "count": 1, "unlockBadge": 4,  "baseWheat": 20, "stock": 1 },
+    { "item": "cobblemon:electirizer",     "count": 1, "unlockBadge": 5,  "baseWheat": 24, "stock": 1 },
+    { "item": "cobblemon:magmarizer",      "count": 1, "unlockBadge": 5,  "baseWheat": 24, "stock": 1 },
+    { "item": "cobblemon:protector",       "count": 1, "unlockBadge": 5,  "baseWheat": 24, "stock": 1 },
+    { "item": "cobblemon:choice_band",     "count": 1, "unlockBadge": 6,  "baseWheat": 32, "stock": 1 },
+    { "item": "cobblemon:focus_sash",      "count": 1, "unlockBadge": 6,  "baseWheat": 32, "stock": 1 },
+    { "item": "cobblemon:assault_vest",    "count": 1, "unlockBadge": 7,  "baseWheat": 32, "stock": 1 },
+    { "item": "cobblemon:destiny_knot",    "count": 1, "unlockBadge": 7,  "baseWheat": 28, "stock": 1 },
+    { "item": "cobblemon:leftovers",       "count": 1, "unlockBadge": 7,  "baseWheat": 38, "stock": 1 },
+    { "item": "cobblemon:dubious_disc",    "count": 1, "unlockBadge": 8,  "baseWheat": 24, "stock": 1 },
+    { "item": "cobblemon:prism_scale",     "count": 1, "unlockBadge": 8,  "baseWheat": 20, "stock": 1 },
+    { "item": "cobblemon:sachet",          "count": 1, "unlockBadge": 8,  "baseWheat": 20, "stock": 1 },
+    { "item": "cobblemon:whipped_dream",   "count": 1, "unlockBadge": 8,  "baseWheat": 20, "stock": 1 },
+    { "item": "cobblemon:ability_capsule", "count": 1, "unlockBadge": 9,  "baseWheat": 36, "stock": 1 },
+    { "item": "cobblemon:ability_patch",   "count": 1, "unlockBadge": 10, "baseWheat": 38, "stock": 1 }
+  ]
+}

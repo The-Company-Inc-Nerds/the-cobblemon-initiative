@@ -1,12 +1,12 @@
 {
     PresetMetadata: {
         author: "TheCompanyInc",
-        category: "Civilian",
+        category: "NPC",
         created: 0L,
-        description: "civilian at Sango Town (act 1). Compiled from dialog-src.",
+        description: "granary at Hua Zhan City (act 1). Compiled from dialog-src.",
         entityTypeId: "easy_npc:humanoid",
         modified: 0L,
-        name: "Nalia",
+        name: "Granary Keeper",
         variantType: "STEVE",
         version: "1.0.0"
     },
@@ -33,108 +33,132 @@
         CanPickUpLoot: 0b,
         CustomNameVisible: 1b,
         DialogData: {
-            Type: "BASIC",
+            Type: "STANDARD",
             DialogDataSet: [
                 {
                     Conditions: [
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
-                            Name: "defeated_villain_final_boss"
-                        }
-                    ],
-                    Priority: 50,
-                    Texts: [
-                        {
-                            Text: "There you are. Sit. The stew does not care what you have been through, it only cares that you are late."
-                        },
-                        {
-                            Text: "The grey suits stopped coming. The square is loud with talk about companies and currencies and I have stopped listening to all of it. You come home now. That is the only ledger I keep."
-                        },
-                        {
-                            Text: "Whoever you had to be out there — in this kitchen you are just mine. That has always been true. It will stay true."
-                        }
-                    ],
-                    Name: "Nalia — her kid at the table",
-                    Label: "homecoming"
-                },
-                {
-                    Conditions: [
-                        {
-                            Type: "PLAYER_TAG",
-                            Operation: "EQUALS",
-                            Name: "defeated_villain_boss"
-                        }
-                    ],
-                    Priority: 40,
-                    Texts: [
-                        {
-                            Text: "You look like you have been fighting something a lot bigger than gym leaders. I am not going to ask. I am going to feed you."
-                        },
-                        {
-                            Text: "The money is steadier this week, they say. Funny how it steadied right around the time you stopped sleeping. I notice things. I am your mother."
-                        },
-                        {
-                            Text: "You never used to visit this much, you know. Whatever else is happening out there, I am keeping that part."
-                        }
-                    ],
-                    Name: "Nalia — worried now",
-                    Label: "worry"
-                },
-                {
-                    Conditions: [
-                        {
-                            Type: "PLAYER_TAG",
-                            Operation: "EQUALS",
-                            Name: "badges_gte_4"
+                            Name: "fields_liberated_gte_4"
                         }
                     ],
                     Priority: 30,
-                    Texts: [
+                    Buttons: [
                         {
-                            Text: "Four badges. I keep the newspaper clippings in the recipe drawer. Do not tell anyone."
+                            Name: "Trade anyway",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "scoreboard players set @s granary_ambush_armed 1"
+                                },
+                                {
+                                    Type: "OPEN_TRADING_SCREEN"
+                                }
+                            ],
+                            Label: "trade_button"
                         },
                         {
-                            Text: "You forgot the kitchen. You forgot the recipes. You even forgot my birthday, which honestly is not new. But you keep coming back, and that is newer than you know."
-                        },
-                        {
-                            Text: "When you were small you would line your toys up by size and audit them. I never knew where you got that. Eat something before you go."
+                            Name: "Back away",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
                         }
                     ],
-                    Name: "Nalia — the visits keep happening",
-                    Label: "warming"
+                    Texts: [
+                        {
+                            Text: "Every field you touch stops answering our memos. And now you walk into my granary wearing that face. The one from the portrait they burned."
+                        },
+                        {
+                            Text: "Company policy says you do not exist. Fine. A customer who does not exist can still pay. Grain up front."
+                        },
+                        {
+                            Text: "Trade, then. But understand me — the moment your hands are full and your guard is down, I am filing you. The bonus on you would buy this whole silo."
+                        }
+                    ],
+                    Name: "Granary Keeper — places the face",
+                    Label: "hostile"
                 },
                 {
                     Conditions: [
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
-                            Name: "met_mom"
+                            Name: "fields_liberated_gte_2"
                         }
                     ],
                     Priority: 20,
-                    Texts: [
+                    Buttons: [
                         {
-                            Text: "Back already? Good. Eat something before you run off again."
+                            Name: "See the stock",
+                            Actions: [
+                                {
+                                    Type: "OPEN_TRADING_SCREEN"
+                                }
+                            ],
+                            Label: "trade_button"
                         },
                         {
-                            Text: "Those grey-suited ones came by once more. I told them I had never seen you. I am not sure they believed me."
+                            Name: "Another time",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
                         }
                     ],
-                    Name: "After First Meeting",
-                    Label: "after_meeting"
+                    Texts: [
+                        {
+                            Text: "Fields keep going quiet. Head office keeps sending descriptions. You keep matching them a little more each week."
+                        },
+                        {
+                            Text: "I am paid to move grain, not to ask questions. Lucky for you the second job pays worse."
+                        },
+                        {
+                            Text: "Wares are open. Wheat only — the coin is not worth the pockets it sits in. For now I am still pretending I do not know you."
+                        }
+                    ],
+                    Name: "Granary Keeper — a number that will not add",
+                    Label: "suspicious"
                 },
                 {
                     Priority: 10,
-                    Texts: [
+                    Buttons: [
                         {
-                            Text: "There you are. I have been worried sick — you walked out without a word."
+                            Name: "Browse the shelves",
+                            Actions: [
+                                {
+                                    Type: "OPEN_TRADING_SCREEN"
+                                }
+                            ],
+                            Label: "trade_button"
                         },
                         {
-                            Text: "People in grey suits have been by the house, asking after you by name. They knew things they should not. Promise me you will be careful out there."
+                            Name: "Keep my grain",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
                         }
                     ],
-                    Name: "First Meeting",
+                    Texts: [
+                        {
+                            Text: "Welcome to the Granary. Company operated, community minded. We do not take CobbleDollars here — grain in, goods out. The honest exchange."
+                        },
+                        {
+                            Text: "Everything on these shelves is priced in wheat. You will find the rates very fair. Fairer every week, in fact, as the paper money keeps slipping."
+                        },
+                        {
+                            Text: "Think of it as the future arriving early. The Company believes in wheat. The Company believes in you. Bring bushels."
+                        }
+                    ],
+                    Name: "Granary Keeper — the company store",
                     Label: "default"
                 }
             ]
@@ -276,6 +300,23 @@
                 id: "minecraft:generic.movement_speed"
             }
         ],
-        id: "easy_npc:humanoid"
+        id: "easy_npc:humanoid",
+        Offers: {
+            Inventory: {},
+            Recipes: {
+                Recipes: [
+            {buy: {id: "minecraft:wheat", count: 19}, sell: {id: "cobblemon:rare_candy", count: 1}, uses: 0, maxUses: 4, rewardExp: 0b, specialPrice: 0, demand: 0, priceMultiplier: 0.0f, xp: 0},
+            {buy: {id: "minecraft:wheat", count: 38}, sell: {id: "cobblemon:exp_share", count: 1}, uses: 0, maxUses: 1, rewardExp: 0b, specialPrice: 0, demand: 0, priceMultiplier: 0.0f, xp: 0}
+        ]
+            }
+        },
+        TradingData: {
+            TradingDataSet: {
+                Type: "BASIC",
+                MaxUses: 4,
+                ResetsEveryMin: 525600,
+                LastReset: 0L
+            }
+        }
     }
 }

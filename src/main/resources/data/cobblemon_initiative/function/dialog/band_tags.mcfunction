@@ -10,9 +10,18 @@ execute as @a unless score @s memory_fragment matches 10.. run tag @s remove bad
 execute as @a if score @s memory_fragment matches 3.. run tag @s add badges_gte_3
 execute as @a unless score @s memory_fragment matches 3.. run tag @s remove badges_gte_3
 
+execute as @a if score @s memory_fragment matches 4.. run tag @s add badges_gte_4
+execute as @a unless score @s memory_fragment matches 4.. run tag @s remove badges_gte_4
+
 execute as @a if score @s memory_fragment matches 7.. run tag @s add badges_gte_7
 execute as @a unless score @s memory_fragment matches 7.. run tag @s remove badges_gte_7
 
 execute as @a if score @s cd_instability matches 40.. run tag @s add cd_instability_gte_40
 execute as @a unless score @s cd_instability matches 40.. run tag @s remove cd_instability_gte_40
+
+execute as @a if score @s fields_liberated matches 2.. run tag @s add fields_liberated_gte_2
+execute as @a unless score @s fields_liberated matches 2.. run tag @s remove fields_liberated_gte_2
+
+execute as @a if score @s fields_liberated matches 4.. run tag @s add fields_liberated_gte_4
+execute as @a unless score @s fields_liberated matches 4.. run tag @s remove fields_liberated_gte_4
 

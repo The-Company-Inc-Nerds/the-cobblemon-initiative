@@ -27,9 +27,13 @@ and the slimmed README + UPM 2 disclaimer). See `GIT_COMMIT_MSG` / `docs/LORE_BI
   - [ ] 4 Board members + The Founder (post-Royal-League, The Boardroom)
 - [ ] **Wheat fields** — mark with `/cobblemon-initiative field-mark add <id> <region>` (6 set-piece + scattered minor), `export`, send Claude the JSON. → *unblocks P4 and removing Field Mark (§2)*
 - [ ] **Wheat-trader NPCs** — place (trade→recognize→ambush) from `wheat_trader_gate` + `trade_wheat_trader` + `dialog_wheat_pitch`
-- [ ] **Granary buyer NPC** per town (sell wheat → CobbleDollars; P5). The default **bank** now
-  buys wheat at a deliberate Company lowball (`wheat` 25 / `hay_block` 225 CD); granaries should
-  **beat** that rate so liberating fields feels like escaping the monopoly.
+- [ ] **Granary trader NPC** — Company Inc. member selling items **for wheat**. **Infrastructure landed:**
+  - [x] `granary_keeper` character + 3-tier recognition dialog (default → suspicious ≥2 fields → hostile ≥4, hostile trade arms `granary_ambush_armed`); compiled via content_compile.
+  - [x] Badge-tiered offers + **wheat bell curve**: `scripts/granary_tiers/master_granary.json` (+ `generate_granary_tiers`) bakes 12 tier presets (`granary_keeper_<tier>.npc.snbt`) — wheat cost = base × (1+(56−idx)×0.012), e.g. rare_candy 20→12(peak)→16 wheat. No restocks (stock baked, no reset). Item IDs validated against the Cobblemon 1.7.3 jar.
+  - [x] Lockstep retier: `ShopTierManager.applyTier` also fires `function cobblemon_initiative:granary/apply_<tier>` (stubs until UUIDs recorded).
+  - [ ] 🧱 Place Granary NPC(s), map UUID → `humanoid/granary_keeper` in npc_presets.json, re-run `generate_granary_tiers` (fills apply functions), `install run`
+  - [ ] Post-trade ambush poller + granary/wheat-trader ambush battle (needs villain trainer authoring; `granary_ambush_armed`/`wheat_ambush_armed` both armed-but-unread today) 💻
+  - [ ] Tune the item pool / prices / ambush thresholds after an in-game pass 🔍
 - [ ] **Memory re-reader (Archivist) NPC** per town (`dialog_memory_rereader`)
 - [ ] **Reserved farm plots** — griefing-safe plots for liberated-field safe-farm conversion
 - [ ] *(Optional)* civilian NPCs: Mom in Sango (`dialog_first_meeting`), rumor mill, Company propaganda
