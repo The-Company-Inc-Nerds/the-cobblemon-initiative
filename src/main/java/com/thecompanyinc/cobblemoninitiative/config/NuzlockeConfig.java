@@ -360,13 +360,14 @@ public class NuzlockeConfig {
   /**
    * A zone with an {@code activeWhenObjective} only counts as active once that world
    * scoreboard (holder {@code activeWhenHolder}, default the zone name) reaches
-   * {@code activeWhenMin}. Ungated zones are always active. Fails open (active) when the
-   * server/scoreboard is unavailable so normal zones are never accidentally disabled; a
-   * gated zone whose objective doesn't exist yet reads as inactive (not-yet-liberated).
+   * {@code activeWhenMin}. Ungated zones are ALWAYS active (never accidentally disabled).
+   * A gated zone reads as INACTIVE (still-occupied) whenever its liberation can't be
+   * confirmed — no server context, missing objective, or score below the threshold — so
+   * an unverified field defaults to dangerous wilderness, not free safe farmland.
    */
   public boolean isZoneActive(SafeZone zone, MinecraftServer server) {
     if (zone.activeWhenObjective == null || zone.activeWhenObjective.isEmpty()) return true;
-    if (server == null) return true;
+    if (server == null) return false; // gated, can't verify liberation -> occupied/inactive
     try {
       Scoreboard sb = server.getScoreboard();
       Objective obj = sb.getObjective(zone.activeWhenObjective);

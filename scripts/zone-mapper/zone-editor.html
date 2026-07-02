@@ -728,8 +728,13 @@ cd "&lt;export dir&gt;" &amp;&amp; python3 -m http.server 8099
     if (!selected) return;
     const m = selected.get("meta");
     m.type = $("f-type").value;
-    $("f-gate-wrap").style.display = (m.type === "FARM") ? "" : "none";
-    if (m.type === "FARM") $("f-gatefield").value = m.activeWhenHolder || "";
+    if (m.type === "FARM") {
+      $("f-gate-wrap").style.display = "";
+      $("f-gatefield").value = m.activeWhenHolder || "";
+    } else {
+      $("f-gate-wrap").style.display = "none";
+      m.activeWhenObjective = null; m.activeWhenHolder = null; // drop the gate — non-FARM zones aren't liberation-gated
+    }
     // if colour was still the type default, follow the new type
     if (!$("f-color").value || $("f-color").value.toUpperCase() === (TYPE_COLORS[$("f-type").value] || "").toUpperCase()) {
       m.color = TYPE_COLORS[m.type] || m.color;
@@ -802,6 +807,16 @@ cd "&lt;export dir&gt;" &amp;&amp; python3 -m http.server 8099
       select = new ol.interaction.Select({ layers: [drawLayer], style: styleFor });
       select.on("select", (e) => selectFeature(e.selected[0] || null, false));
       modify = new ol.interaction.Modify({ source: drawSource });
+      // Hand-editing a route's polygon detaches it from its stored centerline (so a later
+      // width change can't snap it back / clobber the edits) — it becomes a plain polygon.
+      modify.on("modifyend", (e) => {
+        let changed = false;
+        e.features.forEach((f) => {
+          const m = f.get("meta");
+          if (m && m.routeLine) { m.routeLine = null; m.routeWidth = null; changed = true; }
+        });
+        if (changed) { refreshEditor(); refreshExport(); }
+      });
       map.addInteraction(select);
       map.addInteraction(modify);
     } else if (tool === "delete") {
