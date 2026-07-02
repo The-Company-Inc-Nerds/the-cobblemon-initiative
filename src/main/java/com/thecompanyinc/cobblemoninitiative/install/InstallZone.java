@@ -44,6 +44,14 @@ public class InstallZone {
   public boolean hostileOnly = true;
 
   /**
+   * If true, this zone does NOT suppress mob spawning — mobs spawn normally (the zone
+   * is still drawn on the map and can announce). {@link #hostileOnly} is ignored when
+   * this is true. Use for routes / farms / wilderness markers that keep full spawns.
+   * Default false (the zone suppresses spawns per {@link #hostileOnly}).
+   */
+  public boolean mobsSpawn = false;
+
+  /**
    * If true, zone is a vertical cylinder (ignore Y). Recommended for open-world zones.
    * Set false for underground / enclosed spaces (full sphere check).
    */

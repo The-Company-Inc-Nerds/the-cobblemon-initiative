@@ -55,6 +55,7 @@ dependencies {
     // Port). Easy NPC version 6.25.0 collides with a Forge/1.20.1 build, so the
     // Modrinth deps are pinned by VERSION ID, not version number.
     // Fabric Loader was bumped 0.17.2 -> 0.19.3 above: Easy NPC 6.25.0 requires >= 0.18.3.
+    modRuntimeOnly("net.fabricmc:fabric-language-kotlin:1.13.12+kotlin.2.4.0") // Cobblemon is Kotlin — needs the Kotlin runtime + language adapter at launch (matches the .mrpack). Without it run-client crashes: NoClassDefFoundError kotlin/jvm/internal/Intrinsics.
     modRuntimeOnly("maven.modrinth:Epm6R3P2:pxt6JAIU")          // easy_npc 6.25.0 (fabric 1.21.1) — NPC entities for Sight / Map
     modRuntimeOnly("maven.modrinth:uTGjf7vA:GemJghTO")          // easy_npc_config_ui 6.25.0 (fabric 1.21.1)
     modRuntimeOnly("maven.modrinth:lhGA9TYQ:Wto0RchG")          // architectury 13.0.8 — rctapi requires >= 13.0.2

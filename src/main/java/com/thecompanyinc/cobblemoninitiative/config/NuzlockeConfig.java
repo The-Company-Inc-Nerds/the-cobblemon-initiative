@@ -92,6 +92,8 @@ public class NuzlockeConfig {
     public int radius;
     public boolean preventHostileOnly;
     public boolean cylindrical;
+    /** If true, this zone does not suppress mob spawning (mobs spawn normally). */
+    public boolean mobsSpawn = false;
     /** If true, fires an area announcement when the player enters this zone. */
     public boolean announce = false;
     /** Optional subtitle shown beneath the zone name (TITLE style only). */

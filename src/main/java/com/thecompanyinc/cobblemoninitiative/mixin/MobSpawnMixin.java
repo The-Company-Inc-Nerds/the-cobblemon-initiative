@@ -40,7 +40,7 @@ public class MobSpawnMixin {
       pos.getZ()
     );
 
-    if (zone != null) {
+    if (zone != null && !zone.mobsSpawn) {
       if (zone.preventHostileOnly) {
         if (category == MobCategory.MONSTER) {
           ci.cancel();

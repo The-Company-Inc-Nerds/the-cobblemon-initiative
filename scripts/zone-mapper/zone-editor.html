@@ -10,8 +10,9 @@
 
   WHAT IT IS
     A self-contained OpenLayers page that renders your uNmINeD map export and lets
-    you draw towns / routes / shrines / villain sites as rectangles, polygons, or
-    circles, then exports them in the exact schema InstallZone.java expects.
+    you draw towns / routes / shrines / villain sites / farms as rectangles, polygons,
+    circles, or buffered route corridors, then exports them in the exact schema
+    InstallZone.java expects.
 
   WHY OPENLAYERS (not Leaflet)
     uNmINeD's web export IS an OpenLayers app. This file is a faithful port of the
@@ -41,12 +42,12 @@
     check — known zones (Sango 0/0, HQ 1590/1028, Royal League 3528/2773) should land
     on the right spots.
 
-  OpenLayers is loaded from a CDN (same version uNmINeD ships, 6.9.0). If you work
-  offline, drop ol.js / ol.css beside this file and repoint OL_JS / OL_CSS below.
+  OpenLayers 6.9.0 (the UMD full build, matching the version uNmINeD's export
+  targets) is vendored in this tool's vendor/ folder and copied in beside this page
+  by the zone-mapper launcher, so it runs fully offline — no CDN.
 -->
 
-<link id="ol-css" rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/ol@6.9.0/dist/ol.css">
+<link id="ol-css" rel="stylesheet" href="vendor/ol.css">
 <style>
   :root {
     --bg: #1c2128; --panel: #22282f; --edge: #333c45; --ink: #d7dee6;
@@ -131,7 +132,7 @@
   --world "&lt;your save&gt;" \
   --output "&lt;export dir&gt;"
 
-cp zone-editor.html README.md "&lt;export dir&gt;/"
+cp -r zone-editor.html README.md vendor "&lt;export dir&gt;/"
 cd "&lt;export dir&gt;" &amp;&amp; python3 -m http.server 8099
 # open http://localhost:8099/zone-editor.html</pre>
         <p class="hint">See <code>README.md</code> for the full workflow.</p>
@@ -158,11 +159,21 @@ cd "&lt;export dir&gt;" &amp;&amp; python3 -m http.server 8099
         <span>New zone type</span>
         <select id="newtype">
           <option>TOWN</option><option>ROUTE</option><option>SHRINE</option>
-          <option>VILLAIN</option><option>BATTLE_FRONTIER</option><option>LANDMARK</option>
+          <option>VILLAIN</option><option>BATTLE_FRONTIER</option><option>FARM</option><option>LANDMARK</option>
         </select>
       </label>
-      <div class="hint">Box &amp; Polygon &amp; Route export as <code>vertices</code> (center/radius
-      derived by the mod). Circle exports <code>centerX/Y/Z</code> + <code>radius</code>.</div>
+      <label class="field" style="margin-top:6px;">
+        <span>Route width (blocks)</span>
+        <input type="number" id="route-width" value="16" min="1">
+      </label>
+      <div class="hint">Box, Polygon &amp; Route export as <code>vertices</code> (center/radius
+      derived by the mod); the Route tool buffers your line into a corridor of the width
+      above. Circle exports <code>centerX/Y/Z</code> + <code>radius</code>.</div>
+      <label style="display:block;margin-top:8px;font-size:12px;">
+        <input type="checkbox" id="clip-toggle" checked> Clip overlaps by priority
+      </label>
+      <div class="hint">Lower priority number wins; a lower-priority polygon's border is
+      trimmed to the higher one's edge. Circles trim others but aren't reshaped.</div>
     </section>
 
     <section>
@@ -178,7 +189,7 @@ cd "&lt;export dir&gt;" &amp;&amp; python3 -m http.server 8099
         <label class="field"><span>Type</span>
           <select id="f-type">
             <option>TOWN</option><option>ROUTE</option><option>SHRINE</option>
-            <option>VILLAIN</option><option>BATTLE_FRONTIER</option><option>LANDMARK</option>
+            <option>VILLAIN</option><option>BATTLE_FRONTIER</option><option>FARM</option><option>LANDMARK</option>
           </select>
         </label>
         <label class="field"><span>Center Y</span><input type="number" id="f-centery" value="64"></label>
@@ -188,8 +199,20 @@ cd "&lt;export dir&gt;" &amp;&amp; python3 -m http.server 8099
         <input type="color" id="f-color-pick">
         <input type="text" id="f-color" placeholder="#AAAAAA">
       </div>
+      <div class="row">
+        <label class="field"><span>Mob spawning</span>
+          <select id="f-spawn">
+            <option value="hostile">No hostiles (safe)</option>
+            <option value="none">No mobs at all</option>
+            <option value="all">Spawn freely (label-only)</option>
+          </select>
+        </label>
+        <label class="field"><span>Priority (1 = top)</span>
+          <input type="number" id="f-priority" value="5" min="1"></label>
+      </div>
+      <label class="field" id="f-routewidth-wrap" style="display:none;"><span>Route width (blocks)</span>
+        <input type="number" id="f-routewidth" min="1"></label>
       <div class="checks" style="margin-top:8px;">
-        <label><input type="checkbox" id="f-hostile"> hostileOnly</label>
         <label><input type="checkbox" id="f-cyl"> cylindrical</label>
         <label><input type="checkbox" id="f-announce"> announce</label>
       </div>
@@ -222,7 +245,8 @@ cd "&lt;export dir&gt;" &amp;&amp; python3 -m http.server 8099
   </div>
 </div>
 
-<script id="ol-js" src="https://cdn.jsdelivr.net/npm/ol@6.9.0/dist/ol.js"></script>
+<script id="ol-js" src="vendor/ol.js"></script>
+<script id="pc-js" src="vendor/polygon-clipping.js"></script>
 <!-- uNmINeD export metadata (defines window.UnminedMapProperties). Absent if this
      file isn't inside an export — handled gracefully below. -->
 <script src="unmined.map.properties.js" onerror="window.__noProps=true"></script>
@@ -233,8 +257,9 @@ cd "&lt;export dir&gt;" &amp;&amp; python3 -m http.server 8099
   // ---- per-type default colours (suggestions matching existing install.json) ----
   const TYPE_COLORS = {
     TOWN: "#A8C4D8", ROUTE: "#AAAAAA", SHRINE: "#B39DDB",
-    VILLAIN: "#455A64", BATTLE_FRONTIER: "#FFD700", LANDMARK: "#AAAAAA",
+    VILLAIN: "#455A64", BATTLE_FRONTIER: "#FFD700", FARM: "#C9A227", LANDMARK: "#AAAAAA",
   };
+  let clipEnabled = true; // priority-clipping toggle (see recomputeClips)
 
   const P = window.UnminedMapProperties;
   if (!P || window.__noProps) {
@@ -244,9 +269,9 @@ cd "&lt;export dir&gt;" &amp;&amp; python3 -m http.server 8099
   if (typeof ol === "undefined") {
     document.getElementById("setup").style.display = "flex";
     document.querySelector("#setup .card").innerHTML =
-      "<h2>OpenLayers failed to load</h2><p>This page loads OpenLayers 6.9.0 from a CDN. " +
-      "If you're offline, download <code>ol.js</code> / <code>ol.css</code> beside this file " +
-      "and repoint the tags in the &lt;head&gt;.</p>";
+      "<h2>OpenLayers didn't load</h2><p>Expected <code>vendor/ol.js</code> next to this page. " +
+      "Re-run <code>zone-mapper</code> (it copies the bundled OpenLayers into the export), " +
+      "or copy <code>scripts/zone-mapper/vendor/</code> in manually.</p>";
     return;
   }
 
@@ -331,7 +356,9 @@ cd "&lt;export dir&gt;" &amp;&amp; python3 -m http.server 8099
     const m = f.get("meta") || {};
     const col = m.color || "#AAAAAA";
     const sel = (f === selected);
-    return new ol.style.Style({
+    const clip = clipEnabled ? f.get("_clipView") : null;
+    const main = new ol.style.Style({
+      geometry: clip || undefined,   // render the clipped shape when priority-clipping applies
       stroke: new ol.style.Stroke({ color: col, width: sel ? 3 : 2 }),
       fill: new ol.style.Fill({ color: hexToRgba(col, sel ? 0.35 : 0.16) }),
       text: new ol.style.Text({
@@ -340,6 +367,13 @@ cd "&lt;export dir&gt;" &amp;&amp; python3 -m http.server 8099
         stroke: new ol.style.Stroke({ color: "#000", width: 3 }),
       }),
     });
+    // when clipped, also show the raw drawn shape as a faint dashed outline (still editable)
+    if (clip) {
+      return [main, new ol.style.Style({
+        stroke: new ol.style.Stroke({ color: col, width: 1, lineDash: [4, 4] }),
+      })];
+    }
+    return main;
   }
   const drawLayer = new ol.layer.Vector({ source: drawSource, style: styleFor });
 
@@ -382,6 +416,103 @@ cd "&lt;export dir&gt;" &amp;&amp; python3 -m http.server 8099
   //  Coordinate <-> zone conversion (all via uNmINeD's own transform)
   // ============================================================================
   function uid() { return "z" + Math.random().toString(36).slice(2, 9); }
+
+  // Offset an open polyline (view coords) to one side by `half`, mitre-joined
+  // with a clamp so sharp bends don't spike. Negative `half` = the other side.
+  function offsetSide(pts, half) {
+    const n = pts.length, seg = [];
+    for (let i = 0; i < n - 1; i++) {
+      const dx = pts[i + 1][0] - pts[i][0], dy = pts[i + 1][1] - pts[i][1];
+      const l = Math.hypot(dx, dy) || 1;
+      seg.push([-dy / l, dx / l]); // left unit normal
+    }
+    const out = [];
+    for (let i = 0; i < n; i++) {
+      let nx, ny;
+      if (i === 0) { nx = seg[0][0]; ny = seg[0][1]; }
+      else if (i === n - 1) { nx = seg[n - 2][0]; ny = seg[n - 2][1]; }
+      else {
+        let mx = seg[i - 1][0] + seg[i][0], my = seg[i - 1][1] + seg[i][1];
+        const ml = Math.hypot(mx, my) || 1; mx /= ml; my /= ml;
+        const dot = mx * seg[i][0] + my * seg[i][1];         // cos(bend/2)
+        const scale = Math.min(1 / Math.max(dot, 0.34), 3);  // clamp mitre spikes
+        nx = mx * scale; ny = my * scale;
+      }
+      out.push([pts[i][0] + nx * half, pts[i][1] + ny * half]);
+    }
+    return out;
+  }
+  // Turn a drawn route line into a closed corridor-polygon ring `half` wide each side.
+  function bufferLine(pts, half) {
+    if (pts.length < 2) return null;
+    const ring = offsetSide(pts, half).concat(offsetSide(pts, -half).reverse());
+    ring.push(ring[0].slice());
+    return ring;
+  }
+
+  // ---- priority clipping: lower priority number wins; a lower-priority polygon's
+  // border is trimmed to the union of all higher-priority zones (circles included). ----
+  function ringArea(ring) {
+    let a = 0;
+    for (let i = 0; i < ring.length - 1; i++) a += ring[i][0] * ring[i + 1][1] - ring[i + 1][0] * ring[i][1];
+    return Math.abs(a / 2);
+  }
+  // A zone as a block-coord polygon [outerRing] for clipping. Circles -> 48-gon.
+  function buildBlockPolygon(f) {
+    const g = f.getGeometry();
+    if (g.getType() === "Circle") {
+      const cv = g.getCenter(), c = toBlock(cv);
+      const e = toBlock([cv[0] + g.getRadius(), cv[1]]);
+      const r = Math.hypot(e[0] - c[0], e[1] - c[1]);
+      const ring = [];
+      for (let i = 0; i < 48; i++) { const a = (i / 48) * 2 * Math.PI; ring.push([c[0] + r * Math.cos(a), c[1] + r * Math.sin(a)]); }
+      ring.push(ring[0].slice());
+      return [ring];
+    }
+    const vs = polyVerts(g).map((v) => [v.x, v.z]);
+    vs.push(vs[0].slice());
+    return [vs];
+  }
+  function recomputeClips() {
+    const feats = drawSource.getFeatures();
+    feats.forEach((f) => { f.set("_clipRing", null, true); f.set("_clipView", null, true); f.set("_clipWarn", false, true); });
+    if (!clipEnabled || typeof polygonClipping === "undefined") return;
+    const infos = feats.map((f) => ({
+      f, pr: Number((f.get("meta") || {}).priority) || 5,
+      isCircle: f.getGeometry().getType() === "Circle", poly: buildBlockPolygon(f),
+    }));
+    for (const info of infos) {
+      if (info.isCircle) continue; // circles trim others but keep their own shape
+      const higher = infos.filter((o) => o !== info && o.pr < info.pr).map((o) => o.poly);
+      if (!higher.length) continue;
+      let diff;
+      try { diff = polygonClipping.difference(info.poly, ...higher); }
+      catch (e) { continue; }
+      if (!diff || !diff.length) { info.f.set("_clipWarn", true, true); continue; } // fully covered
+      let best = diff[0], bestA = ringArea(diff[0][0]);
+      for (const poly of diff) { const a = ringArea(poly[0]); if (a > bestA) { bestA = a; best = poly; } }
+      const outer = best[0];
+      info.f.set("_clipRing", outer.slice(0, outer.length - 1).map((p) => ({ x: Math.round(p[0]), z: Math.round(p[1]) })), true);
+      info.f.set("_clipView", new ol.geom.Polygon([outer.map((p) => toView(p[0], p[1]))]), true);
+      info.f.set("_clipWarn", diff.length > 1 || best.length > 1, true); // split or has holes
+    }
+  }
+
+  // Build the corridor polygon (view geometry) for a route from its block-coord
+  // centerline + width — used both when drawing and when retro-adjusting the width.
+  function routeToPolygon(lineBlocks, widthBlocks) {
+    const pts = lineBlocks.map((p) => toView(p.x, p.z));
+    const o0 = toView(0, 0), o1 = toView(1, 0);
+    const viewPerBlock = Math.hypot(o1[0] - o0[0], o1[1] - o0[1]) || 1;
+    const ring = bufferLine(pts, (widthBlocks / 2) * viewPerBlock);
+    return ring ? new ol.geom.Polygon([ring]) : null;
+  }
+  function rebufferRoute(f) {
+    const m = f.get("meta");
+    if (!m || !m.routeLine) return;
+    const geom = routeToPolygon(m.routeLine, m.routeWidth || 16);
+    if (geom) f.setGeometry(geom);
+  }
 
   function polyVerts(geom) {
     let coords;
@@ -428,10 +559,15 @@ cd "&lt;export dir&gt;" &amp;&amp; python3 -m http.server 8099
     }
     z.dimension = m.dimension || "minecraft:overworld";
     z.hostileOnly = !!m.hostileOnly;
+    z.mobsSpawn = !!m.mobsSpawn;
     z.cylindrical = !!m.cylindrical;
     z.announce = !!m.announce;
+    z.priority = (m.priority != null ? m.priority : 5);
     z.color = m.color || "#AAAAAA";
-    if (!isCircle) z.vertices = polyVerts(g);
+    if (!isCircle) {
+      const cr = clipEnabled ? f.get("_clipRing") : null;   // priority-clipped border, if any
+      z.vertices = cr || polyVerts(g);
+    }
     return z;
   }
 
@@ -454,8 +590,10 @@ cd "&lt;export dir&gt;" &amp;&amp; python3 -m http.server 8099
       centerY: (z.centerY != null ? z.centerY : 64),
       dimension: z.dimension || "minecraft:overworld",
       hostileOnly: z.hostileOnly !== false,
+      mobsSpawn: z.mobsSpawn === true,
       cylindrical: z.cylindrical !== false,
       announce: z.announce !== false,
+      priority: (z.priority != null ? z.priority : 5),
       color: z.color || TYPE_COLORS[z.type] || "#AAAAAA",
     });
     return f;
@@ -469,8 +607,10 @@ cd "&lt;export dir&gt;" &amp;&amp; python3 -m http.server 8099
   const $ = (id) => document.getElementById(id);
 
   function refreshExport() {
+    recomputeClips();
     const zones = drawSource.getFeatures().map(featureToZone);
     $("out").value = JSON.stringify(zones, null, 2);
+    redraw();
   }
 
   function refreshList() {
@@ -501,7 +641,11 @@ cd "&lt;export dir&gt;" &amp;&amp; python3 -m http.server 8099
     $("f-dim").value = m.dimension || "minecraft:overworld";
     $("f-color").value = m.color || "#AAAAAA";
     $("f-color-pick").value = /^#[0-9a-f]{6}$/i.test(m.color) ? m.color : "#AAAAAA";
-    $("f-hostile").checked = !!m.hostileOnly;
+    $("f-spawn").value = m.mobsSpawn ? "all" : (m.hostileOnly ? "hostile" : "none");
+    $("f-priority").value = (m.priority != null ? m.priority : 5);
+    const rww = $("f-routewidth-wrap");
+    if (m.routeLine) { rww.style.display = ""; $("f-routewidth").value = (m.routeWidth || 16); }
+    else { rww.style.display = "none"; }
     $("f-cyl").checked = !!m.cylindrical;
     $("f-announce").checked = !!m.announce;
     const g = selected.getGeometry();
@@ -512,6 +656,9 @@ cd "&lt;export dir&gt;" &amp;&amp; python3 -m http.server 8099
       $("f-derived").textContent =
         "Polygon → " + polyVerts(g).length + " vertices · mod derives center " +
         d.cx + "/" + d.cz + ", radius " + d.radius;
+    }
+    if (clipEnabled && selected.get("_clipWarn")) {
+      $("f-derived").textContent += "  ⚠ clip split this zone / made a hole — export keeps the largest piece.";
     }
   }
 
@@ -541,7 +688,27 @@ cd "&lt;export dir&gt;" &amp;&amp; python3 -m http.server 8099
   bindMeta("f-centery", "centerY", (el) => parseInt(el.value || "64", 10));
   bindMeta("f-dim", "dimension");
   bindMeta("f-color", "color");
-  bindMeta("f-hostile", "hostileOnly", (el) => el.checked);
+  bindMeta("f-priority", "priority", (el) => parseInt(el.value || "5", 10));
+  $("f-routewidth").addEventListener("input", () => {
+    if (!selected) return;
+    const m = selected.get("meta");
+    if (!m || !m.routeLine) return;
+    const w = parseFloat($("f-routewidth").value);
+    if (isFinite(w) && w > 0) { m.routeWidth = w; rebufferRoute(selected); } // setGeometry triggers refresh
+  });
+  $("f-spawn").addEventListener("change", () => {
+    if (!selected) return;
+    const m = selected.get("meta");
+    const v = $("f-spawn").value;
+    m.mobsSpawn = (v === "all");
+    if (v === "hostile") m.hostileOnly = true;
+    else if (v === "none") m.hostileOnly = false;
+    selected.set("meta", m);
+    redraw(); refreshList(); refreshExport();
+  });
+  $("clip-toggle").addEventListener("change", () => {
+    clipEnabled = $("clip-toggle").checked; refreshExport();
+  });
   bindMeta("f-cyl", "cylindrical", (el) => el.checked);
   bindMeta("f-announce", "announce", (el) => el.checked);
   $("f-type").addEventListener("change", () => {
@@ -583,10 +750,26 @@ cd "&lt;export dir&gt;" &amp;&amp; python3 -m http.server 8099
         const f = e.feature;
         f.setId(uid());
         const t = $("newtype").value;
+        // Route lines → buffer into a corridor polygon of the chosen block width.
+        const g = f.getGeometry();
+        // Route lines → corridor polygon; keep the centerline + width so the width
+        // can be re-adjusted later from the Edit form without redrawing the route.
+        let routeLine = null, routeWidth = null;
+        if (g.getType() === "LineString") {
+          const w = parseFloat($("route-width").value);
+          routeWidth = (isFinite(w) && w > 0) ? w : 16;
+          routeLine = g.getCoordinates().map((c) => { const b = toBlock(c); return { x: Math.round(b[0]), z: Math.round(b[1]) }; });
+          const geom = routeToPolygon(routeLine, routeWidth);
+          if (geom) f.setGeometry(geom);
+        }
+        const spawnFree = (t === "ROUTE" || t === "FARM" || t === "LANDMARK");
+        const PRI = { BATTLE_FRONTIER: 1, TOWN: 2, SHRINE: 2, VILLAIN: 2, ROUTE: 3, FARM: 4, LANDMARK: 5 };
         f.set("meta", {
           name: "", subtitle: "", type: t, centerY: 64,
-          dimension: "minecraft:overworld", hostileOnly: true, cylindrical: true,
-          announce: true, color: TYPE_COLORS[t] || "#AAAAAA",
+          dimension: "minecraft:overworld", hostileOnly: true, mobsSpawn: spawnFree,
+          cylindrical: true, announce: true, priority: (PRI[t] || 5),
+          routeLine: routeLine, routeWidth: routeWidth,
+          color: TYPE_COLORS[t] || "#AAAAAA",
         });
         setTimeout(() => { selectFeature(f, false); setTool("edit"); $("f-name").focus(); }, 0);
       });

@@ -37,9 +37,13 @@ and the slimmed README + UPM 2 disclaimer). See `GIT_COMMIT_MSG` / `docs/LORE_BI
 
 ### B. Remaining systems 💻
 - [ ] **P4 — Field liberation** (needs marked coords): guard trainers, liberate → restore wheat price + unlock safe-farm + advance HQ gate; relog-safe one-way latches; `liberation/fields.json`
-  - [ ] `NuzlockeConfig.SafeZone.activeWhenScore` (world-data-gated safe farm — required for the config-leak)
+  - [x] **Option A core** — `liberation/free_field`(+`_apply`): −6 `cd_instability` (floor 0, tunable) + `fields_liberated`++ + per-field `field_freed` latch + actionbar beat. *Remaining for A:* wire a field-guard `command` reward `execute as {player} run function cobblemon_initiative:liberation/free_field {field:"<id>"}` (blocked on marked field coords 🧱)
+  - [ ] **Option B** — `NuzlockeConfig.SafeZone.activeWhenScore` (world-data-gated conditional safe-farm; occupied field = hostile until liberated) — the real "every zone becomes a safezone" fix
+  - [ ] **Option B** — Granary `sell_wheat` above the Company lowball (reuses `economy/payout`)
   - [ ] `wheat_war_active` flag (lights up the HUD wheat-fields line + the trader poller)
-  - [ ] Wire `wheat_trader/load` + `wheat_trader/tick` into the function tags
+  - [x] Wire `wheat_trader/load` + `wheat_trader/tick` into the function tags (+ new `liberation/load`)
+  - [ ] **Balance decision (before B):** field pushback magnitude (−6?) + count (~6 fields?); whether liberating swaps a shop tier (prices are static-baked, so instability alone won't re-price) or stays narrative/Granary-driven; whether liberation gates the HQ raid
+  - [ ] *(Option C, deferred)* stateful `farmzone/` subsystem (soil/growth/patrols/HQ-difficulty)
 - [ ] **P5 — Wheat traders full wiring** — _done: the trade→recognize→ambush dialogue, `minecraft:paper` currency, and 2/4 recognition/ambush thresholds._ Remaining: in-world placement + the post-trade ambush trigger; Granary `sell_wheat` (batches-first, CD); per-region `wheat_price_<region>`
 - [ ] **Smoke-test `cobbledollars add @s`** inside `execute as` before P4 relies on the payout macro
 - [ ] *(Designed, optional)* Founder name de-obfuscation as the Board falls; propaganda-decay dialog registers
@@ -60,6 +64,13 @@ and the slimmed README + UPM 2 disclaimer). See `GIT_COMMIT_MSG` / `docs/LORE_BI
 ### E. Docs & wiki 💻/🧱
 - [ ] **Publish the wiki** — initialize the GitHub wiki once (create any page in the repo's *Wiki* tab), then run `publish-wiki` to push `wiki/` (it link-checks first; URL defaults to `<origin>.wiki.git`).
 - [ ] After editing `wiki/` pages, re-run `publish-wiki` to keep the live wiki in sync.
+
+### F. Zone-mapper & dev environment 💻
+- [x] Zone-mapper: offline (vendored OpenLayers UMD + polygon-clipping), FARM zone type, per-zone mob-spawning control (`mobsSpawn`), priority-based overlap clipping, route→corridor buffer + retroactive width-adjust
+- [x] mrpack: the 2 new resource packs default-on; BSL shader on by default (`config/iris.properties`); video maxed for the Sodium/Iris stack (graphicsMode kept Fancy — Fabulous breaks Iris)
+- [ ] Capture **max Sodium + BSL shader settings** via `run-client` and bundle `config/sodium-options.json` + `shaderpacks/BSL_v10.1.3.zip.txt` into `mrpack/overrides/` — can't be done headless (needs a display); do on a workstation 🔍
+- [x] **run-client fixed** — added `fabric-language-kotlin:1.13.12+kotlin.2.4.0` (Cobblemon's Kotlin runtime/adapter) to `build.gradle.kts`; it was crashing at launch with `NoClassDefFoundError: kotlin/jvm/internal/Intrinsics`. Verified headless: 69 mods + Cobblemon + **all cobblemon-initiative subsystems init**; only the software-GL window step fails in the sandbox. → 🔍 confirm full boot to menu on a real GPU
+- [ ] *(mod)* `mobsSpawn` per-zone flag — verify in-game a `Spawn freely` FARM/ROUTE zone actually keeps spawns while a town suppresses 🔍
 
 ---
 

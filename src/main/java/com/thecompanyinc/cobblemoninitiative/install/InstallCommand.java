@@ -396,6 +396,7 @@ public class InstallCommand {
           sz.announce = iz.announce;
           sz.subtitle = iz.subtitle != null ? iz.subtitle : "";
           sz.color = iz.color != null ? iz.color : "";
+          sz.mobsSpawn = iz.mobsSpawn;
           nzConfig.getSafeZones().add(sz);
           added++;
         }

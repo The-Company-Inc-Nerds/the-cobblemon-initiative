@@ -36,9 +36,9 @@ world/export.
   `UNMINED` env var). Note the GUI build can't render headlessly — the CLI is what's
   packaged. uNmINeD reads the world's region files read-only.
 - Python 3 — already in the dev shell (`shell.nix`), used to serve the folder.
-- Internet on first open (OpenLayers 6.9.0 loads from a CDN). For offline use, drop
-  `ol.js` and `ol.css` next to `zone-editor.html` and repoint the tags in its
-  `<head>`.
+- No internet needed: OpenLayers 6.9.0 (UMD full build) is **vendored** in
+  `scripts/zone-mapper/vendor/` and copied in beside the editor by the launcher, so
+  the page runs fully offline.
 
 ## Quick start
 

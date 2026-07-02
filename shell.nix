@@ -300,6 +300,7 @@
     fi
 
     cp "$src/zone-editor.html" "$src/README.md" "$out/"
+    [ -d "$src/vendor" ] && cp -r "$src/vendor" "$out/"
     url="http://localhost:$port/zone-editor.html"
     echo "Zone Mapper  ->  $url"
     echo "Serving      $out   (Ctrl-C to stop)"
