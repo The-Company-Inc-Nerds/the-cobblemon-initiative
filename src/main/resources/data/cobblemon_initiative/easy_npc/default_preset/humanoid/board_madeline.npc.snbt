@@ -86,7 +86,7 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @s[tag=defeated_board_madeline] run tbcs battle GEN_9_SINGLES @s vs board_madeline onwin {1: ['cobbledollars add @1 9000', 'tag @1 add defeated_board_madeline', '@2 say The motion fails. After all these years, the motion finally fails. I did so enjoy carrying it.', 'easy_npc delete @2'], 2: ['@2 say Removed again. Try to stay removed this time. It is so much paperwork otherwise.']}"
+                                    Cmd: "execute unless entity @s[tag=defeated_board_madeline] run tbcs battle GEN_9_SINGLES @s vs board_madeline onwin {1: ['cobbledollars add @1 9000', 'tag @1 add defeated_board_madeline', '@2 say The motion fails. After all these years, the motion finally fails. I did so enjoy carrying it.', 'execute as @1 at @1 run function cobblemon_initiative:reveal/board_fell', 'easy_npc delete @2'], 2: ['@2 say Removed again. Try to stay removed this time. It is so much paperwork otherwise.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
