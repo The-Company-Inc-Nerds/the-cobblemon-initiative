@@ -46,6 +46,28 @@
                     Priority: 30,
                     Buttons: [
                         {
+                            Name: "Stand and fight",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "execute if entity @p[tag=defeated_wheat_trader_ambush] run say No. We are not doing that twice. Word went out about you."
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "execute unless entity @p[tag=defeated_wheat_trader_ambush] run tbcs attach wheat_trader_ambush @s"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "execute unless entity @s[tag=defeated_wheat_trader_ambush] run tbcs battle GEN_9_SINGLES @s vs wheat_trader_ambush onwin {1: ['cobbledollars add @1 400', 'tag @1 add defeated_wheat_trader_ambush', '@2 say Fine. Fine! Take the fields. Take the ledgers. I never liked grain anyway.'], 2: ['@2 say Filed. The Company thanks you for your final contribution.']}"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "fight_button"
+                        },
+                        {
                             Name: "Stand down",
                             Actions: [
                                 {

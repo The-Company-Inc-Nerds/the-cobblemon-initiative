@@ -63,6 +63,8 @@ dependencies {
     modRuntimeOnly("maven.modrinth:ohNO6lps:N5qzq0XV")          // Forge Config API Port 21.1.6 — MapFrontiers dependency
     modRuntimeOnly("curse.maven:cobbledollars-859232:6604561")  // CobbleDollars-fabric-2.0.0+Beta-5.1+1.21.1.jar
     modRuntimeOnly("curse.maven:journeymap-32274:8325589")      // journeymap-fabric-1.21.1-6.0.0.jar
+    runtimeOnly("com.electronwill.night-config:core:3.8.1")     // JourneyMap/MapFrontiers server entrypoints need night-config >= 3.8 in dev (runServer NoClassDefFoundError otherwise; the launcher pack provides it via jar-in-jar)
+    runtimeOnly("com.electronwill.night-config:toml:3.8.1")
     modRuntimeOnly("curse.maven:mapfrontiers-366783:7099826")   // MapFrontiers-1.21.1-2.7.0-beta.18-fabric.jar (matches the 2.7.0-beta.18 integration target)
     // Then `run-client` (run dir = ./run); copy/symlink your UPM 2 world into ./run/saves/.
 
