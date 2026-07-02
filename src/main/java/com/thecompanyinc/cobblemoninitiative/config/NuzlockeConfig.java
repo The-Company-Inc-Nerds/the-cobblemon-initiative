@@ -7,6 +7,11 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.scores.Objective;
+import net.minecraft.world.scores.ReadOnlyScoreInfo;
+import net.minecraft.world.scores.ScoreHolder;
+import net.minecraft.world.scores.Scoreboard;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -94,6 +99,10 @@ public class NuzlockeConfig {
     public boolean cylindrical;
     /** If true, this zone does not suppress mob spawning (mobs spawn normally). */
     public boolean mobsSpawn = false;
+    /** Optional liberation gate — see InstallZone.activeWhenObjective. Blank objective = always active. */
+    public String activeWhenObjective = null;
+    public String activeWhenHolder = null;
+    public int activeWhenMin = 1;
     /** If true, fires an area announcement when the player enters this zone. */
     public boolean announce = false;
     /** Optional subtitle shown beneath the zone name (TITLE style only). */
@@ -314,25 +323,61 @@ public class NuzlockeConfig {
   }
 
   public boolean isInSafeZone(String dimension, int x, int y, int z) {
+    return isInSafeZone(dimension, x, y, z, null);
+  }
+
+  public boolean isInSafeZone(String dimension, int x, int y, int z, MinecraftServer server) {
     if (!enableSafeZones) return false;
     for (SafeZone zone : safeZones) {
-      if (zone.contains(dimension, x, y, z)) return true;
+      if (zone.contains(dimension, x, y, z) && isZoneActive(zone, server)) return true;
     }
     return false;
   }
 
   public SafeZone getSafeZoneAt(String dimension, int x, int y, int z) {
+    return getSafeZoneAt(dimension, x, y, z, null);
+  }
+
+  public SafeZone getSafeZoneAt(String dimension, int x, int y, int z, MinecraftServer server) {
     for (SafeZone zone : safeZones) {
-      if (zone.contains(dimension, x, y, z)) return zone;
+      if (zone.contains(dimension, x, y, z) && isZoneActive(zone, server)) return zone;
     }
     return null;
   }
 
   /** Returns the first announce-enabled zone containing the position, or null. */
   public SafeZone getAnnouncedZoneAt(String dimension, int x, int y, int z) {
+    return getAnnouncedZoneAt(dimension, x, y, z, null);
+  }
+
+  public SafeZone getAnnouncedZoneAt(String dimension, int x, int y, int z, MinecraftServer server) {
     for (SafeZone zone : safeZones) {
-      if (zone.announce && zone.contains(dimension, x, y, z)) return zone;
+      if (zone.announce && zone.contains(dimension, x, y, z) && isZoneActive(zone, server)) return zone;
     }
     return null;
+  }
+
+  /**
+   * A zone with an {@code activeWhenObjective} only counts as active once that world
+   * scoreboard (holder {@code activeWhenHolder}, default the zone name) reaches
+   * {@code activeWhenMin}. Ungated zones are always active. Fails open (active) when the
+   * server/scoreboard is unavailable so normal zones are never accidentally disabled; a
+   * gated zone whose objective doesn't exist yet reads as inactive (not-yet-liberated).
+   */
+  public boolean isZoneActive(SafeZone zone, MinecraftServer server) {
+    if (zone.activeWhenObjective == null || zone.activeWhenObjective.isEmpty()) return true;
+    if (server == null) return true;
+    try {
+      Scoreboard sb = server.getScoreboard();
+      Objective obj = sb.getObjective(zone.activeWhenObjective);
+      if (obj == null) return false;
+      String holder = (zone.activeWhenHolder != null && !zone.activeWhenHolder.isEmpty())
+        ? zone.activeWhenHolder
+        : zone.name;
+      ReadOnlyScoreInfo info = sb.getPlayerScoreInfo(ScoreHolder.forNameOnly(holder), obj);
+      return info != null && info.value() >= zone.activeWhenMin;
+    } catch (Exception e) {
+      return true;
+    }
   }
 }

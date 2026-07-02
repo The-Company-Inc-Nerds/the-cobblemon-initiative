@@ -38,8 +38,8 @@ and the slimmed README + UPM 2 disclaimer). See `GIT_COMMIT_MSG` / `docs/LORE_BI
 ### B. Remaining systems 💻
 - [ ] **P4 — Field liberation** (needs marked coords): guard trainers, liberate → restore wheat price + unlock safe-farm + advance HQ gate; relog-safe one-way latches; `liberation/fields.json`
   - [x] **Option A core** — `liberation/free_field`(+`_apply`): −6 `cd_instability` (floor 0, tunable) + `fields_liberated`++ + per-field `field_freed` latch + actionbar beat. *Remaining for A:* wire a field-guard `command` reward `execute as {player} run function cobblemon_initiative:liberation/free_field {field:"<id>"}` (blocked on marked field coords 🧱)
-  - [ ] **Option B** — `NuzlockeConfig.SafeZone.activeWhenScore` (world-data-gated conditional safe-farm; occupied field = hostile until liberated) — the real "every zone becomes a safezone" fix
-  - [ ] **Option B** — Granary `sell_wheat` above the Company lowball (reuses `economy/payout`)
+  - [x] **Option B** — conditional safe-zones: `SafeZone.activeWhenObjective`/`activeWhenHolder`/`activeWhenMin` (+ `isZoneActive` + server-aware `isInSafeZone`/`getSafeZoneAt`/`getAnnouncedZoneAt`, threaded into MobSpawnMixin + Dark Urge + zone-announce). Occupied field = hostile until its `field_freed` latch trips → then safe farmland (world-data, relog-safe). compileJava verified. *Remaining:* expose activeWhen* in the zone-mapper for FARM zones; set it per field when coords are marked.
+  - [ ] **Option B** — Granary `sell_wheat` above the Company lowball (reuses `economy/payout`; needs the `cobbledollars add @s` smoke-test first, and Granary NPC placement 🧱)
   - [ ] `wheat_war_active` flag (lights up the HUD wheat-fields line + the trader poller)
   - [x] Wire `wheat_trader/load` + `wheat_trader/tick` into the function tags (+ new `liberation/load`)
   - [ ] **Balance decision (before B):** field pushback magnitude (−6?) + count (~6 fields?); whether liberating swaps a shop tier (prices are static-baked, so instability alone won't re-price) or stays narrative/Granary-driven; whether liberation gates the HQ raid

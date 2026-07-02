@@ -37,7 +37,8 @@ public class MobSpawnMixin {
       dimension,
       pos.getX(),
       pos.getY(),
-      pos.getZ()
+      pos.getZ(),
+      level.getServer()
     );
 
     if (zone != null && !zone.mobsSpawn) {

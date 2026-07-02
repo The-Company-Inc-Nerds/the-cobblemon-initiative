@@ -434,7 +434,7 @@ public class NuzlockeInit implements ModInitializer {
 
     // Never intrude inside a safe zone (towns/shrines) — the run is "at rest" there.
     String dim = player.level().dimension().location().toString();
-    if (config.isInSafeZone(dim, player.getBlockX(), player.getBlockY(), player.getBlockZ())) return;
+    if (config.isInSafeZone(dim, player.getBlockX(), player.getBlockY(), player.getBlockZ(), player.getServer())) return;
 
     // Per-player cooldown (in-memory; harmlessly resets on relog).
     long now = player.level().getGameTime();
@@ -602,7 +602,7 @@ public class NuzlockeInit implements ModInitializer {
     int y = player.getBlockY();
     int z = player.getBlockZ();
 
-    NuzlockeConfig.SafeZone zone = config.getAnnouncedZoneAt(dim, x, y, z);
+    NuzlockeConfig.SafeZone zone = config.getAnnouncedZoneAt(dim, x, y, z, player.getServer());
     String zoneName = zone != null ? zone.name : null;
     String prevName = playerZones.get(player.getUUID());
 

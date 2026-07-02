@@ -397,6 +397,9 @@ public class InstallCommand {
           sz.subtitle = iz.subtitle != null ? iz.subtitle : "";
           sz.color = iz.color != null ? iz.color : "";
           sz.mobsSpawn = iz.mobsSpawn;
+          sz.activeWhenObjective = iz.activeWhenObjective;
+          sz.activeWhenHolder = iz.activeWhenHolder;
+          sz.activeWhenMin = iz.activeWhenMin;
           nzConfig.getSafeZones().add(sz);
           added++;
         }

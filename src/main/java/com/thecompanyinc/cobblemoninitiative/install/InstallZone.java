@@ -52,6 +52,20 @@ public class InstallZone {
   public boolean mobsSpawn = false;
 
   /**
+   * Optional liberation gate. When {@link #activeWhenObjective} is set, this zone only
+   * "activates" (suppresses spawns / suspends Nuzlocke / announces) once the world
+   * scoreboard {@code activeWhenObjective} for holder {@code activeWhenHolder} (default
+   * this zone's name) reaches {@code activeWhenMin}. Used for FARM zones: an occupied
+   * field stays dangerous wilderness — mobs spawn, Nuzlocke live — until liberated (its
+   * {@code field_freed} latch flips to 1 via liberation/free_field), then becomes safe
+   * farmland. Absent/blank objective → always active (a normal zone). The flip lives in
+   * world data (scoreboard), not config, so it's irreversible and relog-safe.
+   */
+  public String activeWhenObjective = null;
+  public String activeWhenHolder = null;
+  public int activeWhenMin = 1;
+
+  /**
    * If true, zone is a vertical cylinder (ignore Y). Recommended for open-world zones.
    * Set false for underground / enclosed spaces (full sphere check).
    */
