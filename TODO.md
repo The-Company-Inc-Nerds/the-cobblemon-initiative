@@ -16,6 +16,56 @@ and the slimmed README + UPM 2 disclaimer). See `GIT_COMMIT_MSG` / `docs/LORE_BI
 
 ---
 
+## 0. GAME PLAN — the road to 1.0.0 (sequenced 2026-07-02)
+
+The critical path is **verify → author → wire → balance → ship**. Code is largely ahead
+of the map now: most remaining 💻 work is blocked on 🧱 authoring or 🔍 verification,
+so the phases alternate between us. Sections below (§1-2) hold the item-level detail.
+
+### Phase 0 — Verification gate 🔍 (first session at the new location; ~1 sitting)
+The whole session's code is compile-verified but not runtime-verified. One `run-client`
+session, in this order (each failure comes back to Claude as a bug report):
+1. Boot to menu on the real GPU (the Kotlin fix landed; this confirms it end-to-end).
+2. Fresh test world → check the log for **datapack load errors** (liberation/granary/
+   wheat_trader functions + macros all parse?).
+3. `/cobblemon-initiative install run` → §1.C checklist top-to-bottom (HUD, fragments,
+   Dark Urge, economy beats, **shop-tier GATE test**, level caps).
+4. New systems: `/cobblemon-initiative shop badge_3` → granary lockstep fires (log line);
+   `scoreboard players set @s fields_liberated 4` → wheat-trader hostile dialog + battle;
+   `function cobblemon_initiative:liberation/free_field {field:"test_1"}` → −6 idx +
+   HUD wheat line; a FARM zone with `mobsSpawn`/`activeWhen*` behaves occupied→liberated.
+5. While the client is open: capture **Sodium + BSL settings** → `mrpack/overrides/`
+   (§1.F) and run the **`cobbledollars add @s` smoke-test** (§1.B).
+
+### Phase 1 — Map authoring sprint 🧱 (parallelizable with Phase 2 wiring)
+Author in batches; each batch unblocks Claude wiring the same day:
+1. **Zones** via `zone-mapper` (draw towns/routes/shrines/HQ/frontier; FARM zones get
+   their "Liberation field id"). Export → install.json. *(§1.A zones)*
+2. **Wheat fields** via `field-mark` (6 set-piece) → send Claude the JSON. *(§1.A)*
+3. **NPC placement waves**: wheat traders + Granary keeper (record UUID!) → archivist +
+   civilians (Nalia is placed; rumor mill/propaganda use the scrubbing register) →
+   villains act-by-act (grunts → management → DJ → Board/Founder). *(§1.A)*
+
+### Phase 2 — Wiring on authoring output 💻 (Claude; fast turnaround per batch)
+- Field guards: per-field `command` rewards firing `liberation/free_field {field:"<id>"}`;
+  FARM zones in install.json get `activeWhenObjective: field_freed` per field id.
+- Granary UUID recorded → re-run `generate_granary_tiers` (fills `apply_<tier>` fns).
+- Fold zone exports into install.json; regenerate presets/functions; `install run` cycle.
+
+### Phase 3 — Balance + polish (joint; needs Phase 0-2 done)
+- **Open balance decisions** (Claude needs answers, §1.B): field pushback −6 × ~6 fields?
+  liberation swap a shop tier or stay narrative? liberation gate/soften the HQ raid?
+- Tune granary pool/prices, ambush thresholds, instability tug-of-war from playtest feel.
+- Optional narrative systems: Founder name de-obfuscation as the Board falls (next
+  unblocked 💻 item), exchange boards, reserved farm plots; Option C (`farmzone/`) go/no-go.
+
+### Phase 4 — Release pass (§2; mostly 💻 after authoring bakes)
+- Strip dev tooling (field-mark → zone-trace → npc-map) as each authoring stream closes.
+- Debug-command audit, docs/wiki sync + `publish-wiki`, version bump **1.0.0**,
+  `build-mrpack --with-map`, and a clean-launcher **install test** of the final pack.
+
+---
+
 ## 1. BUILD — still to land
 
 ### A. In-world authoring 🧱 (blocks the systems in §B)
@@ -32,17 +82,17 @@ and the slimmed README + UPM 2 disclaimer). See `GIT_COMMIT_MSG` / `docs/LORE_BI
   - [x] Badge-tiered offers + **wheat bell curve**: `scripts/granary_tiers/master_granary.json` (+ `generate_granary_tiers`) bakes 12 tier presets (`granary_keeper_<tier>.npc.snbt`) — wheat cost = base × (1+(56−idx)×0.012), e.g. rare_candy 20→12(peak)→16 wheat. No restocks (stock baked, no reset). Item IDs validated against the Cobblemon 1.7.3 jar.
   - [x] Lockstep retier: `ShopTierManager.applyTier` also fires `function cobblemon_initiative:granary/apply_<tier>` (stubs until UUIDs recorded).
   - [ ] 🧱 Place Granary NPC(s), map UUID → `humanoid/granary_keeper` in npc_presets.json, re-run `generate_granary_tiers` (fills apply functions), `install run`
-  - [ ] Post-trade ambush poller + granary/wheat-trader ambush battle (needs villain trainer authoring; `granary_ambush_armed`/`wheat_ambush_armed` both armed-but-unread today) 💻
+  - [x] Post-trade ambush poller + ambush battles — `granary/tick` fires the one-shot post-trade battle (`granary_ambush` L43-44); wheat traders battle directly from hostile dialog (`wheat_trader_ambush` L38-39). Trainers in villain_team.json, jar-validated.
   - [ ] Tune the item pool / prices / ambush thresholds after an in-game pass 🔍
 - [ ] **Memory re-reader (Archivist) NPC** per town (`dialog_memory_rereader`)
 - [ ] **Reserved farm plots** — griefing-safe plots for liberated-field safe-farm conversion
-- [ ] *(Optional)* civilian NPCs: Mom in Sango (`dialog_first_meeting`), rumor mill, Company propaganda
+- [ ] *(Optional)* civilian NPCs: **Mom (Nalia) full arc authored + compiled** (first meeting → warming ≥4 badges → worry post-HQ → homecoming post-Founder; never learns the truth — LORE_BIBLE §2); her UUID is already mapped. Remaining: rumor mill + Company propaganda NPCs (scrubbing register lines are written and waiting in `dialog-src/registers/scrubbing.json`)
 - [ ] *(Optional)* per-town exchange-board sign/lectern (economy instability display)
 
 ### B. Remaining systems 💻
 - [ ] **P4 — Field liberation** (needs marked coords): guard trainers, liberate → restore wheat price + unlock safe-farm + advance HQ gate; relog-safe one-way latches; `liberation/fields.json`
   - [x] **Option A core** — `liberation/free_field`(+`_apply`): −6 `cd_instability` (floor 0, tunable) + `fields_liberated`++ + per-field `field_freed` latch + actionbar beat. *Remaining for A:* wire a field-guard `command` reward `execute as {player} run function cobblemon_initiative:liberation/free_field {field:"<id>"}` (blocked on marked field coords 🧱)
-  - [x] **Option B** — conditional safe-zones: `SafeZone.activeWhenObjective`/`activeWhenHolder`/`activeWhenMin` (+ `isZoneActive` + server-aware `isInSafeZone`/`getSafeZoneAt`/`getAnnouncedZoneAt`, threaded into MobSpawnMixin + Dark Urge + zone-announce). Occupied field = hostile until its `field_freed` latch trips → then safe farmland (world-data, relog-safe). compileJava verified. *Remaining:* expose activeWhen* in the zone-mapper for FARM zones; set it per field when coords are marked.
+  - [x] **Option B** — conditional safe-zones: `SafeZone.activeWhenObjective`/`activeWhenHolder`/`activeWhenMin` (+ `isZoneActive` + server-aware `isInSafeZone`/`getSafeZoneAt`/`getAnnouncedZoneAt`, threaded into MobSpawnMixin + Dark Urge + zone-announce). Occupied field = hostile until its `field_freed` latch trips → then safe farmland (world-data, relog-safe). compileJava verified. Zone-mapper exposes the gate (FARM "Liberation field id" → activeWhen*). *Remaining:* set it per field when coords are marked.
   - [x] ~~Granary `sell_wheat` datapack~~ — **dropped (design confirmed):** the default economy is CobbleDollars + its built-in bank (handles wheat→CD), and wheat trading is the Easy NPC "wheat traders" (paper). No custom CD sell-back / Granary datapack.
   - [x] `wheat_war_active` flag — set by the first field liberation (`free_field_apply` adds the player tag; `quest/render` shows the wheat-fields HUD line)
   - [x] Wire `wheat_trader/load` + `wheat_trader/tick` into the function tags (+ new `liberation/load`)
