@@ -69,7 +69,7 @@ Author in batches; each batch unblocks Claude wiring the same day:
 ## 1. BUILD — still to land
 
 ### A. In-world authoring 🧱 (blocks the systems in §B)
-- [ ] **Zones** — ~done: the zone-mapper export (dev/unnamed_zones.json) is baked into `install.json` (46 zones: 13 towns incl. Royal League + Battle Frontier, 18 route segments named in journey order with "Route N" subtitles, **10 farms gated `field_freed`/`farm_N`**, 3 landmarks, Fairy Shrine, canonical HQ preserved). *Remaining:* the 4 missing shrines (dragon/ice/fire/ground), route gaps 4/6/9/11 if intended, then a fresh `install run` 🔍. → *unblocks removing Zone Trace (§2)*
+- [x] **Zones** — the zone-mapper export (dev/zones.json) is baked into `install.json`: **58 zones** — 13 towns, **all 5 shrines**, **7 Battle Frontier facilities** (flavor subtitles), 19 route segments named in journey order ("Route N" subtitles; user-named "Road to Royal League"; Route 16 = "Frontier Causeway"), **10 farms gated `field_freed`/`farm_N`**, 3 landmarks, canonical HQ preserved. Array priority-sorted so nested zones (facilities/shrines) announce over their surroundings. *Optional:* route gaps 4/6/9/11 if intended. 🔍 fresh `install run`. → *unblocks removing Zone Trace (§2)*
 - [ ] **Villain NPC placement** — every villain in `villain_team.json` is at `[0,0,0]`. Place each with real coords, composed from the battle + recognition-dialogue snippets:
   - [ ] 11 grunts (Field Agent → Elite Agent), gym-gated on routes
   - [ ] 3 management (Regional Manager Shade, Senior Director Vex, COO Noir)
