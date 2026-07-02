@@ -172,46 +172,141 @@
     cd "$root"
     exec ${pkgs.python3}/bin/python3 "$root/scripts/build_mrpack.py" "$@"
   '';
+  # Prebuilt uNmINeD CLI (Minecraft map renderer), patched to run on NixOS.
+  # The GUI build is Avalonia/X11 and can't render headlessly; this is the CLI.
+  # NOTE: this pins a *dev* build by URL + hash. When unmined.net rolls a new dev
+  # build the hash will drift and the build will fail printing the new hash — bump
+  # `version`, `tmstv`, and `hash` together. (Swap the URL to the non-dev channel
+  # for less churn.)
+  unmined-cli = let
+    version = "0.19.60-dev";
+    # Runtime deps for the .NET single-file bundle's extracted native libs
+    # (coreclr / globalization / crypto) plus the on-disk rocksdb/deflate libs.
+    runtimeLibs = [ pkgs.stdenv.cc.cc.lib pkgs.icu pkgs.openssl pkgs.zlib ];
+  in
+    pkgs.stdenv.mkDerivation {
+      pname = "unmined-cli";
+      inherit version;
+
+      src = pkgs.fetchurl {
+        url = "https://unmined.net/download/unmined-cli-linux-x64-dev/?tmstv=1781729323";
+        name = "unmined-cli_${version}_linux-x64.tar.gz";
+        hash = "sha256-XkrjFSyBTS1jJGR+XtKO2z77/c07fkkicniYzeqfiX4=";
+      };
+
+      sourceRoot = "unmined-cli_${version}_linux-x64";
+
+      nativeBuildInputs = [ pkgs.autoPatchelfHook pkgs.makeWrapper ];
+      # rocksdb-jemalloc (bedrock world codec) pulls these; needed only to satisfy
+      # autoPatchelf (resolved via rpath, not the runtime wrapper).
+      buildInputs = runtimeLibs ++ [
+        pkgs.snappy pkgs.bzip2 pkgs.lz4 pkgs.zstd pkgs.jemalloc
+      ];
+
+      dontConfigure = true;
+      dontBuild = true;
+
+      installPhase = ''
+        runHook preInstall
+        mkdir -p "$out/opt/unmined-cli"
+        cp -r . "$out/opt/unmined-cli/"
+        runHook postInstall
+      '';
+
+      postFixup = ''
+        makeWrapper "$out/opt/unmined-cli/unmined-cli" "$out/bin/unmined-cli" \
+          --prefix LD_LIBRARY_PATH : "${pkgs.lib.makeLibraryPath runtimeLibs}:$out/opt/unmined-cli" \
+          --set-default DOTNET_SYSTEM_GLOBALIZATION_INVARIANT 1 \
+          --set-default DOTNET_CLI_TELEMETRY_OPTOUT 1
+      '';
+
+      meta.description = "uNmINeD command-line Minecraft map renderer (prebuilt, patched for NixOS)";
+    };
   zone-mapper = pkgs.writeShellScriptBin "zone-mapper" ''
     set -euo pipefail
+    shopt -s nullglob
     root="$(git rev-parse --show-toplevel)"
     src="$root/scripts/zone-mapper"
 
     port=8099
     open=1
-    target=""
+    rerender=0
+    world=""
+    out=""
+    dimension=""
+    unmined="''${UNMINED:-unmined-cli}"
+
     while [ $# -gt 0 ]; do
       case "$1" in
-        -p|--port) port="$2"; shift 2 ;;
-        --no-open)  open=0; shift ;;
+        -w|--world)  world="$2"; shift 2 ;;
+        -o|--out)    out="$2"; shift 2 ;;
+        -p|--port)   port="$2"; shift 2 ;;
+        --dimension) dimension="$2"; shift 2 ;;
+        --unmined)   unmined="$2"; shift 2 ;;
+        --rerender)  rerender=1; shift ;;
+        --no-open)   open=0; shift ;;
         -h|--help)
-          echo "Usage: zone-mapper [<uNmINeD-export-dir>] [-p PORT] [--no-open]"
-          echo "Copies the zone editor into a uNmINeD web export and serves it."
-          echo "Default export dir: dev/upm2-map"
+          echo "Usage: zone-mapper [<world-or-export-dir>] [options]"
+          echo ""
+          echo "Renders a Minecraft world with uNmINeD into an untracked dir and"
+          echo "serves the zone editor over it. With no world given, auto-detects"
+          echo "the one staged in mrpack/maps/."
+          echo ""
+          echo "  -w, --world <dir>   world save to render (must contain level.dat)"
+          echo "  -o, --out <dir>     render/serve dir (default: dev/zone-map, untracked)"
+          echo "  -p, --port <n>      http port (default: 8099)"
+          echo "      --dimension <d> uNmINeD dimension (default: overworld)"
+          echo "      --unmined <bin> path to unmined-cli (or the UNMINED env var)"
+          echo "      --rerender      re-run uNmINeD even if a render already exists"
+          echo "      --no-open       don't open a browser"
           exit 0 ;;
-        *) target="$1"; shift ;;
+        *)
+          if [ -f "$1/unmined.map.properties.js" ]; then out="$1"; else world="$1"; fi
+          shift ;;
       esac
     done
-    target="''${target:-$root/dev/upm2-map}"
 
-    if [ ! -f "$target/unmined.map.properties.js" ]; then
-      echo "No uNmINeD export found in:  $target"
-      echo ""
-      echo "Render your world first (needs uNmINeD — https://unmined.net):"
-      echo "  unmined-cli web render --world \"<your save>\" --output \"$target\""
-      echo ""
-      echo "Then re-run:  zone-mapper \"$target\""
-      exit 1
+    out="''${out:-$root/dev/zone-map}"
+
+    # Auto-detect a staged world (mrpack/maps/<world>/level.dat) if none given.
+    if [ -z "$world" ]; then
+      for d in "$root"/mrpack/maps/*/; do
+        if [ -f "$d/level.dat" ]; then world="''${d%/}"; break; fi
+      done
     fi
 
-    cp "$src/zone-editor.html" "$src/README.md" "$target/"
+    if [ ! -f "$out/unmined.map.properties.js" ] || [ "$rerender" -eq 1 ]; then
+      if [ -z "$world" ] || [ ! -f "$world/level.dat" ]; then
+        echo "No Minecraft world found to render."
+        echo "  Looked in: $root/mrpack/maps/*/  (each must contain level.dat)"
+        echo "  Or pass one:  zone-mapper --world \"/path/to/save\""
+        exit 1
+      fi
+      if ! command -v "$unmined" >/dev/null 2>&1; then
+        echo "uNmINeD CLI not found (tried: $unmined)."
+        echo "  Install from https://unmined.net, then put unmined-cli on PATH,"
+        echo "  or run:  zone-mapper --unmined /path/to/unmined-cli"
+        echo "  (or:     UNMINED=/path/to/unmined-cli zone-mapper)"
+        exit 1
+      fi
+      echo "Rendering with uNmINeD (incremental; first run can take a while)..."
+      echo "  world:  $world"
+      echo "  output: $out"
+      mkdir -p "$out"
+      set -- web render --world "$world" --output "$out"
+      if [ -n "$dimension" ]; then set -- "$@" --dimension "$dimension"; fi
+      "$unmined" "$@"
+      echo ""
+    fi
+
+    cp "$src/zone-editor.html" "$src/README.md" "$out/"
     url="http://localhost:$port/zone-editor.html"
     echo "Zone Mapper  ->  $url"
-    echo "Serving      $target   (Ctrl-C to stop)"
+    echo "Serving      $out   (Ctrl-C to stop)"
     if [ "$open" -eq 1 ] && command -v xdg-open >/dev/null 2>&1; then
       ( sleep 1; xdg-open "$url" >/dev/null 2>&1 || true ) &
     fi
-    exec ${pkgs.python3}/bin/python3 -m http.server "$port" --directory "$target"
+    exec ${pkgs.python3}/bin/python3 -m http.server "$port" --directory "$out"
   '';
 in
   pkgs.mkShell {
@@ -227,6 +322,7 @@ in
       publish-wiki
       run-client
       build-mrpack
+      unmined-cli
       zone-mapper
     ];
 
@@ -260,7 +356,7 @@ in
       cmd "generate_shop_tiers"   "rebuild CobbleDollars shop tiers"
       cmd "snbt-merge --help"     "splice sections between SNBT files"
       hdr "world & map"
-      cmd "zone-mapper <dir>"     "draw install.json zones on a uNmINeD render"
+      cmd "zone-mapper"           "render the staged map & draw install.json zones"
       hdr "ship it"
       cmd "gcommit"               "commit via GIT_COMMIT_MSG (optional signed tag)"
       cmd "publish-wiki"          "sync wiki/ → the GitHub wiki (checks links)"

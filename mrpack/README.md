@@ -37,6 +37,11 @@ overrides:
   a `config/` folder, `servers.dat`, etc. Unlike the folders above, this one's
   contents are **tracked** (small, curated pack config) — drop
   `mrpack/overrides/options.txt` here and it ships as `overrides/options.txt`.
+  **Instance logo:** the `.mrpack` format has no icon field, but dropping a square
+  PNG named exactly `mrpack/overrides/icon.png` ships it as `overrides/icon.png`,
+  which Prism Launcher 10.0.0+ auto-applies as the instance icon on local import
+  (older launchers ignore it harmlessly; for Modrinth browser/App installs, set the
+  icon on the Modrinth project page instead).
 
 Always bundled automatically: this mod's own jar → `overrides/mods/`.
 

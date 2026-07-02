@@ -30,57 +30,49 @@ world/export.
 
 ## Prerequisites
 
-- **uNmINeD** (CLI or GUI) — https://unmined.net
-- A copy of the world save you want to map (works on the live save; uNmINeD reads
-  region files read-only).
-- Python 3 (or any static file server) to serve the export folder.
+- **uNmINeD CLI** — **bundled in the dev shell** (`shell.nix` packages the prebuilt
+  `unmined-cli`, patched to run on NixOS), so no manual install. To use a different
+  build, point the launcher at it with `--unmined /path/to/unmined-cli` (or the
+  `UNMINED` env var). Note the GUI build can't render headlessly — the CLI is what's
+  packaged. uNmINeD reads the world's region files read-only.
+- Python 3 — already in the dev shell (`shell.nix`), used to serve the folder.
 - Internet on first open (OpenLayers 6.9.0 loads from a CDN). For offline use, drop
   `ol.js` and `ol.css` next to `zone-editor.html` and repoint the tags in its
   `<head>`.
 
-## Workflow
+## Quick start
 
-### 1. Render the world with uNmINeD
-
-```bash
-unmined-cli web render \
-  --world "/path/to/saves/UPM2" \
-  --output "/path/to/upm2-map"
-```
-
-- `--output` should be an empty folder the first time.
-- Re-running the same command later re-renders only changed regions (incremental).
-- **Do not pass `--zoomin`** if you want verified block-exact coordinates (see
-  Caveats). Default zoom is fine for planning.
-- `--dimension overworld` is the default; pass it explicitly for other dimensions.
-
-Run `unmined-cli web render --help` to confirm flags for your installed build —
-uNmINeD's CLI options beyond `--world`/`--output` are under-documented and vary by
-version.
-
-### 2. Drop the tool into the export
+From the dev shell, one command renders the map and opens the editor:
 
 ```bash
-cp scripts/zone-mapper/zone-editor.html scripts/zone-mapper/README.md /path/to/upm2-map/
+zone-mapper
 ```
 
-`zone-editor.html` sits next to uNmINeD's `index.html`. uNmINeD overwrites its own
-generated files on re-render but leaves arbitrarily-named files alone, so the tool
-survives re-renders. (The source of truth is still the copy in this repo — copy it
-in fresh whenever it changes.)
+It auto-detects the world staged in `mrpack/maps/<world>/`, renders it with uNmINeD
+into **`dev/zone-map/`** (gitignored — renders are never committed), copies the
+editor in, serves it, and opens your browser at
+<http://localhost:8099/zone-editor.html>.
 
-### 3. Serve and open
+- First run renders the whole world (can take a while); later runs skip the render
+  and just serve. Pass `--rerender` to refresh after the world changes (incremental
+  — only changed regions re-render).
+- Render a different save: `zone-mapper --world "/path/to/save"`.
+- Re-open an existing render without re-rendering: `zone-mapper <export-dir>`.
+- Options: `-o/--out <dir>` (default `dev/zone-map`), `-p/--port <n>` (default 8099),
+  `--dimension <d>` (default overworld), `--no-open`. See `zone-mapper --help`.
 
-```bash
-cd /path/to/upm2-map
-python3 -m http.server 8099
-```
+**Do not pass a zoom-in render** (the launcher renders at default zoom, which keeps
+coordinates block-exact — see Caveats). A local server is used because some browsers
+restrict local tile loads over `file://`.
 
-Open <http://localhost:8099/zone-editor.html>. A local server is recommended;
-opening via `file://` usually works too but some browsers restrict local tile
-loads.
+### The `dev/zone-map/` folder
 
-### 4. Draw
+The render output and the copied `zone-editor.html` live in the gitignored
+`dev/zone-map/`. Delete it anytime to force a clean re-render; nothing there is
+tracked. The tool's source of truth stays in `scripts/zone-mapper/` and is copied
+in fresh on every launch.
+
+## Draw
 
 - **Box / Polygon / Route** → exported as `vertices` (`[{x,z}, …]`). The mod derives
   `centerX`/`centerZ`/`radius` from the polygon centroid + max vertex distance; the
@@ -94,7 +86,7 @@ loads.
 - **Delete** → click a zone to remove it.
 - Live block coordinates show bottom-left as you move the mouse.
 
-### 5. Export into the mod
+## Export into the mod
 
 Click **Copy** (or **Download**) — you get the `zones` array. Paste it as the value
 of `"zones"` in
