@@ -99,10 +99,26 @@ def main():
     offers = master["offers"]
     uuids = granary_uuids()
 
+    # Liberation relief: expand <base>_relief<r> rows (same unlock, instability - step*r).
+    # Lower instability = a re-stabilising CobbleDollar = wheat WEAKENS, so relief tiers
+    # make granary goods cost MORE wheat — the back half of the bell curve.
+    tiers = list(master["tiers"])
+    relief = master.get("relief")
+    if relief:
+        by_name = {t["name"]: t for t in tiers}
+        for base_name in relief["bases"]:
+            bt = by_name[base_name]
+            for r in range(1, relief["levels"] + 1):
+                tiers.append({
+                    "name": f"{base_name}_relief{r}",
+                    "unlock": bt["unlock"],
+                    "instability": max(0, bt["instability"] - relief["step"] * r),
+                })
+
     os.makedirs(FN_DIR, exist_ok=True)
     summary = []
 
-    for tier in master["tiers"]:
+    for tier in tiers:
         name, unlock, idx = tier["name"], tier["unlock"], tier["instability"]
         rows = [o for o in offers if o["unlockBadge"] <= unlock]
         recipes = ",\n            ".join(

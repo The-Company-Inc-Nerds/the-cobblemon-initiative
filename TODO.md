@@ -96,11 +96,11 @@ Author in batches; each batch unblocks Claude wiring the same day:
   - [x] ~~Granary `sell_wheat` datapack~~ — **dropped (design confirmed):** the default economy is CobbleDollars + its built-in bank (handles wheat→CD), and wheat trading is the Easy NPC "wheat traders" (paper). No custom CD sell-back / Granary datapack.
   - [x] `wheat_war_active` flag — set by the first field liberation (`free_field_apply` adds the player tag; `quest/render` shows the wheat-fields HUD line)
   - [x] Wire `wheat_trader/load` + `wheat_trader/tick` into the function tags (+ new `liberation/load`)
-  - [ ] **Balance decision (before B):** field pushback magnitude (−6?) + count (~6 fields?); whether liberating swaps a shop tier (prices are static-baked, so instability alone won't re-price) or stays narrative/Granary-driven; whether liberation gates the HQ raid
+  - [x] **Balance decisions (resolved 2026-07-02):** pushback stays **−6/field**; liberation **swaps tiers** — every 2 fields upgrades the active shop+granary tier to a pre-baked relief catalog (`<tier>_relief1/2`, −12 idx each; `ShopTierManager.resolveRelief` reads `fields_liberated` live; `shop refresh` fired by `free_field_apply`; gym rewards unchanged); HQ raid is **hard-gated on 4 liberated fields** (DJ's battle entry gated, "monopoly holds" refusal below it, quest HUD shows "Starve the monopoly" until 4). Thresholds (2/level, −12, gate=4) tunable 🔍.
   - [ ] *(Option C, deferred)* stateful `farmzone/` subsystem (soil/growth/patrols/HQ-difficulty)
 - [ ] **P5 — Wheat traders full wiring** — _done: the trade→recognize→ambush dialogue, `minecraft:paper` currency, 2/4 thresholds, **ambush trainers** (`wheat_trader_ambush` L38-39 farm team / `granary_ambush` L43-44, in villain_team.json, species+items jar-validated), **wheat-trader hostile tier now offers the battle** ("Stand and fight" → tbcs vs wheat_trader_ambush), and the **granary post-trade poller** (`granary/tick`: hostile trade arms `granary_ambush_armed`, ~15s countdown → "Asset located. Initiating retrieval." → battle, one-shot via defeated_granary_ambush)._ Remaining: in-world placement (Easy NPC traders) 🧱 + in-game verify the tbcs battle/onwin path 🔍. (`wheat_ambush_armed` is now superseded — wheat traders battle directly from dialog; objective left declared, unused.)
 - [ ] **Smoke-test `cobbledollars add @s`** inside `execute as` before P4 relies on the payout macro
-- [x] **Founder name de-obfuscation** — each Board defeat fires `reveal/board_fell` (wired into all 4 board on_win): oblique beat + staged preset re-import surfacing letters through the `§k` static (C§kaaa → Co§kaa → Col§ka → held 3rd seat → §6Cole). `scripts/generate_founder_reveals` + `scripts/founder_reveal.json` (**confirm `name: "Cole"` matches the in-game display name**). Apply fns are stubs until the Founder's UUID is recorded (re-run the generator). 🔍 verify a preset re-import updates the live nameplate in-game. *(Propaganda-decay register: done — `dialog-src/registers/scrubbing.json`.)*
+- [x] **Founder reveal (redesigned per decision)** — the Founder's nameplate stays fully `§k`-obfuscated all run (`§kfounder`); each Board defeat fires `reveal/board_fell` (4 oblique beats that circle the name); the name is only spoken at the mirror's defeat — `reveal/founder_defeated` renders **the defeating player's own name** live via selector ("The name on the chair was always ⟨you⟩"). No name baked anywhere. *(Propaganda-decay register: done — `dialog-src/registers/scrubbing.json`.)*
 
 ### C. Verify in-game 🔍 (can't be tested without the mod loader)
 - [ ] **PLAYER_TAG dialog conditions** fire correctly (re-reader, wheat-trader tiers, grunt/management recognition). Fallback if not: `execute if entity @s[tag=...]` command branch.
@@ -159,7 +159,6 @@ Map-authoring aids. Strip each once its authoring is baked in.
 - [ ] Dev-tool doc references to scrub at strip time: `wiki/Commands.md`, `wiki/Architecture-Overview.md`
   (both intentionally document the dev tools today — they carry the "removed at 1.0.0" flags)
 - [ ] Bump `build.gradle.kts:8` version `0.2.0-alpha.1` → `1.0.0`
-- [ ] Confirm `scripts/founder_reveal.json` name matches the streamer's in-game display name (reveal presets bake it)
 
 ---
 

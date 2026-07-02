@@ -45,9 +45,22 @@ def main():
         master = json.load(fh)
 
     swing = master["swingPerPoint"]
-    tiers = master["tiers"]
+    tiers = list(master["tiers"])
     categories = master["categories"]
     items = master["items"]
+
+    # Liberation relief: expand <base>_relief<r> rows (same unlock, instability - step*r).
+    relief = master.get("relief")
+    if relief:
+        bases = {t["name"]: t for t in tiers}
+        for base_name in relief["bases"]:
+            base = bases[base_name]
+            for r in range(1, relief["levels"] + 1):
+                tiers.append({
+                    "name": f"{base_name}_relief{r}",
+                    "unlock": base["unlock"],
+                    "instability": max(0, base["instability"] - relief["step"] * r),
+                })
 
     os.makedirs(OUT_DIR, exist_ok=True)
     summary = []

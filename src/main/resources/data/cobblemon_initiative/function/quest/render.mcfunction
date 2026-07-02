@@ -20,9 +20,13 @@ execute store result bossbar cobblemon_initiative:objective value run scoreboard
 # (0) GYM — next gym by badge count (memory_fragment 0..9).
 execute if score @s memory_fragment matches ..9 run function cobblemon_initiative:quest/gym_town
 
-# (1) HQ RAID — unlocked after gym 7, until Acting CEO DJ falls (climax outranks gyms 8-10).
-execute if score @s memory_fragment matches 7.. unless entity @s[tag=defeated_villain_boss] run bossbar set cobblemon_initiative:objective name [{"text":"⚠ Raid Company HQ — Acting CEO DJ","color":"red"}]
-execute if score @s memory_fragment matches 7.. unless entity @s[tag=defeated_villain_boss] run scoreboard players display name #main ci_quest [{"text":"▶ Raid Company HQ  [1590 51 1028]","color":"red"}]
+# (1) HQ RAID — after gym 7 AND 4 liberated fields (the hard gate: starve the monopoly
+#     before storming it; DJ refuses the meeting while the fields still feed the Company),
+#     until Acting CEO DJ falls (climax outranks gyms 8-10).
+execute if score @s memory_fragment matches 7.. unless entity @s[tag=defeated_villain_boss] unless score @s fields_liberated matches 4.. run bossbar set cobblemon_initiative:objective name [{"text":"⚠ Starve the monopoly — liberate 4 wheat fields","color":"gold"}]
+execute if score @s memory_fragment matches 7.. unless entity @s[tag=defeated_villain_boss] unless score @s fields_liberated matches 4.. run scoreboard players display name #main ci_quest [{"text":"▶ Liberate wheat fields, then raid HQ","color":"gold"}]
+execute if score @s memory_fragment matches 7.. unless entity @s[tag=defeated_villain_boss] if score @s fields_liberated matches 4.. run bossbar set cobblemon_initiative:objective name [{"text":"⚠ Raid Company HQ — Acting CEO DJ","color":"red"}]
+execute if score @s memory_fragment matches 7.. unless entity @s[tag=defeated_villain_boss] if score @s fields_liberated matches 4.. run scoreboard players display name #main ci_quest [{"text":"▶ Raid Company HQ  [1590 51 1028]","color":"red"}]
 
 # (2) ROYAL LEAGUE — all 10 badges, DJ down, champion still standing.
 execute if score @s memory_fragment matches 10 if entity @s[tag=defeated_villain_boss] unless entity @s[tag=defeated_royal_champion] run bossbar set cobblemon_initiative:objective name [{"text":"★ Challenge the Royal League","color":"aqua"}]

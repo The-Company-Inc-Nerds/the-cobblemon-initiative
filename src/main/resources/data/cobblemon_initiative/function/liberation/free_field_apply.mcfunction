@@ -11,5 +11,8 @@ tag @s add wheat_war_active
 scoreboard players remove #idx cd_instability 6
 execute if score #idx cd_instability matches ..-1 run scoreboard players set #idx cd_instability 0
 execute store result storage cobblemon_initiative:economy idx int 1 run scoreboard players get #idx cd_instability
+# Re-apply the active shop tier so the liberation-relief level kicks in immediately
+# (ShopTierManager resolves <base>_relief<r> from fields_liberated; granary follows in lockstep).
+cobblemon-initiative shop refresh
 # Player-facing beat (wheat-gold), in the founder-reclaiming-their-own-system register.
 title @s actionbar {"text":"◆ Field liberated — the wheat-backed currency loses ground.","color":"#C9A227"}

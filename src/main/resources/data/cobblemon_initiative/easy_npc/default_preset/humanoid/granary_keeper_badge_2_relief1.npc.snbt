@@ -1,12 +1,12 @@
 {
     PresetMetadata: {
         author: "TheCompanyInc",
-        category: "Villain",
+        category: "NPC",
         created: 0L,
-        description: "villain_boss at The Boardroom (act 2). Compiled from dialog-src.",
+        description: "granary at Hua Zhan City (act 1). Compiled from dialog-src.",
         entityTypeId: "easy_npc:humanoid",
         modified: 0L,
-        name: "Acting CEO DJ",
+        name: "Granary Keeper",
         variantType: "STEVE",
         version: "1.0.0"
     },
@@ -43,46 +43,23 @@
                             Name: "fields_liberated_gte_4"
                         }
                     ],
-                    Priority: 20,
+                    Priority: 30,
                     Buttons: [
                         {
-                            Name: "Take back the chair",
+                            Name: "Trade anyway",
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @p[tag=defeated_villain_boss] run tbcs attach villain_boss @s"
+                                    Cmd: "scoreboard players set @s granary_ambush_armed 1"
                                 },
                                 {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @s[tag=defeated_villain_boss] run tbcs battle GEN_9_SINGLES @s vs villain_boss onwin {1: ['cobbledollars add @1 8000', 'tag @1 add defeated_villain_boss', '@2 say Keeping it warm. That is all I was ever doing. It was always going to be yours again.', 'function cobblemon_initiative:economy/hq_stabilize', 'easy_npc delete @2'], 2: []}"
-                                },
-                                {
-                                    Type: "CLOSE_DIALOG"
+                                    Type: "OPEN_TRADING_SCREEN"
                                 }
                             ],
-                            Label: "yes_button"
-                        }
-                    ],
-                    Texts: [
-                        {
-                            Text: "So the rumour walks. The founder, back from wherever the board filed you. You look smaller than the legend. They always do."
+                            Label: "trade_button"
                         },
                         {
-                            Text: "Acting CEO. Acting. I keep the chair warm and the lights on while the real owners decide what the region is worth. You were never coming back to take it."
-                        },
-                        {
-                            Text: "But here you are, on my floor, with a team and a grudge you cannot even remember earning. Fine. Let us settle what the seat is worth."
-                        }
-                    ],
-                    Name: "Acting CEO DJ",
-                    Label: "default"
-                },
-                {
-                    Priority: 10,
-                    Buttons: [
-                        {
-                            Name: "Then I will take the fields",
+                            Name: "Back away",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -93,17 +70,96 @@
                     ],
                     Texts: [
                         {
-                            Text: "A meeting. With you. No. Look out that window — every wheat field between here and the coast clears through my desk. While that is true, you are not a rival. You are foot traffic."
+                            Text: "Every field you touch stops answering our memos. And now you walk into my granary wearing that face. The one from the portrait they burned."
                         },
                         {
-                            Text: "The board filed you once already and the paperwork held for years. I do not need to beat you. I need to keep selling bread, and you need to be a rounding error with a famous face."
+                            Text: "Company policy says you do not exist. Fine. A customer who does not exist can still pay. Grain up front."
                         },
                         {
-                            Text: "Come back when the fields stop answering our memos. If you can make that happen — and you cannot — then we will talk about the chair."
+                            Text: "Trade, then. But understand me — the moment your hands are full and your guard is down, I am filing you. The bonus on you would buy this whole silo."
                         }
                     ],
-                    Name: "Acting CEO DJ — the monopoly holds",
-                    Label: "monopoly_holds"
+                    Name: "Granary Keeper — places the face",
+                    Label: "hostile"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "fields_liberated_gte_2"
+                        }
+                    ],
+                    Priority: 20,
+                    Buttons: [
+                        {
+                            Name: "See the stock",
+                            Actions: [
+                                {
+                                    Type: "OPEN_TRADING_SCREEN"
+                                }
+                            ],
+                            Label: "trade_button"
+                        },
+                        {
+                            Name: "Another time",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Fields keep going quiet. Head office keeps sending descriptions. You keep matching them a little more each week."
+                        },
+                        {
+                            Text: "I am paid to move grain, not to ask questions. Lucky for you the second job pays worse."
+                        },
+                        {
+                            Text: "Wares are open. Wheat only — the coin is not worth the pockets it sits in. For now I am still pretending I do not know you."
+                        }
+                    ],
+                    Name: "Granary Keeper — a number that will not add",
+                    Label: "suspicious"
+                },
+                {
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "Browse the shelves",
+                            Actions: [
+                                {
+                                    Type: "OPEN_TRADING_SCREEN"
+                                }
+                            ],
+                            Label: "trade_button"
+                        },
+                        {
+                            Name: "Keep my grain",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Welcome to the Granary. Company operated, community minded. We do not take CobbleDollars here — grain in, goods out. The honest exchange."
+                        },
+                        {
+                            Text: "Everything on these shelves is priced in wheat. You will find the rates very fair. Fairer every week, in fact, as the paper money keeps slipping."
+                        },
+                        {
+                            Text: "Think of it as the future arriving early. The Company believes in wheat. The Company believes in you. Bring bushels."
+                        }
+                    ],
+                    Name: "Granary Keeper — the company store",
+                    Label: "default"
                 }
             ]
         },
@@ -244,6 +300,26 @@
                 id: "minecraft:generic.movement_speed"
             }
         ],
-        id: "easy_npc:humanoid"
+        id: "easy_npc:humanoid",
+        Offers: {
+            Inventory: {},
+            Recipes: {
+                Recipes: [
+            {buy: {id: "minecraft:wheat", count: 19}, sell: {id: "cobblemon:rare_candy", count: 1}, uses: 0, maxUses: 4, rewardExp: 0b, specialPrice: 0, demand: 0, priceMultiplier: 0.0f, xp: 0},
+            {buy: {id: "minecraft:wheat", count: 39}, sell: {id: "cobblemon:exp_share", count: 1}, uses: 0, maxUses: 1, rewardExp: 0b, specialPrice: 0, demand: 0, priceMultiplier: 0.0f, xp: 0},
+            {buy: {id: "minecraft:wheat", count: 32}, sell: {id: "cobblemon:link_cable", count: 1}, uses: 0, maxUses: 2, rewardExp: 0b, specialPrice: 0, demand: 0, priceMultiplier: 0.0f, xp: 0},
+            {buy: {id: "minecraft:wheat", count: 26}, sell: {id: "cobblemon:kings_rock", count: 1}, uses: 0, maxUses: 1, rewardExp: 0b, specialPrice: 0, demand: 0, priceMultiplier: 0.0f, xp: 0},
+            {buy: {id: "minecraft:wheat", count: 26}, sell: {id: "cobblemon:metal_coat", count: 1}, uses: 0, maxUses: 1, rewardExp: 0b, specialPrice: 0, demand: 0, priceMultiplier: 0.0f, xp: 0}
+        ]
+            }
+        },
+        TradingData: {
+            TradingDataSet: {
+                Type: "BASIC",
+                MaxUses: 4,
+                ResetsEveryMin: 525600,
+                LastReset: 0L
+            }
+        }
     }
 }

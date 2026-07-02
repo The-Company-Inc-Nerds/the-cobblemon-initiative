@@ -199,13 +199,17 @@ public class CobblemonInitiativeCommands {
             )
         )
         .then(
-          Commands.literal("shop").then(
-            Commands.argument("tier", StringArgumentType.word())
-              .suggests((context, builder) ->
-                SharedSuggestionProvider.suggest(ShopTierManager.TIERS, builder)
-              )
-              .executes(CobblemonInitiativeCommands::applyShopTier)
-          )
+          Commands.literal("shop")
+            .then(
+              Commands.literal("refresh").executes(CobblemonInitiativeCommands::refreshShopTier)
+            )
+            .then(
+              Commands.argument("tier", StringArgumentType.word())
+                .suggests((context, builder) ->
+                  SharedSuggestionProvider.suggest(ShopTierManager.TIERS, builder)
+                )
+                .executes(CobblemonInitiativeCommands::applyShopTier)
+            )
         )
     );
 
@@ -260,6 +264,34 @@ public class CobblemonInitiativeCommands {
     context.getSource().sendFailure(
       Component.literal("§cUnknown or unreadable shop tier: " + tier)
     );
+    return 0;
+  }
+
+  /**
+   * /cobblemon-initiative shop refresh — re-apply the source player's current base tier
+   * so the liberation-relief level (fields_liberated) is re-resolved. Fired by
+   * liberation/free_field_apply after each field liberation; safe to run any time.
+   */
+  private static int refreshShopTier(CommandContext<CommandSourceStack> context) {
+    net.minecraft.server.level.ServerPlayer player;
+    try {
+      player = context.getSource().getPlayerOrException();
+    } catch (Exception e) {
+      context.getSource().sendFailure(
+        Component.literal("§cshop refresh needs a player source (it reads badge/field state).")
+      );
+      return 0;
+    }
+    String base = ShopTierManager.currentBaseTier(player);
+    boolean ok = ShopTierManager.applyTier(context.getSource().getServer(), base);
+    if (ok) {
+      context.getSource().sendSuccess(
+        () -> Component.literal("§a[Shop] Re-applied tier for §e" + base + "§a (relief re-resolved)."),
+        true
+      );
+      return 1;
+    }
+    context.getSource().sendFailure(Component.literal("§cCould not re-apply tier " + base));
     return 0;
   }
 

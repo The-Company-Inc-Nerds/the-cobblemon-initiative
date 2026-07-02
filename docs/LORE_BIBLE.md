@@ -97,7 +97,7 @@ creation. Reclaiming the org is reclaiming the economy.
 | Act | When | Content |
 |-----|------|---------|
 | 1 — Infiltration | Throughout gyms 1–7 | Grunts & management scattered on routes/towns; wheat traders appear; the CobbleDollar visibly destabilises (`cd_instability` rises ~+8/gym). |
-| 2 — The HQ Raid | After ~gym 7 (HQ at `[1590 51 1028]`) | Fight up through the org to **Acting CEO DJ**. His defeat **stabilises the currency** (idx → 25): a visible, earned "CURRENCY STABILIZED" beat. |
+| 2 — The HQ Raid | After gym 7 **and 4 liberated fields** (HQ at `[1590 51 1028]`) | **Hard gate:** DJ refuses the meeting while the fields still feed the Company — starve the monopoly before storming it. Then fight up through the org to **Acting CEO DJ**. His defeat **stabilises the currency** (idx → 25): a visible, earned "CURRENCY STABILIZED" beat. |
 | 3 — The Board & The Founder | Post-Royal-League | Clear the **Board of Directors**, then the true final boss: **The Founder** — the player's shadow self. |
 
 ### Roster (from `villain_team.json` — names are canon)
@@ -231,6 +231,11 @@ back down — the tug-of-war. Numbers are the current tuning, not gospel.)*
   can't be written by datapacks, only by the mod at badge boundaries), and the live reload only
   reaches merchants using the **default** shop. The fine-grained instability is still sold via the
   per-payout rate line, the per-gym actionbar, and (later) a town exchange board.
+- **DO** let field liberation move the shop: every 2 liberated fields upgrades the active tier to a
+  pre-baked **relief** catalog (`<tier>_relief1/2`, −12 instability each, floor 0) — CobbleDollar
+  prices ease and Granary wheat prices worsen as the player claws the currency back.
+  `ShopTierManager` resolves relief live from `fields_liberated`; `shop refresh` re-applies after
+  each liberation; gym rewards keep passing base tiers.
 - **DON'T** call the name the act-2 boss until act-2, It's **DJ**.
 - **DO** litter the world with **scrubbing artifacts**: brighter rectangles where portraits
   hung, re-verified ledger pages, revised org charts, memos about "the impostor." The

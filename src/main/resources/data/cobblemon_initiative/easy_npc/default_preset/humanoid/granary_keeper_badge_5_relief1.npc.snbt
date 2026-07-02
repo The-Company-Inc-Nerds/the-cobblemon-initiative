@@ -1,0 +1,334 @@
+{
+    PresetMetadata: {
+        author: "TheCompanyInc",
+        category: "NPC",
+        created: 0L,
+        description: "granary at Hua Zhan City (act 1). Compiled from dialog-src.",
+        entityTypeId: "easy_npc:humanoid",
+        modified: 0L,
+        name: "Granary Keeper",
+        variantType: "STEVE",
+        version: "1.0.0"
+    },
+    data: {
+        ActionData: {
+            ActionEventSet: {
+                ON_INTERACTION: [
+                    {
+                        Type: "OPEN_DEFAULT_DIALOG"
+                    }
+                ]
+            }
+        },
+        ArmorDropChances: [0.085f, 0.085f, 0.085f, 0.085f],
+        ArmorItems: [
+            {},
+            {},
+            {},
+            {}
+        ],
+        Brain: {
+            memories: {}
+        },
+        CanPickUpLoot: 0b,
+        CustomNameVisible: 1b,
+        DialogData: {
+            Type: "STANDARD",
+            DialogDataSet: [
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "fields_liberated_gte_4"
+                        }
+                    ],
+                    Priority: 30,
+                    Buttons: [
+                        {
+                            Name: "Trade anyway",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "scoreboard players set @s granary_ambush_armed 1"
+                                },
+                                {
+                                    Type: "OPEN_TRADING_SCREEN"
+                                }
+                            ],
+                            Label: "trade_button"
+                        },
+                        {
+                            Name: "Back away",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Every field you touch stops answering our memos. And now you walk into my granary wearing that face. The one from the portrait they burned."
+                        },
+                        {
+                            Text: "Company policy says you do not exist. Fine. A customer who does not exist can still pay. Grain up front."
+                        },
+                        {
+                            Text: "Trade, then. But understand me — the moment your hands are full and your guard is down, I am filing you. The bonus on you would buy this whole silo."
+                        }
+                    ],
+                    Name: "Granary Keeper — places the face",
+                    Label: "hostile"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "fields_liberated_gte_2"
+                        }
+                    ],
+                    Priority: 20,
+                    Buttons: [
+                        {
+                            Name: "See the stock",
+                            Actions: [
+                                {
+                                    Type: "OPEN_TRADING_SCREEN"
+                                }
+                            ],
+                            Label: "trade_button"
+                        },
+                        {
+                            Name: "Another time",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Fields keep going quiet. Head office keeps sending descriptions. You keep matching them a little more each week."
+                        },
+                        {
+                            Text: "I am paid to move grain, not to ask questions. Lucky for you the second job pays worse."
+                        },
+                        {
+                            Text: "Wares are open. Wheat only — the coin is not worth the pockets it sits in. For now I am still pretending I do not know you."
+                        }
+                    ],
+                    Name: "Granary Keeper — a number that will not add",
+                    Label: "suspicious"
+                },
+                {
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "Browse the shelves",
+                            Actions: [
+                                {
+                                    Type: "OPEN_TRADING_SCREEN"
+                                }
+                            ],
+                            Label: "trade_button"
+                        },
+                        {
+                            Name: "Keep my grain",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Welcome to the Granary. Company operated, community minded. We do not take CobbleDollars here — grain in, goods out. The honest exchange."
+                        },
+                        {
+                            Text: "Everything on these shelves is priced in wheat. You will find the rates very fair. Fairer every week, in fact, as the paper money keeps slipping."
+                        },
+                        {
+                            Text: "Think of it as the future arriving early. The Company believes in wheat. The Company believes in you. Bring bushels."
+                        }
+                    ],
+                    Name: "Granary Keeper — the company store",
+                    Label: "default"
+                }
+            ]
+        },
+        DisplayAttribute: [
+            {
+                Bool: 1b,
+                Type: "VISIBLE"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_AT_DAY"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_AT_NIGHT"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_IN_CREATIVE"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_IN_SPECTATOR"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_IN_STANDARD"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_TO_OWNER"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_TO_TEAM"
+            },
+            {
+                Int: 7,
+                Type: "LIGHT_LEVEL"
+            },
+            {
+                Text: "ALWAYS",
+                Type: "NAME_VISIBILITY"
+            }
+        ],
+        EasyNPCVersion: 3,
+        EntityAttribute: {
+            CanBeHitByProjectile: 0b,
+            CanBeLeashed: 0b,
+            CanBreatheUnderwater: 0b,
+            CanCloseDoor: 0b,
+            CanFloat: 0b,
+            CanOpenDoor: 0b,
+            CanPassDoor: 0b,
+            CanUseNetherPortal: 0b,
+            Freefall: 0b,
+            HealthRegeneration: 0.0d,
+            IsAttackableByMonsters: 0b,
+            IsAttackableByPlayers: 0b,
+            IsInvulnerable: 1b,
+            IsPushable: 0b,
+            NoGravity: 0b,
+            PushEntities: 0b
+        },
+        HandDropChances: [0.085f, 0.085f],
+        HandItems: [
+            {},
+            {}
+        ],
+        Invulnerable: 0b,
+        LeftHanded: 0b,
+        ModelData: {
+            DefaultPose: "STANDING",
+            Pose: "VANILLA",
+            Position: {},
+            Rotation: {},
+            Scale: {},
+            Visible: {
+                Boots: 1b
+            }
+        },
+        Navigation: {
+            Home: {
+                X: 0,
+                Y: 0,
+                Z: 0
+            }
+        },
+        ObjectiveData: {
+            HasObjectives: 0b,
+            HasTravelTarget: 0b,
+            ObjectiveDataSet: []
+        },
+        OnGround: 1b,
+        PersistenceRequired: 0b,
+        PresetUUID: [I; 0, 0, 0, 0],
+        Profession: "NONE",
+        Progression: {
+            AttributeScalingEnabled: 0b,
+            EntityExperience: 1,
+            EntityExperienceLevel: 1
+        },
+        RenderData: {},
+        SkinData: {
+            Content: "",
+            DisableLayers: 0b,
+            Name: "",
+            Timestamp: 0L,
+            Type: "DEFAULT",
+            URL: "",
+            UUID: [I; 0, 0, 0, 0]
+        },
+        SoundData: {
+            SoundDataSet: [
+                {
+                    Name: "minecraft:entity.player.death",
+                    Type: "DEATH"
+                },
+                {
+                    Name: "minecraft:entity.player.hurt",
+                    Type: "HURT"
+                }
+            ]
+        },
+        Status: {
+            finalized: 0b,
+            npc_data_last_saved: 0L,
+            npc_data_last_update: 0L
+        },
+        VariantType: "STEVE",
+        attributes: [
+            {
+                base: 20.0d,
+                id: "minecraft:generic.max_health"
+            },
+            {
+                base: 0.5d,
+                id: "minecraft:generic.movement_speed"
+            }
+        ],
+        id: "easy_npc:humanoid",
+        Offers: {
+            Inventory: {},
+            Recipes: {
+                Recipes: [
+            {buy: {id: "minecraft:wheat", count: 16}, sell: {id: "cobblemon:rare_candy", count: 1}, uses: 0, maxUses: 4, rewardExp: 0b, specialPrice: 0, demand: 0, priceMultiplier: 0.0f, xp: 0},
+            {buy: {id: "minecraft:wheat", count: 32}, sell: {id: "cobblemon:exp_share", count: 1}, uses: 0, maxUses: 1, rewardExp: 0b, specialPrice: 0, demand: 0, priceMultiplier: 0.0f, xp: 0},
+            {buy: {id: "minecraft:wheat", count: 27}, sell: {id: "cobblemon:link_cable", count: 1}, uses: 0, maxUses: 2, rewardExp: 0b, specialPrice: 0, demand: 0, priceMultiplier: 0.0f, xp: 0},
+            {buy: {id: "minecraft:wheat", count: 21}, sell: {id: "cobblemon:kings_rock", count: 1}, uses: 0, maxUses: 1, rewardExp: 0b, specialPrice: 0, demand: 0, priceMultiplier: 0.0f, xp: 0},
+            {buy: {id: "minecraft:wheat", count: 21}, sell: {id: "cobblemon:metal_coat", count: 1}, uses: 0, maxUses: 1, rewardExp: 0b, specialPrice: 0, demand: 0, priceMultiplier: 0.0f, xp: 0},
+            {buy: {id: "minecraft:wheat", count: 37}, sell: {id: "cobblemon:lucky_egg", count: 1}, uses: 0, maxUses: 1, rewardExp: 0b, specialPrice: 0, demand: 0, priceMultiplier: 0.0f, xp: 0},
+            {buy: {id: "minecraft:wheat", count: 21}, sell: {id: "cobblemon:dragon_scale", count: 1}, uses: 0, maxUses: 1, rewardExp: 0b, specialPrice: 0, demand: 0, priceMultiplier: 0.0f, xp: 0},
+            {buy: {id: "minecraft:wheat", count: 21}, sell: {id: "cobblemon:upgrade", count: 1}, uses: 0, maxUses: 1, rewardExp: 0b, specialPrice: 0, demand: 0, priceMultiplier: 0.0f, xp: 0},
+            {buy: {id: "minecraft:wheat", count: 11}, sell: {id: "cobblemon:everstone", count: 1}, uses: 0, maxUses: 2, rewardExp: 0b, specialPrice: 0, demand: 0, priceMultiplier: 0.0f, xp: 0},
+            {buy: {id: "minecraft:wheat", count: 27}, sell: {id: "cobblemon:razor_claw", count: 1}, uses: 0, maxUses: 1, rewardExp: 0b, specialPrice: 0, demand: 0, priceMultiplier: 0.0f, xp: 0},
+            {buy: {id: "minecraft:wheat", count: 27}, sell: {id: "cobblemon:razor_fang", count: 1}, uses: 0, maxUses: 1, rewardExp: 0b, specialPrice: 0, demand: 0, priceMultiplier: 0.0f, xp: 0},
+            {buy: {id: "minecraft:wheat", count: 32}, sell: {id: "cobblemon:electirizer", count: 1}, uses: 0, maxUses: 1, rewardExp: 0b, specialPrice: 0, demand: 0, priceMultiplier: 0.0f, xp: 0},
+            {buy: {id: "minecraft:wheat", count: 32}, sell: {id: "cobblemon:magmarizer", count: 1}, uses: 0, maxUses: 1, rewardExp: 0b, specialPrice: 0, demand: 0, priceMultiplier: 0.0f, xp: 0},
+            {buy: {id: "minecraft:wheat", count: 32}, sell: {id: "cobblemon:protector", count: 1}, uses: 0, maxUses: 1, rewardExp: 0b, specialPrice: 0, demand: 0, priceMultiplier: 0.0f, xp: 0}
+        ]
+            }
+        },
+        TradingData: {
+            TradingDataSet: {
+                Type: "BASIC",
+                MaxUses: 4,
+                ResetsEveryMin: 525600,
+                LastReset: 0L
+            }
+        }
+    }
+}
