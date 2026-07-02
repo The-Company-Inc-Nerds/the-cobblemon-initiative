@@ -69,13 +69,13 @@ Author in batches; each batch unblocks Claude wiring the same day:
 ## 1. BUILD — still to land
 
 ### A. In-world authoring 🧱 (blocks the systems in §B)
-- [ ] **Zones** — trace/finalize every zone with `/cobblemon-initiative zone-trace begin <name>` → `export` → paste into `install.json` (towns, routes, shrines, VILLAIN HQ, Battle Frontier, landmarks), then a fresh `install run`. → *unblocks removing Zone Trace (§2)*
+- [ ] **Zones** — ~done: the zone-mapper export (dev/unnamed_zones.json) is baked into `install.json` (46 zones: 13 towns incl. Royal League + Battle Frontier, 18 route segments named in journey order with "Route N" subtitles, **10 farms gated `field_freed`/`farm_N`**, 3 landmarks, Fairy Shrine, canonical HQ preserved). *Remaining:* the 4 missing shrines (dragon/ice/fire/ground), route gaps 4/6/9/11 if intended, then a fresh `install run` 🔍. → *unblocks removing Zone Trace (§2)*
 - [ ] **Villain NPC placement** — every villain in `villain_team.json` is at `[0,0,0]`. Place each with real coords, composed from the battle + recognition-dialogue snippets:
   - [ ] 11 grunts (Field Agent → Elite Agent), gym-gated on routes
   - [ ] 3 management (Regional Manager Shade, Senior Director Vex, COO Noir)
   - [ ] Acting CEO DJ at HQ `[1590 51 1028]`
   - [ ] 4 Board members + The Founder (post-Royal-League, The Boardroom)
-- [ ] **Wheat fields** — mark with `/cobblemon-initiative field-mark add <id> <region>` (6 set-piece + scattered minor), `export`, send Claude the JSON. → *unblocks P4 and removing Field Mark (§2)*
+- [ ] **Wheat fields** — zones are DONE (10 farms in install.json, gated on `field_freed`/`farm_1`..`farm_10` — those ids are now canonical). *Remaining:* place the field-guard trainers at the farms 🧱 → Claude wires each guard's reward `execute as {player} run function cobblemon_initiative:liberation/free_field {field:"farm_N"}` 💻. (Field Mark tool likely obsolete now — zones came from the zone-mapper.)
 - [ ] **Wheat-trader NPCs** — place (trade→recognize→ambush) from `wheat_trader_gate` + `trade_wheat_trader` + `dialog_wheat_pitch`
 - [ ] **Granary trader NPC** — Company Inc. member selling items **for wheat**. **Infrastructure landed:**
   - [x] `granary_keeper` character + 3-tier recognition dialog (default → suspicious ≥2 fields → hostile ≥4, hostile trade arms `granary_ambush_armed`); compiled via content_compile.
