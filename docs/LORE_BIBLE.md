@@ -150,13 +150,13 @@ because he was hidden; it is because **the coup is actively erasing him**:
 The climax is a **Pokémon-Red-style mirror battle** against the player's shadow self. It
 should feel like fighting *yourself*, not slaying a monster. The "it was you all along"
 reveal is the payoff of the whole amnesia arc — held back until **after the Royal League /
-Board clearout**. **Implemented:** the Founder's nameplate de-obfuscates as the Board
-falls — each Board member's defeat fires `reveal/board_fell`, which surfaces letters
-through the `§k` static (`C§kaaa` → `Co§kaa` → `Col§ka` → held → `§6Cole` gilded when the
-Board is cleared) by re-importing staged presets (`scripts/generate_founder_reveals`,
-name configured in `scripts/founder_reveal.json` — **confirm it matches the streamer's
-in-game name**). The beats stay oblique; the nameplate does the talking, and the third
-seat deliberately withholds its letter ("waiting for the chair to be empty").
+Board clearout**. **Implemented:** the Founder's nameplate is **fully `§k`-obfuscated for
+the entire run** (`§kfounder` — no letters ever surface early, and no name is baked into
+any shipped file). Each Board member's defeat fires `reveal/board_fell` — four oblique
+title beats that circle the name without closing it. The name is only spoken at the
+mirror's defeat: `reveal/founder_defeated` renders **the defeating player's own name
+live** via a selector component — *"The name on the chair was always ⟨you⟩."* Whoever
+wins the run, the reveal is theirs.
 
 Aftermath / post-story: with the Company overthrown, the player leaves the curated map for
 generated terrain and attempts to **beat vanilla Minecraft (the Ender Dragon)** — still
