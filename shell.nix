@@ -172,6 +172,47 @@
     cd "$root"
     exec ${pkgs.python3}/bin/python3 "$root/scripts/build_mrpack.py" "$@"
   '';
+  zone-mapper = pkgs.writeShellScriptBin "zone-mapper" ''
+    set -euo pipefail
+    root="$(git rev-parse --show-toplevel)"
+    src="$root/scripts/zone-mapper"
+
+    port=8099
+    open=1
+    target=""
+    while [ $# -gt 0 ]; do
+      case "$1" in
+        -p|--port) port="$2"; shift 2 ;;
+        --no-open)  open=0; shift ;;
+        -h|--help)
+          echo "Usage: zone-mapper [<uNmINeD-export-dir>] [-p PORT] [--no-open]"
+          echo "Copies the zone editor into a uNmINeD web export and serves it."
+          echo "Default export dir: dev/upm2-map"
+          exit 0 ;;
+        *) target="$1"; shift ;;
+      esac
+    done
+    target="''${target:-$root/dev/upm2-map}"
+
+    if [ ! -f "$target/unmined.map.properties.js" ]; then
+      echo "No uNmINeD export found in:  $target"
+      echo ""
+      echo "Render your world first (needs uNmINeD — https://unmined.net):"
+      echo "  unmined-cli web render --world \"<your save>\" --output \"$target\""
+      echo ""
+      echo "Then re-run:  zone-mapper \"$target\""
+      exit 1
+    fi
+
+    cp "$src/zone-editor.html" "$src/README.md" "$target/"
+    url="http://localhost:$port/zone-editor.html"
+    echo "Zone Mapper  ->  $url"
+    echo "Serving      $target   (Ctrl-C to stop)"
+    if [ "$open" -eq 1 ] && command -v xdg-open >/dev/null 2>&1; then
+      ( sleep 1; xdg-open "$url" >/dev/null 2>&1 || true ) &
+    fi
+    exec ${pkgs.python3}/bin/python3 -m http.server "$port" --directory "$target"
+  '';
 in
   pkgs.mkShell {
     buildInputs = [
@@ -186,6 +227,7 @@ in
       publish-wiki
       run-client
       build-mrpack
+      zone-mapper
     ];
 
     JAVA_HOME = "${pkgs.jdk21}";
@@ -194,17 +236,34 @@ in
 
     shellHook = ''
       export PATH="$PWD/scripts:$PATH"
-      echo "Using wrapped local zed: ./.direnv/.config/zed"
-      echo "Java version: $(java -version 2>&1 | head -n 1)"
-      echo "JAVA_HOME: $JAVA_HOME"
-      echo "Use 'zeditor .' for custom editor for repository."
-      echo "Use 'gradle build' to build repository. If that fails try removing the '.gradle' directory."
-      echo "Use 'run-client' to launch the Fabric dev client (gradle runClient) for live testing."
-      echo "Use 'build-mrpack' to assemble a Modrinth .mrpack (add --with-map to bundle the UPM 2 world)."
-      echo "Use 'snbt-merge --help' to splice sections between SNBT files."
-      echo "Use 'update_preset_index' after adding presets to regenerate the Easy NPC index."
-      echo "Use 'generate_npc_function' to rebuild update_npc_presets.mcfunction from npc_presets.json."
-      echo "Use 'gcommit' to commit using GIT_COMMIT_MSG (prompts for optional tag)."
-      echo "Use 'publish-wiki' to sync wiki/ to the GitHub wiki (defaults to <origin>.wiki.git; checks links first)."
+
+      b=$(printf '\033[1m');   d=$(printf '\033[2m');   r=$(printf '\033[0m')
+      cy=$(printf '\033[36m'); ye=$(printf '\033[33m'); gn=$(printf '\033[32m')
+      jv=$(java -version 2>&1 | head -n1 | sed -E 's/.*"([^"]+)".*/\1/')
+      rule="────────────────────────────────────────────────────────"
+
+      hdr () { printf '  %s%s%s\n'          "$ye$b" "$1" "$r"; }
+      cmd () { printf '    %s%-22s%s %s%s%s\n' "$cy" "$1" "$r" "$d" "$2" "$r"; }
+
+      printf '\n  %s%sThe Cobblemon Initiative%s %s— Fabric dev shell%s\n' "$b" "$cy" "$r" "$d" "$r"
+      printf   '  %s%s%s\n' "$d" "$rule" "$r"
+      printf   '  %sJDK%s %s    %seditor: zeditor .%s\n\n' "$gn" "$r" "$jv" "$d" "$r"
+
+      hdr "build & run"
+      cmd "gradle build"          "build the mod → build/libs/"
+      cmd "run-client"            "launch the Fabric dev client (live testing)"
+      cmd "build-mrpack"          "assemble a .mrpack (--with-map bundles UPM 2)"
+      hdr "content"
+      cmd "content_compile"       "compile dialog-src/ → Easy NPC SNBT presets"
+      cmd "generate_npc_function" "rebuild update_npc_presets.mcfunction"
+      cmd "update_preset_index"   "regenerate the Easy NPC preset index"
+      cmd "generate_shop_tiers"   "rebuild CobbleDollars shop tiers"
+      cmd "snbt-merge --help"     "splice sections between SNBT files"
+      hdr "world & map"
+      cmd "zone-mapper <dir>"     "draw install.json zones on a uNmINeD render"
+      hdr "ship it"
+      cmd "gcommit"               "commit via GIT_COMMIT_MSG (optional signed tag)"
+      cmd "publish-wiki"          "sync wiki/ → the GitHub wiki (checks links)"
+      printf '  %s%s%s\n\n' "$d" "$rule" "$r"
     '';
   }

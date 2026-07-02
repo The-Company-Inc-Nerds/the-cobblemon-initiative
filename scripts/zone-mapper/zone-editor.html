@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Zone Mapper — The Cobblemon Initiative</title>
+
+<!--
+  Zone Mapper — draws install.json zones on top of a uNmINeD web-export.
+
+  WHAT IT IS
+    A self-contained OpenLayers page that renders your uNmINeD map export and lets
+    you draw towns / routes / shrines / villain sites as rectangles, polygons, or
+    circles, then exports them in the exact schema InstallZone.java expects.
+
+  WHY OPENLAYERS (not Leaflet)
+    uNmINeD's web export IS an OpenLayers app. This file is a faithful port of the
+    map construction in the export's own `unmined.openlayers.js`, so tiles render
+    identically. Every drawn coordinate is converted to Minecraft (X, Z) by running
+    it through uNmINeD's OWN registered VIEW->DATA transform — we do no coordinate
+    math of our own. That transform is a single Y-flip [x, -y]; the DATA coordinate
+    equals Minecraft (X, Z) with origin at world 0,0. This is the "reuse the engine,
+    don't reimplement it" approach that avoids off-by-a-flip alignment bugs.
+
+  HOW TO USE  (see README.md for the full walkthrough)
+    1. Render your world:  unmined-cli web render --world <save> --output <dir>
+    2. Copy this file (and README.md) into that <dir>, next to index.html.
+    3. Serve the folder:   python3 -m http.server 8099   (from inside <dir>)
+    4. Open http://localhost:8099/zone-editor.html
+    Opening via file:// also works but a local server is more reliable for tiles.
+
+  RE-RENDER SAFETY
+    uNmINeD overwrites its own generated files (index.html, unmined.openlayers.js,
+    unmined.map.*.js) on every render but leaves arbitrarily-named files alone, so
+    "zone-editor.html" survives re-renders. Keep a copy in the repo regardless.
+
+  NOTE ON --zoomin
+    Coordinate exactness is verified for default renders (maxZoom == 0). If you pass
+    --zoomin, this tool shows a warning; verify one exported coord against F3 before
+    trusting a batch. Importing your existing install.json is the quickest sanity
+    check — known zones (Sango 0/0, HQ 1590/1028, Royal League 3528/2773) should land
+    on the right spots.
+
+  OpenLayers is loaded from a CDN (same version uNmINeD ships, 6.9.0). If you work
+  offline, drop ol.js / ol.css beside this file and repoint OL_JS / OL_CSS below.
+-->
+
+<link id="ol-css" rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/ol@6.9.0/dist/ol.css">
+<style>
+  :root {
+    --bg: #1c2128; --panel: #22282f; --edge: #333c45; --ink: #d7dee6;
+    --muted: #8a97a5; --accent: #7AAAD0; --accent2: #FFD166; --danger: #e06c6c;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; font-family: system-ui, sans-serif; color: var(--ink); background: var(--bg); }
+  #app { display: flex; height: 100%; }
+  #map { flex: 1 1 auto; position: relative; background: #10141a; }
+  #panel {
+    flex: 0 0 340px; background: var(--panel); border-left: 1px solid var(--edge);
+    display: flex; flex-direction: column; overflow-y: auto;
+  }
+  #panel h1 { font-size: 15px; margin: 0; padding: 12px 14px; border-bottom: 1px solid var(--edge); }
+  #panel h1 small { color: var(--muted); font-weight: normal; display: block; font-size: 11px; margin-top: 2px; }
+  section { padding: 10px 14px; border-bottom: 1px solid var(--edge); }
+  section > .label { font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin-bottom: 8px; }
+  .tools { display: flex; flex-wrap: wrap; gap: 6px; }
+  button {
+    background: #2c343d; color: var(--ink); border: 1px solid var(--edge);
+    border-radius: 6px; padding: 6px 9px; font-size: 12px; cursor: pointer;
+  }
+  button:hover { border-color: var(--accent); }
+  button.active { background: var(--accent); color: #10141a; border-color: var(--accent); font-weight: 600; }
+  button.danger:hover { border-color: var(--danger); color: var(--danger); }
+  label.field { display: block; margin: 6px 0; font-size: 12px; }
+  label.field > span { display: block; color: var(--muted); margin-bottom: 2px; }
+  input[type=text], input[type=number], select, textarea {
+    width: 100%; background: #171c22; color: var(--ink); border: 1px solid var(--edge);
+    border-radius: 5px; padding: 5px 7px; font-size: 12px; font-family: inherit;
+  }
+  textarea { resize: vertical; min-height: 60px; }
+  .row { display: flex; gap: 8px; }
+  .row > * { flex: 1; }
+  .checks { display: flex; flex-wrap: wrap; gap: 10px; font-size: 12px; }
+  .checks label { display: flex; align-items: center; gap: 4px; color: var(--ink); }
+  .colorrow { display: flex; align-items: center; gap: 8px; }
+  .colorrow input[type=color] { width: 34px; height: 28px; padding: 0; border: 1px solid var(--edge); background: none; }
+  #zonelist { list-style: none; margin: 0; padding: 0; max-height: 180px; overflow-y: auto; }
+  #zonelist li {
+    display: flex; align-items: center; gap: 8px; padding: 5px 6px; border-radius: 5px;
+    cursor: pointer; font-size: 12px;
+  }
+  #zonelist li:hover { background: #2c343d; }
+  #zonelist li.sel { background: var(--accent); color: #10141a; }
+  #zonelist .swatch { width: 12px; height: 12px; border-radius: 3px; flex: 0 0 auto; border: 1px solid #0006; }
+  #zonelist .badge { font-size: 9px; color: var(--muted); text-transform: uppercase; }
+  #zonelist li.sel .badge { color: #10141a; }
+  #out { width: 100%; min-height: 150px; font-family: ui-monospace, Menlo, monospace; font-size: 11px; white-space: pre; }
+  .derived { font-size: 11px; color: var(--muted); margin-top: 4px; }
+  .mouse-pos {
+    position: absolute; bottom: 8px; left: 8px; z-index: 5; background: #10141acc;
+    padding: 4px 8px; border-radius: 5px; font-family: ui-monospace, monospace; font-size: 12px;
+    color: var(--accent2); pointer-events: none;
+  }
+  #warn {
+    display: none; margin: 0; padding: 8px 14px; background: #4a3a12; color: #ffd98a;
+    font-size: 12px; border-bottom: 1px solid var(--edge);
+  }
+  #setup {
+    position: absolute; inset: 0; display: none; align-items: center; justify-content: center;
+    background: #10141af2; z-index: 20; padding: 40px; text-align: left;
+  }
+  #setup .card { max-width: 560px; background: var(--panel); border: 1px solid var(--edge); border-radius: 10px; padding: 22px 26px; }
+  #setup h2 { margin-top: 0; }
+  #setup code { background: #171c22; padding: 1px 5px; border-radius: 4px; font-size: 12px; }
+  #setup pre { background: #171c22; padding: 10px; border-radius: 6px; overflow-x: auto; font-size: 12px; }
+  a { color: var(--accent); }
+  .hint { font-size: 11px; color: var(--muted); margin-top: 6px; line-height: 1.4; }
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="map">
+    <div class="mouse-pos" id="mouse-pos">X — · Z —</div>
+    <div id="setup">
+      <div class="card">
+        <h2>Drop me in a uNmINeD export</h2>
+        <p>This page couldn't find <code>unmined.map.properties.js</code>. It needs to sit
+        inside a uNmINeD web-export folder (next to <code>index.html</code>).</p>
+        <pre>unmined-cli web render \
+  --world "&lt;your save&gt;" \
+  --output "&lt;export dir&gt;"
+
+cp zone-editor.html README.md "&lt;export dir&gt;/"
+cd "&lt;export dir&gt;" &amp;&amp; python3 -m http.server 8099
+# open http://localhost:8099/zone-editor.html</pre>
+        <p class="hint">See <code>README.md</code> for the full workflow.</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="panel">
+    <h1>Zone Mapper<small>The Cobblemon Initiative · install.json zones</small></h1>
+    <div id="warn"></div>
+
+    <section>
+      <div class="label">Draw</div>
+      <div class="tools" id="tools">
+        <button data-tool="pan" class="active">✋ Pan</button>
+        <button data-tool="rect">▭ Box</button>
+        <button data-tool="polygon">⬡ Polygon</button>
+        <button data-tool="circle">◯ Circle</button>
+        <button data-tool="route">✏ Route</button>
+        <button data-tool="edit">↔ Edit</button>
+        <button data-tool="delete" class="danger">🗑 Delete</button>
+      </div>
+      <label class="field" style="margin-top:8px;">
+        <span>New zone type</span>
+        <select id="newtype">
+          <option>TOWN</option><option>ROUTE</option><option>SHRINE</option>
+          <option>VILLAIN</option><option>BATTLE_FRONTIER</option><option>LANDMARK</option>
+        </select>
+      </label>
+      <div class="hint">Box &amp; Polygon &amp; Route export as <code>vertices</code> (center/radius
+      derived by the mod). Circle exports <code>centerX/Y/Z</code> + <code>radius</code>.</div>
+    </section>
+
+    <section>
+      <div class="label">Zones</div>
+      <ul id="zonelist"></ul>
+    </section>
+
+    <section id="editor" style="display:none;">
+      <div class="label">Selected zone</div>
+      <label class="field"><span>Name</span><input type="text" id="f-name"></label>
+      <label class="field"><span>Subtitle</span><input type="text" id="f-subtitle"></label>
+      <div class="row">
+        <label class="field"><span>Type</span>
+          <select id="f-type">
+            <option>TOWN</option><option>ROUTE</option><option>SHRINE</option>
+            <option>VILLAIN</option><option>BATTLE_FRONTIER</option><option>LANDMARK</option>
+          </select>
+        </label>
+        <label class="field"><span>Center Y</span><input type="number" id="f-centery" value="64"></label>
+      </div>
+      <label class="field"><span>Dimension</span><input type="text" id="f-dim" value="minecraft:overworld"></label>
+      <div class="colorrow">
+        <input type="color" id="f-color-pick">
+        <input type="text" id="f-color" placeholder="#AAAAAA">
+      </div>
+      <div class="checks" style="margin-top:8px;">
+        <label><input type="checkbox" id="f-hostile"> hostileOnly</label>
+        <label><input type="checkbox" id="f-cyl"> cylindrical</label>
+        <label><input type="checkbox" id="f-announce"> announce</label>
+      </div>
+      <div class="derived" id="f-derived"></div>
+    </section>
+
+    <section>
+      <div class="label">Import existing</div>
+      <input type="file" id="importfile" accept=".json,application/json">
+      <textarea id="importtext" placeholder="…or paste an install.json / zones array here"></textarea>
+      <div class="row" style="margin-top:6px;">
+        <button id="btn-import">Import</button>
+        <button id="btn-clear" class="danger">Clear all</button>
+      </div>
+      <div class="hint">Accepts a full <code>install.json</code> (reads its <code>zones</code>)
+      or a bare zones array. Imported zones become editable on the map.</div>
+    </section>
+
+    <section>
+      <div class="label">Export — <code>zones</code> array</div>
+      <textarea id="out" readonly></textarea>
+      <div class="row" style="margin-top:6px;">
+        <button id="btn-copy">Copy</button>
+        <button id="btn-download">Download</button>
+      </div>
+      <div class="hint">Paste as the value of <code>"zones"</code> in
+      <code>src/main/resources/data/cobblemon_initiative/install.json</code>, rebuild,
+      then <code>/cobblemon-initiative install run</code>.</div>
+    </section>
+  </div>
+</div>
+
+<script id="ol-js" src="https://cdn.jsdelivr.net/npm/ol@6.9.0/dist/ol.js"></script>
+<!-- uNmINeD export metadata (defines window.UnminedMapProperties). Absent if this
+     file isn't inside an export — handled gracefully below. -->
+<script src="unmined.map.properties.js" onerror="window.__noProps=true"></script>
+
+<script>
+"use strict";
+(function () {
+  // ---- per-type default colours (suggestions matching existing install.json) ----
+  const TYPE_COLORS = {
+    TOWN: "#A8C4D8", ROUTE: "#AAAAAA", SHRINE: "#B39DDB",
+    VILLAIN: "#455A64", BATTLE_FRONTIER: "#FFD700", LANDMARK: "#AAAAAA",
+  };
+
+  const P = window.UnminedMapProperties;
+  if (!P || window.__noProps) {
+    document.getElementById("setup").style.display = "flex";
+    return;
+  }
+  if (typeof ol === "undefined") {
+    document.getElementById("setup").style.display = "flex";
+    document.querySelector("#setup .card").innerHTML =
+      "<h2>OpenLayers failed to load</h2><p>This page loads OpenLayers 6.9.0 from a CDN. " +
+      "If you're offline, download <code>ol.js</code> / <code>ol.css</code> beside this file " +
+      "and repoint the tags in the &lt;head&gt;.</p>";
+    return;
+  }
+
+  // ============================================================================
+  //  Map construction — faithful port of uNmINeD's unmined.openlayers.js.
+  //  All values read from UnminedMapProperties at runtime; nothing hardcoded.
+  // ============================================================================
+  const dpiScale        = window.devicePixelRatio || 1;
+  const worldTileSize   = 256;                       // uNmINeD constant
+  const minZoom         = P.minZoom;
+  const maxZoom         = P.maxZoom;
+  const mapZoomLevels   = maxZoom - minZoom;
+  const imageFormat     = P.imageFormat || "png";
+  const worldMaxZoomFactor = Math.pow(2, maxZoom);
+  const worldMinX       = P.minRegionX * 512;        // region = 512 blocks
+  const worldMinZ       = P.minRegionZ * 512;
+  const worldWidth      = (P.maxRegionX - P.minRegionX + 1) * 512;
+  const worldHeight     = (P.maxRegionZ - P.minRegionZ + 1) * 512;
+
+  // Two pixel projections related by a single Y flip. DATA == Minecraft (X, Z).
+  const viewProjection = new ol.proj.Projection({ code: "VIEW", units: "pixels" });
+  const dataProjection = new ol.proj.Projection({ code: "DATA", units: "pixels" });
+  ol.proj.addProjection(viewProjection);
+  ol.proj.addProjection(dataProjection);
+  ol.proj.addCoordinateTransforms(
+    viewProjection, dataProjection,
+    (c) => [c[0], -c[1]],   // VIEW -> DATA
+    (c) => [c[0], -c[1]]    // DATA -> VIEW
+  );
+  // block (X, Z) -> view coord, and view coord -> block (X, Z)
+  const toView  = (x, z) => ol.proj.transform([x, z], dataProjection, viewProjection);
+  const toBlock = (c)    => ol.proj.transform(c, viewProjection, dataProjection);
+
+  const mapExtent = ol.extent.boundingExtent([
+    [worldMinX * worldMaxZoomFactor, -(worldMinZ + worldHeight) * worldMaxZoomFactor],
+    [(worldMinX + worldWidth) * worldMaxZoomFactor, -worldMinZ * worldMaxZoomFactor],
+  ]);
+
+  const resolutions = [];
+  for (let z = 0; z <= mapZoomLevels; z++) {
+    resolutions[mapZoomLevels - z] = Math.pow(2, z) * dpiScale / worldMaxZoomFactor;
+  }
+
+  const tileGrid = new ol.tilegrid.TileGrid({
+    extent: mapExtent,
+    origin: [0, 0],
+    resolutions: resolutions,
+    tileSize: worldTileSize / dpiScale,
+  });
+
+  const tileSource = new ol.source.XYZ({
+    projection: viewProjection,
+    tileGrid: tileGrid,
+    tilePixelRatio: dpiScale,
+    wrapX: false,
+    // Exact tile URL from unmined.openlayers.js — tileY (coordinate[2]) is NOT
+    // negated; on-disk rows grow southward with increasing Minecraft Z.
+    tileUrlFunction: function (tc) {
+      if (!tc) return undefined;
+      const worldZoom = -(mapZoomLevels - tc[0]) + maxZoom;
+      const tileX = tc[1], tileY = tc[2];
+      return "tiles/zoom." + worldZoom +
+             "/" + Math.floor(tileX / 10) +
+             "/" + Math.floor(tileY / 10) +
+             "/tile." + tileX + "." + tileY + "." + imageFormat;
+    },
+  });
+  // Missing tiles (unexplored regions) 404 silently — that's expected, not an error.
+  tileSource.on("tileloaderror", function () { /* ignore */ });
+
+  const tileLayer = new ol.layer.Tile({ source: tileSource });
+
+  // ---- vector layer for drawn zones ----
+  const drawSource = new ol.source.Vector();
+
+  function hexToRgba(hex, a) {
+    const h = (hex || "#AAAAAA").replace("#", "");
+    const n = parseInt(h.length === 3 ? h.split("").map(c => c + c).join("") : h, 16);
+    return "rgba(" + ((n >> 16) & 255) + "," + ((n >> 8) & 255) + "," + (n & 255) + "," + a + ")";
+  }
+  function styleFor(f) {
+    const m = f.get("meta") || {};
+    const col = m.color || "#AAAAAA";
+    const sel = (f === selected);
+    return new ol.style.Style({
+      stroke: new ol.style.Stroke({ color: col, width: sel ? 3 : 2 }),
+      fill: new ol.style.Fill({ color: hexToRgba(col, sel ? 0.35 : 0.16) }),
+      text: new ol.style.Text({
+        text: m.name || "", font: "12px system-ui, sans-serif", overflow: true,
+        fill: new ol.style.Fill({ color: "#fff" }),
+        stroke: new ol.style.Stroke({ color: "#000", width: 3 }),
+      }),
+    });
+  }
+  const drawLayer = new ol.layer.Vector({ source: drawSource, style: styleFor });
+
+  // ---- view centred on the middle of the rendered world ----
+  const view = new ol.View({
+    projection: viewProjection,
+    center: toView(worldMinX + worldWidth / 2, worldMinZ + worldHeight / 2),
+    resolutions: resolutions,
+    zoom: Math.max(0, mapZoomLevels - 3),
+  });
+
+  const mousePos = new ol.control.MousePosition({
+    projection: dataProjection,
+    className: "",
+    target: document.createElement("div"), // we render our own readout below
+    coordinateFormat: function (c) {
+      if (!c) return "";
+      document.getElementById("mouse-pos").textContent =
+        "X " + Math.round(c[0]) + " · Z " + Math.round(c[1]);
+      return "";
+    },
+  });
+
+  const map = new ol.Map({
+    target: "map",
+    layers: [tileLayer, drawLayer],
+    view: view,
+    controls: ol.control.defaults({ attribution: false }).extend([mousePos]),
+  });
+
+  if (maxZoom !== 0) {
+    const w = document.getElementById("warn");
+    w.style.display = "block";
+    w.innerHTML = "⚠ This export was rendered with zoom-in levels (maxZoom = " + maxZoom +
+      "). Block-coordinate exactness is only verified for default renders. " +
+      "Import your existing install.json and confirm known zones line up before trusting exports.";
+  }
+
+  // ============================================================================
+  //  Coordinate <-> zone conversion (all via uNmINeD's own transform)
+  // ============================================================================
+  function uid() { return "z" + Math.random().toString(36).slice(2, 9); }
+
+  function polyVerts(geom) {
+    let coords;
+    if (geom.getType() === "Polygon") {
+      coords = geom.getCoordinates()[0].slice();
+      if (coords.length > 1) {
+        const a = coords[0], b = coords[coords.length - 1];
+        if (a[0] === b[0] && a[1] === b[1]) coords.pop(); // drop closing dup
+      }
+    } else { // LineString
+      coords = geom.getCoordinates().slice();
+    }
+    return coords.map((c) => {
+      const b = toBlock(c);
+      return { x: Math.round(b[0]), z: Math.round(b[1]) };
+    });
+  }
+
+  function derived(verts) {
+    const n = verts.length;
+    const cx = Math.round(verts.reduce((s, v) => s + v.x, 0) / n);
+    const cz = Math.round(verts.reduce((s, v) => s + v.z, 0) / n);
+    let max = 0;
+    for (const v of verts) { const d = Math.hypot(v.x - cx, v.z - cz); if (d > max) max = d; }
+    return { cx, cz, radius: Math.ceil(max) };
+  }
+
+  // Build a schema-correct zone object, keys ordered to match install.json.
+  function featureToZone(f) {
+    const m = f.get("meta");
+    const g = f.getGeometry();
+    const isCircle = g.getType() === "Circle";
+    const z = { name: m.name || "", subtitle: m.subtitle || "", type: m.type || "LANDMARK" };
+    if (isCircle) {
+      const cv = g.getCenter();
+      const c = toBlock(cv);
+      const edge = toBlock([cv[0] + g.getRadius(), cv[1]]);
+      z.centerX = Math.round(c[0]);
+      z.centerY = m.centerY;
+      z.centerZ = Math.round(c[1]);
+      z.radius = Math.round(Math.hypot(edge[0] - c[0], edge[1] - c[1]));
+    } else {
+      z.centerY = m.centerY;
+    }
+    z.dimension = m.dimension || "minecraft:overworld";
+    z.hostileOnly = !!m.hostileOnly;
+    z.cylindrical = !!m.cylindrical;
+    z.announce = !!m.announce;
+    z.color = m.color || "#AAAAAA";
+    if (!isCircle) z.vertices = polyVerts(g);
+    return z;
+  }
+
+  function zoneToFeature(z) {
+    let geom;
+    if (z.vertices && z.vertices.length) {
+      const ring = z.vertices.map((v) => toView(v.x, v.z));
+      ring.push(ring[0].slice());
+      geom = new ol.geom.Polygon([ring]);
+    } else {
+      const cx = z.centerX || 0, cz = z.centerZ || 0, r = z.radius || 100;
+      const cv = toView(cx, cz);
+      const edge = toView(cx + r, cz);
+      geom = new ol.geom.Circle(cv, Math.hypot(edge[0] - cv[0], edge[1] - cv[1]));
+    }
+    const f = new ol.Feature({ geometry: geom });
+    f.setId(uid());
+    f.set("meta", {
+      name: z.name || "", subtitle: z.subtitle || "", type: z.type || "LANDMARK",
+      centerY: (z.centerY != null ? z.centerY : 64),
+      dimension: z.dimension || "minecraft:overworld",
+      hostileOnly: z.hostileOnly !== false,
+      cylindrical: z.cylindrical !== false,
+      announce: z.announce !== false,
+      color: z.color || TYPE_COLORS[z.type] || "#AAAAAA",
+    });
+    return f;
+  }
+
+  // ============================================================================
+  //  UI wiring
+  // ============================================================================
+  let selected = null;
+  let activeDraw = null, modify = null, select = null;
+  const $ = (id) => document.getElementById(id);
+
+  function refreshExport() {
+    const zones = drawSource.getFeatures().map(featureToZone);
+    $("out").value = JSON.stringify(zones, null, 2);
+  }
+
+  function refreshList() {
+    const ul = $("zonelist");
+    ul.innerHTML = "";
+    drawSource.getFeatures().forEach((f) => {
+      const m = f.get("meta");
+      const li = document.createElement("li");
+      if (f === selected) li.className = "sel";
+      li.innerHTML =
+        '<span class="swatch" style="background:' + (m.color || "#AAA") + '"></span>' +
+        '<span>' + (m.name || "(unnamed)") + '</span>' +
+        '<span class="badge" style="margin-left:auto;">' + (m.type || "") + '</span>';
+      li.onclick = () => selectFeature(f, true);
+      ul.appendChild(li);
+    });
+  }
+
+  function refreshEditor() {
+    const ed = $("editor");
+    if (!selected) { ed.style.display = "none"; return; }
+    ed.style.display = "block";
+    const m = selected.get("meta");
+    $("f-name").value = m.name || "";
+    $("f-subtitle").value = m.subtitle || "";
+    $("f-type").value = m.type || "LANDMARK";
+    $("f-centery").value = m.centerY;
+    $("f-dim").value = m.dimension || "minecraft:overworld";
+    $("f-color").value = m.color || "#AAAAAA";
+    $("f-color-pick").value = /^#[0-9a-f]{6}$/i.test(m.color) ? m.color : "#AAAAAA";
+    $("f-hostile").checked = !!m.hostileOnly;
+    $("f-cyl").checked = !!m.cylindrical;
+    $("f-announce").checked = !!m.announce;
+    const g = selected.getGeometry();
+    if (g.getType() === "Circle") {
+      $("f-derived").textContent = "Circle → centerX/Y/Z + radius";
+    } else {
+      const d = derived(polyVerts(g));
+      $("f-derived").textContent =
+        "Polygon → " + polyVerts(g).length + " vertices · mod derives center " +
+        d.cx + "/" + d.cz + ", radius " + d.radius;
+    }
+  }
+
+  function redraw() { drawLayer.changed(); }
+
+  function selectFeature(f, pan) {
+    selected = f;
+    redraw(); refreshList(); refreshEditor();
+    if (pan && f) {
+      const ext = f.getGeometry().getExtent();
+      view.fit(ext, { maxZoom: view.getZoom(), duration: 200, padding: [40, 40, 40, 40] });
+    }
+  }
+
+  // form -> meta
+  function bindMeta(id, key, transform) {
+    $(id).addEventListener("input", () => {
+      if (!selected) return;
+      const m = selected.get("meta");
+      m[key] = transform ? transform($(id)) : $(id).value;
+      selected.set("meta", m);
+      redraw(); refreshList(); refreshExport();
+    });
+  }
+  bindMeta("f-name", "name");
+  bindMeta("f-subtitle", "subtitle");
+  bindMeta("f-centery", "centerY", (el) => parseInt(el.value || "64", 10));
+  bindMeta("f-dim", "dimension");
+  bindMeta("f-color", "color");
+  bindMeta("f-hostile", "hostileOnly", (el) => el.checked);
+  bindMeta("f-cyl", "cylindrical", (el) => el.checked);
+  bindMeta("f-announce", "announce", (el) => el.checked);
+  $("f-type").addEventListener("change", () => {
+    if (!selected) return;
+    const m = selected.get("meta");
+    m.type = $("f-type").value;
+    // if colour was still the type default, follow the new type
+    if (!$("f-color").value || $("f-color").value.toUpperCase() === (TYPE_COLORS[$("f-type").value] || "").toUpperCase()) {
+      m.color = TYPE_COLORS[m.type] || m.color;
+      $("f-color").value = m.color; $("f-color-pick").value = m.color;
+    }
+    selected.set("meta", m);
+    redraw(); refreshList(); refreshExport();
+  });
+  $("f-color-pick").addEventListener("input", () => {
+    $("f-color").value = $("f-color-pick").value;
+    $("f-color").dispatchEvent(new Event("input"));
+  });
+
+  // ---- tools ----
+  function clearInteractions() {
+    [activeDraw, modify, select].forEach((i) => { if (i) map.removeInteraction(i); });
+    activeDraw = modify = select = null;
+  }
+  const DRAW_TYPES = {
+    rect: { type: "Circle", geometryFunction: ol.interaction.Draw.createBox() },
+    polygon: { type: "Polygon" },
+    circle: { type: "Circle" },
+    route: { type: "LineString" },
+  };
+  function setTool(tool) {
+    clearInteractions();
+    document.querySelectorAll("#tools button").forEach((b) =>
+      b.classList.toggle("active", b.dataset.tool === tool));
+
+    if (DRAW_TYPES[tool]) {
+      activeDraw = new ol.interaction.Draw(Object.assign({ source: drawSource }, DRAW_TYPES[tool]));
+      activeDraw.on("drawend", (e) => {
+        const f = e.feature;
+        f.setId(uid());
+        const t = $("newtype").value;
+        f.set("meta", {
+          name: "", subtitle: "", type: t, centerY: 64,
+          dimension: "minecraft:overworld", hostileOnly: true, cylindrical: true,
+          announce: true, color: TYPE_COLORS[t] || "#AAAAAA",
+        });
+        setTimeout(() => { selectFeature(f, false); setTool("edit"); $("f-name").focus(); }, 0);
+      });
+      map.addInteraction(activeDraw);
+    } else if (tool === "edit") {
+      select = new ol.interaction.Select({ layers: [drawLayer], style: styleFor });
+      select.on("select", (e) => selectFeature(e.selected[0] || null, false));
+      modify = new ol.interaction.Modify({ source: drawSource });
+      map.addInteraction(select);
+      map.addInteraction(modify);
+    } else if (tool === "delete") {
+      select = new ol.interaction.Select({ layers: [drawLayer] });
+      select.on("select", (e) => {
+        const f = e.selected[0];
+        if (f) { drawSource.removeFeature(f); if (selected === f) selected = null; }
+        select.getFeatures().clear();
+      });
+      map.addInteraction(select);
+    }
+  }
+  document.querySelectorAll("#tools button").forEach((b) =>
+    b.onclick = () => setTool(b.dataset.tool));
+
+  // keep list/editor/export in sync with any geometry or membership change
+  drawSource.on(["addfeature", "removefeature", "changefeature"], () => {
+    refreshList(); refreshExport(); if (selected) refreshEditor();
+  });
+
+  // ---- import / export ----
+  function importZones(text) {
+    let data;
+    try { data = JSON.parse(text); }
+    catch (e) { alert("Couldn't parse JSON: " + e.message); return; }
+    const zones = Array.isArray(data) ? data : (data && data.zones) || null;
+    if (!zones) { alert('No zones found. Expected an array, or an object with a "zones" array.'); return; }
+    let n = 0;
+    zones.forEach((z) => { try { drawSource.addFeature(zoneToFeature(z)); n++; } catch (e) { /* skip bad */ } });
+    if (n) {
+      const ext = drawSource.getExtent();
+      if (ext && isFinite(ext[0])) view.fit(ext, { padding: [40, 40, 40, 40], duration: 300 });
+    }
+    refreshList(); refreshExport();
+  }
+  $("btn-import").onclick = () => {
+    if ($("importtext").value.trim()) importZones($("importtext").value);
+    else alert("Paste JSON or choose a file first.");
+  };
+  $("importfile").addEventListener("change", (e) => {
+    const file = e.target.files[0]; if (!file) return;
+    const r = new FileReader();
+    r.onload = () => importZones(String(r.result));
+    r.readAsText(file);
+  });
+  $("btn-clear").onclick = () => {
+    if (confirm("Remove all drawn zones?")) { drawSource.clear(); selected = null; refreshList(); refreshEditor(); refreshExport(); }
+  };
+  $("btn-copy").onclick = () => {
+    navigator.clipboard.writeText($("out").value).then(
+      () => { $("btn-copy").textContent = "Copied!"; setTimeout(() => $("btn-copy").textContent = "Copy", 1200); },
+      () => { $("out").select(); document.execCommand("copy"); }
+    );
+  };
+  $("btn-download").onclick = () => {
+    const blob = new Blob([$("out").value], { type: "application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob); a.download = "zones.json"; a.click();
+    URL.revokeObjectURL(a.href);
+  };
+
+  refreshExport();
+})();
+</script>
+</body>
+</html>
