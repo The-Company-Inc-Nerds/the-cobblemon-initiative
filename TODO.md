@@ -151,10 +151,15 @@ Map-authoring aids. Strip each once its authoring is baked in.
 ### Dev datapack functions (`function/dev/`)
 - [ ] Review/remove `data/cobblemon_initiative/function/dev/npc_tour_*.mcfunction` + the `npc_tour_idx` objective (keep `function/update_npc_presets` — that ships)
 
-### General release pass
-- [ ] Audit for debug-only commands (e.g. `/cobblemon-initiative shrine <id> test <name>`) — keep or strip
-- [ ] Confirm no lingering `field-mark` / `zone-trace` / `npc-map` references in docs
-- [ ] Bump version to `1.0.0`
+### General release pass *(pre-audited 2026-07-02 — the strip is now a checklist)*
+- [ ] Debug-only command surfaces found (keep-or-strip decision each):
+  - `CobblemonInitiativeCommands.java:116` — `shrine <id> test <name>` (fairy shrine test runner, ~L595)
+  - `CobblemonInitiativeCommands.java:832` — `/cobblemon-initiative dev kit` (shrine crystals + test items)
+- [ ] Dev datapack functions: `function/dev/npc_tour_{fetch,goto,init,next,prev}.mcfunction` + `npc_tour_idx` objective
+- [ ] Dev-tool doc references to scrub at strip time: `wiki/Commands.md`, `wiki/Architecture-Overview.md`
+  (both intentionally document the dev tools today — they carry the "removed at 1.0.0" flags)
+- [ ] Bump `build.gradle.kts:8` version `0.2.0-alpha.1` → `1.0.0`
+- [ ] Confirm `scripts/founder_reveal.json` name matches the streamer's in-game display name (reveal presets bake it)
 
 ---
 
