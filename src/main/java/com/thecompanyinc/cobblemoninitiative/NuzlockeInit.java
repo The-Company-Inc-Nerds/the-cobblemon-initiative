@@ -628,6 +628,13 @@ public class NuzlockeInit implements ModInitializer {
   private static void sendZoneEntry(ServerPlayer player, NuzlockeConfig.SafeZone zone) {
     NuzlockeConfig.AnnouncementStyle style = config.getAnnouncementStyle();
     Component title = buildTitleComponent(zone.name, zone.color);
+    // The stored subtitle is the MAP-facing state (Map Frontiers renders it on the label
+    // from install run — e.g. a farm's "Corporate owned."). A liberation-gated zone only
+    // announces once its latch has tripped, so the announce always shows the freed state.
+    String subtitle =
+      (zone.activeWhenObjective != null && !zone.activeWhenObjective.isEmpty())
+        ? "Liberated."
+        : zone.subtitle;
 
     if (style == NuzlockeConfig.AnnouncementStyle.TITLE) {
       player.connection.send(new ClientboundSetTitlesAnimationPacket(
@@ -636,17 +643,15 @@ public class NuzlockeInit implements ModInitializer {
         config.getAnnouncementFadeOut()
       ));
       player.connection.send(new ClientboundSetTitleTextPacket(title));
-      if (zone.subtitle != null && !zone.subtitle.isEmpty()) {
+      if (subtitle != null && !subtitle.isEmpty()) {
         player.connection.send(new ClientboundSetSubtitleTextPacket(
-          Component.literal("§7" + zone.subtitle)
+          Component.literal("§7" + subtitle)
         ));
       }
     } else if (style == NuzlockeConfig.AnnouncementStyle.ACTIONBAR) {
-      String label = zone.name
-        + (zone.subtitle != null && !zone.subtitle.isEmpty() ? " §8— §7" + zone.subtitle : "");
       player.connection.send(new ClientboundSetActionBarTextPacket(
         Component.literal("§e▶ ").append(title).append(Component.literal(
-          zone.subtitle != null && !zone.subtitle.isEmpty() ? " §8— §7" + zone.subtitle : ""
+          subtitle != null && !subtitle.isEmpty() ? " §8— §7" + subtitle : ""
         ))
       ));
     } else {
