@@ -48,6 +48,14 @@ public class LootChestManager {
   private static final int MAX_TIER = 10;
   private static final String NAMESPACE = "cobblemon_initiative";
 
+  /**
+   * Fixed reduction applied on top of the user multipliers, so the neutral-looking 1.0×
+   * defaults still stock a SMALL chest. At 1.0× this yields roughly a third of the legacy
+   * amount per dimension; the min-1 floors below keep every stocked chest at at least one
+   * stack of one item. Raise a multiplier toward 3.0× to restore fuller volume.
+   */
+  private static final double BASE_LOOT_SCALE = 1.0 / 6.0;
+
   private final LootChestStorage storage = new LootChestStorage();
 
   // ── Lifecycle ─────────────────────────────────────────────────────────────────
@@ -214,8 +222,10 @@ public class LootChestManager {
       if (i == 0) perPass = pool.size(); // stacks the tables yield in one pass
     }
 
-    // Keep round(perPass * stackMultiplier) stacks, chosen at random.
-    int targetStacks = (int) Math.round(perPass * stackMult);
+    // Keep round(perPass * stackMult * BASE_LOOT_SCALE) stacks, chosen at random — the
+    // base scale keeps the default 1.0× knob lean; the floor guarantees at least one stack.
+    int targetStacks = (int) Math.round(perPass * stackMult * BASE_LOOT_SCALE);
+    if (stackMult > 0.0 && !pool.isEmpty() && targetStacks < 1) targetStacks = 1;
     Collections.shuffle(pool);
     List<ItemStack> kept = new ArrayList<>(
       pool.subList(0, Math.min(Math.max(targetStacks, 0), pool.size()))
@@ -226,7 +236,7 @@ public class LootChestManager {
     List<ItemStack> out = new ArrayList<>();
     for (ItemStack stack : kept) {
       if (stack.isEmpty()) continue;
-      int count = (int) Math.round(stack.getCount() * itemMult);
+      int count = (int) Math.round(stack.getCount() * itemMult * BASE_LOOT_SCALE);
       count = Math.min(count, stack.getMaxStackSize());
       if (itemMult > 0.0 && count < 1) count = 1; // wanted some items → keep at least one
       if (count <= 0) continue;

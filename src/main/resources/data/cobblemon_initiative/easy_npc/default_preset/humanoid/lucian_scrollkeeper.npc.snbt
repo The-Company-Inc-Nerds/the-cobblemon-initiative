@@ -505,6 +505,23 @@
                             Label: "histories_button"
                         },
                         {
+                            Name: "A word, off the record?",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "off_record_offer"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "NOT_EQUALS",
+                                    Name: "off_record_started"
+                                }
+                            ],
+                            Label: "offrec_button"
+                        },
+                        {
                             Name: "Enough for now",
                             Actions: [
                                 {
@@ -524,6 +541,109 @@
                     ],
                     Name: "Lucian Scrollkeeper",
                     Label: "archivist"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Take the ledger satchel",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add off_record_started"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add carrying_ledger"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "scoreboard players set @s obs_count 0"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "title @p actionbar [{\"text\":\"Carry the satchel to Oma at her fence - unseen by the auditors. Break their line of sight with buildings and crouch.\",\"color\":\"yellow\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "take_satchel_button"
+                        },
+                        {
+                            Name: "Not my errand",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "decline_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Lower your voice. The two grey coats in the square are on an observation sweep, and everything they see goes on a file that outlives the seer. Some of what this town does should stay off that file. Nothing illegal. Just neighborly, and quiet."
+                        },
+                        {
+                            Text: "Carry my ledger satchel to Oma at her fence, and do it without a clipboard ever landing its eyes on you. If one does, it is not the end - it is only a line item, and line items can be redacted. But try for clean. Clean is a kind of freedom around here."
+                        }
+                    ],
+                    Name: "Lucian — off the record",
+                    Label: "off_record_offer"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "errand1_done"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "errand2_done"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "errand3_done"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "NOT_EQUALS",
+                            Name: "off_record_complete"
+                        }
+                    ],
+                    Priority: 70,
+                    Buttons: [
+                        {
+                            Name: "Collect - off the record",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:sidequest/off_record/finish"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "collect_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "All three, and the desk in the square is folding its legs. You carried what needed carrying and stood still when standing still was the whole trick. There is a page in my ledger for exactly this kind of work, and unlike theirs, mine forgets on purpose."
+                        },
+                        {
+                            Text: "Here is what the archive owes you. Spend it on something that does not leave a receipt."
+                        }
+                    ],
+                    Name: "Lucian — the quiet ledger",
+                    Label: "off_record_debrief"
                 },
                 {
                     Priority: -1,

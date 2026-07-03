@@ -51,17 +51,22 @@ public class LootChestConfig {
    * Scales the NUMBER of item stacks stocked into a chest, relative to what the
    * loot tables roll. 1.0 = the tables' default count of stacks, 0.5 = half,
    * 0 = none, up to 3.0 = triple (extra stacks come from re-rolling the tables).
-   * Clamped to 0.0..3.0. Default 0.5.
+   * Clamped to 0.0..3.0. Default 1.0 (reads as 1.0× in the config UI). A fixed internal
+   * BASE_LOOT_SCALE in rollLoot keeps the real stack count small — about a third of the
+   * legacy amount — so 1.0× is the neutral knob while chests stay lean; the min-1 floor
+   * guarantees at least one stack. Raise toward 3.0× for fuller chests.
    */
-  private double stackMultiplier = 0.5;
+  private double stackMultiplier = 1.0;
 
   /**
    * Scales the number of ITEMS within each stack, relative to the loot tables'
    * counts. 1.0 = default, 0.5 = half, up to 3.0 — capped at each item's max
    * stack size, so it never spills into extra stacks (independent of the stack
-   * multiplier). Clamped to 0.0..3.0. Default 0.5.
+   * multiplier). Clamped to 0.0..3.0. Default 1.0 (reads as 1.0× in the config UI); the
+   * shared BASE_LOOT_SCALE in rollLoot keeps the real count small and the min-1 floor
+   * keeps each kept stack at about one item by default.
    */
-  private double itemMultiplier = 0.5;
+  private double itemMultiplier = 1.0;
 
   // ── Singleton / lifecycle ─────────────────────────────────────────────────────
 

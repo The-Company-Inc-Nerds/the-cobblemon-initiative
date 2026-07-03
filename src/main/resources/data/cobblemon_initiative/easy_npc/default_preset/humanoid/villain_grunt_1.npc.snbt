@@ -1,12 +1,12 @@
 {
     PresetMetadata: {
         author: "TheCompanyInc",
-        category: "Civilian",
+        category: "Villain",
         created: 0L,
-        description: "civilian at Sango Town (act 1). Compiled from dialog-src.",
+        description: "villain_grunt at Blossom Path — Company Checkpoint (act 1). Compiled from dialog-src.",
         entityTypeId: "easy_npc:humanoid",
         modified: 0L,
-        name: "Oma",
+        name: "Field Agent",
         variantType: "STEVE",
         version: "1.0.0"
     },
@@ -40,184 +40,123 @@
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
-                            Name: "carrying_ledger"
-                        },
-                        {
-                            Type: "PLAYER_TAG",
-                            Operation: "NOT_EQUALS",
-                            Name: "errand1_done"
-                        }
-                    ],
-                    Priority: 45,
-                    Buttons: [
-                        {
-                            Name: "Hand over the satchel, take the basket",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "function cobblemon_initiative:sidequest/off_record/deliver_ledger"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "tag @s add carrying_basket"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "scoreboard players set @s obs_count 0"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    Cmd: "title @p actionbar [{\"text\":\"Carry the bread basket to Sarii by the noticeboard - unseen.\",\"color\":\"yellow\"}]"
-                                },
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "handoff_button"
-                        }
-                    ],
-                    Texts: [
-                        {
-                            Text: "Lucians satchel. And no grey coat on your heel - or if there was, you lost it, which is the same thing to me. Set it here. The less that leaves this fence in writing, the better we all sleep."
-                        },
-                        {
-                            Text: "One more, while you still have the quiet in you. Run this bread basket to Sarii by the noticeboard, same rules. Eyes off you the whole way."
-                        }
-                    ],
-                    Name: "Oma — the satchel",
-                    Label: "off_ledger"
-                },
-                {
-                    Conditions: [
-                        {
-                            Type: "PLAYER_TAG",
-                            Operation: "EQUALS",
-                            Name: "lane_done"
-                        }
-                    ],
-                    Priority: 40,
-                    Buttons: [
-                        {
-                            Name: "Thank her and go",
-                            Actions: [
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "leave_button"
-                        }
-                    ],
-                    Texts: [
-                        {
-                            Text: "Off you go, then. The lane looks after its own, and today that meant you. Come back through any time — a door on this street will always have your name on it, even if the Company files say you have not got one."
-                        },
-                        {
-                            Text: "Mind the notary office on your way. Take the long way past it if your knees are better than mine, which they are."
-                        }
-                    ],
-                    Name: "Oma — the lane remembers",
-                    Label: "done"
-                },
-                {
-                    Conditions: [
-                        {
-                            Type: "PLAYER_TAG",
-                            Operation: "EQUALS",
-                            Name: "delivered_1"
-                        },
-                        {
-                            Type: "PLAYER_TAG",
-                            Operation: "EQUALS",
-                            Name: "delivered_2"
-                        },
-                        {
-                            Type: "PLAYER_TAG",
-                            Operation: "EQUALS",
-                            Name: "delivered_3"
-                        },
-                        {
-                            Type: "PLAYER_TAG",
-                            Operation: "NOT_EQUALS",
-                            Name: "lane_done"
+                            Name: "badges_gte_7"
                         }
                     ],
                     Priority: 30,
                     Buttons: [
                         {
-                            Name: "Accept the care package",
+                            Name: "Face them",
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "give @s cobblemon:potion 3"
+                                    Cmd: "execute if entity @p[tag=defeated_villain_grunt_1] run say We have a file open on you. I do not need a second look. Move along."
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "execute unless entity @p[tag=defeated_villain_grunt_1] run tbcs attach villain_grunt_1 @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "give @s cobblemon:oran_berry 8"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "give @s cobblemon:poke_ball 2"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "give @s minecraft:bread 16"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "cobbledollars add @s 200"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "tag @s add lane_done"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    Cmd: "tellraw @p [{\"text\":\"The lane sends you off with full pockets and Nalia bread. Two hundred CobbleDollars folded in an envelope, no note.\",\"color\":\"gold\"}]"
+                                    Cmd: "execute unless entity @s[tag=defeated_villain_grunt_1] run tbcs battle GEN_9_SINGLES @s vs villain_grunt_1 onwin {1: ['cobbledollars add @1 240', 'tag @1 add defeated_villain_grunt_1', '@2 say Logged as an unscheduled deviation. The outpost keeps a file on faces now. Yours is in it.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 110', '@2 say Asset secured. The Company appreciates your cooperation.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "take_package_button"
+                            Label: "yes_button"
                         }
                     ],
                     Texts: [
                         {
-                            Text: "All three doors, and back before the kettle. Bless you. Now — the neighbors put a little something together while you were about it. Potions from the clinic tin, berries from every windowbox on the lane, a couple of spare balls, and bread. The bread is from Nalia, love. She would not hear of you leaving without it, so I am handing it over on her account. Her hands are full of the professor errands, but her heart came with the loaf."
+                            Text: "That face. It is on the sealed board at the outpost, the one we are not supposed to have seen. The founder, they whisper, back on the roads."
                         },
                         {
-                            Text: "There is a little money folded in besides. Do not argue. Arguing with a widow about money is a fight nobody wins."
+                            Text: "I did not sign up to arrest a ghost. But the scrip clears on Friday, and ghosts do not feed my kids."
                         }
                     ],
-                    Name: "Oma — the care package",
-                    Label: "care_package"
+                    Name: "Grunt — late recognition",
+                    Label: "late"
                 },
                 {
                     Conditions: [
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
-                            Name: "lane_started"
-                        },
-                        {
-                            Type: "PLAYER_TAG",
-                            Operation: "NOT_EQUALS",
-                            Name: "lane_done"
+                            Name: "badges_gte_3"
                         }
                     ],
                     Priority: 20,
                     Buttons: [
                         {
-                            Name: "Back to the round",
+                            Name: "Fight",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "execute if entity @p[tag=defeated_villain_grunt_1] run say We have a file open on you. I do not need a second look. Move along."
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "execute unless entity @p[tag=defeated_villain_grunt_1] run tbcs attach villain_grunt_1 @s"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "execute unless entity @s[tag=defeated_villain_grunt_1] run tbcs battle GEN_9_SINGLES @s vs villain_grunt_1 onwin {1: ['cobbledollars add @1 240', 'tag @1 add defeated_villain_grunt_1', '@2 say Logged as an unscheduled deviation. The outpost keeps a file on faces now. Yours is in it.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 110', '@2 say Asset secured. The Company appreciates your cooperation.']}"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "yes_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Hold on. You match a memo — the redacted kind, black bar where the name goes, do not engage stamped twice."
+                        },
+                        {
+                            Text: "A closed file should not be standing in my checkpoint asking to pass. So I am going to have to open it."
+                        }
+                    ],
+                    Name: "Grunt — mid recognition",
+                    Label: "mid"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "paid_checkpoint_fee"
+                        }
+                    ],
+                    Priority: 16,
+                    Buttons: [
+                        {
+                            Name: "Pick a fight anyway",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "execute if entity @p[tag=defeated_villain_grunt_1] run say We have a file open on you. I do not need a second look. Move along."
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "execute unless entity @p[tag=defeated_villain_grunt_1] run tbcs attach villain_grunt_1 @s"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "execute unless entity @s[tag=defeated_villain_grunt_1] run tbcs battle GEN_9_SINGLES @s vs villain_grunt_1 onwin {1: ['cobbledollars add @1 240', 'tag @1 add defeated_villain_grunt_1', '@2 say Logged as an unscheduled deviation. The outpost keeps a file on faces now. Yours is in it.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 110', '@2 say Asset secured. The Company appreciates your cooperation.']}"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "fight_anyway_button"
+                        },
+                        {
+                            Name: "Move along",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -228,63 +167,97 @@
                     ],
                     Texts: [
                         {
-                            Text: "Still on the round? Three doors, no rush. Sarii by the noticeboard, Kele down at the water, and Dakarai at the end house. They will each have a word for you. Some of the words are worth keeping."
+                            Text: "My colleague already stamped you. Verified in absentia, which is the best kind of verified. Enjoy the route."
                         },
                         {
-                            Text: "You will notice everyone on this lane says the same too-polite sentence about the men in grey. Notice it. That is all I ask. Noticing is free and the Company hates a free thing."
+                            Text: "You are in the system as compliant. I only trouble the ones who are not."
                         }
                     ],
-                    Name: "Oma — three doors",
-                    Label: "in_progress"
+                    Name: "Checkpoint — already verified",
+                    Label: "processed"
                 },
                 {
-                    Conditions: [
-                        {
-                            Type: "PLAYER_TAG",
-                            Operation: "NOT_EQUALS",
-                            Name: "lane_started"
-                        }
-                    ],
-                    Priority: 10,
+                    Priority: 15,
                     Buttons: [
                         {
-                            Name: "Take the basket",
+                            Name: "Settle it here — face them",
                             Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "execute if entity @p[tag=defeated_villain_grunt_1] run say We have a file open on you. I do not need a second look. Move along."
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "execute unless entity @p[tag=defeated_villain_grunt_1] run tbcs attach villain_grunt_1 @s"
+                                },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "tag @s add lane_started"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    Cmd: "title @p actionbar [{\"text\":\"Three doors on Nalia lane: Sarii by the noticeboard, Kele at the water, Dakarai at the end house.\",\"color\":\"yellow\"}]"
+                                    Cmd: "execute unless entity @s[tag=defeated_villain_grunt_1] run tbcs battle GEN_9_SINGLES @s vs villain_grunt_1 onwin {1: ['cobbledollars add @1 240', 'tag @1 add defeated_villain_grunt_1', '@2 say Logged as an unscheduled deviation. The outpost keeps a file on faces now. Yours is in it.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 110', '@2 say Asset secured. The Company appreciates your cooperation.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "take_basket_button"
+                            Label: "refuse_button"
                         },
                         {
-                            Name: "Maybe later",
+                            Name: "Go see the desk",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "decline_button"
+                            Label: "leave_button"
                         }
                     ],
                     Texts: [
                         {
-                            Text: "There you are, up and about. Good. The lane looks after its own, and my knees are done looking after anything past this fence. Do an old woman a turn — run this basket to three doors down the street. Sarii, Kele, and Dakarai. Bread, mostly. A little gossip, unavoidably."
+                            Text: "Far enough. Voluntary verification checkpoint. My colleague at the desk handles the paperwork; I handle the part where you do not stroll past without it."
                         },
                         {
-                            Text: "Come back to me at the west gate when you have. There will be something waiting. There always is, on this lane."
+                            Text: "Pay the man his processing fee, turn back, or settle it with me. Company business, all three."
                         }
                     ],
-                    Name: "Oma at the fence",
-                    Label: "start"
+                    Name: "Checkpoint — the enforcer",
+                    Label: "checkpoint_hail"
+                },
+                {
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "Fight",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "execute if entity @p[tag=defeated_villain_grunt_1] run say We have a file open on you. I do not need a second look. Move along."
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "execute unless entity @p[tag=defeated_villain_grunt_1] run tbcs attach villain_grunt_1 @s"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "execute unless entity @s[tag=defeated_villain_grunt_1] run tbcs battle GEN_9_SINGLES @s vs villain_grunt_1 onwin {1: ['cobbledollars add @1 240', 'tag @1 add defeated_villain_grunt_1', '@2 say Logged as an unscheduled deviation. The outpost keeps a file on faces now. Yours is in it.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 110', '@2 say Asset secured. The Company appreciates your cooperation.']}"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "yes_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Company checkpoint. This stretch is closed for restructuring, and restructuring does not take walk-ups."
+                        },
+                        {
+                            Text: "We can do this the quiet way or the other way. Wait — have we crossed paths before?"
+                        }
+                    ],
+                    Name: "Grunt — early (no recognition)",
+                    Label: "default"
                 }
             ]
         },
@@ -374,26 +347,9 @@
             }
         },
         ObjectiveData: {
-            HasObjectives: 1b,
+            HasObjectives: 0b,
             HasTravelTarget: 0b,
-            ObjectiveDataSet: [
-                {
-                    Type: "LOOK_AT_PLAYER",
-                    Prio: 9,
-                    Id: "ambient_look_player",
-                    LookDistance: 8.0f
-                },
-                {
-                    Type: "LOOK_RANDOM_AROUND",
-                    Prio: 10,
-                    Id: "ambient_look_random"
-                },
-                {
-                    Type: "LOOK_AT_RESET",
-                    Prio: 9,
-                    Id: "ambient_look_reset"
-                }
-            ]
+            ObjectiveDataSet: []
         },
         OnGround: 1b,
         PersistenceRequired: 0b,

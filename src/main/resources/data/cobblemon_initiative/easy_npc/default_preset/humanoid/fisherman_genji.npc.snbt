@@ -1,12 +1,12 @@
 {
     PresetMetadata: {
         author: "TheCompanyInc",
-        category: "Civilian",
+        category: "Quest",
         created: 0L,
-        description: "civilian at Sango Town (act 1). Compiled from dialog-src.",
+        description: "quest_giver at Takehara Falls - Plunge Pool (act 1). Compiled from dialog-src.",
         entityTypeId: "easy_npc:humanoid",
         modified: 0L,
-        name: "Sarii",
+        name: "Fisherman Genji",
         variantType: "STEVE",
         version: "1.0.0"
     },
@@ -40,54 +40,13 @@
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
-                            Name: "carrying_basket"
-                        },
-                        {
-                            Type: "PLAYER_TAG",
-                            Operation: "NOT_EQUALS",
-                            Name: "errand2_done"
+                            Name: "defeated_sq_genji_wager"
                         }
                     ],
-                    Priority: 45,
+                    Priority: 40,
                     Buttons: [
                         {
-                            Name: "Hand over the bread basket",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "function cobblemon_initiative:sidequest/off_record/deliver_basket"
-                                },
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "receive_basket_button"
-                        }
-                    ],
-                    Texts: [
-                        {
-                            Text: "Bread from Oma, and you came the long quiet way around the square - I watched you do it. Set it down. Whatever this is really about, I did not see a thing, which is my favourite thing to see."
-                        },
-                        {
-                            Text: "You are one errand short of whatever Lucian is paying. The last one is backwards: go let the auditors get a good long look at you, reading the poster like the dullest resident alive. Sell them ordinary."
-                        }
-                    ],
-                    Name: "Sarii — the basket",
-                    Label: "off_basket"
-                },
-                {
-                    Conditions: [
-                        {
-                            Type: "PLAYER_TAG",
-                            Operation: "EQUALS",
-                            Name: "delivered_1"
-                        }
-                    ],
-                    Priority: 25,
-                    Buttons: [
-                        {
-                            Name: "You will keep an eye on it",
+                            Name: "Cast a while",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -98,65 +57,99 @@
                     ],
                     Texts: [
                         {
-                            Text: "Thank Oma for the bread. And do me a kindness — next time you pass the noticeboard, check the exchange rate against the one before it. I keep a tally. It keeps coming up one coin short. Only ever short. Never the other way."
+                            Text: "Good cast? I log them, you know. Force of habit. Three nibbles, one keeper, one that got away with my dignity. A cleaner ledger than anything I kept for the Company."
                         },
                         {
-                            Text: "Probably nothing. Rates wander. But they wander downhill so tidily you could set a level by them."
+                            Text: "The river does not restate its earnings. That is why I trust it and not them."
                         }
                     ],
-                    Name: "Sarii — the arithmetic",
-                    Label: "received"
+                    Name: "Genji - line items",
+                    Label: "ledger_flavor"
                 },
                 {
                     Conditions: [
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
-                            Name: "lane_started"
+                            Name: "genji_rod_done"
                         },
                         {
                             Type: "PLAYER_TAG",
                             Operation: "NOT_EQUALS",
-                            Name: "delivered_1"
+                            Name: "defeated_sq_genji_wager"
                         }
                     ],
-                    Priority: 20,
+                    Priority: 30,
                     Buttons: [
                         {
-                            Name: "Hand over the bread",
+                            Name: "Take the wager - 200 CD on the line",
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "tag @s add delivered_1"
+                                    Cmd: "execute if entity @p[tag=defeated_sq_genji_wager] run say One wager a visit. My old heart cannot audit two in a day."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "title @p actionbar [{\"text\":\"One door down. Sarii tallies the noticeboard rates and frowns at the arithmetic.\",\"color\":\"yellow\"}]"
+                                    Cmd: "execute unless entity @p[tag=defeated_sq_genji_wager] run tbcs attach sq_genji_wager @s"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "execute unless entity @s[tag=defeated_sq_genji_wager] run tbcs battle GEN_9_SINGLES @s vs sq_genji_wager onwin {1: ['cobbledollars add @1 200', 'tag @1 add defeated_sq_genji_wager', '@2 say Ha. The river gives, the river takes. Today it gave. Two hundred, fair and audited.'], 2: ['cobbledollars remove @1 200', '@2 say The house keeps the stake. Call it a consulting fee. No hard feelings, and no refunds - I did work for the Company once, after all.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "hand_bread_button"
+                            Label: "wager_button"
+                        },
+                        {
+                            Name: "Not today",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "decline_button"
                         }
                     ],
                     Texts: [
                         {
-                            Text: "Oma sent bread? On a day like this she should keep it. But I will not turn away a neighbor at the door — the lane does not work that way. Set it there, love."
+                            Text: "That rod suit you? Good. Then a proposition, one auditor to a promising asset: a friendly wager. Two hundred CobbleDollars says my two river-dwellers put yours on the bank. Lose and the stake is mine; decline and we stay friends."
                         },
                         {
-                            Text: "While you are here. The rates on this board have been re-verified twice this month, and both times they came up one coin short. I mentioned it to the polite man in grey who does the verifying. He verified that I was mistaken."
+                            Text: "No pressure. The pool is not going anywhere, and neither, apparently, am I."
                         }
                     ],
-                    Name: "Sarii by the noticeboard",
-                    Label: "receive"
+                    Name: "Genji - a friendly audit",
+                    Label: "wager"
                 },
                 {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "NOT_EQUALS",
+                            Name: "genji_rod_done"
+                        }
+                    ],
                     Priority: 10,
                     Buttons: [
                         {
-                            Name: "Move on",
+                            Name: "Hand over 8 string",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:sidequest/genji/turn_in_rod"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "turn_in_button"
+                        },
+                        {
+                            Name: "I will go find some",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -167,13 +160,13 @@
                     ],
                     Texts: [
                         {
-                            Text: "Morning. Mind the noticeboard — half of it is Company revisions now and the other half is missing corners where the revisions used to be. A board that edits itself. Wonderful century."
+                            Text: "Genji. I audited Company ledgers for thirty years, then they made me redundant - their word - by the water. Now I audit the river. It never fails verification."
                         },
                         {
-                            Text: "You have a lost sort of look. Everyone on this lane has decided to be gentle about it. Take that as a welcome."
+                            Text: "My rod lines rotted years back. Bring me eight lengths of string and I will restring two - one for me, one for you. String comes off the spiders on Blossom Path after dark, if you have the nerve for the dark."
                         }
                     ],
-                    Name: "Sarii",
+                    Name: "Fisherman Genji",
                     Label: "default"
                 }
             ]

@@ -37,7 +37,9 @@ public class NuzlockeConfig {
   private boolean enableSafeZones = true;
   private List<SafeZone> safeZones = new ArrayList<>();
   private boolean enableAreaAnnouncements = true;
-  private AnnouncementStyle announcementStyle = AnnouncementStyle.TITLE;
+  // ACTIONBAR by default: a small line above the hotbar ("▶ Zone Name — subtitle"),
+  // not the fullscreen title card. Map Frontiers already shows where you are.
+  private AnnouncementStyle announcementStyle = AnnouncementStyle.ACTIONBAR;
   private int announcementFadeIn = 20;
   private int announcementStay = 70;
   private int announcementFadeOut = 20;

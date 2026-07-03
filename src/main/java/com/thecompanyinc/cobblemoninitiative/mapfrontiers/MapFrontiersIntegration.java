@@ -128,7 +128,10 @@ public final class MapFrontiersIntegration {
         }
 
         setName1.invoke(frontier, zone.name);
-        setName2.invoke(frontier, zone.subtitle != null ? zone.subtitle : "");
+        // Second label line is intentionally left blank: the map shows the zone NAME only
+        // (routes read as e.g. "Blossom Path", not "Route 1"). Subtitles are reserved for
+        // in-game area announcements, which are off by default (Map Frontiers is the map).
+        setName2.invoke(frontier, "");
         setColor.invoke(frontier, parseHexColor(zone.color));
         for (String flag : VISIBILITY_ON) {
           try {

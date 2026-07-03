@@ -56,9 +56,14 @@ Author in batches; each batch unblocks Claude wiring the same day:
      finished 2026-07-03 (the 8 orphaned dialog trees + `personnel_file/*` and
      `noncompliance/*` functions); all sidequest `load`/`tick` entrypoints registered in
      the `#minecraft:load` / `#minecraft:tick` tags.
-   - [ ] **Off the Record** (selected, Sango) is not yet built — needs the `obs_count`
-     stealth loop (`sidequest/off_record/*`), an `off_record` dialog on Oma + Lucian, and
-     its advancement. Oma/Lucian character files already reserve the role.
+   - [x] **Off the Record** (Sango) built 2026-07-03 — `sidequest/off_record/*` stealth
+     loop (obs_count + off_record_blown, auditor-sight tick), Lucian offer/debrief + Oma
+     (errand 1) + Sarii (errand 2) entries; errand 3 + conclusion use the pre-authored
+     auditor dialog. Clean-sweep bonus is a heal_ball + praise line (advancement deferred).
+   - [x] **Out of Office** (Genji, Takehara) built 2026-07-03 — `fisherman_genji` + dialog
+     (8 string → cobblemon:poke_rod + 300 CD via `sidequest/genji/*`) + opt-in 200 CD wager
+     (trainer sq_genji_wager, loss_fee 200).
+   - [ ] **Fair Market Value** — shelved (no spec; cut for now).
    - [ ] 🔍 **Batch smoke-tests** these side quests lean on: `givepokemonother`
      (Kele Magikarp, trades, gifts), `cobbledollars add/remove @s` inside `execute as`,
      the `can_see_player` stealth branches (surveyor/canvasser), `cobblemon:poke_rod` +
@@ -140,7 +145,7 @@ Author in batches; each batch unblocks Claude wiring the same day:
 ### F. Zone-mapper & dev environment 💻
 - [x] Zone-mapper: offline (vendored OpenLayers UMD + polygon-clipping), FARM zone type, per-zone mob-spawning control (`mobsSpawn`), priority-based overlap clipping, route→corridor buffer + retroactive width-adjust
 - [x] mrpack: the 2 new resource packs default-on; BSL shader on by default (`config/iris.properties`); video maxed for the Sodium/Iris stack (graphicsMode kept Fancy — Fabulous breaks Iris)
-- [ ] Capture **max Sodium + BSL shader settings** via `run-client` and bundle `config/sodium-options.json` + `shaderpacks/BSL_v10.1.3.zip.txt` into `mrpack/overrides/` — can't be done headless (needs a display); do on a workstation 🔍
+- [~] **Sodium + BSL settings seeded** (2026-07-03), pending in-game verify 🔍: `config/sodium-options.json` sets Quality → Weather + Leaves = **Fancy**; `shaderpacks/BSL_v10.1.3.zip.txt` sets Material → Advanced Materials = **On** (`ADVANCED_MATERIALS=true`). These are best-effort schema (Sodium 0.6.13 + Reese's/Sodium-Extra key names, and the BSL define name) — confirm they take on a `run-client` session with a display, then capture the full generated files to overwrite these stubs.
 - [x] **run-client fixed** — added `fabric-language-kotlin:1.13.12+kotlin.2.4.0` (Cobblemon's Kotlin runtime/adapter) to `build.gradle.kts`; it was crashing at launch with `NoClassDefFoundError: kotlin/jvm/internal/Intrinsics`. Verified headless: 69 mods + Cobblemon + **all cobblemon-initiative subsystems init**; only the software-GL window step fails in the sandbox. → 🔍 confirm full boot to menu on a real GPU
 - **Known limitation: `gradle runServer` can't host the full companion stack.** Cobblemon's production jar does intermediary-name reflection (`class_2960`) that can't resolve in a mojmap dev server, and JourneyMap additionally wants its separate API jar. night-config 3.8.1 was added as a dev runtime dep (fixed one layer). Consequence: datapack runtime verification (liberation/granary functions, shop→granary lockstep) is 🔍 in-game via run-client, not headless.
 - [ ] *(mod)* `mobsSpawn` per-zone flag — verify in-game a `Spawn freely` FARM/ROUTE zone actually keeps spawns while a town suppresses 🔍
