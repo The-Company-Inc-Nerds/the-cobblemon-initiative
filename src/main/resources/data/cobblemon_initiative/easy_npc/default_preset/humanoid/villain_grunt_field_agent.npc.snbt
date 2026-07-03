@@ -3,7 +3,7 @@
         author: "TheCompanyInc",
         category: "Villain",
         created: 0L,
-        description: "villain_grunt at Company Outpost (act 1). Compiled from dialog-src.",
+        description: "villain_grunt at Blossom Path — Company Checkpoint (act 1). Compiled from dialog-src.",
         entityTypeId: "easy_npc:humanoid",
         modified: 0L,
         name: "Field Agent",
@@ -16,6 +16,12 @@
                 ON_INTERACTION: [
                     {
                         Type: "OPEN_DEFAULT_DIALOG"
+                    }
+                ],
+                ON_DISTANCE_NEAR: [
+                    {
+                        Type: "OPEN_NAMED_DIALOG",
+                        Cmd: "overheard_memo"
                     }
                 ]
             }
@@ -59,7 +65,7 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @s[tag=defeated_villain_grunt_1] run tbcs battle GEN_9_SINGLES @s vs villain_grunt_1 onwin {1: ['cobbledollars add @1 150', 'tag @1 add defeated_villain_grunt_1', '@2 say This goes in my performance review, does it not.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 100', '@2 say Asset recovered. The Company thanks you.']}"
+                                    Cmd: "execute unless entity @s[tag=defeated_villain_grunt_1] run tbcs battle GEN_9_SINGLES @s vs villain_grunt_1 onwin {1: ['cobbledollars add @1 230', 'tag @1 add defeated_villain_grunt_1', '@2 say This goes in my performance review, does it not.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 100', '@2 say Asset recovered. The Company thanks you.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -103,7 +109,7 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @s[tag=defeated_villain_grunt_1] run tbcs battle GEN_9_SINGLES @s vs villain_grunt_1 onwin {1: ['cobbledollars add @1 150', 'tag @1 add defeated_villain_grunt_1', '@2 say This goes in my performance review, does it not.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 100', '@2 say Asset recovered. The Company thanks you.']}"
+                                    Cmd: "execute unless entity @s[tag=defeated_villain_grunt_1] run tbcs battle GEN_9_SINGLES @s vs villain_grunt_1 onwin {1: ['cobbledollars add @1 230', 'tag @1 add defeated_villain_grunt_1', '@2 say This goes in my performance review, does it not.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 100', '@2 say Asset recovered. The Company thanks you.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -124,6 +130,457 @@
                     Label: "mid"
                 },
                 {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "carrying_dead_letter"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "NOT_EQUALS",
+                            Name: "paid_handling_fee"
+                        }
+                    ],
+                    Priority: 18,
+                    Buttons: [
+                        {
+                            Name: "Hand over the letter",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:sidequest/memo/surrender_letter"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "surrender_button"
+                        },
+                        {
+                            Name: "Pay the 250 CD handling fee",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobbledollars remove @s 250"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add paid_handling_fee"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "title @p actionbar [{\"text\":\"Handling fee logged. The letter remains your liability. The Company thanks you for participating in commerce.\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "handling_fee_button"
+                        },
+                        {
+                            Name: "Refuse and face the agent",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "execute if entity @p[tag=defeated_villain_grunt_1] run say I already filed the incident report. Move along."
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "execute unless entity @p[tag=defeated_villain_grunt_1] run tbcs attach villain_grunt_1 @s"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "execute unless entity @s[tag=defeated_villain_grunt_1] run tbcs battle GEN_9_SINGLES @s vs villain_grunt_1 onwin {1: ['cobbledollars add @1 230', 'tag @1 add defeated_villain_grunt_1', '@2 say This goes in my performance review, does it not.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 100', '@2 say Asset recovered. The Company thanks you.']}"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "refuse_button"
+                        },
+                        {
+                            Name: "Step back",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "back_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Hold. The scanner says you are transporting unverified correspondence. Article nine — private mail moves on Company rails or it does not move. Surrender the item, pay the handling fee, or decline processing and accept the consequences of commerce."
+                        }
+                    ],
+                    Name: "Checkpoint — unverified mail",
+                    Label: "contraband"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "paid_checkpoint_fee"
+                        }
+                    ],
+                    Priority: 16,
+                    Buttons: [
+                        {
+                            Name: "Pick a fight anyway",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "execute if entity @p[tag=defeated_villain_grunt_1] run say I already filed the incident report. Move along."
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "execute unless entity @p[tag=defeated_villain_grunt_1] run tbcs attach villain_grunt_1 @s"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "execute unless entity @s[tag=defeated_villain_grunt_1] run tbcs battle GEN_9_SINGLES @s vs villain_grunt_1 onwin {1: ['cobbledollars add @1 230', 'tag @1 add defeated_villain_grunt_1', '@2 say This goes in my performance review, does it not.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 100', '@2 say Asset recovered. The Company thanks you.']}"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "fight_anyway_button"
+                        },
+                        {
+                            Name: "Move along",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Processing complete. Your compliance has been rated appreciated. Move along before the rating changes."
+                        },
+                        {
+                            Text: "Verified trust, verified value. You are free to proceed. The Company thanks Sango for its continued trust."
+                        }
+                    ],
+                    Name: "Checkpoint — processed",
+                    Label: "processed"
+                },
+                {
+                    Priority: 15,
+                    Buttons: [
+                        {
+                            Name: "Ask what is being verified",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "verify_desk"
+                                }
+                            ],
+                            Label: "about_button"
+                        },
+                        {
+                            Name: "Pay the 120 CD processing fee",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobbledollars remove @s 120"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add paid_checkpoint_fee"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "title @p actionbar [{\"text\":\"Expedited processing fee received. You have been verified in absentia.\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "NOT_EQUALS",
+                                    Name: "paid_checkpoint_fee"
+                                }
+                            ],
+                            Label: "fee_button"
+                        },
+                        {
+                            Name: "Decline verification and face them",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "execute if entity @p[tag=defeated_villain_grunt_1] run say I already filed the incident report. Move along."
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "execute unless entity @p[tag=defeated_villain_grunt_1] run tbcs attach villain_grunt_1 @s"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "execute unless entity @s[tag=defeated_villain_grunt_1] run tbcs battle GEN_9_SINGLES @s vs villain_grunt_1 onwin {1: ['cobbledollars add @1 230', 'tag @1 add defeated_villain_grunt_1', '@2 say This goes in my performance review, does it not.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 100', '@2 say Asset recovered. The Company thanks you.']}"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "refuse_button"
+                        },
+                        {
+                            Name: "Walk away",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Good afternoon, traveler. This is a voluntary verification checkpoint. Verified trust, verified value. Step to the table and we will confirm you exist in under a minute."
+                        },
+                        {
+                            Text: "Welcome to the Blossom Path service point. Verification is voluntary. Compliance is appreciated. Refusal is also processed — differently."
+                        }
+                    ],
+                    Name: "Checkpoint — the hail",
+                    Label: "checkpoint_hail"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Pay the 120 CD processing fee",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobbledollars remove @s 120"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add paid_checkpoint_fee"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "title @p actionbar [{\"text\":\"Expedited processing fee received. You have been verified in absentia.\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "NOT_EQUALS",
+                                    Name: "paid_checkpoint_fee"
+                                }
+                            ],
+                            Label: "fee_button"
+                        },
+                        {
+                            Name: "Decline verification and face them",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "execute if entity @p[tag=defeated_villain_grunt_1] run say I already filed the incident report. Move along."
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "execute unless entity @p[tag=defeated_villain_grunt_1] run tbcs attach villain_grunt_1 @s"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "execute unless entity @s[tag=defeated_villain_grunt_1] run tbcs battle GEN_9_SINGLES @s vs villain_grunt_1 onwin {1: ['cobbledollars add @1 230', 'tag @1 add defeated_villain_grunt_1', '@2 say This goes in my performance review, does it not.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 100', '@2 say Asset recovered. The Company thanks you.']}"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "refuse_button"
+                        },
+                        {
+                            Name: "Step back",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Identity, itinerary, and intent. Three boxes. Most people clear all three. Although — between us — the new database is missing rows this week. Walk-ins with faces the file room swears it has seen and the system swears it has not. Head office says that is normal. Head office says a lot of things are normal."
+                        }
+                    ],
+                    Name: "Checkpoint — the desk",
+                    Label: "verify_desk"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "memo_loiter"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "NOT_EQUALS",
+                            Name: "memo_heard"
+                        }
+                    ],
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Keep listening",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "overheard_two"
+                                }
+                            ],
+                            Label: "listen_button"
+                        },
+                        {
+                            Name: "Slip away",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "slip_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Two voices behind the canvas. The first reads slowly, the way people read a thing twice. Keep your voice down. New directive — Memo 44-C. Some walk-in wearing a face from the old company. Head office wants it verified twice and reported once."
+                        }
+                    ],
+                    Name: "Overheard — Memo 44-C",
+                    Label: "overheard_memo"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "memo_loiter"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "NOT_EQUALS",
+                            Name: "memo_heard"
+                        }
+                    ],
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Keep listening",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "overheard_three"
+                                }
+                            ],
+                            Label: "listen_button"
+                        },
+                        {
+                            Name: "Slip away",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "slip_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The second voice does not laugh. It says the photo matched something in the deep records — and the row was gone by morning. Someone above them is deleting faster than the field can file."
+                        }
+                    ],
+                    Name: "Overheard — the missing row",
+                    Label: "overheard_two"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "memo_loiter"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "NOT_EQUALS",
+                            Name: "memo_heard"
+                        }
+                    ],
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Lift Memo 44-C from the dispatch tray",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "loot give @s loot cobblemon_initiative:npc_gift/memo_44c"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add memo_heard"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s remove memo_loiter"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "tellraw @p [{\"text\":\"Memo 44-C secured. The checkpoint has not noticed. Lucian the archivist will want this.\",\"color\":\"gold\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "take_memo_button"
+                        },
+                        {
+                            Name: "Slip away empty-handed",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "slip_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "A page turns. The first voice reads the closing line flat, like weather. Reminder from head office — there was never a founder. Distribution ends. Destroy after reading. The memo sits in the dispatch tray, one arm-length from the flap."
+                        }
+                    ],
+                    Name: "Overheard — the closing line",
+                    Label: "overheard_three"
+                },
+                {
                     Priority: 10,
                     Buttons: [
                         {
@@ -140,7 +597,7 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @s[tag=defeated_villain_grunt_1] run tbcs battle GEN_9_SINGLES @s vs villain_grunt_1 onwin {1: ['cobbledollars add @1 150', 'tag @1 add defeated_villain_grunt_1', '@2 say This goes in my performance review, does it not.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 100', '@2 say Asset recovered. The Company thanks you.']}"
+                                    Cmd: "execute unless entity @s[tag=defeated_villain_grunt_1] run tbcs battle GEN_9_SINGLES @s vs villain_grunt_1 onwin {1: ['cobbledollars add @1 230', 'tag @1 add defeated_villain_grunt_1', '@2 say This goes in my performance review, does it not.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 100', '@2 say Asset recovered. The Company thanks you.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

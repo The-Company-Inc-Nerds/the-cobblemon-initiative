@@ -15,6 +15,73 @@
             ActionEventSet: {
                 ON_INTERACTION: [
                     {
+                        Type: "COMMAND",
+                        ExecAsUser: 1b,
+                        Conditions: [
+                            {
+                                Type: "PLAYER_TAG",
+                                Operation: "EQUALS",
+                                Name: "census_refused"
+                            },
+                            {
+                                Type: "PLAYER_TAG",
+                                Operation: "NOT_EQUALS",
+                                Name: "sentinel_kit"
+                            }
+                        ],
+                        Cmd: "give @s cobblemon:potion 2"
+                    },
+                    {
+                        Type: "COMMAND",
+                        ExecAsUser: 1b,
+                        Conditions: [
+                            {
+                                Type: "PLAYER_TAG",
+                                Operation: "EQUALS",
+                                Name: "census_refused"
+                            },
+                            {
+                                Type: "PLAYER_TAG",
+                                Operation: "NOT_EQUALS",
+                                Name: "sentinel_kit"
+                            }
+                        ],
+                        Cmd: "give @s cobblemon:antidote 1"
+                    },
+                    {
+                        Type: "COMMAND",
+                        Conditions: [
+                            {
+                                Type: "PLAYER_TAG",
+                                Operation: "EQUALS",
+                                Name: "census_refused"
+                            },
+                            {
+                                Type: "PLAYER_TAG",
+                                Operation: "NOT_EQUALS",
+                                Name: "sentinel_kit"
+                            }
+                        ],
+                        Cmd: "tellraw @p [{\"text\":\"Elder Sentinel presses a worn field kit into your hands. The old town does not sign.\",\"color\":\"gray\"}]"
+                    },
+                    {
+                        Type: "COMMAND",
+                        ExecAsUser: 1b,
+                        Conditions: [
+                            {
+                                Type: "PLAYER_TAG",
+                                Operation: "EQUALS",
+                                Name: "census_refused"
+                            },
+                            {
+                                Type: "PLAYER_TAG",
+                                Operation: "NOT_EQUALS",
+                                Name: "sentinel_kit"
+                            }
+                        ],
+                        Cmd: "tag @s add sentinel_kit"
+                    },
+                    {
                         Type: "OPEN_DEFAULT_DIALOG"
                     }
                 ]

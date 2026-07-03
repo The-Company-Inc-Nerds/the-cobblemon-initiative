@@ -3,7 +3,7 @@
         author: "TheCompanyInc",
         category: "Villain",
         created: 0L,
-        description: "villain_grunt at Company Outpost (act 1). Compiled from dialog-src.",
+        description: "villain_grunt at Blossom Path — Company Checkpoint (act 1). Compiled from dialog-src.",
         entityTypeId: "easy_npc:humanoid",
         modified: 0L,
         name: "Field Agent",
@@ -59,7 +59,7 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @s[tag=defeated_villain_grunt_2] run tbcs battle GEN_9_SINGLES @s vs villain_grunt_2 onwin {1: ['cobbledollars add @1 170', 'tag @1 add defeated_villain_grunt_2', '@2 say Logged as an unscheduled deviation. The outpost will note your face.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 110', '@2 say Asset secured. The Company appreciates your cooperation.']}"
+                                    Cmd: "execute unless entity @s[tag=defeated_villain_grunt_2] run tbcs battle GEN_9_SINGLES @s vs villain_grunt_2 onwin {1: ['cobbledollars add @1 240', 'tag @1 add defeated_villain_grunt_2', '@2 say Logged as an unscheduled deviation. The outpost will note your face.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 110', '@2 say Asset secured. The Company appreciates your cooperation.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -103,7 +103,7 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @s[tag=defeated_villain_grunt_2] run tbcs battle GEN_9_SINGLES @s vs villain_grunt_2 onwin {1: ['cobbledollars add @1 170', 'tag @1 add defeated_villain_grunt_2', '@2 say Logged as an unscheduled deviation. The outpost will note your face.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 110', '@2 say Asset secured. The Company appreciates your cooperation.']}"
+                                    Cmd: "execute unless entity @s[tag=defeated_villain_grunt_2] run tbcs battle GEN_9_SINGLES @s vs villain_grunt_2 onwin {1: ['cobbledollars add @1 240', 'tag @1 add defeated_villain_grunt_2', '@2 say Logged as an unscheduled deviation. The outpost will note your face.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 110', '@2 say Asset secured. The Company appreciates your cooperation.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -124,6 +124,227 @@
                     Label: "mid"
                 },
                 {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "carrying_dead_letter"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "NOT_EQUALS",
+                            Name: "paid_handling_fee"
+                        }
+                    ],
+                    Priority: 18,
+                    Buttons: [
+                        {
+                            Name: "Hand over the letter",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:sidequest/memo/surrender_letter"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "surrender_button"
+                        },
+                        {
+                            Name: "Pay the 250 CD handling fee",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobbledollars remove @s 250"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add paid_handling_fee"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "title @p actionbar [{\"text\":\"Handling fee logged. The letter remains your liability. The Company thanks you for participating in commerce.\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "handling_fee_button"
+                        },
+                        {
+                            Name: "Refuse and face the agent",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "execute if entity @p[tag=defeated_villain_grunt_2] run say We have a file open on you now. I do not need a second look. Move along."
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "execute unless entity @p[tag=defeated_villain_grunt_2] run tbcs attach villain_grunt_2 @s"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "execute unless entity @s[tag=defeated_villain_grunt_2] run tbcs battle GEN_9_SINGLES @s vs villain_grunt_2 onwin {1: ['cobbledollars add @1 240', 'tag @1 add defeated_villain_grunt_2', '@2 say Logged as an unscheduled deviation. The outpost will note your face.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 110', '@2 say Asset secured. The Company appreciates your cooperation.']}"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "refuse_button"
+                        },
+                        {
+                            Name: "Step back",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "back_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "One moment. That is mail, and you are not a rail. Unverified correspondence is a category two irregularity. Surrender it, pay handling, or decline processing — your call, officially."
+                        }
+                    ],
+                    Name: "Checkpoint — unverified mail",
+                    Label: "contraband"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "paid_checkpoint_fee"
+                        }
+                    ],
+                    Priority: 16,
+                    Buttons: [
+                        {
+                            Name: "Pick a fight anyway",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "execute if entity @p[tag=defeated_villain_grunt_2] run say We have a file open on you now. I do not need a second look. Move along."
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "execute unless entity @p[tag=defeated_villain_grunt_2] run tbcs attach villain_grunt_2 @s"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "execute unless entity @s[tag=defeated_villain_grunt_2] run tbcs battle GEN_9_SINGLES @s vs villain_grunt_2 onwin {1: ['cobbledollars add @1 240', 'tag @1 add defeated_villain_grunt_2', '@2 say Logged as an unscheduled deviation. The outpost will note your face.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 110', '@2 say Asset secured. The Company appreciates your cooperation.']}"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "fight_anyway_button"
+                        },
+                        {
+                            Name: "Move along",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "You are in the system as compliant. Enjoy the route. Routes are a Company courtesy."
+                        },
+                        {
+                            Text: "Verified. Appreciated. Processed. Three of the nicest words in the language."
+                        }
+                    ],
+                    Name: "Checkpoint — processed",
+                    Label: "processed"
+                },
+                {
+                    Priority: 15,
+                    Buttons: [
+                        {
+                            Name: "Pay the 120 CD processing fee",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobbledollars remove @s 120"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add paid_checkpoint_fee"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "title @p actionbar [{\"text\":\"Expedited processing fee received. You have been verified in absentia.\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "NOT_EQUALS",
+                                    Name: "paid_checkpoint_fee"
+                                }
+                            ],
+                            Label: "fee_button"
+                        },
+                        {
+                            Name: "Decline verification and face them",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "execute if entity @p[tag=defeated_villain_grunt_2] run say We have a file open on you now. I do not need a second look. Move along."
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "execute unless entity @p[tag=defeated_villain_grunt_2] run tbcs attach villain_grunt_2 @s"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "execute unless entity @s[tag=defeated_villain_grunt_2] run tbcs battle GEN_9_SINGLES @s vs villain_grunt_2 onwin {1: ['cobbledollars add @1 240', 'tag @1 add defeated_villain_grunt_2', '@2 say Logged as an unscheduled deviation. The outpost will note your face.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 110', '@2 say Asset secured. The Company appreciates your cooperation.']}"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "refuse_button"
+                        },
+                        {
+                            Name: "Walk away",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Step lively. Voluntary verification — the good kind of voluntary, where everyone volunteers."
+                        },
+                        {
+                            Text: "Blossom Path service point. We verify trust and we verify value. You look like you carry at least one of those."
+                        }
+                    ],
+                    Name: "Checkpoint — the hail",
+                    Label: "checkpoint_hail"
+                },
+                {
                     Priority: 10,
                     Buttons: [
                         {
@@ -140,7 +361,7 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @s[tag=defeated_villain_grunt_2] run tbcs battle GEN_9_SINGLES @s vs villain_grunt_2 onwin {1: ['cobbledollars add @1 170', 'tag @1 add defeated_villain_grunt_2', '@2 say Logged as an unscheduled deviation. The outpost will note your face.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 110', '@2 say Asset secured. The Company appreciates your cooperation.']}"
+                                    Cmd: "execute unless entity @s[tag=defeated_villain_grunt_2] run tbcs battle GEN_9_SINGLES @s vs villain_grunt_2 onwin {1: ['cobbledollars add @1 240', 'tag @1 add defeated_villain_grunt_2', '@2 say Logged as an unscheduled deviation. The outpost will note your face.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 110', '@2 say Asset secured. The Company appreciates your cooperation.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

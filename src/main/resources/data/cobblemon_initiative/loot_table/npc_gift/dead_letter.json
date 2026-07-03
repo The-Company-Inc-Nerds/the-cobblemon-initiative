@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:chest",
+  "_comment": "No Such Recipient — Uncle Marlows dead letter (renamed paper prop). Name is kept short and exact because sidequest/memo/surrender_letter clears it by custom_name component predicate; if the name here changes, update that function to match.",
+  "pools": [
+    {
+      "name": "letter",
+      "rolls": 1,
+      "bonus_rolls": 0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:paper",
+          "functions": [
+            {
+              "function": "minecraft:set_name",
+              "name": { "text": "Dead Letter", "color": "gold", "italic": false }
+            },
+            {
+              "function": "minecraft:set_lore",
+              "lore": [
+                { "text": "RETURN TO SENDER — NO SUCH RECIPIENT", "color": "red", "italic": false },
+                { "text": "ADDRESSEE: RECORD EXPUNGED", "color": "dark_red", "italic": false },
+                { "text": "Carried by U. Marlow — 31 years, Sango route", "color": "gray", "italic": true }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

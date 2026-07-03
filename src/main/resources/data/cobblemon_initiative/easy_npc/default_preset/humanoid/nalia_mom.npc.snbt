@@ -33,7 +33,7 @@
         CanPickUpLoot: 0b,
         CustomNameVisible: 1b,
         DialogData: {
-            Type: "BASIC",
+            Type: "STANDARD",
             DialogDataSet: [
                 {
                     Conditions: [
@@ -109,7 +109,110 @@
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
-                            Name: "met_mom"
+                            Name: "got_pokedex"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "NOT_EQUALS",
+                            Name: "got_running_shoes"
+                        }
+                    ],
+                    Priority: 28,
+                    Buttons: [
+                        {
+                            Name: "Take the Running Shoes",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "loot give @s loot cobblemon_initiative:npc_gift/running_shoes"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add got_running_shoes"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "title @p actionbar [{\"text\":\"Received the Running Shoes. The road to Takehara Falls is west.\"}]"
+                                },
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "send_off"
+                                }
+                            ],
+                            Label: "take_shoes_button"
+                        },
+                        {
+                            Name: "Not just yet",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "moment_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "A Pokedex. So it is official — you are really going. Then you will take these too. They have been sitting by the door for as long as I care to admit, waiting for the day you finally went."
+                        }
+                    ],
+                    Name: "Nalia — the running shoes",
+                    Label: "pokedex_return"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "I will be back",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "promise_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "They fit. Of course they fit — I guessed. Go on then. West along the Blossom Path, and do not let those bug catchers talk you into anything. Come back and see me between badges. I mean it."
+                        }
+                    ],
+                    Name: "Nalia — the send-off",
+                    Label: "send_off"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "mom_sent_to_lab"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "NOT_EQUALS",
+                            Name: "got_pokedex"
+                        }
+                    ],
+                    Priority: 26,
+                    Texts: [
+                        {
+                            Text: "Still here? The lab is just up the way. Acacia does not bite — she has been waiting for you to wake properly."
+                        },
+                        {
+                            Text: "Those grey-suited ones came by once more while you slept. I told them I had never seen you. I am not sure they believed me. Go and see Acacia — I feel better with you looked after."
+                        }
+                    ],
+                    Name: "Nalia — go see Acacia",
+                    Label: "lab_nudge"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "got_running_shoes"
                         }
                     ],
                     Priority: 20,
@@ -126,16 +229,64 @@
                 },
                 {
                     Priority: 10,
-                    Texts: [
+                    Buttons: [
                         {
-                            Text: "There you are. I have been worried sick — you walked out without a word."
+                            Name: "I am ready to do something",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "go_to_lab"
+                                }
+                            ],
+                            Label: "ready_button"
                         },
                         {
-                            Text: "People in grey suits have been by the house, asking after you by name. They knew things they should not. Promise me you will be careful out there."
+                            Name: "Give me a moment",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "moment_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "There you are — up and on your feet at last. I have been worried sick since they carried you in. Let me look at you. Good. You look like you again."
                         }
                     ],
                     Name: "First Meeting",
                     Label: "default"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "I will. On my way",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add mom_sent_to_lab"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "title @p actionbar [{\"text\":\"Visit Professor Acacia at the Sango lab.\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "on_my_way_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Then start at the lab. Professor Acacia looked you over when they found you on the road — she has been waiting for you to wake properly. Go and choose yourself a partner. And be careful out there. People in grey suits have been by the house, asking after you by name. They knew things they should not."
+                        }
+                    ],
+                    Name: "Nalia — go to the lab",
+                    Label: "go_to_lab"
                 }
             ]
         },

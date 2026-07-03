@@ -36,6 +36,47 @@
             Type: "CUSTOM",
             DialogDataSet: [
                 {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "got_pokedex"
+                        }
+                    ],
+                    Priority: 15,
+                    Buttons: [
+                        {
+                            Name: "Who were the people who found me?",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "the_strangers"
+                                }
+                            ],
+                            Label: "ask_button"
+                        },
+                        {
+                            Name: "I will keep filling it",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "How is the Pokedex coming along? Slowly, I imagine. Good. The slow records are the honest ones."
+                        },
+                        {
+                            Text: "Your mother will want to see that Pokedex before you leave town. Go and show her. She waited longer than you know."
+                        }
+                    ],
+                    Name: "Acacia — records matter",
+                    Label: "post_pokedex"
+                },
+                {
                     Priority: 10,
                     Buttons: [
                         {
@@ -47,10 +88,51 @@
                                     Cmd: "openstarterscreen @p"
                                 },
                                 {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add chose_starter"
+                                },
+                                {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
                             Label: "starter_button"
+                        },
+                        {
+                            Name: "Take the Pokedex",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "give @s cobblemon:pokedex_red"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add got_pokedex"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "title @p actionbar [{\"text\":\"Received the Pokedex. Fill it out.\"}]"
+                                },
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "pokedex_words"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "chose_starter"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "NOT_EQUALS",
+                                    Name: "got_pokedex"
+                                }
+                            ],
+                            Label: "pokedex_button"
                         },
                         {
                             Name: "Who were the people who found me?",
@@ -82,6 +164,27 @@
                     ],
                     Name: "Professor Greeting",
                     Label: "default"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "I will fill it out",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "back_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "It is a recorder. Every creature you meet, it remembers — whether or not anyone else does. I find that records matter more than they used to around here. Fill it out. And show your mother before you go — she will pretend she is not proud, and she will be lying."
+                        }
+                    ],
+                    Name: "The Pokedex",
+                    Label: "pokedex_words"
                 },
                 {
                     Priority: -1,

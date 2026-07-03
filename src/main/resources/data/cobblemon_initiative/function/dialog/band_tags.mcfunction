@@ -4,8 +4,14 @@
 # (badges/cd_instability/fields_liberated/recognition) are lowered to these tags.
 # Single-player: @a == the player; idempotent add/remove keeps it relog-safe.
 
+execute as @a if score @s memory_fragment matches 1.. run tag @s add badges_gte_1
+execute as @a unless score @s memory_fragment matches 1.. run tag @s remove badges_gte_1
+
 execute as @a if score @s memory_fragment matches 10.. run tag @s add badges_gte_10
 execute as @a unless score @s memory_fragment matches 10.. run tag @s remove badges_gte_10
+
+execute as @a if score @s memory_fragment matches 2.. run tag @s add badges_gte_2
+execute as @a unless score @s memory_fragment matches 2.. run tag @s remove badges_gte_2
 
 execute as @a if score @s memory_fragment matches 3.. run tag @s add badges_gte_3
 execute as @a unless score @s memory_fragment matches 3.. run tag @s remove badges_gte_3
@@ -18,6 +24,9 @@ execute as @a unless score @s memory_fragment matches 7.. run tag @s remove badg
 
 execute as @a if score @s cd_instability matches 40.. run tag @s add cd_instability_gte_40
 execute as @a unless score @s cd_instability matches 40.. run tag @s remove cd_instability_gte_40
+
+execute as @a if score @s ci_notices matches 3.. run tag @s add ci_notices_gte_3
+execute as @a unless score @s ci_notices matches 3.. run tag @s remove ci_notices_gte_3
 
 execute as @a if score @s fields_liberated matches 2.. run tag @s add fields_liberated_gte_2
 execute as @a unless score @s fields_liberated matches 2.. run tag @s remove fields_liberated_gte_2

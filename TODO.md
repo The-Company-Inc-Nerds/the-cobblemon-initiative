@@ -45,6 +45,24 @@ Author in batches; each batch unblocks Claude wiring the same day:
 3. **NPC placement waves**: wheat traders + Granary keeper (record UUID!) → archivist +
    civilians (Nalia is placed; rumor mill/propaganda use the scrubbing register) →
    villains act-by-act (grunts → management → DJ → Board/Founder). *(§1.A)*
+4. **Act 1 side-quest cast** (Sango / Blossom Path / Takehara / Gym 1) — the full
+   `dialog-src` layer is authored + compiled (106 chars, 0 errors); every side-quest NPC
+   has a preset in `default_preset/humanoid/`. Remaining is pure placement + UUID mapping
+   (record each UUID → re-run `content_compile` → `update_npc_presets`), then `npcsight add`
+   for the sight NPCs (surveyor `surveyor` tag, canvasser `ci_canvasser` tag, perf-review
+   sentries `takehara_sentry`, checkpoint agents `checkpoint_agent`). See
+   `docs/QUEST_OPTIONS_TOWNS_1-2.md` Status for the selected list.
+   - [x] **The Incomplete File / The Lane Looks After Its Own / Notice of Non-Compliance**
+     finished 2026-07-03 (the 8 orphaned dialog trees + `personnel_file/*` and
+     `noncompliance/*` functions); all sidequest `load`/`tick` entrypoints registered in
+     the `#minecraft:load` / `#minecraft:tick` tags.
+   - [ ] **Off the Record** (selected, Sango) is not yet built — needs the `obs_count`
+     stealth loop (`sidequest/off_record/*`), an `off_record` dialog on Oma + Lucian, and
+     its advancement. Oma/Lucian character files already reserve the role.
+   - [ ] 🔍 **Batch smoke-tests** these side quests lean on: `givepokemonother`
+     (Kele Magikarp, trades, gifts), `cobbledollars add/remove @s` inside `execute as`,
+     the `can_see_player` stealth branches (surveyor/canvasser), `cobblemon:poke_rod` +
+     fossil item ids, renamed `writable_book`/`paper` component shape.
 
 ### Phase 2 — Wiring on authoring output 💻 (Claude; fast turnaround per batch)
 - Field guards: per-field `command` rewards firing `liberation/free_field {field:"<id>"}`;

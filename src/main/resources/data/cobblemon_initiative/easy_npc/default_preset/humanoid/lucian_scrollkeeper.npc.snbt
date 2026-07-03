@@ -3,7 +3,7 @@
         author: "TheCompanyInc",
         category: "Civilian",
         created: 0L,
-        description: "lore_keeper at Royal League (act 3). Compiled from dialog-src.",
+        description: "lore_keeper at Sango Town (act 1). Compiled from dialog-src.",
         entityTypeId: "easy_npc:humanoid",
         modified: 0L,
         name: "Lucian Scrollkeeper",
@@ -36,7 +36,497 @@
             Type: "CUSTOM",
             DialogDataSet: [
                 {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "carrying_dead_letter"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "NOT_EQUALS",
+                            Name: "letter_delivered"
+                        }
+                    ],
+                    Priority: 72,
+                    Buttons: [
+                        {
+                            Name: "Deliver the dead letter",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/payout {amount:300}"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add letter_delivered"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s remove carrying_dead_letter"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "tellraw @p [{\"text\":\"Lucian goes quiet, files the letter under F, and pays a finders fee without saying why. Marlow should hear it arrived.\",\"color\":\"gold\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "deliver_letter_button"
+                        },
+                        {
+                            Name: "Keep it a while longer",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "keep_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "A dead letter. Return to sender, no such recipient. Addressee — record expunged. I have shelved wars with smaller labels than that. Marlow kept this in his bag? Of course he did. Couriers are the last honest database."
+                        }
+                    ],
+                    Name: "Lucian — the dead letter",
+                    Label: "letter_turn_in"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "memo_heard"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "NOT_EQUALS",
+                            Name: "memo_delivered"
+                        }
+                    ],
+                    Priority: 71,
+                    Buttons: [
+                        {
+                            Name: "Hand over Memo 44-C",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/payout {amount:400}"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "give @s cobblemon:super_potion 2"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add memo_delivered"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "tellraw @p [{\"text\":\"Lucian files Memo 44-C without reading it twice. The file is incomplete — but growing.\",\"color\":\"gold\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "hand_memo_button"
+                        },
+                        {
+                            Name: "Keep it for now",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "keep_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "You are carrying Company paper. Internal distribution, forty-four stroke C. Hand it here — slowly. Documents that insist there was never a founder are my favourite kind. Insistence is a fingerprint."
+                        }
+                    ],
+                    Name: "Lucian — Memo 44-C",
+                    Label: "memo_turn_in"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "defeated_villain_boss"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "notices_filed"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "NOT_EQUALS",
+                            Name: "file_refiled"
+                        }
+                    ],
+                    Priority: 60,
+                    Buttons: [
+                        {
+                            Name: "Let him close the file",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:sidequest/personnel_file/refile"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "close_file_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "You came back. Good. I have laid all of it out — the portrait backing, the ledger, the charter, the notices. Read together they make one document, and the document has a shape where a name should be. The reassembly renders it as static. Every pass, static."
+                        },
+                        {
+                            Text: "So I will say what the file says. This record was not lost. It was retired. No — that is wrong too. There was never a record. That is the sentence they wrote over the sentence that used to be here. Sit down. Let me close the file properly, and pay what the archive owes you for finishing its work."
+                        }
+                    ],
+                    Name: "Lucian — the record reassembled",
+                    Label: "stage3"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "NOT_EQUALS",
+                            Name: "notices_filed"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "ci_notices_gte_3"
+                        }
+                    ],
+                    Priority: 55,
+                    Buttons: [
+                        {
+                            Name: "Hand over the intact notices",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:sidequest/personnel_file/file_notices"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "file_notices_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Three Revision Notices, corners uncurled, and no audit stamp on any of them. You pulled them clean. Do you know how rare an unobserved document is now? Lay them here. I want to see what the Company thought was worth pasting over twice."
+                        }
+                    ],
+                    Name: "Lucian — the intact notices",
+                    Label: "stage2_turnin"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "doc_portrait"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "doc_ledger"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "doc_charter"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "NOT_EQUALS",
+                            Name: "docs_filed"
+                        }
+                    ],
+                    Priority: 50,
+                    Buttons: [
+                        {
+                            Name: "Hand Lucian the three records",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:sidequest/personnel_file/file_docs"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "file_docs_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "All three. The portrait backing, the re-signed ledger, the founding charter. You could have sold the lot on the north road and I would never have known. You did not. That tells me more about you than any of these papers do."
+                        },
+                        {
+                            Text: "Give them here. I will cross-reference, and refund a records fee you never paid, because the ledger must balance and it is the only thing in this town that still does."
+                        }
+                    ],
+                    Name: "Lucian — the three records",
+                    Label: "stage1_turnin"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "docs_filed"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "NOT_EQUALS",
+                            Name: "notices_filed"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "badges_gte_3"
+                        }
+                    ],
+                    Priority: 45,
+                    Buttons: [
+                        {
+                            Name: "Read me the histories",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "lore_menu"
+                                }
+                            ],
+                            Label: "histories_button"
+                        },
+                        {
+                            Name: "I will watch her loop",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The region is being re-signed again. A Company Surveyor walks Blossom Path pasting Revision Notices — this signage supersedes all prior signage, prior signage never existed, that sort of thing. I want three, intact, and I want them pulled while her eyes are elsewhere."
+                        },
+                        {
+                            Text: "If she sees you holding one, she will not touch you. She will note the time and adjust her clipboard, and your intact notices will not be intact any more. Patience beats her. It usually does."
+                        }
+                    ],
+                    Name: "Lucian — the notices return",
+                    Label: "stage2_brief"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "sold_docs"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "NOT_EQUALS",
+                            Name: "docs_filed"
+                        }
+                    ],
+                    Priority: 44,
+                    Buttons: [
+                        {
+                            Name: "Read me the histories",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "lore_menu"
+                                }
+                            ],
+                            Label: "histories_button"
+                        },
+                        {
+                            Name: "Say nothing",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The courier logged a transaction. Two founding-era documents, sold on the north road, paid in full. I am not angry. Nine hundred CobbleDollars is a great deal of money and a file is only paper. But the record is closed now, at that end, by you. I will keep the space where it would have gone. Files abhor a vacuum, and I have learned to keep them company."
+                        },
+                        {
+                            Text: "If it matters later — and it will — remember that you had the whole of it in your hands, and chose the money. Most people do. That is rather the point of the money."
+                        }
+                    ],
+                    Name: "Lucian — the sale",
+                    Label: "stage1_sold"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "file_opened"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "NOT_EQUALS",
+                            Name: "docs_filed"
+                        }
+                    ],
+                    Priority: 43,
+                    Buttons: [
+                        {
+                            Name: "Read me the histories",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "lore_menu"
+                                }
+                            ],
+                            Label: "histories_button"
+                        },
+                        {
+                            Name: "I will look",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The file is open, which means the errand stands. Three misfiled originals. A sun-faded portrait backing in a crate behind the town hall — look for the brighter rectangle on the wall above it. A re-signed ledger page in a barrel down at the shore warehouse. And the founding charter, carried by a Company courier on the north road who would rather buy your silence than surrender it."
+                        },
+                        {
+                            Text: "Bring me what you notice. The region is being re-signed one document at a time, and I would like at least one copy that remembers the first draft."
+                        }
+                    ],
+                    Name: "Lucian — the standing errand",
+                    Label: "stage1_brief"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "NOT_EQUALS",
+                            Name: "file_opened"
+                        }
+                    ],
+                    Priority: 42,
+                    Buttons: [
+                        {
+                            Name: "Open my file",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:sidequest/personnel_file/open_file"
+                                },
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "stage1_brief"
+                                }
+                            ],
+                            Label: "open_button"
+                        },
+                        {
+                            Name: "First, read me the histories",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "lore_menu"
+                                }
+                            ],
+                            Label: "histories_button"
+                        },
+                        {
+                            Name: "Not now",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Stop a moment. I keep the histories the Company would rather you never read, and I have just found a gap shaped like you. Your file reads FOUND. No name. No history. And files, in my long experience, abhor a vacuum."
+                        },
+                        {
+                            Text: "So let me open one. Standard registration, a place to keep what you learn on the roads — and one section you will fill yourself, one page at a time, and never tear out. Will you let me open a file on you?"
+                        }
+                    ],
+                    Name: "Lucian — a vacuum in the file",
+                    Label: "open_file"
+                },
+                {
                     Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "Read me the histories",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "lore_menu"
+                                }
+                            ],
+                            Label: "histories_button"
+                        },
+                        {
+                            Name: "Enough for now",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Lucian Scrollkeeper. I keep the histories the League would rather forget and the Company would rather you never read. The file stays open, by the way. It always will, until the last page is written."
+                        },
+                        {
+                            Text: "You have the look of someone reaching for a memory that keeps stepping back. Sit. I have shelves of the things. What would you have me read to you?"
+                        }
+                    ],
+                    Name: "Lucian Scrollkeeper",
+                    Label: "archivist"
+                },
+                {
+                    Priority: -1,
                     Buttons: [
                         {
                             Name: "How did the Company begin?",
@@ -76,6 +566,13 @@
                                     Cmd: "the_wheat_plan"
                                 }
                             ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "badges_gte_2"
+                                }
+                            ],
                             Label: "wheat_button"
                         },
                         {
@@ -90,24 +587,21 @@
                     ],
                     Texts: [
                         {
-                            Text: "Lucian Scrollkeeper. I keep the histories the League would rather forget and the Company would rather you never read. Up here, near the throne, people finally ask the right questions."
-                        },
-                        {
-                            Text: "You have the look of someone reaching for a memory that keeps stepping back. Sit. I have shelves of the things. What would you have me read to you?"
+                            Text: "Ask, then. I will read you what the ledger remembers, and leave out only what would get us both a follow-up visit."
                         }
                     ],
-                    Name: "Lucian Greeting",
-                    Label: "default"
+                    Name: "Lucian — the shelves",
+                    Label: "lore_menu"
                 },
                 {
                     Priority: -1,
                     Buttons: [
                         {
-                            Name: "Tell me more",
+                            Name: "Ask something else",
                             Actions: [
                                 {
                                     Type: "OPEN_NAMED_DIALOG",
-                                    Cmd: "default"
+                                    Cmd: "lore_menu"
                                 }
                             ],
                             Label: "back_button"
@@ -137,11 +631,11 @@
                     Priority: -1,
                     Buttons: [
                         {
-                            Name: "Go on",
+                            Name: "Ask something else",
                             Actions: [
                                 {
                                     Type: "OPEN_NAMED_DIALOG",
-                                    Cmd: "default"
+                                    Cmd: "lore_menu"
                                 }
                             ],
                             Label: "back_button"
@@ -171,11 +665,11 @@
                     Priority: -1,
                     Buttons: [
                         {
-                            Name: "And then?",
+                            Name: "Ask something else",
                             Actions: [
                                 {
                                     Type: "OPEN_NAMED_DIALOG",
-                                    Cmd: "default"
+                                    Cmd: "lore_menu"
                                 }
                             ],
                             Label: "back_button"
@@ -209,7 +703,7 @@
                             Actions: [
                                 {
                                     Type: "OPEN_NAMED_DIALOG",
-                                    Cmd: "default"
+                                    Cmd: "lore_menu"
                                 }
                             ],
                             Label: "back_button"

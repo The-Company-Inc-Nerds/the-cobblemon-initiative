@@ -20,6 +20,24 @@ execute store result bossbar cobblemon_initiative:objective value run scoreboard
 # (0) GYM — next gym by badge count (memory_fragment 0..9).
 execute if score @s memory_fragment matches ..9 run function cobblemon_initiative:quest/gym_town
 
+# (0b) OPENING CHAIN — Sango Town, pre-badge only. Mom (mom_sent_to_lab) -> starter at the
+#      lab (chose_starter) -> Pokedex (got_pokedex) -> Running Shoes (got_running_shoes).
+#      Overrides the gym line until the shoes are on; boss bar shows chain progress 0..4.
+execute if score @s memory_fragment matches 0 unless entity @s[tag=got_running_shoes] run scoreboard players set #open quest_hud 0
+execute if score @s memory_fragment matches 0 unless entity @s[tag=got_running_shoes] if entity @s[tag=mom_sent_to_lab] run scoreboard players add #open quest_hud 1
+execute if score @s memory_fragment matches 0 unless entity @s[tag=got_running_shoes] if entity @s[tag=chose_starter] run scoreboard players add #open quest_hud 1
+execute if score @s memory_fragment matches 0 unless entity @s[tag=got_running_shoes] if entity @s[tag=got_pokedex] run scoreboard players add #open quest_hud 1
+execute if score @s memory_fragment matches 0 unless entity @s[tag=got_running_shoes] run bossbar set cobblemon_initiative:objective max 4
+execute if score @s memory_fragment matches 0 unless entity @s[tag=got_running_shoes] store result bossbar cobblemon_initiative:objective value run scoreboard players get #open quest_hud
+execute if score @s memory_fragment matches 0 unless entity @s[tag=mom_sent_to_lab] run bossbar set cobblemon_initiative:objective name [{"text":"⌂ Find your feet — talk to Mom","color":"yellow"}]
+execute if score @s memory_fragment matches 0 unless entity @s[tag=mom_sent_to_lab] run scoreboard players display name #main ci_quest [{"text":"▶ Talk to Mom","color":"yellow"}]
+execute if score @s memory_fragment matches 0 if entity @s[tag=mom_sent_to_lab] unless entity @s[tag=chose_starter] run bossbar set cobblemon_initiative:objective name [{"text":"⌂ Choose a partner at the Sango lab","color":"yellow"}]
+execute if score @s memory_fragment matches 0 if entity @s[tag=mom_sent_to_lab] unless entity @s[tag=chose_starter] run scoreboard players display name #main ci_quest [{"text":"▶ Visit Professor Acacia at the lab","color":"yellow"}]
+execute if score @s memory_fragment matches 0 if entity @s[tag=chose_starter] unless entity @s[tag=got_pokedex] run bossbar set cobblemon_initiative:objective name [{"text":"⌂ Take the Pokedex from Acacia","color":"yellow"}]
+execute if score @s memory_fragment matches 0 if entity @s[tag=chose_starter] unless entity @s[tag=got_pokedex] run scoreboard players display name #main ci_quest [{"text":"▶ Take the Pokedex from Acacia","color":"yellow"}]
+execute if score @s memory_fragment matches 0 if entity @s[tag=got_pokedex] unless entity @s[tag=got_running_shoes] run bossbar set cobblemon_initiative:objective name [{"text":"⌂ Show Mom your Pokedex","color":"yellow"}]
+execute if score @s memory_fragment matches 0 if entity @s[tag=got_pokedex] unless entity @s[tag=got_running_shoes] run scoreboard players display name #main ci_quest [{"text":"▶ Show Mom your Pokedex","color":"yellow"}]
+
 # (1) HQ RAID — after gym 7 AND 4 liberated fields (the hard gate: starve the monopoly
 #     before storming it; DJ refuses the meeting while the fields still feed the Company),
 #     until Acting CEO DJ falls (climax outranks gyms 8-10).

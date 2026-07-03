@@ -48,6 +48,7 @@ public class ConfigLoader {
       "data/cobblemon_initiative/trainers/royal_league/royal_league.json",
       "data/cobblemon_initiative/trainers/battle_frontier/battle_frontier.json",
       "data/cobblemon_initiative/trainers/villain_team/villain_team.json",
+      "data/cobblemon_initiative/trainers/side_quests/act1.json",
       "data/cobblemon_initiative/trainers/shrine_challenges/dragon_hydra.json",
     };
 

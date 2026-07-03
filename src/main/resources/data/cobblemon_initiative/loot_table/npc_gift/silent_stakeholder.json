@@ -1,0 +1,41 @@
+{
+  "type": "minecraft:chest",
+  "_comment": "Performance Review (Ghost or Sweep) — Silent Stakeholder cache, granted by sidequest/perf_review/ghost_reward when the player beats Cicada with gym1_seen still 0. The 400 CD component is paid separately by the function via economy/payout.",
+  "pools": [
+    {
+      "name": "ball",
+      "rolls": 1,
+      "bonus_rolls": 0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "cobblemon:dusk_ball",
+          "functions": [{ "function": "minecraft:set_count", "count": 1 }]
+        }
+      ]
+    },
+    {
+      "name": "lens",
+      "rolls": 1,
+      "bonus_rolls": 0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:spyglass",
+          "functions": [
+            {
+              "function": "minecraft:set_name",
+              "name": { "text": "Auditors Lens", "color": "gold", "italic": false }
+            },
+            {
+              "function": "minecraft:set_lore",
+              "lore": [
+                { "text": "Sees everything. Reports nothing.", "color": "gray", "italic": true }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
