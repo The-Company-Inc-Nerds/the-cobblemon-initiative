@@ -86,16 +86,16 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "give @s minecraft:golden_apple 1"
+                                    Cmd: "give @initiator minecraft:golden_apple 1"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "tag @s add work_all_done"
+                                    Cmd: "tag @initiator add work_all_done"
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "title @p actionbar [{\"text\":\"Work orders complete. Blossom Path signed off as maintained.\",\"color\":\"gold\"}]"
+                                    Cmd: "title @initiator actionbar [{\"text\":\"Work orders complete. Blossom Path signed off as maintained.\",\"color\":\"gold\"}]"
                                 }
                             ],
                             Label: "signoff_button"
@@ -172,7 +172,7 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "function cobblemon_initiative:sidequest/work_orders/start_night"
+                                    Cmd: "execute as @initiator run function cobblemon_initiative:sidequest/work_orders/start_night"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -193,21 +193,21 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "function cobblemon_initiative:economy/payout {amount:300}"
+                                    Cmd: "execute as @initiator run function cobblemon_initiative:economy/payout {amount:300}"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "give @s cobblemon:potion 2"
+                                    Cmd: "give @initiator cobblemon:potion 2"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "tag @s add work_night_paid"
+                                    Cmd: "tag @initiator add work_night_paid"
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "title @p actionbar [{\"text\":\"Night Shift closed. 300 CD and two potions. Honest wages.\",\"color\":\"yellow\"}]"
+                                    Cmd: "title @initiator actionbar [{\"text\":\"Night Shift closed. 300 CD and two potions. Honest wages.\",\"color\":\"yellow\"}]"
                                 },
                                 {
                                     Type: "OPEN_DEFAULT_DIALOG"
@@ -275,7 +275,7 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "function cobblemon_initiative:sidequest/work_orders/turn_in_mine"
+                                    Cmd: "execute as @initiator run function cobblemon_initiative:sidequest/work_orders/turn_in_mine"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

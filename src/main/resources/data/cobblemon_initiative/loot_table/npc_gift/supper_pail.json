@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:chest",
+  "_comment": "Tenants of Record — the Supper Pail Old Deng asks the player to carry to Haoran (verifier fix 1: renamed via loot set_name, NOT a give command with a custom_name component). Haoran clears it with plain clear @s minecraft:rabbit_stew — if the name here changes nothing breaks, the item id is what gets cleared and the carrying_supper tag is the real state. Loot JSON is punctuation-exempt from the quote bans.",
+  "pools": [
+    {
+      "name": "supper_pail",
+      "rolls": 1,
+      "bonus_rolls": 0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:rabbit_stew",
+          "functions": [
+            {
+              "function": "minecraft:set_name",
+              "name": { "text": "Supper Pail", "color": "gold", "italic": false }
+            },
+            {
+              "function": "minecraft:set_lore",
+              "lore": [
+                { "text": "Still warm. Granny Yun packs for a siege.", "color": "gray", "italic": true },
+                { "text": "For the boy at the fence line.", "color": "gray", "italic": true }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

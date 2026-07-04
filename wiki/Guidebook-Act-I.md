@@ -40,10 +40,12 @@ flowchart LR
 - **Level cap:** **20** by default until you earn your first badge.
 
 ### What to expect
-- **Get your bearings, not a fight.** Sango is where you set your party, learn the controls of a Nuzlocke run, and meet the first NPCs who give you that *odd look* — the one you will learn to dread.
-- **The Archivist.** A town NPC who can **re-read your collected memory fragments** on request. You have none yet, so for now they simply note that your file is "incomplete." Remember where they stand — you will come back as the fragments mount.
-- **The Company's first face.** Sango carries early Company propaganda in its **glossy, warm Act-I register**: *"The Company: Verified Trust, Verified Value."* It reads as civic-minded sponsorship. It is not.
-- **Quest HUD.** Your objective tracker (a boss bar plus an optional sidebar log) lives here too. Toggle it with `/ca quest show`, `/ca quest hide`, and `/ca quest refresh`. In Act I it will simply point you down the road to Takehara Falls.
+- **The opening chain.** Wake at Nalia's, get caught at the door, get sent to **Professor Acacia** for the Pokédex and your starter, come home for the **Running Shoes**, and take the west road. The quest HUD walks all four steps.
+- **The Archivist — Lucian Scrollkeeper.** He opens a **Personnel File** on the nameless stranger (a writable book that doubles as your hand-written death ledger) and runs a *run-long* errand chain: recover re-signed documents now, pull Revision Notices unseen mid-run, and be there after the HQ raid when the record still refuses a name. He is also the turn-in desk for half the paper you'll lift from the Company.
+- **A town full of jobs.** Sango is a neighborhood, not a corridor: the **census desk** (sign the Field Liability Policy — the Nuzlocke ruleset read aloud as HR-speak — or refuse), **Deka's** fishing derby *and* his suspiciously good deal on a Magikarp, the **Shorefront Invitational** (a 2-round dockside bracket with a Company-verified envelope that arrives 3% light), **the Lane** (a bread round that ends in a care package and a fish), lab errands for Acacia's assistants, a Pokémon trade, and a stealth loop where the Company's **auditors can literally see you** — their sightlines are real.
+- **The Company's first face.** Glossy, warm, Act-I register: *"Verified Trust, Verified Value."* A courier camps by his cart at the north end of town; nobody asks what's in the chest. (You should.)
+- **Healing costs money now.** Dr. Medcrest patches your team for **100 CD** — the Company revised the service schedule. The Poké Mart sells basic medicine from day one (potions, antidotes), so the clinic quests are your bulk-healing lifeline.
+- **Quest HUD.** Toggle with `/ca quest show`, `/ca quest hide`, `/ca quest refresh`.
 
 > [!NOTE]
 > **Recognition flickers start at zero.** Pre-gym NPCs are mostly unaware of who you are. The double-takes ("...have we met?") begin in earnest once you start collecting badges and your `memory_fragment` count climbs.
@@ -63,9 +65,12 @@ A waterfall town and the gentlest gym on the route — the right place to learn 
 | Trainer 2 | Entomologist Yuki | Spinarak, Ledyba | Lv 10 |
 | Trainer 3 | Bug Maniac Shin | Nincada, Surskit | Lv 11 |
 | Trainer 4 | Youngster Taro | Burmy, Combee | Lv 11 |
-| Jr. Apprentice | Hachi | Beedrill, Beautifly | Lv 13 |
-| Apprentice | Hana *(doubles)* | Butterfree, Beedrill, Yanma, Ninjask | Lv 15–16 |
+| Jr. Apprentice | Sora | Beedrill, Beautifly | Lv 13 |
+| Apprentice | Aiko *(doubles)* | Butterfree, Beedrill, Yanma, Ninjask | Lv 15–16 |
 | **Leader** | **Cicada** | **Scolipede, Heracross, Vespiquen, Yanmega** | **Lv 17–18** |
+
+> [!NOTE]
+> **The apprentices are not in the gym.** Cicada keeps her ladder outdoors this season: Jr. Apprentice **Sora** fights among the flowerbeds and points you deeper — Apprentice **Aiko** trains in the town greenhouse, and you have to go find her before the Leader will see you.
 
 ### What to expect
 - **Type primer.** A clean Bug gym. Cicada's Heracross (Bug/Fighting) and Yanmega (Bug/Flying) punish a one-note answer — bring coverage rather than a single Fire stick. He carries **3× Full Restore**, so chip damage alone won't close it.
@@ -83,10 +88,13 @@ A waterfall town and the gentlest gym on the route — the right place to learn 
 > The **Blossom Path** connects Takehara to Sango; the road on to Hua Zhan runs through **wheat country**.
 
 ### What to expect
-- **First Company grunts in the open.** Outside the gyms, **Field Agents** (`villain_grunt_1`, `villain_grunt_2`) and **Contractors** (`villain_grunt_4`, gated behind the Bug badge) work the routes and regional offices. Their teams are low-rent thugs — Zubat, Rattata, Poochyena, Grimer, Sneasel, Mightyena. They drop Great Balls when beaten.
-- **Recognition: the first flicker.** Early grunts are *almost* unaware — but a Contractor who has seen your file may do a confused double-take. Nothing lands yet. File it away.
-- **Wheat traders appear.** As you enter wheat country, **Company wheat traders** begin offering you an "alternative" to CobbleDollars. In Act I they are polite and harmless — a friendly pitch for a wheat-backed currency. They have not recognised you, and they will not ambush you this early. (Fields aren't liberated yet; that tug-of-war belongs to later acts.)
-- **Full mob spawns.** You are out of Sango's safe zone. Hostile mobs spawn freely on the route. A whiteout here is a *dead run*, not a setback — play it like the world is trying to kill you, because it is.
+- **Blossom Path first.** Four local trainers work the meadow between Sango and Takehara — all of them play by the **eye-contact rule**: cross their sightline and the battle walks up to you. Between them: a paid research census, a speed-run courier bet, road-crew work orders, a checkpoint the Company swears is voluntary, and one Magikarp salesman who is accidentally telling the truth.
+- **The checkpoint.** Two Field Agents run a *Voluntary Verification Checkpoint* on the path — pay the processing fee, sneak the long way, or settle it the old way. This is the Company at its politest. Enjoy that while it lasts.
+- **Harvest Road is the Company in the open.** Past Takehara, the gloves come off *after your first badge*: a **survey detail** unfolds a wagon of paperwork mid-road (the escort is the run's first villain ambusher), and **Firstfurrow Farm** sits behind a Company fence — a Yield Protection Officer at the gate, an Acting Site Manager running the field off a clipboard, and a family camped by the roadside who used to own it.
+- **The first liberation.** Beat the farm detail and the field flips: *Firstfurrow — Liberated* on the zone banner, the commodity currency visibly loses ground, and the family walks home on camera. This is the whole Wheat War loop, taught once, small. Five more fields are waiting across the region. You can even stand the night watch over the first free harvest.
+- **Recognition: the first flicker.** Grunts do confused, memo-tier double-takes — *"the sketch is bad, but you match it."* Nothing lands yet. File it away.
+- **Nobody says the word.** The crop is standing right there in the fields, and every Company employee calls it *the asset, the yield, the parcel*. The word itself is waiting for you in Hua Zhan.
+- **Full mob spawns.** You are out of the safe zones. A whiteout here is a *dead run*, not a setback.
 
 ---
 
@@ -104,14 +112,21 @@ A garden city in the heart of the wheat belt. The gym leans hard on Grass, but B
 | Apprentice | Sakura *(doubles)* | Roselia, Bayleef, Jumpluff, Leafeon | Lv 25–26 |
 | **Leader** | **Blossom** | **Tropius, Leafeon, Roserade, Venusaur** | **Lv 27–29** |
 
+### The gym is the town — the Four Gardens Pilgrimage
+Blossom keeps her gym the old way: her four wardens hold four **living garden stations** scattered through the city — the moss court, the orchard rows, the terrace over the water channels, the pond. **Garden Master Wei** on the west hill opens the pilgrimage; beat a warden, press the station plaque, earn the seal. Four seals earn his blessing (a **Leaf Stone**, real money for the Gloom/Weepinbell lines) and Blossom's respect before the fight. Jr. Apprentice Lian and Apprentice Sakura hold the gym building itself; the Leader waits at the back of the hall.
+
+### The wheat reveal
+Hua Zhan is where the story finally says the word. **Wheat traders pitch openly** in the market, the **Granary** runs a grain-for-goods company store, and the Company **greenhouse** looms over the whole city — industrial monoculture staring down the last living garden on the circuit. Take the PR tour if you want the pitch from the inside. Once you've heard it, the quest HUD's wheat line lights, and Blossom herself will tell you what she thinks of the grey suits buying her town.
+
 ### What to expect
-- **Status pressure.** Roserade and Venusaur carry **Sleep Powder** and **Sludge Bomb**; Blossom will try to put a key Pokémon to sleep and grind. In a Nuzlocke, a slept lead is a liability — lead into it carefully. She runs **3× Full Restore**.
+- **Status pressure.** Roserade and Venusaur carry **Sleep Powder** and **Sludge Bomb**; a slept lead in a Nuzlocke is a liability. She runs **3× Full Restore**.
 - **Reward & cap.** The **Grass badge** grants **5 emeralds** and unlocks **level cap 38**.
-- **Memory beat — `frag_2`:** a second fragment fires. Still vague, but the unease is taking on edges — a place, a phrase, a face that *means* something. The Archivist now has two to re-read.
-- **Economy beat:** `cd_instability → 16`. The skew is starting to bite (rate ≈ 96%). Spokes-NPCs begin the **nervous reassurance** register — over-explaining why prices are "adjusting." That's the plot leaking into the dialogue.
+- **Memory beat — `frag_2`:** the unease takes on edges — a place, a phrase, a face that *means* something.
+- **Economy beat:** `cd_instability → 16`. Prices visibly drift — a market quest literally has you **price-check the stalls** and do the math on stream. The Pokémon Center charges (100 CD), the clinic runs a restock quest, and the shop's badge-2 tier opens (Ultra/Dusk/Quick balls, Hyper Potions).
+- **The Company appraises everything.** A **Yield Analyst** stands at the gym gate valuing the garden as an under-performing asset (eavesdrop his math; lift the report). The **branch office tower** holds the quarterly minutes — if you can get past two floors of staff sightlines, the closing line of the meeting is worth stealing. Everything files back to Lucian in Sango.
 
 > [!NOTE]
-> Hua Zhan is **wheat country**, which is why the wheat traders are thickest here. The fields you walk past are the literal stakes of the whole story — The Company occupies them to anchor the currency they want to replace CobbleDollars with.
+> The fields you walked past on Harvest Road are the literal stakes of the whole story — The Company occupies them to anchor the currency it wants to replace CobbleDollars with. You freed the first one. The traders noticed.
 
 ---
 

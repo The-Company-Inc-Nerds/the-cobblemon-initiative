@@ -1,0 +1,669 @@
+{
+    PresetMetadata: {
+        author: "TheCompanyInc",
+        category: "Merchant",
+        created: 0L,
+        description: "merchant at Hua Zhan City - East Market Pokemart (act 1). Compiled from dialog-src.",
+        entityTypeId: "easy_npc:humanoid",
+        modified: 0L,
+        name: "Kaito Zhang",
+        variantType: "STEVE",
+        version: "1.0.0"
+    },
+    data: {
+        ActionData: {
+            ActionEventSet: {
+                ON_INTERACTION: [
+                    {
+                        Type: "OPEN_DEFAULT_DIALOG"
+                    }
+                ]
+            }
+        },
+        ArmorDropChances: [0.08500000089406967f, 0.08500000089406967f, 0.08500000089406967f, 0.08500000089406967f],
+        ArmorItems: [
+            {},
+            {},
+            {},
+            {}
+        ],
+        Brain: {
+            memories: {}
+        },
+        CanPickUpLoot: 0b,
+        CustomNameVisible: 1b,
+        DialogData: {
+            Type: "CUSTOM",
+            DialogDataSet: [
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "fields_liberated_gte_2"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "hz_prices_done"
+                        }
+                    ],
+                    Priority: 26,
+                    Buttons: [
+                        {
+                            Name: "Browse the mart",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "tellraw @initiator [{\"text\":\"Kaito nods at the register — the counter board lists the verified catalog. The index sets the tickets, half of one percent per point.\",\"color\":\"gray\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "browse_button"
+                        },
+                        {
+                            Name: "Leave",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The index breathed out this week — first time since the sign went up. Tickets eased, the payout rail skims a little less, and the only new fact in the world is that somebody keeps prying fields loose from the Company. Whatever you did, keep doing it."
+                        },
+                        {
+                            Text: "Prices dipped. Not to honest — but toward it. My ledger noticed the same week the Company lost another field. I do not believe in coincidence anymore. I believe in arithmetic."
+                        }
+                    ],
+                    Name: "Kaito — the index breathed out",
+                    Label: "relief"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "cd_instability_gte_20"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "hz_prices_done"
+                        }
+                    ],
+                    Priority: 25,
+                    Buttons: [
+                        {
+                            Name: "Browse the mart",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "tellraw @initiator [{\"text\":\"Kaito nods at the register — the counter board lists the verified catalog. The index sets the tickets, half of one percent per point.\",\"color\":\"gray\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "browse_button"
+                        },
+                        {
+                            Name: "Leave",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The index cleared twenty. More than ten parts in a hundred on every ticket now, and the verified rate on payouts reads worse at every audit. I flipped that sign face-down and the arithmetic did not even notice."
+                        },
+                        {
+                            Text: "Twenty on the index and climbing. Every shelf in this mart wears it — half of one percent per point, stamped in before you reach the register. Your notes were the warning. This is the weather."
+                        }
+                    ],
+                    Name: "Kaito — past twenty",
+                    Label: "idx_high"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "hz_price_1"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "hz_price_2"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "hz_price_3"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "NOT_EQUALS",
+                            Name: "hz_prices_done"
+                        }
+                    ],
+                    Priority: 20,
+                    Buttons: [
+                        {
+                            Name: "Hand over the notes",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "execute as @initiator run function cobblemon_initiative:sidequest/price_check/payout"
+                                },
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "paid_out"
+                                }
+                            ],
+                            Label: "turnin_button"
+                        },
+                        {
+                            Name: "Not yet",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "later_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Let me see the notes. Produce up. Tools up — and quoted in sheaves now, unprompted. And the one stall nobody verifies has not moved a copper. So the greens did not change and the hoes did not change. The believing changed. Hand them over — and I will flip that verified sign face-down where it belongs."
+                        },
+                        {
+                            Text: "Three stalls, three tickets, one story: everything the Company verifies gets more expensive, and the only flat price on the street is the one they forgot to bless. Hand me the notes. The sign comes down today — face-down, under the counter."
+                        }
+                    ],
+                    Name: "Kaito — three notes on the counter",
+                    Label: "payout"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "badges_gte_2"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "hz_prices_done"
+                        }
+                    ],
+                    Priority: 18,
+                    Buttons: [
+                        {
+                            Name: "Browse the mart",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "tellraw @initiator [{\"text\":\"Kaito nods at the register — the counter board lists the verified catalog. The index sets the tickets, half of one percent per point.\",\"color\":\"gray\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "browse_button"
+                        },
+                        {
+                            Name: "Leave",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "New wall behind the counter since the gym fell — ultra, dusk, quick, timer, repeat, dive, and hyper potions on the medicine shelf. Every one of them wears the index the day it arrives: half of one percent per point, priced in before you touch it. The wall got taller. The arithmetic stayed exactly the same."
+                        },
+                        {
+                            Text: "Two badges deep and the catalog doubled overnight. The Company calls it expanded verified selection. I call it more shelves for the index to sit on. Browse — just read the tickets the way you read my street notes."
+                        }
+                    ],
+                    Name: "Kaito — the new wall",
+                    Label: "new_stock"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "hz_price_check_active"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "NOT_EQUALS",
+                            Name: "hz_prices_done"
+                        }
+                    ],
+                    Priority: 16,
+                    Buttons: [
+                        {
+                            Name: "Browse the mart",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "tellraw @initiator [{\"text\":\"Kaito nods at the register — the counter board lists the verified catalog. The index sets the tickets, half of one percent per point.\",\"color\":\"gray\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "browse_button"
+                        },
+                        {
+                            Name: "Back to the street",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Three tickets: Linh Hua on the produce, Wei Shun on the tools, Mei Lin down the southwest lane. The index moves weekly — walk faster than it does."
+                        },
+                        {
+                            Text: "Still short a note or two. Linh Hua, Wei Shun, Mei Lin — in any order. The street will tell you what my ledger is not allowed to."
+                        }
+                    ],
+                    Name: "Kaito — three tickets",
+                    Label: "in_progress"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "met_hz_martkeeper"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "NOT_EQUALS",
+                            Name: "hz_price_check_active"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "cd_instability_gte_8"
+                        }
+                    ],
+                    Priority: 15,
+                    Buttons: [
+                        {
+                            Name: "Take the price check",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "execute as @initiator run function cobblemon_initiative:sidequest/price_check/start"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "accept_button"
+                        },
+                        {
+                            Name: "Browse the mart",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "tellraw @initiator [{\"text\":\"Kaito nods at the register — the counter board lists the verified catalog. The index sets the tickets, half of one percent per point.\",\"color\":\"gray\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "browse_button"
+                        },
+                        {
+                            Name: "Not today",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "later_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "You came back. Good. My ledger matches the verified index to the decimal — the sign upstairs agrees with itself, which is exactly the problem. Go ask the street whether the index matches anything. Three stalls: Linh Hua with the produce, Wei Shun with the tools, Mei Lin down the southwest lane. Note what their tickets say. I pay for arithmetic."
+                        },
+                        {
+                            Text: "Every week the Company checks my ledger against the index and calls it accurate. Nobody checks the index against the street. Three stalls, three tickets, three notes — Linh Hua, Wei Shun, Mei Lin. Bring me the numbers and I pay for the walk."
+                        }
+                    ],
+                    Name: "Kaito — check the street",
+                    Label: "price_check"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "hz_prices_done"
+                        }
+                    ],
+                    Priority: 12,
+                    Buttons: [
+                        {
+                            Name: "Browse the mart",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "tellraw @initiator [{\"text\":\"Kaito nods at the register — the counter board lists the verified catalog. The index sets the tickets, half of one percent per point.\",\"color\":\"gray\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "browse_button"
+                        },
+                        {
+                            Name: "Leave",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The sign is face-down under the counter and my ledger grew a new column: what the street actually pays. Browse if you like — the index still sets the tickets, but at least one shelf in Hua Zhan is honest about it."
+                        },
+                        {
+                            Text: "Customers ask where the verified sign went. I tell them it is being re-verified. Indefinitely. Against the street."
+                        }
+                    ],
+                    Name: "Kaito — a new column",
+                    Label: "done"
+                },
+                {
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "Browse the mart",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @initiator add met_hz_martkeeper"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "tellraw @initiator [{\"text\":\"Kaito nods at the register — the counter board lists the verified catalog. The index sets the tickets, half of one percent per point.\",\"color\":\"gray\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "browse_button"
+                        },
+                        {
+                            Name: "Ask about the sign",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @initiator add met_hz_martkeeper"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "tellraw @initiator [{\"text\":\"The Company checks my ledger weekly and calls it verification. Come back and ask me again sometime — I am starting to have opinions about the arithmetic.\",\"color\":\"gray\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "ask_sign_button"
+                        },
+                        {
+                            Name: "Leave",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @initiator add met_hz_martkeeper"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Kaito Zhang, east market mart. The sign over my register says PRICES VERIFIED ACCURATE BY THE COMPANY. The Company hung it, the Company calibrates it, and lately I read it the way you read a weather warning."
+                        },
+                        {
+                            Text: "Balls, medicine, candy — the catalog sits on the counter and the prices are whatever the verified index says today. A plain ball lists at 2000 stable; the ticket adds half of one percent for every point the index climbs, before you even reach the register. I did not pick the arithmetic. The sign did."
+                        }
+                    ],
+                    Name: "Kaito — the verified sign",
+                    Label: "default"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Pocket the pay",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "done_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "There. That yellow line over your hotbar — face value in, less out. One percent shaved for every four points the index climbs, capped only where the Company got embarrassed. Read the yellow number. That is the fee for being believed. I paid you the honest figure and the rails took their cut on camera."
+                        },
+                        {
+                            Text: "Look at the yellow line. That is the rate the rails quote when they skim politely — the Company fee for being believed. Your notes were worth every step, and the shortfall you just watched is the whole report."
+                        }
+                    ],
+                    Name: "Kaito — the fee for being believed",
+                    Label: "paid_out"
+                }
+            ]
+        },
+        DisplayAttribute: [
+            {
+                Type: "VISIBLE",
+                Bool: 1b
+            },
+            {
+                Type: "VISIBLE_AT_DAY",
+                Bool: 1b
+            },
+            {
+                Type: "VISIBLE_AT_NIGHT",
+                Bool: 1b
+            },
+            {
+                Type: "VISIBLE_IN_CREATIVE",
+                Bool: 1b
+            },
+            {
+                Type: "VISIBLE_IN_SPECTATOR",
+                Bool: 1b
+            },
+            {
+                Type: "VISIBLE_IN_STANDARD",
+                Bool: 1b
+            },
+            {
+                Type: "VISIBLE_TO_OWNER",
+                Bool: 1b
+            },
+            {
+                Type: "VISIBLE_TO_TEAM",
+                Bool: 1b
+            },
+            {
+                Type: "LIGHT_LEVEL",
+                Int: 7
+            },
+            {
+                Type: "NAME_VISIBILITY",
+                Text: "ALWAYS"
+            }
+        ],
+        EasyNPCVersion: 3,
+        EntityAttribute: {
+            IsAttackableByMonsters: 0b,
+            CanCloseDoor: 0b,
+            Freefall: 0b,
+            CanUseNetherPortal: 0b,
+            IsInvulnerable: 1b,
+            HealthRegeneration: 0.0d,
+            NoGravity: 0b,
+            CanPassDoor: 0b,
+            PushEntities: 0b,
+            CanFloat: 0b,
+            CanBreatheUnderwater: 0b,
+            CanBeLeashed: 0b,
+            CanBeHitByProjectile: 0b,
+            IsPushable: 0b,
+            IsAttackableByPlayers: 0b,
+            CanOpenDoor: 0b
+        },
+        HandDropChances: [0.08500000089406967f, 0.08500000089406967f],
+        HandItems: [
+            {},
+            {}
+        ],
+        Invulnerable: 0b,
+        LeftHanded: 0b,
+        ModelData: {
+            DefaultPose: "STANDING",
+            Pose: "DEFAULT",
+            Visible: {},
+            Rotation: {},
+            Position: {},
+            Scale: {}
+        },
+        Navigation: {
+            Home: {
+                Y: 88,
+                Z: 2110,
+                X: 1541
+            }
+        },
+        ObjectiveData: {
+            HasObjectives: 1b,
+            HasTravelTarget: 0b,
+            ObjectiveDataSet: [
+                {
+                    Type: "LOOK_AT_PLAYER",
+                    Prio: 9,
+                    Id: "ambient_look_player",
+                    LookDistance: 8.0f
+                },
+                {
+                    Type: "LOOK_RANDOM_AROUND",
+                    Prio: 10,
+                    Id: "ambient_look_random"
+                },
+                {
+                    Type: "LOOK_AT_RESET",
+                    Prio: 9,
+                    Id: "ambient_look_reset"
+                }
+            ]
+        },
+        OnGround: 1b,
+        PersistenceRequired: 0b,
+        PresetUUID: [I; 0, 0, 0, 0],
+        Profession: "NONE",
+        Progression: {
+            AttributeScalingEnabled: 0b,
+            EntityExperience: 1,
+            EntityExperienceLevel: 1
+        },
+        RenderData: {},
+        SkinData: {
+            Type: "SECURE_REMOTE_URL",
+            URL: "https://www.minecraftskins.com/uploads/skins/2025/05/24/zhang-yi-23291550.png?v940",
+            UUID: [I; 1616161759, -2070136082, -1740166070, 768025240],
+            Name: "",
+            Content: "",
+            Timestamp: 1771346644852L,
+            DisableLayers: 0b
+        },
+        SoundData: {
+            SoundDataSet: [
+                {
+                    Type: "DEATH",
+                    Name: "minecraft:entity.player.death"
+                },
+                {
+                    Type: "EAT",
+                    Name: "minecraft:entity.generic.eat"
+                },
+                {
+                    Type: "HURT",
+                    Name: "minecraft:entity.player.hurt"
+                },
+                {
+                    Type: "TRADE",
+                    Name: "minecraft:entity.villager.trade"
+                },
+                {
+                    Type: "TRADE_YES",
+                    Name: "minecraft:entity.villager.yes"
+                },
+                {
+                    Type: "TRADE_NO",
+                    Name: "minecraft:entity.villager.no"
+                }
+            ]
+        },
+        Status: {
+            finalized: 0b,
+            npc_data_last_saved: 0L,
+            npc_data_last_update: 0L
+        },
+        VariantType: "STEVE",
+        attributes: [
+            {
+                base: 20.0d,
+                id: "minecraft:generic.max_health"
+            },
+            {
+                base: 0.5d,
+                id: "minecraft:generic.movement_speed"
+            }
+        ],
+        id: "easy_npc:humanoid",
+        CustomName: '{"text": "Kaito Zhang", "color": "#9AC0CD"}'
+    }
+}

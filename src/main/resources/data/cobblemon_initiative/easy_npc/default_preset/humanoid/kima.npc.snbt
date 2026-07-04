@@ -20,7 +20,7 @@
                 ]
             }
         },
-        ArmorDropChances: [0.085f, 0.085f, 0.085f, 0.085f],
+        ArmorDropChances: [0.08500000089406967f, 0.08500000089406967f, 0.08500000089406967f, 0.08500000089406967f],
         ArmorItems: [
             {},
             {},
@@ -60,22 +60,29 @@
                         {
                             Type: "PLAYER_TAG",
                             Operation: "NOT_EQUALS",
-                            Name: "defeated_sq_bracket_1"
+                            Name: "invit_entered"
                         }
                     ],
                     Priority: 15,
                     Texts: [
                         {
-                            Text: "The bracket is the bracket. Lumo first, down the dock. I do not battle out of order — it snarls the lines."
+                            Text: "The bracket is the bracket. Signup is with Harbourmaster Tayo at the desk — put your name down and I am your first round."
                         },
                         {
-                            Text: "Round two waits for round one. Lumo and that Wingull are that way."
+                            Text: "No entry, no bout. The Harbourmaster keeps the list; I keep the lines. Go sign."
                         }
                     ],
-                    Name: "Kima — bracket order",
+                    Name: "Kima — sign up first",
                     Label: "not_ready"
                 },
                 {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "invit_entered"
+                        }
+                    ],
                     Priority: 10,
                     Buttons: [
                         {
@@ -83,16 +90,16 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @p[tag=defeated_sq_bracket_2] run say The final waits with the Harbourmaster. Do not leave the podium standing empty."
+                                    Cmd: "execute if entity @initiator[tag=defeated_sq_bracket_2] run say The final waits with the Harbourmaster. Do not leave the podium standing empty."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @p[tag=defeated_sq_bracket_2] run tbcs attach sq_bracket_2 @s"
+                                    Cmd: "execute unless entity @initiator[tag=defeated_sq_bracket_2] run tbcs attach sq_bracket_2 @initiator"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @s[tag=defeated_sq_bracket_2] run tbcs battle GEN_9_SINGLES @s vs sq_bracket_2 onwin {1: ['cobbledollars add @1 150', 'tag @1 add defeated_sq_bracket_2', '@2 say Corphish and Shellos both. Fine. The final waits in the harbour office.'], 2: ['@2 say The net catches what the net catches. Mend your team and come back.']}"
+                                    Cmd: "execute unless entity @initiator[tag=defeated_sq_bracket_2] run tbcs battle GEN_9_SINGLES @initiator vs sq_bracket_2 onwin {1: ['cobbledollars add @1 150', 'tag @1 add defeated_sq_bracket_2', '@2 say Corphish and Shellos both. Fine. The final waits in the harbour office.'], 2: ['@2 say The net catches what the net catches. Mend your team and come back.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -130,73 +137,73 @@
                             Text: "I have mended nets through storms and I battle the same way. Whenever you are set."
                         }
                     ],
-                    Name: "Kima — round two",
+                    Name: "Kima — round one",
                     Label: "default"
                 }
             ]
         },
         DisplayAttribute: [
             {
-                Bool: 1b,
-                Type: "VISIBLE"
+                Type: "VISIBLE",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_AT_DAY"
+                Type: "VISIBLE_AT_DAY",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_AT_NIGHT"
+                Type: "VISIBLE_AT_NIGHT",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_IN_CREATIVE"
+                Type: "VISIBLE_IN_CREATIVE",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_IN_SPECTATOR"
+                Type: "VISIBLE_IN_SPECTATOR",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_IN_STANDARD"
+                Type: "VISIBLE_IN_STANDARD",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_TO_OWNER"
+                Type: "VISIBLE_TO_OWNER",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_TO_TEAM"
+                Type: "VISIBLE_TO_TEAM",
+                Bool: 1b
             },
             {
-                Int: 7,
-                Type: "LIGHT_LEVEL"
+                Type: "LIGHT_LEVEL",
+                Int: 7
             },
             {
-                Text: "ALWAYS",
-                Type: "NAME_VISIBILITY"
+                Type: "NAME_VISIBILITY",
+                Text: "ALWAYS"
             }
         ],
         EasyNPCVersion: 3,
         EntityAttribute: {
-            CanBeHitByProjectile: 0b,
-            CanBeLeashed: 0b,
-            CanBreatheUnderwater: 0b,
-            CanCloseDoor: 0b,
-            CanFloat: 0b,
-            CanOpenDoor: 0b,
-            CanPassDoor: 0b,
-            CanUseNetherPortal: 0b,
-            Freefall: 0b,
-            HealthRegeneration: 0.0d,
             IsAttackableByMonsters: 0b,
-            IsAttackableByPlayers: 0b,
+            CanCloseDoor: 0b,
+            Freefall: 0b,
+            CanUseNetherPortal: 0b,
             IsInvulnerable: 1b,
-            IsPushable: 0b,
+            HealthRegeneration: 0.0d,
             NoGravity: 0b,
-            PushEntities: 0b
+            CanPassDoor: 0b,
+            PushEntities: 0b,
+            CanFloat: 0b,
+            CanBreatheUnderwater: 0b,
+            CanBeLeashed: 0b,
+            CanBeHitByProjectile: 0b,
+            IsPushable: 0b,
+            IsAttackableByPlayers: 0b,
+            CanOpenDoor: 0b
         },
-        HandDropChances: [0.085f, 0.085f],
+        HandDropChances: [0.08500000089406967f, 0.08500000089406967f],
         HandItems: [
             {},
             {}
@@ -206,18 +213,16 @@
         ModelData: {
             DefaultPose: "STANDING",
             Pose: "VANILLA",
-            Position: {},
+            Visible: {},
             Rotation: {},
-            Scale: {},
-            Visible: {
-                Boots: 1b
-            }
+            Position: {},
+            Scale: {}
         },
         Navigation: {
             Home: {
-                X: 0,
-                Y: 0,
-                Z: 0
+                Y: 118,
+                Z: 2808,
+                X: 2627
             }
         },
         ObjectiveData: {
@@ -253,23 +258,39 @@
         },
         RenderData: {},
         SkinData: {
-            Content: "",
-            DisableLayers: 0b,
+            Type: "SECURE_REMOTE_URL",
+            URL: "https://www.minecraftskins.com/uploads/skins/2025/01/18/1-21-5-hermitcraft-dane--hot-pig-updated-23004302.png?v921",
+            UUID: [I; 890412251, -1972489095, -1155391594, 138403671],
             Name: "",
-            Timestamp: 0L,
-            Type: "DEFAULT",
-            URL: "",
-            UUID: [I; 0, 0, 0, 0]
+            Content: "",
+            Timestamp: 1757618996401L,
+            DisableLayers: 0b
         },
         SoundData: {
             SoundDataSet: [
                 {
-                    Name: "minecraft:entity.player.death",
-                    Type: "DEATH"
+                    Type: "DEATH",
+                    Name: "minecraft:entity.player.death"
                 },
                 {
-                    Name: "minecraft:entity.player.hurt",
-                    Type: "HURT"
+                    Type: "EAT",
+                    Name: "minecraft:entity.generic.eat"
+                },
+                {
+                    Type: "HURT",
+                    Name: "minecraft:entity.player.hurt"
+                },
+                {
+                    Type: "TRADE",
+                    Name: "minecraft:entity.villager.trade"
+                },
+                {
+                    Type: "TRADE_YES",
+                    Name: "minecraft:entity.villager.yes"
+                },
+                {
+                    Type: "TRADE_NO",
+                    Name: "minecraft:entity.villager.no"
                 }
             ]
         },
@@ -289,6 +310,7 @@
                 id: "minecraft:generic.movement_speed"
             }
         ],
-        id: "easy_npc:humanoid"
+        id: "easy_npc:humanoid",
+        CustomName: '{"text": "Net-Mender Kima", "color": "#FF0000"}'
     }
 }

@@ -83,7 +83,10 @@ def granary_uuids():
         data = json.load(fh)
     out = []
     for uuid, entry in (data.get("mappings") or {}).items():
-        if str(entry.get("preset", "")).startswith("humanoid/granary_keeper"):
+        # content_compile writes bare ids for classic bodies ("granary_keeper") and a
+        # type prefix for slim ones ("humanoid_slim/granary_keeper") — accept all forms.
+        preset = str(entry.get("preset", ""))
+        if preset.split("/")[-1].startswith("granary_keeper"):
             out.append((uuid, entry.get("label", "Granary Keeper")))
     return sorted(out)
 

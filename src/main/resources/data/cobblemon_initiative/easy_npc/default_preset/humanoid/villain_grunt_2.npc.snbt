@@ -50,16 +50,16 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @p[tag=defeated_villain_grunt_2] run say We have a file open on you now. I do not need a second look. Move along."
+                                    Cmd: "execute if entity @initiator[tag=defeated_villain_grunt_2] run say We have a file open on you now. I do not need a second look. Move along."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @p[tag=defeated_villain_grunt_2] run tbcs attach villain_grunt_2 @s"
+                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_grunt_2] run tbcs attach villain_grunt_2 @initiator"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @s[tag=defeated_villain_grunt_2] run tbcs battle GEN_9_SINGLES @s vs villain_grunt_2 onwin {1: ['cobbledollars add @1 240', 'tag @1 add defeated_villain_grunt_2', '@2 say Logged as an unscheduled deviation. The outpost will note your face.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 110', '@2 say Asset secured. The Company appreciates your cooperation.']}"
+                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_grunt_2] run tbcs battle GEN_9_SINGLES @initiator vs villain_grunt_2 onwin {1: ['cobbledollars add @1 240', 'tag @1 add defeated_villain_grunt_2', '@2 say Logged as an unscheduled deviation. The outpost will note your face.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 110', '@2 say Asset secured. The Company appreciates your cooperation.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -94,16 +94,16 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @p[tag=defeated_villain_grunt_2] run say We have a file open on you now. I do not need a second look. Move along."
+                                    Cmd: "execute if entity @initiator[tag=defeated_villain_grunt_2] run say We have a file open on you now. I do not need a second look. Move along."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @p[tag=defeated_villain_grunt_2] run tbcs attach villain_grunt_2 @s"
+                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_grunt_2] run tbcs attach villain_grunt_2 @initiator"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @s[tag=defeated_villain_grunt_2] run tbcs battle GEN_9_SINGLES @s vs villain_grunt_2 onwin {1: ['cobbledollars add @1 240', 'tag @1 add defeated_villain_grunt_2', '@2 say Logged as an unscheduled deviation. The outpost will note your face.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 110', '@2 say Asset secured. The Company appreciates your cooperation.']}"
+                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_grunt_2] run tbcs battle GEN_9_SINGLES @initiator vs villain_grunt_2 onwin {1: ['cobbledollars add @1 240', 'tag @1 add defeated_villain_grunt_2', '@2 say Logged as an unscheduled deviation. The outpost will note your face.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 110', '@2 say Asset secured. The Company appreciates your cooperation.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -144,7 +144,7 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "function cobblemon_initiative:sidequest/memo/surrender_letter"
+                                    Cmd: "execute as @initiator run function cobblemon_initiative:sidequest/memo/surrender_letter"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -158,16 +158,16 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "cobbledollars remove @s 250"
+                                    Cmd: "cobbledollars remove @initiator 250"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "tag @s add paid_handling_fee"
+                                    Cmd: "tag @initiator add paid_handling_fee"
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "title @p actionbar [{\"text\":\"Handling fee logged. The letter remains your liability. The Company thanks you for participating in commerce.\"}]"
+                                    Cmd: "title @initiator actionbar [{\"text\":\"Handling fee logged. The letter remains your liability. The Company thanks you for participating in commerce.\"}]"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -180,16 +180,16 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @p[tag=defeated_villain_grunt_2] run say We have a file open on you now. I do not need a second look. Move along."
+                                    Cmd: "execute if entity @initiator[tag=defeated_villain_grunt_2] run say We have a file open on you now. I do not need a second look. Move along."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @p[tag=defeated_villain_grunt_2] run tbcs attach villain_grunt_2 @s"
+                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_grunt_2] run tbcs attach villain_grunt_2 @initiator"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @s[tag=defeated_villain_grunt_2] run tbcs battle GEN_9_SINGLES @s vs villain_grunt_2 onwin {1: ['cobbledollars add @1 240', 'tag @1 add defeated_villain_grunt_2', '@2 say Logged as an unscheduled deviation. The outpost will note your face.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 110', '@2 say Asset secured. The Company appreciates your cooperation.']}"
+                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_grunt_2] run tbcs battle GEN_9_SINGLES @initiator vs villain_grunt_2 onwin {1: ['cobbledollars add @1 240', 'tag @1 add defeated_villain_grunt_2', '@2 say Logged as an unscheduled deviation. The outpost will note your face.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 110', '@2 say Asset secured. The Company appreciates your cooperation.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -230,16 +230,16 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @p[tag=defeated_villain_grunt_2] run say We have a file open on you now. I do not need a second look. Move along."
+                                    Cmd: "execute if entity @initiator[tag=defeated_villain_grunt_2] run say We have a file open on you now. I do not need a second look. Move along."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @p[tag=defeated_villain_grunt_2] run tbcs attach villain_grunt_2 @s"
+                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_grunt_2] run tbcs attach villain_grunt_2 @initiator"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @s[tag=defeated_villain_grunt_2] run tbcs battle GEN_9_SINGLES @s vs villain_grunt_2 onwin {1: ['cobbledollars add @1 240', 'tag @1 add defeated_villain_grunt_2', '@2 say Logged as an unscheduled deviation. The outpost will note your face.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 110', '@2 say Asset secured. The Company appreciates your cooperation.']}"
+                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_grunt_2] run tbcs battle GEN_9_SINGLES @initiator vs villain_grunt_2 onwin {1: ['cobbledollars add @1 240', 'tag @1 add defeated_villain_grunt_2', '@2 say Logged as an unscheduled deviation. The outpost will note your face.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 110', '@2 say Asset secured. The Company appreciates your cooperation.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -277,16 +277,16 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "cobbledollars remove @s 120"
+                                    Cmd: "cobbledollars remove @initiator 120"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "tag @s add paid_checkpoint_fee"
+                                    Cmd: "tag @initiator add paid_checkpoint_fee"
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "title @p actionbar [{\"text\":\"Expedited processing fee received. You have been verified in absentia.\"}]"
+                                    Cmd: "title @initiator actionbar [{\"text\":\"Expedited processing fee received. You have been verified in absentia.\"}]"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -306,16 +306,16 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @p[tag=defeated_villain_grunt_2] run say We have a file open on you now. I do not need a second look. Move along."
+                                    Cmd: "execute if entity @initiator[tag=defeated_villain_grunt_2] run say We have a file open on you now. I do not need a second look. Move along."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @p[tag=defeated_villain_grunt_2] run tbcs attach villain_grunt_2 @s"
+                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_grunt_2] run tbcs attach villain_grunt_2 @initiator"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @s[tag=defeated_villain_grunt_2] run tbcs battle GEN_9_SINGLES @s vs villain_grunt_2 onwin {1: ['cobbledollars add @1 240', 'tag @1 add defeated_villain_grunt_2', '@2 say Logged as an unscheduled deviation. The outpost will note your face.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 110', '@2 say Asset secured. The Company appreciates your cooperation.']}"
+                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_grunt_2] run tbcs battle GEN_9_SINGLES @initiator vs villain_grunt_2 onwin {1: ['cobbledollars add @1 240', 'tag @1 add defeated_villain_grunt_2', '@2 say Logged as an unscheduled deviation. The outpost will note your face.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 110', '@2 say Asset secured. The Company appreciates your cooperation.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -352,16 +352,16 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @p[tag=defeated_villain_grunt_2] run say We have a file open on you now. I do not need a second look. Move along."
+                                    Cmd: "execute if entity @initiator[tag=defeated_villain_grunt_2] run say We have a file open on you now. I do not need a second look. Move along."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @p[tag=defeated_villain_grunt_2] run tbcs attach villain_grunt_2 @s"
+                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_grunt_2] run tbcs attach villain_grunt_2 @initiator"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @s[tag=defeated_villain_grunt_2] run tbcs battle GEN_9_SINGLES @s vs villain_grunt_2 onwin {1: ['cobbledollars add @1 240', 'tag @1 add defeated_villain_grunt_2', '@2 say Logged as an unscheduled deviation. The outpost will note your face.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 110', '@2 say Asset secured. The Company appreciates your cooperation.']}"
+                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_grunt_2] run tbcs battle GEN_9_SINGLES @initiator vs villain_grunt_2 onwin {1: ['cobbledollars add @1 240', 'tag @1 add defeated_villain_grunt_2', '@2 say Logged as an unscheduled deviation. The outpost will note your face.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 110', '@2 say Asset secured. The Company appreciates your cooperation.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

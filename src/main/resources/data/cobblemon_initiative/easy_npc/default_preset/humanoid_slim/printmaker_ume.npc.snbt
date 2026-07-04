@@ -1,0 +1,516 @@
+{
+    PresetMetadata: {
+        author: "TheCompanyInc",
+        category: "Civilian",
+        created: 0L,
+        description: "civilian at Takehara Falls - Print Stall by the Gym (act 1). Compiled from dialog-src.",
+        entityTypeId: "easy_npc:humanoid_slim",
+        modified: 0L,
+        name: "Printmaker Mei",
+        variantType: "ALEX",
+        version: "1.0.0"
+    },
+    data: {
+        ActionData: {
+            ActionEventSet: {
+                ON_INTERACTION: [
+                    {
+                        Type: "OPEN_DEFAULT_DIALOG"
+                    }
+                ]
+            }
+        },
+        ArmorDropChances: [0.08500000089406967f, 0.08500000089406967f, 0.08500000089406967f, 0.08500000089406967f],
+        ArmorItems: [
+            {},
+            {},
+            {},
+            {}
+        ],
+        Brain: {
+            memories: {}
+        },
+        CanPickUpLoot: 0b,
+        CustomNameVisible: 1b,
+        DialogData: {
+            Type: "CUSTOM",
+            DialogDataSet: [
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "sq_posters_done"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "defeated_takehara_leader"
+                        }
+                    ],
+                    Priority: 45,
+                    Texts: [
+                        {
+                            Text: "The bulletins came back overnight. New batch, same bad glue — this time addressed to a face from the old days, whatever that means. I am keeping a copy for the archive."
+                        }
+                    ],
+                    Name: "Mei - the bulletins return",
+                    Label: "post_badge"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "sq_posters_done"
+                        }
+                    ],
+                    Priority: 40,
+                    Texts: [
+                        {
+                            Text: "The Company glue peels in the falls mist. Mine holds. That is the whole of my politics."
+                        },
+                        {
+                            Text: "I keep thinking about the mural under board three. A face painted out twice — once by whoever came first, once by the Company. Erased twice is almost remembered."
+                        }
+                    ],
+                    Name: "Mei - ink over adhesive",
+                    Label: "done"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "sq_poster_one"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "sq_poster_two"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "sq_poster_three"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "NOT_EQUALS",
+                            Name: "sq_poster_scolded"
+                        }
+                    ],
+                    Priority: 32,
+                    Buttons: [
+                        {
+                            Name: "Collect your pay",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "execute as @initiator run function cobblemon_initiative:economy/pay_macro {paid:400}"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "give @initiator cobblemon:potion 3"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "give @initiator cobblemon:heal_ball 1"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @initiator add sq_posters_done"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "title @initiator actionbar [{\"text\":\"The moth prints fly over Takehara again. Never seen once.\",\"color\":\"gold\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "payout_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Three prints up and he never saw a thing. Not once. You move like ink in water. The pulped slogans read verified trust, verified value — in a voice as flat as the paper deserved."
+                        },
+                        {
+                            Text: "And under board three — you saw it. The old mural. The center figure painted out years ago. Nobody in town remembers commissioning either version. I checked the guild ledger. That page is missing."
+                        }
+                    ],
+                    Name: "Mei - never seen once",
+                    Label: "turn_in_clean"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "sq_poster_one"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "sq_poster_two"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "sq_poster_three"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "NOT_EQUALS",
+                            Name: "sq_posters_done"
+                        }
+                    ],
+                    Priority: 31,
+                    Buttons: [
+                        {
+                            Name: "Collect your pay",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "execute as @initiator run function cobblemon_initiative:economy/pay_macro {paid:400}"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "give @initiator cobblemon:potion 3"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "give @initiator cobblemon:heal_ball 1"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @initiator add sq_posters_done"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "title @initiator actionbar [{\"text\":\"The moth prints fly over Takehara again.\",\"color\":\"gold\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "payout_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Three prints up. He caught you mid-paste along the way — you got the lecture, I got the giggles, and the prints got up anyway. Good enough for art."
+                        },
+                        {
+                            Text: "Under board three, the old mural. The center figure painted out years ago, and nobody remembers either version. I checked the guild ledger. That page is missing."
+                        }
+                    ],
+                    Name: "Mei - prints up anyway",
+                    Label: "turn_in"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "sq_posters_started"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "NOT_EQUALS",
+                            Name: "sq_posters_done"
+                        }
+                    ],
+                    Priority: 20,
+                    Buttons: [
+                        {
+                            Name: "Slip out and paste print one - gym entrance",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "execute as @initiator run function cobblemon_initiative:sidequest/noncompliance/attempt_one"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "NOT_EQUALS",
+                                    Name: "sq_poster_one"
+                                }
+                            ],
+                            Label: "post_one_button"
+                        },
+                        {
+                            Name: "Paste print two - falls overlook",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "execute as @initiator run function cobblemon_initiative:sidequest/noncompliance/attempt_two"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "sq_poster_one"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "NOT_EQUALS",
+                                    Name: "sq_poster_two"
+                                }
+                            ],
+                            Label: "post_two_button"
+                        },
+                        {
+                            Name: "Paste print three - the bridge mural",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "execute as @initiator run function cobblemon_initiative:sidequest/noncompliance/attempt_three"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "sq_poster_two"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "NOT_EQUALS",
+                                    Name: "sq_poster_three"
+                                }
+                            ],
+                            Label: "post_three_button"
+                        },
+                        {
+                            Name: "Watch the patrol a while",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Watch his loop from my counter. When his eyes are elsewhere, go. If he sees you he will only lecture you — nobody gets hurt over paper — but a lectured paste is a voided paste, so time it clean and try again."
+                        }
+                    ],
+                    Name: "Mei - time it clean",
+                    Label: "posting"
+                },
+                {
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "Take the three moth prints",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @initiator add sq_posters_started"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "title @initiator actionbar [{\"text\":\"Re-post the moth prints over three notices — without the canvasser seeing you.\",\"color\":\"yellow\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "take_button"
+                        },
+                        {
+                            Name: "Not my fight",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "decline_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Look at this. Verified Trust, Verified Value — glued straight over my moth-wing prints. I do not even mind the slogan. I mind the glue. It is bad glue."
+                        },
+                        {
+                            Text: "Three notices went up: gym entrance, falls overlook, and the bridge mural. The canvasser patrols them with that clipboard head-track of his. I want my prints back on top — and I want him to never see it happen."
+                        }
+                    ],
+                    Name: "Mei - the glue objection",
+                    Label: "default"
+                }
+            ]
+        },
+        DisplayAttribute: [
+            {
+                Type: "VISIBLE",
+                Bool: 1b
+            },
+            {
+                Type: "VISIBLE_AT_DAY",
+                Bool: 1b
+            },
+            {
+                Type: "VISIBLE_AT_NIGHT",
+                Bool: 1b
+            },
+            {
+                Type: "VISIBLE_IN_CREATIVE",
+                Bool: 1b
+            },
+            {
+                Type: "VISIBLE_IN_SPECTATOR",
+                Bool: 1b
+            },
+            {
+                Type: "VISIBLE_IN_STANDARD",
+                Bool: 1b
+            },
+            {
+                Type: "VISIBLE_TO_OWNER",
+                Bool: 1b
+            },
+            {
+                Type: "VISIBLE_TO_TEAM",
+                Bool: 1b
+            },
+            {
+                Type: "LIGHT_LEVEL",
+                Int: 7
+            },
+            {
+                Type: "NAME_VISIBILITY",
+                Text: "ALWAYS"
+            }
+        ],
+        EasyNPCVersion: 3,
+        EntityAttribute: {
+            IsAttackableByMonsters: 0b,
+            CanCloseDoor: 0b,
+            Freefall: 0b,
+            CanUseNetherPortal: 0b,
+            IsInvulnerable: 1b,
+            HealthRegeneration: 0.0d,
+            NoGravity: 0b,
+            CanPassDoor: 0b,
+            PushEntities: 0b,
+            CanFloat: 0b,
+            CanBreatheUnderwater: 0b,
+            CanBeLeashed: 0b,
+            CanBeHitByProjectile: 0b,
+            IsPushable: 0b,
+            IsAttackableByPlayers: 0b,
+            CanOpenDoor: 0b
+        },
+        HandDropChances: [0.08500000089406967f, 0.08500000089406967f],
+        HandItems: [
+            {},
+            {}
+        ],
+        Invulnerable: 0b,
+        LeftHanded: 0b,
+        ModelData: {
+            DefaultPose: "STANDING",
+            Pose: "VANILLA",
+            Visible: {},
+            Rotation: {},
+            Position: {},
+            Scale: {}
+        },
+        Navigation: {
+            Home: {
+                Y: 109,
+                Z: 2506,
+                X: 1817
+            }
+        },
+        ObjectiveData: {
+            HasObjectives: 1b,
+            HasTravelTarget: 0b,
+            ObjectiveDataSet: [
+                {
+                    Type: "LOOK_AT_PLAYER",
+                    Prio: 9,
+                    Id: "ambient_look_player",
+                    LookDistance: 8.0f
+                },
+                {
+                    Type: "LOOK_RANDOM_AROUND",
+                    Prio: 10,
+                    Id: "ambient_look_random"
+                },
+                {
+                    Type: "LOOK_AT_RESET",
+                    Prio: 9,
+                    Id: "ambient_look_reset"
+                }
+            ]
+        },
+        OnGround: 1b,
+        PersistenceRequired: 0b,
+        PresetUUID: [I; 0, 0, 0, 0],
+        Profession: "NONE",
+        Progression: {
+            AttributeScalingEnabled: 0b,
+            EntityExperience: 1,
+            EntityExperienceLevel: 1
+        },
+        RenderData: {},
+        SkinData: {
+            Type: "SECURE_REMOTE_URL",
+            URL: "https://www.minecraftskins.com/uploads/skins/2025/05/02/tokyo-bloom-23241681.png?v921",
+            UUID: [I; 1703045323, 1580675667, -2030933445, -1235832861],
+            Name: "",
+            Content: "",
+            Timestamp: 1757693857784L,
+            DisableLayers: 0b
+        },
+        SoundData: {
+            SoundDataSet: []
+        },
+        Status: {
+            finalized: 0b,
+            npc_data_last_saved: 0L,
+            npc_data_last_update: 0L
+        },
+        VariantType: "ALEX",
+        attributes: [
+            {
+                base: 20.0d,
+                id: "minecraft:generic.max_health"
+            },
+            {
+                base: 0.5d,
+                id: "minecraft:generic.movement_speed"
+            }
+        ],
+        id: "easy_npc:humanoid_slim",
+        CustomName: '{"text": "Printmaker Mei", "color": "#FF69B4"}'
+    }
+}

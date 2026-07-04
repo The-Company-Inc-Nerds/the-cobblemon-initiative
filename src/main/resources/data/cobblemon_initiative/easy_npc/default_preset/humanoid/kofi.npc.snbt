@@ -1,12 +1,12 @@
 {
     PresetMetadata: {
         author: "TheCompanyInc",
-        category: "Quest",
+        category: "Civilian",
         created: 0L,
-        description: "quest_giver at Sango Town (act 1). Compiled from dialog-src.",
+        description: "civilian at Sango Town (act 1). Compiled from dialog-src.",
         entityTypeId: "easy_npc:humanoid",
         modified: 0L,
-        name: "Assistant Kofi",
+        name: "Kofi",
         variantType: "STEVE",
         version: "1.0.0"
     },
@@ -20,7 +20,7 @@
                 ]
             }
         },
-        ArmorDropChances: [0.085f, 0.085f, 0.085f, 0.085f],
+        ArmorDropChances: [0.08500000089406967f, 0.08500000089406967f, 0.08500000089406967f, 0.08500000089406967f],
         ArmorItems: [
             {},
             {},
@@ -33,299 +33,88 @@
         CanPickUpLoot: 0b,
         CustomNameVisible: 1b,
         DialogData: {
-            Type: "STANDARD",
+            Type: "BASIC",
             DialogDataSet: [
                 {
-                    Conditions: [
-                        {
-                            Type: "PLAYER_TAG",
-                            Operation: "EQUALS",
-                            Name: "quest_assist_grant_done"
-                        }
-                    ],
-                    Priority: 40,
-                    Texts: [
-                        {
-                            Text: "The report went out with this morning post. Three field studies, zero budget, one anonymous benefactor. Science limps on."
-                        },
-                        {
-                            Text: "Acacia read the whole report twice and smiled once. For her that is a standing ovation."
-                        }
-                    ],
-                    Name: "Kofi — grant filed",
-                    Label: "grant_done"
-                },
-                {
-                    Conditions: [
-                        {
-                            Type: "PLAYER_TAG",
-                            Operation: "EQUALS",
-                            Name: "quest_assist_cull_done"
-                        },
-                        {
-                            Type: "PLAYER_TAG",
-                            Operation: "EQUALS",
-                            Name: "quest_assist_collect_done"
-                        },
-                        {
-                            Type: "PLAYER_TAG",
-                            Operation: "EQUALS",
-                            Name: "quest_assist_mine_done"
-                        },
-                        {
-                            Type: "PLAYER_TAG",
-                            Operation: "NOT_EQUALS",
-                            Name: "quest_assist_grant_done"
-                        }
-                    ],
-                    Priority: 30,
-                    Buttons: [
-                        {
-                            Name: "Take the completion packet",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "function cobblemon_initiative:economy/pay_macro {paid:400}"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "give @s cobblemon:exp_candy_xs 2"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "tag @s add quest_assist_grant_done"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    Cmd: "title @p actionbar [{\"text\":\"Grant report filed. The annex thanks its unverified benefactor.\",\"color\":\"gold\"}]"
-                                },
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "packet_button"
-                        },
-                        {
-                            Name: "Hold it for me",
-                            Actions: [
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "later_button"
-                        }
-                    ],
-                    Texts: [
-                        {
-                            Text: "Fieldwork, collections, geology — all three ledgers closed. Acacia countersigned the grant report an hour ago. There is a completion line in the budget, and for once there is something in it."
-                        }
-                    ],
-                    Name: "Kofi — the grant report",
-                    Label: "grant_report"
-                },
-                {
-                    Conditions: [
-                        {
-                            Type: "PLAYER_TAG",
-                            Operation: "EQUALS",
-                            Name: "quest_assist_cull_done"
-                        }
-                    ],
-                    Priority: 20,
-                    Texts: [
-                        {
-                            Text: "The night counts are clean again. Whatever you did out there, the habitat survey thanks you and asks no further questions."
-                        },
-                        {
-                            Text: "Miri is still waiting on her kelp and Raan on his rocks, if you have more science in you. When all three ledgers close, come back to me — Acacia countersigns and the annex pays out."
-                        }
-                    ],
-                    Name: "Kofi — survey resumed",
-                    Label: "cull_done"
-                },
-                {
                     Priority: 10,
-                    Buttons: [
-                        {
-                            Name: "Hand over 8 rotten flesh",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "clear @s minecraft:rotten_flesh 8"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "function cobblemon_initiative:economy/pay_macro {paid:250}"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "give @s cobblemon:poke_ball 1"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "tag @s add quest_assist_cull_done"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    Cmd: "title @p actionbar [{\"text\":\"Field cull logged. Grant work: one of three ledgers closed.\",\"color\":\"yellow\"}]"
-                                },
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Conditions: [
-                                {
-                                    Type: "HAS_ITEM_IN_INVENTORY",
-                                    Operation: "EQUALS",
-                                    Item: "minecraft:rotten_flesh",
-                                    Quantity: 8
-                                },
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "NOT_EQUALS",
-                                    Name: "quest_assist_cull_done"
-                                }
-                            ],
-                            Label: "flesh_button"
-                        },
-                        {
-                            Name: "Hand over 8 bones",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "clear @s minecraft:bone 8"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "function cobblemon_initiative:economy/pay_macro {paid:250}"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "give @s cobblemon:poke_ball 1"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "tag @s add quest_assist_cull_done"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    Cmd: "title @p actionbar [{\"text\":\"Field cull logged. Grant work: one of three ledgers closed.\",\"color\":\"yellow\"}]"
-                                },
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Conditions: [
-                                {
-                                    Type: "HAS_ITEM_IN_INVENTORY",
-                                    Operation: "EQUALS",
-                                    Item: "minecraft:bone",
-                                    Quantity: 8
-                                },
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "NOT_EQUALS",
-                                    Name: "quest_assist_cull_done"
-                                }
-                            ],
-                            Label: "bone_button"
-                        },
-                        {
-                            Name: "I will be back after dark",
-                            Actions: [
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "later_button"
-                        }
-                    ],
                     Texts: [
                         {
-                            Text: "I run fieldwork for the lab. Ran. The grant was consolidated for verification and the verification never came back, so now I count moths from my kitchen window. The night surveys on Blossom Path are ruined — shamblers and archers trample every plot after dark. Cull eight of either and bring me proof. The field pays by the specimen, out of a budget line nobody has verified yet."
+                            Text: "Hear it, hear it! The Shorefront Invitational is open on the docks — two rounds, one purse, one very official banner!"
                         },
                         {
-                            Text: "Blossom Path after dark is honest work and honest risk — go only if your team is ready, and come home if it is not. Eight pieces of rotten flesh or eight bones is proof enough for the ledger. Miri handles collections by the shore and Raan does geology up the lane, if daylight suits you better."
+                            Text: "Sign up with Harbourmaster Tayo at the harbour office! Entry one hundred fifty, purse counted, sealed, and verified by The Company, Inc!"
+                        },
+                        {
+                            Text: "Net-mender, then the Harbourmaster herself! Beat them both and the podium is yours — the envelope is already waiting!"
                         }
                     ],
-                    Name: "Kofi — fieldwork brief",
+                    Name: "Crier — hear it",
                     Label: "default"
                 }
             ]
         },
         DisplayAttribute: [
             {
-                Bool: 1b,
-                Type: "VISIBLE"
+                Type: "VISIBLE",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_AT_DAY"
+                Type: "VISIBLE_AT_DAY",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_AT_NIGHT"
+                Type: "VISIBLE_AT_NIGHT",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_IN_CREATIVE"
+                Type: "VISIBLE_IN_CREATIVE",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_IN_SPECTATOR"
+                Type: "VISIBLE_IN_SPECTATOR",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_IN_STANDARD"
+                Type: "VISIBLE_IN_STANDARD",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_TO_OWNER"
+                Type: "VISIBLE_TO_OWNER",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_TO_TEAM"
+                Type: "VISIBLE_TO_TEAM",
+                Bool: 1b
             },
             {
-                Int: 7,
-                Type: "LIGHT_LEVEL"
+                Type: "LIGHT_LEVEL",
+                Int: 7
             },
             {
-                Text: "ALWAYS",
-                Type: "NAME_VISIBILITY"
+                Type: "NAME_VISIBILITY",
+                Text: "ALWAYS"
             }
         ],
         EasyNPCVersion: 3,
         EntityAttribute: {
-            CanBeHitByProjectile: 0b,
-            CanBeLeashed: 0b,
-            CanBreatheUnderwater: 0b,
-            CanCloseDoor: 0b,
-            CanFloat: 0b,
-            CanOpenDoor: 0b,
-            CanPassDoor: 0b,
-            CanUseNetherPortal: 0b,
-            Freefall: 0b,
-            HealthRegeneration: 0.0d,
             IsAttackableByMonsters: 0b,
-            IsAttackableByPlayers: 0b,
+            CanCloseDoor: 0b,
+            Freefall: 0b,
+            CanUseNetherPortal: 0b,
             IsInvulnerable: 1b,
-            IsPushable: 0b,
+            HealthRegeneration: 0.0d,
             NoGravity: 0b,
-            PushEntities: 0b
+            CanPassDoor: 0b,
+            PushEntities: 0b,
+            CanFloat: 0b,
+            CanBreatheUnderwater: 0b,
+            CanBeLeashed: 0b,
+            CanBeHitByProjectile: 0b,
+            IsPushable: 0b,
+            IsAttackableByPlayers: 0b,
+            CanOpenDoor: 0b
         },
-        HandDropChances: [0.085f, 0.085f],
+        HandDropChances: [0.08500000089406967f, 0.08500000089406967f],
         HandItems: [
             {},
             {}
@@ -335,18 +124,16 @@
         ModelData: {
             DefaultPose: "STANDING",
             Pose: "VANILLA",
-            Position: {},
+            Visible: {},
             Rotation: {},
-            Scale: {},
-            Visible: {
-                Boots: 1b
-            }
+            Position: {},
+            Scale: {}
         },
         Navigation: {
             Home: {
-                X: 0,
-                Y: 0,
-                Z: 0
+                Y: 105,
+                Z: 2902,
+                X: 2584
             }
         },
         ObjectiveData: {
@@ -382,23 +169,39 @@
         },
         RenderData: {},
         SkinData: {
-            Content: "",
-            DisableLayers: 0b,
+            Type: "SECURE_REMOTE_URL",
+            URL: "https://www.minecraftskins.com/uploads/skins/2023/04/17/savanna-explorer-21524237.png?v921",
+            UUID: [I; -365797682, -1150929424, -1182776199, 844372522],
             Name: "",
-            Timestamp: 0L,
-            Type: "DEFAULT",
-            URL: "",
-            UUID: [I; 0, 0, 0, 0]
+            Content: "",
+            Timestamp: 1757619126296L,
+            DisableLayers: 0b
         },
         SoundData: {
             SoundDataSet: [
                 {
-                    Name: "minecraft:entity.player.death",
-                    Type: "DEATH"
+                    Type: "DEATH",
+                    Name: "minecraft:entity.player.death"
                 },
                 {
-                    Name: "minecraft:entity.player.hurt",
-                    Type: "HURT"
+                    Type: "EAT",
+                    Name: "minecraft:entity.generic.eat"
+                },
+                {
+                    Type: "HURT",
+                    Name: "minecraft:entity.player.hurt"
+                },
+                {
+                    Type: "TRADE",
+                    Name: "minecraft:entity.villager.trade"
+                },
+                {
+                    Type: "TRADE_YES",
+                    Name: "minecraft:entity.villager.yes"
+                },
+                {
+                    Type: "TRADE_NO",
+                    Name: "minecraft:entity.villager.no"
                 }
             ]
         },
@@ -418,6 +221,7 @@
                 id: "minecraft:generic.movement_speed"
             }
         ],
-        id: "easy_npc:humanoid"
+        id: "easy_npc:humanoid",
+        CustomName: '{"text": "Kofi", "color": "#8B4513"}'
     }
 }

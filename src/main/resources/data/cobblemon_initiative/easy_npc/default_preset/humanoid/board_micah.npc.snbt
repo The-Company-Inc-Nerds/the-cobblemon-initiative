@@ -81,12 +81,12 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @p[tag=defeated_board_micah] run tbcs attach board_micah @s"
+                                    Cmd: "execute unless entity @initiator[tag=defeated_board_micah] run tbcs attach board_micah @initiator"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @s[tag=defeated_board_micah] run tbcs battle GEN_9_SINGLES @s vs board_micah onwin {1: ['cobbledollars add @1 9000', 'tag @1 add defeated_board_micah', '@2 say The model held until it did not. I will need to revise my assumptions about people who refuse to be line items.', 'execute as @1 at @1 run function cobblemon_initiative:reveal/board_fell', 'easy_npc delete @2'], 2: ['@2 say Liability realised on schedule. I did reserve against you. It is almost a relief to be right about the worst case.']}"
+                                    Cmd: "execute unless entity @initiator[tag=defeated_board_micah] run tbcs battle GEN_9_SINGLES @initiator vs board_micah onwin {1: ['cobbledollars add @1 9000', 'tag @1 add defeated_board_micah', '@2 say The model held until it did not. I will need to revise my assumptions about people who refuse to be line items.', 'execute as @1 at @1 run function cobblemon_initiative:reveal/board_fell', 'easy_npc delete @2'], 2: ['@2 say Liability realised on schedule. I did reserve against you. It is almost a relief to be right about the worst case.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

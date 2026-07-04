@@ -1,0 +1,602 @@
+{
+    PresetMetadata: {
+        author: "TheCompanyInc",
+        category: "Quest",
+        created: 0L,
+        description: "quest_giver at Hua Zhan City - West Hill Garden (act 1). Compiled from dialog-src.",
+        entityTypeId: "easy_npc:humanoid",
+        modified: 0L,
+        name: "Garden Master Wei",
+        variantType: "STEVE",
+        version: "1.0.0"
+    },
+    data: {
+        ActionData: {
+            ActionEventSet: {
+                ON_INTERACTION: [
+                    {
+                        Type: "OPEN_DEFAULT_DIALOG"
+                    }
+                ]
+            }
+        },
+        ArmorDropChances: [0.08500000089406967f, 0.08500000089406967f, 0.08500000089406967f, 0.08500000089406967f],
+        ArmorItems: [
+            {},
+            {},
+            {},
+            {}
+        ],
+        Brain: {
+            memories: {}
+        },
+        CanPickUpLoot: 0b,
+        CustomNameVisible: 1b,
+        DialogData: {
+            Type: "STANDARD",
+            DialogDataSet: [
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "seal_moss"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "seal_orchard"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "seal_terrace"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "seal_pond"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "NOT_EQUALS",
+                            Name: "pilgrimage_done"
+                        }
+                    ],
+                    Priority: 40,
+                    Buttons: [
+                        {
+                            Name: "Receive the blessing of the four gardens",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "loot give @initiator loot cobblemon_initiative:npc_gift/pilgrim_blessing"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobbledollars add @initiator 300"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @initiator add pilgrimage_done"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "execute as @initiator run function cobblemon_initiative:sidequest/pilgrimage/hud"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "tellraw @initiator [{\"text\":\"Blessing of the Four Gardens — a leaf stone, two super potions, and 300 CobbleDollars.\",\"color\":\"gold\"}]"
+                                },
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "blessed"
+                                }
+                            ],
+                            Label: "bless_button"
+                        },
+                        {
+                            Name: "Not just yet",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Four seals. Moss, orchard, terrace, pond. You walked the town the way the first gardeners walked it, and every garden said yes."
+                        },
+                        {
+                            Text: "Come here, pilgrim. What grows slow grows true — and one or two things only grow when a stone tells them now."
+                        }
+                    ],
+                    Name: "Wei — four seals",
+                    Label: "blessing"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "defeated_hua_zhan_leader"
+                        }
+                    ],
+                    Priority: 30,
+                    Buttons: [
+                        {
+                            Name: "I will remember",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The Bloom Badge. Blossom bends and does not break — I taught her the bending part when she was small enough to hide in the moss court."
+                        },
+                        {
+                            Text: "Down in the valley they grow under glass now. Schedules. Quotas. Verified rows. Up here the gardens keep their own calendar, and they were keeping it long before anyone thought to sell the weather. Remember which botany taught you."
+                        }
+                    ],
+                    Name: "Wei — after the Bloom Badge",
+                    Label: "after_badge"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "NOT_EQUALS",
+                            Name: "pilgrimage_done"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "seal_moss"
+                        }
+                    ],
+                    Priority: 15,
+                    Buttons: [
+                        {
+                            Name: "Name the gardens again",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "stations"
+                                }
+                            ],
+                            Label: "stations_button"
+                        },
+                        {
+                            Name: "Back to the circle",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The hill hears things. A plaque has been pressed already — good. The gardens talk to each other through the water, you know, and none of them called you a tourist."
+                        },
+                        {
+                            Text: "Moss, orchard, terrace, pond. Finish the circle in any order, then climb back up to me."
+                        }
+                    ],
+                    Name: "Wei — the circle half walked",
+                    Label: "in_progress"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "NOT_EQUALS",
+                            Name: "pilgrimage_done"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "seal_orchard"
+                        }
+                    ],
+                    Priority: 15,
+                    Buttons: [
+                        {
+                            Name: "Name the gardens again",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "stations"
+                                }
+                            ],
+                            Label: "stations_button"
+                        },
+                        {
+                            Name: "Back to the circle",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The hill hears things. A plaque has been pressed already — good. The gardens talk to each other through the water, you know, and none of them called you a tourist."
+                        },
+                        {
+                            Text: "Moss, orchard, terrace, pond. Finish the circle in any order, then climb back up to me."
+                        }
+                    ],
+                    Name: "Wei — the circle half walked",
+                    Label: "in_progress__or1"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "NOT_EQUALS",
+                            Name: "pilgrimage_done"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "seal_terrace"
+                        }
+                    ],
+                    Priority: 15,
+                    Buttons: [
+                        {
+                            Name: "Name the gardens again",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "stations"
+                                }
+                            ],
+                            Label: "stations_button"
+                        },
+                        {
+                            Name: "Back to the circle",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The hill hears things. A plaque has been pressed already — good. The gardens talk to each other through the water, you know, and none of them called you a tourist."
+                        },
+                        {
+                            Text: "Moss, orchard, terrace, pond. Finish the circle in any order, then climb back up to me."
+                        }
+                    ],
+                    Name: "Wei — the circle half walked",
+                    Label: "in_progress__or2"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "NOT_EQUALS",
+                            Name: "pilgrimage_done"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "seal_pond"
+                        }
+                    ],
+                    Priority: 15,
+                    Buttons: [
+                        {
+                            Name: "Name the gardens again",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "stations"
+                                }
+                            ],
+                            Label: "stations_button"
+                        },
+                        {
+                            Name: "Back to the circle",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The hill hears things. A plaque has been pressed already — good. The gardens talk to each other through the water, you know, and none of them called you a tourist."
+                        },
+                        {
+                            Text: "Moss, orchard, terrace, pond. Finish the circle in any order, then climb back up to me."
+                        }
+                    ],
+                    Name: "Wei — the circle half walked",
+                    Label: "in_progress__or3"
+                },
+                {
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "Where are the four gardens",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "stations"
+                                }
+                            ],
+                            Label: "stations_button"
+                        },
+                        {
+                            Name: "I will walk them",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Up here we practice the old botany. Blossom holds the badge, but the badge grew out of four living gardens long before there was a building to keep it in."
+                        },
+                        {
+                            Text: "If you mean to challenge her, do it the old way. Walk the four gardens — moss court, orchard, terrace, pond. Best the warden of each, press your hand to the station plaque, and take its seal. Four seals, and this hill will bless your challenge."
+                        }
+                    ],
+                    Name: "Wei — the old botany",
+                    Label: "default"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Back",
+                            Actions: [
+                                {
+                                    Type: "OPEN_DEFAULT_DIALOG"
+                                }
+                            ],
+                            Label: "back_button"
+                        },
+                        {
+                            Name: "To the gardens",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The moss court sits below this hill to the east, where the stones stay green all winter. Gardener Lin keeps it, and Lin does not hurry for anyone."
+                        },
+                        {
+                            Text: "The orchard lies north in the low rows — Botanist Mei grafts there. The terrace hangs southeast over the water channels, that is Horticulturist Fang. And the pond is far south past the terrace, still as a held breath. Ranger Xiu watches it. Warden first, plaque second. The plaques know the difference."
+                        }
+                    ],
+                    Name: "Wei — naming the stations",
+                    Label: "stations"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Thank you, Master Wei",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The stone came out of the moss court soil forty years ago and has been waiting on a worthy pocket ever since. Some of what you carry will know what to do with it."
+                        },
+                        {
+                            Text: "Now go and see Blossom. Tell her the hill sent you — she will know what that costs me to say."
+                        }
+                    ],
+                    Name: "Wei — the handoff",
+                    Label: "blessed"
+                }
+            ]
+        },
+        DisplayAttribute: [
+            {
+                Type: "VISIBLE",
+                Bool: 1b
+            },
+            {
+                Type: "VISIBLE_AT_DAY",
+                Bool: 1b
+            },
+            {
+                Type: "VISIBLE_AT_NIGHT",
+                Bool: 1b
+            },
+            {
+                Type: "VISIBLE_IN_CREATIVE",
+                Bool: 1b
+            },
+            {
+                Type: "VISIBLE_IN_SPECTATOR",
+                Bool: 1b
+            },
+            {
+                Type: "VISIBLE_IN_STANDARD",
+                Bool: 1b
+            },
+            {
+                Type: "VISIBLE_TO_OWNER",
+                Bool: 1b
+            },
+            {
+                Type: "VISIBLE_TO_TEAM",
+                Bool: 1b
+            },
+            {
+                Type: "LIGHT_LEVEL",
+                Int: 7
+            },
+            {
+                Type: "NAME_VISIBILITY",
+                Text: "ALWAYS"
+            }
+        ],
+        EasyNPCVersion: 3,
+        EntityAttribute: {
+            IsAttackableByMonsters: 0b,
+            CanCloseDoor: 0b,
+            Freefall: 0b,
+            CanUseNetherPortal: 0b,
+            IsInvulnerable: 1b,
+            HealthRegeneration: 0.0d,
+            NoGravity: 0b,
+            CanPassDoor: 0b,
+            PushEntities: 0b,
+            CanFloat: 0b,
+            CanBreatheUnderwater: 0b,
+            CanBeLeashed: 0b,
+            CanBeHitByProjectile: 0b,
+            IsPushable: 0b,
+            IsAttackableByPlayers: 0b,
+            CanOpenDoor: 0b
+        },
+        HandDropChances: [0.08500000089406967f, 0.08500000089406967f],
+        HandItems: [
+            {},
+            {}
+        ],
+        Invulnerable: 0b,
+        LeftHanded: 1b,
+        ModelData: {
+            DefaultPose: "STANDING",
+            Pose: "DEFAULT",
+            Visible: {},
+            Rotation: {},
+            Position: {},
+            Scale: {}
+        },
+        Navigation: {
+            Home: {
+                Y: 105,
+                Z: 2053,
+                X: 1404
+            }
+        },
+        ObjectiveData: {
+            HasObjectives: 1b,
+            HasTravelTarget: 0b,
+            ObjectiveDataSet: [
+                {
+                    Type: "LOOK_AT_PLAYER",
+                    Prio: 9,
+                    Id: "ambient_look_player",
+                    LookDistance: 8.0f
+                },
+                {
+                    Type: "LOOK_RANDOM_AROUND",
+                    Prio: 10,
+                    Id: "ambient_look_random"
+                },
+                {
+                    Type: "LOOK_AT_RESET",
+                    Prio: 9,
+                    Id: "ambient_look_reset"
+                }
+            ]
+        },
+        OnGround: 1b,
+        PersistenceRequired: 0b,
+        PresetUUID: [I; 0, 0, 0, 0],
+        Profession: "NONE",
+        Progression: {
+            AttributeScalingEnabled: 0b,
+            EntityExperience: 1,
+            EntityExperienceLevel: 1
+        },
+        RenderData: {},
+        SkinData: {
+            Type: "SECURE_REMOTE_URL",
+            URL: "https://www.minecraftskins.com/uploads/skins/2025/04/12/liu-zhigang-23186547.png?v940",
+            UUID: [I; -1241460053, 1327641338, -1887117648, -401263116],
+            Name: "",
+            Content: "",
+            Timestamp: 1771347309212L,
+            DisableLayers: 0b
+        },
+        SoundData: {
+            SoundDataSet: [
+                {
+                    Type: "DEATH",
+                    Name: "minecraft:entity.player.death"
+                },
+                {
+                    Type: "EAT",
+                    Name: "minecraft:entity.generic.eat"
+                },
+                {
+                    Type: "HURT",
+                    Name: "minecraft:entity.player.hurt"
+                },
+                {
+                    Type: "TRADE",
+                    Name: "minecraft:entity.villager.trade"
+                },
+                {
+                    Type: "TRADE_YES",
+                    Name: "minecraft:entity.villager.yes"
+                },
+                {
+                    Type: "TRADE_NO",
+                    Name: "minecraft:entity.villager.no"
+                }
+            ]
+        },
+        Status: {
+            finalized: 0b,
+            npc_data_last_saved: 0L,
+            npc_data_last_update: 0L
+        },
+        VariantType: "STEVE",
+        attributes: [
+            {
+                base: 20.0d,
+                id: "minecraft:generic.max_health"
+            },
+            {
+                base: 0.5d,
+                id: "minecraft:generic.movement_speed"
+            }
+        ],
+        id: "easy_npc:humanoid",
+        CustomName: '{"text": "Garden Master Wei", "color": "#0000FF"}'
+    }
+}

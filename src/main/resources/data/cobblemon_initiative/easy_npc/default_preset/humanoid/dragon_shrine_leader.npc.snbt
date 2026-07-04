@@ -74,16 +74,16 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @p[tag=defeated_dragon_shrine_leader] run say The wyrm remembers your weight. There is nothing left for you to prove here."
+                                    Cmd: "execute if entity @initiator[tag=defeated_dragon_shrine_leader] run say The wyrm remembers your weight. There is nothing left for you to prove here."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @p[tag=defeated_dragon_shrine_leader] run tbcs attach dragon_shrine_leader @s"
+                                    Cmd: "execute unless entity @initiator[tag=defeated_dragon_shrine_leader] run tbcs attach dragon_shrine_leader @initiator"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @s[tag=defeated_dragon_shrine_leader] run tbcs battle GEN_9_SINGLES @s vs dragon_shrine_leader onwin {1: ['cobbledollars add @1 2500', 'tag @1 add defeated_dragon_shrine_leader', '@2 say The wyrm has weighed you and found you whole. Go, bearer of the old fire.'], 2: ['@2 say The shrine has not finished with you. Return when your scales have hardened.']}"
+                                    Cmd: "execute unless entity @initiator[tag=defeated_dragon_shrine_leader] run tbcs battle GEN_9_SINGLES @initiator vs dragon_shrine_leader onwin {1: ['cobbledollars add @1 2500', 'tag @1 add defeated_dragon_shrine_leader', '@2 say The wyrm has weighed you and found you whole. Go, bearer of the old fire.'], 2: ['@2 say The shrine has not finished with you. Return when your scales have hardened.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

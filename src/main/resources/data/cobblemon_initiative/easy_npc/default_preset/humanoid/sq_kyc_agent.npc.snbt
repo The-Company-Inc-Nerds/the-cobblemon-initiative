@@ -68,16 +68,16 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @p[tag=defeated_sq_kyc_agent] run say The survey window has closed. Records are final."
+                                    Cmd: "execute if entity @initiator[tag=defeated_sq_kyc_agent] run say The survey window has closed. Records are final."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @p[tag=defeated_sq_kyc_agent] run tbcs attach sq_kyc_agent @s"
+                                    Cmd: "execute unless entity @initiator[tag=defeated_sq_kyc_agent] run tbcs attach sq_kyc_agent @initiator"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @s[tag=defeated_sq_kyc_agent] run tbcs battle GEN_9_SINGLES @s vs sq_kyc_agent onwin {1: ['cobbledollars add @1 460', 'tag @1 add defeated_sq_kyc_agent', '@2 say There has been a scheduling conflict. The survey is suspended. This visit never reached the district office.', 'give @1 cobblemon:super_potion 2', 'easy_npc delete @2'], 2: ['@2 say Thank you for your participation. Your responses have been recorded against you.']}"
+                                    Cmd: "execute unless entity @initiator[tag=defeated_sq_kyc_agent] run tbcs battle GEN_9_SINGLES @initiator vs sq_kyc_agent onwin {1: ['cobbledollars add @1 460', 'tag @1 add defeated_sq_kyc_agent', '@2 say There has been a scheduling conflict. The survey is suspended. This visit never reached the district office.', 'give @1 cobblemon:super_potion 2', 'easy_npc delete @2'], 2: ['@2 say Thank you for your participation. Your responses have been recorded against you.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -91,11 +91,11 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "cobbledollars remove @s 150"
+                                    Cmd: "cobbledollars remove @initiator 150"
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "title @p actionbar [{\"text\":\"Interview declined. A 150 CD processing fee has been applied with verified gratitude.\",\"color\":\"gray\"}]"
+                                    Cmd: "title @initiator actionbar [{\"text\":\"Interview declined. A 150 CD processing fee has been applied with verified gratitude.\",\"color\":\"gray\"}]"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

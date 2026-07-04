@@ -67,7 +67,16 @@ Author in batches; each batch unblocks Claude wiring the same day:
    - [ ] 🔍 **Batch smoke-tests** these side quests lean on: `givepokemonother`
      (Kele Magikarp, trades, gifts), `cobbledollars add/remove @s` inside `execute as`,
      the `can_see_player` stealth branches (surveyor/canvasser), `cobblemon:poke_rod` +
-     fossil item ids, renamed `writable_book`/`paper` component shape.
+     fossil item ids, renamed `writable_book`/`paper` component shape, **the world-merge
+     import** (one NPC: preset import keeps builder skin + our dialog + renames), and the
+     **zone-mapper NPC overlay** rendering in a browser.
+5. **Act 1 beat 2 — Harvest Road + Hua Zhan City (gym 2, the wheat reveal)** — BUILT
+   2026-07-03 (11 showrunner-selected quests + both route backbones + gym ladder
+   plumbing; 143 chars compile clean). Design menu: `docs/QUEST_OPTIONS_HARVEST_HUAZHAN.md`;
+   placement pass: `docs/PLACEMENT_BEAT2.md` (16 import-only castings + 16 new bodies);
+   test script: `docs/VERIFICATION_RUNBOOK.md`. Skipped by selection: Boundary
+   Adjustments, the dojo, Pest Control, Bloom Festival, Two Botanies. Guidebook
+   (wiki/Guidebook-Act-I.md) updated through Hua Zhan.
 
 ### Phase 2 — Wiring on authoring output 💻 (Claude; fast turnaround per batch)
 - Field guards: per-field `command` rewards firing `liberation/free_field {field:"<id>"}`;

@@ -20,7 +20,7 @@
                 ]
             }
         },
-        ArmorDropChances: [0.085f, 0.085f, 0.085f, 0.085f],
+        ArmorDropChances: [0.08500000089406967f, 0.08500000089406967f, 0.08500000089406967f, 0.08500000089406967f],
         ArmorItems: [
             {},
             {},
@@ -47,6 +47,16 @@
                                 }
                             ],
                             Label: "explain_button"
+                        },
+                        {
+                            Name: "About the glass tower",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "greenhouse_tour"
+                                }
+                            ],
+                            Label: "greenhouse_button"
                         },
                         {
                             Name: "I know what I am doing",
@@ -105,71 +115,146 @@
                     ],
                     Name: "How Gyms Work",
                     Label: "explain"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Back",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "default"
+                                }
+                            ],
+                            Label: "back_button"
+                        },
+                        {
+                            Name: "Thanks",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The Company runs a greenhouse at the north end of town — the big glass tower. Free public tours, they say. Verified growth, verified value. Go and see what they grow under all that glass before you challenge Blossom."
+                        },
+                        {
+                            Text: "Go all the way to the top. The ferns are on the ground floor. The rest of it is on the catwalk. Then come back down here and let Blossom show you the old way still wins."
+                        }
+                    ],
+                    Name: "Guide — the Company greenhouse",
+                    Label: "greenhouse_tour"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "NOT_EQUALS",
+                            Name: "pilgrimage_done"
+                        }
+                    ],
+                    Priority: 15,
+                    Buttons: [
+                        {
+                            Name: "Explain the gym",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "explain"
+                                }
+                            ],
+                            Label: "explain_button"
+                        },
+                        {
+                            Name: "I will find the hill",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Hua Zhan is a strange gym, challenger — half of it is not in this building. Blossom accepts challengers the old way: walk the four gardens first."
+                        },
+                        {
+                            Text: "Take the west stair up the hill and find Garden Master Wei. Four gardens, four wardens, four seals — finish the circle and the hill itself will vouch for you at this door."
+                        }
+                    ],
+                    Name: "Guide — the old way",
+                    Label: "pilgrim_hint"
                 }
             ]
         },
         DisplayAttribute: [
             {
-                Bool: 1b,
-                Type: "VISIBLE"
+                Type: "VISIBLE",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_AT_DAY"
+                Type: "VISIBLE_AT_DAY",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_AT_NIGHT"
+                Type: "VISIBLE_AT_NIGHT",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_IN_CREATIVE"
+                Type: "VISIBLE_IN_CREATIVE",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_IN_SPECTATOR"
+                Type: "VISIBLE_IN_SPECTATOR",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_IN_STANDARD"
+                Type: "VISIBLE_IN_STANDARD",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_TO_OWNER"
+                Type: "VISIBLE_TO_OWNER",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_TO_TEAM"
+                Type: "VISIBLE_TO_TEAM",
+                Bool: 1b
             },
             {
-                Int: 7,
-                Type: "LIGHT_LEVEL"
+                Type: "LIGHT_LEVEL",
+                Int: 7
             },
             {
-                Text: "ALWAYS",
-                Type: "NAME_VISIBILITY"
+                Type: "NAME_VISIBILITY",
+                Text: "ALWAYS"
             }
         ],
         EasyNPCVersion: 3,
         EntityAttribute: {
-            CanBeHitByProjectile: 0b,
-            CanBeLeashed: 0b,
-            CanBreatheUnderwater: 0b,
-            CanCloseDoor: 0b,
-            CanFloat: 0b,
-            CanOpenDoor: 0b,
-            CanPassDoor: 0b,
-            CanUseNetherPortal: 0b,
-            Freefall: 0b,
-            HealthRegeneration: 0.0d,
             IsAttackableByMonsters: 0b,
-            IsAttackableByPlayers: 0b,
+            CanCloseDoor: 0b,
+            Freefall: 0b,
+            CanUseNetherPortal: 0b,
             IsInvulnerable: 1b,
-            IsPushable: 0b,
+            HealthRegeneration: 0.0d,
             NoGravity: 0b,
-            PushEntities: 0b
+            CanPassDoor: 0b,
+            PushEntities: 0b,
+            CanFloat: 0b,
+            CanBreatheUnderwater: 0b,
+            CanBeLeashed: 0b,
+            CanBeHitByProjectile: 0b,
+            IsPushable: 0b,
+            IsAttackableByPlayers: 0b,
+            CanOpenDoor: 0b
         },
-        HandDropChances: [0.085f, 0.085f],
+        HandDropChances: [0.08500000089406967f, 0.08500000089406967f],
         HandItems: [
             {},
             {}
@@ -178,19 +263,17 @@
         LeftHanded: 0b,
         ModelData: {
             DefaultPose: "STANDING",
-            Pose: "VANILLA",
-            Position: {},
+            Pose: "DEFAULT",
+            Visible: {},
             Rotation: {},
-            Scale: {},
-            Visible: {
-                Boots: 1b
-            }
+            Position: {},
+            Scale: {}
         },
         Navigation: {
             Home: {
-                X: 0,
-                Y: 0,
-                Z: 0
+                Y: 86,
+                Z: 2050,
+                X: 1492
             }
         },
         ObjectiveData: {
@@ -226,23 +309,39 @@
         },
         RenderData: {},
         SkinData: {
-            Content: "",
-            DisableLayers: 0b,
+            Type: "SECURE_REMOTE_URL",
+            URL: "https://www.minecraftskins.com/uploads/skins/2024/04/28/magic-lily-22501763.png?v940",
+            UUID: [I; 1680188247, 1592539214, -1685551289, -1319377507],
             Name: "",
-            Timestamp: 0L,
-            Type: "DEFAULT",
-            URL: "",
-            UUID: [I; 0, 0, 0, 0]
+            Content: "",
+            Timestamp: 1771359113913L,
+            DisableLayers: 0b
         },
         SoundData: {
             SoundDataSet: [
                 {
-                    Name: "minecraft:entity.player.death",
-                    Type: "DEATH"
+                    Type: "DEATH",
+                    Name: "minecraft:entity.player.death"
                 },
                 {
-                    Name: "minecraft:entity.player.hurt",
-                    Type: "HURT"
+                    Type: "EAT",
+                    Name: "minecraft:entity.generic.eat"
+                },
+                {
+                    Type: "HURT",
+                    Name: "minecraft:entity.player.hurt"
+                },
+                {
+                    Type: "TRADE",
+                    Name: "minecraft:entity.villager.trade"
+                },
+                {
+                    Type: "TRADE_YES",
+                    Name: "minecraft:entity.villager.yes"
+                },
+                {
+                    Type: "TRADE_NO",
+                    Name: "minecraft:entity.villager.no"
                 }
             ]
         },
@@ -262,6 +361,7 @@
                 id: "minecraft:generic.movement_speed"
             }
         ],
-        id: "easy_npc:humanoid"
+        id: "easy_npc:humanoid",
+        CustomName: '{"text": "Hua Zhan Gym Guide", "color": "#0000FF"}'
     }
 }

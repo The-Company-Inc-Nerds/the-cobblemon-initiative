@@ -50,16 +50,16 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @p[tag=defeated_villain_grunt_11] run say The door behind me is already open because of you. There is nothing here for us to settle. Move along."
+                                    Cmd: "execute if entity @initiator[tag=defeated_villain_grunt_11] run say The door behind me is already open because of you. There is nothing here for us to settle. Move along."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @p[tag=defeated_villain_grunt_11] run tbcs attach villain_grunt_11 @s"
+                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_grunt_11] run tbcs attach villain_grunt_11 @initiator"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @s[tag=defeated_villain_grunt_11] run tbcs battle GEN_9_SINGLES @s vs villain_grunt_11 onwin {1: ['cobbledollars add @1 600', 'tag @1 add defeated_villain_grunt_11', '@2 say Past me is the boardroom door. They told me nobody gets past me. They told me a lot of things.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 400', '@2 say Perimeter holds. The board is not receiving visitors. Especially not you.']}"
+                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_grunt_11] run tbcs battle GEN_9_SINGLES @initiator vs villain_grunt_11 onwin {1: ['cobbledollars add @1 600', 'tag @1 add defeated_villain_grunt_11', '@2 say Past me is the boardroom door. They told me nobody gets past me. They told me a lot of things.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 400', '@2 say Perimeter holds. The board is not receiving visitors. Especially not you.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -90,16 +90,16 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @p[tag=defeated_villain_grunt_11] run say The door behind me is already open because of you. There is nothing here for us to settle. Move along."
+                                    Cmd: "execute if entity @initiator[tag=defeated_villain_grunt_11] run say The door behind me is already open because of you. There is nothing here for us to settle. Move along."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @p[tag=defeated_villain_grunt_11] run tbcs attach villain_grunt_11 @s"
+                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_grunt_11] run tbcs attach villain_grunt_11 @initiator"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @s[tag=defeated_villain_grunt_11] run tbcs battle GEN_9_SINGLES @s vs villain_grunt_11 onwin {1: ['cobbledollars add @1 600', 'tag @1 add defeated_villain_grunt_11', '@2 say Past me is the boardroom door. They told me nobody gets past me. They told me a lot of things.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 400', '@2 say Perimeter holds. The board is not receiving visitors. Especially not you.']}"
+                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_grunt_11] run tbcs battle GEN_9_SINGLES @initiator vs villain_grunt_11 onwin {1: ['cobbledollars add @1 600', 'tag @1 add defeated_villain_grunt_11', '@2 say Past me is the boardroom door. They told me nobody gets past me. They told me a lot of things.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 400', '@2 say Perimeter holds. The board is not receiving visitors. Especially not you.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

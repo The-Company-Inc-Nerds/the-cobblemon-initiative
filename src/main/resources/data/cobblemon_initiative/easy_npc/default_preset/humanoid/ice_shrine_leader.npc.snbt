@@ -74,16 +74,16 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @p[tag=defeated_ice_shrine_leader] run say The frost already sealed you once. What is frozen does not freeze again."
+                                    Cmd: "execute if entity @initiator[tag=defeated_ice_shrine_leader] run say The frost already sealed you once. What is frozen does not freeze again."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @p[tag=defeated_ice_shrine_leader] run tbcs attach ice_shrine_leader @s"
+                                    Cmd: "execute unless entity @initiator[tag=defeated_ice_shrine_leader] run tbcs attach ice_shrine_leader @initiator"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @s[tag=defeated_ice_shrine_leader] run tbcs battle GEN_9_SINGLES @s vs ice_shrine_leader onwin {1: ['cobbledollars add @1 2500', 'tag @1 add defeated_ice_shrine_leader', '@2 say The frost has set its seal on you and it will not thaw. Go, and keep your stillness.'], 2: ['@2 say The cold turns you away. Return when your resolve will not crack.']}"
+                                    Cmd: "execute unless entity @initiator[tag=defeated_ice_shrine_leader] run tbcs battle GEN_9_SINGLES @initiator vs ice_shrine_leader onwin {1: ['cobbledollars add @1 2500', 'tag @1 add defeated_ice_shrine_leader', '@2 say The frost has set its seal on you and it will not thaw. Go, and keep your stillness.'], 2: ['@2 say The cold turns you away. Return when your resolve will not crack.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

@@ -99,12 +99,12 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @p[tag=company_overthrown] run tbcs attach villain_final_boss @s"
+                                    Cmd: "execute unless entity @initiator[tag=company_overthrown] run tbcs attach villain_final_boss @initiator"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @s[tag=company_overthrown] run tbcs battle GEN_9_SINGLES @s vs villain_final_boss onwin {1: ['tag @1 add company_overthrown', '@2 say There it is. The thing I was missing and you were not. You held the line I would have sold. Take it all. You finally earned the right to be the one of us who stays.', 'execute as @1 at @1 run function cobblemon_initiative:reveal/founder_defeated', 'easy_npc delete @2'], 2: ['@2 say Of course. Assets fail. You replace them. I have been replacing us for years and I am not tired yet. Get up and try again, or do not, and let me have the chair back.']}"
+                                    Cmd: "execute unless entity @initiator[tag=company_overthrown] run tbcs battle GEN_9_SINGLES @initiator vs villain_final_boss onwin {1: ['tag @1 add company_overthrown', '@2 say There it is. The thing I was missing and you were not. You held the line I would have sold. Take it all. You finally earned the right to be the one of us who stays.', 'execute as @1 at @1 run function cobblemon_initiative:reveal/founder_defeated', 'easy_npc delete @2'], 2: ['@2 say Of course. Assets fail. You replace them. I have been replacing us for years and I am not tired yet. Get up and try again, or do not, and let me have the chair back.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

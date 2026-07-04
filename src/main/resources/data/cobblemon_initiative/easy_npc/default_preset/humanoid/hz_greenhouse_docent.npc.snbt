@@ -1,0 +1,315 @@
+{
+    PresetMetadata: {
+        author: "TheCompanyInc",
+        category: "Civilian",
+        created: 0L,
+        description: "civilian at Hua Zhan City — Greenhouse Lobby (act 1). Compiled from dialog-src.",
+        entityTypeId: "easy_npc:humanoid",
+        modified: 0L,
+        name: "Greenhouse Docent",
+        variantType: "STEVE",
+        version: "1.0.0"
+    },
+    data: {
+        ActionData: {
+            ActionEventSet: {
+                ON_INTERACTION: [
+                    {
+                        Type: "OPEN_DEFAULT_DIALOG"
+                    }
+                ]
+            }
+        },
+        ArmorDropChances: [0.085f, 0.085f, 0.085f, 0.085f],
+        ArmorItems: [
+            {},
+            {},
+            {},
+            {}
+        ],
+        Brain: {
+            memories: {}
+        },
+        CanPickUpLoot: 0b,
+        CustomNameVisible: 1b,
+        DialogData: {
+            Type: "STANDARD",
+            DialogDataSet: [
+                {
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "Begin the tour",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @initiator add hz_tour_started"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "title @initiator actionbar [{\"text\":\"Up the glass tower — ground floor, then the seed vault, then the catwalk.\",\"color\":\"gray\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "start_button"
+                        },
+                        {
+                            Name: "Just looking",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Welcome to the Company greenhouse. I am your docent. Three floors, all free, all verified. Ground floor, ornamental botany — orchids, ferns, the pretty things that photograph well."
+                        },
+                        {
+                            Text: "Mezzanine, the seed vault, where our archivist keeps the dispatch board. And the catwalk, at the very top, for guests with a head for scale. Go up. Take your time. The Company thanks you for your attention."
+                        }
+                    ],
+                    Name: "Docent — three floors, all free",
+                    Label: "tour"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "wheat_named"
+                        }
+                    ],
+                    Priority: 15,
+                    Buttons: [
+                        {
+                            Name: "Just ferns",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The tour continues as scheduled. I do hope you enjoyed the view from the top."
+                        },
+                        {
+                            Text: "If anyone from head office asks, you saw ferns. Lovely ferns. That is all anyone ever sees up there. Ferns."
+                        }
+                    ],
+                    Name: "Docent — just ferns",
+                    Label: "post_reveal"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "wheat_named"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "NOT_EQUALS",
+                            Name: "hz_tour_stamped"
+                        }
+                    ],
+                    Priority: 20,
+                    Buttons: [
+                        {
+                            Name: "Accept the visitor kit",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "loot give @initiator loot cobblemon_initiative:npc_gift/greenhouse_kit"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @initiator add hz_tour_stamped"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "kit_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "You went all the way to the catwalk. Most visitors stop at the ferns. You saw the whole floor at once. Good. That is the entire point of the glass — so a guest can take it all in."
+                        },
+                        {
+                            Text: "The Company likes a guest who pays attention. Take a visitor kit, with our compliments. We pay our goodwill in the crop. It is a small joke of ours. You will get it in a moment."
+                        }
+                    ],
+                    Name: "Docent — the visitor kit",
+                    Label: "stamp"
+                }
+            ]
+        },
+        DisplayAttribute: [
+            {
+                Bool: 1b,
+                Type: "VISIBLE"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_AT_DAY"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_AT_NIGHT"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_IN_CREATIVE"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_IN_SPECTATOR"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_IN_STANDARD"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_TO_OWNER"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_TO_TEAM"
+            },
+            {
+                Int: 7,
+                Type: "LIGHT_LEVEL"
+            },
+            {
+                Text: "ALWAYS",
+                Type: "NAME_VISIBILITY"
+            }
+        ],
+        EasyNPCVersion: 3,
+        EntityAttribute: {
+            CanBeHitByProjectile: 0b,
+            CanBeLeashed: 0b,
+            CanBreatheUnderwater: 0b,
+            CanCloseDoor: 0b,
+            CanFloat: 0b,
+            CanOpenDoor: 0b,
+            CanPassDoor: 0b,
+            CanUseNetherPortal: 0b,
+            Freefall: 0b,
+            HealthRegeneration: 0.0d,
+            IsAttackableByMonsters: 0b,
+            IsAttackableByPlayers: 0b,
+            IsInvulnerable: 1b,
+            IsPushable: 0b,
+            NoGravity: 0b,
+            PushEntities: 0b
+        },
+        HandDropChances: [0.085f, 0.085f],
+        HandItems: [
+            {},
+            {}
+        ],
+        Invulnerable: 0b,
+        LeftHanded: 0b,
+        ModelData: {
+            DefaultPose: "STANDING",
+            Pose: "VANILLA",
+            Position: {},
+            Rotation: {},
+            Scale: {},
+            Visible: {
+                Boots: 1b
+            }
+        },
+        Navigation: {
+            Home: {
+                X: 0,
+                Y: 0,
+                Z: 0
+            }
+        },
+        ObjectiveData: {
+            HasObjectives: 1b,
+            HasTravelTarget: 0b,
+            ObjectiveDataSet: [
+                {
+                    Type: "LOOK_AT_PLAYER",
+                    Prio: 9,
+                    Id: "ambient_look_player",
+                    LookDistance: 8.0f
+                },
+                {
+                    Type: "LOOK_RANDOM_AROUND",
+                    Prio: 10,
+                    Id: "ambient_look_random"
+                },
+                {
+                    Type: "LOOK_AT_RESET",
+                    Prio: 9,
+                    Id: "ambient_look_reset"
+                }
+            ]
+        },
+        OnGround: 1b,
+        PersistenceRequired: 0b,
+        PresetUUID: [I; 0, 0, 0, 0],
+        Profession: "NONE",
+        Progression: {
+            AttributeScalingEnabled: 0b,
+            EntityExperience: 1,
+            EntityExperienceLevel: 1
+        },
+        RenderData: {},
+        SkinData: {
+            Content: "",
+            DisableLayers: 0b,
+            Name: "",
+            Timestamp: 0L,
+            Type: "DEFAULT",
+            URL: "",
+            UUID: [I; 0, 0, 0, 0]
+        },
+        SoundData: {
+            SoundDataSet: [
+                {
+                    Name: "minecraft:entity.player.death",
+                    Type: "DEATH"
+                },
+                {
+                    Name: "minecraft:entity.player.hurt",
+                    Type: "HURT"
+                }
+            ]
+        },
+        Status: {
+            finalized: 0b,
+            npc_data_last_saved: 0L,
+            npc_data_last_update: 0L
+        },
+        VariantType: "STEVE",
+        attributes: [
+            {
+                base: 20.0d,
+                id: "minecraft:generic.max_health"
+            },
+            {
+                base: 0.5d,
+                id: "minecraft:generic.movement_speed"
+            }
+        ],
+        id: "easy_npc:humanoid"
+    }
+}

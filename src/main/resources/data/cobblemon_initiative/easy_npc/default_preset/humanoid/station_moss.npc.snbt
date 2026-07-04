@@ -1,0 +1,330 @@
+{
+    PresetMetadata: {
+        author: "TheCompanyInc",
+        category: "Civilian",
+        created: 0L,
+        description: "civilian at Hua Zhan City - Moss Court (act 1). Compiled from dialog-src.",
+        entityTypeId: "easy_npc:humanoid",
+        modified: 0L,
+        name: "Moss Court Station Plaque",
+        variantType: "STEVE",
+        version: "1.0.0"
+    },
+    data: {
+        ActionData: {
+            ActionEventSet: {
+                ON_INTERACTION: [
+                    {
+                        Type: "OPEN_DEFAULT_DIALOG"
+                    }
+                ]
+            }
+        },
+        ArmorDropChances: [0.085f, 0.085f, 0.085f, 0.085f],
+        ArmorItems: [
+            {},
+            {},
+            {},
+            {}
+        ],
+        Brain: {
+            memories: {}
+        },
+        CanPickUpLoot: 0b,
+        CustomNameVisible: 1b,
+        DialogData: {
+            Type: "STANDARD",
+            DialogDataSet: [
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "seal_moss"
+                        }
+                    ],
+                    Priority: 20,
+                    Buttons: [
+                        {
+                            Name: "Study the old botany",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "lore"
+                                }
+                            ],
+                            Label: "study_button"
+                        },
+                        {
+                            Name: "Leave the court",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The seal of the moss court sits warm in the stone. One hand-print, older than the badge."
+                        },
+                        {
+                            Text: "The moss has already closed over the edge of the mark, as if the plaque had been pressed a hundred years ago."
+                        }
+                    ],
+                    Name: "Moss Court Plaque — sealed",
+                    Label: "sealed"
+                },
+                {
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "Press your hand to the seal",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @initiator add seal_moss"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "execute as @initiator run function cobblemon_initiative:sidequest/pilgrimage/update"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "title @initiator actionbar [{\"text\":\"The moss court seal takes.\",\"color\":\"green\"}]"
+                                },
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "lore"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "defeated_hua_zhan_trainer_1"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "NOT_EQUALS",
+                                    Name: "seal_moss"
+                                }
+                            ],
+                            Label: "press_button"
+                        },
+                        {
+                            Name: "Step back",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "STATION OF THE MOSS COURT — first of the four gardens. Best the warden of this court, then press your hand to the seal."
+                        },
+                        {
+                            Text: "A worn line beneath the crest reads: moss holds water and hates the torch. So does everything the court grows. Fire and wings have always been the fast way through — the court respects a trainer who knows it."
+                        }
+                    ],
+                    Name: "Moss Court Plaque",
+                    Label: "default"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Back to the plaque",
+                            Actions: [
+                                {
+                                    Type: "OPEN_DEFAULT_DIALOG"
+                                }
+                            ],
+                            Label: "back_button"
+                        },
+                        {
+                            Name: "Done reading",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "OLD BOTANY, PAGE OF THE MOSS COURT. Before the town had a name it had this court. The first gardeners judged a trainer the way they judged a cutting — not by how fast it grew but by how well it waited. The moss remembers every foot that rushed."
+                        },
+                        {
+                            Text: "The hill gardens grew here first. Everything that grows under glass in the valley came after, and it knows it."
+                        }
+                    ],
+                    Name: "Old Botany — First Leaf",
+                    Label: "lore"
+                }
+            ]
+        },
+        DisplayAttribute: [
+            {
+                Bool: 1b,
+                Type: "VISIBLE"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_AT_DAY"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_AT_NIGHT"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_IN_CREATIVE"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_IN_SPECTATOR"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_IN_STANDARD"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_TO_OWNER"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_TO_TEAM"
+            },
+            {
+                Int: 7,
+                Type: "LIGHT_LEVEL"
+            },
+            {
+                Text: "ALWAYS",
+                Type: "NAME_VISIBILITY"
+            }
+        ],
+        EasyNPCVersion: 3,
+        EntityAttribute: {
+            CanBeHitByProjectile: 0b,
+            CanBeLeashed: 0b,
+            CanBreatheUnderwater: 0b,
+            CanCloseDoor: 0b,
+            CanFloat: 0b,
+            CanOpenDoor: 0b,
+            CanPassDoor: 0b,
+            CanUseNetherPortal: 0b,
+            Freefall: 0b,
+            HealthRegeneration: 0.0d,
+            IsAttackableByMonsters: 0b,
+            IsAttackableByPlayers: 0b,
+            IsInvulnerable: 1b,
+            IsPushable: 0b,
+            NoGravity: 0b,
+            PushEntities: 0b
+        },
+        HandDropChances: [0.085f, 0.085f],
+        HandItems: [
+            {},
+            {}
+        ],
+        Invulnerable: 0b,
+        LeftHanded: 0b,
+        ModelData: {
+            DefaultPose: "STANDING",
+            Pose: "VANILLA",
+            Position: {},
+            Rotation: {},
+            Scale: {},
+            Visible: {
+                Boots: 1b
+            }
+        },
+        Navigation: {
+            Home: {
+                X: 0,
+                Y: 0,
+                Z: 0
+            }
+        },
+        ObjectiveData: {
+            HasObjectives: 1b,
+            HasTravelTarget: 0b,
+            ObjectiveDataSet: [
+                {
+                    Type: "LOOK_AT_PLAYER",
+                    Prio: 9,
+                    Id: "ambient_look_player",
+                    LookDistance: 8.0f
+                },
+                {
+                    Type: "LOOK_RANDOM_AROUND",
+                    Prio: 10,
+                    Id: "ambient_look_random"
+                },
+                {
+                    Type: "LOOK_AT_RESET",
+                    Prio: 9,
+                    Id: "ambient_look_reset"
+                }
+            ]
+        },
+        OnGround: 1b,
+        PersistenceRequired: 0b,
+        PresetUUID: [I; 0, 0, 0, 0],
+        Profession: "NONE",
+        Progression: {
+            AttributeScalingEnabled: 0b,
+            EntityExperience: 1,
+            EntityExperienceLevel: 1
+        },
+        RenderData: {},
+        SkinData: {
+            Content: "",
+            DisableLayers: 0b,
+            Name: "",
+            Timestamp: 0L,
+            Type: "DEFAULT",
+            URL: "",
+            UUID: [I; 0, 0, 0, 0]
+        },
+        SoundData: {
+            SoundDataSet: [
+                {
+                    Name: "minecraft:entity.player.death",
+                    Type: "DEATH"
+                },
+                {
+                    Name: "minecraft:entity.player.hurt",
+                    Type: "HURT"
+                }
+            ]
+        },
+        Status: {
+            finalized: 0b,
+            npc_data_last_saved: 0L,
+            npc_data_last_update: 0L
+        },
+        VariantType: "STEVE",
+        attributes: [
+            {
+                base: 20.0d,
+                id: "minecraft:generic.max_health"
+            },
+            {
+                base: 0.5d,
+                id: "minecraft:generic.movement_speed"
+            }
+        ],
+        id: "easy_npc:humanoid"
+    }
+}

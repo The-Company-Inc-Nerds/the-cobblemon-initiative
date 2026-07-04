@@ -1,0 +1,249 @@
+{
+    PresetMetadata: {
+        author: "TheCompanyInc",
+        category: "Service",
+        created: 0L,
+        description: "healer at Takehara Falls - Pokemon Center (act 1). Compiled from dialog-src.",
+        entityTypeId: "easy_npc:humanoid_slim",
+        modified: 0L,
+        name: "Nurse Lila",
+        variantType: "ALEX",
+        version: "1.0.0"
+    },
+    data: {
+        ActionData: {
+            ActionEventSet: {
+                ON_INTERACTION: [
+                    {
+                        Type: "OPEN_DEFAULT_DIALOG"
+                    }
+                ]
+            }
+        },
+        ArmorDropChances: [0.08500000089406967f, 0.08500000089406967f, 0.08500000089406967f, 0.08500000089406967f],
+        ArmorItems: [
+            {},
+            {},
+            {},
+            {}
+        ],
+        Brain: {
+            memories: {}
+        },
+        CanPickUpLoot: 0b,
+        CustomNameVisible: 1b,
+        DialogData: {
+            Type: "STANDARD",
+            DialogDataSet: [
+                {
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "Heal my team - 100 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "execute as @initiator run function cobblemon_initiative:economy/heal_paid"
+                                },
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "healed"
+                                }
+                            ],
+                            Label: "heal_button"
+                        },
+                        {
+                            Name: "Not right now",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Welcome to the Center. We can restore your team to full health - the Company revised the service schedule last quarter, so there is a small fee now. Verified care, verified invoice."
+                        },
+                        {
+                            Text: "You look like you have been through it. One hundred CobbleDollars and I will put your whole team right."
+                        }
+                    ],
+                    Name: "Nurse Lila",
+                    Label: "default"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Thank you",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "There. Rested and ready. We hope to see you again - the Company certainly hopes so, it is per-visit now."
+                        },
+                        {
+                            Text: "Your team is in the pink. Do try to keep them that way. The fee does add up, and adding up is rather the point these days."
+                        }
+                    ],
+                    Name: "Nurse Lila - all better",
+                    Label: "healed"
+                }
+            ]
+        },
+        DisplayAttribute: [
+            {
+                Type: "VISIBLE",
+                Bool: 1b
+            },
+            {
+                Type: "VISIBLE_AT_DAY",
+                Bool: 1b
+            },
+            {
+                Type: "VISIBLE_AT_NIGHT",
+                Bool: 1b
+            },
+            {
+                Type: "VISIBLE_IN_CREATIVE",
+                Bool: 1b
+            },
+            {
+                Type: "VISIBLE_IN_SPECTATOR",
+                Bool: 1b
+            },
+            {
+                Type: "VISIBLE_IN_STANDARD",
+                Bool: 1b
+            },
+            {
+                Type: "VISIBLE_TO_OWNER",
+                Bool: 1b
+            },
+            {
+                Type: "VISIBLE_TO_TEAM",
+                Bool: 1b
+            },
+            {
+                Type: "LIGHT_LEVEL",
+                Int: 7
+            },
+            {
+                Type: "NAME_VISIBILITY",
+                Text: "ALWAYS"
+            }
+        ],
+        EasyNPCVersion: 3,
+        EntityAttribute: {
+            IsAttackableByMonsters: 0b,
+            CanCloseDoor: 0b,
+            Freefall: 0b,
+            CanUseNetherPortal: 0b,
+            IsInvulnerable: 1b,
+            HealthRegeneration: 0.0d,
+            NoGravity: 0b,
+            CanPassDoor: 0b,
+            PushEntities: 0b,
+            CanFloat: 0b,
+            CanBreatheUnderwater: 0b,
+            CanBeLeashed: 0b,
+            CanBeHitByProjectile: 0b,
+            IsPushable: 0b,
+            IsAttackableByPlayers: 0b,
+            CanOpenDoor: 0b
+        },
+        HandDropChances: [0.08500000089406967f, 0.08500000089406967f],
+        HandItems: [
+            {},
+            {}
+        ],
+        Invulnerable: 0b,
+        LeftHanded: 0b,
+        ModelData: {
+            DefaultPose: "STANDING",
+            Pose: "DEFAULT",
+            Visible: {},
+            Rotation: {},
+            Position: {},
+            Scale: {}
+        },
+        Navigation: {
+            Home: {
+                Y: 109,
+                Z: 2427,
+                X: 1822
+            }
+        },
+        ObjectiveData: {
+            HasObjectives: 1b,
+            HasTravelTarget: 0b,
+            ObjectiveDataSet: [
+                {
+                    Type: "LOOK_AT_PLAYER",
+                    Prio: 9,
+                    Id: "ambient_look_player",
+                    LookDistance: 8.0f
+                },
+                {
+                    Type: "LOOK_RANDOM_AROUND",
+                    Prio: 10,
+                    Id: "ambient_look_random"
+                },
+                {
+                    Type: "LOOK_AT_RESET",
+                    Prio: 9,
+                    Id: "ambient_look_reset"
+                }
+            ]
+        },
+        OnGround: 1b,
+        PersistenceRequired: 0b,
+        PresetUUID: [I; 0, 0, 0, 0],
+        Profession: "NONE",
+        Progression: {
+            AttributeScalingEnabled: 0b,
+            EntityExperience: 1,
+            EntityExperienceLevel: 1
+        },
+        RenderData: {},
+        SkinData: {
+            Type: "SECURE_REMOTE_URL",
+            URL: "https://www.minecraftskins.com/uploads/skins/2025/07/01/*-nightingale---follow-contest-entry-*-23370609.png?v921",
+            UUID: [I; -556279604, -1321386286, -1112025934, 225922815],
+            Name: "",
+            Content: "",
+            Timestamp: 1757695047430L,
+            DisableLayers: 0b
+        },
+        SoundData: {
+            SoundDataSet: []
+        },
+        Status: {
+            finalized: 0b,
+            npc_data_last_saved: 0L,
+            npc_data_last_update: 0L
+        },
+        VariantType: "ALEX",
+        attributes: [
+            {
+                base: 20.0d,
+                id: "minecraft:generic.max_health"
+            },
+            {
+                base: 0.5d,
+                id: "minecraft:generic.movement_speed"
+            }
+        ],
+        id: "easy_npc:humanoid_slim",
+        CustomName: '{"text": "Nurse Lila", "color": "#FF00FF"}'
+    }
+}

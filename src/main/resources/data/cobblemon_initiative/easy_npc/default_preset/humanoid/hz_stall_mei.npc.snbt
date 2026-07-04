@@ -1,0 +1,321 @@
+{
+    PresetMetadata: {
+        author: "TheCompanyInc",
+        category: "Civilian",
+        created: 0L,
+        description: "civilian at Hua Zhan City - Southwest Lane (act 1). Compiled from dialog-src.",
+        entityTypeId: "easy_npc:humanoid",
+        modified: 0L,
+        name: "Mei Lin",
+        variantType: "STEVE",
+        version: "1.0.0"
+    },
+    data: {
+        ActionData: {
+            ActionEventSet: {
+                ON_INTERACTION: [
+                    {
+                        Type: "OPEN_DEFAULT_DIALOG"
+                    }
+                ]
+            }
+        },
+        ArmorDropChances: [0.08500000089406967f, 0.08500000089406967f, 0.08500000089406967f, 0.08500000089406967f],
+        ArmorItems: [
+            {},
+            {},
+            {},
+            {}
+        ],
+        Brain: {
+            memories: {}
+        },
+        CanPickUpLoot: 0b,
+        CustomNameVisible: 1b,
+        DialogData: {
+            Type: "STANDARD",
+            DialogDataSet: [
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "hz_price_check_active"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "NOT_EQUALS",
+                            Name: "hz_price_3"
+                        }
+                    ],
+                    Priority: 25,
+                    Buttons: [
+                        {
+                            Name: "Note the price",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "execute as @initiator run function cobblemon_initiative:sidequest/price_check/note_3"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "note_button"
+                        },
+                        {
+                            Name: "Leave the lane",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "A price check, in my lane? Check the board all you like — nothing on it moved. Nobody verifies the southwest lane. No sign, no calibration visits, no index. I used to think the Company forgot us. Lately I think being forgotten is the only thing keeping my prices still. Write that down too."
+                        },
+                        {
+                            Text: "Same board as last season, same numbers as last season. The stalls with the verified signs all drifted up and mine sat still — and the only difference between us is that no clipboard has ever blessed me. Tell the mart exactly that."
+                        }
+                    ],
+                    Name: "Mei Lin — the unverified stall",
+                    Label: "price_stop"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "hz_price_3"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "NOT_EQUALS",
+                            Name: "hz_prices_done"
+                        }
+                    ],
+                    Priority: 20,
+                    Buttons: [
+                        {
+                            Name: "On my way",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Told you — still the same board. If the mart wants proof that the index is the disease, I am the healthy patient."
+                        },
+                        {
+                            Text: "You have my number, which is to say the old number. Take it up the street and let Kaito do the arithmetic out loud."
+                        }
+                    ],
+                    Name: "Mei Lin — the healthy patient",
+                    Label: "noted"
+                },
+                {
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "Thanks — up the street",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "thanks_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "If your team is hurting, do not stand in my lane being brave about it. The Center is up the street past the market row — Nurse Anong charges one hundred flat and does not ask what you are verified as."
+                        },
+                        {
+                            Text: "You would not believe the foot traffic lately. Everything that limps into this town limps past this corner first, and I point every one of them the same way — up the street, to the clinic. Go on."
+                        }
+                    ],
+                    Name: "Mei Lin — the southwest lane",
+                    Label: "default"
+                }
+            ]
+        },
+        DisplayAttribute: [
+            {
+                Type: "VISIBLE",
+                Bool: 1b
+            },
+            {
+                Type: "VISIBLE_AT_DAY",
+                Bool: 1b
+            },
+            {
+                Type: "VISIBLE_AT_NIGHT",
+                Bool: 1b
+            },
+            {
+                Type: "VISIBLE_IN_CREATIVE",
+                Bool: 1b
+            },
+            {
+                Type: "VISIBLE_IN_SPECTATOR",
+                Bool: 1b
+            },
+            {
+                Type: "VISIBLE_IN_STANDARD",
+                Bool: 1b
+            },
+            {
+                Type: "VISIBLE_TO_OWNER",
+                Bool: 1b
+            },
+            {
+                Type: "VISIBLE_TO_TEAM",
+                Bool: 1b
+            },
+            {
+                Type: "LIGHT_LEVEL",
+                Int: 7
+            },
+            {
+                Type: "NAME_VISIBILITY",
+                Text: "ALWAYS"
+            }
+        ],
+        EasyNPCVersion: 3,
+        EntityAttribute: {
+            IsAttackableByMonsters: 0b,
+            CanCloseDoor: 0b,
+            Freefall: 0b,
+            CanUseNetherPortal: 0b,
+            IsInvulnerable: 1b,
+            HealthRegeneration: 0.0d,
+            NoGravity: 0b,
+            CanPassDoor: 0b,
+            PushEntities: 0b,
+            CanFloat: 0b,
+            CanBreatheUnderwater: 0b,
+            CanBeLeashed: 0b,
+            CanBeHitByProjectile: 0b,
+            IsPushable: 0b,
+            IsAttackableByPlayers: 0b,
+            CanOpenDoor: 0b
+        },
+        HandDropChances: [0.08500000089406967f, 0.08500000089406967f],
+        HandItems: [
+            {},
+            {}
+        ],
+        Invulnerable: 0b,
+        LeftHanded: 0b,
+        ModelData: {
+            DefaultPose: "STANDING",
+            Pose: "DEFAULT",
+            Visible: {},
+            Rotation: {},
+            Position: {},
+            Scale: {}
+        },
+        Navigation: {
+            Home: {
+                Y: 90,
+                Z: 2151,
+                X: 1432
+            }
+        },
+        ObjectiveData: {
+            HasObjectives: 1b,
+            HasTravelTarget: 0b,
+            ObjectiveDataSet: [
+                {
+                    Type: "LOOK_AT_PLAYER",
+                    Prio: 9,
+                    Id: "ambient_look_player",
+                    LookDistance: 8.0f
+                },
+                {
+                    Type: "LOOK_RANDOM_AROUND",
+                    Prio: 10,
+                    Id: "ambient_look_random"
+                },
+                {
+                    Type: "LOOK_AT_RESET",
+                    Prio: 9,
+                    Id: "ambient_look_reset"
+                }
+            ]
+        },
+        OnGround: 1b,
+        PersistenceRequired: 0b,
+        PresetUUID: [I; 0, 0, 0, 0],
+        Profession: "NONE",
+        Progression: {
+            AttributeScalingEnabled: 0b,
+            EntityExperience: 1,
+            EntityExperienceLevel: 1
+        },
+        RenderData: {},
+        SkinData: {
+            Type: "SECURE_REMOTE_URL",
+            URL: "https://www.minecraftskins.com/uploads/skins/2025/12/22/----t-r-a-d-i-t-i-o-n-a-l--------b-e-a-u-t-y-----t-w-s---3-23737710.png?v940",
+            UUID: [I; -301308015, 72890530, -1906745848, 474314625],
+            Name: "",
+            Content: "",
+            Timestamp: 1771345732494L,
+            DisableLayers: 0b
+        },
+        SoundData: {
+            SoundDataSet: [
+                {
+                    Type: "DEATH",
+                    Name: "minecraft:entity.player.death"
+                },
+                {
+                    Type: "EAT",
+                    Name: "minecraft:entity.generic.eat"
+                },
+                {
+                    Type: "HURT",
+                    Name: "minecraft:entity.player.hurt"
+                },
+                {
+                    Type: "TRADE",
+                    Name: "minecraft:entity.villager.trade"
+                },
+                {
+                    Type: "TRADE_YES",
+                    Name: "minecraft:entity.villager.yes"
+                },
+                {
+                    Type: "TRADE_NO",
+                    Name: "minecraft:entity.villager.no"
+                }
+            ]
+        },
+        Status: {
+            finalized: 0b,
+            npc_data_last_saved: 0L,
+            npc_data_last_update: 0L
+        },
+        VariantType: "STEVE",
+        attributes: [
+            {
+                base: 20.0d,
+                id: "minecraft:generic.max_health"
+            },
+            {
+                base: 0.5d,
+                id: "minecraft:generic.movement_speed"
+            }
+        ],
+        id: "easy_npc:humanoid",
+        CustomName: '{"text": "Mei Lin", "color": "#BFFF00"}'
+    }
+}

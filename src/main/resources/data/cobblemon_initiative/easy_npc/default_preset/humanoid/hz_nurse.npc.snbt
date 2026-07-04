@@ -1,0 +1,682 @@
+{
+    PresetMetadata: {
+        author: "TheCompanyInc",
+        category: "Service",
+        created: 0L,
+        description: "healer at Hua Zhan City - Pokemon Center (act 1). Compiled from dialog-src.",
+        entityTypeId: "easy_npc:humanoid",
+        modified: 0L,
+        name: "Nurse Anong",
+        variantType: "STEVE",
+        version: "1.0.0"
+    },
+    data: {
+        ActionData: {
+            ActionEventSet: {
+                ON_INTERACTION: [
+                    {
+                        Type: "OPEN_DEFAULT_DIALOG"
+                    }
+                ]
+            }
+        },
+        ArmorDropChances: [0.08500000089406967f, 0.08500000089406967f, 0.08500000089406967f, 0.08500000089406967f],
+        ArmorItems: [
+            {},
+            {},
+            {},
+            {}
+        ],
+        Brain: {
+            memories: {}
+        },
+        CanPickUpLoot: 0b,
+        CustomNameVisible: 1b,
+        DialogData: {
+            Type: "CUSTOM",
+            DialogDataSet: [
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "badges_gte_2"
+                        }
+                    ],
+                    Priority: 25,
+                    Buttons: [
+                        {
+                            Name: "Heal my team - 100 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "execute as @initiator run function cobblemon_initiative:economy/heal_paid"
+                                },
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "healed"
+                                }
+                            ],
+                            Label: "heal_button"
+                        },
+                        {
+                            Name: "About the short shipment",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "restock"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "met_hz_nurse"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "NOT_EQUALS",
+                                    Name: "hz_rx_done"
+                                }
+                            ],
+                            Label: "restock_button"
+                        },
+                        {
+                            Name: "Just passing through",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Mind the queue. Two badges into the season and the waiting room fills itself — trainers keep limping in off Harvest Road with stories about fences and schedules. I do not editorialize. I restock, I set bones, and the fee stays one hundred flat."
+                        },
+                        {
+                            Text: "Busiest quarter this clinic has ever run, and every limp walks in from the east road. Draw your own map. Sit your team down — the schedule is posted and it is the same for everyone."
+                        }
+                    ],
+                    Name: "Nurse Anong — standing room only",
+                    Label: "post_badge_2"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "company_account_holder"
+                        }
+                    ],
+                    Priority: 20,
+                    Buttons: [
+                        {
+                            Name: "Heal my team - 100 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "execute as @initiator run function cobblemon_initiative:economy/heal_paid"
+                                },
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "healed"
+                                }
+                            ],
+                            Label: "heal_button"
+                        },
+                        {
+                            Name: "About the short shipment",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "restock"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "met_hz_nurse"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "NOT_EQUALS",
+                                    Name: "hz_rx_done"
+                                }
+                            ],
+                            Label: "restock_button"
+                        },
+                        {
+                            Name: "Understood",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Before you ask — that verified account of yours is worth exactly nothing in this room. We are out of network, and we intend to stay that way. Care costs one hundred flat, the same as it costs people the Company has never heard of."
+                        },
+                        {
+                            Text: "Put the account card away. This clinic bills in CobbleDollars, out loud, on a schedule taped to the wall. One hundred flat — no tiers, no verification, no exceptions."
+                        }
+                    ],
+                    Name: "Nurse Anong — out of network",
+                    Label: "account_holder"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "company_declined"
+                        }
+                    ],
+                    Priority: 20,
+                    Buttons: [
+                        {
+                            Name: "Heal my team - 100 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "execute as @initiator run function cobblemon_initiative:economy/heal_paid"
+                                },
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "healed"
+                                }
+                            ],
+                            Label: "heal_button"
+                        },
+                        {
+                            Name: "About the short shipment",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "restock"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "met_hz_nurse"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "NOT_EQUALS",
+                                    Name: "hz_rx_done"
+                                }
+                            ],
+                            Label: "restock_button"
+                        },
+                        {
+                            Name: "Noted, Nurse",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Word travels down the supply road. A kiosk in Takehara offered you a verified account and you walked away from it. Consider this nod professional courtesy — the nod is free, the medicine is one hundred flat."
+                        },
+                        {
+                            Text: "You said no to their folder too, I hear. Welcome to a small and unsponsored club. Sit your team down — same fee as everyone, which is rather the point of the club."
+                        }
+                    ],
+                    Name: "Nurse Anong — professional courtesy",
+                    Label: "declined_nod"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "met_hz_nurse"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "NOT_EQUALS",
+                            Name: "hz_rx_done"
+                        }
+                    ],
+                    Priority: 15,
+                    Buttons: [
+                        {
+                            Name: "I brought the berries — six oran, four cheri",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "clear @initiator cobblemon:oran_berry 6"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "clear @initiator cobblemon:cheri_berry 4"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "loot give @initiator loot cobblemon_initiative:npc_gift/clinic_hua_zhan"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "execute as @initiator run function cobblemon_initiative:economy/payout {amount:240}"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @initiator add hz_rx_done"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "tellraw @initiator [{\"text\":\"Achievement: Out of Network — the one room in town the Company could not buy is stocked again.\",\"color\":\"gold\"}]"
+                                },
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "restock_done"
+                                }
+                            ],
+                            Label: "turnin_button"
+                        },
+                        {
+                            Name: "Heal my team - 100 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "execute as @initiator run function cobblemon_initiative:economy/heal_paid"
+                                },
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "healed"
+                                }
+                            ],
+                            Label: "heal_button"
+                        },
+                        {
+                            Name: "Still gathering",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The shipment came up short again — two boxes, re-verified, nothing actionable, same as every month since I said no to their folder. The shelf will not lie for anyone. If you are walking the grass country anyway: six oran berries and four cheri berries would put this clinic right, and the wild growth around town carries both."
+                        },
+                        {
+                            Text: "Six oran, four cheri. The berries growing wild around Hua Zhan are fresher than anything the depot has sent me since spring. Bring what you gather and I will settle it from the clinic drawer — honestly, and probably short. You will see what I mean."
+                        }
+                    ],
+                    Name: "Nurse Anong — the short shipment",
+                    Label: "restock"
+                },
+                {
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "Heal my team - 100 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "execute as @initiator run function cobblemon_initiative:economy/heal_paid"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @initiator add met_hz_nurse"
+                                },
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "healed"
+                                }
+                            ],
+                            Label: "heal_button"
+                        },
+                        {
+                            Name: "Ask why the Center charges",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @initiator add met_hz_nurse"
+                                },
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "sponsorship"
+                                }
+                            ],
+                            Label: "story_button"
+                        },
+                        {
+                            Name: "Not right now",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @initiator add met_hz_nurse"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Welcome to the Hua Zhan Center. Full team restore is one hundred CobbleDollars, flat — the schedule is posted, the invoice is honest, and no account is required. That last part is deliberate. Ask, if you like."
+                        },
+                        {
+                            Text: "Sit your team down. One hundred CobbleDollars covers the whole party, and it is the same hundred for everyone who walks through that door. We do not do tiers here."
+                        }
+                    ],
+                    Name: "Nurse Anong",
+                    Label: "default"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Ask about the short shipments",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @initiator add met_hz_nurse"
+                                },
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "restock"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "NOT_EQUALS",
+                                    Name: "hz_rx_done"
+                                }
+                            ],
+                            Label: "ask_restock_button"
+                        },
+                        {
+                            Name: "Back",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "default"
+                                }
+                            ],
+                            Label: "back_button"
+                        },
+                        {
+                            Name: "Take care, Nurse",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The Company came through last spring with a sponsorship folder. Free care for verified account holders, branded bedding, our fee schedule set from a head office I have never seen. I said no. Since then my supply shipments arrive adjusted — short two boxes, re-verified, nothing actionable. Every crate signed, every seal intact, every count wrong. You cannot file a complaint against arithmetic. So the fee stays, the door stays open, and this room stays the one place in town they could not buy."
+                        }
+                    ],
+                    Name: "Nurse Anong — the folder",
+                    Label: "sponsorship"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Heal my team - 100 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "execute as @initiator run function cobblemon_initiative:economy/heal_paid"
+                                },
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "healed"
+                                }
+                            ],
+                            Label: "heal_button"
+                        },
+                        {
+                            Name: "Take care, Nurse",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Shelved, counted, and paid — from the clinic drawer, not from anywhere verified. Now look at your receipt. The rate line. See. That is what adjusted looks like when it happens to a whole town at once. Take the potions with you — the shelf owes you that much, and so do the next ten trainers who limp in here."
+                        }
+                    ],
+                    Name: "Nurse Anong — settled from the drawer",
+                    Label: "restock_done"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Thank you",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "There. Rested, ready, and billed at the posted rate — the same rate as everyone else in this town. We call that medicine."
+                        },
+                        {
+                            Text: "Good as new. Mind the roads out east; the grass country is generous with berries and much less generous with everything else."
+                        }
+                    ],
+                    Name: "Nurse Anong — all better",
+                    Label: "healed"
+                }
+            ]
+        },
+        DisplayAttribute: [
+            {
+                Type: "VISIBLE",
+                Bool: 1b
+            },
+            {
+                Type: "VISIBLE_AT_DAY",
+                Bool: 1b
+            },
+            {
+                Type: "VISIBLE_AT_NIGHT",
+                Bool: 1b
+            },
+            {
+                Type: "VISIBLE_IN_CREATIVE",
+                Bool: 1b
+            },
+            {
+                Type: "VISIBLE_IN_SPECTATOR",
+                Bool: 1b
+            },
+            {
+                Type: "VISIBLE_IN_STANDARD",
+                Bool: 1b
+            },
+            {
+                Type: "VISIBLE_TO_OWNER",
+                Bool: 1b
+            },
+            {
+                Type: "VISIBLE_TO_TEAM",
+                Bool: 1b
+            },
+            {
+                Type: "LIGHT_LEVEL",
+                Int: 7
+            },
+            {
+                Type: "NAME_VISIBILITY",
+                Text: "ALWAYS"
+            }
+        ],
+        EasyNPCVersion: 3,
+        EntityAttribute: {
+            IsAttackableByMonsters: 0b,
+            CanCloseDoor: 0b,
+            Freefall: 0b,
+            CanUseNetherPortal: 0b,
+            IsInvulnerable: 1b,
+            HealthRegeneration: 0.0d,
+            NoGravity: 0b,
+            CanPassDoor: 0b,
+            PushEntities: 0b,
+            CanFloat: 0b,
+            CanBreatheUnderwater: 0b,
+            CanBeLeashed: 0b,
+            CanBeHitByProjectile: 0b,
+            IsPushable: 0b,
+            IsAttackableByPlayers: 0b,
+            CanOpenDoor: 0b
+        },
+        HandDropChances: [0.08500000089406967f, 0.08500000089406967f],
+        HandItems: [
+            {},
+            {}
+        ],
+        Invulnerable: 0b,
+        LeftHanded: 1b,
+        ModelData: {
+            DefaultPose: "STANDING",
+            Pose: "VANILLA",
+            Visible: {},
+            Rotation: {},
+            Position: {},
+            Scale: {}
+        },
+        Navigation: {
+            Home: {
+                Y: 93,
+                Z: 2006,
+                X: 1534
+            }
+        },
+        ObjectiveData: {
+            HasObjectives: 1b,
+            HasTravelTarget: 0b,
+            ObjectiveDataSet: [
+                {
+                    Type: "LOOK_AT_PLAYER",
+                    Prio: 9,
+                    Id: "ambient_look_player",
+                    LookDistance: 8.0f
+                },
+                {
+                    Type: "LOOK_RANDOM_AROUND",
+                    Prio: 10,
+                    Id: "ambient_look_random"
+                },
+                {
+                    Type: "LOOK_AT_RESET",
+                    Prio: 9,
+                    Id: "ambient_look_reset"
+                }
+            ]
+        },
+        OnGround: 1b,
+        PersistenceRequired: 0b,
+        PresetUUID: [I; 0, 0, 0, 0],
+        Profession: "NONE",
+        Progression: {
+            AttributeScalingEnabled: 0b,
+            EntityExperience: 1,
+            EntityExperienceLevel: 1
+        },
+        RenderData: {},
+        SkinData: {
+            Type: "SECURE_REMOTE_URL",
+            URL: "https://www.minecraftskins.com/uploads/skins/2025/08/08/li-jing---eternal-love-23457345.png?v940",
+            UUID: [I; 2028837575, -1879818554, -1470410187, -1279120853],
+            Name: "",
+            Content: "",
+            Timestamp: 1771346316493L,
+            DisableLayers: 0b
+        },
+        SoundData: {
+            SoundDataSet: [
+                {
+                    Type: "DEATH",
+                    Name: "minecraft:entity.player.death"
+                },
+                {
+                    Type: "EAT",
+                    Name: "minecraft:entity.generic.eat"
+                },
+                {
+                    Type: "HURT",
+                    Name: "minecraft:entity.player.hurt"
+                },
+                {
+                    Type: "TRADE",
+                    Name: "minecraft:entity.villager.trade"
+                },
+                {
+                    Type: "TRADE_YES",
+                    Name: "minecraft:entity.villager.yes"
+                },
+                {
+                    Type: "TRADE_NO",
+                    Name: "minecraft:entity.villager.no"
+                }
+            ]
+        },
+        Status: {
+            finalized: 0b,
+            npc_data_last_saved: 0L,
+            npc_data_last_update: 0L
+        },
+        VariantType: "STEVE",
+        attributes: [
+            {
+                base: 20.0d,
+                id: "minecraft:generic.max_health"
+            },
+            {
+                base: 0.5d,
+                id: "minecraft:generic.movement_speed"
+            }
+        ],
+        id: "easy_npc:humanoid",
+        CustomName: '{"text": "Nurse Anong", "color": "#BFFF00"}'
+    }
+}

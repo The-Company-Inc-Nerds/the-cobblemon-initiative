@@ -81,12 +81,12 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @p[tag=defeated_board_matt] run tbcs attach board_matt @s"
+                                    Cmd: "execute unless entity @initiator[tag=defeated_board_matt] run tbcs attach board_matt @initiator"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @s[tag=defeated_board_matt] run tbcs battle GEN_9_SINGLES @s vs board_matt onwin {1: ['cobbledollars add @1 9000', 'tag @1 add defeated_board_matt', '@2 say You taught me everything except how to beat you. Of course you held that part back. You always held something back.', 'execute as @1 at @1 run function cobblemon_initiative:reveal/board_fell', 'easy_npc delete @2'], 2: ['@2 say The student keeps the chair. Sit down somewhere else and stay a position, not a person.']}"
+                                    Cmd: "execute unless entity @initiator[tag=defeated_board_matt] run tbcs battle GEN_9_SINGLES @initiator vs board_matt onwin {1: ['cobbledollars add @1 9000', 'tag @1 add defeated_board_matt', '@2 say You taught me everything except how to beat you. Of course you held that part back. You always held something back.', 'execute as @1 at @1 run function cobblemon_initiative:reveal/board_fell', 'easy_npc delete @2'], 2: ['@2 say The student keeps the chair. Sit down somewhere else and stay a position, not a person.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

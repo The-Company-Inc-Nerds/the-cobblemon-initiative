@@ -4,7 +4,7 @@ $scoreboard players set $(field) field_freed 1
 # Feed the SHARED counter the wheat-trader poller reads: 0-1 trade -> 2-3 suspicious -> 4+ ambush.
 scoreboard players add @s fields_liberated 1
 # The first liberation makes the Wheat War personal — light the HUD objective line
-# (quest/render shows "Liberate wheat fields n/6" while the player has this tag).
+# (quest/render shows "Liberate the occupied fields n/6" while the player has this tag).
 tag @s add wheat_war_active
 # Push CobbleDollar instability back DOWN (gyms add +8 each; a field claws back 6). Floor at 0.
 # TUNABLE tug-of-war knobs — magnitude (6) and floor (0): revisit alongside the field count (TODO P4).
@@ -15,4 +15,4 @@ execute store result storage cobblemon_initiative:economy idx int 1 run scoreboa
 # (ShopTierManager resolves <base>_relief<r> from fields_liberated; granary follows in lockstep).
 cobblemon-initiative shop refresh
 # Player-facing beat (wheat-gold), in the founder-reclaiming-their-own-system register.
-title @s actionbar {"text":"◆ Field liberated — the wheat-backed currency loses ground.","color":"#C9A227"}
+title @s actionbar {"text":"◆ Field liberated — the commodity currency loses ground.","color":"#C9A227"}

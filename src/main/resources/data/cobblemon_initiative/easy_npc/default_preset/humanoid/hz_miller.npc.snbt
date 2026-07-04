@@ -1,0 +1,445 @@
+{
+    PresetMetadata: {
+        author: "TheCompanyInc",
+        category: "Quest",
+        created: 0L,
+        description: "quest_giver at Hua Zhan City — The Mill (act 1). Compiled from dialog-src.",
+        entityTypeId: "easy_npc:humanoid",
+        modified: 0L,
+        name: "Guo the Miller",
+        variantType: "STEVE",
+        version: "1.0.0"
+    },
+    data: {
+        ActionData: {
+            ActionEventSet: {
+                ON_INTERACTION: [
+                    {
+                        Type: "OPEN_DEFAULT_DIALOG"
+                    }
+                ]
+            }
+        },
+        ArmorDropChances: [0.08500000089406967f, 0.08500000089406967f, 0.08500000089406967f, 0.08500000089406967f],
+        ArmorItems: [
+            {},
+            {},
+            {},
+            {}
+        ],
+        Brain: {
+            memories: {}
+        },
+        CanPickUpLoot: 0b,
+        CustomNameVisible: 1b,
+        DialogData: {
+            Type: "STANDARD",
+            DialogDataSet: [
+                {
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "I will run your survey",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @initiator add hz_survey_active"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "title @initiator actionbar [{\"text\":\"Survey accepted — hear the Grain Buyer at the market row, then see the Granary. Come back after both.\",\"color\":\"gray\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "NOT_EQUALS",
+                                    Name: "hz_survey_active"
+                                }
+                            ],
+                            Label: "accept_button"
+                        },
+                        {
+                            Name: "Some other day",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The Company owns the seed, and the field, and the silo. Grain in, goods out, they call it, like it is a courtesy they are doing me. Now they want the till as well."
+                        },
+                        {
+                            Text: "I am the last mill in wheat country that still takes coin. The Granary stopped. The Grain Buyer in the square is telling my own customers the paper money is already dead. Do me one favour. Go and hear them both. Then come back and tell me I am wrong."
+                        }
+                    ],
+                    Name: "Miller — grain in, goods out",
+                    Label: "intro"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "hz_survey_active"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "NOT_EQUALS",
+                            Name: "hz_survey_paid"
+                        }
+                    ],
+                    Priority: 15,
+                    Buttons: [
+                        {
+                            Name: "Not yet",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Well? Did you hear the Grain Buyer say the coin is finished? Did you watch the Granary take bushels and hand back goods, no coin allowed?"
+                        },
+                        {
+                            Text: "Come back to me when you have stood in front of both. I want you to see it with your own eyes before I pay you to tell me about it."
+                        }
+                    ],
+                    Name: "Miller — still surveying",
+                    Label: "in_progress"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "hz_survey_paid"
+                        }
+                    ],
+                    Priority: 20,
+                    Buttons: [
+                        {
+                            Name: "Take care, miller",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Short, was it. It always is. They call it a rate. I call it a thumb on the scale you are not allowed to look at."
+                        },
+                        {
+                            Text: "Keep your coin. Somebody in this town has to remember what it was worth before they decided it was worth less."
+                        }
+                    ],
+                    Name: "Miller — the coin only fails where they say",
+                    Label: "thanks"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "hz_survey_paid"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "badges_gte_2"
+                        }
+                    ],
+                    Priority: 25,
+                    Buttons: [
+                        {
+                            Name: "I will look into it",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "You have the Bloom Badge now. Good. You will need the standing for what I am about to point you at."
+                        },
+                        {
+                            Text: "The Chai girl up on the north edge counts the fence posts every morning, and every morning the count is wrong by a little. Fenceline Acres does not buy the land. It just gets bigger in the night. Somebody ought to walk up there and put the line back where the stones say it goes."
+                        }
+                    ],
+                    Name: "Miller — the fence up north",
+                    Label: "fenceline"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "hz_survey_paid"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "fields_liberated_gte_2"
+                        }
+                    ],
+                    Priority: 30,
+                    Buttons: [
+                        {
+                            Name: "Understood",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Two fields gone quiet, and the index breathed out this week. Whatever you are doing north of here, keep doing it. My flour sold at a fair price for the first time since spring."
+                        },
+                        {
+                            Text: "One warning for the road. The Grain Buyer has started asking about a face. Yours, I think. Trade fast down there, or do not trade at all."
+                        }
+                    ],
+                    Name: "Miller — the index breathed out",
+                    Label: "liberated"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "hz_saw_pitch"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "hz_saw_granary"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "NOT_EQUALS",
+                            Name: "hz_survey_paid"
+                        }
+                    ],
+                    Priority: 40,
+                    Buttons: [
+                        {
+                            Name: "Take the survey fee",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "execute as @initiator run function cobblemon_initiative:sidequest/grain_survey/payout"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "collect_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "So you heard it. Back your savings in something you can hold, grain does not lie, all of it. And you saw the Granary — no coin, only bushels, prices very fair and fairer every week. You know what fairer every week means. It means the coin is dying on schedule."
+                        },
+                        {
+                            Text: "Here is your fee. Watch what the Company rail does to it between my hand and your pocket. That is the whole trick, on camera. The coin is only failing where they say it is failing."
+                        }
+                    ],
+                    Name: "Miller — the survey fee",
+                    Label: "payout"
+                }
+            ]
+        },
+        DisplayAttribute: [
+            {
+                Type: "VISIBLE",
+                Bool: 1b
+            },
+            {
+                Type: "VISIBLE_AT_DAY",
+                Bool: 1b
+            },
+            {
+                Type: "VISIBLE_AT_NIGHT",
+                Bool: 1b
+            },
+            {
+                Type: "VISIBLE_IN_CREATIVE",
+                Bool: 1b
+            },
+            {
+                Type: "VISIBLE_IN_SPECTATOR",
+                Bool: 1b
+            },
+            {
+                Type: "VISIBLE_IN_STANDARD",
+                Bool: 1b
+            },
+            {
+                Type: "VISIBLE_TO_OWNER",
+                Bool: 1b
+            },
+            {
+                Type: "VISIBLE_TO_TEAM",
+                Bool: 1b
+            },
+            {
+                Type: "LIGHT_LEVEL",
+                Int: 7
+            },
+            {
+                Type: "NAME_VISIBILITY",
+                Text: "ALWAYS"
+            }
+        ],
+        EasyNPCVersion: 3,
+        EntityAttribute: {
+            IsAttackableByMonsters: 0b,
+            CanCloseDoor: 0b,
+            Freefall: 0b,
+            CanUseNetherPortal: 0b,
+            IsInvulnerable: 1b,
+            HealthRegeneration: 0.0d,
+            NoGravity: 0b,
+            CanPassDoor: 0b,
+            PushEntities: 0b,
+            CanFloat: 0b,
+            CanBreatheUnderwater: 0b,
+            CanBeLeashed: 0b,
+            CanBeHitByProjectile: 0b,
+            IsPushable: 0b,
+            IsAttackableByPlayers: 0b,
+            CanOpenDoor: 0b
+        },
+        HandDropChances: [0.08500000089406967f, 0.08500000089406967f],
+        HandItems: [
+            {},
+            {}
+        ],
+        Invulnerable: 0b,
+        LeftHanded: 0b,
+        ModelData: {
+            DefaultPose: "STANDING",
+            Pose: "VANILLA",
+            Visible: {},
+            Rotation: {},
+            Position: {},
+            Scale: {}
+        },
+        Navigation: {
+            Home: {
+                Y: 84,
+                Z: 1987,
+                X: 1511
+            }
+        },
+        ObjectiveData: {
+            HasObjectives: 1b,
+            HasTravelTarget: 0b,
+            ObjectiveDataSet: [
+                {
+                    Type: "LOOK_AT_PLAYER",
+                    Prio: 9,
+                    Id: "ambient_look_player",
+                    LookDistance: 8.0f
+                },
+                {
+                    Type: "LOOK_RANDOM_AROUND",
+                    Prio: 10,
+                    Id: "ambient_look_random"
+                },
+                {
+                    Type: "LOOK_AT_RESET",
+                    Prio: 9,
+                    Id: "ambient_look_reset"
+                }
+            ]
+        },
+        OnGround: 1b,
+        PersistenceRequired: 0b,
+        PresetUUID: [I; 0, 0, 0, 0],
+        Profession: "NONE",
+        Progression: {
+            AttributeScalingEnabled: 0b,
+            EntityExperience: 1,
+            EntityExperienceLevel: 1
+        },
+        RenderData: {},
+        SkinData: {
+            Type: "SECURE_REMOTE_URL",
+            URL: "https://www.minecraftskins.com/uploads/skins/2024/06/27/kurt-frank---treasure-digger---idv-22642700.png?v940",
+            UUID: [I; -1660904859, 1090532067, -1119397213, 254901626],
+            Name: "",
+            Content: "",
+            Timestamp: 1771358932441L,
+            DisableLayers: 0b
+        },
+        SoundData: {
+            SoundDataSet: [
+                {
+                    Type: "DEATH",
+                    Name: "minecraft:entity.player.death"
+                },
+                {
+                    Type: "EAT",
+                    Name: "minecraft:entity.generic.eat"
+                },
+                {
+                    Type: "HURT",
+                    Name: "minecraft:entity.player.hurt"
+                },
+                {
+                    Type: "TRADE",
+                    Name: "minecraft:entity.villager.trade"
+                },
+                {
+                    Type: "TRADE_YES",
+                    Name: "minecraft:entity.villager.yes"
+                },
+                {
+                    Type: "TRADE_NO",
+                    Name: "minecraft:entity.villager.no"
+                }
+            ]
+        },
+        Status: {
+            finalized: 0b,
+            npc_data_last_saved: 0L,
+            npc_data_last_update: 0L
+        },
+        VariantType: "STEVE",
+        attributes: [
+            {
+                base: 20.0d,
+                id: "minecraft:generic.max_health"
+            },
+            {
+                base: 0.5d,
+                id: "minecraft:generic.movement_speed"
+            }
+        ],
+        id: "easy_npc:humanoid",
+        CustomName: '{"text": "Guo the Miller", "color": "#00FFFF"}'
+    }
+}

@@ -74,16 +74,16 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @p[tag=defeated_deepcore_leader] run say Iron Badge already on you. Stand tall out there. The grey suits in this city talk soft and hit softer, but they never stop counting."
+                                    Cmd: "execute if entity @initiator[tag=defeated_deepcore_leader] run say Iron Badge already on you. Stand tall out there. The grey suits in this city talk soft and hit softer, but they never stop counting."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @p[tag=defeated_deepcore_leader] run tbcs attach deepcore_leader @s"
+                                    Cmd: "execute unless entity @initiator[tag=defeated_deepcore_leader] run tbcs attach deepcore_leader @initiator"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @s[tag=defeated_deepcore_leader] run tbcs battle GEN_9_SINGLES @s vs deepcore_leader onwin {1: ['cobbledollars add @1 2800', 'tag @1 add defeated_deepcore_leader', '@2 say Now that is a punch with weight behind it. The Iron Badge is earned, not given. You earned it.'], 2: ['@2 say Get up. Always get up. The mat is not where you live. Train harder and find me again.']}"
+                                    Cmd: "execute unless entity @initiator[tag=defeated_deepcore_leader] run tbcs battle GEN_9_SINGLES @initiator vs deepcore_leader onwin {1: ['cobbledollars add @1 2800', 'tag @1 add defeated_deepcore_leader', '@2 say Now that is a punch with weight behind it. The Iron Badge is earned, not given. You earned it.'], 2: ['@2 say Get up. Always get up. The mat is not where you live. Train harder and find me again.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

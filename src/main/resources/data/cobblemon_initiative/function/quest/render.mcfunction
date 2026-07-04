@@ -63,8 +63,38 @@ execute if entity @s[tag=defeated_villain_final_boss] run bossbar set cobblemon_
 execute if entity @s[tag=defeated_villain_final_boss] run scoreboard players display name #main ci_quest [{"text":"▶ Hunt the Ender Dragon","color":"dark_green"}]
 
 # ---- Side objectives (light up as their systems come online) ----
-# Wheat War: shows "Liberate wheat fields n/6" once the war is flagged active (P4 sets wheat_war_active).
+# Wheat War: shows the fields side line once the war is active AND the reveal has landed
+# (heard_wheat_pitch — set by the Hua Zhan traders or the greenhouse catwalk; canon: the
+# word never prints before the reveal).
 scoreboard players reset #side_wheat ci_quest
-execute if entity @s[tag=wheat_war_active] run scoreboard players set #side_wheat ci_quest 80
-execute if entity @s[tag=wheat_war_active] store result storage cobblemon_initiative:quest fields int 1 run scoreboard players get @s fields_liberated
-execute if entity @s[tag=wheat_war_active] run function cobblemon_initiative:quest/set_wheat with storage cobblemon_initiative:quest
+execute if entity @s[tag=wheat_war_active,tag=heard_wheat_pitch] run scoreboard players set #side_wheat ci_quest 80
+execute if entity @s[tag=wheat_war_active,tag=heard_wheat_pitch] store result storage cobblemon_initiative:quest fields int 1 run scoreboard players get @s fields_liberated
+execute if entity @s[tag=wheat_war_active,tag=heard_wheat_pitch] run function cobblemon_initiative:quest/set_wheat with storage cobblemon_initiative:quest
+
+# ── beat-2 side objectives (appended by the quest build) ──
+# Four Gardens Pilgrimage: Garden seals n/4 side line — lights at the first seal, clears on the blessing (pilgrimage_done latch). Counting + macro render live in sidequest/pilgrimage/hud (mirrors the #side_wheat block above; #side_pilgrim rides ci_quest 78, below wheat at 80).
+function cobblemon_initiative:sidequest/pilgrimage/hud
+
+# Price Check (Hua Zhan side quest): shows Price checks noted n/3 once Kaito hands out the check (hz_price_check_active), hides after turn-in (hz_prices_done). Scratch counter #prices quest_hud per the render ladder pattern; macro lives in sidequest/price_check/set_prices (quest/ dir is shared).
+scoreboard players reset #side_prices ci_quest
+execute if entity @s[tag=hz_price_check_active] unless entity @s[tag=hz_prices_done] run scoreboard players set #prices quest_hud 0
+execute if entity @s[tag=hz_price_check_active] unless entity @s[tag=hz_prices_done] if entity @s[tag=hz_price_1] run scoreboard players add #prices quest_hud 1
+execute if entity @s[tag=hz_price_check_active] unless entity @s[tag=hz_prices_done] if entity @s[tag=hz_price_2] run scoreboard players add #prices quest_hud 1
+execute if entity @s[tag=hz_price_check_active] unless entity @s[tag=hz_prices_done] if entity @s[tag=hz_price_3] run scoreboard players add #prices quest_hud 1
+execute if entity @s[tag=hz_price_check_active] unless entity @s[tag=hz_prices_done] run scoreboard players set #side_prices ci_quest 74
+execute if entity @s[tag=hz_price_check_active] unless entity @s[tag=hz_prices_done] store result storage cobblemon_initiative:quest prices int 1 run scoreboard players get #prices quest_hud
+execute if entity @s[tag=hz_price_check_active] unless entity @s[tag=hz_prices_done] run function cobblemon_initiative:sidequest/price_check/set_prices with storage cobblemon_initiative:quest
+
+scoreboard players reset #side_minutes ci_quest
+execute if entity @s[tag=hz_minutes_heard,tag=!hz_minutes_filed] run scoreboard players set #side_minutes ci_quest 78
+execute if entity @s[tag=hz_minutes_heard,tag=!hz_minutes_filed] run scoreboard players display name #side_minutes ci_quest [{"text":"• Deliver the minutes to Lucian in Sango","color":"gray"}]
+
+# Verified Growth (reveal spine): tour pointer until the catwalk reveal lands.
+scoreboard players reset #side_green ci_quest
+execute if entity @s[tag=hz_arrived,tag=!wheat_named] run scoreboard players set #side_green ci_quest 79
+execute if entity @s[tag=hz_arrived,tag=!wheat_named] run scoreboard players display name #side_green ci_quest [{"text":"• Tour the Company greenhouse","color":"gray"}]
+
+# Grain In, Goods Out (the Miller Walk): survey line while active.
+scoreboard players reset #side_survey ci_quest
+execute if entity @s[tag=hz_survey_active,tag=!hz_survey_paid] run scoreboard players set #side_survey ci_quest 76
+execute if entity @s[tag=hz_survey_active,tag=!hz_survey_paid] run scoreboard players display name #side_survey ci_quest [{"text":"• Survey the grain market for the miller","color":"gray"}]

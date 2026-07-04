@@ -74,16 +74,16 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @p[tag=defeated_fairy_shrine_leader] run say The light already named you. It does not name a soul twice."
+                                    Cmd: "execute if entity @initiator[tag=defeated_fairy_shrine_leader] run say The light already named you. It does not name a soul twice."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @p[tag=defeated_fairy_shrine_leader] run tbcs attach fairy_shrine_leader @s"
+                                    Cmd: "execute unless entity @initiator[tag=defeated_fairy_shrine_leader] run tbcs attach fairy_shrine_leader @initiator"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @s[tag=defeated_fairy_shrine_leader] run tbcs battle GEN_9_SINGLES @s vs fairy_shrine_leader onwin {1: ['cobbledollars add @1 2500', 'tag @1 add defeated_fairy_shrine_leader', '@2 say The light has chosen to follow you. Be gentle with what it shows you.'], 2: ['@2 say The radiance turns away for now. Come back when your heart is steadier.']}"
+                                    Cmd: "execute unless entity @initiator[tag=defeated_fairy_shrine_leader] run tbcs battle GEN_9_SINGLES @initiator vs fairy_shrine_leader onwin {1: ['cobbledollars add @1 2500', 'tag @1 add defeated_fairy_shrine_leader', '@2 say The light has chosen to follow you. Be gentle with what it shows you.'], 2: ['@2 say The radiance turns away for now. Come back when your heart is steadier.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

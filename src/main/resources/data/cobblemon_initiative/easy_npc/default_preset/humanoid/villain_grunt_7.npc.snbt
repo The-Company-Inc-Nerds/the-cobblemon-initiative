@@ -50,16 +50,16 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @p[tag=defeated_villain_grunt_7] run say I have already priced in your victory. There is no further upside in fighting you. Move along."
+                                    Cmd: "execute if entity @initiator[tag=defeated_villain_grunt_7] run say I have already priced in your victory. There is no further upside in fighting you. Move along."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @p[tag=defeated_villain_grunt_7] run tbcs attach villain_grunt_7 @s"
+                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_grunt_7] run tbcs attach villain_grunt_7 @initiator"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @s[tag=defeated_villain_grunt_7] run tbcs battle GEN_9_SINGLES @s vs villain_grunt_7 onwin {1: ['cobbledollars add @1 380', 'tag @1 add defeated_villain_grunt_7', '@2 say The model did not account for you. I will adjust the model. I always adjust the model.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 250', '@2 say Volatility resolved. The CobbleDollar is fine. The CobbleDollar has always been fine.']}"
+                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_grunt_7] run tbcs battle GEN_9_SINGLES @initiator vs villain_grunt_7 onwin {1: ['cobbledollars add @1 380', 'tag @1 add defeated_villain_grunt_7', '@2 say The model did not account for you. I will adjust the model. I always adjust the model.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 250', '@2 say Volatility resolved. The CobbleDollar is fine. The CobbleDollar has always been fine.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -99,16 +99,16 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @p[tag=defeated_villain_grunt_7] run say I have already priced in your victory. There is no further upside in fighting you. Move along."
+                                    Cmd: "execute if entity @initiator[tag=defeated_villain_grunt_7] run say I have already priced in your victory. There is no further upside in fighting you. Move along."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @p[tag=defeated_villain_grunt_7] run tbcs attach villain_grunt_7 @s"
+                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_grunt_7] run tbcs attach villain_grunt_7 @initiator"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @s[tag=defeated_villain_grunt_7] run tbcs battle GEN_9_SINGLES @s vs villain_grunt_7 onwin {1: ['cobbledollars add @1 380', 'tag @1 add defeated_villain_grunt_7', '@2 say The model did not account for you. I will adjust the model. I always adjust the model.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 250', '@2 say Volatility resolved. The CobbleDollar is fine. The CobbleDollar has always been fine.']}"
+                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_grunt_7] run tbcs battle GEN_9_SINGLES @initiator vs villain_grunt_7 onwin {1: ['cobbledollars add @1 380', 'tag @1 add defeated_villain_grunt_7', '@2 say The model did not account for you. I will adjust the model. I always adjust the model.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 250', '@2 say Volatility resolved. The CobbleDollar is fine. The CobbleDollar has always been fine.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

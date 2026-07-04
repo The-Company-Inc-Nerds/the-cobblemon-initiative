@@ -1,0 +1,323 @@
+{
+    PresetMetadata: {
+        author: "TheCompanyInc",
+        category: "Civilian",
+        created: 0L,
+        description: "civilian at Hua Zhan City — Company Branch Office, ground floor (act 1). Compiled from dialog-src.",
+        entityTypeId: "easy_npc:humanoid",
+        modified: 0L,
+        name: "Branch Receptionist",
+        variantType: "STEVE",
+        version: "1.0.0"
+    },
+    data: {
+        ActionData: {
+            ActionEventSet: {
+                ON_INTERACTION: [
+                    {
+                        Type: "OPEN_DEFAULT_DIALOG"
+                    }
+                ]
+            }
+        },
+        ArmorDropChances: [0.085f, 0.085f, 0.085f, 0.085f],
+        ArmorItems: [
+            {},
+            {},
+            {},
+            {}
+        ],
+        Brain: {
+            memories: {}
+        },
+        CanPickUpLoot: 0b,
+        CustomNameVisible: 1b,
+        DialogData: {
+            Type: "STANDARD",
+            DialogDataSet: [
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "badges_gte_2"
+                        }
+                    ],
+                    Priority: 20,
+                    Buttons: [
+                        {
+                            Name: "Ask what this branch does",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "about_office"
+                                }
+                            ],
+                            Label: "about_button"
+                        },
+                        {
+                            Name: "Leave the desk",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The quarterly numbers were very strong. I have been told to say that. The numbers were very strong, everyone upstairs is very pleased, and the shredder has not run since Tuesday."
+                        },
+                        {
+                            Text: "Please enjoy the lobby. The lobby is performing."
+                        }
+                    ],
+                    Name: "Reception — after the quarter",
+                    Label: "nervous"
+                },
+                {
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "Ask what this branch does",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "about_office"
+                                }
+                            ],
+                            Label: "about_button"
+                        },
+                        {
+                            Name: "Leave the desk",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Welcome to the Eastern District branch office of The Company, Inc. Visitors are welcome. Verified visitors are more welcome."
+                        },
+                        {
+                            Text: "The ground floor is for inquiries. The mezzanine is for account review. The top floor is by appointment, and appointments are issued, not requested."
+                        }
+                    ],
+                    Name: "Reception — visitors welcome",
+                    Label: "default"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Ask something else",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "default"
+                                }
+                            ],
+                            Label: "back_button"
+                        },
+                        {
+                            Name: "Step away",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "This branch administers the eastern accounts. Yield in, confidence out. If your question is about the fields, the fields are performing. If your question is about anything else, there is a form, and the form is out of stock."
+                        }
+                    ],
+                    Name: "Reception — the brochure voice",
+                    Label: "about_office"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Keep moving",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Logged, says the receptionist, without looking up. Visitor traffic is a metric here, and you have just improved it."
+                        }
+                    ],
+                    Name: "Reception — logged",
+                    Label: "sighted"
+                }
+            ]
+        },
+        DisplayAttribute: [
+            {
+                Bool: 1b,
+                Type: "VISIBLE"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_AT_DAY"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_AT_NIGHT"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_IN_CREATIVE"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_IN_SPECTATOR"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_IN_STANDARD"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_TO_OWNER"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_TO_TEAM"
+            },
+            {
+                Int: 7,
+                Type: "LIGHT_LEVEL"
+            },
+            {
+                Text: "ALWAYS",
+                Type: "NAME_VISIBILITY"
+            }
+        ],
+        EasyNPCVersion: 3,
+        EntityAttribute: {
+            CanBeHitByProjectile: 0b,
+            CanBeLeashed: 0b,
+            CanBreatheUnderwater: 0b,
+            CanCloseDoor: 0b,
+            CanFloat: 0b,
+            CanOpenDoor: 0b,
+            CanPassDoor: 0b,
+            CanUseNetherPortal: 0b,
+            Freefall: 0b,
+            HealthRegeneration: 0.0d,
+            IsAttackableByMonsters: 0b,
+            IsAttackableByPlayers: 0b,
+            IsInvulnerable: 1b,
+            IsPushable: 0b,
+            NoGravity: 0b,
+            PushEntities: 0b
+        },
+        HandDropChances: [0.085f, 0.085f],
+        HandItems: [
+            {},
+            {}
+        ],
+        Invulnerable: 0b,
+        LeftHanded: 0b,
+        ModelData: {
+            DefaultPose: "STANDING",
+            Pose: "VANILLA",
+            Position: {},
+            Rotation: {},
+            Scale: {},
+            Visible: {
+                Boots: 1b
+            }
+        },
+        Navigation: {
+            Home: {
+                X: 0,
+                Y: 0,
+                Z: 0
+            }
+        },
+        ObjectiveData: {
+            HasObjectives: 1b,
+            HasTravelTarget: 0b,
+            ObjectiveDataSet: [
+                {
+                    Type: "LOOK_AT_PLAYER",
+                    Prio: 9,
+                    Id: "ambient_look_player",
+                    LookDistance: 8.0f
+                },
+                {
+                    Type: "LOOK_RANDOM_AROUND",
+                    Prio: 10,
+                    Id: "ambient_look_random"
+                },
+                {
+                    Type: "LOOK_AT_RESET",
+                    Prio: 9,
+                    Id: "ambient_look_reset"
+                }
+            ]
+        },
+        OnGround: 1b,
+        PersistenceRequired: 0b,
+        PresetUUID: [I; 0, 0, 0, 0],
+        Profession: "NONE",
+        Progression: {
+            AttributeScalingEnabled: 0b,
+            EntityExperience: 1,
+            EntityExperienceLevel: 1
+        },
+        RenderData: {},
+        SkinData: {
+            Content: "",
+            DisableLayers: 0b,
+            Name: "",
+            Timestamp: 0L,
+            Type: "DEFAULT",
+            URL: "",
+            UUID: [I; 0, 0, 0, 0]
+        },
+        SoundData: {
+            SoundDataSet: [
+                {
+                    Name: "minecraft:entity.player.death",
+                    Type: "DEATH"
+                },
+                {
+                    Name: "minecraft:entity.player.hurt",
+                    Type: "HURT"
+                }
+            ]
+        },
+        Status: {
+            finalized: 0b,
+            npc_data_last_saved: 0L,
+            npc_data_last_update: 0L
+        },
+        VariantType: "STEVE",
+        attributes: [
+            {
+                base: 20.0d,
+                id: "minecraft:generic.max_health"
+            },
+            {
+                base: 0.5d,
+                id: "minecraft:generic.movement_speed"
+            }
+        ],
+        id: "easy_npc:humanoid"
+    }
+}

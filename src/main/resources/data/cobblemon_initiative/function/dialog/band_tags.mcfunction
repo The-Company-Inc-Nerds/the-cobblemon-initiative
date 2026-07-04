@@ -22,11 +22,23 @@ execute as @a unless score @s memory_fragment matches 4.. run tag @s remove badg
 execute as @a if score @s memory_fragment matches 7.. run tag @s add badges_gte_7
 execute as @a unless score @s memory_fragment matches 7.. run tag @s remove badges_gte_7
 
+execute as @a if score @s cd_instability matches 16.. run tag @s add cd_instability_gte_16
+execute as @a unless score @s cd_instability matches 16.. run tag @s remove cd_instability_gte_16
+
+execute as @a if score @s cd_instability matches 20.. run tag @s add cd_instability_gte_20
+execute as @a unless score @s cd_instability matches 20.. run tag @s remove cd_instability_gte_20
+
 execute as @a if score @s cd_instability matches 40.. run tag @s add cd_instability_gte_40
 execute as @a unless score @s cd_instability matches 40.. run tag @s remove cd_instability_gte_40
 
+execute as @a if score @s cd_instability matches 8.. run tag @s add cd_instability_gte_8
+execute as @a unless score @s cd_instability matches 8.. run tag @s remove cd_instability_gte_8
+
 execute as @a if score @s ci_notices matches 3.. run tag @s add ci_notices_gte_3
 execute as @a unless score @s ci_notices matches 3.. run tag @s remove ci_notices_gte_3
+
+execute as @a if score @s fields_liberated matches 1.. run tag @s add fields_liberated_gte_1
+execute as @a unless score @s fields_liberated matches 1.. run tag @s remove fields_liberated_gte_1
 
 execute as @a if score @s fields_liberated matches 2.. run tag @s add fields_liberated_gte_2
 execute as @a unless score @s fields_liberated matches 2.. run tag @s remove fields_liberated_gte_2

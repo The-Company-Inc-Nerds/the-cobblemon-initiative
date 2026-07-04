@@ -20,7 +20,7 @@
                 ]
             }
         },
-        ArmorDropChances: [0.085f, 0.085f, 0.085f, 0.085f],
+        ArmorDropChances: [0.08500000089406967f, 0.08500000089406967f, 0.08500000089406967f, 0.08500000089406967f],
         ArmorItems: [
             {},
             {},
@@ -171,7 +171,7 @@
                     ],
                     Texts: [
                         {
-                            Text: "Before field clearance, the standard reading. Dr. Medcrest countersigned this by depot fax, so consider it read to you in a medical voice. Field Liability Policy, Section 4: a fainted partner is a non-recoverable asset. The Company does not restore non-recoverable assets. Neither does anyone else."
+                            Text: "Before field clearance, the standard reading. Dr. Asha countersigned this by depot fax, so consider it read to you in a medical voice. Field Liability Policy, Section 4: a fainted partner is a non-recoverable asset. The Company does not restore non-recoverable assets. Neither does anyone else."
                         }
                     ],
                     Name: "Field Liability Policy — 1 of 2",
@@ -208,26 +208,26 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "function cobblemon_initiative:economy/payout {amount:500}"
+                                    Cmd: "execute as @initiator run function cobblemon_initiative:economy/payout {amount:500}"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "loot give @s loot cobblemon_initiative:npc_gift/provisional_id"
+                                    Cmd: "loot give @initiator loot cobblemon_initiative:npc_gift/provisional_id"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "tag @s add census_signed"
+                                    Cmd: "tag @initiator add census_signed"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "tag @s add census_processed"
+                                    Cmd: "tag @initiator add census_processed"
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "title @p actionbar [{\"text\":\"Signed. Compliance stipend issued. Provisional Resident ID received.\"}]"
+                                    Cmd: "title @initiator actionbar [{\"text\":\"Signed. Compliance stipend issued. Provisional Resident ID received.\"}]"
                                 },
                                 {
                                     Type: "OPEN_NAMED_DIALOG",
@@ -242,16 +242,16 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "tag @s add census_refused"
+                                    Cmd: "tag @initiator add census_refused"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "tag @s add census_processed"
+                                    Cmd: "tag @initiator add census_processed"
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "title @p actionbar [{\"text\":\"Refused. Your file is forwarded anyway. The Drive appreciates your feedback.\"}]"
+                                    Cmd: "title @initiator actionbar [{\"text\":\"Refused. Your file is forwarded anyway. The Drive appreciates your feedback.\"}]"
                                 },
                                 {
                                     Type: "OPEN_NAMED_DIALOG",
@@ -384,16 +384,16 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "give @s cobblemon:exp_candy_xs 1"
+                                    Cmd: "give @initiator cobblemon:exp_candy_xs 1"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "tag @s add survey_done"
+                                    Cmd: "tag @initiator add survey_done"
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "title @p actionbar [{\"text\":\"Survey complete. Participation gift issued. Your satisfaction has been recorded as Very.\"}]"
+                                    Cmd: "title @initiator actionbar [{\"text\":\"Survey complete. Participation gift issued. Your satisfaction has been recorded as Very.\"}]"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -407,16 +407,16 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "give @s cobblemon:exp_candy_xs 1"
+                                    Cmd: "give @initiator cobblemon:exp_candy_xs 1"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "tag @s add survey_done"
+                                    Cmd: "tag @initiator add survey_done"
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "title @p actionbar [{\"text\":\"Survey complete. Participation gift issued. Your enthusiasm has been flagged for review.\"}]"
+                                    Cmd: "title @initiator actionbar [{\"text\":\"Survey complete. Participation gift issued. Your enthusiasm has been flagged for review.\"}]"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -437,66 +437,66 @@
         },
         DisplayAttribute: [
             {
-                Bool: 1b,
-                Type: "VISIBLE"
+                Type: "VISIBLE",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_AT_DAY"
+                Type: "VISIBLE_AT_DAY",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_AT_NIGHT"
+                Type: "VISIBLE_AT_NIGHT",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_IN_CREATIVE"
+                Type: "VISIBLE_IN_CREATIVE",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_IN_SPECTATOR"
+                Type: "VISIBLE_IN_SPECTATOR",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_IN_STANDARD"
+                Type: "VISIBLE_IN_STANDARD",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_TO_OWNER"
+                Type: "VISIBLE_TO_OWNER",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_TO_TEAM"
+                Type: "VISIBLE_TO_TEAM",
+                Bool: 1b
             },
             {
-                Int: 7,
-                Type: "LIGHT_LEVEL"
+                Type: "LIGHT_LEVEL",
+                Int: 7
             },
             {
-                Text: "ALWAYS",
-                Type: "NAME_VISIBILITY"
+                Type: "NAME_VISIBILITY",
+                Text: "ALWAYS"
             }
         ],
         EasyNPCVersion: 3,
         EntityAttribute: {
-            CanBeHitByProjectile: 0b,
-            CanBeLeashed: 0b,
-            CanBreatheUnderwater: 0b,
-            CanCloseDoor: 0b,
-            CanFloat: 0b,
-            CanOpenDoor: 0b,
-            CanPassDoor: 0b,
-            CanUseNetherPortal: 0b,
-            Freefall: 0b,
-            HealthRegeneration: 0.0d,
             IsAttackableByMonsters: 0b,
-            IsAttackableByPlayers: 0b,
+            CanCloseDoor: 0b,
+            Freefall: 0b,
+            CanUseNetherPortal: 0b,
             IsInvulnerable: 1b,
-            IsPushable: 0b,
+            HealthRegeneration: 0.0d,
             NoGravity: 0b,
-            PushEntities: 0b
+            CanPassDoor: 0b,
+            PushEntities: 0b,
+            CanFloat: 0b,
+            CanBreatheUnderwater: 0b,
+            CanBeLeashed: 0b,
+            CanBeHitByProjectile: 0b,
+            IsPushable: 0b,
+            IsAttackableByPlayers: 0b,
+            CanOpenDoor: 0b
         },
-        HandDropChances: [0.085f, 0.085f],
+        HandDropChances: [0.08500000089406967f, 0.08500000089406967f],
         HandItems: [
             {},
             {}
@@ -506,18 +506,16 @@
         ModelData: {
             DefaultPose: "STANDING",
             Pose: "VANILLA",
-            Position: {},
+            Visible: {},
             Rotation: {},
-            Scale: {},
-            Visible: {
-                Boots: 1b
-            }
+            Position: {},
+            Scale: {}
         },
         Navigation: {
             Home: {
-                X: 0,
-                Y: 0,
-                Z: 0
+                Y: 105,
+                Z: 2881,
+                X: 2604
             }
         },
         ObjectiveData: {
@@ -553,23 +551,39 @@
         },
         RenderData: {},
         SkinData: {
-            Content: "",
-            DisableLayers: 0b,
+            Type: "SECURE_REMOTE_URL",
+            URL: "https://www.minecraftskins.com/uploads/skins/2021/05/26/savanna-17922335.png?v921",
+            UUID: [I; -1242989054, -437108772, -1447632054, 1840319320],
             Name: "",
-            Timestamp: 0L,
-            Type: "DEFAULT",
-            URL: "",
-            UUID: [I; 0, 0, 0, 0]
+            Content: "",
+            Timestamp: 1757623378285L,
+            DisableLayers: 0b
         },
         SoundData: {
             SoundDataSet: [
                 {
-                    Name: "minecraft:entity.player.death",
-                    Type: "DEATH"
+                    Type: "DEATH",
+                    Name: "minecraft:entity.player.death"
                 },
                 {
-                    Name: "minecraft:entity.player.hurt",
-                    Type: "HURT"
+                    Type: "EAT",
+                    Name: "minecraft:entity.generic.eat"
+                },
+                {
+                    Type: "HURT",
+                    Name: "minecraft:entity.player.hurt"
+                },
+                {
+                    Type: "TRADE",
+                    Name: "minecraft:entity.villager.trade"
+                },
+                {
+                    Type: "TRADE_YES",
+                    Name: "minecraft:entity.villager.yes"
+                },
+                {
+                    Type: "TRADE_NO",
+                    Name: "minecraft:entity.villager.no"
                 }
             ]
         },
@@ -589,6 +603,7 @@
                 id: "minecraft:generic.movement_speed"
             }
         ],
-        id: "easy_npc:humanoid"
+        id: "easy_npc:humanoid",
+        CustomName: '{"text": "Census Taker", "color": "#A020F0"}'
     }
 }

@@ -3,7 +3,7 @@
         author: "TheCompanyInc",
         category: "Civilian",
         created: 0L,
-        description: "civilian at Blossom Path (act 1). Compiled from dialog-src.",
+        description: "civilian at Sango Town - Courier Cart (act 1). Compiled from dialog-src.",
         entityTypeId: "easy_npc:humanoid",
         modified: 0L,
         name: "Company Courier",
@@ -20,7 +20,7 @@
                 ]
             }
         },
-        ArmorDropChances: [0.085f, 0.085f, 0.085f, 0.085f],
+        ArmorDropChances: [0.08500000089406967f, 0.08500000089406967f, 0.08500000089406967f, 0.08500000089406967f],
         ArmorItems: [
             {},
             {},
@@ -118,26 +118,26 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "function cobblemon_initiative:economy/payout {amount:900}"
+                                    Cmd: "execute as @initiator run function cobblemon_initiative:economy/payout {amount:900}"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "tag @s add sold_docs"
+                                    Cmd: "tag @initiator add sold_docs"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "tag @s remove doc_portrait"
+                                    Cmd: "tag @initiator remove doc_portrait"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "tag @s remove doc_ledger"
+                                    Cmd: "tag @initiator remove doc_ledger"
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "tellraw @p [{\"text\":\"You hand over the portrait backing and the ledger. The courier logs the transaction and is gone before the money finishes counting.\",\"color\":\"gold\"}]"
+                                    Cmd: "tellraw @initiator [{\"text\":\"You hand over the portrait backing and the ledger. The courier logs the transaction and is gone before the money finishes counting.\",\"color\":\"gold\"}]"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -151,11 +151,11 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "function cobblemon_initiative:sidequest/personnel_file/give_doc_charter"
+                                    Cmd: "execute as @initiator run function cobblemon_initiative:sidequest/personnel_file/give_doc_charter"
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "tellraw @p [{\"text\":\"You decline. The courier shrugs, turns to go — and the founding charter slips from his overstuffed satchel into the road dust. He does not come back for it.\",\"color\":\"gold\"}]"
+                                    Cmd: "tellraw @initiator [{\"text\":\"You decline. The courier shrugs, turns to go — and the founding charter slips from his overstuffed satchel into the road dust. He does not come back for it.\",\"color\":\"gold\"}]"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -203,66 +203,66 @@
         },
         DisplayAttribute: [
             {
-                Bool: 1b,
-                Type: "VISIBLE"
+                Type: "VISIBLE",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_AT_DAY"
+                Type: "VISIBLE_AT_DAY",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_AT_NIGHT"
+                Type: "VISIBLE_AT_NIGHT",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_IN_CREATIVE"
+                Type: "VISIBLE_IN_CREATIVE",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_IN_SPECTATOR"
+                Type: "VISIBLE_IN_SPECTATOR",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_IN_STANDARD"
+                Type: "VISIBLE_IN_STANDARD",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_TO_OWNER"
+                Type: "VISIBLE_TO_OWNER",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_TO_TEAM"
+                Type: "VISIBLE_TO_TEAM",
+                Bool: 1b
             },
             {
-                Int: 7,
-                Type: "LIGHT_LEVEL"
+                Type: "LIGHT_LEVEL",
+                Int: 7
             },
             {
-                Text: "ALWAYS",
-                Type: "NAME_VISIBILITY"
+                Type: "NAME_VISIBILITY",
+                Text: "ALWAYS"
             }
         ],
         EasyNPCVersion: 3,
         EntityAttribute: {
-            CanBeHitByProjectile: 0b,
-            CanBeLeashed: 0b,
-            CanBreatheUnderwater: 0b,
-            CanCloseDoor: 0b,
-            CanFloat: 0b,
-            CanOpenDoor: 0b,
-            CanPassDoor: 0b,
-            CanUseNetherPortal: 0b,
-            Freefall: 0b,
-            HealthRegeneration: 0.0d,
             IsAttackableByMonsters: 0b,
-            IsAttackableByPlayers: 0b,
+            CanCloseDoor: 0b,
+            Freefall: 0b,
+            CanUseNetherPortal: 0b,
             IsInvulnerable: 1b,
-            IsPushable: 0b,
+            HealthRegeneration: 0.0d,
             NoGravity: 0b,
-            PushEntities: 0b
+            CanPassDoor: 0b,
+            PushEntities: 0b,
+            CanFloat: 0b,
+            CanBreatheUnderwater: 0b,
+            CanBeLeashed: 0b,
+            CanBeHitByProjectile: 0b,
+            IsPushable: 0b,
+            IsAttackableByPlayers: 0b,
+            CanOpenDoor: 0b
         },
-        HandDropChances: [0.085f, 0.085f],
+        HandDropChances: [0.08500000089406967f, 0.08500000089406967f],
         HandItems: [
             {},
             {}
@@ -272,18 +272,16 @@
         ModelData: {
             DefaultPose: "STANDING",
             Pose: "VANILLA",
-            Position: {},
+            Visible: {},
             Rotation: {},
-            Scale: {},
-            Visible: {
-                Boots: 1b
-            }
+            Position: {},
+            Scale: {}
         },
         Navigation: {
             Home: {
-                X: 0,
-                Y: 0,
-                Z: 0
+                Y: 110,
+                Z: 2821,
+                X: 2603
             }
         },
         ObjectiveData: {
@@ -323,19 +321,35 @@
             DisableLayers: 0b,
             Name: "",
             Timestamp: 0L,
-            Type: "DEFAULT",
-            URL: "",
+            Type: "SECURE_REMOTE_URL",
+            URL: "https://www.minecraftskins.com/uploads/skins/2026/04/18/masked-cultist--warrior-of-dingo-24001876.png?v960",
             UUID: [I; 0, 0, 0, 0]
         },
         SoundData: {
             SoundDataSet: [
                 {
-                    Name: "minecraft:entity.player.death",
-                    Type: "DEATH"
+                    Type: "DEATH",
+                    Name: "minecraft:entity.player.death"
                 },
                 {
-                    Name: "minecraft:entity.player.hurt",
-                    Type: "HURT"
+                    Type: "EAT",
+                    Name: "minecraft:entity.generic.eat"
+                },
+                {
+                    Type: "HURT",
+                    Name: "minecraft:entity.player.hurt"
+                },
+                {
+                    Type: "TRADE",
+                    Name: "minecraft:entity.villager.trade"
+                },
+                {
+                    Type: "TRADE_YES",
+                    Name: "minecraft:entity.villager.yes"
+                },
+                {
+                    Type: "TRADE_NO",
+                    Name: "minecraft:entity.villager.no"
                 }
             ]
         },
@@ -355,6 +369,7 @@
                 id: "minecraft:generic.movement_speed"
             }
         ],
-        id: "easy_npc:humanoid"
+        id: "easy_npc:humanoid",
+        CustomName: '{"text": "Company Courier", "color": "#FFFF00"}'
     }
 }

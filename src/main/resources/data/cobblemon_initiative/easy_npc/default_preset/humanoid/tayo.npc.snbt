@@ -20,7 +20,7 @@
                 ]
             }
         },
-        ArmorDropChances: [0.085f, 0.085f, 0.085f, 0.085f],
+        ArmorDropChances: [0.08500000089406967f, 0.08500000089406967f, 0.08500000089406967f, 0.08500000089406967f],
         ArmorItems: [
             {},
             {},
@@ -50,16 +50,16 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @p[tag=defeated_sq_bracket_3] run say Champion. The ladder resets weekly, if you feel like defending the title."
+                                    Cmd: "execute if entity @initiator[tag=defeated_sq_bracket_3] run say Champion. The ladder resets weekly, if you feel like defending the title."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @p[tag=defeated_sq_bracket_3] run tbcs attach sq_bracket_3 @s"
+                                    Cmd: "execute unless entity @initiator[tag=defeated_sq_bracket_3] run tbcs attach sq_bracket_3 @initiator"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @s[tag=defeated_sq_bracket_3] run tbcs battle GEN_9_SINGLES @s vs sq_bracket_3 onwin {1: ['tag @1 add defeated_sq_bracket_3', '@2 say Krabby concedes. The Invitational has its champion — the liaison at the podium holds your envelope.'], 2: ['@2 say The harbour keeps its title another week. Entry stands if you want another run.']}"
+                                    Cmd: "execute unless entity @initiator[tag=defeated_sq_bracket_3] run tbcs battle GEN_9_SINGLES @initiator vs sq_bracket_3 onwin {1: ['tag @1 add defeated_sq_bracket_3', '@2 say Krabby concedes. The Invitational has its champion — the liaison at the podium holds your envelope.'], 2: ['@2 say The harbour keeps its title another week. Entry stands if you want another run.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -108,16 +108,16 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @p[tag=defeated_sq_bracket_3] run say Champion. The ladder resets weekly, if you feel like defending the title."
+                                    Cmd: "execute if entity @initiator[tag=defeated_sq_bracket_3] run say Champion. The ladder resets weekly, if you feel like defending the title."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @p[tag=defeated_sq_bracket_3] run tbcs attach sq_bracket_3 @s"
+                                    Cmd: "execute unless entity @initiator[tag=defeated_sq_bracket_3] run tbcs attach sq_bracket_3 @initiator"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @s[tag=defeated_sq_bracket_3] run tbcs battle GEN_9_SINGLES @s vs sq_bracket_3 onwin {1: ['tag @1 add defeated_sq_bracket_3', '@2 say Krabby concedes. The Invitational has its champion — the liaison at the podium holds your envelope.'], 2: ['@2 say The harbour keeps its title another week. Entry stands if you want another run.']}"
+                                    Cmd: "execute unless entity @initiator[tag=defeated_sq_bracket_3] run tbcs battle GEN_9_SINGLES @initiator vs sq_bracket_3 onwin {1: ['tag @1 add defeated_sq_bracket_3', '@2 say Krabby concedes. The Invitational has its champion — the liaison at the podium holds your envelope.'], 2: ['@2 say The harbour keeps its title another week. Entry stands if you want another run.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -191,16 +191,16 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "cobbledollars remove @s 150"
+                                    Cmd: "cobbledollars remove @initiator 150"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "tag @s add invit_entered"
+                                    Cmd: "tag @initiator add invit_entered"
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "title @p actionbar [{\"text\":\"Entered the Shorefront Invitational. Round one: Dockhand Lumo, down the dock.\",\"color\":\"aqua\"}]"
+                                    Cmd: "title @initiator actionbar [{\"text\":\"Entered the Shorefront Invitational. Round one: Dockhand Lumo, down the dock.\",\"color\":\"aqua\"}]"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -240,66 +240,66 @@
         },
         DisplayAttribute: [
             {
-                Bool: 1b,
-                Type: "VISIBLE"
+                Type: "VISIBLE",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_AT_DAY"
+                Type: "VISIBLE_AT_DAY",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_AT_NIGHT"
+                Type: "VISIBLE_AT_NIGHT",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_IN_CREATIVE"
+                Type: "VISIBLE_IN_CREATIVE",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_IN_SPECTATOR"
+                Type: "VISIBLE_IN_SPECTATOR",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_IN_STANDARD"
+                Type: "VISIBLE_IN_STANDARD",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_TO_OWNER"
+                Type: "VISIBLE_TO_OWNER",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_TO_TEAM"
+                Type: "VISIBLE_TO_TEAM",
+                Bool: 1b
             },
             {
-                Int: 7,
-                Type: "LIGHT_LEVEL"
+                Type: "LIGHT_LEVEL",
+                Int: 7
             },
             {
-                Text: "ALWAYS",
-                Type: "NAME_VISIBILITY"
+                Type: "NAME_VISIBILITY",
+                Text: "ALWAYS"
             }
         ],
         EasyNPCVersion: 3,
         EntityAttribute: {
-            CanBeHitByProjectile: 0b,
-            CanBeLeashed: 0b,
-            CanBreatheUnderwater: 0b,
-            CanCloseDoor: 0b,
-            CanFloat: 0b,
-            CanOpenDoor: 0b,
-            CanPassDoor: 0b,
-            CanUseNetherPortal: 0b,
-            Freefall: 0b,
-            HealthRegeneration: 0.0d,
             IsAttackableByMonsters: 0b,
-            IsAttackableByPlayers: 0b,
+            CanCloseDoor: 0b,
+            Freefall: 0b,
+            CanUseNetherPortal: 0b,
             IsInvulnerable: 1b,
-            IsPushable: 0b,
+            HealthRegeneration: 0.0d,
             NoGravity: 0b,
-            PushEntities: 0b
+            CanPassDoor: 0b,
+            PushEntities: 0b,
+            CanFloat: 0b,
+            CanBreatheUnderwater: 0b,
+            CanBeLeashed: 0b,
+            CanBeHitByProjectile: 0b,
+            IsPushable: 0b,
+            IsAttackableByPlayers: 0b,
+            CanOpenDoor: 0b
         },
-        HandDropChances: [0.085f, 0.085f],
+        HandDropChances: [0.08500000089406967f, 0.08500000089406967f],
         HandItems: [
             {},
             {}
@@ -309,18 +309,16 @@
         ModelData: {
             DefaultPose: "STANDING",
             Pose: "VANILLA",
-            Position: {},
+            Visible: {},
             Rotation: {},
-            Scale: {},
-            Visible: {
-                Boots: 1b
-            }
+            Position: {},
+            Scale: {}
         },
         Navigation: {
             Home: {
-                X: 0,
-                Y: 0,
-                Z: 0
+                Y: 108,
+                Z: 2953,
+                X: 2542
             }
         },
         ObjectiveData: {
@@ -356,23 +354,39 @@
         },
         RenderData: {},
         SkinData: {
-            Content: "",
-            DisableLayers: 0b,
+            Type: "SECURE_REMOTE_URL",
+            URL: "https://www.minecraftskins.com/uploads/skins/2022/01/09/savannah-steve-19680623.png?v921",
+            UUID: [I; 184029361, 1299330339, -1086957393, -771310145],
             Name: "",
-            Timestamp: 0L,
-            Type: "DEFAULT",
-            URL: "",
-            UUID: [I; 0, 0, 0, 0]
+            Content: "",
+            Timestamp: 1757617310808L,
+            DisableLayers: 0b
         },
         SoundData: {
             SoundDataSet: [
                 {
-                    Name: "minecraft:entity.player.death",
-                    Type: "DEATH"
+                    Type: "DEATH",
+                    Name: "minecraft:entity.player.death"
                 },
                 {
-                    Name: "minecraft:entity.player.hurt",
-                    Type: "HURT"
+                    Type: "EAT",
+                    Name: "minecraft:entity.generic.eat"
+                },
+                {
+                    Type: "HURT",
+                    Name: "minecraft:entity.player.hurt"
+                },
+                {
+                    Type: "TRADE",
+                    Name: "minecraft:entity.villager.trade"
+                },
+                {
+                    Type: "TRADE_YES",
+                    Name: "minecraft:entity.villager.yes"
+                },
+                {
+                    Type: "TRADE_NO",
+                    Name: "minecraft:entity.villager.no"
                 }
             ]
         },
@@ -392,6 +406,7 @@
                 id: "minecraft:generic.movement_speed"
             }
         ],
-        id: "easy_npc:humanoid"
+        id: "easy_npc:humanoid",
+        CustomName: '{"text": "Harbourmaster Tayo", "color": "#9AC0CD"}'
     }
 }

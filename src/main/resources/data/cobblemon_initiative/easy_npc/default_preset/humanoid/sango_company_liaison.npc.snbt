@@ -3,7 +3,7 @@
         author: "TheCompanyInc",
         category: "Villain",
         created: 0L,
-        description: "villain_grunt at Sango Docks (act 1). Compiled from dialog-src.",
+        description: "villain_grunt at Sango Town - Wheat Field (act 1). Compiled from dialog-src.",
         entityTypeId: "easy_npc:humanoid",
         modified: 0L,
         name: "Company Liaison",
@@ -97,26 +97,26 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "function cobblemon_initiative:economy/pay_macro {paid:600}"
+                                    Cmd: "execute as @initiator run function cobblemon_initiative:economy/pay_macro {paid:600}"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "give @s cobblemon:heal_ball 1"
+                                    Cmd: "give @initiator cobblemon:heal_ball 1"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "give @s cobblemon:exp_candy_xs 2"
+                                    Cmd: "give @initiator cobblemon:exp_candy_xs 2"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "tag @s add invit_podium_done"
+                                    Cmd: "tag @initiator add invit_podium_done"
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "tellraw @p [{\"text\":\"Champion purse received. The envelope was counted three times and is exactly three percent light.\",\"color\":\"gray\"}]"
+                                    Cmd: "tellraw @initiator [{\"text\":\"Champion purse received. The envelope was counted three times and is exactly three percent light.\",\"color\":\"gray\"}]"
                                 },
                                 {
                                     Type: "OPEN_NAMED_DIALOG",
@@ -158,16 +158,13 @@
                     ],
                     Texts: [
                         {
-                            Text: "Welcome to the Shorefront Invitational, a friendly competition verified by The Company, Inc. Verified trust, verified value."
+                            Text: "A fine parcel. South-facing, well watered, poorly papered. Almost nobody holds clean title in this town - a detail, but details are my whole portfolio."
                         },
                         {
-                            Text: "The Company, Inc. is proud to support grassroots athletics wherever value can be verified. Today, that is here!"
-                        },
-                        {
-                            Text: "All prizes at this event are pre-counted for your convenience. Convenience is a Company promise."
+                            Text: "Company liaison. I verified a friendly competition down at the docks this quarter - and now I am verifying acreage. The region has such promising fundamentals. Whoever owns the ground under a thing owns the thing. Enjoy the fields while they are scenery."
                         }
                     ],
-                    Name: "Liaison — verified competition",
+                    Name: "Liaison — appraising the field",
                     Label: "default"
                 },
                 {

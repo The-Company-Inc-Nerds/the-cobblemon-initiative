@@ -74,16 +74,16 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @p[tag=defeated_villain_admin_2] run say I have stopped pretending you are a clerical error. The stairs are clear. Go ruin his day instead of mine."
+                                    Cmd: "execute if entity @initiator[tag=defeated_villain_admin_2] run say I have stopped pretending you are a clerical error. The stairs are clear. Go ruin his day instead of mine."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @p[tag=defeated_villain_admin_2] run tbcs attach villain_admin_2 @s"
+                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_admin_2] run tbcs attach villain_admin_2 @initiator"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @s[tag=defeated_villain_admin_2] run tbcs battle GEN_9_DOUBLES @s vs villain_admin_2 onwin {1: ['cobbledollars add @1 4500', 'tag @1 add defeated_villain_admin_2', '@2 say Reconciled. The numbers were always going to find you. They are very patient. So were you, once.', 'easy_npc delete @2'], 2: ['@2 say Variance contained. Asset re-secured. Please do not make me file that memo a second time.']}"
+                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_admin_2] run tbcs battle GEN_9_DOUBLES @initiator vs villain_admin_2 onwin {1: ['cobbledollars add @1 4500', 'tag @1 add defeated_villain_admin_2', '@2 say Reconciled. The numbers were always going to find you. They are very patient. So were you, once.', 'easy_npc delete @2'], 2: ['@2 say Variance contained. Asset re-secured. Please do not make me file that memo a second time.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

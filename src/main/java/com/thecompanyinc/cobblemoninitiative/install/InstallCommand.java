@@ -460,21 +460,36 @@ public class InstallCommand {
       }
     }
 
-    // Apply NPC presets via the existing npc-map storage (same as npc-map apply)
+    // Refresh ALL placed NPCs from the shipped preset pipeline: the generated
+    // update_npc_presets function imports every uuid-mapped preset (dialog, quests, the
+    // role rename, and the world-merged builder skin), then register_sight re-registers
+    // the sight-driven NPCs. Import lines for not-yet-placed uuids fail harmlessly, so
+    // this is safe to run on any world at any time — `install run` IS the NPC refresh.
+    server
+      .getCommands()
+      .performPrefixedCommand(
+        silentOp,
+        "function cobblemon_initiative:update_npc_presets"
+      );
+    server
+      .getCommands()
+      .performPrefixedCommand(
+        silentOp,
+        "function cobblemon_initiative:dialog/register_sight"
+      );
+    ctx
+      .getSource()
+      .sendSuccess(
+        () ->
+          Component.literal(
+            "[Install] NPC presets refreshed (update_npc_presets + register_sight)."
+          ),
+        true
+      );
+
+    // Legacy: also apply anything registered via the npc-map dev tool (world storage).
     NpcMapStorage storage = NpcMapInit.getStorage();
-    if (storage == null || storage.size() == 0) {
-      ctx
-        .getSource()
-        .sendSuccess(
-          () ->
-            Component.literal(
-              "[Install] No NPC preset mappings registered yet. " +
-                "Use '/cobblemon-initiative npc-map add' or run generate_npc_function " +
-                "then '/function cobblemon_initiative:update_npc_presets'."
-            ),
-          false
-        );
-    } else {
+    if (storage != null && storage.size() > 0) {
       int applied = 0;
       for (NpcMapEntry e : storage.getAll()) {
         try {

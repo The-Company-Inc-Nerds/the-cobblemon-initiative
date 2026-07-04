@@ -74,16 +74,16 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @p[tag=defeated_royal_elite_4] run say You have already tamed my dragons. The Champion is through the last door — and she asked for you by description."
+                                    Cmd: "execute if entity @initiator[tag=defeated_royal_elite_4] run say You have already tamed my dragons. The Champion is through the last door — and she asked for you by description."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @p[tag=defeated_royal_elite_4] run tbcs attach royal_elite_4 @s"
+                                    Cmd: "execute unless entity @initiator[tag=defeated_royal_elite_4] run tbcs attach royal_elite_4 @initiator"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @s[tag=defeated_royal_elite_4] run tbcs battle GEN_9_SINGLES @s vs royal_elite_4 onwin {1: ['cobbledollars add @1 9500', 'tag @1 add defeated_royal_elite_4', '@2 say Dragons bow to no one, and yet here you stand. Only the Champion remains. She has been watching, you know.'], 2: ['@2 say A dragon does not forgive a soft grip. Toughen up and try the storm again.']}"
+                                    Cmd: "execute unless entity @initiator[tag=defeated_royal_elite_4] run tbcs battle GEN_9_SINGLES @initiator vs royal_elite_4 onwin {1: ['cobbledollars add @1 9500', 'tag @1 add defeated_royal_elite_4', '@2 say Dragons bow to no one, and yet here you stand. Only the Champion remains. She has been watching, you know.'], 2: ['@2 say A dragon does not forgive a soft grip. Toughen up and try the storm again.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

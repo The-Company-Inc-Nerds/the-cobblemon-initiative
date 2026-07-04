@@ -1,0 +1,276 @@
+{
+    PresetMetadata: {
+        author: "TheCompanyInc",
+        category: "Civilian",
+        created: 0L,
+        description: "civilian at Hua Zhan City — Gym Gate (act 1). Compiled from dialog-src.",
+        entityTypeId: "easy_npc:humanoid",
+        modified: 0L,
+        name: "Notice of Preliminary Rezoning",
+        variantType: "STEVE",
+        version: "1.0.0"
+    },
+    data: {
+        ActionData: {
+            ActionEventSet: {
+                ON_INTERACTION: [
+                    {
+                        Type: "OPEN_DEFAULT_DIALOG"
+                    }
+                ]
+            }
+        },
+        ArmorDropChances: [0.085f, 0.085f, 0.085f, 0.085f],
+        ArmorItems: [
+            {},
+            {},
+            {},
+            {}
+        ],
+        Brain: {
+            memories: {}
+        },
+        CanPickUpLoot: 0b,
+        CustomNameVisible: 1b,
+        DialogData: {
+            Type: "STANDARD",
+            DialogDataSet: [
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "defeated_hua_zhan_leader"
+                        }
+                    ],
+                    Priority: 20,
+                    Buttons: [
+                        {
+                            Name: "Step away from the board",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "ADDENDUM, pasted square over the original. Greenspace 7 refiled — brand asset, heritage class, RETAINED. Conversion review closed. The Company congratulates the community on a successful valuation it will describe as its own idea."
+                        },
+                        {
+                            Text: "The addendum is printed on better paper than the notice it covers."
+                        }
+                    ],
+                    Name: "Rezoning Notice — addendum",
+                    Label: "retained_addendum"
+                },
+                {
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "Read the notice closely",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @initiator add seen_rezoning_notice"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "tellraw @initiator [{\"text\":\"Greenspace 7. They mean the garden. The gym is a line item now. Blossom should hear that you read it.\",\"color\":\"gold\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "NOT_EQUALS",
+                                    Name: "seen_rezoning_notice"
+                                }
+                            ],
+                            Label: "read_button"
+                        },
+                        {
+                            Name: "Step away from the board",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "NOTICE OF PRELIMINARY REZONING. Asset: Greenspace 7, legacy garden, status UNDER-PERFORMING. Comparator: Greenhouse Annex B. Conversion review pending community valuation. Comments are welcome and are weighted at zero. — The Company, Inc."
+                        },
+                        {
+                            Text: "The paste is still fresh. The garden behind the gate is very old and very quiet."
+                        }
+                    ],
+                    Name: "Notice of Preliminary Rezoning",
+                    Label: "default"
+                }
+            ]
+        },
+        DisplayAttribute: [
+            {
+                Bool: 1b,
+                Type: "VISIBLE"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_AT_DAY"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_AT_NIGHT"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_IN_CREATIVE"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_IN_SPECTATOR"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_IN_STANDARD"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_TO_OWNER"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_TO_TEAM"
+            },
+            {
+                Int: 7,
+                Type: "LIGHT_LEVEL"
+            },
+            {
+                Text: "ALWAYS",
+                Type: "NAME_VISIBILITY"
+            }
+        ],
+        EasyNPCVersion: 3,
+        EntityAttribute: {
+            CanBeHitByProjectile: 0b,
+            CanBeLeashed: 0b,
+            CanBreatheUnderwater: 0b,
+            CanCloseDoor: 0b,
+            CanFloat: 0b,
+            CanOpenDoor: 0b,
+            CanPassDoor: 0b,
+            CanUseNetherPortal: 0b,
+            Freefall: 0b,
+            HealthRegeneration: 0.0d,
+            IsAttackableByMonsters: 0b,
+            IsAttackableByPlayers: 0b,
+            IsInvulnerable: 1b,
+            IsPushable: 0b,
+            NoGravity: 0b,
+            PushEntities: 0b
+        },
+        HandDropChances: [0.085f, 0.085f],
+        HandItems: [
+            {},
+            {}
+        ],
+        Invulnerable: 0b,
+        LeftHanded: 0b,
+        ModelData: {
+            DefaultPose: "STANDING",
+            Pose: "VANILLA",
+            Position: {},
+            Rotation: {},
+            Scale: {},
+            Visible: {
+                Boots: 1b
+            }
+        },
+        Navigation: {
+            Home: {
+                X: 0,
+                Y: 0,
+                Z: 0
+            }
+        },
+        ObjectiveData: {
+            HasObjectives: 1b,
+            HasTravelTarget: 0b,
+            ObjectiveDataSet: [
+                {
+                    Type: "LOOK_AT_PLAYER",
+                    Prio: 9,
+                    Id: "ambient_look_player",
+                    LookDistance: 8.0f
+                },
+                {
+                    Type: "LOOK_RANDOM_AROUND",
+                    Prio: 10,
+                    Id: "ambient_look_random"
+                },
+                {
+                    Type: "LOOK_AT_RESET",
+                    Prio: 9,
+                    Id: "ambient_look_reset"
+                }
+            ]
+        },
+        OnGround: 1b,
+        PersistenceRequired: 0b,
+        PresetUUID: [I; 0, 0, 0, 0],
+        Profession: "NONE",
+        Progression: {
+            AttributeScalingEnabled: 0b,
+            EntityExperience: 1,
+            EntityExperienceLevel: 1
+        },
+        RenderData: {},
+        SkinData: {
+            Content: "",
+            DisableLayers: 0b,
+            Name: "",
+            Timestamp: 0L,
+            Type: "DEFAULT",
+            URL: "",
+            UUID: [I; 0, 0, 0, 0]
+        },
+        SoundData: {
+            SoundDataSet: [
+                {
+                    Name: "minecraft:entity.player.death",
+                    Type: "DEATH"
+                },
+                {
+                    Name: "minecraft:entity.player.hurt",
+                    Type: "HURT"
+                }
+            ]
+        },
+        Status: {
+            finalized: 0b,
+            npc_data_last_saved: 0L,
+            npc_data_last_update: 0L
+        },
+        VariantType: "STEVE",
+        attributes: [
+            {
+                base: 20.0d,
+                id: "minecraft:generic.max_health"
+            },
+            {
+                base: 0.5d,
+                id: "minecraft:generic.movement_speed"
+            }
+        ],
+        id: "easy_npc:humanoid"
+    }
+}

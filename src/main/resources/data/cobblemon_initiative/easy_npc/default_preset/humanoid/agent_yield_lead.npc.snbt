@@ -43,16 +43,16 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @p[tag=defeated_sq_mayor_suits] run say The session is concluded. Do not append yourself further."
+                                    Cmd: "execute if entity @initiator[tag=defeated_sq_mayor_suits] run say The session is concluded. Do not append yourself further."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @p[tag=defeated_sq_mayor_suits] run tbcs attach sq_mayor_suits @s"
+                                    Cmd: "execute unless entity @initiator[tag=defeated_sq_mayor_suits] run tbcs attach sq_mayor_suits @initiator"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @s[tag=defeated_sq_mayor_suits] run tbcs battle GEN_9_DOUBLES @s vs sq_mayor_suits onwin {1: ['cobbledollars add @1 460', 'tag @1 add defeated_sq_mayor_suits', '@2 say Filed. Two agents, one trainer, zero signatures. This quarter is a writeoff.', 'easy_npc delete @2'], 2: ['@2 say The mayor will sign now. Yield is inevitable.']}"
+                                    Cmd: "execute unless entity @initiator[tag=defeated_sq_mayor_suits] run tbcs battle GEN_9_DOUBLES @initiator vs sq_mayor_suits onwin {1: ['cobbledollars add @1 460', 'tag @1 add defeated_sq_mayor_suits', '@2 say Filed. Two agents, one trainer, zero signatures. This quarter is a writeoff.', 'easy_npc delete @2'], 2: ['@2 say The mayor will sign now. Yield is inevitable.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

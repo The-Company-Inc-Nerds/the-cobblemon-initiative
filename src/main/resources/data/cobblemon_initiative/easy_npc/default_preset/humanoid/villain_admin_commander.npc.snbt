@@ -74,16 +74,16 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @p[tag=defeated_villain_admin_commander] run say The door is open. He is waiting and does not know what for. Go and remind him."
+                                    Cmd: "execute if entity @initiator[tag=defeated_villain_admin_commander] run say The door is open. He is waiting and does not know what for. Go and remind him."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @p[tag=defeated_villain_admin_commander] run tbcs attach villain_admin_commander @s"
+                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_admin_commander] run tbcs attach villain_admin_commander @initiator"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @s[tag=defeated_villain_admin_commander] run tbcs battle GEN_9_SINGLES @s vs villain_admin_commander onwin {1: ['cobbledollars add @1 6000', 'tag @1 add defeated_villain_admin_commander', '@2 say Operations cede. I will hold the door. It is the last order I intend to follow, and the first one I have ever wanted to.', 'easy_npc delete @2'], 2: ['@2 say Contained. Efficient. The way it should have ended years ago. Rest. The door will still be locked tomorrow.']}"
+                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_admin_commander] run tbcs battle GEN_9_SINGLES @initiator vs villain_admin_commander onwin {1: ['cobbledollars add @1 6000', 'tag @1 add defeated_villain_admin_commander', '@2 say Operations cede. I will hold the door. It is the last order I intend to follow, and the first one I have ever wanted to.', 'easy_npc delete @2'], 2: ['@2 say Contained. Efficient. The way it should have ended years ago. Rest. The door will still be locked tomorrow.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

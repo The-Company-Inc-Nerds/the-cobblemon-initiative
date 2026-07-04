@@ -1,0 +1,519 @@
+{
+    PresetMetadata: {
+        author: "TheCompanyInc",
+        category: "Quest",
+        created: 0L,
+        description: "quest_giver at Sango Town - Fishing Pond (act 1). Compiled from dialog-src.",
+        entityTypeId: "easy_npc:humanoid",
+        modified: 0L,
+        name: "Deka",
+        variantType: "STEVE",
+        version: "1.0.0"
+    },
+    data: {
+        ActionData: {
+            ActionEventSet: {
+                ON_INTERACTION: [
+                    {
+                        Type: "OPEN_DEFAULT_DIALOG"
+                    }
+                ]
+            }
+        },
+        ArmorDropChances: [0.08500000089406967f, 0.08500000089406967f, 0.08500000089406967f, 0.08500000089406967f],
+        ArmorItems: [
+            {},
+            {},
+            {},
+            {}
+        ],
+        Brain: {
+            memories: {}
+        },
+        CanPickUpLoot: 0b,
+        CustomNameVisible: 1b,
+        DialogData: {
+            Type: "STANDARD",
+            DialogDataSet: [
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "classic_active"
+                        }
+                    ],
+                    Priority: 40,
+                    Buttons: [
+                        {
+                            Name: "Hand in the catch",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "execute as @initiator run function cobblemon_initiative:sidequest/derby/turnin"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "turnin_button"
+                        },
+                        {
+                            Name: "Back to the pier",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "back_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Bar is running and the line should be wet! Five fish before it empties — cod or salmon, the Classic does not discriminate."
+                        },
+                        {
+                            Text: "Less talking, more casting! Bring me the bucket when there are five in it."
+                        }
+                    ],
+                    Name: "Deka — the quarter is live",
+                    Label: "active"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "sango_classic_champion"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "NOT_EQUALS",
+                            Name: "classic_active"
+                        }
+                    ],
+                    Priority: 30,
+                    Buttons: [
+                        {
+                            Name: "Enter again — 150 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "execute as @initiator run function cobblemon_initiative:sidequest/derby/start"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "reenter_button"
+                        },
+                        {
+                            Name: "Resting on my laurels",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The reigning Classic Champion, back at my pier. The title is quarterly, you know. There is always another quarter."
+                        },
+                        {
+                            Text: "Best quarterly report in town, and your name is on it. Nobody audits the Classic — that is the whole charm. Fancy another run?"
+                        }
+                    ],
+                    Name: "Deka — Classic Champion",
+                    Label: "champion"
+                },
+                {
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "Take the spare rod",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "give @initiator minecraft:fishing_rod 1"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @initiator add classic_rod_given"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "title @initiator actionbar [{\"text\":\"Received the spare fishing rod.\",\"color\":\"gray\"}]"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "NOT_EQUALS",
+                                    Name: "classic_rod_given"
+                                }
+                            ],
+                            Label: "rod_button"
+                        },
+                        {
+                            Name: "Enter the Classic — 150 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "execute as @initiator run function cobblemon_initiative:sidequest/derby/start"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "enter_button"
+                        },
+                        {
+                            Name: "Ask about the other fish",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "karp_pitch"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "NOT_EQUALS",
+                                    Name: "bought_magikarp"
+                                }
+                            ],
+                            Label: "karp_button"
+                        },
+                        {
+                            Name: "How is my investment doing",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "karp_sold"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "bought_magikarp"
+                                }
+                            ],
+                            Label: "karp_after_button"
+                        },
+                        {
+                            Name: "Not this quarter",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Deka. Angler, dealer in aquatic futures, and keeper of the Sango Classic — a quarterly fishing derby and the only quarterly report in this town nobody audits. Entry is one hundred fifty, the bar runs six minutes, five fish off this pond before it empties. Cod, salmon, no favoritism."
+                        },
+                        {
+                            Text: "Rules of the Classic: pay in, watch the bar, five fish before zero. Miss and you are out the entry and nothing else — the water keeps no other score. First timers get my spare rod, no charge. And if the derby is too honest for you, ask me about the other fish."
+                        }
+                    ],
+                    Name: "Deka — the Sango Classic",
+                    Label: "default"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Buy the growth vehicle - 500 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobbledollars remove @initiator 500"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "givepokemonother @initiator magikarp level=5"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "give @initiator cobblemon:oran_berry 1"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @initiator add bought_magikarp"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "title @initiator actionbar [{\"text\":\"Asset transferred. One long-term growth vehicle, one complimentary onboarding berry.\",\"color\":\"gold\"}]"
+                                },
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "karp_handoff"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "NOT_EQUALS",
+                                    Name: "bought_magikarp"
+                                }
+                            ],
+                            Label: "buy_button"
+                        },
+                        {
+                            Name: "Just the derby, thanks",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "decline_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Now this — this is not derby stock. One fish, one price, one opportunity: a long-term growth vehicle, fully verified by me, past performance no guarantee of future results. Five hundred CobbleDollars, and the upside is, in a word, monstrous."
+                        },
+                        {
+                            Text: "It knows one move and the move is patience. Five hundred, and at level twenty you will name a lake after me."
+                        }
+                    ],
+                    Name: "Deka — a liquid asset",
+                    Label: "karp_pitch"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Back",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "default"
+                                }
+                            ],
+                            Label: "back_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Per the terms of sale — all transactions final, all growth organic, all refunds hypothetical. How is the asset performing? Do not answer. Past performance is not my department."
+                        },
+                        {
+                            Text: "You hold the vehicle, I hold the proceeds. That is what a healthy market looks like. Now — fancy a derby run while you wait for it to appreciate?"
+                        }
+                    ],
+                    Name: "Deka — no refunds",
+                    Label: "karp_sold"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Take the fish and go",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "done_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "A pleasure doing verified business. The asset responds to feeding, patience, and level twenty. I have said too much. The berry is complimentary. The confidence is priced in."
+                        }
+                    ],
+                    Name: "Deka — the handoff",
+                    Label: "karp_handoff"
+                }
+            ]
+        },
+        DisplayAttribute: [
+            {
+                Type: "VISIBLE",
+                Bool: 1b
+            },
+            {
+                Type: "VISIBLE_AT_DAY",
+                Bool: 1b
+            },
+            {
+                Type: "VISIBLE_AT_NIGHT",
+                Bool: 1b
+            },
+            {
+                Type: "VISIBLE_IN_CREATIVE",
+                Bool: 1b
+            },
+            {
+                Type: "VISIBLE_IN_SPECTATOR",
+                Bool: 1b
+            },
+            {
+                Type: "VISIBLE_IN_STANDARD",
+                Bool: 1b
+            },
+            {
+                Type: "VISIBLE_TO_OWNER",
+                Bool: 1b
+            },
+            {
+                Type: "VISIBLE_TO_TEAM",
+                Bool: 1b
+            },
+            {
+                Type: "LIGHT_LEVEL",
+                Int: 7
+            },
+            {
+                Type: "NAME_VISIBILITY",
+                Text: "ALWAYS"
+            }
+        ],
+        EasyNPCVersion: 3,
+        EntityAttribute: {
+            IsAttackableByMonsters: 0b,
+            CanCloseDoor: 0b,
+            Freefall: 0b,
+            CanUseNetherPortal: 0b,
+            IsInvulnerable: 1b,
+            HealthRegeneration: 0.0d,
+            NoGravity: 0b,
+            CanPassDoor: 0b,
+            PushEntities: 0b,
+            CanFloat: 0b,
+            CanBreatheUnderwater: 0b,
+            CanBeLeashed: 0b,
+            CanBeHitByProjectile: 0b,
+            IsPushable: 0b,
+            IsAttackableByPlayers: 0b,
+            CanOpenDoor: 0b
+        },
+        HandDropChances: [0.08500000089406967f, 0.08500000089406967f],
+        HandItems: [
+            {
+                id: "cobblemon:poke_rod",
+                count: 1
+            },
+            {}
+        ],
+        Invulnerable: 0b,
+        LeftHanded: 0b,
+        ModelData: {
+            DefaultPose: "STANDING",
+            Pose: "VANILLA",
+            Visible: {},
+            Rotation: {},
+            Position: {},
+            Scale: {}
+        },
+        Navigation: {
+            Home: {
+                Y: 111,
+                Z: 2856,
+                X: 2570
+            }
+        },
+        ObjectiveData: {
+            HasObjectives: 1b,
+            HasTravelTarget: 0b,
+            ObjectiveDataSet: [
+                {
+                    Type: "LOOK_AT_PLAYER",
+                    Prio: 9,
+                    Id: "ambient_look_player",
+                    LookDistance: 8.0f
+                },
+                {
+                    Type: "LOOK_RANDOM_AROUND",
+                    Prio: 10,
+                    Id: "ambient_look_random"
+                },
+                {
+                    Type: "LOOK_AT_RESET",
+                    Prio: 9,
+                    Id: "ambient_look_reset"
+                }
+            ]
+        },
+        OnGround: 1b,
+        PersistenceRequired: 0b,
+        PresetUUID: [I; 0, 0, 0, 0],
+        Profession: "NONE",
+        Progression: {
+            AttributeScalingEnabled: 0b,
+            EntityExperience: 1,
+            EntityExperienceLevel: 1
+        },
+        RenderData: {},
+        SkinData: {
+            Type: "SECURE_REMOTE_URL",
+            URL: "https://www.minecraftskins.com/uploads/skins/2020/04/11/areumadlol-savanna-leatherworker--no-hat--14105586.png?v921",
+            UUID: [I; 455480145, 569587052, -1101081044, -2015732090],
+            Name: "",
+            Content: "",
+            Timestamp: 1757617925198L,
+            DisableLayers: 0b
+        },
+        SoundData: {
+            SoundDataSet: [
+                {
+                    Type: "DEATH",
+                    Name: "minecraft:entity.player.death"
+                },
+                {
+                    Type: "EAT",
+                    Name: "minecraft:entity.generic.eat"
+                },
+                {
+                    Type: "HURT",
+                    Name: "minecraft:entity.player.hurt"
+                },
+                {
+                    Type: "TRADE",
+                    Name: "minecraft:entity.villager.trade"
+                },
+                {
+                    Type: "TRADE_YES",
+                    Name: "minecraft:entity.villager.yes"
+                },
+                {
+                    Type: "TRADE_NO",
+                    Name: "minecraft:entity.villager.no"
+                }
+            ]
+        },
+        Status: {
+            finalized: 0b,
+            npc_data_last_saved: 0L,
+            npc_data_last_update: 0L
+        },
+        VariantType: "STEVE",
+        attributes: [
+            {
+                base: 20.0d,
+                id: "minecraft:generic.max_health"
+            },
+            {
+                base: 0.5d,
+                id: "minecraft:generic.movement_speed"
+            }
+        ],
+        id: "easy_npc:humanoid",
+        CustomName: '{"text": "Deka", "color": "#FFFF00"}'
+    }
+}

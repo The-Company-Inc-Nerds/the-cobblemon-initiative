@@ -74,16 +74,16 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @p[tag=defeated_nifl_leader] run say Glacier Badge already, good. The ice keeps things, you know. Faces. Names. I have seen yours in here long before you arrived in Nifl. The cold remembers what the warm world chose to forget about you."
+                                    Cmd: "execute if entity @initiator[tag=defeated_nifl_leader] run say Glacier Badge already, good. The ice keeps things, you know. Faces. Names. I have seen yours in here long before you arrived in Nifl. The cold remembers what the warm world chose to forget about you."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @p[tag=defeated_nifl_leader] run tbcs attach nifl_leader @s"
+                                    Cmd: "execute unless entity @initiator[tag=defeated_nifl_leader] run tbcs attach nifl_leader @initiator"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @s[tag=defeated_nifl_leader] run tbcs battle GEN_9_SINGLES @s vs nifl_leader onwin {1: ['cobbledollars add @1 5400', 'tag @1 add defeated_nifl_leader', '@2 say Cold sharpens what it does not kill. You came through clear and unbroken. The Glacier Badge is yours.'], 2: ['@2 say The frost takes the hurried and the warm. Slow down. Go still. The ice will teach you, if you let it.']}"
+                                    Cmd: "execute unless entity @initiator[tag=defeated_nifl_leader] run tbcs battle GEN_9_SINGLES @initiator vs nifl_leader onwin {1: ['cobbledollars add @1 5400', 'tag @1 add defeated_nifl_leader', '@2 say Cold sharpens what it does not kill. You came through clear and unbroken. The Glacier Badge is yours.'], 2: ['@2 say The frost takes the hurried and the warm. Slow down. Go still. The ice will teach you, if you let it.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

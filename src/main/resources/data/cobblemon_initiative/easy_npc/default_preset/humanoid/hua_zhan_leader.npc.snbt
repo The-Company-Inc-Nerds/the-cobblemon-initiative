@@ -41,6 +41,290 @@
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
                             Name: "defeated_hua_zhan_leader"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "fields_liberated_gte_1"
+                        }
+                    ],
+                    Priority: 25,
+                    Buttons: [
+                        {
+                            Name: "Grow well, Leader",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "A field went quiet up north this week. Stopped answering the Company memos. That was you. I heard it from three farmers before noon."
+                        },
+                        {
+                            Text: "Keep pulling the grey out of the ground. The garden will hold the line down here. That is what gardens are for."
+                        }
+                    ],
+                    Name: "Blossom — the fields thanks",
+                    Label: "fields_thanks"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "heard_wheat_pitch"
+                        }
+                    ],
+                    Priority: 15,
+                    Buttons: [
+                        {
+                            Name: "Challenge the Gym",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "execute if entity @initiator[tag=defeated_hua_zhan_leader] run say The Bloom Badge is already yours. Mind the wheat fields on your way out. They are not as friendly as they look these days."
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "execute unless entity @initiator[tag=defeated_hua_zhan_leader] run tbcs attach hua_zhan_leader @initiator"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "execute unless entity @initiator[tag=defeated_hua_zhan_leader] run tbcs battle GEN_9_SINGLES @initiator vs hua_zhan_leader onwin {1: ['cobbledollars add @1 1800', 'tag @1 add defeated_hua_zhan_leader', '@2 say Good roots. You bend where you must and you hold where it counts. Go on growing.'], 2: ['@2 say A seedling cannot rush the sun. Tend your team and come back when you have grown.']}"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "yes_button"
+                        },
+                        {
+                            Name: "I need to prepare",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "You have been down the market row. You heard the grey suits selling grain like scripture — back your savings in something you can hold, they say, soft voices and hard paper."
+                        },
+                        {
+                            Text: "They bought my town one lease at a time and called it growth. I grew this garden. They grow a number. Show me which one outlasts the other. The Bloom Badge is waiting."
+                        }
+                    ],
+                    Name: "Blossom — the traders word",
+                    Label: "traders_word"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "toured_greenhouse"
+                        }
+                    ],
+                    Priority: 15,
+                    Buttons: [
+                        {
+                            Name: "Challenge the Gym",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "execute if entity @initiator[tag=defeated_hua_zhan_leader] run say The Bloom Badge is already yours. Mind the wheat fields on your way out. They are not as friendly as they look these days."
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "execute unless entity @initiator[tag=defeated_hua_zhan_leader] run tbcs attach hua_zhan_leader @initiator"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "execute unless entity @initiator[tag=defeated_hua_zhan_leader] run tbcs battle GEN_9_SINGLES @initiator vs hua_zhan_leader onwin {1: ['cobbledollars add @1 1800', 'tag @1 add defeated_hua_zhan_leader', '@2 say Good roots. You bend where you must and you hold where it counts. Go on growing.'], 2: ['@2 say A seedling cannot rush the sun. Tend your team and come back when you have grown.']}"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "yes_button"
+                        },
+                        {
+                            Name: "I need to prepare",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "You have been down the market row. You heard the grey suits selling grain like scripture — back your savings in something you can hold, they say, soft voices and hard paper."
+                        },
+                        {
+                            Text: "They bought my town one lease at a time and called it growth. I grew this garden. They grow a number. Show me which one outlasts the other. The Bloom Badge is waiting."
+                        }
+                    ],
+                    Name: "Blossom — the traders word",
+                    Label: "traders_word__or1"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "seen_rezoning_notice"
+                        }
+                    ],
+                    Priority: 14,
+                    Buttons: [
+                        {
+                            Name: "Challenge the Gym",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "execute if entity @initiator[tag=defeated_hua_zhan_leader] run say The Bloom Badge is already yours. Mind the wheat fields on your way out. They are not as friendly as they look these days."
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "execute unless entity @initiator[tag=defeated_hua_zhan_leader] run tbcs attach hua_zhan_leader @initiator"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "execute unless entity @initiator[tag=defeated_hua_zhan_leader] run tbcs battle GEN_9_SINGLES @initiator vs hua_zhan_leader onwin {1: ['cobbledollars add @1 1800', 'tag @1 add defeated_hua_zhan_leader', '@2 say Good roots. You bend where you must and you hold where it counts. Go on growing.'], 2: ['@2 say A seedling cannot rush the sun. Tend your team and come back when you have grown.']}"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "yes_button"
+                        },
+                        {
+                            Name: "I need to prepare",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "You read the board too. Greenspace 7, under-performing. This garden fed three generations of trainers before their comparator was a drawing. Let them measure. I am not moving."
+                        },
+                        {
+                            Text: "They sent a man with a clipboard because a bulldozer would photograph badly. The garden bends. It does not break. Neither do I. Now — did you come to talk zoning, or to battle?"
+                        }
+                    ],
+                    Name: "Blossom — the paperwork",
+                    Label: "notice_seen"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "defeated_hua_zhan_leader"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "defeated_villain_yield_analyst"
+                        }
+                    ],
+                    Priority: 26,
+                    Buttons: [
+                        {
+                            Name: "Grow well, Leader",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The analyst refiled my garden this morning. Brand asset, heritage class, retained. Saved by foot traffic. I wanted to be angry. But the garden does not ask why the rain comes, and perhaps I should learn from it."
+                        },
+                        {
+                            Text: "You beat him at his own arithmetic and the badge crowd did the rest. The numbers now say the garden earns. It was always earning. They simply could not read the currency."
+                        }
+                    ],
+                    Name: "Blossom — retained",
+                    Label: "retained_after"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "pilgrimage_done"
+                        }
+                    ],
+                    Priority: 16,
+                    Buttons: [
+                        {
+                            Name: "Challenge the Gym",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "execute if entity @initiator[tag=defeated_hua_zhan_leader] run say The Bloom Badge is already yours. Mind the wheat fields on your way out. They are not as friendly as they look these days."
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "execute unless entity @initiator[tag=defeated_hua_zhan_leader] run tbcs attach hua_zhan_leader @initiator"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "execute unless entity @initiator[tag=defeated_hua_zhan_leader] run tbcs battle GEN_9_SINGLES @initiator vs hua_zhan_leader onwin {1: ['cobbledollars add @1 1800', 'tag @1 add defeated_hua_zhan_leader', '@2 say Good roots. You bend where you must and you hold where it counts. Go on growing.'], 2: ['@2 say A seedling cannot rush the sun. Tend your team and come back when you have grown.']}"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "yes_button"
+                        },
+                        {
+                            Name: "I need to prepare",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Four seals and the smell of the moss court still on your sleeves. Master Wei does not send many pilgrims down the hill — the old way asks more patience than most challengers carry."
+                        },
+                        {
+                            Text: "The gardens already taught you what I would have: grass does not win by force. It outlasts. Show me what the hill grew, pilgrim — the Bloom Badge is waiting."
+                        }
+                    ],
+                    Name: "Blossom — the pilgrim",
+                    Label: "pilgrim"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "defeated_hua_zhan_leader"
                         }
                     ],
                     Priority: 20,
@@ -74,16 +358,16 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @p[tag=defeated_hua_zhan_leader] run say The Bloom Badge is already yours. Mind the wheat fields on your way out. They are not as friendly as they look these days."
+                                    Cmd: "execute if entity @initiator[tag=defeated_hua_zhan_leader] run say The Bloom Badge is already yours. Mind the wheat fields on your way out. They are not as friendly as they look these days."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @p[tag=defeated_hua_zhan_leader] run tbcs attach hua_zhan_leader @s"
+                                    Cmd: "execute unless entity @initiator[tag=defeated_hua_zhan_leader] run tbcs attach hua_zhan_leader @initiator"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @s[tag=defeated_hua_zhan_leader] run tbcs battle GEN_9_SINGLES @s vs hua_zhan_leader onwin {1: ['cobbledollars add @1 1800', 'tag @1 add defeated_hua_zhan_leader', '@2 say Good roots. You bend where you must and you hold where it counts. Go on growing.'], 2: ['@2 say A seedling cannot rush the sun. Tend your team and come back when you have grown.']}"
+                                    Cmd: "execute unless entity @initiator[tag=defeated_hua_zhan_leader] run tbcs battle GEN_9_SINGLES @initiator vs hua_zhan_leader onwin {1: ['cobbledollars add @1 1800', 'tag @1 add defeated_hua_zhan_leader', '@2 say Good roots. You bend where you must and you hold where it counts. Go on growing.'], 2: ['@2 say A seedling cannot rush the sun. Tend your team and come back when you have grown.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

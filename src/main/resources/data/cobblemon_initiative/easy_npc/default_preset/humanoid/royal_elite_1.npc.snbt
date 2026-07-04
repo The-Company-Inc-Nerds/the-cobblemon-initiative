@@ -74,16 +74,16 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @p[tag=defeated_royal_elite_1] run say You have passed me already. The next hall is open — Marcus does not like to be kept waiting."
+                                    Cmd: "execute if entity @initiator[tag=defeated_royal_elite_1] run say You have passed me already. The next hall is open — Marcus does not like to be kept waiting."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @p[tag=defeated_royal_elite_1] run tbcs attach royal_elite_1 @s"
+                                    Cmd: "execute unless entity @initiator[tag=defeated_royal_elite_1] run tbcs attach royal_elite_1 @initiator"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @s[tag=defeated_royal_elite_1] run tbcs battle GEN_9_SINGLES @s vs royal_elite_1 onwin {1: ['cobbledollars add @1 5000', 'tag @1 add defeated_royal_elite_1', '@2 say Shadows test the nerve before the mind. Yours did not flinch. Go on to Marcus.'], 2: ['@2 say The dark found the gap in your team. Mend it, and return when your nerve is whole.']}"
+                                    Cmd: "execute unless entity @initiator[tag=defeated_royal_elite_1] run tbcs battle GEN_9_SINGLES @initiator vs royal_elite_1 onwin {1: ['cobbledollars add @1 5000', 'tag @1 add defeated_royal_elite_1', '@2 say Shadows test the nerve before the mind. Yours did not flinch. Go on to Marcus.'], 2: ['@2 say The dark found the gap in your team. Mend it, and return when your nerve is whole.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

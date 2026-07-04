@@ -6,7 +6,7 @@
         description: "duelist at Blossom Path (act 1). Compiled from dialog-src.",
         entityTypeId: "easy_npc:humanoid",
         modified: 0L,
-        name: "Picnicker Ren",
+        name: "Jabari",
         variantType: "STEVE",
         version: "1.0.0"
     },
@@ -20,7 +20,7 @@
                 ]
             }
         },
-        ArmorDropChances: [0.085f, 0.085f, 0.085f, 0.085f],
+        ArmorDropChances: [0.08500000089406967f, 0.08500000089406967f, 0.08500000089406967f, 0.08500000089406967f],
         ArmorItems: [
             {},
             {},
@@ -57,7 +57,7 @@
                             Text: "A badge already. When you beat me here on the blanket, I knew you were headed somewhere."
                         }
                     ],
-                    Name: "Ren - after the badge",
+                    Name: "Jabari - after the badge",
                     Label: "badge_after"
                 },
                 {
@@ -77,7 +77,7 @@
                             Text: "Sit a while if you like. The blanket is big and the fruit is fresh."
                         }
                     ],
-                    Name: "Ren - beaten",
+                    Name: "Jabari - beaten",
                     Label: "beaten"
                 },
                 {
@@ -88,16 +88,16 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @p[tag=defeated_sq_regular_meadow] run say Rematch some other picnic. The fruit is going soft."
+                                    Cmd: "execute if entity @initiator[tag=defeated_sq_regular_meadow] run say Rematch some other picnic. The fruit is going soft."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @p[tag=defeated_sq_regular_meadow] run tbcs attach sq_regular_meadow @s"
+                                    Cmd: "execute unless entity @initiator[tag=defeated_sq_regular_meadow] run tbcs attach sq_regular_meadow @initiator"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @s[tag=defeated_sq_regular_meadow] run tbcs battle GEN_9_SINGLES @s vs sq_regular_meadow onwin {1: ['cobbledollars add @1 150', 'tag @1 add defeated_sq_regular_meadow', '@2 say Oh, they liked that. They always fight better for an audience.'], 2: ['@2 say The meadow looks after its own. No hard feelings - have a snack before you go.']}"
+                                    Cmd: "execute unless entity @initiator[tag=defeated_sq_regular_meadow] run tbcs battle GEN_9_SINGLES @initiator vs sq_regular_meadow onwin {1: ['cobbledollars add @1 150', 'tag @1 add defeated_sq_regular_meadow', '@2 say Oh, they liked that. They always fight better for an audience.'], 2: ['@2 say The meadow looks after its own. No hard feelings - have a snack before you go.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -123,73 +123,73 @@
                             Text: "You walk like you have somewhere to be. Nobody has somewhere to be on Blossom Path."
                         }
                     ],
-                    Name: "Ren - picnic day",
+                    Name: "Jabari - picnic day",
                     Label: "default"
                 }
             ]
         },
         DisplayAttribute: [
             {
-                Bool: 1b,
-                Type: "VISIBLE"
+                Type: "VISIBLE",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_AT_DAY"
+                Type: "VISIBLE_AT_DAY",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_AT_NIGHT"
+                Type: "VISIBLE_AT_NIGHT",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_IN_CREATIVE"
+                Type: "VISIBLE_IN_CREATIVE",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_IN_SPECTATOR"
+                Type: "VISIBLE_IN_SPECTATOR",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_IN_STANDARD"
+                Type: "VISIBLE_IN_STANDARD",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_TO_OWNER"
+                Type: "VISIBLE_TO_OWNER",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_TO_TEAM"
+                Type: "VISIBLE_TO_TEAM",
+                Bool: 1b
             },
             {
-                Int: 7,
-                Type: "LIGHT_LEVEL"
+                Type: "LIGHT_LEVEL",
+                Int: 7
             },
             {
-                Text: "ALWAYS",
-                Type: "NAME_VISIBILITY"
+                Type: "NAME_VISIBILITY",
+                Text: "ALWAYS"
             }
         ],
         EasyNPCVersion: 3,
         EntityAttribute: {
-            CanBeHitByProjectile: 0b,
-            CanBeLeashed: 0b,
-            CanBreatheUnderwater: 0b,
-            CanCloseDoor: 0b,
-            CanFloat: 0b,
-            CanOpenDoor: 0b,
-            CanPassDoor: 0b,
-            CanUseNetherPortal: 0b,
-            Freefall: 0b,
-            HealthRegeneration: 0.0d,
             IsAttackableByMonsters: 0b,
-            IsAttackableByPlayers: 0b,
+            CanCloseDoor: 0b,
+            Freefall: 0b,
+            CanUseNetherPortal: 0b,
             IsInvulnerable: 1b,
-            IsPushable: 0b,
+            HealthRegeneration: 0.0d,
             NoGravity: 0b,
-            PushEntities: 0b
+            CanPassDoor: 0b,
+            PushEntities: 0b,
+            CanFloat: 0b,
+            CanBreatheUnderwater: 0b,
+            CanBeLeashed: 0b,
+            CanBeHitByProjectile: 0b,
+            IsPushable: 0b,
+            IsAttackableByPlayers: 0b,
+            CanOpenDoor: 0b
         },
-        HandDropChances: [0.085f, 0.085f],
+        HandDropChances: [0.08500000089406967f, 0.08500000089406967f],
         HandItems: [
             {},
             {}
@@ -199,18 +199,16 @@
         ModelData: {
             DefaultPose: "STANDING",
             Pose: "VANILLA",
-            Position: {},
+            Visible: {},
             Rotation: {},
-            Scale: {},
-            Visible: {
-                Boots: 1b
-            }
+            Position: {},
+            Scale: {}
         },
         Navigation: {
             Home: {
-                X: 0,
-                Y: 0,
-                Z: 0
+                Y: 94,
+                Z: 2907,
+                X: 2377
             }
         },
         ObjectiveData: {
@@ -229,23 +227,39 @@
         },
         RenderData: {},
         SkinData: {
-            Content: "",
-            DisableLayers: 0b,
+            Type: "SECURE_REMOTE_URL",
+            URL: "https://www.minecraftskins.com/uploads/skins/2024/06/04/kullan-red-blood-summer-arid-gear-22583308.png?v921",
+            UUID: [I; -690072779, -848152348, -2052260731, 879590794],
             Name: "",
-            Timestamp: 0L,
-            Type: "DEFAULT",
-            URL: "",
-            UUID: [I; 0, 0, 0, 0]
+            Content: "",
+            Timestamp: 1757769476381L,
+            DisableLayers: 0b
         },
         SoundData: {
             SoundDataSet: [
                 {
-                    Name: "minecraft:entity.player.death",
-                    Type: "DEATH"
+                    Type: "DEATH",
+                    Name: "minecraft:entity.player.death"
                 },
                 {
-                    Name: "minecraft:entity.player.hurt",
-                    Type: "HURT"
+                    Type: "EAT",
+                    Name: "minecraft:entity.generic.eat"
+                },
+                {
+                    Type: "HURT",
+                    Name: "minecraft:entity.player.hurt"
+                },
+                {
+                    Type: "TRADE",
+                    Name: "minecraft:entity.villager.trade"
+                },
+                {
+                    Type: "TRADE_YES",
+                    Name: "minecraft:entity.villager.yes"
+                },
+                {
+                    Type: "TRADE_NO",
+                    Name: "minecraft:entity.villager.no"
                 }
             ]
         },
@@ -265,6 +279,7 @@
                 id: "minecraft:generic.movement_speed"
             }
         ],
-        id: "easy_npc:humanoid"
+        id: "easy_npc:humanoid",
+        CustomName: '{"text": "Jabari", "color": "#8B4513"}'
     }
 }

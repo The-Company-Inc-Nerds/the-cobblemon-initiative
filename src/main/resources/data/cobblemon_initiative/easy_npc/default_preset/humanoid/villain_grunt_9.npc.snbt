@@ -50,16 +50,16 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @p[tag=defeated_villain_grunt_9] run say We have done this dance. I lost. I am not auditioning for a rematch. Move along."
+                                    Cmd: "execute if entity @initiator[tag=defeated_villain_grunt_9] run say We have done this dance. I lost. I am not auditioning for a rematch. Move along."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @p[tag=defeated_villain_grunt_9] run tbcs attach villain_grunt_9 @s"
+                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_grunt_9] run tbcs attach villain_grunt_9 @initiator"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @s[tag=defeated_villain_grunt_9] run tbcs battle GEN_9_SINGLES @s vs villain_grunt_9 onwin {1: ['cobbledollars add @1 500', 'tag @1 add defeated_villain_grunt_9', '@2 say I held this corridor through two reorganisations. I will not be the one who explains how you passed.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 330', '@2 say Breach neutralised. Return to the lobby and someone will see to your account.']}"
+                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_grunt_9] run tbcs battle GEN_9_SINGLES @initiator vs villain_grunt_9 onwin {1: ['cobbledollars add @1 500', 'tag @1 add defeated_villain_grunt_9', '@2 say I held this corridor through two reorganisations. I will not be the one who explains how you passed.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 330', '@2 say Breach neutralised. Return to the lobby and someone will see to your account.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -90,16 +90,16 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @p[tag=defeated_villain_grunt_9] run say We have done this dance. I lost. I am not auditioning for a rematch. Move along."
+                                    Cmd: "execute if entity @initiator[tag=defeated_villain_grunt_9] run say We have done this dance. I lost. I am not auditioning for a rematch. Move along."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @p[tag=defeated_villain_grunt_9] run tbcs attach villain_grunt_9 @s"
+                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_grunt_9] run tbcs attach villain_grunt_9 @initiator"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @s[tag=defeated_villain_grunt_9] run tbcs battle GEN_9_SINGLES @s vs villain_grunt_9 onwin {1: ['cobbledollars add @1 500', 'tag @1 add defeated_villain_grunt_9', '@2 say I held this corridor through two reorganisations. I will not be the one who explains how you passed.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 330', '@2 say Breach neutralised. Return to the lobby and someone will see to your account.']}"
+                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_grunt_9] run tbcs battle GEN_9_SINGLES @initiator vs villain_grunt_9 onwin {1: ['cobbledollars add @1 500', 'tag @1 add defeated_villain_grunt_9', '@2 say I held this corridor through two reorganisations. I will not be the one who explains how you passed.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 330', '@2 say Breach neutralised. Return to the lobby and someone will see to your account.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

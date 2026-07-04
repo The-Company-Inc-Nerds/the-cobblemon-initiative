@@ -74,16 +74,16 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @p[tag=defeated_royal_elite_3] run say You have already walked out of my dark. Drake is just ahead — the air gets heavier from here."
+                                    Cmd: "execute if entity @initiator[tag=defeated_royal_elite_3] run say You have already walked out of my dark. Drake is just ahead — the air gets heavier from here."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @p[tag=defeated_royal_elite_3] run tbcs attach royal_elite_3 @s"
+                                    Cmd: "execute unless entity @initiator[tag=defeated_royal_elite_3] run tbcs attach royal_elite_3 @initiator"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @s[tag=defeated_royal_elite_3] run tbcs battle GEN_9_SINGLES @s vs royal_elite_3 onwin {1: ['cobbledollars add @1 8000', 'tag @1 add defeated_royal_elite_3', '@2 say Even darkness has a shape, and you found it. Drake is last of the four. Do not let him intimidate you.'], 2: ['@2 say You lost the thread in the gloom. Find it again, and we will dance once more.']}"
+                                    Cmd: "execute unless entity @initiator[tag=defeated_royal_elite_3] run tbcs battle GEN_9_SINGLES @initiator vs royal_elite_3 onwin {1: ['cobbledollars add @1 8000', 'tag @1 add defeated_royal_elite_3', '@2 say Even darkness has a shape, and you found it. Drake is last of the four. Do not let him intimidate you.'], 2: ['@2 say You lost the thread in the gloom. Find it again, and we will dance once more.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

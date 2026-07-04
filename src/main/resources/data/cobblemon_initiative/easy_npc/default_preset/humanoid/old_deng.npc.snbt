@@ -1,0 +1,567 @@
+{
+    PresetMetadata: {
+        author: "TheCompanyInc",
+        category: "Quest",
+        created: 0L,
+        description: "quest_giver at Harvest Road — roadside camp west of Firstfurrow (act 1). Compiled from dialog-src.",
+        entityTypeId: "easy_npc:humanoid",
+        modified: 0L,
+        name: "Old Deng",
+        variantType: "STEVE",
+        version: "1.0.0"
+    },
+    data: {
+        ActionData: {
+            ActionEventSet: {
+                ON_INTERACTION: [
+                    {
+                        Type: "OPEN_DEFAULT_DIALOG"
+                    }
+                ]
+            }
+        },
+        ArmorDropChances: [0.085f, 0.085f, 0.085f, 0.085f],
+        ArmorItems: [
+            {},
+            {},
+            {},
+            {}
+        ],
+        Brain: {
+            memories: {}
+        },
+        CanPickUpLoot: 0b,
+        CustomNameVisible: 1b,
+        DialogData: {
+            Type: "STANDARD",
+            DialogDataSet: [
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "farm_1_free"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "NOT_EQUALS",
+                            Name: "homecoming_paid"
+                        }
+                    ],
+                    Priority: 30,
+                    Buttons: [
+                        {
+                            Name: "Walk the family home",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "execute as @initiator run function cobblemon_initiative:sidequest/tenants_of_record/homecoming"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "walk_home_button"
+                        },
+                        {
+                            Name: "Show him the Company order",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "order_react"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "field_1_transition_taken"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "NOT_EQUALS",
+                                    Name: "transition_paid"
+                                }
+                            ],
+                            Label: "order_button"
+                        },
+                        {
+                            Name: "Give them a moment",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "moment_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The clipboards are gone from the field. You know that better than anyone — I watched you make it true from this exact spot, and I did not blink, because some things a man owes his own eyes."
+                        },
+                        {
+                            Text: "Four generations kept one small rule on that land: the first honest sale of the season pays whoever kept the fence honest. This season, that is you. The counting houses will shave the coin on its way to your hand — they shave everything now — but it leaves mine at the full number."
+                        },
+                        {
+                            Text: "Yun has the hamper packed and the boy is already facing the gate. Walk us home. It is fifty paces, and I intend to enjoy every one of them."
+                        }
+                    ],
+                    Name: "Old Deng — the walk home",
+                    Label: "homecoming"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "homecoming_paid"
+                        }
+                    ],
+                    Priority: 25,
+                    Buttons: [
+                        {
+                            Name: "Show him the Company order",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "order_react"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "field_1_transition_taken"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "NOT_EQUALS",
+                                    Name: "transition_paid"
+                                }
+                            ],
+                            Label: "order_button"
+                        },
+                        {
+                            Name: "Leave him to his gate",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The gate hangs the way my father hung it. Half a thumb off level, on purpose, so anyone leaning on it knows it is ours."
+                        },
+                        {
+                            Text: "The stamp is still on the paper you carry. Keep it — I mean that. Paper remembers what the Company says. The land remembers who walked back through the gate, and the land keeps better files."
+                        }
+                    ],
+                    Name: "Old Deng — at the gate",
+                    Label: "home_after"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "supper_delivered"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "NOT_EQUALS",
+                            Name: "has_firstfurrow_deed"
+                        }
+                    ],
+                    Priority: 15,
+                    Buttons: [
+                        {
+                            Name: "Take the deed copy",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "loot give @initiator loot cobblemon_initiative:npc_gift/firstfurrow_deed"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @initiator add has_firstfurrow_deed"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "tellraw @initiator [{\"text\":\"Old Deng folds the deed into your hand — proof there was a family, kept outside the family.\",\"color\":\"gold\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "take_deed_button"
+                        },
+                        {
+                            Name: "It should stay with the family",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "tellraw @initiator [{\"text\":\"He tucks it back into the coat with great care. Then it waits, he says. Paper is patient. So am I.\",\"color\":\"gray\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "refuse_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "He ate. Good. You have done this family a kindness the size of a pail, so I will trust you with the thing that is heavier than it looks."
+                        },
+                        {
+                            Text: "This is the deed — the copy that stayed in my coat when the originals went in for re-verification. Look at the holder line. Four names, one under the other, and a stamp across the last of them. They did not cross us out. They verified us away, which is tidier, and worse."
+                        },
+                        {
+                            Text: "Carry it. Paper survives better in a pocket the Company has not measured twice."
+                        }
+                    ],
+                    Name: "Old Deng — the deed in the coat",
+                    Label: "deed_entrust"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "has_firstfurrow_deed"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "NOT_EQUALS",
+                            Name: "farm_1_free"
+                        }
+                    ],
+                    Priority: 12,
+                    Buttons: [
+                        {
+                            Name: "Look toward the field",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "You carry our name now, which is more than the paper allows us to do. The crop still stands. So does someone in a clean coat, standing in it, counting rows that never once counted back."
+                        },
+                        {
+                            Text: "I am told the Company keeps an officer on the fence and a manager by the barn. I am not asking anything of you. I am only saying the rows would not mind a visitor with your kind of manners."
+                        }
+                    ],
+                    Name: "Old Deng — within sight of the crop",
+                    Label: "camp_wait"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "NOT_EQUALS",
+                            Name: "supper_taken"
+                        }
+                    ],
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "Carry the supper pail up the road",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "loot give @initiator loot cobblemon_initiative:npc_gift/supper_pail"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @initiator add carrying_supper"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @initiator add supper_taken"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "title @initiator actionbar [{\"text\":\"Supper Pail taken. Haoran stands up the road east, within sight of the farm fence.\",\"color\":\"gold\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "take_pail_button"
+                        },
+                        {
+                            Name: "Not this evening",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "tellraw @initiator [{\"text\":\"He nods like a man used to waiting. The kettle stays on. It always does.\",\"color\":\"gray\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "not_now_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Traveler. A moment, if the road can spare you one. We are the Dengs — Firstfurrow, four generations, though the paper now says otherwise. The polite men measured the farm twice. The first measurement was arithmetic. The second one was a signature."
+                        },
+                        {
+                            Text: "I do not ask you to fix any of that. I ask something the size of a pail. My grandson stands up the road within sight of the fence, and he will not leave it long enough to eat. Carry his supper to him, and tell him the camp is warm."
+                        }
+                    ],
+                    Name: "Old Deng — the roadside camp",
+                    Label: "camp_intro"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "supper_taken"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "NOT_EQUALS",
+                            Name: "supper_delivered"
+                        }
+                    ],
+                    Priority: 8,
+                    Buttons: [
+                        {
+                            Name: "Back up the road",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Did you find him? He stands where the road bends toward the fence, watching the rows like they might miss him back. The supper cools faster than his stubbornness."
+                        }
+                    ],
+                    Name: "Old Deng — the pail on the road",
+                    Label: "camp_between"
+                },
+                {
+                    Priority: 5,
+                    Buttons: [
+                        {
+                            Name: "Sit a moment, then go",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The road gives and the paper takes. Sit if you like. The kettle does not check deeds."
+                        }
+                    ],
+                    Name: "Old Deng",
+                    Label: "default"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Put the order away",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "back_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "That paper in your bag — Transition Order, seven stroke A. I know the shape of it from across a table. The passive voice does all the lifting in that sentence. Families are transitioned. Nobody, anywhere, transitions them."
+                        },
+                        {
+                            Text: "There is a keeper of histories in Sango who pays a records fee for live Company paper. Let him read what they wrote about us. Insistence, he likes to say, is a fingerprint."
+                        }
+                    ],
+                    Name: "Old Deng — the passive voice",
+                    Label: "order_react"
+                }
+            ]
+        },
+        DisplayAttribute: [
+            {
+                Bool: 1b,
+                Type: "VISIBLE"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_AT_DAY"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_AT_NIGHT"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_IN_CREATIVE"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_IN_SPECTATOR"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_IN_STANDARD"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_TO_OWNER"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_TO_TEAM"
+            },
+            {
+                Int: 7,
+                Type: "LIGHT_LEVEL"
+            },
+            {
+                Text: "ALWAYS",
+                Type: "NAME_VISIBILITY"
+            }
+        ],
+        EasyNPCVersion: 3,
+        EntityAttribute: {
+            CanBeHitByProjectile: 0b,
+            CanBeLeashed: 0b,
+            CanBreatheUnderwater: 0b,
+            CanCloseDoor: 0b,
+            CanFloat: 0b,
+            CanOpenDoor: 0b,
+            CanPassDoor: 0b,
+            CanUseNetherPortal: 0b,
+            Freefall: 0b,
+            HealthRegeneration: 0.0d,
+            IsAttackableByMonsters: 0b,
+            IsAttackableByPlayers: 0b,
+            IsInvulnerable: 1b,
+            IsPushable: 0b,
+            NoGravity: 0b,
+            PushEntities: 0b
+        },
+        HandDropChances: [0.085f, 0.085f],
+        HandItems: [
+            {},
+            {}
+        ],
+        Invulnerable: 0b,
+        LeftHanded: 0b,
+        ModelData: {
+            DefaultPose: "STANDING",
+            Pose: "VANILLA",
+            Position: {},
+            Rotation: {},
+            Scale: {},
+            Visible: {
+                Boots: 1b
+            }
+        },
+        Navigation: {
+            Home: {
+                X: 0,
+                Y: 0,
+                Z: 0
+            }
+        },
+        ObjectiveData: {
+            HasObjectives: 1b,
+            HasTravelTarget: 0b,
+            ObjectiveDataSet: [
+                {
+                    Type: "LOOK_AT_PLAYER",
+                    Prio: 9,
+                    Id: "ambient_look_player",
+                    LookDistance: 8.0f
+                },
+                {
+                    Type: "LOOK_RANDOM_AROUND",
+                    Prio: 10,
+                    Id: "ambient_look_random"
+                },
+                {
+                    Type: "LOOK_AT_RESET",
+                    Prio: 9,
+                    Id: "ambient_look_reset"
+                }
+            ]
+        },
+        OnGround: 1b,
+        PersistenceRequired: 0b,
+        PresetUUID: [I; 0, 0, 0, 0],
+        Profession: "NONE",
+        Progression: {
+            AttributeScalingEnabled: 0b,
+            EntityExperience: 1,
+            EntityExperienceLevel: 1
+        },
+        RenderData: {},
+        SkinData: {
+            Content: "",
+            DisableLayers: 0b,
+            Name: "",
+            Timestamp: 0L,
+            Type: "DEFAULT",
+            URL: "",
+            UUID: [I; 0, 0, 0, 0]
+        },
+        SoundData: {
+            SoundDataSet: [
+                {
+                    Name: "minecraft:entity.player.death",
+                    Type: "DEATH"
+                },
+                {
+                    Name: "minecraft:entity.player.hurt",
+                    Type: "HURT"
+                }
+            ]
+        },
+        Status: {
+            finalized: 0b,
+            npc_data_last_saved: 0L,
+            npc_data_last_update: 0L
+        },
+        VariantType: "STEVE",
+        attributes: [
+            {
+                base: 20.0d,
+                id: "minecraft:generic.max_health"
+            },
+            {
+                base: 0.5d,
+                id: "minecraft:generic.movement_speed"
+            }
+        ],
+        id: "easy_npc:humanoid"
+    }
+}

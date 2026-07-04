@@ -1,199 +1,103 @@
 # NPC Placement — Sango · Blossom Path · Takehara Falls · Gym 1
 
-Working checklist for placing the Act 1 cast. Everything below is compiled and ready; this
-is the in-world pass.
+**Status 2026-07-03: the casting is WIRED.** All 40 placed NPCs from the builders' CSV are
+mapped to quest presets, and `content_compile` now **merges each body's builder data**
+(remote-URL skin, model, slim/classic variant, equipment, sounds, home anchor) from
+`mrpack/maps/.../easy_npc/npcs/<uuid>.npc.nbt` into the compiled preset — so a preset
+import applies our dialog/quests **and** keeps their look, renaming the NPC to its role
+(name colors preserved). Skins came along automatically (the builders already use
+minecraftskins.com URLs); only Lumo's was overridden per the showrunner
+(masked-cultist URL).
 
-## How this works
+## In-game steps after every compile (OP 2)
 
-1. **Place** the NPC in-world (Easy NPC). Give it the right **model/skin** (your call) and,
-   for props, the disguise noted below.
-2. **Send me** the mapping as `preset = uuid` (one line each — e.g. `angler_bess = 1a2b3c4d-...`).
-   I add the UUIDs, re-run `content_compile`, and the preset + sight registrations regenerate.
-3. **In-world, run** (OP 2), in order:
-   - `/function cobblemon_initiative:update_npc_presets` — imports dialog/preset onto every mapped NPC.
-   - `/function cobblemon_initiative:dialog/register_sight` — registers the sight NPCs (auto-built from UUIDs).
-4. **Apply entity tags by hand** for the ones marked **TAG** below — the preset import can't do this:
-   `tag @e[type=easy_npc:humanoid,limit=1,sort=nearest] add <tag>` (stand next to it).
+1. `/reload`
+2. `/function cobblemon_initiative:update_npc_presets` (41 imports; slim bodies import from `humanoid_slim/`)
+3. `/function cobblemon_initiative:dialog/register_sight` (9 sight NPCs)
+4. **Entity tags, by hand** (stand next to each, `tag @e[type=easy_npc:humanoid,limit=1,sort=nearest] add <tag>` — use `easy_npc:humanoid_slim` for slim bodies):
+   - Zari + Kiano (the auditors) → `auditor`
+   - Kaito (canvasser) → `ci_canvasser`
+   - the checkpoint grunts (when placed) → `checkpoint_agent`
+   - the surveyor (when placed) → `surveyor`
+   - the 4 gym juniors (RCT spawns, Performance Review) → `takehara_sentry` + `/npcsight add`
 
-Anything you place that has a **sight** entry only starts working after step 3; anything with a
-**TAG** only works after step 4.
+## The cast as wired (CSV body → role)
 
-## Already placed (mapped) — just needs a re-import
+**Sango:** Nalia=Mom · Acacia=Professor · **Lani=Lucian** (archive hub ×4 quests) ·
+**Asha=Dr. Medcrest** (paid heals + Preferred Provider) · **Deka=derby + Magikarp salesman**
+(one tree) · **Sarii=Census Taker** · **Zari/Kiano=Auditors** (Pending Review + Off the
+Record) · **Lumo=Company Courier** (Incomplete File; masked-cultist skin) · Oma/Fara(was
+Sarii-role)/Kele/Dakarai=the Lane · Miri+Raan=Adjunct Faculty (now 2 errands) ·
+**Kofi=Invitational crier** · Kima=round 1 · Tayo=signup+final (2-round bracket) · Sefu=the
+trade · **Taya=the dead letter** (was Uncle Marlow) · Elder Nuru/Sentinel=lore/reward ·
+Mara=untouched flavor.
 
-Run `update_npc_presets` after the next compile and these pick up their new/updated dialog:
+**Blossom Path:** Jabari/Ayo/Zola/Kwame = the four eye-contact route trainers
+(meadow/spotter/4th/type-tip), levels 9–13.
 
-| Preset | UUID | Action |
+**Takehara:** **Dashan=Leader Cicada** · Lina=gym guide · **Aiko=Apprentice,
+Sora=Jr. Apprentice** (outside the gym — Sora's dialog sends challengers to find Aiko in
+the greenhouse; gym config + RCT renamed to match) · Nurse Lila=paid healing · Kaori=Trader
+Mayu · **Mei=Printmaker Mei** (Notice quest) · **Shou=Falls Warden** (Cascade Ascent) ·
+**Kenji=Curator** (museum brush/dig/revival) + **Sayuri=the bone donation** ·
+Kaito=Canvasser · **Mayor Liang**=the roof scene · **Mika=Fisherman Genji** (Out of
+Office) · **Eiji=Beekeeper Masumi** (Sweetwater Futures) · **Haruto=Beekeeper Tomo**
+(Sting Operation, at the Blossom arch) · Ren/Hana/Taro/Kito/Elder Sefu/Hiro=flavor
+(untouched).
+
+## Remaining placements (new bodies — none exist in the world yet)
+
+| Role (preset) | Where | Notes |
 |---|---|---|
-| `nalia_mom` (Mom) | `74b1c524…` | done — opening chain live |
-| `professor_acacia` | `92d33528…` | done — Pokédex/starter live |
-| `aurelius_medcrest` | `0caa3fce…` | re-import (now carries Pending Review + Preferred Provider) |
-| `elder_nuru` | `306a81a0…` | re-import (Sango lore) |
-| `elder_sentinel` | `277f717f…` | re-import (Pending Review refuse-fork reward) |
-| `lucian_scrollkeeper` | `bdc36dd5…` | **MOVE him** to the Sango lane (lab→west gate) + re-import. He now runs The Incomplete File, the memo/dead-letter turn-ins, **and** Off the Record. Sight already registers (approach_once). |
+| `agent_yield_lead` | **(2015, 169, 2466)** gym roof | mayor-scene grunt (doubles battle `sq_mayor_suits`) |
+| `agent_yield_second` | **(2015, 169, 2463)** gym roof | second grunt |
+| `sango_company_liaison` | **(2581, 111, 2822)** wheat-field fence | facing the field; also pays the Invitational envelope |
+| `field_researcher_ume` | **(2192, ~100, 2835)** mid-meadow | Head Count *(coords verified inside the route corridor)* |
+| `courier_mio` | **(2486, ~100, 2914)** Sango mouth | Sprint; bell prop at the Takehara arch (~1923, 2584) |
+| `forewoman_tetsu` | **(2319, ~100, 2899)** waystation | Work Orders |
+| `apiarist_sumi` | **(2290, ~100, 2894)** by the waystation | Work Orders fork B + wild hives |
+| `villain_grunt_field_agent` + `villain_grunt_2` | **(2039/2043, ~100, 2704/2708)** path pinch | checkpoint tent; tag `checkpoint_agent` + npcsight both |
+| `sq_kyc_agent` | **(2467, ~100, 2913)** Sango approach | post-badge survey table |
+| `company_surveyor` | **(2230, ~100, 2866)** patrol anchor | loop past all three posts; tag `surveyor` + npcsight |
+| `notice_post_1..3` | **(2343, 2903)** · **(2074, 2736)** · **(1750, 2470 — Harvest Road)** | tiny disguised prop-NPCs on her loop |
 
-## Zone anchors (rough centers / bboxes)
+All coordinates above are point-in-polygon-verified inside their zone corridors (the routes
+are narrow traced corridors, not boxes). They're also on the map: run
+`scripts/generate_npc_overlay` and open the zone-mapper — orange dots are these planned
+spots, green are wired bodies, gray are flavor NPCs; hover shows name/Y/role.
 
-| Zone | Center (x,y,z) | BBox |
-|---|---|---|
-| Sango Town | ~(2601, 64, 2862) | x2505–2713 · z2742–2993 |
-| Blossom Path (Route 1) | ~(2185, 64, 2786) | x1923–2530 · z2564–2925 |
-| Takehara Falls | ~(1915, 64, 2467) | x1776–2123 · z2262–2634 |
-| Harvest Road (Route 2) | ~(1570, 64, 2422) | x1456–1831 · z2286–2521 |
+For each: place → send `preset = uuid` → I recompile (the merge picks up their look
+automatically) → rerun the in-game steps.
 
----
+## Standing notes
 
-## Sango Town — new NPCs (24)
+- **The merge reads `mrpack/maps/.../easy_npc/npcs/`.** If builders edit NPCs in the live
+  instance, refresh that world copy before recompiling, or the merge uses stale data.
+- **Royal League healer body (`0caa3fce`) is unbound** for now: the Medcrest preset merged
+  onto Asha's slim body, and the royal body is classic-type. Re-bind at the Act-3 league
+  pass (needs a type-matched preset variant).
+- The old royal Lucian body (`bdc36dd5`) also keeps its builder identity — give it a new
+  role or remove it in-world.
+- **Paid healing**: remove/fence any free Cobblemon Healing Machine blocks in Sango +
+  Takehara so Medcrest/Lila (100 CD via `economy/heal_paid`) are the healing path.
+- Set-dressing that pairs with the above: census desk, doc chest/barrel (wired at
+  (2591,111,2815) / (2584,107,2925)), Invitational dock dressing, museum dig site,
+  Cascade course + record board, three notice boards + mural, apiaries, waystation,
+  checkpoint tent, greenhouse arena space for Aiko/Sora.
 
-**Sight NPCs — place + TAG + they register via `register_sight`:**
+## Geometry audit notes (2026-07-03, via zone polygons)
 
-| Preset | Place | Sight | TAG |
-|---|---|---|---|
-| `auditor_a` | patrol loop around the census desk + mouth of the lane (never Nalia's porch) | dialog r12 | `auditor` |
-| `auditor_b` | opposite half of the square loop, so the two cones cross | dialog r12 | `auditor` |
-| `company_surveyor` | Blossom Path patrol passing all three notice posts | dialog r12 | `surveyor` |
-
-**Prop NPCs — place + disguise (small/invisible model against real set-dressing), no sight/tag:**
-
-| Preset | Place |
-|---|---|
-| `doc_portrait_crate` | behind the town hall, under a repainted "bright rectangle" wall |
-| `doc_ledger_barrel` | in/beside the shore warehouse on the waterline |
-| `notice_post_1` | Blossom Path wall inside the surveyor patrol |
-| `notice_post_2` | farther along, where pulling it means standing in the open |
-| `notice_post_3` | Harvest Road end of the surveyor loop (the exposed far pull) |
-
-**Battle NPCs — the Shorefront Invitational bracket (place at the docks):**
-
-| Preset | Trainer | Place |
-|---|---|---|
-| `lumo` | `sq_bracket_1` | round 1 — dockside |
-| `kima` | `sq_bracket_2` | round 2 — dockside |
-| `tayo` | `sq_bracket_3` | final — dockside |
-
-**Plain quest NPCs:**
-
-| Preset | Quest | Place |
-|---|---|---|
-| `angler_bess` | Record Quarter (fishing derby) | the pier |
-| `census_taker` | Pending Review | census desk in the square (never on Nalia's lane) |
-| `company_courier` | The Incomplete File st.1 | north road, on Blossom Path just past the gate |
-| `oma` | The Lane / Off the Record | her fence on Nalia's lane, near the west gate |
-| `sarii` | The Lane door 1 / Off the Record | by the town noticeboard, two doors from Oma |
-| `dakarai` | The Lane door 3 | the end house of the lane |
-| `kele` | The Lane door 2 (Magikarp) | scouted water spot in Sango (x2505–2713 z2742–2993) |
-| `kofi` · `miri` · `raan` | Adjunct Faculty | three ordinary Sango houses (assistants) |
-| `sefu` · `taya` | In-Kind Exchange (trades) | two spots in town |
-| `sq_uncle_marlow` | No Such Recipient | 2–3 doors from Nalia's, by his door with the mailbag |
-| `sango_dock_crier` | Invitational (crier) | the docks |
-| `sango_company_liaison` | Invitational (Company rep) | the podium |
-
----
-
-## Blossom Path / Route 1 — new NPCs (8)
-
-| Preset | Trainer / Quest | Place | Sight |
-|---|---|---|---|
-| `sq_regular_meadow` | `sq_regular_meadow` (Picnicker Ren) | first pinch point west of Sango | — |
-| `sq_regular_spotter` | `sq_regular_spotter` (Bird Keeper Hoku) | mid-route, **long clear sightline** (walk-up ambush) | **pursue r8** — register_sight, no tag |
-| `sq_regular_typetip` | `sq_regular_typetip` (Bird Keeper Hina) | Takehara-side end, before the arch (~1923,2584) | — |
-| `field_researcher_ume` | `sq_headcount_wager` (Head Count) | folding table mid-meadow | — |
-| `asset_liquidator` | Long-Term Growth Vehicle | roadside "COMPANY SURPLUS (unaffiliated)" stall | — |
-| `courier_mio` | Quarterly Sprint | Sango-side mouth (~x2505) at a start line; bell prop at the Takehara arch | — |
-| `forewoman_tetsu` | Roadside Work Orders | mid-route waystation shack + work-order board | — |
-| `apiarist_sumi` | Work Orders fork B (Combee) | meadow by her apiary — needs a few placed bee hives | — |
-
----
-
-## Takehara Falls — new NPCs (11)
-
-**Sight NPC — place + TAG + register:**
-
-| Preset | Trainer | Place | Sight | TAG |
-|---|---|---|---|---|
-| `company_canvasser` | `sq_canvasser` | patrol loop: gym entrance → falls overlook → bridge, sweeping past Ume's stall | dialog r10 | `ci_canvasser` |
-
-**The mayor-roof scene (place all three on the gym roof balcony):**
-
-| Preset | Trainer | Place |
-|---|---|---|
-| `mayor_suzune` | — | center of the rail, falls behind him |
-| `agent_yield_lead` | `sq_mayor_suits` | mayor's left, clipboard-forward |
-| `agent_yield_second` | — | mayor's right, holding the silence |
-
-**Other quest NPCs:**
-
-| Preset | Trainer / Quest | Place |
-|---|---|---|
-| `fisherman_genji` | `sq_genji_wager` (Out of Office) | rocks below the falls at the plunge pool |
-| `sq_beekeeper_tomo` | `sq_sting_agent` (Sting Operation) | Takehara end of Blossom Path, among the hive trees |
-| `beekeeper_masumi` | Sweetwater Futures | terrace apiary beside the falls |
-| `curator_tamiko` | Sediment & Acquisitions (museum) | in the museum by the empty "PENDING RE-VERIFICATION" plinth |
-| `falls_warden_ayame` | Cascade Ascent | plunge-pool base by her sign-up board |
-| `printmaker_ume` | Notice of Non-Compliance | print stall near the gym, within eyeshot of the canvasser loop |
-| `trader_mayu` | Assets in Kind | one-desk exchange by the falls bridge |
-
----
-
-## Gym 1 (Takehara Bug Gym)
-
-**Easy NPC — place + send me `preset = uuid`:**
-
-| Preset | Place |
-|---|---|
-| `takehara_leader` (Leader Cicada) | the arena |
-| `takehara_guide` | gym entrance |
-
-**RCT trainers — these are NOT Easy NPC presets; place them via RCT (the "not placed" ones you mentioned):**
-
-| RCT id | Name |
-|---|---|
-| `takehara_trainer_1` | Bug Catcher Koji |
-| `takehara_trainer_2` | Entomologist Yuki |
-| `takehara_trainer_3` | Bug Maniac Shin |
-| `takehara_trainer_4` | Youngster Taro |
-| `takehara_jr_apprentice` | Jr. Apprentice Hachi |
-| `takehara_apprentice` | Apprentice Hana |
-
-✅ **Battle teams done (2026-07-03):** all 7 Takehara RCT files now mirror the gym config —
-a clean cap-20 ladder (Koji/Yuki 10 → Shin/Taro 11 → Hachi 13 → Hana 15–16 → **Cicada
-17–18**). This also fixed a live bug where the RCT files had Cicada at Scyther 24 / Volcarona
-26 (over cap, wrong species). Every side-quest battle also has an RCT file now, so battles
-resolve.
-
-- **Performance Review** (if kept) needs the four ladder trainers registered as sight sentries: after RCT placement, `/npcsight add <uuid> <range> dialog` on each of Koji/Yuki/Shin/Taro and `tag <entity> add takehara_sentry`.
-
----
-
-## Villain NPCs that live in these beats (2)
-
-| Preset | Trainer | Quest | Place | Sight / TAG |
-|---|---|---|---|---|
-| `sq_kyc_agent` | `sq_kyc_agent` | Know Your Customer (post-badge) | Sango approach of Blossom Path, survey table | — |
-| checkpoint agents | `villain_grunt_1/2` | Per My Last Memo | a checkpoint tent on Blossom Path | `tag checkpoint_agent` + `/npcsight add` (both) |
-
-✅ `villain_grunt_1` minted (2026-07-03) as the left-flank checkpoint enforcer; both
-`villain_grunt_1/2` now have RCT battle files, so the memo fight path resolves. Place both,
-`tag … add checkpoint_agent`, and `npcsight add <uuid> 12 checkpoint_hail`.
-
----
-
-## Set-dressing that pairs with placement (your build, via snbt_merge / in-world)
-
-- **Sango:** census desk; bright-rectangle wall + crate behind town hall; shore-warehouse barrel; three Blossom Path notice posts; the docks (Invitational); Kele's water spot; the pier (derby).
-- **Blossom Path:** Liquidator's stall + sign; Mio's start line + delivery bell at the arch; Tetsu's waystation + board; Sumi's apiary + wild bee hives; Ume's meadow table.
-- **Takehara:** gym-roof balcony; museum interior + dig site + "PENDING RE-VERIFICATION" plinth; Cascade parkour course + record board; three notice boards + the painted-out mural; Masumi's terrace apiary; Mayu's exchange desk; Genji's plunge-pool rocks.
-
-## What to send me
-
-Just the mappings, e.g.:
-
-```
-angler_bess = <uuid>
-oma = <uuid>
-company_surveyor = <uuid>     # I'll also remind you: tag it `surveyor`
-takehara_leader = <uuid>
-...
-```
-
-You can send them in any batch (per zone is easiest). After each batch I compile, and you run
-`update_npc_presets` + `register_sight`, then hand-apply the **TAG** commands.
+- **Elder Nuru (2524,106,2914)** and **Raan (2680,111,2802)** stand just OUTSIDE the Sango
+  polygon — their houses are clipped by the zone edge. Quests work regardless, but they
+  miss safe-zone/announce coverage; consider a small zone-mapper nudge of the Sango
+  polygon to swallow both houses.
+- **Lumo (the Company Courier) already stands beside his cart** — the doc-chest pickup at
+  (2591,111,2815) is ~10 blocks from him, so the charter courier camps next to the very
+  cart the player searches. Dialog updated to match (no move needed).
+- **The auditors' bodies are far apart** (Zari at the windmill, Kiano by the lab — ~180
+  blocks): their sight cones cover different halves of town, which makes the Off the
+  Record runs a two-cone gauntlet. Playable as-is; move them closer to the square if the
+  stealth should be tighter.
+- **The canvasser (Kaito, 1940,105,2470)** patrols between the gym and Mei's house —
+  place the three moth-print notice boards inside his loop (roughly x1900–1990,
+  z2440–2520) so the stealth checks read his sightline.

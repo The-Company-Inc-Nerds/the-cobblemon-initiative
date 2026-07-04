@@ -6,7 +6,7 @@
         description: "lore_keeper at Takehara Falls - Museum (act 1). Compiled from dialog-src.",
         entityTypeId: "easy_npc:humanoid",
         modified: 0L,
-        name: "Curator Tamiko",
+        name: "Curator Kenji",
         variantType: "STEVE",
         version: "1.0.0"
     },
@@ -20,7 +20,7 @@
                 ]
             }
         },
-        ArmorDropChances: [0.085f, 0.085f, 0.085f, 0.085f],
+        ArmorDropChances: [0.08500000089406967f, 0.08500000089406967f, 0.08500000089406967f, 0.08500000089406967f],
         ArmorItems: [
             {},
             {},
@@ -83,78 +83,8 @@
                             Text: "Keep brushing the strata. The water is patient and so am I. And if a fossil turns up, my bench is yours — once."
                         }
                     ],
-                    Name: "Tamiko - exhibit complete",
+                    Name: "Kenji - exhibit complete",
                     Label: "exhibit_filled"
-                },
-                {
-                    Conditions: [
-                        {
-                            Type: "PLAYER_TAG",
-                            Operation: "EQUALS",
-                            Name: "sq_museum_brush"
-                        },
-                        {
-                            Type: "PLAYER_TAG",
-                            Operation: "NOT_EQUALS",
-                            Name: "sq_museum_donation_done"
-                        }
-                    ],
-                    Priority: 20,
-                    Buttons: [
-                        {
-                            Name: "Donate six specimen bones",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "function cobblemon_initiative:sidequest/museum/donate_bones"
-                                },
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "donate_button"
-                        },
-                        {
-                            Name: "Ask about fossil revival",
-                            Actions: [
-                                {
-                                    Type: "OPEN_NAMED_DIALOG",
-                                    Cmd: "revive"
-                                }
-                            ],
-                            Label: "revive_button"
-                        },
-                        {
-                            Name: "Where is the dig site again?",
-                            Actions: [
-                                {
-                                    Type: "OPEN_NAMED_DIALOG",
-                                    Cmd: "dig_directions"
-                                }
-                            ],
-                            Label: "directions_button"
-                        },
-                        {
-                            Name: "Leave",
-                            Actions: [
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "leave_button"
-                        }
-                    ],
-                    Texts: [
-                        {
-                            Text: "How goes the brushing? The exhibit hall needs six assorted specimen bones to complete the comparative anatomy case. Bring me six and the museum pays a finders fee — an honest one, in actual money."
-                        },
-                        {
-                            Text: "Soft pale gravel, low strokes, patience. The water did the hard part ten thousand years ago."
-                        }
-                    ],
-                    Name: "Tamiko - the anatomy case",
-                    Label: "donate"
                 },
                 {
                     Priority: 10,
@@ -165,16 +95,16 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "give @s minecraft:brush 1"
+                                    Cmd: "give @initiator minecraft:brush 1"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "tag @s add sq_museum_brush"
+                                    Cmd: "tag @initiator add sq_museum_brush"
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "title @p actionbar [{\"text\":\"Received a brush. Soft gravel waits in the strata below the falls.\",\"color\":\"gold\"}]"
+                                    Cmd: "title @initiator actionbar [{\"text\":\"Received a brush. Soft gravel waits in the strata below the falls.\",\"color\":\"gold\"}]"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -217,7 +147,7 @@
                             Text: "The falls have been cutting these cliffs for ten thousand years. Everything the water uncovers ends up in my strata — what the Company calls pre-verification assets, and I call fossils."
                         }
                     ],
-                    Name: "Tamiko - welcome to natural history",
+                    Name: "Kenji - welcome to natural history",
                     Label: "default"
                 },
                 {
@@ -229,21 +159,21 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "clear @s cobblemon:dome_fossil 1"
+                                    Cmd: "clear @initiator cobblemon:dome_fossil 1"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "givepokemonother @s kabuto level=10"
+                                    Cmd: "givepokemonother @initiator kabuto level=10"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "tag @s add sq_museum_revived"
+                                    Cmd: "tag @initiator add sq_museum_revived"
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "tellraw @p [{\"text\":\"Ten thousand years of sediment let go. Kabuto lives again.\",\"color\":\"gold\"}]"
+                                    Cmd: "tellraw @initiator [{\"text\":\"Ten thousand years of sediment let go. Kabuto lives again.\",\"color\":\"gold\"}]"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -270,21 +200,21 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "clear @s cobblemon:claw_fossil 1"
+                                    Cmd: "clear @initiator cobblemon:claw_fossil 1"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "givepokemonother @s anorith level=10"
+                                    Cmd: "givepokemonother @initiator anorith level=10"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "tag @s add sq_museum_revived"
+                                    Cmd: "tag @initiator add sq_museum_revived"
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "tellraw @p [{\"text\":\"The claw uncurls after an age asleep. Anorith swims once more.\",\"color\":\"gold\"}]"
+                                    Cmd: "tellraw @initiator [{\"text\":\"The claw uncurls after an age asleep. Anorith swims once more.\",\"color\":\"gold\"}]"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -330,7 +260,7 @@
                             Text: "Revival. Yes. The board authorizes one de-extinction per fiscal era — their words, and for once I agree with the caution. Bring me a dome or claw fossil and I will wake it. The cover and armor plates are beyond my bench."
                         }
                     ],
-                    Name: "Tamiko - the revival bench",
+                    Name: "Kenji - the revival bench",
                     Label: "revive"
                 },
                 {
@@ -351,7 +281,7 @@
                             Text: "The cover and armor fossils need a full restoration line — pressure tanks, sequencers, a technician who does not blink. The only lab still running one is in Cyber City, six badges up the road. Keep them safe until then. Old things are patient."
                         }
                     ],
-                    Name: "Tamiko - the long game",
+                    Name: "Kenji - the long game",
                     Label: "fossil_lore"
                 },
                 {
@@ -372,73 +302,73 @@
                             Text: "Follow the spray to the strata shelf below the falls. Look for a ring of soft pale gravel — brush slowly and lift what the water hid. Bones and sherds mostly. Sometimes the water is generous."
                         }
                     ],
-                    Name: "Tamiko - reading the strata",
+                    Name: "Kenji - reading the strata",
                     Label: "dig_directions"
                 }
             ]
         },
         DisplayAttribute: [
             {
-                Bool: 1b,
-                Type: "VISIBLE"
+                Type: "VISIBLE",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_AT_DAY"
+                Type: "VISIBLE_AT_DAY",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_AT_NIGHT"
+                Type: "VISIBLE_AT_NIGHT",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_IN_CREATIVE"
+                Type: "VISIBLE_IN_CREATIVE",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_IN_SPECTATOR"
+                Type: "VISIBLE_IN_SPECTATOR",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_IN_STANDARD"
+                Type: "VISIBLE_IN_STANDARD",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_TO_OWNER"
+                Type: "VISIBLE_TO_OWNER",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_TO_TEAM"
+                Type: "VISIBLE_TO_TEAM",
+                Bool: 1b
             },
             {
-                Int: 7,
-                Type: "LIGHT_LEVEL"
+                Type: "LIGHT_LEVEL",
+                Int: 7
             },
             {
-                Text: "ALWAYS",
-                Type: "NAME_VISIBILITY"
+                Type: "NAME_VISIBILITY",
+                Text: "ALWAYS"
             }
         ],
         EasyNPCVersion: 3,
         EntityAttribute: {
-            CanBeHitByProjectile: 0b,
-            CanBeLeashed: 0b,
-            CanBreatheUnderwater: 0b,
-            CanCloseDoor: 0b,
-            CanFloat: 0b,
-            CanOpenDoor: 0b,
-            CanPassDoor: 0b,
-            CanUseNetherPortal: 0b,
-            Freefall: 0b,
-            HealthRegeneration: 0.0d,
             IsAttackableByMonsters: 0b,
-            IsAttackableByPlayers: 0b,
+            CanCloseDoor: 0b,
+            Freefall: 0b,
+            CanUseNetherPortal: 0b,
             IsInvulnerable: 1b,
-            IsPushable: 0b,
+            HealthRegeneration: 0.0d,
             NoGravity: 0b,
-            PushEntities: 0b
+            CanPassDoor: 0b,
+            PushEntities: 0b,
+            CanFloat: 0b,
+            CanBreatheUnderwater: 0b,
+            CanBeLeashed: 0b,
+            CanBeHitByProjectile: 0b,
+            IsPushable: 0b,
+            IsAttackableByPlayers: 0b,
+            CanOpenDoor: 0b
         },
-        HandDropChances: [0.085f, 0.085f],
+        HandDropChances: [0.08500000089406967f, 0.08500000089406967f],
         HandItems: [
             {},
             {}
@@ -447,19 +377,17 @@
         LeftHanded: 0b,
         ModelData: {
             DefaultPose: "STANDING",
-            Pose: "VANILLA",
-            Position: {},
+            Pose: "DEFAULT",
+            Visible: {},
             Rotation: {},
-            Scale: {},
-            Visible: {
-                Boots: 1b
-            }
+            Position: {},
+            Scale: {}
         },
         Navigation: {
             Home: {
-                X: 0,
-                Y: 0,
-                Z: 0
+                Y: 114,
+                Z: 2337,
+                X: 1902
             }
         },
         ObjectiveData: {
@@ -495,23 +423,39 @@
         },
         RenderData: {},
         SkinData: {
-            Content: "",
-            DisableLayers: 0b,
+            Type: "SECURE_REMOTE_URL",
+            URL: "https://www.minecraftskins.com/uploads/skins/2024/06/05/investing-in-pixels---sf11-22586526.png?v921",
+            UUID: [I; 54003245, -1976421032, -2038371314, 172683255],
             Name: "",
-            Timestamp: 0L,
-            Type: "DEFAULT",
-            URL: "",
-            UUID: [I; 0, 0, 0, 0]
+            Content: "",
+            Timestamp: 1757695760270L,
+            DisableLayers: 0b
         },
         SoundData: {
             SoundDataSet: [
                 {
-                    Name: "minecraft:entity.player.death",
-                    Type: "DEATH"
+                    Type: "DEATH",
+                    Name: "minecraft:entity.player.death"
                 },
                 {
-                    Name: "minecraft:entity.player.hurt",
-                    Type: "HURT"
+                    Type: "EAT",
+                    Name: "minecraft:entity.generic.eat"
+                },
+                {
+                    Type: "HURT",
+                    Name: "minecraft:entity.player.hurt"
+                },
+                {
+                    Type: "TRADE",
+                    Name: "minecraft:entity.villager.trade"
+                },
+                {
+                    Type: "TRADE_YES",
+                    Name: "minecraft:entity.villager.yes"
+                },
+                {
+                    Type: "TRADE_NO",
+                    Name: "minecraft:entity.villager.no"
                 }
             ]
         },
@@ -531,6 +475,7 @@
                 id: "minecraft:generic.movement_speed"
             }
         ],
-        id: "easy_npc:humanoid"
+        id: "easy_npc:humanoid",
+        CustomName: '{"text": "Curator Kenji", "color": "#9AC0CD"}'
     }
 }

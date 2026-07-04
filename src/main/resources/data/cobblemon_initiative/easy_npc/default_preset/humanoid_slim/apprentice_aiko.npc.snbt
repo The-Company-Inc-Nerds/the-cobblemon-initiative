@@ -1,0 +1,252 @@
+{
+    PresetMetadata: {
+        author: "TheCompanyInc",
+        category: "Duelist",
+        created: 0L,
+        description: "duelist at Takehara Falls - Greenhouse (act 1). Compiled from dialog-src.",
+        entityTypeId: "easy_npc:humanoid_slim",
+        modified: 0L,
+        name: "Apprentice Aiko",
+        variantType: "ALEX",
+        version: "1.0.0"
+    },
+    data: {
+        ActionData: {
+            ActionEventSet: {
+                ON_INTERACTION: [
+                    {
+                        Type: "OPEN_DEFAULT_DIALOG"
+                    }
+                ]
+            }
+        },
+        ArmorDropChances: [0.08500000089406967f, 0.08500000089406967f, 0.08500000089406967f, 0.08500000089406967f],
+        ArmorItems: [
+            {},
+            {},
+            {},
+            {}
+        ],
+        Brain: {
+            memories: {}
+        },
+        CanPickUpLoot: 0b,
+        CustomNameVisible: 1b,
+        DialogData: {
+            Type: "STANDARD",
+            DialogDataSet: [
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "defeated_takehara_apprentice"
+                        }
+                    ],
+                    Priority: 30,
+                    Texts: [
+                        {
+                            Text: "You beat the garden and the gardener. Take the climb to Cicada - and tell her the yanma flew true."
+                        },
+                        {
+                            Text: "The brood upstairs is stronger than my greenhouse. Bring antidotes. That is free advice, which is the best kind."
+                        }
+                    ],
+                    Name: "Aiko - the garden remembers",
+                    Label: "beaten"
+                },
+                {
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "Challenge the Apprentice",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "execute if entity @initiator[tag=defeated_takehara_apprentice] run say You already pruned me once. The arena is up the falls - Cicada is waiting."
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "execute unless entity @initiator[tag=defeated_takehara_apprentice] run tbcs attach takehara_apprentice @initiator"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "execute unless entity @initiator[tag=defeated_takehara_apprentice] run tbcs battle GEN_9_DOUBLES @initiator vs takehara_apprentice onwin {1: ['tag @1 add defeated_takehara_apprentice', '@2 say Grown, pruned, and beaten fairly. Cicada will want to see the trainer who walked through my garden.'], 2: ['@2 say The greenhouse keeps what it catches. Rest up and come through again.']}"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "battle_button"
+                        },
+                        {
+                            Name: "Not yet",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Found me, did you? Good. Cicada does not keep her apprentice standing in a lobby - I train where the bugs actually live. If you want the arena, you go through the greenhouse first."
+                        },
+                        {
+                            Text: "Apprentice Aiko. Four partners, two at a time, no shade to hide in. When you are ready, say so."
+                        }
+                    ],
+                    Name: "Aiko - the apprentice among the vines",
+                    Label: "default"
+                }
+            ]
+        },
+        DisplayAttribute: [
+            {
+                Type: "VISIBLE",
+                Bool: 1b
+            },
+            {
+                Type: "VISIBLE_AT_DAY",
+                Bool: 1b
+            },
+            {
+                Type: "VISIBLE_AT_NIGHT",
+                Bool: 1b
+            },
+            {
+                Type: "VISIBLE_IN_CREATIVE",
+                Bool: 1b
+            },
+            {
+                Type: "VISIBLE_IN_SPECTATOR",
+                Bool: 1b
+            },
+            {
+                Type: "VISIBLE_IN_STANDARD",
+                Bool: 1b
+            },
+            {
+                Type: "VISIBLE_TO_OWNER",
+                Bool: 1b
+            },
+            {
+                Type: "VISIBLE_TO_TEAM",
+                Bool: 1b
+            },
+            {
+                Type: "LIGHT_LEVEL",
+                Int: 7
+            },
+            {
+                Type: "NAME_VISIBILITY",
+                Text: "ALWAYS"
+            }
+        ],
+        EasyNPCVersion: 3,
+        EntityAttribute: {
+            IsAttackableByMonsters: 0b,
+            CanCloseDoor: 0b,
+            Freefall: 0b,
+            CanUseNetherPortal: 0b,
+            IsInvulnerable: 1b,
+            HealthRegeneration: 0.0d,
+            NoGravity: 0b,
+            CanPassDoor: 0b,
+            PushEntities: 0b,
+            CanFloat: 0b,
+            CanBreatheUnderwater: 0b,
+            CanBeLeashed: 0b,
+            CanBeHitByProjectile: 0b,
+            IsPushable: 0b,
+            IsAttackableByPlayers: 0b,
+            CanOpenDoor: 0b
+        },
+        HandDropChances: [0.08500000089406967f, 0.08500000089406967f],
+        HandItems: [
+            {},
+            {}
+        ],
+        Invulnerable: 0b,
+        LeftHanded: 0b,
+        ModelData: {
+            DefaultPose: "STANDING",
+            Pose: "DEFAULT",
+            Visible: {},
+            Rotation: {},
+            Position: {},
+            Scale: {}
+        },
+        Navigation: {
+            Home: {
+                Y: 109,
+                Z: 2524,
+                X: 1898
+            }
+        },
+        ObjectiveData: {
+            HasObjectives: 1b,
+            HasTravelTarget: 0b,
+            ObjectiveDataSet: [
+                {
+                    Type: "LOOK_AT_PLAYER",
+                    Prio: 9,
+                    Id: "ambient_look_player",
+                    LookDistance: 8.0f
+                },
+                {
+                    Type: "LOOK_RANDOM_AROUND",
+                    Prio: 10,
+                    Id: "ambient_look_random"
+                },
+                {
+                    Type: "LOOK_AT_RESET",
+                    Prio: 9,
+                    Id: "ambient_look_reset"
+                }
+            ]
+        },
+        OnGround: 1b,
+        PersistenceRequired: 0b,
+        PresetUUID: [I; 0, 0, 0, 0],
+        Profession: "NONE",
+        Progression: {
+            AttributeScalingEnabled: 0b,
+            EntityExperience: 1,
+            EntityExperienceLevel: 1
+        },
+        RenderData: {},
+        SkinData: {
+            Type: "SECURE_REMOTE_URL",
+            URL: "https://www.minecraftskins.com/uploads/skins/2025/01/30/tina-kitten-in-asian-dress-23030062.png?v921",
+            UUID: [I; -885771574, 290012330, -2099908206, 403639175],
+            Name: "",
+            Content: "",
+            Timestamp: 1757694072227L,
+            DisableLayers: 0b
+        },
+        SoundData: {
+            SoundDataSet: []
+        },
+        Status: {
+            finalized: 0b,
+            npc_data_last_saved: 0L,
+            npc_data_last_update: 0L
+        },
+        VariantType: "ALEX",
+        attributes: [
+            {
+                base: 20.0d,
+                id: "minecraft:generic.max_health"
+            },
+            {
+                base: 0.5d,
+                id: "minecraft:generic.movement_speed"
+            }
+        ],
+        id: "easy_npc:humanoid_slim",
+        CustomName: '{"text": "Apprentice Aiko", "color": "#BFFF00"}'
+    }
+}

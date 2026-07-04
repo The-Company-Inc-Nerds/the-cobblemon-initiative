@@ -57,6 +57,11 @@ DIALOG_SRC   = PROJECT_ROOT / "dialog-src"
 PRESET_ROOT  = (PROJECT_ROOT
                 / "src/main/resources/data/cobblemon_initiative/easy_npc/default_preset")
 HUMANOID_DIR = PRESET_ROOT / "humanoid"
+# Builder-authored per-NPC world storage (gzipped NBT). When a character has a uuid and a
+# world file exists, the compile MERGES the builders' visual identity (skin, model, variant,
+# equipment, sounds, home) into the compiled preset — so `preset import` no longer resets a
+# placed NPC to a default Steve.
+WORLD_NPCS   = PROJECT_ROOT / "mrpack/maps/The Cobblemon Initiative/easy_npc/npcs"
 SNIPPET_DIR  = PROJECT_ROOT / "presets/snippets"
 NPC_PRESETS  = PROJECT_ROOT / "npc_presets.json"
 FUNCTION_DIR = PROJECT_ROOT / "src/main/resources/data/cobblemon_initiative/function"
@@ -254,6 +259,30 @@ def resolve_ref_lines(ref: str, registers: dict, lore: dict) -> list[str]:
 
 # ─── Actions ─────────────────────────────────────────────────────────────────
 
+_DIALOG_SEL = re.compile(r"@[sp](?![\w-])")
+
+def dialog_cmd(cmd: str) -> str:
+    """Rewrite a dialog-issued command for the real Easy NPC execution context.
+
+    RUNTIME-VERIFIED (2026-07-03 in-game session): a command fired from a dialog button
+    does NOT execute as the interacting player — @s binds to the NPC/server context and
+    ExecAsUser does not change that. Easy NPC substitutes @initiator with the interacting
+    player, so every @s/@p token becomes @initiator, and a bare `function ...` call is
+    wrapped in `execute as @initiator run ...` so the callee sees the player as @s.
+    TBCS onwin payloads keep their own token language (@1/@2) — the transform never
+    touches anything after ` onwin ` in a command.
+    """
+    if " onwin " in cmd:
+        head, tail = cmd.split(" onwin ", 1)
+        head = _DIALOG_SEL.sub("@initiator", head)
+        out = head + " onwin " + tail
+    else:
+        out = _DIALOG_SEL.sub("@initiator", cmd)
+    if out.startswith("function "):
+        out = "execute as @initiator run " + out
+    return out
+
+
 def command_action(cmd: str, as_player: bool, gate: dict | None, where: str) -> OrderedDict:
     check_command(cmd, where)
     pairs = [("Type", s("COMMAND"))]
@@ -263,7 +292,7 @@ def command_action(cmd: str, as_player: bool, gate: dict | None, where: str) -> 
         conds, _ = gate_conditions(gate)
         if conds:
             pairs.append(("Conditions", lst(conds)))
-    pairs.append(("Cmd", s(cmd)))
+    pairs.append(("Cmd", s(dialog_cmd(cmd))))
     return comp(pairs)
 
 def announce_action(a: dict, where: str) -> OrderedDict:
@@ -285,7 +314,7 @@ def announce_action(a: dict, where: str) -> OrderedDict:
         conds, _ = gate_conditions(a["gate"])
         if conds:
             pairs.append(("Conditions", lst(conds)))
-    pairs.append(("Cmd", s(cmd)))
+    pairs.append(("Cmd", s(dialog_cmd(cmd))))
     return comp(pairs)
 
 def build_onwin(win: list[str], lose: list[str], where: str) -> str:
@@ -505,6 +534,29 @@ def base_for(ch: dict) -> Path:
     return HUMANOID_DIR / ("_battle_trainer_base.npc.snbt" if "battle" in ch
                            else "_civilian_base.npc.snbt")
 
+
+def skin_node(skin: dict):
+    """Build an Easy NPC SkinData node from a character 'skin' field, baked into the preset so
+    `easy_npc preset import` applies the intended skin instead of resetting the NPC to Steve.
+      {"type":"url","url":"https://..."}  -> portable remote-URL skin (recommended; ships anywhere)
+      {"type":"custom","uuid":[a,b,c,d]}  -> instance-local custom skin
+                                             (config/easy_npc/skin/humanoid/<uuid>.png)
+    """
+    t = skin.get("type")
+    if t == "url":
+        url = str(skin["url"]).replace('"', "").strip()
+        scheme = "SECURE_REMOTE_URL" if url.lower().startswith("https") else "INSECURE_REMOTE_URL"
+        return sm.parse_snbt(
+            '{Content:"",DisableLayers:0b,Name:"",Timestamp:0L,Type:"%s",URL:"%s",UUID:[I;0,0,0,0]}'
+            % (scheme, url))
+    if t == "custom":
+        a, b, c, d = skin["uuid"]
+        return sm.parse_snbt(
+            '{Content:"",DisableLayers:0b,Name:"",Timestamp:0L,Type:"CUSTOM",URL:"",UUID:[I;%d,%d,%d,%d]}'
+            % (int(a), int(b), int(c), int(d)))
+    raise CompileError(f"skin: unknown type {t!r} (use 'url' or 'custom')")
+
+
 def compile_character(ch: dict, dialogs: dict, registers: dict, lore: dict):
     cid = ch["id"]
     if "dialog_inline" in ch:
@@ -529,15 +581,101 @@ def compile_character(ch: dict, dialogs: dict, registers: dict, lore: dict):
     out = apply_movement(out, ch.get("movement"))
     if ch.get("trade"):
         out = apply_nondialog_snippet(out, "trade/" + ch["trade"]["snippet"])
+    if ch.get("skin"):
+        out = sm.set_path(out, ["data", "SkinData"], skin_node(ch["skin"]))
     return out
+
+
+# ─── World merge (builder NPC data -> compiled preset) ───────────────────────
+
+import nbt_read  # noqa: E402  (binary NBT -> SNBT, for the world merge)
+
+# data.* fields adopted verbatim from the world NPC: the builders' visual + audio identity.
+# Quest-functional fields (DialogData, ActionData, ObjectiveData, TradingData, attributes)
+# stay OURS. SkinData is adopted unless the character declares an explicit "skin" override.
+WORLD_ADOPT = [
+    "SkinData", "VariantType", "ModelData", "Profession", "LeftHanded",
+    "ArmorItems", "HandItems", "ArmorDropChances", "HandDropChances",
+    "EntityAttribute", "DisplayAttribute", "SoundData", "Progression",
+]
+
+
+def _snbt_value(snbt_text: str):
+    """Parse a single SNBT value via the shared parser (wrap/unwrap in a compound)."""
+    return sm.parse_snbt("{K:" + snbt_text + "}")["K"]
+
+
+def merge_world(tree, ch: dict):
+    """Merge the placed NPC's builder data into the compiled preset.
+
+    Returns (tree, entity_type) where entity_type is 'humanoid' / 'humanoid_slim' — the
+    preset must be written under default_preset/<entity_type>/ and the npc_presets mapping
+    must carry the same prefix so `preset import` resolves against the right registry.
+    """
+    etype = "humanoid"
+    uuid = (ch.get("uuid") or "").strip()
+    if not uuid:
+        return tree, etype
+    path = WORLD_NPCS / f"{uuid}.npc.nbt"
+    if not path.is_file():
+        warn(f"{ch['id']}: no world NBT for {uuid[:8]} — compiled without builder merge.")
+        return tree, etype
+    try:
+        _, (_, world) = nbt_read.read_nbt_file(str(path))
+    except Exception as e:  # unreadable world file: compile still succeeds, just unmerged
+        warn(f"{ch['id']}: world NBT unreadable ({e}) — compiled without builder merge.")
+        return tree, etype
+
+    # Entity type drives the preset directory + import path.
+    wid = world.get("id")
+    if wid and wid[1] in ("easy_npc:humanoid", "easy_npc:humanoid_slim"):
+        etype = wid[1].split(":", 1)[1]
+        tree = sm.set_path(tree, ["data", "id"], _snbt_value(f'"easy_npc:{etype}"'))
+
+    for key in WORLD_ADOPT:
+        if key == "SkinData" and ch.get("skin"):
+            continue  # explicit character skin wins
+        node = world.get(key)
+        if node is not None:
+            tree = sm.set_path(tree, ["data", key], _snbt_value(nbt_read.to_snbt(node)))
+
+    # Home: keep the builders' anchor unless the character sets an explicit one.
+    if not (ch.get("movement") or {}).get("home"):
+        nav = world.get("Navigation")
+        if nav is not None:
+            tree = sm.set_path(tree, ["data", "Navigation"], _snbt_value(nbt_read.to_snbt(nav)))
+
+    # CustomName: OUR display name (roles rename bodies), keeping the builders' color.
+    color = None
+    cn = world.get("CustomName")
+    if cn is not None:
+        try:
+            color = json.loads(cn[1]).get("color")
+        except Exception:
+            color = None
+    name_json = {"text": ch["display_name"]}
+    if color:
+        name_json["color"] = color
+    raw = "'" + json.dumps(name_json, ensure_ascii=False) + "'"
+    tree = sm.set_path(tree, ["data", "CustomName"], _snbt_value(raw))
+
+    # PresetMetadata mirrors the variant so the Easy NPC UI previews correctly.
+    vt = world.get("VariantType")
+    if vt is not None:
+        meta = OrderedDict(tree.get("PresetMetadata", OrderedDict()))
+        meta["variantType"] = s(vt[1])
+        meta["entityTypeId"] = s(f"easy_npc:{etype}")
+        tree = sm.set_path(tree, ["PresetMetadata"], meta)
+    return tree, etype
 
 
 # ─── npc_presets.json / sight manifest ───────────────────────────────────────
 
-def merge_mapping(mappings: dict, ch: dict) -> None:
+def merge_mapping(mappings: dict, ch: dict, etype: str = "humanoid") -> None:
     if not ch.get("uuid"):
         return
-    mappings[ch["uuid"].strip()] = {"preset": ch["id"], "label": ch["display_name"]}
+    preset = ch["id"] if etype == "humanoid" else f"{etype}/{ch['id']}"
+    mappings[ch["uuid"].strip()] = {"preset": preset, "label": ch["display_name"]}
 
 def sight_lines_for(ch: dict) -> list[str]:
     sg = ch.get("sight")
@@ -638,24 +776,30 @@ def main() -> None:
     for ch in chars:
         try:
             tree = compile_character(ch, dialogs, registers, lore)
+            tree, etype = merge_world(tree, ch)
             text = sm.serialize(tree, indent_size=4)
             sm.parse_snbt(text)                # round-trip safety check
-            compiled.append((ch["id"], text))
-            merge_mapping(mappings, ch)
+            compiled.append((ch["id"], text, etype))
+            merge_mapping(mappings, ch, etype)
             sight += sight_lines_for(ch)
         except (CompileError, KeyError, SystemExit) as e:
             errors.append(f"{ch['id']}: {e}")
 
     # Orphans: generated presets no longer backed by a current character (full runs only).
-    current_ids = {cid for cid, _ in compiled}
+    current_ids = {cid for cid, _, _ in compiled}
     orphans: list[str] = []
     if args.prune and not args.character:
-        for p in sorted(HUMANOID_DIR.glob("*.npc.snbt")):
-            if p.name.startswith("_"):
+        for tdir in (HUMANOID_DIR, PRESET_ROOT / "humanoid_slim"):
+            if not tdir.is_dir():
                 continue
-            pid = p.name[:-len(".npc.snbt")]
-            if pid not in current_ids:
-                orphans.append(pid)
+            for p in sorted(tdir.glob("*.npc.snbt")):
+                # Never prune templates (_*) or presets produced by OTHER generators —
+                # the granary badge/relief tiers come from scripts/generate_granary_tiers.
+                if p.name.startswith("_") or p.name.startswith("granary_keeper_"):
+                    continue
+                pid = p.name[:-len(".npc.snbt")]
+                if pid not in current_ids:
+                    orphans.append(pid)
 
     print(f"Characters: {len(chars)} | compiled: {len(compiled)} | errors: {len(errors)} "
           f"| band-tags: {len(BAND_REGISTRY)} | uuid maps: {sum(1 for c in chars if c.get('uuid'))}"
@@ -673,18 +817,26 @@ def main() -> None:
         print("\n(dry-run: nothing written)")
         return
 
-    # Write presets
-    HUMANOID_DIR.mkdir(parents=True, exist_ok=True)
-    for cid, text in compiled:
-        (HUMANOID_DIR / f"{cid}.npc.snbt").write_text(text + "\n")
+    # Write presets to the directory matching each NPC's real entity type; when a preset
+    # switches type (e.g. a humanoid_slim body takes a role compiled as humanoid before),
+    # remove the stale copy from the other directory so the index holds exactly one.
+    for cid, text, etype in compiled:
+        tdir = PRESET_ROOT / etype
+        tdir.mkdir(parents=True, exist_ok=True)
+        (tdir / f"{cid}.npc.snbt").write_text(text + "\n")
+        other = PRESET_ROOT / ("humanoid_slim" if etype == "humanoid" else "humanoid")
+        if cid and (other / f"{cid}.npc.snbt").is_file():
+            (other / f"{cid}.npc.snbt").unlink()
 
     # Prune orphaned presets + their UUID mappings
     for pid in orphans:
         (HUMANOID_DIR / f"{pid}.npc.snbt").unlink(missing_ok=True)
+        (PRESET_ROOT / "humanoid_slim" / f"{pid}.npc.snbt").unlink(missing_ok=True)
     if orphans:
         orphan_set = set(orphans)
         mappings = {u: v for u, v in mappings.items()
-                    if not (isinstance(v, dict) and v.get("preset") in orphan_set)}
+                    if not (isinstance(v, dict)
+                            and v.get("preset", "").split("/")[-1] in orphan_set)}
 
     # Band-tags tick fn + sight manifest
     BAND_TAGS_FN.parent.mkdir(parents=True, exist_ok=True)
