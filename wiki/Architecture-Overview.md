@@ -145,7 +145,7 @@ These mods ship with UPM 2 and are assumed present at runtime, but they are **`s
 | **Easy NPC** | Supplies the physical, UUID-tracked NPC entities. `NpcSightManager.findEntity(server, uuid)` looks them up for raycasting; `NpcMapInit` imports presets onto them by UUID. |
 | **RCTAPI / TBCS** | Radical Cobblemon Trainers provides the trainer spawn + battle API. Trainer config JSON uses RCTAPI-compatible team structures; TBCS `onwin` hooks fire reward/recognition logic. |
 | **JourneyMap / MapFrontiers** | No init-time Java coupling. `MapFrontiersBridge` is lazily applied during `install run` to draw zone boundaries; JourneyMap markers may be set via datapack/commands. |
-| **CobbleDollars** | The in-world currency. `type=command` trainer rewards call `cobbledollars add` via the economy payout macro; CobbleDollars is also the narrative spine of the villain plot. |
+| **CobbleDollars** | The in-world currency. `type=command` trainer rewards pay via `cobbledollars give` (CobbleDollars has no `add` subcommand) — flat in tbcs onwin strings, skew-aware via the economy payout macro; CobbleDollars is also the narrative spine of the villain plot. |
 
 ---
 

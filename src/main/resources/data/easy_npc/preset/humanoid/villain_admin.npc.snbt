@@ -1,0 +1,321 @@
+{
+    PresetMetadata: {
+        author: "TheCompanyInc",
+        category: "Villain",
+        created: 0L,
+        description: "villain_management at Company Regional Office (act 1). Compiled from dialog-src.",
+        entityTypeId: "easy_npc:humanoid",
+        modified: 0L,
+        name: "Regional Manager Shade",
+        variantType: "STEVE",
+        version: "1.0.0"
+    },
+    data: {
+        ActionData: {
+            ActionEventSet: {
+                ON_INTERACTION: [
+                    {
+                        Type: "OPEN_DEFAULT_DIALOG"
+                    }
+                ]
+            }
+        },
+        ArmorDropChances: [0.085f, 0.085f, 0.085f, 0.085f],
+        ArmorItems: [
+            {},
+            {},
+            {},
+            {}
+        ],
+        Brain: {
+            memories: {}
+        },
+        CanPickUpLoot: 0b,
+        CustomNameVisible: 1b,
+        DialogData: {
+            Type: "STANDARD",
+            DialogDataSet: [
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "defeated_villain_admin"
+                        }
+                    ],
+                    Priority: 30,
+                    Buttons: [
+                        {
+                            Name: "Mind the door",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Go on, then. Up the ladder, the way you always did. I will tell the next floor you are coming. I owe you that much, whoever you were."
+                        },
+                        {
+                            Text: "I have been escorting people out of this building for years. You are the first one I wanted to follow."
+                        }
+                    ],
+                    Name: "Shade — after defeat",
+                    Label: "after"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "badges_gte_3"
+                        }
+                    ],
+                    Priority: 20,
+                    Buttons: [
+                        {
+                            Name: "I am going up",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "execute if entity @initiator[tag=defeated_villain_admin] run say The floor is yours to cross. I already logged the variance. Go on up."
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_admin] run tbcs attach villain_admin @initiator"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_admin] run tbcs battle GEN_9_DOUBLES @initiator vs villain_admin onwin {1: ['cobbledollars give @1 3000', 'tag @1 add defeated_villain_admin', '@2 say Filed under closed. I will note you were polite about it. That goes a long way, up where you are headed.', 'easy_npc delete @2'], 2: ['@2 say Recorded, escorted, and forgotten. The Company thanks you for your cooperation.']}"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "yes_button"
+                        },
+                        {
+                            Name: "Not today",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Welcome to the Regional Office. Sign here, initial there, and — I am sorry, have we — no. No. I sign a hundred faces a week, I am being foolish."
+                        },
+                        {
+                            Text: "It is just that you stand like someone who used to own a chair like mine. The way you came through that door. As if you knew the building disliked you."
+                        },
+                        {
+                            Text: "Forget I said it. Per policy, I cannot let an unverified visitor proceed. Per something quieter, I would rather you turned around. You are not going to, are you."
+                        }
+                    ],
+                    Name: "Shade — half-recognises you",
+                    Label: "recognition"
+                },
+                {
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "Then let us go through it",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "execute if entity @initiator[tag=defeated_villain_admin] run say The floor is yours to cross. I already logged the variance. Go on up."
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_admin] run tbcs attach villain_admin @initiator"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_admin] run tbcs battle GEN_9_DOUBLES @initiator vs villain_admin onwin {1: ['cobbledollars give @1 3000', 'tag @1 add defeated_villain_admin', '@2 say Filed under closed. I will note you were polite about it. That goes a long way, up where you are headed.', 'easy_npc delete @2'], 2: ['@2 say Recorded, escorted, and forgotten. The Company thanks you for your cooperation.']}"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "yes_button"
+                        },
+                        {
+                            Name: "I will come back",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The Regional Office is not open to walk-ins. We verify. We file. We do not let strangers wander toward the stairs."
+                        },
+                        {
+                            Text: "I manage this floor and everyone on it. If you want past me, it goes through me first. Those are the only rules I have left that still mean anything."
+                        },
+                        {
+                            Text: "The Company, Inc. reminds you: verified trust, verified value."
+                        },
+                        {
+                            Text: "Sleep easy. Every CobbleDollar is backed, audited, and watched over by people who care."
+                        },
+                        {
+                            Text: "Ten years of stability and counting. The Company keeps the ledgers honest so you do not have to."
+                        }
+                    ],
+                    Name: "Shade — challenge",
+                    Label: "default"
+                }
+            ]
+        },
+        DisplayAttribute: [
+            {
+                Bool: 1b,
+                Type: "VISIBLE"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_AT_DAY"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_AT_NIGHT"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_IN_CREATIVE"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_IN_SPECTATOR"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_IN_STANDARD"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_TO_OWNER"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_TO_TEAM"
+            },
+            {
+                Int: 7,
+                Type: "LIGHT_LEVEL"
+            },
+            {
+                Text: "ALWAYS",
+                Type: "NAME_VISIBILITY"
+            }
+        ],
+        EasyNPCVersion: 3,
+        EntityAttribute: {
+            CanBeHitByProjectile: 0b,
+            CanBeLeashed: 0b,
+            CanBreatheUnderwater: 0b,
+            CanCloseDoor: 0b,
+            CanFloat: 0b,
+            CanOpenDoor: 0b,
+            CanPassDoor: 0b,
+            CanUseNetherPortal: 0b,
+            Freefall: 0b,
+            HealthRegeneration: 0.0d,
+            IsAttackableByMonsters: 0b,
+            IsAttackableByPlayers: 0b,
+            IsInvulnerable: 1b,
+            IsPushable: 0b,
+            NoGravity: 0b,
+            PushEntities: 0b
+        },
+        HandDropChances: [0.085f, 0.085f],
+        HandItems: [
+            {},
+            {}
+        ],
+        Invulnerable: 0b,
+        LeftHanded: 0b,
+        ModelData: {
+            DefaultPose: "STANDING",
+            Pose: "VANILLA",
+            Position: {},
+            Rotation: {},
+            Scale: {},
+            Visible: {
+                Boots: 1b
+            }
+        },
+        Navigation: {
+            Home: {
+                X: 0,
+                Y: 0,
+                Z: 0
+            }
+        },
+        ObjectiveData: {
+            HasObjectives: 0b,
+            HasTravelTarget: 0b,
+            ObjectiveDataSet: []
+        },
+        OnGround: 1b,
+        PersistenceRequired: 0b,
+        PresetUUID: [I; 0, 0, 0, 0],
+        Profession: "NONE",
+        Progression: {
+            AttributeScalingEnabled: 0b,
+            EntityExperience: 1,
+            EntityExperienceLevel: 1
+        },
+        RenderData: {},
+        SkinData: {
+            Content: "",
+            DisableLayers: 0b,
+            Name: "",
+            Timestamp: 0L,
+            Type: "DEFAULT",
+            URL: "",
+            UUID: [I; 0, 0, 0, 0]
+        },
+        SoundData: {
+            SoundDataSet: [
+                {
+                    Name: "minecraft:entity.player.death",
+                    Type: "DEATH"
+                },
+                {
+                    Name: "minecraft:entity.player.hurt",
+                    Type: "HURT"
+                }
+            ]
+        },
+        Status: {
+            finalized: 0b,
+            npc_data_last_saved: 0L,
+            npc_data_last_update: 0L
+        },
+        VariantType: "STEVE",
+        attributes: [
+            {
+                base: 20.0d,
+                id: "minecraft:generic.max_health"
+            },
+            {
+                base: 0.5d,
+                id: "minecraft:generic.movement_speed"
+            }
+        ],
+        id: "easy_npc:humanoid"
+    }
+}

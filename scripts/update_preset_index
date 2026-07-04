@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
-# update_preset_index — regenerate default_preset.index for the cobblemon_initiative
-# Easy NPC namespace. Run this after adding or removing any .npc.snbt preset files.
+# update_preset_index — regenerate preset.index for the shipped Easy NPC DATA
+# presets (data/easy_npc/preset/). Run this after adding or removing any
+# .npc.snbt preset files.
+#
+# Easy NPC 6.25 only accepts DATA preset imports from the easy_npc namespace
+# under preset/ with a .npc.snbt/.npc.nbt extension (PresetSecurity), which is
+# why the presets ship under data/easy_npc/preset/ rather than our own namespace.
 #
 # Usage: update_preset_index
 
@@ -8,17 +13,19 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-PRESET_DIR="$PROJECT_ROOT/src/main/resources/data/cobblemon_initiative/easy_npc/default_preset"
-INDEX_FILE="$PRESET_DIR/default_preset.index"
+PRESET_DIR="$PROJECT_ROOT/src/main/resources/data/easy_npc/preset"
+INDEX_FILE="$PRESET_DIR/preset.index"
 
 if [[ ! -d "$PRESET_DIR" ]]; then
   echo "update_preset_index: preset directory not found: $PRESET_DIR" >&2
   exit 1
 fi
 
-# Collect all .npc.snbt files, sorted, relative to PRESET_DIR
+# Collect all .npc.snbt files, sorted, relative to PRESET_DIR.
+# LC_ALL=C: bytewise order, matching npc_preset_builder's Python sorted() so the
+# two index writers agree (and the output is locale-independent).
 mapfile -t presets < <(
-  find "$PRESET_DIR" -name "*.npc.snbt" | sort | sed "s|$PRESET_DIR/||"
+  find "$PRESET_DIR" -name "*.npc.snbt" | LC_ALL=C sort | sed "s|$PRESET_DIR/||"
 )
 
 {

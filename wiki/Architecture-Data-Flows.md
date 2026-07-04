@@ -181,7 +181,7 @@ flowchart TD
     P0["economy/payout {amount}"] --> P1["cut = min(idx/4, 25)"]
     P1 --> P2["rate = 100 - cut  (75-100%)"]
     P2 --> P3["paid = amount * rate / 100"]
-    P3 --> P4["economy/pay_macro:<br/>cobbledollars add @s paid<br/>+ 'Company Verified Rate rate%'"]
+    P3 --> P4["economy/pay_macro:<br/>cobbledollars give @s paid<br/>+ 'Company Verified Rate rate%'"]
   end
   subgraph Trade["Trader tug-of-war — fields_liberated"]
     T0["wheat_trader/tick (per tick)"] --> T1{"fields_liberated"}
@@ -196,7 +196,7 @@ flowchart TD
 
 **Stabilize.** Defeating **Acting CEO DJ** in the HQ raid (around gym 8) runs `economy/hq_stabilize`, which hard-sets the index to the post-raid floor of **25** and plays the earned *"CURRENCY STABILIZED"* title beat with a beacon-activate chime. This is the single biggest economic turning point in the run.
 
-**Payout skew.** Mod-routed CobbleDollar payouts go through `economy/payout`, which computes a haircut: `cut = min(idx/4, 25)`, `rate = 100 - cut`. At peak instability the player still receives **75%** of face value; once DJ stabilizes the index to 25, the worst case is ~6% off. `pay_macro` then does the actual `cobbledollars add @s` and shows the "Company Verified Rate". Battle prizes paid directly by TBCS stay flat — only mod-routed payouts skew.
+**Payout skew.** Mod-routed CobbleDollar payouts go through `economy/payout`, which computes a haircut: `cut = min(idx/4, 25)`, `rate = 100 - cut`. At peak instability the player still receives **75%** of face value; once DJ stabilizes the index to 25, the worst case is ~6% off. `pay_macro` then does the actual `cobbledollars give @s` and shows the "Company Verified Rate". Battle prizes paid directly by TBCS stay flat — only mod-routed payouts skew.
 
 **Trader tug-of-war.** `wheat_trader/tick` reads the shared `fields_liberated` counter and escalates traders in one-way, relog-safe tiers: 0–1 fields → trade only; **2+ → recognition** (`wheat_trader_suspicious`); **4+ → hostile** (`wheat_trader_hostile`) — at which point the trader's dialog offers the battle directly (`tbcs battle … vs wheat_trader_ambush`). **Field Liberation** increments the counter: a field guard's command reward fires `liberation/free_field {field:"<id>"}`, which (idempotently, via the per-field `field_freed` latch) bumps `fields_liberated`, claws `cd_instability` back **−6**, tags `wheat_war_active` (lighting the HUD wheat line, Flow 6), and — for FARM zones gated with `activeWhenObjective` — flips the occupied field into active safe farmland.
 

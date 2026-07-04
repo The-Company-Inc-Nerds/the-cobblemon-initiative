@@ -1,6 +1,7 @@
 package com.thecompanyinc.cobblemoninitiative.economy;
 
 import com.thecompanyinc.cobblemoninitiative.InitiativeInit;
+import com.thecompanyinc.cobblemoninitiative.npcmap.NpcPresetRefreshManager;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -148,6 +149,10 @@ public final class ShopTierManager {
         server.createCommandSourceStack().withPermission(2).withSuppressedOutput(),
         "function cobblemon_initiative:granary/apply_" + tier
       );
+      // The function can only retier a LOADED keeper (Easy NPC preset import updates
+      // in place only for loaded entities). Record a pending override so an unloaded
+      // keeper picks up the tier preset the next time its chunk loads.
+      NpcPresetRefreshManager.queueTierOverride(server, tier);
       InitiativeInit.LOGGER.info(
         "Applied shop tier {} (CobbleDollars reloaded, granary retiered).",
         tier

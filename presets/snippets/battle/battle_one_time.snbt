@@ -17,7 +17,7 @@ DialogData: {
                         {
                             Type: "COMMAND",
                             ExecAsUser: 1b,
-                            Cmd: "execute unless entity @s[tag=defeated_%%TRAINER_ID%%] run tbcs battle %%BATTLE_FORMAT:GEN_9_SINGLES|GEN_9_DOUBLES=GEN_9_SINGLES%% @s vs %%TRAINER_ID%% onwin {1: ['cobbledollars add @1 %%PRIZE=200%%', 'tag @1 add defeated_%%TRAINER_ID%%', '@2 say %%WIN_LINE=Noted. The ledger never lies.%%'], 2: ['@2 say %%LOSE_LINE=As projected.%%']}"
+                            Cmd: "execute unless entity @s[tag=defeated_%%TRAINER_ID%%] run tbcs battle %%BATTLE_FORMAT:GEN_9_SINGLES|GEN_9_DOUBLES=GEN_9_SINGLES%% @s vs %%TRAINER_ID%% onwin {1: ['cobbledollars give @1 %%PRIZE=200%%', 'tag @1 add defeated_%%TRAINER_ID%%', '@2 say %%WIN_LINE=Noted. The ledger never lies.%%'], 2: ['@2 say %%LOSE_LINE=As projected.%%']}"
                         },
                         {
                             Type: "CLOSE_DIALOG"

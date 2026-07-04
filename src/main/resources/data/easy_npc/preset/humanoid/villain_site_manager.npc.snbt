@@ -1,0 +1,398 @@
+{
+    PresetMetadata: {
+        author: "TheCompanyInc",
+        category: "Villain",
+        created: 0L,
+        description: "villain_grunt at Firstfurrow Farm — The Barn (act 1). Compiled from dialog-src.",
+        entityTypeId: "easy_npc:humanoid",
+        modified: 0L,
+        name: "Acting Site Manager",
+        variantType: "STEVE",
+        version: "1.0.0"
+    },
+    data: {
+        ActionData: {
+            ActionEventSet: {
+                ON_INTERACTION: [
+                    {
+                        Type: "OPEN_DEFAULT_DIALOG"
+                    }
+                ]
+            }
+        },
+        ArmorDropChances: [0.085f, 0.085f, 0.085f, 0.085f],
+        ArmorItems: [
+            {},
+            {},
+            {},
+            {}
+        ],
+        Brain: {
+            memories: {}
+        },
+        CanPickUpLoot: 0b,
+        CustomNameVisible: 1b,
+        DialogData: {
+            Type: "STANDARD",
+            DialogDataSet: [
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "badges_gte_7"
+                        }
+                    ],
+                    Priority: 30,
+                    Buttons: [
+                        {
+                            Name: "Face them",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "execute if entity @initiator[tag=defeated_villain_site_manager] run say The field is out of my portfolio. Enjoy the produce. It never suited the ledger anyway."
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_site_manager] run tbcs attach villain_site_manager @initiator"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_site_manager] run tbcs battle GEN_9_SINGLES @initiator vs villain_site_manager onwin {1: ['cobbledollars give @1 520', 'tag @1 add defeated_villain_site_manager', '@2 say Noted. The parcel is — the parcel was. I will be filing this under force majeure.', 'execute as @1 run function cobblemon_initiative:liberation/free_field {field:farm_1}', 'loot give @1 loot cobblemon_initiative:npc_gift/transition_order', 'tag @1 add field_1_transition_taken', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 150', '@2 say Yield secured. Your visit has been logged as agricultural tourism.']}"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "defeated_villain_yield_officer"
+                                }
+                            ],
+                            Label: "yes_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "It is you. The founder, walking the routes like a rookie. They swore you were a story told to scare new hires."
+                        },
+                        {
+                            Text: "I have orders. I have a family paid in Company scrip. Do not make me do this. But I am going to."
+                        }
+                    ],
+                    Name: "Manager — late recognition",
+                    Label: "late"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "badges_gte_3"
+                        }
+                    ],
+                    Priority: 20,
+                    Buttons: [
+                        {
+                            Name: "Fight",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "execute if entity @initiator[tag=defeated_villain_site_manager] run say The field is out of my portfolio. Enjoy the produce. It never suited the ledger anyway."
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_site_manager] run tbcs attach villain_site_manager @initiator"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_site_manager] run tbcs battle GEN_9_SINGLES @initiator vs villain_site_manager onwin {1: ['cobbledollars give @1 520', 'tag @1 add defeated_villain_site_manager', '@2 say Noted. The parcel is — the parcel was. I will be filing this under force majeure.', 'execute as @1 run function cobblemon_initiative:liberation/free_field {field:farm_1}', 'loot give @1 loot cobblemon_initiative:npc_gift/transition_order', 'tag @1 add field_1_transition_taken', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 150', '@2 say Yield secured. Your visit has been logged as agricultural tourism.']}"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "defeated_villain_yield_officer"
+                                }
+                            ],
+                            Label: "yes_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Your face is on a memo. The kind with a black bar over the name and the words do not engage, report immediately."
+                        },
+                        {
+                            Text: "You are supposed to be a closed file. Closed files do not get to walk away."
+                        }
+                    ],
+                    Name: "Manager — mid recognition",
+                    Label: "mid"
+                },
+                {
+                    Priority: 15,
+                    Buttons: [
+                        {
+                            Name: "Take the field back — face the Manager",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "execute if entity @initiator[tag=defeated_villain_site_manager] run say The field is out of my portfolio. Enjoy the produce. It never suited the ledger anyway."
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_site_manager] run tbcs attach villain_site_manager @initiator"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_site_manager] run tbcs battle GEN_9_SINGLES @initiator vs villain_site_manager onwin {1: ['cobbledollars give @1 520', 'tag @1 add defeated_villain_site_manager', '@2 say Noted. The parcel is — the parcel was. I will be filing this under force majeure.', 'execute as @1 run function cobblemon_initiative:liberation/free_field {field:farm_1}', 'loot give @1 loot cobblemon_initiative:npc_gift/transition_order', 'tag @1 add field_1_transition_taken', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 150', '@2 say Yield secured. Your visit has been logged as agricultural tourism.']}"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "defeated_villain_yield_officer"
+                                }
+                            ],
+                            Label: "fight_button"
+                        },
+                        {
+                            Name: "About the officer at the gate",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "tellraw @initiator [{\"text\":\"The Manager does not look up. Clear my perimeter first, resident. I do not take unscheduled meetings.\",\"color\":\"gray\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "NOT_EQUALS",
+                                    Name: "defeated_villain_yield_officer"
+                                }
+                            ],
+                            Label: "blocked_button"
+                        },
+                        {
+                            Name: "Leave the field",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "You are standing in an active yield zone. The family that mismanaged this parcel has been transitioned to alternative outcomes, and the parcel now performs. Look at it. Rows. Numbers. Performance."
+                        },
+                        {
+                            Text: "I run six fields like this one off a single clipboard. This one is my favorite, because it was first. Everything the Company plans to do, it practiced here."
+                        }
+                    ],
+                    Name: "Manager — the quota",
+                    Label: "quota"
+                },
+                {
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "Fight",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "execute if entity @initiator[tag=defeated_villain_site_manager] run say The field is out of my portfolio. Enjoy the produce. It never suited the ledger anyway."
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_site_manager] run tbcs attach villain_site_manager @initiator"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_site_manager] run tbcs battle GEN_9_SINGLES @initiator vs villain_site_manager onwin {1: ['cobbledollars give @1 520', 'tag @1 add defeated_villain_site_manager', '@2 say Noted. The parcel is — the parcel was. I will be filing this under force majeure.', 'execute as @1 run function cobblemon_initiative:liberation/free_field {field:farm_1}', 'loot give @1 loot cobblemon_initiative:npc_gift/transition_order', 'tag @1 add field_1_transition_taken', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 150', '@2 say Yield secured. Your visit has been logged as agricultural tourism.']}"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "defeated_villain_yield_officer"
+                                }
+                            ],
+                            Label: "yes_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Company business. This parcel is closed for restructuring, and there is no walking away from it."
+                        },
+                        {
+                            Text: "We settle this the old way. Wait. Do I know you from somewhere?"
+                        }
+                    ],
+                    Name: "Manager — early (no recognition)",
+                    Label: "default"
+                }
+            ]
+        },
+        DisplayAttribute: [
+            {
+                Bool: 1b,
+                Type: "VISIBLE"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_AT_DAY"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_AT_NIGHT"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_IN_CREATIVE"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_IN_SPECTATOR"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_IN_STANDARD"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_TO_OWNER"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_TO_TEAM"
+            },
+            {
+                Int: 7,
+                Type: "LIGHT_LEVEL"
+            },
+            {
+                Text: "ALWAYS",
+                Type: "NAME_VISIBILITY"
+            }
+        ],
+        EasyNPCVersion: 3,
+        EntityAttribute: {
+            CanBeHitByProjectile: 0b,
+            CanBeLeashed: 0b,
+            CanBreatheUnderwater: 0b,
+            CanCloseDoor: 0b,
+            CanFloat: 0b,
+            CanOpenDoor: 0b,
+            CanPassDoor: 0b,
+            CanUseNetherPortal: 0b,
+            Freefall: 0b,
+            HealthRegeneration: 0.0d,
+            IsAttackableByMonsters: 0b,
+            IsAttackableByPlayers: 0b,
+            IsInvulnerable: 1b,
+            IsPushable: 0b,
+            NoGravity: 0b,
+            PushEntities: 0b
+        },
+        HandDropChances: [0.085f, 0.085f],
+        HandItems: [
+            {},
+            {}
+        ],
+        Invulnerable: 0b,
+        LeftHanded: 0b,
+        ModelData: {
+            DefaultPose: "STANDING",
+            Pose: "VANILLA",
+            Position: {},
+            Rotation: {},
+            Scale: {},
+            Visible: {
+                Boots: 1b
+            }
+        },
+        Navigation: {
+            Home: {
+                X: 0,
+                Y: 0,
+                Z: 0
+            }
+        },
+        ObjectiveData: {
+            HasObjectives: 0b,
+            HasTravelTarget: 0b,
+            ObjectiveDataSet: []
+        },
+        OnGround: 1b,
+        PersistenceRequired: 0b,
+        PresetUUID: [I; 0, 0, 0, 0],
+        Profession: "NONE",
+        Progression: {
+            AttributeScalingEnabled: 0b,
+            EntityExperience: 1,
+            EntityExperienceLevel: 1
+        },
+        RenderData: {},
+        SkinData: {
+            Content: "",
+            DisableLayers: 0b,
+            Name: "",
+            Timestamp: 0L,
+            Type: "DEFAULT",
+            URL: "",
+            UUID: [I; 0, 0, 0, 0]
+        },
+        SoundData: {
+            SoundDataSet: [
+                {
+                    Name: "minecraft:entity.player.death",
+                    Type: "DEATH"
+                },
+                {
+                    Name: "minecraft:entity.player.hurt",
+                    Type: "HURT"
+                }
+            ]
+        },
+        Status: {
+            finalized: 0b,
+            npc_data_last_saved: 0L,
+            npc_data_last_update: 0L
+        },
+        VariantType: "STEVE",
+        attributes: [
+            {
+                base: 20.0d,
+                id: "minecraft:generic.max_health"
+            },
+            {
+                base: 0.5d,
+                id: "minecraft:generic.movement_speed"
+            }
+        ],
+        id: "easy_npc:humanoid"
+    }
+}

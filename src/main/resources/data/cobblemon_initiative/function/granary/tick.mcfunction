@@ -15,5 +15,5 @@ execute as @a[scores={granary_ambush_armed=1..}] run scoreboard players add @s g
 
 # the filing — menace beat, then the battle, then reset (order matters: reset last)
 execute as @a[scores={granary_ambush_armed=300..}] unless entity @s[tag=defeated_granary_ambush] run tellraw @s [{"text":"The keeper folds the receipt into a grey envelope. ","color":"gray"},{"text":"Asset located. Initiating retrieval.","color":"red"}]
-execute as @a[scores={granary_ambush_armed=300..}] unless entity @s[tag=defeated_granary_ambush] run tbcs battle GEN_9_SINGLES @s vs granary_ambush onwin {1: ['cobbledollars add @1 600', 'tag @1 add defeated_granary_ambush'], 2: []}
+execute as @a[scores={granary_ambush_armed=300..}] unless entity @s[tag=defeated_granary_ambush] run tbcs battle GEN_9_SINGLES @s vs granary_ambush onwin {1: ['cobbledollars give @1 600', 'tag @1 add defeated_granary_ambush'], 2: []}
 execute as @a[scores={granary_ambush_armed=300..}] run scoreboard players set @s granary_ambush_armed 0

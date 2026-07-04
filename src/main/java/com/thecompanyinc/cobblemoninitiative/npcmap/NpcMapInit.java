@@ -22,6 +22,10 @@ public class NpcMapInit implements ModInitializer {
       NpcMapCommand.register(dispatcher, registryAccess, storage)
     );
 
+    // Per-NPC preset refresh: imports shipped presets onto mapped NPCs as their chunks
+    // load (a one-shot bulk import can only reach loaded NPCs — see the manager's javadoc).
+    NpcPresetRefreshManager.init();
+
     ServerLifecycleEvents.SERVER_STARTED.register(server -> {
       storage.load(server);
       LOGGER.info("NPC Map loaded {} mapping(s).", storage.size());

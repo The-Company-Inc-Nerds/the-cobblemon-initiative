@@ -44,6 +44,29 @@ The full PrismLauncher log explained everything:
 3. `function cobblemon_initiative:economy/payout {amount:100}` (with braces!) → ~100 CD + gold rate line.
 4. Census SIGN → +500 + the ID paper (now that both the loot table and @initiator paths are fixed).
 
+## Round 4 results (2026-07-03 night, log-0.4.1-alpha.1 + log-0.4.1-alpha.2) → 0.4.2
+
+Round 3's flip was still wrong — this time the grammar was pulled from the **decompiled
+6.25.0 jar** (PresetCommand bytecode), not guessed from an error cursor:
+
+| Finding | Root cause | Fix |
+|---|---|---|
+| `update_npc_presets` + all 32 `granary/apply_*` STILL failed to parse (identical errors in both alpha.1 and alpha.2 — the alpha.2 commit only touched configs) | Easy NPC 6.25 grammar is `preset import data <location> [<x y z> [<uuid>]]` — a UUID is **only accepted after a position**. `<location> <uuid>` was never a valid form. | Command template is now `execute as <uuid> at @s run easy_npc preset import data <loc> ~ ~ ~ <uuid>` — in-place update when loaded, safe no-op when not. |
+| Even a valid import would have been **blocked**: `Blocked invalid DATA preset resource` | `PresetSecurity.validateResourceLocation` (bytecode-verified) requires DATA presets in namespace `easy_npc`, path prefix `preset/`, extension `.npc.snbt`. Ours shipped as `cobblemon_initiative:easy_npc/default_preset/…` with no extension in the reference. | All 177 presets moved to `data/easy_npc/preset/<type>/<name>.npc.snbt`; generators emit `easy_npc:preset/…npc.snbt`. |
+| A one-shot install refresh can never reach the whole map | `preset import` updates in place only for **loaded** entities (`LivingEntityManager` tracks loaded NPCs only); an unloaded UUID would spawn a duplicate at 0,0,0. | New `NpcPresetRefreshManager`: per-NPC content-version tracking in the world save; re-imports each mapped NPC as its chunk loads. `install run` arms it and reports honestly. |
+| Every Easy NPC dialog button command would be **silently blocked** | 6.25.0 blocks all `ExecAsUser` commands whose root is not in `executeAsUserCommandAllowList.*` — and the shipped security.cfg had them **empty**. | Allowlists populated with the pack's command roots (execute, function, cobbledollars, tag, tbcs, …). |
+| `payout` paid nothing even when invoked correctly | CobbleDollars 2.0.0-Beta-5.1 has **no `add` subcommand** (verified from the jar: pay/query/give/remove/set/reload/leaderboard). Every `cobbledollars add` in the repo — pay_macro, granary ambush, and **all 143 battle-prize onwin strings** — was a dead command. | Global `cobbledollars add` → `cobbledollars give` (same target-first arg order). |
+| 8 dialog buttons paid nothing | They called `economy/pay_macro {paid:N}` directly — the macro also needs `rate`/`raw`, and a macro invoked with missing keys fails entirely. | Rerouted to `economy/payout {amount:N}` (dialog-src + compiled presets). |
+| 16 advancements failed to parse (`Unknown registry key … cobblemon_initiative:badge_icon`) | Item registers under the **hyphen** mod id (`cobblemon-initiative:badge_icon`); advancements referenced the underscore datapack namespace. | Advancement icons → `cobblemon-initiative:badge_icon`; base model fallback texture → `all_badges` (kills the missing-texture warn). |
+
+**Round 5 canary list (0.4.2):**
+1. World load: **zero** `Failed to load function` and zero advancement parse errors.
+2. `/cobblemon-initiative install run` → chat says "NPC preset refresh armed for N mapped NPC(s); M loaded now…" (no more unconditional "refreshed").
+3. Walk to Asha → nameplate **Dr. Asha** within a second of her chunk loading (watch the log for `[NPC Refresh] Applied …`).
+4. `function cobblemon_initiative:economy/payout {amount:100}` (as a player, with braces) → ~100 CD credited (`cobbledollars query` to confirm) + gold rate actionbar.
+5. Win any trainer battle → prize money actually lands (was dead in every build so far).
+6. NPC dialog buttons execute (no `Blocked execute-as-user command root …` lines in the log) — needs the new security.cfg in the instance's `config/easy_npc/` (fresh mrpack install, or copy it into the existing instance).
+
 ## Phase 0 — Boot & wiring (5 min)
 
 1. **Datapack parse** — start the world, check the log.
@@ -167,7 +190,7 @@ These commands are used by dozens of quests but are **unverified in this Cobblem
 
 ## Known-unverified master list (what this session retires)
 
-`givepokemonother` (+gender/level keys) · `cobbledollars add/remove @s` under `execute as` ·
+`givepokemonother` (+gender/level keys) · `cobbledollars give/remove @s` under `execute as` ·
 insufficient-balance behavior · `can_see_player` stealth branches (auditor/surveyor/
 canvasser/office) · renamed give/loot component shapes (boots, IDs, books, papers) ·
 `cobblemon:poke_rod`/`leaf_stone`/fossil ids · RCT `aspects` (autumn Deerling) · the

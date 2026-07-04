@@ -13,6 +13,7 @@ import com.thecompanyinc.cobblemoninitiative.mixin.PrimaryLevelDataAccessor;
 import com.thecompanyinc.cobblemoninitiative.npcmap.NpcMapEntry;
 import com.thecompanyinc.cobblemoninitiative.npcmap.NpcMapInit;
 import com.thecompanyinc.cobblemoninitiative.npcmap.NpcMapStorage;
+import com.thecompanyinc.cobblemoninitiative.npcmap.NpcPresetRefreshManager;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
@@ -27,6 +28,7 @@ import net.minecraft.server.packs.repository.PackRepository;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Difficulty;
@@ -460,41 +462,80 @@ public class InstallCommand {
       }
     }
 
-    // Refresh ALL placed NPCs from the shipped preset pipeline: the generated
-    // update_npc_presets function imports every uuid-mapped preset (dialog, quests, the
-    // role rename, and the world-merged builder skin), then register_sight re-registers
-    // the sight-driven NPCs. Import lines for not-yet-placed uuids fail harmlessly, so
-    // this is safe to run on any world at any time — `install run` IS the NPC refresh.
-    server
-      .getCommands()
-      .performPrefixedCommand(
-        silentOp,
-        "function cobblemon_initiative:update_npc_presets"
-      );
-    server
-      .getCommands()
-      .performPrefixedCommand(
-        silentOp,
-        "function cobblemon_initiative:dialog/register_sight"
-      );
-    ctx
-      .getSource()
-      .sendSuccess(
-        () ->
+    // Refresh ALL placed NPCs from the shipped preset pipeline. Easy NPC's preset import
+    // only updates an NPC that is currently loaded (an unloaded UUID would spawn a
+    // duplicate), so a one-shot function cannot reach a map's worth of NPCs. Instead the
+    // refresh is ARMED here: NpcPresetRefreshManager re-imports each mapped NPC the first
+    // time its chunk loads; NPCs loaded right now are queued immediately.
+    if (NpcPresetRefreshManager.hasBundledMap()) {
+      NpcPresetRefreshManager.ArmResult armed =
+        NpcPresetRefreshManager.armFullRefresh(server);
+      ctx
+        .getSource()
+        .sendSuccess(
+          () ->
+            Component.literal(
+              "[Install] NPC preset refresh armed for " +
+                armed.mapped() +
+                " mapped NPC(s); " +
+                armed.loadedNow() +
+                " loaded now, the rest apply as their chunks load."
+            ),
+          true
+        );
+    } else {
+      ctx
+        .getSource()
+        .sendFailure(
           Component.literal(
-            "[Install] NPC presets refreshed (update_npc_presets + register_sight)."
-          ),
-        true
-      );
+            "[Install] Bundled NPC preset map missing (cobblemon_initiative:npc/preset_map.json)" +
+              " — NPC presets NOT refreshed. Re-run scripts/generate_npc_function and rebuild."
+          )
+        );
+    }
+
+    // register_sight re-registers the sight-driven NPCs. Verify the function actually
+    // loaded before claiming success — a datapack parse failure silently removes it.
+    ResourceLocation sightFn = ResourceLocation.fromNamespaceAndPath(
+      "cobblemon_initiative",
+      "dialog/register_sight"
+    );
+    if (server.getFunctions().get(sightFn).isPresent()) {
+      server
+        .getCommands()
+        .performPrefixedCommand(
+          silentOp,
+          "function cobblemon_initiative:dialog/register_sight"
+        );
+      ctx
+        .getSource()
+        .sendSuccess(
+          () -> Component.literal("[Install] NPC sight registrations refreshed (register_sight)."),
+          true
+        );
+    } else {
+      ctx
+        .getSource()
+        .sendFailure(
+          Component.literal(
+            "[Install] Function " + sightFn + " did not load — check the log for datapack" +
+              " parse errors. NPC sight registrations NOT refreshed."
+          )
+        );
+    }
 
     // Legacy: also apply anything registered via the npc-map dev tool (world storage).
+    // Only loaded NPCs can be updated in place; the execute-as guard skips the rest.
     NpcMapStorage storage = NpcMapInit.getStorage();
     if (storage != null && storage.size() > 0) {
       int applied = 0;
       for (NpcMapEntry e : storage.getAll()) {
         try {
-          String cmd = "easy_npc preset import data " + e.preset + " " + e.uuid;
-          server.getCommands().performPrefixedCommand(silentOp, cmd);
+          String location = NpcPresetRefreshManager.resolvePresetLocation(e.preset);
+          server.getCommands().performPrefixedCommand(
+            silentOp,
+            NpcPresetRefreshManager.importCommand(e.uuid, location)
+          );
           applied++;
         } catch (Exception ex) {
           LOGGER.warn(
@@ -510,11 +551,11 @@ public class InstallCommand {
         .sendSuccess(
           () ->
             Component.literal(
-              "[Install] Applied " +
+              "[Install] Dispatched " +
                 count +
                 "/" +
                 storage.size() +
-                " NPC preset(s)."
+                " npc-map preset import(s) (loaded NPCs only)."
             ),
           true
         );

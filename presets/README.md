@@ -3,7 +3,7 @@
 This directory holds the **authoring assets** for Easy NPC presets — partial
 SNBT snippets that get spliced into full presets. Nothing in here ships with
 the mod; the shipped presets live in
-`src/main/resources/data/cobblemon_initiative/easy_npc/default_preset/`.
+`src/main/resources/data/easy_npc/preset/` (Easy NPC 6.25 only accepts DATA imports from `easy_npc:preset/…​.npc.snbt` — PresetSecurity).
 
 Snippets are **self-contained**: behavior is implemented inline via dialog
 button actions, NPC objectives, distance/interaction action events, and vanilla
@@ -29,7 +29,7 @@ To give one of them behavior without losing their skin/pose/position:
    Then answer the placeholder prompts; a summary is shown before anything is
    written.
 3. **Apply**: the builder writes the preset into the shipped `humanoid/`
-   directory, refreshes `default_preset.index`, and can map the NPC UUID in
+   directory, refreshes `preset.index`, and can map the NPC UUID in
    `npc_presets.json`. Then run `scripts/generate_npc_function` and, in-game,
    `/function cobblemon_initiative:update_npc_presets`.
 

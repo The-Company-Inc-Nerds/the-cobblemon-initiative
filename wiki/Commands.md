@@ -177,7 +177,7 @@ Bidirectional NPC-UUID ↔ Easy NPC preset mapping, used to batch-apply presets 
 
 | Command | Description | Args |
 |---------|-------------|------|
-| `/ca npc-map add <uuid> <preset> [label]` | Maps an NPC UUID to an Easy NPC preset. | `uuid` (looked-at entity, autocomplete); `preset` (autocomplete from `cobblemon_initiative:easy_npc/default_preset/`); `label` optional friendly name |
+| `/ca npc-map add <uuid> <preset> [label]` | Maps an NPC UUID to an Easy NPC preset. | `uuid` (looked-at entity, autocomplete); `preset` (autocomplete from the shipped `data/easy_npc/preset/` DATA presets); `label` optional friendly name |
 | `/ca npc-map remove <uuid>` | Removes a mapping. | `uuid` (stored, autocomplete) |
 | `/ca npc-map list` | Lists all stored mappings (uuid, preset, label). | — |
 | `/ca npc-map apply` | Applies every stored mapping to its NPC via Easy NPC preset import. | — |

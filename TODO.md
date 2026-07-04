@@ -35,7 +35,7 @@ session, in this order (each failure comes back to Claude as a bug report):
    `function cobblemon_initiative:liberation/free_field {field:"test_1"}` → −6 idx +
    HUD wheat line; a FARM zone with `mobsSpawn`/`activeWhen*` behaves occupied→liberated.
 5. While the client is open: capture **Sodium + BSL settings** → `mrpack/overrides/`
-   (§1.F) and run the **`cobbledollars add @s` smoke-test** (§1.B).
+   (§1.F) and run the **`cobbledollars give @s` smoke-test** (§1.B).
 
 ### Phase 1 — Map authoring sprint 🧱 (parallelizable with Phase 2 wiring)
 Author in batches; each batch unblocks Claude wiring the same day:
@@ -65,7 +65,7 @@ Author in batches; each batch unblocks Claude wiring the same day:
      (trainer sq_genji_wager, loss_fee 200).
    - [ ] **Fair Market Value** — shelved (no spec; cut for now).
    - [ ] 🔍 **Batch smoke-tests** these side quests lean on: `givepokemonother`
-     (Kele Magikarp, trades, gifts), `cobbledollars add/remove @s` inside `execute as`,
+     (Kele Magikarp, trades, gifts), `cobbledollars give/remove @s` inside `execute as`,
      the `can_see_player` stealth branches (surveyor/canvasser), `cobblemon:poke_rod` +
      fossil item ids, renamed `writable_book`/`paper` component shape, **the world-merge
      import** (one NPC: preset import keeps builder skin + our dialog + renames), and the
@@ -131,7 +131,8 @@ Author in batches; each batch unblocks Claude wiring the same day:
   - [x] **Balance decisions (resolved 2026-07-02):** pushback stays **−6/field**; liberation **swaps tiers** — every 2 fields upgrades the active shop+granary tier to a pre-baked relief catalog (`<tier>_relief1/2`, −12 idx each; `ShopTierManager.resolveRelief` reads `fields_liberated` live; `shop refresh` fired by `free_field_apply`; gym rewards unchanged); HQ raid is **hard-gated on 4 liberated fields** (DJ's battle entry gated, "monopoly holds" refusal below it, quest HUD shows "Starve the monopoly" until 4). Thresholds (2/level, −12, gate=4) tunable 🔍.
   - [ ] *(Option C, deferred)* stateful `farmzone/` subsystem (soil/growth/patrols/HQ-difficulty)
 - [ ] **P5 — Wheat traders full wiring** — _done: the trade→recognize→ambush dialogue, `minecraft:paper` currency, 2/4 thresholds, **ambush trainers** (`wheat_trader_ambush` L38-39 farm team / `granary_ambush` L43-44, in villain_team.json, species+items jar-validated), **wheat-trader hostile tier now offers the battle** ("Stand and fight" → tbcs vs wheat_trader_ambush), and the **granary post-trade poller** (`granary/tick`: hostile trade arms `granary_ambush_armed`, ~15s countdown → "Asset located. Initiating retrieval." → battle, one-shot via defeated_granary_ambush)._ Remaining: in-world placement (Easy NPC traders) 🧱 + in-game verify the tbcs battle/onwin path 🔍. (`wheat_ambush_armed` is now superseded — wheat traders battle directly from dialog; objective left declared, unused.)
-- [ ] **Smoke-test `cobbledollars add @s`** inside `execute as` before P4 relies on the payout macro
+- [x] ~~Smoke-test `cobbledollars add @s`~~ — **moot (2026-07-03):** CobbleDollars 2.0.0-Beta-5.1 has **no `add` subcommand at all** (jar-verified grammar: pay/query/give/remove/set/reload/leaderboard). Every `cobbledollars add` in the repo (pay_macro, granary ambush, all 143 battle-prize onwin strings) was a dead command — all replaced with `cobbledollars give <targets> <amount>` (selector-first, accepts @s under execute-as). Verify in-game that a battle prize actually lands (runbook Round 5 canary #5).
+- [ ] **RCT trainer data cleanup** 💻 (from the log-0.4.1-alpha.2 review): 86 trainers log "Model validation failure" — invalid gender/ability/move entries throughout; 3 Royal League trainers hold **mega_showdown items that are not in the pack** (elite_four_lorelei `blue_orb`, champion_terry `red_orb`, title_defense_zeph `steel_memory` — those items will simply be missing in the fights); gym-9 leader `skadi_gymleader1` references invalid species `cobblemon:ninetales_alola` (regional forms are species aspects in Cobblemon) — **she may silently drop that team member on stream**.
 - [x] **Founder reveal (redesigned per decision)** — the Founder's nameplate stays fully `§k`-obfuscated all run (`§kfounder`); each Board defeat fires `reveal/board_fell` (4 oblique beats that circle the name); the name is only spoken at the mirror's defeat — `reveal/founder_defeated` renders **the defeating player's own name** live via selector ("The name on the chair was always ⟨you⟩"). No name baked anywhere. *(Propaganda-decay register: done — `dialog-src/registers/scrubbing.json`.)*
 
 ### C. Verify in-game 🔍 (can't be tested without the mod loader)

@@ -51,7 +51,7 @@ DialogData: {
                         {
                             Type: "COMMAND",
                             ExecAsUser: 1b,
-                            Cmd: "execute unless entity @s[tag=defeated_%%TRAINER_ID%%] run tbcs battle %%BATTLE_FORMAT:GEN_9_SINGLES|GEN_9_DOUBLES=GEN_9_SINGLES%% @s vs %%TRAINER_ID%% onwin {1: ['cobbledollars add @1 %%PRIZE=800%%', 'tag @1 add defeated_%%TRAINER_ID%%', 'tag @1 add %%CLEAR_TAG=company_management_cleared%%', '@2 say %%WIN_LINE=That face... the board swore you were dead. What are you?%%', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 %%LOSS_FEE=200%%', '@2 say %%LOSE_LINE=Recovered, with interest. The Company always balances its books.%%']}"
+                            Cmd: "execute unless entity @s[tag=defeated_%%TRAINER_ID%%] run tbcs battle %%BATTLE_FORMAT:GEN_9_SINGLES|GEN_9_DOUBLES=GEN_9_SINGLES%% @s vs %%TRAINER_ID%% onwin {1: ['cobbledollars give @1 %%PRIZE=800%%', 'tag @1 add defeated_%%TRAINER_ID%%', 'tag @1 add %%CLEAR_TAG=company_management_cleared%%', '@2 say %%WIN_LINE=That face... the board swore you were dead. What are you?%%', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 %%LOSS_FEE=200%%', '@2 say %%LOSE_LINE=Recovered, with interest. The Company always balances its books.%%']}"
                         },
                         {
                             Type: "CLOSE_DIALOG"

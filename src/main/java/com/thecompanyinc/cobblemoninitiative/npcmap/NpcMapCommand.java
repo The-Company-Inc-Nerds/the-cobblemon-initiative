@@ -24,9 +24,11 @@ public class NpcMapCommand {
 
   private static NpcMapStorage storage;
 
-  private static final String PRESET_PATH_PREFIX = "easy_npc/default_preset/";
+  // Shipped Easy NPC DATA presets: data/easy_npc/preset/** (Easy NPC 6.25's PresetSecurity
+  // only accepts DATA imports from the easy_npc namespace under preset/).
+  private static final String PRESET_PATH_PREFIX = "preset/";
   private static final String PRESET_SUFFIX       = ".npc.snbt";
-  private static final String PRESET_NAMESPACE    = "cobblemon_initiative";
+  private static final String PRESET_NAMESPACE    = "easy_npc";
 
   public static void register(
     CommandDispatcher<CommandSourceStack> dispatcher,
@@ -48,7 +50,9 @@ public class NpcMapCommand {
                   Commands.argument("uuid", StringArgumentType.word())
                     .suggests(NpcMapCommand::suggestLookedAt)
                     .then(
-                      Commands.argument("preset", StringArgumentType.word())
+                      // string(): quotable, so "humanoid_slim/nalia_mom" works (word()
+                      // rejects '/'); bare names imply humanoid/ via the resolver.
+                      Commands.argument("preset", StringArgumentType.string())
                         .suggests(NpcMapCommand::suggestPresets)
                         .executes(ctx -> cmdAdd(ctx,
                           StringArgumentType.getString(ctx, "uuid"),
@@ -174,7 +178,10 @@ public class NpcMapCommand {
     int count = 0;
     for (NpcMapEntry entry : entries) {
       try {
-        String cmd = "easy_npc preset import data " + entry.preset + " " + entry.uuid;
+        // Only a LOADED NPC can be updated in place; the execute-as guard makes the
+        // line a no-op for unloaded UUIDs (importing those would spawn a duplicate).
+        String location = NpcPresetRefreshManager.resolvePresetLocation(entry.preset);
+        String cmd = NpcPresetRefreshManager.importCommand(entry.uuid, location);
         CommandSourceStack src = server.createCommandSourceStack()
           .withPermission(4)
           .withSuppressedOutput();
@@ -187,7 +194,8 @@ public class NpcMapCommand {
 
     final int applied = count;
     ctx.getSource().sendSuccess(
-      () -> Component.literal("[NPC Map] Applied " + applied + "/" + entries.size() + " preset(s)."),
+      () -> Component.literal("[NPC Map] Dispatched " + applied + "/" + entries.size()
+        + " preset import(s) — loaded NPCs only."),
       true
     );
     return applied;
@@ -231,9 +239,9 @@ public class NpcMapCommand {
   }
 
   /**
-   * Suggests preset resource locations from the cobblemon_initiative datapack
-   * (all *.npc.snbt files under easy_npc/default_preset/).
-   * Suggestions are formatted as: cobblemon_initiative:humanoid/cyber_leader
+   * Suggests short preset names from the shipped Easy NPC DATA presets
+   * (all *.npc.snbt files under data/easy_npc/preset/). Bare names imply humanoid/;
+   * other entity-type paths are quoted so the string argument accepts the slash.
    */
   private static CompletableFuture<Suggestions> suggestPresets(
     CommandContext<CommandSourceStack> ctx, SuggestionsBuilder builder
@@ -242,17 +250,21 @@ public class NpcMapCommand {
       MinecraftServer server = ctx.getSource().getServer();
       Map<ResourceLocation, Resource> resources = server.getResourceManager()
         .listResources(
-          PRESET_PATH_PREFIX,
+          "preset",
           rl -> rl.getNamespace().equals(PRESET_NAMESPACE)
             && rl.getPath().endsWith(PRESET_SUFFIX)
         );
       for (ResourceLocation rl : resources.keySet()) {
-        // rl.getPath() = "easy_npc/default_preset/humanoid/cyber_leader.npc.snbt"
+        // rl.getPath() = "preset/humanoid/cyber_leader.npc.snbt"
         String path = rl.getPath();
         if (!path.startsWith(PRESET_PATH_PREFIX)) continue;
         String relative = path.substring(PRESET_PATH_PREFIX.length()); // "humanoid/cyber_leader.npc.snbt"
         String name = relative.substring(0, relative.length() - PRESET_SUFFIX.length()); // "humanoid/cyber_leader"
-        builder.suggest(rl.getNamespace() + ":" + name);
+        if (name.startsWith("humanoid/")) {
+          builder.suggest(name.substring("humanoid/".length()));
+        } else {
+          builder.suggest("\"" + name + "\"");
+        }
       }
     } catch (Exception ignored) {}
     return builder.buildFuture();

@@ -148,7 +148,7 @@ DialogData: {
                         {
                             Type: "COMMAND",
                             ExecAsUser: 1b,
-                            Cmd: "execute unless entity @s[tag=defeated_%%TRAINER_ID%%] run tbcs battle %%BATTLE_FORMAT:GEN_9_SINGLES|GEN_9_DOUBLES=GEN_9_SINGLES%% @s vs %%TRAINER_ID%% onwin {1: ['cobbledollars add @1 %%PRIZE=300%%', 'tag @1 add defeated_%%TRAINER_ID%%', 'scoreboard players set @1 wheat_ambush_armed 0', '@2 say %%WIN_LINE=The note... it was never worth the field. Neither was The Company. Neither were we.%%', 'easy_npc delete @2'], 2: ['scoreboard players set @1 wheat_ambush_armed 0', '@2 say %%LOSE_LINE=Asset recovered. The ledger balances. It always does.%%']}"
+                            Cmd: "execute unless entity @s[tag=defeated_%%TRAINER_ID%%] run tbcs battle %%BATTLE_FORMAT:GEN_9_SINGLES|GEN_9_DOUBLES=GEN_9_SINGLES%% @s vs %%TRAINER_ID%% onwin {1: ['cobbledollars give @1 %%PRIZE=300%%', 'tag @1 add defeated_%%TRAINER_ID%%', 'scoreboard players set @1 wheat_ambush_armed 0', '@2 say %%WIN_LINE=The note... it was never worth the field. Neither was The Company. Neither were we.%%', 'easy_npc delete @2'], 2: ['scoreboard players set @1 wheat_ambush_armed 0', '@2 say %%LOSE_LINE=Asset recovered. The ledger balances. It always does.%%']}"
                         },
                         {Type: "CLOSE_DIALOG"}
                     ],

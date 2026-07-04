@@ -1,0 +1,772 @@
+{
+    PresetMetadata: {
+        author: "TheCompanyInc",
+        category: "Villain",
+        created: 0L,
+        description: "villain_grunt at Hua Zhan City — Gym Gate (act 1). Compiled from dialog-src.",
+        entityTypeId: "easy_npc:humanoid",
+        modified: 0L,
+        name: "Yield Analyst",
+        variantType: "STEVE",
+        version: "1.0.0"
+    },
+    data: {
+        ActionData: {
+            ActionEventSet: {
+                ON_INTERACTION: [
+                    {
+                        Type: "OPEN_DEFAULT_DIALOG"
+                    }
+                ],
+                ON_DISTANCE_NEAR: [
+                    {
+                        Type: "OPEN_NAMED_DIALOG",
+                        Cmd: "overheard_valuation"
+                    }
+                ]
+            }
+        },
+        ArmorDropChances: [0.085f, 0.085f, 0.085f, 0.085f],
+        ArmorItems: [
+            {},
+            {},
+            {},
+            {}
+        ],
+        Brain: {
+            memories: {}
+        },
+        CanPickUpLoot: 0b,
+        CustomNameVisible: 1b,
+        DialogData: {
+            Type: "STANDARD",
+            DialogDataSet: [
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "badges_gte_7"
+                        }
+                    ],
+                    Priority: 30,
+                    Buttons: [
+                        {
+                            Name: "Face them",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "execute if entity @initiator[tag=defeated_villain_yield_analyst] run say The audit is suspended. Repeat engagements do not compound. Take it up with the badge."
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_yield_analyst] run tbcs attach villain_yield_analyst @initiator"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_yield_analyst] run tbcs battle GEN_9_SINGLES @initiator vs villain_yield_analyst onwin {1: ['cobbledollars give @1 480', 'tag @1 add defeated_villain_yield_analyst', '@2 say Recorded. One loss, assessor. My confidence interval did not include you — which is itself a data point.'], 2: ['@2 say Engagement concluded. Your challenge has been logged as community sentiment, weight zero.']}"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "yes_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "It is you. The founder, walking the routes like a rookie. They swore you were a story told to scare new hires."
+                        },
+                        {
+                            Text: "I have orders. I have a family paid in Company scrip. Do not make me do this. But I am going to."
+                        }
+                    ],
+                    Name: "Grunt — late recognition",
+                    Label: "late"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "defeated_hua_zhan_leader"
+                        }
+                    ],
+                    Priority: 25,
+                    Buttons: [
+                        {
+                            Name: "Accept the 150 CD goodwill disbursement",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobbledollars give @initiator 150"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @initiator add goodwill_paid"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "tellraw @initiator [{\"text\":\"Disbursement logged under community relations. The garden is saved because it earns. Nobody files the other reason.\",\"color\":\"gold\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "NOT_EQUALS",
+                                    Name: "goodwill_paid"
+                                }
+                            ],
+                            Label: "disbursement_button"
+                        },
+                        {
+                            Name: "Contest the math anyway",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "execute if entity @initiator[tag=defeated_villain_yield_analyst] run say The audit is suspended. Repeat engagements do not compound. Take it up with the badge."
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_yield_analyst] run tbcs attach villain_yield_analyst @initiator"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_yield_analyst] run tbcs battle GEN_9_SINGLES @initiator vs villain_yield_analyst onwin {1: ['cobbledollars give @1 480', 'tag @1 add defeated_villain_yield_analyst', '@2 say Recorded. One loss, assessor. My confidence interval did not include you — which is itself a data point.'], 2: ['@2 say Engagement concluded. Your challenge has been logged as community sentiment, weight zero.']}"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "NOT_EQUALS",
+                                    Name: "defeated_villain_yield_analyst"
+                                }
+                            ],
+                            Label: "contest_button"
+                        },
+                        {
+                            Name: "Leave him to his refiling",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Update, for the record. Challenger traffic at this facility has moved the community valuation past the retention threshold. Greenspace 7 is refiled — brand asset, heritage class, retained. The garden stays."
+                        },
+                        {
+                            Text: "I had the conversion at eighty percent likely. The numbers disagreed, and I answer to the numbers. You moved the numbers. Head office has authorized a goodwill disbursement, for the optics."
+                        }
+                    ],
+                    Name: "Analyst — the retained filing",
+                    Label: "retained"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "defeated_villain_yield_analyst"
+                        }
+                    ],
+                    Priority: 22,
+                    Buttons: [
+                        {
+                            Name: "Take the Yield Report from the dispatch tray",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "loot give @initiator loot cobblemon_initiative:npc_gift/rezoning_memo"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @initiator add yield_report_taken"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @initiator remove audit_loiter"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "tellraw @initiator [{\"text\":\"Yield Report RZ-7 secured. The analyst does not object. Lucian the archivist in Sango will want this.\",\"color\":\"gold\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "NOT_EQUALS",
+                                    Name: "yield_report_taken"
+                                }
+                            ],
+                            Label: "tray_button"
+                        },
+                        {
+                            Name: "Leave him to the forms",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The audit is suspended. Field incident, one loss, equipment intact. I have restated my findings as preliminary and my confidence as moderate."
+                        },
+                        {
+                            Text: "The paperwork survives the auditor. It always does. The draft is in the dispatch tray if the community wants a copy. Evidence chooses its own custodian."
+                        }
+                    ],
+                    Name: "Analyst — audit suspended",
+                    Label: "withdrawn"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "badges_gte_3"
+                        }
+                    ],
+                    Priority: 20,
+                    Buttons: [
+                        {
+                            Name: "Fight",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "execute if entity @initiator[tag=defeated_villain_yield_analyst] run say The audit is suspended. Repeat engagements do not compound. Take it up with the badge."
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_yield_analyst] run tbcs attach villain_yield_analyst @initiator"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_yield_analyst] run tbcs battle GEN_9_SINGLES @initiator vs villain_yield_analyst onwin {1: ['cobbledollars give @1 480', 'tag @1 add defeated_villain_yield_analyst', '@2 say Recorded. One loss, assessor. My confidence interval did not include you — which is itself a data point.'], 2: ['@2 say Engagement concluded. Your challenge has been logged as community sentiment, weight zero.']}"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "yes_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Your face is on a memo. The kind with a black bar over the name and the words do not engage, report immediately."
+                        },
+                        {
+                            Text: "You are supposed to be a closed file. Closed files do not get to walk away."
+                        }
+                    ],
+                    Name: "Grunt — mid recognition",
+                    Label: "mid"
+                },
+                {
+                    Priority: 15,
+                    Buttons: [
+                        {
+                            Name: "Ask how a garden gets audited",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "audit_explainer"
+                                }
+                            ],
+                            Label: "about_button"
+                        },
+                        {
+                            Name: "Battle the assessor",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "execute if entity @initiator[tag=defeated_villain_yield_analyst] run say The audit is suspended. Repeat engagements do not compound. Take it up with the badge."
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_yield_analyst] run tbcs attach villain_yield_analyst @initiator"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_yield_analyst] run tbcs battle GEN_9_SINGLES @initiator vs villain_yield_analyst onwin {1: ['cobbledollars give @1 480', 'tag @1 add defeated_villain_yield_analyst', '@2 say Recorded. One loss, assessor. My confidence interval did not include you — which is itself a data point.'], 2: ['@2 say Engagement concluded. Your challenge has been logged as community sentiment, weight zero.']}"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "battle_button"
+                        },
+                        {
+                            Name: "Pay the 150 CD non-engagement consideration",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobbledollars remove @initiator 150"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @initiator add paid_survey_decline"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "title @initiator actionbar [{\"text\":\"Non-engagement consideration received. Your refusal has been monetized. The Company thanks you for participating in commerce.\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "NOT_EQUALS",
+                                    Name: "paid_survey_decline"
+                                }
+                            ],
+                            Label: "decline_button"
+                        },
+                        {
+                            Name: "Walk past the audit",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Good day. Community valuation survey, in progress, fully voluntary. This facility is filed as Greenspace 7 — legacy garden, under-performing — pending conversion comparison against Greenhouse Annex B. Your visit is already a data point. Care to formalize it?"
+                        },
+                        {
+                            Text: "Welcome to the assessment perimeter. You may battle the assessor, decline for a processing consideration, or proceed inside. All three outcomes fit on the form. The form is very accommodating."
+                        }
+                    ],
+                    Name: "Analyst — the survey hail",
+                    Label: "survey_hail"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Battle the assessor",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "execute if entity @initiator[tag=defeated_villain_yield_analyst] run say The audit is suspended. Repeat engagements do not compound. Take it up with the badge."
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_yield_analyst] run tbcs attach villain_yield_analyst @initiator"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_yield_analyst] run tbcs battle GEN_9_SINGLES @initiator vs villain_yield_analyst onwin {1: ['cobbledollars give @1 480', 'tag @1 add defeated_villain_yield_analyst', '@2 say Recorded. One loss, assessor. My confidence interval did not include you — which is itself a data point.'], 2: ['@2 say Engagement concluded. Your challenge has been logged as community sentiment, weight zero.']}"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "battle_button"
+                        },
+                        {
+                            Name: "Pay the 150 CD non-engagement consideration",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobbledollars remove @initiator 150"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @initiator add paid_survey_decline"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "title @initiator actionbar [{\"text\":\"Non-engagement consideration received. Your refusal has been monetized. The Company thanks you for participating in commerce.\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "NOT_EQUALS",
+                                    Name: "paid_survey_decline"
+                                }
+                            ],
+                            Label: "decline_button"
+                        },
+                        {
+                            Name: "Step back",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "back_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The method is simple. Every asset must produce an auditable yield. A greenhouse produces trays per week — a clean number, it files itself. A garden produces sentiment. Sentiment converts poorly. The resident Venusaur, for instance, produces no auditable yield at all. Unless the community valuation moves, the comparison writes itself."
+                        }
+                    ],
+                    Name: "Analyst — the method",
+                    Label: "audit_explainer"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "audit_loiter"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "NOT_EQUALS",
+                            Name: "yield_report_taken"
+                        }
+                    ],
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Keep listening",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "overheard_two"
+                                }
+                            ],
+                            Label: "listen_button"
+                        },
+                        {
+                            Name: "Slip away",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "slip_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "He is reading his own draft aloud, quietly, the way people rehearse a verdict. Item — Greenspace 7, legacy garden, no auditable yield on record. Comparator — Greenhouse Annex B, four hundred trays a week at launch."
+                        }
+                    ],
+                    Name: "Overheard — the biomass math",
+                    Label: "overheard_valuation"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "audit_loiter"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "NOT_EQUALS",
+                            Name: "yield_report_taken"
+                        }
+                    ],
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Keep listening",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "overheard_three"
+                                }
+                            ],
+                            Label: "listen_button"
+                        },
+                        {
+                            Name: "Slip away",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "slip_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Line item. The resident Venusaur. Age unknown, provenance unknown, recorded output none. Then a footnote in his flattest voice — the specimen is widely loved. Love is not a column. Something gets crossed out."
+                        }
+                    ],
+                    Name: "Overheard — the footnote",
+                    Label: "overheard_two"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "audit_loiter"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "NOT_EQUALS",
+                            Name: "yield_report_taken"
+                        }
+                    ],
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Lift the Yield Report from the dispatch tray",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "loot give @initiator loot cobblemon_initiative:npc_gift/rezoning_memo"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @initiator add yield_report_taken"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @initiator remove audit_loiter"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "tellraw @initiator [{\"text\":\"Yield Report RZ-7 lifted from the dispatch tray. He did not look up. Lucian the archivist in Sango will want this.\",\"color\":\"gold\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "take_report_button"
+                        },
+                        {
+                            Name: "Slip away empty-handed",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "slip_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Last page. Recommendation pending community valuation. He squares the papers and sets the draft in the dispatch tray, one arm-length from where you stand. Preliminary, he says to nobody. Everything is preliminary until it is signed."
+                        }
+                    ],
+                    Name: "Overheard — the dispatch tray",
+                    Label: "overheard_three"
+                },
+                {
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "Fight",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "execute if entity @initiator[tag=defeated_villain_yield_analyst] run say The audit is suspended. Repeat engagements do not compound. Take it up with the badge."
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_yield_analyst] run tbcs attach villain_yield_analyst @initiator"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_yield_analyst] run tbcs battle GEN_9_SINGLES @initiator vs villain_yield_analyst onwin {1: ['cobbledollars give @1 480', 'tag @1 add defeated_villain_yield_analyst', '@2 say Recorded. One loss, assessor. My confidence interval did not include you — which is itself a data point.'], 2: ['@2 say Engagement concluded. Your challenge has been logged as community sentiment, weight zero.']}"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "yes_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Company business. This route is closed for restructuring, and there is no walking away from it."
+                        },
+                        {
+                            Text: "We settle this the old way. Wait. Do I know you from somewhere?"
+                        }
+                    ],
+                    Name: "Grunt — early (no recognition)",
+                    Label: "default"
+                }
+            ]
+        },
+        DisplayAttribute: [
+            {
+                Bool: 1b,
+                Type: "VISIBLE"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_AT_DAY"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_AT_NIGHT"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_IN_CREATIVE"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_IN_SPECTATOR"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_IN_STANDARD"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_TO_OWNER"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_TO_TEAM"
+            },
+            {
+                Int: 7,
+                Type: "LIGHT_LEVEL"
+            },
+            {
+                Text: "ALWAYS",
+                Type: "NAME_VISIBILITY"
+            }
+        ],
+        EasyNPCVersion: 3,
+        EntityAttribute: {
+            CanBeHitByProjectile: 0b,
+            CanBeLeashed: 0b,
+            CanBreatheUnderwater: 0b,
+            CanCloseDoor: 0b,
+            CanFloat: 0b,
+            CanOpenDoor: 0b,
+            CanPassDoor: 0b,
+            CanUseNetherPortal: 0b,
+            Freefall: 0b,
+            HealthRegeneration: 0.0d,
+            IsAttackableByMonsters: 0b,
+            IsAttackableByPlayers: 0b,
+            IsInvulnerable: 1b,
+            IsPushable: 0b,
+            NoGravity: 0b,
+            PushEntities: 0b
+        },
+        HandDropChances: [0.085f, 0.085f],
+        HandItems: [
+            {},
+            {}
+        ],
+        Invulnerable: 0b,
+        LeftHanded: 0b,
+        ModelData: {
+            DefaultPose: "STANDING",
+            Pose: "VANILLA",
+            Position: {},
+            Rotation: {},
+            Scale: {},
+            Visible: {
+                Boots: 1b
+            }
+        },
+        Navigation: {
+            Home: {
+                X: 0,
+                Y: 0,
+                Z: 0
+            }
+        },
+        ObjectiveData: {
+            HasObjectives: 0b,
+            HasTravelTarget: 0b,
+            ObjectiveDataSet: []
+        },
+        OnGround: 1b,
+        PersistenceRequired: 0b,
+        PresetUUID: [I; 0, 0, 0, 0],
+        Profession: "NONE",
+        Progression: {
+            AttributeScalingEnabled: 0b,
+            EntityExperience: 1,
+            EntityExperienceLevel: 1
+        },
+        RenderData: {},
+        SkinData: {
+            Content: "",
+            DisableLayers: 0b,
+            Name: "",
+            Timestamp: 0L,
+            Type: "DEFAULT",
+            URL: "",
+            UUID: [I; 0, 0, 0, 0]
+        },
+        SoundData: {
+            SoundDataSet: [
+                {
+                    Name: "minecraft:entity.player.death",
+                    Type: "DEATH"
+                },
+                {
+                    Name: "minecraft:entity.player.hurt",
+                    Type: "HURT"
+                }
+            ]
+        },
+        Status: {
+            finalized: 0b,
+            npc_data_last_saved: 0L,
+            npc_data_last_update: 0L
+        },
+        VariantType: "STEVE",
+        attributes: [
+            {
+                base: 20.0d,
+                id: "minecraft:generic.max_health"
+            },
+            {
+                base: 0.5d,
+                id: "minecraft:generic.movement_speed"
+            }
+        ],
+        id: "easy_npc:humanoid"
+    }
+}

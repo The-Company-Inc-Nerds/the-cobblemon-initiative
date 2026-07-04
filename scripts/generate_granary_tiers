@@ -7,14 +7,14 @@ Usage:
 Reads:  scripts/granary_tiers/master_granary.json
             The single source of truth — offers, unlock badges, base wheat costs (at the
             instability peak), and the tier table (mirrors master_shop.json).
-        src/main/resources/.../easy_npc/default_preset/humanoid/granary_keeper.npc.snbt
+        src/main/resources/data/easy_npc/preset/humanoid/granary_keeper.npc.snbt
             The compiled base preset (from dialog-src via content_compile) — dialog, skin,
             and recognition gates. This generator only swaps its trade Offers per tier.
         npc_presets.json (repo root, if present)
             In-world UUID mappings. Entries whose preset starts with "humanoid/granary_keeper"
             get an import line in each apply_<tier> function.
 
-Writes: src/main/resources/.../easy_npc/default_preset/humanoid/granary_keeper_<tier>.npc.snbt
+Writes: src/main/resources/data/easy_npc/preset/humanoid/granary_keeper_<tier>.npc.snbt
             One full preset per tier — the base preset with its Recipes array replaced by the
             tier's offers, priced on the wheat bell curve:
                 cost = baseWheat * (1 + (peakInstability - instability) * wheatSwingPerPoint)
@@ -22,12 +22,18 @@ Writes: src/main/resources/.../easy_npc/default_preset/humanoid/granary_keeper_<
             either side of it — the wheat-backed currency rising and falling with the plot.
         src/main/resources/data/cobblemon_initiative/function/granary/apply_<tier>.mcfunction
             Retier function per tier: re-imports the tier preset onto every recorded Granary
-            NPC. ShopTierManager fires this after each CobbleDollars shop tier swap, so the
-            Granary and the shop move in lockstep. Empty (comment-only) until Granary NPC
-            UUIDs are recorded in npc_presets.json.
+            NPC that is currently loaded (unloaded keepers are covered by the mod's
+            NpcPresetRefreshManager pending-override queue). ShopTierManager fires this after
+            each CobbleDollars shop tier swap, so the Granary and the shop move in lockstep.
+            Empty (comment-only) until Granary NPC UUIDs are recorded in npc_presets.json.
+
+Preset locations follow Easy NPC 6.25 DATA preset rules (PresetSecurity): namespace
+easy_npc, path prefix preset/, extension .npc.snbt. The import grammar is
+`preset import data <location> [<x y z> [<uuid>]]` — a UUID is only accepted after a
+position, so apply lines run as the NPC and pass ~ ~ ~.
 
 Run scripts/update_preset_index afterwards (or content_compile, which does it) so the new
-presets appear in default_preset.index.
+presets appear in preset.index.
 """
 
 import json
@@ -37,8 +43,7 @@ import re
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 MASTER = os.path.join(ROOT, "scripts", "granary_tiers", "master_granary.json")
 PRESET_DIR = os.path.join(
-    ROOT, "src", "main", "resources", "data", "cobblemon_initiative",
-    "easy_npc", "default_preset", "humanoid",
+    ROOT, "src", "main", "resources", "data", "easy_npc", "preset", "humanoid",
 )
 BASE_PRESET = os.path.join(PRESET_DIR, "granary_keeper.npc.snbt")
 FN_DIR = os.path.join(
@@ -83,6 +88,8 @@ def granary_uuids():
         data = json.load(fh)
     out = []
     for uuid, entry in (data.get("mappings") or {}).items():
+        if isinstance(entry, str):
+            entry = {"preset": entry}   # plain-string mapping form (see generate_npc_function)
         # content_compile writes bare ids for classic bodies ("granary_keeper") and a
         # type prefix for slim ones ("humanoid_slim/granary_keeper") — accept all forms.
         preset = str(entry.get("preset", ""))
@@ -146,9 +153,11 @@ def main():
         if uuids:
             fn_lines.append("")
             for uuid, label in uuids:
-                fn_lines.append(f"# {label}")
+                rl = f"easy_npc:preset/humanoid/granary_keeper_{name}.npc.snbt"
+                fn_lines.append(f"# {label} (skipped when not loaded)")
                 fn_lines.append(
-                    f"easy_npc preset import data cobblemon_initiative:humanoid/granary_keeper_{name} {uuid}"
+                    f"execute as {uuid} at @s run "
+                    f"easy_npc preset import data {rl} ~ ~ ~ {uuid}"
                 )
         else:
             fn_lines += [

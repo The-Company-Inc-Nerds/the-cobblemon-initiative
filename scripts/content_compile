@@ -6,11 +6,11 @@ The authoring layer under dialog-src/ (character / dialog / register / lore JSON
 is the writer-facing source; this tool lowers it into the shipped pipeline:
 
   dialog-src/characters/**/*.json
-      -> src/main/resources/.../easy_npc/default_preset/humanoid/<id>.npc.snbt
+      -> src/main/resources/data/easy_npc/preset/humanoid/<id>.npc.snbt
   character "uuid"            -> npc_presets.json  (merged, never clobbered)
   numeric/recognition gates   -> function/dialog/band_tags.mcfunction  (derived PLAYER_TAGs)
   character "sight"           -> function/dialog/register_sight.mcfunction
-  (then) default_preset.index + update_npc_presets.mcfunction are refreshed.
+  (then) preset.index + update_npc_presets.mcfunction are refreshed.
 
 It REUSES the existing engine rather than reinventing it:
   - snbt_merge        : parse_snbt / serialize / set_path / merge_nodes
@@ -55,7 +55,7 @@ _loader.exec_module(npb)  # type: ignore
 
 DIALOG_SRC   = PROJECT_ROOT / "dialog-src"
 PRESET_ROOT  = (PROJECT_ROOT
-                / "src/main/resources/data/cobblemon_initiative/easy_npc/default_preset")
+                / "src/main/resources/data/easy_npc/preset")
 HUMANOID_DIR = PRESET_ROOT / "humanoid"
 # Builder-authored per-NPC world storage (gzipped NBT). When a character has a uuid and a
 # world file exists, the compile MERGES the builders' visual identity (skin, model, variant,
@@ -342,7 +342,7 @@ def battle_actions(ch: dict, where: str) -> list:
         f"execute unless entity @p[tag={dt}] run tbcs attach {trainer} @s", False, None, where))
     win = []
     if b.get("prize"):
-        win.append(f"cobbledollars add @1 {int(b['prize'])}")
+        win.append(f"cobbledollars give @1 {int(b['prize'])}")
     win.append(f"tag @1 add {dt}")
     if b.get("win_line"):
         win.append(f"@2 say {b['win_line']}")
@@ -609,7 +609,7 @@ def merge_world(tree, ch: dict):
     """Merge the placed NPC's builder data into the compiled preset.
 
     Returns (tree, entity_type) where entity_type is 'humanoid' / 'humanoid_slim' — the
-    preset must be written under default_preset/<entity_type>/ and the npc_presets mapping
+    preset must be written under preset/<entity_type>/ and the npc_presets mapping
     must carry the same prefix so `preset import` resolves against the right registry.
     """
     etype = "humanoid"
@@ -860,7 +860,7 @@ def main() -> None:
 
     if not args.no_generate:
         n = npb.regenerate_index()
-        print(f"Regenerated default_preset.index ({n} presets)")
+        print(f"Regenerated preset.index ({n} presets)")
         subprocess.run([sys.executable, str(SCRIPT_DIR / "generate_npc_function")], check=False)
 
     print("\nNext in-game (OP 2):")

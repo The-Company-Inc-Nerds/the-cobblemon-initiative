@@ -37,8 +37,8 @@ Workflow:
      The same KEY is asked once and substituted everywhere.
      (Option lists and defaults may not contain `%` or `=`.)
   4. The result is validated (re-parsed) and written to
-     easy_npc/default_preset/humanoid/<name>.npc.snbt,
-     default_preset.index is regenerated, and you can optionally map the
+     data/easy_npc/preset/humanoid/<name>.npc.snbt,
+     preset.index is regenerated, and you can optionally map the
      preset to an in-world NPC UUID (searched from the dev NPC CSV) in
      npc_presets.json — then regenerate the apply function with
      scripts/generate_npc_function.
@@ -63,9 +63,9 @@ sys.path.insert(0, str(SCRIPT_DIR))
 import snbt_merge as sm  # noqa: E402  (shared SNBT parser/serializer)
 
 PRESET_ROOT = (PROJECT_ROOT
-               / "src/main/resources/data/cobblemon_initiative/easy_npc/default_preset")
+               / "src/main/resources/data/easy_npc/preset")
 HUMANOID_DIR = PRESET_ROOT / "humanoid"
-INDEX_FILE = PRESET_ROOT / "default_preset.index"
+INDEX_FILE = PRESET_ROOT / "preset.index"
 SNIPPET_DIR = PROJECT_ROOT / "presets/snippets"
 NPC_PRESETS_JSON = PROJECT_ROOT / "npc_presets.json"
 NAMESPACE = "cobblemon_initiative"
@@ -728,7 +728,7 @@ def main() -> None:
                     help="map the preset to an in-world NPC UUID matching QUERY "
                          "in npc_presets.json")
     ap.add_argument("--no-index", action="store_true",
-                    help="skip regenerating default_preset.index")
+                    help="skip regenerating preset.index")
     ap.add_argument("--dry-run", action="store_true",
                     help="print the composed preset to stdout; write nothing")
     ap.add_argument("--list", action="store_true",
@@ -884,8 +884,14 @@ def main() -> None:
         count = regenerate_index()
         info(f"regenerated {INDEX_FILE.name} ({count} presets)")
 
-    resource = f"{NAMESPACE}:humanoid/{name}"
-    info(f"in-game apply: /easy_npc preset import data <uuid> {resource}")
+    # Short mapping form; resolved by generate_npc_function to the shipped DATA
+    # preset location easy_npc:preset/humanoid/<name>.npc.snbt (Easy NPC 6.25
+    # only accepts DATA imports from easy_npc:preset/ with a .npc.snbt suffix,
+    # and its grammar only accepts a UUID after an x/y/z position).
+    resource = f"humanoid/{name}"
+    data_rl = f"easy_npc:preset/humanoid/{name}.npc.snbt"
+    info("in-game apply (NPC must be loaded; run as/at it so ~ ~ ~ resolves):")
+    info(f"  /execute as <uuid> at @s run easy_npc preset import data {data_rl} ~ ~ ~ <uuid>")
 
     # ── 6. optional UUID mapping ─────────────────────────────────────────────
     if args.map is not None:

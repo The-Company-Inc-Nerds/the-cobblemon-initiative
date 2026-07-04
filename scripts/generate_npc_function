@@ -3,9 +3,11 @@
 generate_npc_function — generate a Minecraft function that re-applies Easy NPC
 presets to already-placed in-world NPCs by UUID.
 
-Reads npc_presets.json (or a file you specify) and writes a .mcfunction that
-an admin can run with:
-    /function cobblemon_initiative:update_npc_presets
+Reads npc_presets.json (or a file you specify) and writes:
+  1. update_npc_presets.mcfunction — manual/dev refresh function
+  2. data/cobblemon_initiative/npc/preset_map.json — the UUID→preset map the mod
+     reads at runtime (NpcPresetRefreshManager applies presets per-NPC as their
+     chunks load; a one-shot function can only reach loaded NPCs)
 
 Mapping file format (npc_presets.json):
     {
@@ -15,11 +17,19 @@ Mapping file format (npc_presets.json):
       }
     }
 
-Preset values are resolved to Easy NPC resource locations:
-    "cyber_leader"                           → cobblemon_initiative:humanoid/cyber_leader
-    "humanoid/cyber_leader"                  → cobblemon_initiative:humanoid/cyber_leader
-    "cobblemon_initiative:humanoid/cyber_leader" → used as-is
-    "other_ns:humanoid/something"            → used as-is
+Preset values are resolved to Easy NPC DATA preset resource locations. Easy NPC
+6.25 (PresetSecurity) only accepts DATA imports from the easy_npc namespace,
+under preset/, with a .npc.snbt extension — runtime-verified against the
+6.25.0 jar:
+    "cyber_leader"               → easy_npc:preset/humanoid/cyber_leader.npc.snbt
+    "humanoid_slim/nalia_mom"    → easy_npc:preset/humanoid_slim/nalia_mom.npc.snbt
+    legacy "cobblemon_initiative:humanoid/x" → easy_npc:preset/humanoid/x.npc.snbt
+
+Command shape (Easy NPC 6.25 grammar: preset import data <location> [<x y z> [<uuid>]]
+— a UUID is only accepted AFTER a position):
+    execute as <uuid> at @s run easy_npc preset import data <location> ~ ~ ~ <uuid>
+The execute-as guard makes each line a no-op when the NPC's chunk is not loaded
+(importing an unloaded NPC would spawn a duplicate instead of updating it).
 
 Usage:
     generate_npc_function
@@ -30,6 +40,7 @@ Usage:
 
 from __future__ import annotations
 import argparse
+import hashlib
 import json
 import os
 import sys
@@ -46,31 +57,47 @@ DEFAULT_MAP  = PROJECT_ROOT / "npc_presets.json"
 DEFAULT_OUT  = (PROJECT_ROOT
                 / "src/main/resources/data/cobblemon_initiative/function"
                 / "update_npc_presets.mcfunction")
+DEFAULT_JAVA_MAP = (PROJECT_ROOT
+                    / "src/main/resources/data/cobblemon_initiative/npc"
+                    / "preset_map.json")
 
 # Relative path from a world directory root to the in-game storage file
 WORLD_DATA_FILE = Path("data/npc_preset_map.json")
 
-DEFAULT_NAMESPACE   = "cobblemon_initiative"
+DEFAULT_NAMESPACE   = "cobblemon_initiative"   # function namespace
 DEFAULT_ENTITY_TYPE = "humanoid"
+
+# Easy NPC DATA preset constraints (PresetSecurity, Easy NPC 6.25)
+PRESET_NAMESPACE = "easy_npc"
+PRESET_PREFIX    = "preset"
+PRESET_SUFFIX    = ".npc.snbt"
 
 
 # ─── Resource location resolution ────────────────────────────────────────────
 
-def resolve_preset(raw: str, namespace: str, entity_type: str) -> str:
+def resolve_preset(raw: str, entity_type: str) -> str:
     """
-    Expand a short preset name to a full resource location.
+    Expand a preset name to the shipped Easy NPC DATA preset resource location.
 
-      "cyber_leader"                    → <ns>:<entity_type>/cyber_leader
-      "humanoid/cyber_leader"           → <ns>:humanoid/cyber_leader
-      "cobblemon_initiative:humanoid/…" → unchanged
+      "cyber_leader"                → easy_npc:preset/humanoid/cyber_leader.npc.snbt
+      "humanoid_slim/nalia_mom"     → easy_npc:preset/humanoid_slim/nalia_mom.npc.snbt
+      "easy_npc:preset/humanoid/x.npc.snbt"      → unchanged
+      legacy "cobblemon_initiative:humanoid/x"   → easy_npc:preset/humanoid/x.npc.snbt
     """
-    if ":" in raw:
-        return raw                          # already namespaced
+    path = raw.split(":", 1)[1] if ":" in raw else raw
 
-    if "/" in raw:
-        return f"{namespace}:{raw}"         # has entity-type prefix but no namespace
+    # Strip legacy path prefixes from older layouts
+    for prefix in ("easy_npc/default_preset/", f"{PRESET_PREFIX}/"):
+        if path.startswith(prefix):
+            path = path[len(prefix):]
 
-    return f"{namespace}:{entity_type}/{raw}"
+    if path.endswith(PRESET_SUFFIX):
+        path = path[: -len(PRESET_SUFFIX)]
+
+    if "/" not in path:
+        path = f"{entity_type}/{path}"
+
+    return f"{PRESET_NAMESPACE}:{PRESET_PREFIX}/{path}{PRESET_SUFFIX}"
 
 
 # ─── Mapping file parsing ─────────────────────────────────────────────────────
@@ -152,19 +179,66 @@ def generate(
         f"# Run with: /function {namespace}:update_npc_presets",
         f"# Requires permission level 2+",
         f"#",
-        f"# Each line applies a preset to a specific in-world Easy NPC by UUID.",
-        f"# Command: easy_npc preset import data <resource_location> <uuid>  (Easy NPC 6.25: location FIRST — runtime-verified)",
+        f"# Each line applies a preset to a specific LOADED in-world Easy NPC by UUID.",
+        f"# Grammar (Easy NPC 6.25): easy_npc preset import data <location> [<x y z> [<uuid>]]",
+        f"# — the UUID is only accepted after a position, so each line runs as the NPC",
+        f"# and passes ~ ~ ~. Unloaded NPCs are skipped (importing them would spawn a",
+        f"# duplicate); the mod's NpcPresetRefreshManager covers those as chunks load.",
         "",
     ]
 
     for uuid_str, preset, label in entries:
-        rl = resolve_preset(preset, namespace, entity_type)
+        rl = resolve_preset(preset, entity_type)
         if label:
             lines.append(f"# {label}")
-        lines.append(f"easy_npc preset import data {rl} {uuid_str}")
+        if _is_granary(rl):
+            # The keeper's trades are owned by the tier pipeline (ShopTierManager →
+            # granary/apply_<tier> + the mod's sticky tier override). Importing the
+            # base preset here would revert a mid-progress keeper to tier-0 trades.
+            lines.append(f"# (skipped: granary tier pipeline owns this NPC — {rl})")
+        else:
+            lines.append(
+                f"execute as {uuid_str} at @s run "
+                f"easy_npc preset import data {rl} ~ ~ ~ {uuid_str}"
+            )
         lines.append("")
 
     return "\n".join(lines)
+
+
+def _is_granary(rl: str) -> bool:
+    return rl.rsplit("/", 1)[-1].startswith("granary_keeper")
+
+
+def generate_java_map(
+    entries:     list[tuple[str, str, str]],
+    entity_type: str,
+) -> str:
+    """
+    The runtime UUID→preset map consumed by NpcPresetRefreshManager
+    (resource cobblemon_initiative:npc/preset_map.json).
+
+    "version" is a stable content hash over the mapping AND every shipped
+    .npc.snbt file's bytes — the mod re-applies presets to each mapped NPC (as
+    it loads) whenever the version changes, so content-only preset edits
+    (dialog/trade recompiles) roll out without any mapping change.
+    """
+    npcs: dict[str, dict[str, str]] = {}
+    for uuid_str, preset, label in sorted(entries):
+        entry = {"preset": resolve_preset(preset, entity_type)}
+        if label:
+            entry["label"] = label
+        npcs[uuid_str] = entry
+
+    digest = hashlib.sha1(
+        "\n".join(f"{u} {v['preset']}" for u, v in sorted(npcs.items())).encode()
+    )
+    preset_root = PROJECT_ROOT / "src/main/resources/data" / PRESET_NAMESPACE / PRESET_PREFIX
+    for preset_file in sorted(preset_root.rglob(f"*{PRESET_SUFFIX}")):
+        digest.update(str(preset_file.relative_to(preset_root)).encode())
+        digest.update(preset_file.read_bytes())
+
+    return json.dumps({"version": digest.hexdigest()[:12], "npcs": npcs}, indent=2) + "\n"
 
 
 # ─── CLI ─────────────────────────────────────────────────────────────────────
@@ -183,6 +257,7 @@ def main() -> None:
 defaults:
   --map  {DEFAULT_MAP.relative_to(PROJECT_ROOT)}
   --out  {DEFAULT_OUT.relative_to(PROJECT_ROOT)}
+  also writes {DEFAULT_JAVA_MAP.relative_to(PROJECT_ROOT)}
 
 mapping file — object format (npc_presets.json, manually edited):
   {{
@@ -198,8 +273,8 @@ mapping file — object format (npc_presets.json, manually edited):
 mapping file — array format (npc_preset_map.json, written by /cobblemon-initiative npc-map):
   {{
     "mappings": [
-      {{"uuid": "dd12be42-52a9-4a91-a8a1-11c01849e498", "preset": "cobblemon_initiative:humanoid/cyber_leader", "label": "Surge"}},
-      {{"uuid": "aa34be42-52a9-4a91-a8a1-11c01849e498", "preset": "cobblemon_initiative:humanoid/cyber_trainer_1", "label": ""}}
+      {{"uuid": "dd12be42-52a9-4a91-a8a1-11c01849e498", "preset": "cyber_leader", "label": "Surge"}},
+      {{"uuid": "aa34be42-52a9-4a91-a8a1-11c01849e498", "preset": "cyber_trainer_1", "label": ""}}
     ]
   }}
 
@@ -215,8 +290,10 @@ to use in-game mappings directly:
                     help=f"World save directory; reads {WORLD_DATA_FILE} written by /cobblemon-initiative npc-map")
     ap.add_argument("--out", "-o", default=None, metavar="FILE",
                     help=f"Output .mcfunction file (default: {DEFAULT_OUT.relative_to(PROJECT_ROOT)})")
+    ap.add_argument("--java-map", default=None, metavar="FILE",
+                    help=f"Output runtime preset map JSON (default: {DEFAULT_JAVA_MAP.relative_to(PROJECT_ROOT)})")
     ap.add_argument("--namespace", default=DEFAULT_NAMESPACE, metavar="NS",
-                    help=f"Datapack namespace for short preset names (default: {DEFAULT_NAMESPACE})")
+                    help=f"Datapack namespace of the generated function (default: {DEFAULT_NAMESPACE})")
     ap.add_argument("--entity-type", default=DEFAULT_ENTITY_TYPE, metavar="TYPE",
                     help=f"Entity type folder for bare preset names (default: {DEFAULT_ENTITY_TYPE})")
     ap.add_argument("--dry-run", action="store_true",
@@ -240,6 +317,10 @@ to use in-game mappings directly:
     if not out_path.is_absolute():
         out_path = PROJECT_ROOT / out_path
 
+    java_map_path = Path(args.java_map) if args.java_map else DEFAULT_JAVA_MAP
+    if not java_map_path.is_absolute():
+        java_map_path = PROJECT_ROOT / java_map_path
+
     # Load and validate mapping
     entries = load_map(map_path)
     if not entries:
@@ -247,17 +328,24 @@ to use in-game mappings directly:
 
     # Generate function content
     content = generate(entries, args.namespace, args.entity_type, map_path)
+    java_map = generate_java_map(entries, args.entity_type)
 
     if args.dry_run:
         print(content)
+        print(java_map)
         return
 
     # Write output
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text(content)
+    java_map_path.parent.mkdir(parents=True, exist_ok=True)
+    java_map_path.write_text(java_map)
 
     rel = out_path.relative_to(PROJECT_ROOT) if out_path.is_relative_to(PROJECT_ROOT) else out_path
+    rel_map = (java_map_path.relative_to(PROJECT_ROOT)
+               if java_map_path.is_relative_to(PROJECT_ROOT) else java_map_path)
     print(f"generate_npc_function: wrote {len(entries)} command(s) to {rel}", file=sys.stderr)
+    print(f"generate_npc_function: wrote runtime preset map to {rel_map}", file=sys.stderr)
     print(f"  In-game: /function {args.namespace}:update_npc_presets", file=sys.stderr)
 
 
