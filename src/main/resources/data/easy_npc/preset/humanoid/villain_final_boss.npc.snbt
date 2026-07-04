@@ -102,8 +102,8 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "company_overthrown"
+                                            Operation: "EQUALS",
+                                            Name: "no_company_overthrown"
                                         }
                                     ],
                                     Cmd: "tbcs attach villain_final_boss @s"
@@ -114,17 +114,26 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "company_overthrown"
+                                            Operation: "EQUALS",
+                                            Name: "no_company_overthrown"
                                         }
                                     ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_final_boss onwin {1: ['tag @1 add company_overthrown', '@2 say There it is. The thing I was missing and you were not. You held the line I would have sold. Take it all. You finally earned the right to be the one of us who stays.', 'execute as @1 at @1 run function cobblemon_initiative:reveal/founder_defeated', 'easy_npc delete @2'], 2: ['@2 say Of course. Assets fail. You replace them. I have been replacing us for years and I am not tired yet. Get up and try again, or do not, and let me have the chair back.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_final_boss onwin {1: ['tag @1 add company_overthrown', '@2 say There it is. The thing I was missing and you were not. You held the line I would have sold. Take it all. You finally earned the right to be the one of us who stays.', 'execute as @1 at @1 run function cobblemon_initiative:reveal/founder_defeated', 'easy_npc delete @2'], 2: ['@1 say Of course. Assets fail. You replace them. I have been replacing us for years and I am not tired yet. Get up and try again, or do not, and let me have the chair back.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
                             Label: "yes_button"
+                        },
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
                         }
                     ],
                     Texts: [

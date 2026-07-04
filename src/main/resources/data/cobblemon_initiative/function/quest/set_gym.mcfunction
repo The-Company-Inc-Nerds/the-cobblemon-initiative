@@ -1,3 +1,2 @@
-# Macro: render the current gym objective. Arg: town.
-$bossbar set cobblemon_initiative:objective name [{"text":"⚔ Defeat the $(town) Gym","color":"gold"}]
-$scoreboard players display name #main ci_quest [{"text":"▶ Defeat the $(town) Gym","color":"yellow"}]
+# Macro: render the current gym objective on the sidebar main line. Arg: town.
+$scoreboard players display name q.main ci_quest [{"text":"▶ Defeat the $(town) Gym","color":"yellow"}]

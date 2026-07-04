@@ -88,8 +88,8 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_ryujin_leader"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_ryujin_leader"
                                         }
                                     ],
                                     Cmd: "tbcs attach ryujin_leader @s"
@@ -100,11 +100,11 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_ryujin_leader"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_ryujin_leader"
                                         }
                                     ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs ryujin_leader onwin {1: ['cobbledollars give @1 4900', 'tag @1 add defeated_ryujin_leader', '@2 say A dragon does not bow. You made it kneel anyway. The Sovereign Badge is yours, and few hands have ever closed around it.'], 2: ['@2 say Power without command is just noise. A dragon hears only those who do not flinch. Steel yourself and climb the Keep again.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs ryujin_leader onwin {1: ['cobbledollars give @1 4900', 'tag @1 add defeated_ryujin_leader', '@2 say A dragon does not bow. You made it kneel anyway. The Sovereign Badge is yours, and few hands have ever closed around it.'], 2: ['@1 say Power without command is just noise. A dragon hears only those who do not flinch. Steel yourself and climb the Keep again.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

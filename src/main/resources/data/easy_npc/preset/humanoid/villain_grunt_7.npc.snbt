@@ -64,8 +64,8 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_villain_grunt_7"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_villain_grunt_7"
                                         }
                                     ],
                                     Cmd: "tbcs attach villain_grunt_7 @s"
@@ -76,17 +76,26 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_villain_grunt_7"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_villain_grunt_7"
                                         }
                                     ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_grunt_7 onwin {1: ['cobbledollars give @1 380', 'tag @1 add defeated_villain_grunt_7', '@2 say The model did not account for you. I will adjust the model. I always adjust the model.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 250', '@2 say Volatility resolved. The CobbleDollar is fine. The CobbleDollar has always been fine.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_grunt_7 onwin {1: ['cobbledollars give @1 380', 'tag @1 add defeated_villain_grunt_7', '@2 say The model did not account for you. I will adjust the model. I always adjust the model.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 250', '@1 say Volatility resolved. The CobbleDollar is fine. The CobbleDollar has always been fine.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
                             Label: "yes_button"
+                        },
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
                         }
                     ],
                     Texts: [
@@ -134,8 +143,8 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_villain_grunt_7"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_villain_grunt_7"
                                         }
                                     ],
                                     Cmd: "tbcs attach villain_grunt_7 @s"
@@ -146,17 +155,26 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_villain_grunt_7"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_villain_grunt_7"
                                         }
                                     ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_grunt_7 onwin {1: ['cobbledollars give @1 380', 'tag @1 add defeated_villain_grunt_7', '@2 say The model did not account for you. I will adjust the model. I always adjust the model.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 250', '@2 say Volatility resolved. The CobbleDollar is fine. The CobbleDollar has always been fine.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_grunt_7 onwin {1: ['cobbledollars give @1 380', 'tag @1 add defeated_villain_grunt_7', '@2 say The model did not account for you. I will adjust the model. I always adjust the model.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 250', '@1 say Volatility resolved. The CobbleDollar is fine. The CobbleDollar has always been fine.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
                             Label: "yes_button"
+                        },
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
                         }
                     ],
                     Texts: [

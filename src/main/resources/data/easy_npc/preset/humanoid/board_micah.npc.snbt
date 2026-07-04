@@ -84,8 +84,8 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_board_micah"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_board_micah"
                                         }
                                     ],
                                     Cmd: "tbcs attach board_micah @s"
@@ -96,17 +96,26 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_board_micah"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_board_micah"
                                         }
                                     ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs board_micah onwin {1: ['cobbledollars give @1 9000', 'tag @1 add defeated_board_micah', '@2 say The model held until it did not. I will need to revise my assumptions about people who refuse to be line items.', 'execute as @1 at @1 run function cobblemon_initiative:reveal/board_fell', 'easy_npc delete @2'], 2: ['@2 say Liability realised on schedule. I did reserve against you. It is almost a relief to be right about the worst case.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs board_micah onwin {1: ['cobbledollars give @1 9000', 'tag @1 add defeated_board_micah', '@2 say The model held until it did not. I will need to revise my assumptions about people who refuse to be line items.', 'execute as @1 at @1 run function cobblemon_initiative:reveal/board_fell', 'easy_npc delete @2'], 2: ['@1 say Liability realised on schedule. I did reserve against you. It is almost a relief to be right about the worst case.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
                             Label: "yes_button"
+                        },
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
                         }
                     ],
                     Texts: [

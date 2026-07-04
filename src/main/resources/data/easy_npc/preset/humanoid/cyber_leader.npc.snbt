@@ -88,8 +88,8 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_cyber_leader"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_cyber_leader"
                                         }
                                     ],
                                     Cmd: "tbcs attach cyber_leader @s"
@@ -100,11 +100,11 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_cyber_leader"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_cyber_leader"
                                         }
                                     ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs cyber_leader onwin {1: ['cobbledollars give @1 4300', 'tag @1 add defeated_cyber_leader', '@2 say Fast hands, faster head. You read the surge before it landed. The Circuit Badge is yours, and you have earned the city talking about you.'], 2: ['@2 say Too slow on the draw. Electricity does not wait and neither do I. Sharpen up and reconnect with me.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs cyber_leader onwin {1: ['cobbledollars give @1 4300', 'tag @1 add defeated_cyber_leader', '@2 say Fast hands, faster head. You read the surge before it landed. The Circuit Badge is yours, and you have earned the city talking about you.'], 2: ['@1 say Too slow on the draw. Electricity does not wait and neither do I. Sharpen up and reconnect with me.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

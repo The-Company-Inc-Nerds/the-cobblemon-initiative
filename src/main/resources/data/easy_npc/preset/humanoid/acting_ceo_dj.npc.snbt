@@ -53,8 +53,8 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_villain_boss"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_villain_boss"
                                         }
                                     ],
                                     Cmd: "tbcs attach villain_boss @s"
@@ -65,8 +65,8 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_villain_boss"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_villain_boss"
                                         }
                                     ],
                                     Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_boss onwin {1: ['cobbledollars give @1 8000', 'tag @1 add defeated_villain_boss', '@2 say Keeping it warm. That is all I was ever doing. It was always going to be yours again.', 'function cobblemon_initiative:economy/hq_stabilize', 'easy_npc delete @2'], 2: []}"
@@ -76,6 +76,15 @@
                                 }
                             ],
                             Label: "yes_button"
+                        },
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
                         }
                     ],
                     Texts: [

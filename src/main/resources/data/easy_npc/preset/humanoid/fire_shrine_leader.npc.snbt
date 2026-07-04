@@ -88,8 +88,8 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_fire_shrine_leader"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_fire_shrine_leader"
                                         }
                                     ],
                                     Cmd: "tbcs attach fire_shrine_leader @s"
@@ -100,11 +100,11 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_fire_shrine_leader"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_fire_shrine_leader"
                                         }
                                     ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs fire_shrine_leader onwin {1: ['cobbledollars give @1 2500', 'tag @1 add defeated_fire_shrine_leader', '@2 say The flame takes its measure of you and is satisfied. Burn brightly, and burn long.'], 2: ['@2 say The fire spits you back out. Temper yourself and return when you will not break.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs fire_shrine_leader onwin {1: ['cobbledollars give @1 2500', 'tag @1 add defeated_fire_shrine_leader', '@2 say The flame takes its measure of you and is satisfied. Burn brightly, and burn long.'], 2: ['@1 say The fire spits you back out. Temper yourself and return when you will not break.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

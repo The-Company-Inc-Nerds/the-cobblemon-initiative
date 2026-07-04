@@ -88,8 +88,8 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_gaviota_leader"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_gaviota_leader"
                                         }
                                     ],
                                     Cmd: "tbcs attach gaviota_leader @s"
@@ -100,11 +100,11 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_gaviota_leader"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_gaviota_leader"
                                         }
                                     ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs gaviota_leader onwin {1: ['cobbledollars give @1 3200', 'tag @1 add defeated_gaviota_leader', '@2 say The tide turned and you turned with it. The Current Badge is yours. The sea does not give those out lightly.'], 2: ['@2 say You fought the current head on. Nobody wins that way. Learn to ride it and the water will carry you back to me.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs gaviota_leader onwin {1: ['cobbledollars give @1 3200', 'tag @1 add defeated_gaviota_leader', '@2 say The tide turned and you turned with it. The Current Badge is yours. The sea does not give those out lightly.'], 2: ['@1 say You fought the current head on. Nobody wins that way. Learn to ride it and the water will carry you back to me.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

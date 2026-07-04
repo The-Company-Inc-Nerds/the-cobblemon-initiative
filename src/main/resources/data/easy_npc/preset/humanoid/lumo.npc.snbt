@@ -44,6 +44,17 @@
                         }
                     ],
                     Priority: 20,
+                    Buttons: [
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
+                        }
+                    ],
                     Texts: [
                         {
                             Text: "Round one is yours, fair and square. Kima is next, mid-dock, mending nets and grudges."
@@ -59,11 +70,22 @@
                     Conditions: [
                         {
                             Type: "PLAYER_TAG",
-                            Operation: "NOT_EQUALS",
-                            Name: "invit_entered"
+                            Operation: "EQUALS",
+                            Name: "no_invit_entered"
                         }
                     ],
                     Priority: 15,
+                    Buttons: [
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
+                        }
+                    ],
                     Texts: [
                         {
                             Text: "Interested in the Invitational? Signup is with Harbourmaster Tayo at the harbour office. Bracket rules — no entry, no battle, no exceptions. The banner insists."
@@ -97,8 +119,8 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_sq_bracket_1"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_sq_bracket_1"
                                         }
                                     ],
                                     Cmd: "tbcs attach sq_bracket_1 @s"
@@ -109,11 +131,11 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_sq_bracket_1"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_sq_bracket_1"
                                         }
                                     ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs sq_bracket_1 onwin {1: ['cobbledollars give @1 100', 'tag @1 add defeated_sq_bracket_1', '@2 say Wingull down. The bracket said this would happen to somebody.'], 2: ['@2 say The bracket holds. The loss column is nothing to be ashamed of.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs sq_bracket_1 onwin {1: ['cobbledollars give @1 100', 'tag @1 add defeated_sq_bracket_1', '@2 say Wingull down. The bracket said this would happen to somebody.'], 2: ['@1 say The bracket holds. The loss column is nothing to be ashamed of.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -127,8 +149,8 @@
                                 },
                                 {
                                     Type: "PLAYER_TAG",
-                                    Operation: "NOT_EQUALS",
-                                    Name: "defeated_sq_bracket_1"
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_sq_bracket_1"
                                 }
                             ],
                             Label: "battle_button"

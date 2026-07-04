@@ -107,7 +107,8 @@ Author in batches; each batch unblocks Claude wiring the same day:
   - [ ] 3 management (Regional Manager Shade, Senior Director Vex, COO Noir)
   - [ ] Acting CEO DJ at HQ `[1590 51 1028]`
   - [ ] 4 Board members + The Founder (post-Royal-League, The Boardroom)
-- [ ] **Wheat fields** — zones are DONE (10 farms in install.json, gated on `field_freed`/`farm_1`..`farm_10` — those ids are now canonical). *Remaining:* place the field-guard trainers at the farms 🧱 → Claude wires each guard's reward `execute as {player} run function cobblemon_initiative:liberation/free_field {field:"farm_N"}` 💻. (Field Mark tool likely obsolete now — zones came from the zone-mapper.)
+- [ ] **Wheat fields** — zones are DONE (10 farms in install.json, gated on `field_freed`/`farm_1`..`farm_10` — those ids are now canonical). **As shipped (2026-07-04) only `farm_1` is wired to `liberation/free_field` — `fields_liberated` maxes at 1**, so the HQ-raid gate (4), the wheat-trader escalation (2/4), the relief shop tiers (2/4), and the granary ambush (4) are all unreachable. **This is the single biggest Act-1→Act-2 blocker.** *Remaining:* place the field-guard trainers at the farms 🧱 → Claude wires each guard's reward `execute as {player} run function cobblemon_initiative:liberation/free_field {field:"farm_N"}` 💻. (Field Mark tool likely obsolete now — zones came from the zone-mapper.)
+- [ ] 🧱 **Place the compiled-but-unplaced NPCs** — the dead-letter checkpoint agent (`checkpoint_agent` tag), the Per My Last Memo courier, and the Head Count census wagon: compiled presets exist for all three, but there is no UUID mapping / import line yet.
 - [ ] **Wheat-trader NPCs** — place (trade→recognize→ambush) from `wheat_trader_gate` + `trade_wheat_trader` + `dialog_wheat_pitch`
 - [ ] **Granary trader NPC** — Company Inc. member selling items **for wheat**. **Infrastructure landed:**
   - [x] `granary_keeper` character + 3-tier recognition dialog (default → suspicious ≥2 fields → hostile ≥4, hostile trade arms `granary_ambush_armed`); compiled via content_compile.
@@ -122,6 +123,16 @@ Author in batches; each batch unblocks Claude wiring the same day:
 - [ ] *(Optional)* per-town exchange-board sign/lectern (economy instability display)
 
 ### B. Remaining systems 💻
+- [ ] **STANDALONE: capture the CobbleDollars bank re-theme into the mod** 💻 — the
+  `nether_star` 25k backing + `hay_block`/`wheat` commons re-theme (listed above as
+  "already landed") exists **nowhere in the repo or the mrpack** (verified 2026-07-04:
+  the `cobbledollars_tiers/*.json` resources carry only `defaultShop`; no bank file
+  anywhere). It apparently lives only in the live instance's
+  `config/cobbledollars/bank.json` — **lost on every fresh install, pack or standalone**.
+  Export that file from the instance into `src/main/resources/cobbledollars_tiers/`
+  (or a `cobbledollars_bank.json` resource) and have `ShopTierManager.applyTier` /
+  `install run` seed it the same way the shop is seeded (then `cobbledollars reload`).
+  Same standalone rule as the Easy NPC security.cfg patcher (see docs/ENGINE_FINDINGS §3).
 - [ ] **P4 — Field liberation** (needs marked coords): guard trainers, liberate → restore wheat price + unlock safe-farm + advance HQ gate; relog-safe one-way latches; `liberation/fields.json`
   - [x] **Option A core** — `liberation/free_field`(+`_apply`): −6 `cd_instability` (floor 0, tunable) + `fields_liberated`++ + per-field `field_freed` latch + actionbar beat. *Remaining for A:* wire a field-guard `command` reward `execute as {player} run function cobblemon_initiative:liberation/free_field {field:"<id>"}` (blocked on marked field coords 🧱)
   - [x] **Option B** — conditional safe-zones: `SafeZone.activeWhenObjective`/`activeWhenHolder`/`activeWhenMin` (+ `isZoneActive` + server-aware `isInSafeZone`/`getSafeZoneAt`/`getAnnouncedZoneAt`, threaded into MobSpawnMixin + Dark Urge + zone-announce). Occupied field = hostile until its `field_freed` latch trips → then safe farmland (world-data, relog-safe). compileJava verified. Zone-mapper exposes the gate (FARM "Liberation field id" → activeWhen*). *Remaining:* set it per field when coords are marked.
@@ -132,12 +143,15 @@ Author in batches; each batch unblocks Claude wiring the same day:
   - [ ] *(Option C, deferred)* stateful `farmzone/` subsystem (soil/growth/patrols/HQ-difficulty)
 - [ ] **P5 — Wheat traders full wiring** — _done: the trade→recognize→ambush dialogue, `minecraft:paper` currency, 2/4 thresholds, **ambush trainers** (`wheat_trader_ambush` L38-39 farm team / `granary_ambush` L43-44, in villain_team.json, species+items jar-validated), **wheat-trader hostile tier now offers the battle** ("Stand and fight" → tbcs vs wheat_trader_ambush), and the **granary post-trade poller** (`granary/tick`: hostile trade arms `granary_ambush_armed`, ~15s countdown → "Asset located. Initiating retrieval." → battle, one-shot via defeated_granary_ambush)._ Remaining: in-world placement (Easy NPC traders) 🧱 + in-game verify the tbcs battle/onwin path 🔍. (`wheat_ambush_armed` is now superseded — wheat traders battle directly from dialog; objective left declared, unused.)
 - [x] ~~Smoke-test `cobbledollars add @s`~~ — **moot (2026-07-03):** CobbleDollars 2.0.0-Beta-5.1 has **no `add` subcommand at all** (jar-verified grammar: pay/query/give/remove/set/reload/leaderboard). Every `cobbledollars add` in the repo (pay_macro, granary ambush, all 143 battle-prize onwin strings) was a dead command — all replaced with `cobbledollars give <targets> <amount>` (selector-first, accepts @s under execute-as). Verify in-game that a battle prize actually lands (runbook Round 5 canary #5).
+- [ ] **Cast the 20 empty trainer teams** 💻/🧱 (HIGH PRIORITY): `data/rctmod/trainers/{royal_champion, royal_elite_1..4, dragon/fairy/fire/ground/ice_shrine_leader, *_shrine_cultist_1..2}.json` are literally `{}` — rctapi refuses to start those battles (`insufficientPokemon`), and the shipped presets already wire battles against the Royal League + shrine leaders, so those buttons dead-end today. `content_compile` now WARNS on every battle that references an empty/missing team (28 warnings currently).
+- [ ] **Author the 18 missing trainer JSONs** 💻 (blocks the Act-2 arc): `villain_boss` (Acting CEO DJ — the badge-7 HQ-raid HUD target and every `defeated_villain_boss` gate depend on it), `board_lauren`/`board_madeline`/`board_matt`/`board_micah`, `villain_admin`/`villain_admin_2`/`villain_commander`, and `villain_grunt_3..11`.
+- [ ] **villain_grunt_2 checkpoint dialog ladder** 💻 (minor polish): the `default` entry is dead code, and `contraband` is overshadowed at 3+ badges.
 - [ ] **RCT trainer data cleanup** 💻 (from the log-0.4.1-alpha.2 review): 86 trainers log "Model validation failure" — invalid gender/ability/move entries throughout; 3 Royal League trainers hold **mega_showdown items that are not in the pack** (elite_four_lorelei `blue_orb`, champion_terry `red_orb`, title_defense_zeph `steel_memory` — those items will simply be missing in the fights); gym-9 leader `skadi_gymleader1` references invalid species `cobblemon:ninetales_alola` (regional forms are species aspects in Cobblemon) — **she may silently drop that team member on stream**.
 - [x] **Founder reveal (redesigned per decision)** — the Founder's nameplate stays fully `§k`-obfuscated all run (`§kfounder`); each Board defeat fires `reveal/board_fell` (4 oblique beats that circle the name); the name is only spoken at the mirror's defeat — `reveal/founder_defeated` renders **the defeating player's own name** live via selector ("The name on the chair was always ⟨you⟩"). No name baked anywhere. *(Propaganda-decay register: done — `dialog-src/registers/scrubbing.json`.)*
 
 ### C. Verify in-game 🔍 (can't be tested without the mod loader)
-- [ ] **PLAYER_TAG dialog conditions** fire correctly (re-reader, wheat-trader tiers, grunt/management recognition). Fallback if not: `execute if entity @s[tag=...]` command branch.
-- [ ] **Quest HUD** renders (boss bar + sidebar; numbers hidden; advances on gym defeat; `/ca quest hide` clears)
+- [ ] **PLAYER_TAG dialog conditions** fire correctly (re-reader, wheat-trader tiers, grunt/management recognition). Bytecode-settled 2026-07-04: Easy NPC 6.25 **ignores the Operation field** (`contains()` only), so every gate is EQUALS on a tag — "not_tag" gates ride the derived inverse tags `no_<X>`, maintained each tick by `function/dialog/band_tags.mcfunction` (auto-generated; also `no_defeated_<id>` for all 95 shipped trainers). Remaining 🔍 is the in-game confirm.
+- [ ] **Quest HUD** renders (**sidebar-only** since 2026-07-04 — the top "Objective" boss bar was removed; `quest/load` runs `bossbar remove cobblemon_initiative:objective` to clear old worlds; numbers hidden; the main line advances on gym defeat; side lines ride `q.side_*` slots; `/ca quest hide` clears). See `docs/VERIFICATION_RUNBOOK.md` **Round 7 canaries**.
 - [ ] **Memory fragment** title fires once per leader; no re-fire on relog
 - [ ] **Dark Urge** whisper fires outside safe zones, silent inside
 - [ ] **Economy beats**: gyms 1-7 tick `cd_instability` up; Acting CEO → "CURRENCY STABILIZED"
@@ -177,9 +191,14 @@ Map-authoring aids. Strip each once its authoring is baked in.
 - [ ] Remove `build.gradle.kts` dep `fabricApi.module("fabric-events-interaction-v0", ...)` (only if nothing else uses `UseBlockCallback`)
 
 ### NPC Map system (`npcmap/`) — once NPC presets are finalized + `update_npc_presets.mcfunction` is baked
-- [ ] Delete `src/main/java/.../npcmap/{NpcMapInit,NpcMapCommand,NpcMapEntry,NpcMapStorage}.java`
-- [ ] Remove entrypoint `...npcmap.NpcMapInit` from `fabric.mod.json`
-- [ ] Remove the NPC apply block in `InstallCommand.cmdRun()` + the NPC count line in `cmdCheck()` + the 3 `npcmap` imports
+> ⚠ **Scope changed 2026-07-04:** `npcmap/` now also hosts `NpcPresetRefreshManager` — the SHIPPING
+> per-chunk-load preset refresh that `NpcMapInit.onInitialize()` wires and that `InstallCommand`
+> + `ShopTierManager` depend on. Only the dev-tool classes below may be stripped at 1.0.0;
+> `NpcPresetRefreshManager` must stay (move its `init()` call into `InitiativeInit` when
+> `NpcMapInit` goes).
+- [ ] Delete `src/main/java/.../npcmap/{NpcMapCommand,NpcMapEntry,NpcMapStorage}.java` (keep `NpcPresetRefreshManager`)
+- [ ] Move `NpcPresetRefreshManager.init()` into `InitiativeInit`, then delete `NpcMapInit` + its entrypoint in `fabric.mod.json`
+- [ ] Remove the LEGACY npc-map replay block in `InstallCommand.cmdRun()` + the NPC count line in `cmdCheck()` (the armed-refresh block stays)
 
 ### Dev datapack functions (`function/dev/`)
 - [ ] Review/remove `data/cobblemon_initiative/function/dev/npc_tour_*.mcfunction` + the `npc_tour_idx` objective (keep `function/update_npc_presets` — that ships)

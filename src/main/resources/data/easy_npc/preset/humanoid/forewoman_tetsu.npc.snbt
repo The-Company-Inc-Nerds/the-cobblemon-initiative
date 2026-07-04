@@ -44,6 +44,17 @@
                         }
                     ],
                     Priority: 45,
+                    Buttons: [
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
+                        }
+                    ],
                     Texts: [
                         {
                             Text: "Road reads as maintained by unverified persons now. Best paperwork I ever filed. Walk it proud."
@@ -74,8 +85,8 @@
                         },
                         {
                             Type: "PLAYER_TAG",
-                            Operation: "NOT_EQUALS",
-                            Name: "work_all_done"
+                            Operation: "EQUALS",
+                            Name: "no_work_all_done"
                         }
                     ],
                     Priority: 40,
@@ -99,6 +110,15 @@
                                 }
                             ],
                             Label: "signoff_button"
+                        },
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
                         }
                     ],
                     Texts: [
@@ -181,8 +201,8 @@
                             Conditions: [
                                 {
                                     Type: "PLAYER_TAG",
-                                    Operation: "NOT_EQUALS",
-                                    Name: "work_night_done"
+                                    Operation: "EQUALS",
+                                    Name: "no_work_night_done"
                                 }
                             ],
                             Label: "accept_button"
@@ -221,8 +241,8 @@
                                 },
                                 {
                                     Type: "PLAYER_TAG",
-                                    Operation: "NOT_EQUALS",
-                                    Name: "work_night_paid"
+                                    Operation: "EQUALS",
+                                    Name: "no_work_night_paid"
                                 }
                             ],
                             Label: "turnin_button"
@@ -256,6 +276,15 @@
                                 }
                             ],
                             Label: "back_button"
+                        },
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
                         }
                     ],
                     Texts: [
@@ -284,8 +313,8 @@
                             Conditions: [
                                 {
                                     Type: "PLAYER_TAG",
-                                    Operation: "NOT_EQUALS",
-                                    Name: "work_mine_done"
+                                    Operation: "EQUALS",
+                                    Name: "no_work_mine_done"
                                 }
                             ],
                             Label: "mine_turnin_button"

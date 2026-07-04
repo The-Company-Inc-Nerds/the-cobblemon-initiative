@@ -70,7 +70,7 @@ Each gym is its own small climb — rank-and-file trainers → Jr. Apprentice �
 5. **→ Gaviota Port.** Beat **Leader Neptune** (Water). Recognition sharpens toward "you're supposed to be dead." → cap **58**.
 6. **→ Kalahar Reach.** Beat **Leader Gaia** (Ground). **Optional:** the **Ground Shrine — Buried Maze** unlocks (half-HP, blind, random teleports — the single most run-ending shrine). → cap **63**.
 7. **→ Cyber City.** Beat **Leader Volt** (Electric). The seventh badge is the **inflection point** — the "you signed this charter" memory fragment lands, instability nears its peak, and wheat traders are turning hostile. → cap **68**.
-   - ★ **The HQ Raid opens.** With seven badges the trail leads to **Company HQ `[1590 51 1028]`**. Fight up to **Acting CEO DJ**; his defeat triggers **"CURRENCY STABILIZED"** (instability snaps to 25). This is the Act II climax — do it around now (a few of its prerequisites expect you to have pressed on toward gym 8). Full beat: [[Guidebook Act II]].
+   - ★ **The HQ Raid opens.** With seven badges — and **4 wheat fields liberated** (the raid is hard-gated: starve the monopoly first) — the trail leads to **Company HQ `[1590 51 1028]`**. Fight up to **Acting CEO DJ**; his defeat triggers **"CURRENCY STABILIZED"** (instability snaps to 25). This is the Act II climax — do it around now (a few of its prerequisites expect you to have pressed on toward gym 8). Full beat: [[Guidebook Act II]].
 8. **→ Ryujin Keep.** Beat **Leader Ryujin** (Dragon). **Optional:** the **Dragon Shrine — Hydra Gauntlet** (three battles, full heal between — the safest shrine). → cap **73**. *Act III —* see [[Guidebook Act III]].
 9. **→ Nifl Town.** Beat **Leader Boreas** (Ice). **Optional:** the **Ice Shrine — Frozen Path** (timed parkour, generous 180s). → cap **78**.
 10. **→ Scorchspire.** Beat **Leader Vulcan** (Fire), the final gym. **Optional:** the **Fire Shrine — Trial by Flame** (tight 120s parkour, but the **best-paying shrine**: Master Ball + Netherite). → cap **85**.
@@ -82,7 +82,7 @@ Each gym is its own small climb — rank-and-file trainers → Jr. Apprentice �
 
 ## Reminders for the road
 
-- **Track the goal:** `/ca quest show` (boss bar + sidebar) always names your current objective and progress. Toggle off for overlays with `/ca quest hide`.
+- **Track the goal:** `/ca quest show` (the sidebar HUD) always names your current objective and progress on its main line. Toggle off for overlays with `/ca quest hide`.
 - **Shrines are detours, not steps** — none are required. Match a shrine to its element's gym, and read [[Guidebook Shrines]] before you commit; `/shrine-abort` is your panic button.
 - **Safe zones are towns + shrine grounds only.** The routes between are full wilderness — that's where Nuzlocke faints, Dark Urge whispers, and ambushes happen.
 - **Don't over-level.** The cap is a ceiling *and* a target; the world is tuned for an at-cap team.

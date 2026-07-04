@@ -88,8 +88,8 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_dragon_shrine_leader"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_dragon_shrine_leader"
                                         }
                                     ],
                                     Cmd: "tbcs attach dragon_shrine_leader @s"
@@ -100,11 +100,11 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_dragon_shrine_leader"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_dragon_shrine_leader"
                                         }
                                     ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs dragon_shrine_leader onwin {1: ['cobbledollars give @1 2500', 'tag @1 add defeated_dragon_shrine_leader', '@2 say The wyrm has weighed you and found you whole. Go, bearer of the old fire.'], 2: ['@2 say The shrine has not finished with you. Return when your scales have hardened.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs dragon_shrine_leader onwin {1: ['cobbledollars give @1 2500', 'tag @1 add defeated_dragon_shrine_leader', '@2 say The wyrm has weighed you and found you whole. Go, bearer of the old fire.'], 2: ['@1 say The shrine has not finished with you. Return when your scales have hardened.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

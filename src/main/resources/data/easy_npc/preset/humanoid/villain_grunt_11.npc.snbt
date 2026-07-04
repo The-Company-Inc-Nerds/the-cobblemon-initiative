@@ -64,8 +64,8 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_villain_grunt_11"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_villain_grunt_11"
                                         }
                                     ],
                                     Cmd: "tbcs attach villain_grunt_11 @s"
@@ -76,17 +76,26 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_villain_grunt_11"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_villain_grunt_11"
                                         }
                                     ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_grunt_11 onwin {1: ['cobbledollars give @1 600', 'tag @1 add defeated_villain_grunt_11', '@2 say Past me is the boardroom door. They told me nobody gets past me. They told me a lot of things.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 400', '@2 say Perimeter holds. The board is not receiving visitors. Especially not you.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_grunt_11 onwin {1: ['cobbledollars give @1 600', 'tag @1 add defeated_villain_grunt_11', '@2 say Past me is the boardroom door. They told me nobody gets past me. They told me a lot of things.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 400', '@1 say Perimeter holds. The board is not receiving visitors. Especially not you.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
                             Label: "yes_button"
+                        },
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
                         }
                     ],
                     Texts: [
@@ -125,8 +134,8 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_villain_grunt_11"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_villain_grunt_11"
                                         }
                                     ],
                                     Cmd: "tbcs attach villain_grunt_11 @s"
@@ -137,17 +146,26 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_villain_grunt_11"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_villain_grunt_11"
                                         }
                                     ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_grunt_11 onwin {1: ['cobbledollars give @1 600', 'tag @1 add defeated_villain_grunt_11', '@2 say Past me is the boardroom door. They told me nobody gets past me. They told me a lot of things.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 400', '@2 say Perimeter holds. The board is not receiving visitors. Especially not you.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_grunt_11 onwin {1: ['cobbledollars give @1 600', 'tag @1 add defeated_villain_grunt_11', '@2 say Past me is the boardroom door. They told me nobody gets past me. They told me a lot of things.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 400', '@1 say Perimeter holds. The board is not receiving visitors. Especially not you.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
                             Label: "yes_button"
+                        },
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
                         }
                     ],
                     Texts: [

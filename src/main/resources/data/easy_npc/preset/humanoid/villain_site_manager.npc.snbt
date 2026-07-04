@@ -64,8 +64,8 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_villain_site_manager"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_villain_site_manager"
                                         }
                                     ],
                                     Cmd: "tbcs attach villain_site_manager @s"
@@ -76,11 +76,11 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_villain_site_manager"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_villain_site_manager"
                                         }
                                     ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_site_manager onwin {1: ['cobbledollars give @1 520', 'tag @1 add defeated_villain_site_manager', '@2 say Noted. The parcel is — the parcel was. I will be filing this under force majeure.', 'execute as @1 run function cobblemon_initiative:liberation/free_field {field:farm_1}', 'loot give @1 loot cobblemon_initiative:npc_gift/transition_order', 'tag @1 add field_1_transition_taken', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 150', '@2 say Yield secured. Your visit has been logged as agricultural tourism.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_site_manager onwin {1: ['cobbledollars give @1 520', 'tag @1 add defeated_villain_site_manager', '@2 say Noted. The parcel is — the parcel was. I will be filing this under force majeure.', 'execute as @1 run function cobblemon_initiative:liberation/free_field {field:farm_1}', 'loot give @1 loot cobblemon_initiative:npc_gift/transition_order', 'tag @1 add field_1_transition_taken', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 150', '@1 say Yield secured. Your visit has been logged as agricultural tourism.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -94,6 +94,15 @@
                                 }
                             ],
                             Label: "yes_button"
+                        },
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
                         }
                     ],
                     Texts: [
@@ -136,8 +145,8 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_villain_site_manager"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_villain_site_manager"
                                         }
                                     ],
                                     Cmd: "tbcs attach villain_site_manager @s"
@@ -148,11 +157,11 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_villain_site_manager"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_villain_site_manager"
                                         }
                                     ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_site_manager onwin {1: ['cobbledollars give @1 520', 'tag @1 add defeated_villain_site_manager', '@2 say Noted. The parcel is — the parcel was. I will be filing this under force majeure.', 'execute as @1 run function cobblemon_initiative:liberation/free_field {field:farm_1}', 'loot give @1 loot cobblemon_initiative:npc_gift/transition_order', 'tag @1 add field_1_transition_taken', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 150', '@2 say Yield secured. Your visit has been logged as agricultural tourism.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_site_manager onwin {1: ['cobbledollars give @1 520', 'tag @1 add defeated_villain_site_manager', '@2 say Noted. The parcel is — the parcel was. I will be filing this under force majeure.', 'execute as @1 run function cobblemon_initiative:liberation/free_field {field:farm_1}', 'loot give @1 loot cobblemon_initiative:npc_gift/transition_order', 'tag @1 add field_1_transition_taken', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 150', '@1 say Yield secured. Your visit has been logged as agricultural tourism.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -166,6 +175,15 @@
                                 }
                             ],
                             Label: "yes_button"
+                        },
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
                         }
                     ],
                     Texts: [
@@ -201,8 +219,8 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_villain_site_manager"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_villain_site_manager"
                                         }
                                     ],
                                     Cmd: "tbcs attach villain_site_manager @s"
@@ -213,11 +231,11 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_villain_site_manager"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_villain_site_manager"
                                         }
                                     ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_site_manager onwin {1: ['cobbledollars give @1 520', 'tag @1 add defeated_villain_site_manager', '@2 say Noted. The parcel is — the parcel was. I will be filing this under force majeure.', 'execute as @1 run function cobblemon_initiative:liberation/free_field {field:farm_1}', 'loot give @1 loot cobblemon_initiative:npc_gift/transition_order', 'tag @1 add field_1_transition_taken', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 150', '@2 say Yield secured. Your visit has been logged as agricultural tourism.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_site_manager onwin {1: ['cobbledollars give @1 520', 'tag @1 add defeated_villain_site_manager', '@2 say Noted. The parcel is — the parcel was. I will be filing this under force majeure.', 'execute as @1 run function cobblemon_initiative:liberation/free_field {field:farm_1}', 'loot give @1 loot cobblemon_initiative:npc_gift/transition_order', 'tag @1 add field_1_transition_taken', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 150', '@1 say Yield secured. Your visit has been logged as agricultural tourism.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -246,8 +264,8 @@
                             Conditions: [
                                 {
                                     Type: "PLAYER_TAG",
-                                    Operation: "NOT_EQUALS",
-                                    Name: "defeated_villain_yield_officer"
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_villain_yield_officer"
                                 }
                             ],
                             Label: "blocked_button"
@@ -295,8 +313,8 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_villain_site_manager"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_villain_site_manager"
                                         }
                                     ],
                                     Cmd: "tbcs attach villain_site_manager @s"
@@ -307,11 +325,11 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_villain_site_manager"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_villain_site_manager"
                                         }
                                     ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_site_manager onwin {1: ['cobbledollars give @1 520', 'tag @1 add defeated_villain_site_manager', '@2 say Noted. The parcel is — the parcel was. I will be filing this under force majeure.', 'execute as @1 run function cobblemon_initiative:liberation/free_field {field:farm_1}', 'loot give @1 loot cobblemon_initiative:npc_gift/transition_order', 'tag @1 add field_1_transition_taken', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 150', '@2 say Yield secured. Your visit has been logged as agricultural tourism.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_site_manager onwin {1: ['cobbledollars give @1 520', 'tag @1 add defeated_villain_site_manager', '@2 say Noted. The parcel is — the parcel was. I will be filing this under force majeure.', 'execute as @1 run function cobblemon_initiative:liberation/free_field {field:farm_1}', 'loot give @1 loot cobblemon_initiative:npc_gift/transition_order', 'tag @1 add field_1_transition_taken', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 150', '@1 say Yield secured. Your visit has been logged as agricultural tourism.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -325,6 +343,15 @@
                                 }
                             ],
                             Label: "yes_button"
+                        },
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
                         }
                     ],
                     Texts: [

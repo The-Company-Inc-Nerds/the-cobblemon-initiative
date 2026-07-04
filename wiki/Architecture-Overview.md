@@ -104,7 +104,7 @@ Registers the custom `cobblemon-initiative:trainer_defeated` criterion once via 
 **Entrypoint:** invoked via command — `install/InstallCommand`
 **Key classes:** `InstallCommand`, `LevelSettingsAccessor`, `PrimaryLevelDataAccessor`, `MapFrontiersBridge`
 
-`/cobblemon-initiative install run` applies gamerules, difficulty, hardcore mode, safe zones, NPC presets, and MapFrontiers boundaries from `install.json`, then disconnects players so the world reloads in hardcore. `install check` reports current-vs-target without changing anything. Hardcore is flipped via the accessor mixins on the level data.
+`/cobblemon-initiative install run` applies gamerules, difficulty, hardcore mode, safe zones, and MapFrontiers boundaries from `install.json`, arms a full `NpcPresetRefreshManager` refresh (each mapped NPC re-imports its preset as its chunk loads — a one-shot import can only reach loaded NPCs), then disconnects players so the world reloads in hardcore. `install check` reports current-vs-target without changing anything. Hardcore is flipped via the accessor mixins on the level data.
 
 ### Dev-only entrypoints (removed at 1.0.0)
 
@@ -142,10 +142,19 @@ These mods ship with UPM 2 and are assumed present at runtime, but they are **`s
 
 | Mod | How this mod uses it |
 |---|---|
-| **Easy NPC** | Supplies the physical, UUID-tracked NPC entities. `NpcSightManager.findEntity(server, uuid)` looks them up for raycasting; `NpcMapInit` imports presets onto them by UUID. |
-| **RCTAPI / TBCS** | Radical Cobblemon Trainers provides the trainer spawn + battle API. Trainer config JSON uses RCTAPI-compatible team structures; TBCS `onwin` hooks fire reward/recognition logic. |
+| **Easy NPC** | Supplies the physical, UUID-tracked NPC entities. `NpcSightManager.findEntity(server, uuid)` looks them up for raycasting; `NpcPresetRefreshManager` keeps every placed NPC on the current shipped preset content — a bundled uuid→preset map with a content-hash version, re-imported per NPC as its chunk loads, with sticky per-NPC overrides (the Granary trade tier). `/ca install run` arms a full refresh; a one-shot import can only reach currently-loaded NPCs. |
+| **RCTAPI / TBCS** | Radical Cobblemon Trainers provides the battle API. Trainer team JSON uses the RCTAPI format, but the `tbcs` command (TBCS mod) calls RCTAPI's `BattleManager` **directly, bypassing rctmod's requirement/defeat tracking** — so battle gating lives in Easy NPC action Conditions (`EQUALS` on the derived `no_defeated_<id>` tags) and one-time rewards in the `tbcs` onwin lists. Onwin `@1`/`@2` tokens substitute **winners first**: in the win list `@1` = player / `@2` = NPC, but in the lose list `@1` = NPC / `@2` = player — lose-side commands are mirrored (e.g. `cobbledollars remove @2`, `@1 say <taunt>`). |
 | **JourneyMap / MapFrontiers** | No init-time Java coupling. `MapFrontiersBridge` is lazily applied during `install run` to draw zone boundaries; JourneyMap markers may be set via datapack/commands. |
-| **CobbleDollars** | The in-world currency. `type=command` trainer rewards pay via `cobbledollars give` (CobbleDollars has no `add` subcommand) — flat in tbcs onwin strings, skew-aware via the economy payout macro; CobbleDollars is also the narrative spine of the villain plot. |
+| **CobbleDollars** | The in-world currency. The full grammar is `give/remove/set/pay/query/reload` — there is **no `add` subcommand**. `type=command` trainer rewards pay via `cobbledollars give` — flat in tbcs onwin strings, skew-aware via the economy payout macro. Paid heals gate on `execute store result … cobbledollars pay @s 100` (`pay` soft-fails on an empty wallet, so `store result` works where `store success` would not). CobbleDollars is also the narrative spine of the villain plot. |
+
+### Easy NPC 6.25 engine caveats
+
+All dialog content is authored against these bytecode-verified quirks of the shipped Easy NPC 6.25:
+
+- **`PLAYER_TAG` conditions ignore the Operation field** — the engine only ever runs `contains()`, so every gate is effectively `EQUALS` on a tag. "not tag" gates therefore compile to `EQUALS` on derived inverse tags `no_<X>`, maintained every tick by `function/dialog/band_tags.mcfunction` (auto-generated; it also maintains `no_defeated_<id>` for all 95 shipped trainers).
+- **All `execute`-rooted ExecAsUser dialog commands are silently blocked** (a redirect-parse quirk). `as_player` commands compile to bare commands — under ExecAsUser, `@s` *is* the interacting player. Entity-path commands may use `execute`, but `@initiator` substitutes to the player **name**, which is never valid inside selector brackets.
+- Every dialog entry gets an **auto-appended "Goodbye" close button** unless it already has one or sets `"no_goodbye": true`.
+- **DATA presets must live at `easy_npc:preset/<type>/<name>.npc.snbt`** (PresetSecurity rejects other paths). Import grammar: `preset import data <loc> [<x y z> [<uuid>]]` — the canonical template is `execute as <uuid> at @s run easy_npc preset import data <loc> ~ ~ ~ <uuid>`.
 
 ---
 

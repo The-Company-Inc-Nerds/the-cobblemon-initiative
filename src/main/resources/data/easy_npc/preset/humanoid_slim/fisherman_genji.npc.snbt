@@ -75,8 +75,8 @@
                         },
                         {
                             Type: "PLAYER_TAG",
-                            Operation: "NOT_EQUALS",
-                            Name: "defeated_sq_genji_wager"
+                            Operation: "EQUALS",
+                            Name: "no_defeated_sq_genji_wager"
                         }
                     ],
                     Priority: 30,
@@ -100,8 +100,8 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_sq_genji_wager"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_sq_genji_wager"
                                         }
                                     ],
                                     Cmd: "tbcs attach sq_genji_wager @s"
@@ -112,11 +112,11 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_sq_genji_wager"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_sq_genji_wager"
                                         }
                                     ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs sq_genji_wager onwin {1: ['cobbledollars give @1 200', 'tag @1 add defeated_sq_genji_wager', '@2 say Ha. The river gives, the river takes. Today it gave. Two hundred, fair and audited.'], 2: ['cobbledollars remove @1 200', '@2 say The house keeps the stake. Call it a consulting fee. No hard feelings, and no refunds - I did work for the Company once, after all.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs sq_genji_wager onwin {1: ['cobbledollars give @1 200', 'tag @1 add defeated_sq_genji_wager', '@2 say Ha. The river gives, the river takes. Today it gave. Two hundred, fair and audited.'], 2: ['cobbledollars remove @2 200', '@1 say The house keeps the stake. Call it a consulting fee. No hard feelings, and no refunds - I did work for the Company once, after all.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -149,8 +149,8 @@
                     Conditions: [
                         {
                             Type: "PLAYER_TAG",
-                            Operation: "NOT_EQUALS",
-                            Name: "genji_rod_done"
+                            Operation: "EQUALS",
+                            Name: "no_genji_rod_done"
                         }
                     ],
                     Priority: 10,

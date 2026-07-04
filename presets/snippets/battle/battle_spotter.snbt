@@ -25,11 +25,11 @@ ActionData: {
                 Conditions: [
                     {
                         Type: "PLAYER_TAG",
-                        Operation: "NOT_EQUALS",
-                        Name: "defeated_%%TRAINER_ID%%"
+                        Operation: "EQUALS",
+                        Name: "no_defeated_%%TRAINER_ID%%"
                     }
                 ],
-                Cmd: "tbcs battle %%BATTLE_FORMAT:GEN_9_SINGLES|GEN_9_DOUBLES=GEN_9_SINGLES%% @s vs %%TRAINER_ID%% onwin {1: ['cobbledollars give @1 %%PRIZE=200%%', 'tag @1 add defeated_%%TRAINER_ID%%', '@2 say %%WIN_LINE=You actually caught me. Quotas be damned.%%'], 2: ['@2 say %%LOSE_LINE=Heh. Should have watched where you were walking.%%']}"
+                Cmd: "tbcs battle %%BATTLE_FORMAT:GEN_9_SINGLES|GEN_9_DOUBLES=GEN_9_SINGLES%% @s vs %%TRAINER_ID%% onwin {1: ['cobbledollars give @1 %%PRIZE=200%%', 'tag @1 add defeated_%%TRAINER_ID%%', '@2 say %%WIN_LINE=You actually caught me. Quotas be damned.%%'], 2: ['@1 say %%LOSE_LINE=Heh. Should have watched where you were walking.%%']}"
             }
         ]
     }

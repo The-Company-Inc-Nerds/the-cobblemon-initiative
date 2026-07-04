@@ -44,6 +44,17 @@
                         }
                     ],
                     Priority: 30,
+                    Buttons: [
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
+                        }
+                    ],
                     Texts: [
                         {
                             Text: "Sixteen coal, eight raw iron, one conclusion: the seam under this town is healthier than its funding."
@@ -85,8 +96,8 @@
                                 },
                                 {
                                     Type: "PLAYER_TAG",
-                                    Operation: "NOT_EQUALS",
-                                    Name: "assist_coal_in"
+                                    Operation: "EQUALS",
+                                    Name: "no_assist_coal_in"
                                 }
                             ],
                             Label: "coal_button"
@@ -118,8 +129,8 @@
                                 },
                                 {
                                     Type: "PLAYER_TAG",
-                                    Operation: "NOT_EQUALS",
-                                    Name: "assist_iron_in"
+                                    Operation: "EQUALS",
+                                    Name: "no_assist_iron_in"
                                 }
                             ],
                             Label: "iron_button"
@@ -158,8 +169,8 @@
                                 },
                                 {
                                     Type: "PLAYER_TAG",
-                                    Operation: "NOT_EQUALS",
-                                    Name: "quest_assist_mine_done"
+                                    Operation: "EQUALS",
+                                    Name: "no_quest_assist_mine_done"
                                 }
                             ],
                             Label: "fee_button"

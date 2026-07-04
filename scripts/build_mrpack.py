@@ -34,6 +34,54 @@ import zipfile
 MODRINTH_API = "https://api.modrinth.com/v2"
 UA = "the-cobblemon-initiative-mrpack-builder/1.0 (+https://github.com/thecompanyinc)"
 MRPACK_DIR = "mrpack"
+
+INSTALL_JSON = "src/main/resources/data/cobblemon_initiative/install.json"
+DIFFICULTY_BYTE = {"peaceful": 0, "easy": 1, "normal": 2, "hard": 3}
+
+
+def bake_install_into_level_dat(level_dat: str) -> None:
+    """Pre-apply install.json's world-side settings to a bundled world COPY:
+    gamerules (all NBT strings), difficulty, and the hardcore bit. Mirrors what
+    `/cobblemon-initiative install run` does live; failures warn, never abort."""
+    try:
+        import sys as _sys
+        _sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+        from nbt_read import read_nbt_file, TAG_COMPOUND, TAG_STRING, TAG_BYTE
+        from nbt_write import write_nbt_file
+
+        with open(INSTALL_JSON) as fh:
+            install = json.load(fh)
+        gamerules = dict(install.get("gamerules") or {})
+        difficulty = gamerules.pop("_difficulty", None)
+        hardcore = bool(install.get("hardcore"))
+
+        root_name, tree = read_nbt_file(level_dat)
+        data = tree[1].get("Data")
+        if not data or data[0] != TAG_COMPOUND:
+            print(f"    [warn] {level_dat}: no Data compound — skipping install bake.")
+            return
+        dtag = data[1]
+
+        rules = dtag.get("GameRules")
+        if not rules or rules[0] != TAG_COMPOUND:
+            rules = (TAG_COMPOUND, {})
+            dtag["GameRules"] = rules
+        for rule, value in gamerules.items():
+            rules[1][rule] = (TAG_STRING, str(value))
+
+        if difficulty in DIFFICULTY_BYTE:
+            dtag["Difficulty"] = (TAG_BYTE, DIFFICULTY_BYTE[difficulty])
+        if hardcore:
+            dtag["hardcore"] = (TAG_BYTE, 1)
+            dtag["Difficulty"] = (TAG_BYTE, DIFFICULTY_BYTE["hard"])
+
+        write_nbt_file(level_dat, root_name, tree, gzipped=True)
+        print(f"    baked install: {len(gamerules)} gamerule(s)"
+              f"{', difficulty=' + difficulty if difficulty else ''}"
+              f"{', hardcore' if hardcore else ''} -> level.dat")
+    except Exception as e:
+        print(f"    [warn] install bake failed for {level_dat}: {e} — "
+              f"run '/cobblemon-initiative install run' in-game instead.")
 MANIFEST = os.path.join(MRPACK_DIR, "modpack.json")
 
 # Resource packs and shaders are client-side only; declaring it keeps dedicated-server
@@ -293,12 +341,45 @@ def main():
                 print(f"  staged {sub[:-1]}: {os.path.basename(e)}")
                 copy_into(e, os.path.join(overrides, sub))
 
-        # World(s) -> overrides/saves/.
+        # World(s) -> overrides/saves/, with the install command's WORLD-side effects
+        # pre-baked into the COPY (never the source map): gamerules + difficulty +
+        # hardcore from install.json land directly in level.dat, so a fresh pack
+        # install opens ready — no `/cobblemon-initiative install run` needed for
+        # those. (Config-side pieces ship as overrides below; NPC preset refresh and
+        # sight registrations self-arm/self-seed in the mod on a fresh world.)
         for w in worlds:
             wname = os.path.basename(w)
             print(f"  world: {wname}")
-            shutil.copytree(w, os.path.join(overrides, "saves", wname),
+            wdst = os.path.join(overrides, "saves", wname)
+            shutil.copytree(w, wdst,
                             symlinks=False, ignore=shutil.ignore_patterns("session.lock"))
+            bake_install_into_level_dat(os.path.join(wdst, "level.dat"))
+
+        # Shop seed: the same badge_0 catalog `install run` copies at runtime, shipped
+        # as a config override so the opening shop is right on first launch.
+        shop_seed = "src/main/resources/cobbledollars_tiers/badge_0.json"
+        if os.path.isfile(shop_seed):
+            dst = os.path.join(overrides, "config", "cobbledollars", "default_shop.json")
+            if not os.path.exists(dst):
+                os.makedirs(os.path.dirname(dst), exist_ok=True)
+                shutil.copy2(shop_seed, dst)
+                print("  config seed: cobbledollars/default_shop.json (badge_0 catalog)")
+
+        # Auto-install marker: PACK-ONLY. Its presence makes the mod run
+        # `/cobblemon-initiative install run` once per fresh world shortly after the
+        # first join (zones + Map Frontiers — the pieces level.dat baking can't cover).
+        # Bare-mod installs never have this file, so nothing auto-runs standalone.
+        marker = os.path.join(overrides, "config", "cobblemon-initiative-autoinstall.json")
+        os.makedirs(os.path.dirname(marker), exist_ok=True)
+        with open(marker, "w") as fh:
+            json.dump({
+                "enabled": True,
+                "_comment": "Shipped by build_mrpack. The Cobblemon Initiative auto-runs "
+                            "'/cobblemon-initiative install run' once per fresh world when this "
+                            "file exists (world latch: data/cobblemon_initiative_autoinstall.json). "
+                            "Delete this file or set enabled=false to go back to manual installs.",
+            }, fh, indent=2)
+        print("  config seed: cobblemon-initiative-autoinstall.json (first-join auto-install)")
 
         # Locally-staged datapacks -> each bundled world's datapacks/.
         staged_dp = staged_entries("datapacks")

@@ -49,6 +49,17 @@
                         }
                     ],
                     Priority: 40,
+                    Buttons: [
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
+                        }
+                    ],
                     Texts: [
                         {
                             Text: "You took the falls badge. Told you - wings over shells. Remember it when the bugs get bigger."
@@ -69,6 +80,17 @@
                         }
                     ],
                     Priority: 30,
+                    Buttons: [
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
+                        }
+                    ],
                     Texts: [
                         {
                             Text: "My birds still talk about you. The tip stands, free of charge - bug types drop fast to flying moves. Cicada will not thank me for saying so."
@@ -102,8 +124,8 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_sq_regular_typetip"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_sq_regular_typetip"
                                         }
                                     ],
                                     Cmd: "tbcs attach sq_regular_typetip @s"
@@ -114,11 +136,11 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_sq_regular_typetip"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_sq_regular_typetip"
                                         }
                                     ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs sq_regular_typetip onwin {1: ['cobbledollars give @1 250', 'tag @1 add defeated_sq_regular_typetip', '@2 say There it is. Now you know why the bugs hide when the flock passes. Take this potion - you will want it at the falls.'], 2: ['@2 say The sky does not lose to the meadow often. Rest up and try again.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs sq_regular_typetip onwin {1: ['cobbledollars give @1 250', 'tag @1 add defeated_sq_regular_typetip', '@2 say There it is. Now you know why the bugs hide when the flock passes. Take this potion - you will want it at the falls.'], 2: ['@1 say The sky does not lose to the meadow often. Rest up and try again.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

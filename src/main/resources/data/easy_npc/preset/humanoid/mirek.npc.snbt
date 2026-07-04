@@ -49,6 +49,17 @@
                         }
                     ],
                     Priority: 40,
+                    Buttons: [
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
+                        }
+                    ],
                     Texts: [
                         {
                             Text: "They are flying my birds off honest ground again. First field on this road that belongs to its own dirt in a season."
@@ -69,6 +80,17 @@
                         }
                     ],
                     Priority: 30,
+                    Buttons: [
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
+                        }
+                    ],
                     Texts: [
                         {
                             Text: "Beaten by an honest wallet. It stings less than the vouchers did. The tip still stands — fire, wings, or bugs for the glass garden ahead."
@@ -102,8 +124,8 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_sq_rt2_scarecrow"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_sq_rt2_scarecrow"
                                         }
                                     ],
                                     Cmd: "tbcs attach sq_rt2_scarecrow @s"
@@ -114,11 +136,11 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_sq_rt2_scarecrow"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_sq_rt2_scarecrow"
                                         }
                                     ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs sq_rt2_scarecrow onwin {1: ['cobbledollars give @1 230', 'tag @1 add defeated_sq_rt2_scarecrow', '@2 say Sharp work. The crows would scatter for you without a single scarecrow.'], 2: ['@2 say Ha — the birds still earn better than the vouchers do. Rest yours and come back.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs sq_rt2_scarecrow onwin {1: ['cobbledollars give @1 230', 'tag @1 add defeated_sq_rt2_scarecrow', '@2 say Sharp work. The crows would scatter for you without a single scarecrow.'], 2: ['@1 say Ha — the birds still earn better than the vouchers do. Rest yours and come back.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -166,8 +188,8 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_sq_rt2_scarecrow"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_sq_rt2_scarecrow"
                                         }
                                     ],
                                     Cmd: "tbcs attach sq_rt2_scarecrow @s"
@@ -178,11 +200,11 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_sq_rt2_scarecrow"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_sq_rt2_scarecrow"
                                         }
                                     ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs sq_rt2_scarecrow onwin {1: ['cobbledollars give @1 230', 'tag @1 add defeated_sq_rt2_scarecrow', '@2 say Sharp work. The crows would scatter for you without a single scarecrow.'], 2: ['@2 say Ha — the birds still earn better than the vouchers do. Rest yours and come back.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs sq_rt2_scarecrow onwin {1: ['cobbledollars give @1 230', 'tag @1 add defeated_sq_rt2_scarecrow', '@2 say Sharp work. The crows would scatter for you without a single scarecrow.'], 2: ['@1 say Ha — the birds still earn better than the vouchers do. Rest yours and come back.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

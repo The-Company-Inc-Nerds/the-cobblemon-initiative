@@ -44,6 +44,17 @@
                         }
                     ],
                     Priority: 20,
+                    Buttons: [
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
+                        }
+                    ],
                     Texts: [
                         {
                             Text: "Two rounds down. The final is the Harbourmaster in the harbour office, and Tayo does not lose at home. Usually."
@@ -59,11 +70,22 @@
                     Conditions: [
                         {
                             Type: "PLAYER_TAG",
-                            Operation: "NOT_EQUALS",
-                            Name: "invit_entered"
+                            Operation: "EQUALS",
+                            Name: "no_invit_entered"
                         }
                     ],
                     Priority: 15,
+                    Buttons: [
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
+                        }
+                    ],
                     Texts: [
                         {
                             Text: "The bracket is the bracket. Signup is with Harbourmaster Tayo at the desk — put your name down and I am your first round."
@@ -104,8 +126,8 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_sq_bracket_2"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_sq_bracket_2"
                                         }
                                     ],
                                     Cmd: "tbcs attach sq_bracket_2 @s"
@@ -116,11 +138,11 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_sq_bracket_2"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_sq_bracket_2"
                                         }
                                     ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs sq_bracket_2 onwin {1: ['cobbledollars give @1 150', 'tag @1 add defeated_sq_bracket_2', '@2 say Corphish and Shellos both. Fine. The final waits in the harbour office.'], 2: ['@2 say The net catches what the net catches. Mend your team and come back.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs sq_bracket_2 onwin {1: ['cobbledollars give @1 150', 'tag @1 add defeated_sq_bracket_2', '@2 say Corphish and Shellos both. Fine. The final waits in the harbour office.'], 2: ['@1 say The net catches what the net catches. Mend your team and come back.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -134,8 +156,8 @@
                                 },
                                 {
                                     Type: "PLAYER_TAG",
-                                    Operation: "NOT_EQUALS",
-                                    Name: "defeated_sq_bracket_2"
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_sq_bracket_2"
                                 }
                             ],
                             Label: "battle_button"

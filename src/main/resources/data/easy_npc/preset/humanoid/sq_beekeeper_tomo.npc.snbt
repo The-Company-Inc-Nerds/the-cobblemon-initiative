@@ -49,8 +49,8 @@
                         },
                         {
                             Type: "PLAYER_TAG",
-                            Operation: "NOT_EQUALS",
-                            Name: "sting_futures_paid"
+                            Operation: "EQUALS",
+                            Name: "no_sting_futures_paid"
                         }
                     ],
                     Priority: 30,
@@ -115,6 +115,17 @@
                         }
                     ],
                     Priority: 25,
+                    Buttons: [
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
+                        }
+                    ],
                     Texts: [
                         {
                             Text: "Every jar from here on is contraband by Company reckoning. Sweetest paperwork I ever filed."
@@ -135,8 +146,8 @@
                         },
                         {
                             Type: "PLAYER_TAG",
-                            Operation: "NOT_EQUALS",
-                            Name: "sting_reward_paid"
+                            Operation: "EQUALS",
+                            Name: "no_sting_reward_paid"
                         }
                     ],
                     Priority: 20,
@@ -206,6 +217,17 @@
                         }
                     ],
                     Priority: 18,
+                    Buttons: [
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
+                        }
+                    ],
                     Texts: [
                         {
                             Text: "The bees remember faces. Yours is filed under friend. Come see me after the gym — the hives will owe you a proper harvest by then."
@@ -223,8 +245,8 @@
                         },
                         {
                             Type: "PLAYER_TAG",
-                            Operation: "NOT_EQUALS",
-                            Name: "sting_memo_taken"
+                            Operation: "EQUALS",
+                            Name: "no_sting_memo_taken"
                         }
                     ],
                     Priority: 15,
@@ -266,8 +288,8 @@
                         },
                         {
                             Type: "PLAYER_TAG",
-                            Operation: "NOT_EQUALS",
-                            Name: "sting_seal_4"
+                            Operation: "EQUALS",
+                            Name: "no_sting_seal_4"
                         }
                     ],
                     Priority: 14,
@@ -309,8 +331,8 @@
                         },
                         {
                             Type: "PLAYER_TAG",
-                            Operation: "NOT_EQUALS",
-                            Name: "sting_seal_3"
+                            Operation: "EQUALS",
+                            Name: "no_sting_seal_3"
                         }
                     ],
                     Priority: 13,
@@ -352,8 +374,8 @@
                         },
                         {
                             Type: "PLAYER_TAG",
-                            Operation: "NOT_EQUALS",
-                            Name: "sting_seal_2"
+                            Operation: "EQUALS",
+                            Name: "no_sting_seal_2"
                         }
                     ],
                     Priority: 12,
@@ -559,8 +581,8 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_sq_sting_agent"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_sq_sting_agent"
                                         }
                                     ],
                                     Cmd: "tbcs attach sq_sting_agent @s"
@@ -571,11 +593,11 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_sq_sting_agent"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_sq_sting_agent"
                                         }
                                     ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs sq_sting_agent onwin {1: ['cobbledollars give @1 280', 'tag @1 add defeated_sq_sting_agent', '@2 say Asset intervention failed. Noting hostile local fauna and one uncooperative individual.', 'tag @1 add sting_seal_4_clear', 'give @1 cobblemon:poke_ball 2'], 2: ['@2 say The valuation stands. The Company thanks this route for its cooperation.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs sq_sting_agent onwin {1: ['cobbledollars give @1 280', 'tag @1 add defeated_sq_sting_agent', '@2 say Asset intervention failed. Noting hostile local fauna and one uncooperative individual.', 'tag @1 add sting_seal_4_clear', 'give @1 cobblemon:poke_ball 2'], 2: ['@1 say The valuation stands. The Company thanks this route for its cooperation.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -584,8 +606,8 @@
                             Conditions: [
                                 {
                                     Type: "PLAYER_TAG",
-                                    Operation: "NOT_EQUALS",
-                                    Name: "sting_seal_4_clear"
+                                    Operation: "EQUALS",
+                                    Name: "no_sting_seal_4_clear"
                                 }
                             ],
                             Label: "face_agent_button"
@@ -610,8 +632,8 @@
                             Conditions: [
                                 {
                                     Type: "PLAYER_TAG",
-                                    Operation: "NOT_EQUALS",
-                                    Name: "sting_seal_4_clear"
+                                    Operation: "EQUALS",
+                                    Name: "no_sting_seal_4_clear"
                                 }
                             ],
                             Label: "cite_button"

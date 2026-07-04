@@ -88,8 +88,8 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_scorchspire_leader"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_scorchspire_leader"
                                         }
                                     ],
                                     Cmd: "tbcs attach scorchspire_leader @s"
@@ -100,11 +100,11 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_scorchspire_leader"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_scorchspire_leader"
                                         }
                                     ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs scorchspire_leader onwin {1: ['cobbledollars give @1 6000', 'tag @1 add defeated_scorchspire_leader', '@2 say You walked into the fire and came out hotter than the spire. The Ember Badge is yours. Nothing stands between you and the Royal League now but the road.'], 2: ['@2 say Fire does not forgive the unready. You burned bright but you burned out. Bank your coals and climb the spire again.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs scorchspire_leader onwin {1: ['cobbledollars give @1 6000', 'tag @1 add defeated_scorchspire_leader', '@2 say You walked into the fire and came out hotter than the spire. The Ember Badge is yours. Nothing stands between you and the Royal League now but the road.'], 2: ['@1 say Fire does not forgive the unready. You burned bright but you burned out. Bank your coals and climb the spire again.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

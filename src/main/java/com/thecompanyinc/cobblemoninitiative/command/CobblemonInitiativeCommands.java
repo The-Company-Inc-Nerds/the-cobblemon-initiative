@@ -221,7 +221,7 @@ public class CobblemonInitiativeCommands {
   }
 
   // Quest HUD toggle — thin wrappers that dispatch the datapack quest functions
-  // (the boss bar + sidebar logic lives in data/.../function/quest/).
+  // (the sidebar HUD logic lives in data/.../function/quest/).
   private static int questDispatch(
     CommandContext<CommandSourceStack> context, String fn
   ) {

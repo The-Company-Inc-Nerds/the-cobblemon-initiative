@@ -88,8 +88,8 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_sq_canvasser"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_sq_canvasser"
                                         }
                                     ],
                                     Cmd: "tbcs attach sq_canvasser @s"
@@ -100,11 +100,11 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_sq_canvasser"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_sq_canvasser"
                                         }
                                     ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs sq_canvasser onwin {1: ['cobbledollars give @1 280', 'tag @1 add defeated_sq_canvasser', '@2 say Noted. The route survey will describe you as a headwind.'], 2: ['@2 say Your objection has been processed and declined.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs sq_canvasser onwin {1: ['cobbledollars give @1 280', 'tag @1 add defeated_sq_canvasser', '@2 say Noted. The route survey will describe you as a headwind.'], 2: ['@1 say Your objection has been processed and declined.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

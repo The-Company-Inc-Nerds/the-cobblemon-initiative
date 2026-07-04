@@ -64,8 +64,8 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_wheat_trader_ambush"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_wheat_trader_ambush"
                                         }
                                     ],
                                     Cmd: "tbcs attach wheat_trader_ambush @s"
@@ -76,11 +76,11 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_wheat_trader_ambush"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_wheat_trader_ambush"
                                         }
                                     ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs wheat_trader_ambush onwin {1: ['cobbledollars give @1 400', 'tag @1 add defeated_wheat_trader_ambush', '@2 say Fine. Fine! Take the fields. Take the ledgers. I never liked grain anyway.'], 2: ['@2 say Filed. The Company thanks you for your final contribution.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs wheat_trader_ambush onwin {1: ['cobbledollars give @1 400', 'tag @1 add defeated_wheat_trader_ambush', '@2 say Fine. Fine! Take the fields. Take the ledgers. I never liked grain anyway.'], 2: ['@1 say Filed. The Company thanks you for your final contribution.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

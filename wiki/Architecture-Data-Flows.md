@@ -204,9 +204,9 @@ flowchart TD
 
 ---
 
-## 6. Quest HUD — Derive State → Render Ladder → Boss Bar + Sidebar
+## 6. Quest HUD — Derive State → Render Ladder → Sidebar
 
-The Quest HUD invents **no new quest state**. It re-derives the current objective every second from data the other flows already wrote — `memory_fragment` (badges), `defeated_*` tags, and `fields_liberated` — and paints a boss bar plus a sidebar line.
+The Quest HUD invents **no new quest state**. It re-derives the current objective every second from data the other flows already wrote — `memory_fragment` (badges), `defeated_*` tags, and `fields_liberated` — and paints the sidebar: one main story line plus the active side-quest lines. (The old top "Objective" **boss bar was removed** on 2026-07-04 — a showrunner call; `quest/load` runs `bossbar remove cobblemon_initiative:objective` so it also disappears from existing worlds.)
 
 ```mermaid
 flowchart TD
@@ -215,12 +215,14 @@ flowchart TD
   end
   RF --> R0["quest/render priority ladder<br/>(low -> high; highest wins)"]
   R0 --> P0["(0) GYM: memory_fragment 0..9<br/>-> quest/gym_town -> set_gym<br/>'Defeat the <Town> Gym'"]
-  R0 --> P1["(1) HQ RAID: badges >= 7<br/>AND not defeated_villain_boss<br/>'Raid Company HQ — Acting CEO DJ'"]
+  R0 --> P0b["(0b) OPENING CHAIN: pre-badge Sango steps<br/>Mom -> starter -> Pokedex -> Running Shoes"]
+  R0 --> P1["(1) HQ RAID: badges >= 7, DJ standing<br/>fields_liberated < 4: 'Liberate wheat fields, then raid HQ'<br/>>= 4: 'Raid Company HQ'"]
   R0 --> P2["(2) ROYAL LEAGUE: 10 badges,<br/>DJ down, champion standing"]
-  R0 --> P3["(3) THE BOARD: champion down,<br/>board < 4 cleared (max 4 progress)"]
-  R0 --> P4["(4) DONE: defeated_villain_final_boss<br/>'Beyond the map: the Dragon'"]
-  R0 --> S["side: wheat_war_active<br/>-> set_wheat 'Liberate wheat fields n/6'"]
-  P0 --> OUT["boss bar (name + value/max)<br/>+ sidebar #main"]
+  R0 --> P3["(3) THE BOARD: champion down<br/>(royal_league_champion), board < 4 cleared"]
+  R0 --> P3b["(3b) board 4/4 cleared:<br/>'Face The Founder'"]
+  R0 --> P4["(4) DONE: defeated_villain_final_boss<br/>'Hunt the Ender Dragon'"]
+  R0 --> S["side lines: q.side_* fake players<br/>(~22 side quests, slots 81..58 —<br/>opening chain 81, wheat war 80, ...)"]
+  P0 --> OUT["sidebar ci_quest '⚜ THE INITIATIVE'<br/>main line = q.main (slot 100)"]
   P1 --> OUT
   P2 --> OUT
   P3 --> OUT
@@ -230,9 +232,11 @@ flowchart TD
 
 **The poller.** `quest/tick` (bound to `#minecraft:tick`) throttles itself to once per second and only recomputes while `#hud == 1`. `quest/refresh` runs `quest/render` as the player.
 
-**The priority ladder.** `render` evaluates branches **low priority first so the highest wins**: the gym objective (next town derived from `memory_fragment` 0–9) is the floor; once 7 badges are in, the **HQ raid outranks gyms 8–10** until DJ falls; then the Royal League; then hunting the Board (with the boss bar repurposed to a 0–4 board-cleared counter); and finally the post-game *"Beyond the map: the Dragon"* line once The Founder is down. A wheat-war side line appears separately when `wheat_war_active` is tagged, showing `Liberate wheat fields n/6`.
+**The priority ladder.** `render` evaluates branches **low priority first so the highest wins**: the gym objective (next town derived from `memory_fragment` 0–9) is the floor, overridden pre-badge-1 by the Sango opening chain; once 7 badges are in, the **HQ raid outranks gyms 8–10** until DJ falls — hard-gated on **4 liberated fields** (*"Liberate wheat fields, then raid HQ"* until then); then the Royal League (latched by `royal_league_champion` — the champion's `defeat_tag` override, **not** the `defeated_<id>` default); then hunting the Board; then *"Face The Founder"* once all 4 Board members are cleared; and finally the post-game *"Hunt the Ender Dragon"* line once The Founder is down (`defeated_villain_final_boss` — granted by `reveal/founder_defeated` alongside the canon `company_overthrown` flag).
 
-**Toggle.** `/ca quest show|hide|refresh` flips `#hud` and the sidebar display. `quest/load` is relog-safe — it guards one-time defaults with `#init` so a `/reload` respects the player's current show/hide choice. The HUD logic lives entirely in the datapack; the command just dispatches to `quest/{show,hide,refresh}`. Full command details are on the [[Commands]] page.
+**The sidebar mechanics.** Every displayed row rides a `q.*` fake player (`q.main` plus per-quest `q.side_*` holders) — vanilla 1.21.1 **hides `#`-prefixed holders from the sidebar**, so `#` names stay scratch-only (the `quest_hud` objective). The side list tracks ~22 side quests via their accept/complete tags — the opening chain rides slot 81, the wheat-war line slot 80 (`set_wheat`, gated on `wheat_war_active` + `heard_wheat_pitch`), the rest slots 79..58. The sidebar caps at **15 visible rows**; the slot scores (100, 81..58) rank which lines survive when many are active.
+
+**Toggle.** `/ca quest show|hide|refresh` flips `#hud` and the sidebar display. `quest/load` is relog-safe — it guards one-time defaults with `#init` so a `/reload` respects the player's current show/hide choice, and it deletes the retired `cobblemon_initiative:objective` boss bar on every load (side-quest countdowns therefore use their own dedicated bossbar ids — the `sidequest/sprint` pattern — never that id). The HUD logic lives entirely in the datapack; the command just dispatches to `quest/{show,hide,refresh}`. Full command details are on the [[Commands]] page.
 
 ---
 

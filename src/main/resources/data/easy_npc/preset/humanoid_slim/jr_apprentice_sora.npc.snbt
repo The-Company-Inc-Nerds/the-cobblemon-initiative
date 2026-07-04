@@ -44,6 +44,17 @@
                         }
                     ],
                     Priority: 30,
+                    Buttons: [
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
+                        }
+                    ],
                     Texts: [
                         {
                             Text: "Aiko is the apprentice proper - center of the greenhouse, in with the tall vines. She hits harder than me and apologizes less."
@@ -77,8 +88,8 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_takehara_jr_apprentice"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_takehara_jr_apprentice"
                                         }
                                     ],
                                     Cmd: "tbcs attach takehara_jr_apprentice @s"
@@ -89,11 +100,11 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_takehara_jr_apprentice"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_takehara_jr_apprentice"
                                         }
                                     ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs takehara_jr_apprentice onwin {1: ['tag @1 add defeated_takehara_jr_apprentice', '@2 say Stung and fair. My senior is deeper in, by the tall vines - Aiko. Tell her I softened you up.'], 2: ['@2 say The little bees win again. Patch up and come back through.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs takehara_jr_apprentice onwin {1: ['tag @1 add defeated_takehara_jr_apprentice', '@2 say Stung and fair. My senior is deeper in, by the tall vines - Aiko. Tell her I softened you up.'], 2: ['@1 say The little bees win again. Patch up and come back through.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

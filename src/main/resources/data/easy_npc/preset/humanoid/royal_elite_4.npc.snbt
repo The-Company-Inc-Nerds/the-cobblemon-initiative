@@ -88,8 +88,8 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_royal_elite_4"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_royal_elite_4"
                                         }
                                     ],
                                     Cmd: "tbcs attach royal_elite_4 @s"
@@ -100,11 +100,11 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_royal_elite_4"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_royal_elite_4"
                                         }
                                     ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs royal_elite_4 onwin {1: ['cobbledollars give @1 9500', 'tag @1 add defeated_royal_elite_4', '@2 say Dragons bow to no one, and yet here you stand. Only the Champion remains. She has been watching, you know.'], 2: ['@2 say A dragon does not forgive a soft grip. Toughen up and try the storm again.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs royal_elite_4 onwin {1: ['cobbledollars give @1 9500', 'tag @1 add defeated_royal_elite_4', '@2 say Dragons bow to no one, and yet here you stand. Only the Champion remains. She has been watching, you know.'], 2: ['@1 say A dragon does not forgive a soft grip. Toughen up and try the storm again.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

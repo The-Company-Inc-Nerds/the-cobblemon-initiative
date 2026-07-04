@@ -92,7 +92,7 @@ Shrine flow is phased: **start → (parkour) complete → optional Fairy tests**
 
 ### Quest HUD
 
-The Quest HUD (boss bar showing the current objective + a togglable sidebar log) is rendered by the datapack. These commands are thin wrappers that dispatch `cobblemon_initiative:quest/{show,hide,refresh}`.
+The Quest HUD (a togglable sidebar — the main line shows the current story objective, with side-quest lines beneath it) is rendered by the datapack. These commands are thin wrappers that dispatch `cobblemon_initiative:quest/{show,hide,refresh}`.
 
 | Command | Description |
 |---------|-------------|

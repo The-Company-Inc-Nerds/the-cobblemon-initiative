@@ -49,6 +49,17 @@
                         }
                     ],
                     Priority: 40,
+                    Buttons: [
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
+                        }
+                    ],
                     Texts: [
                         {
                             Text: "From up here I watched the banner flip on the first field. The kites flew lower that evening, like the air itself relaxed."
@@ -69,6 +80,17 @@
                         }
                     ],
                     Priority: 30,
+                    Buttons: [
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
+                        }
+                    ],
                     Texts: [
                         {
                             Text: "You are free under my sky. The kites only mark a trainer once — after that you are landscape."
@@ -102,8 +124,8 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_sq_rt2_kite"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_sq_rt2_kite"
                                         }
                                     ],
                                     Cmd: "tbcs attach sq_rt2_kite @s"
@@ -114,17 +136,26 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_sq_rt2_kite"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_sq_rt2_kite"
                                         }
                                     ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs sq_rt2_kite onwin {1: ['cobbledollars give @1 300', 'tag @1 add defeated_sq_rt2_kite', '@2 say Grounded. The kites called the wind wrong and so did I.'], 2: ['@2 say I saw the whole battle before it started. The ledge does that. Rest up and watch the sky next time.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs sq_rt2_kite onwin {1: ['cobbledollars give @1 300', 'tag @1 add defeated_sq_rt2_kite', '@2 say Grounded. The kites called the wind wrong and so did I.'], 2: ['@1 say I saw the whole battle before it started. The ledge does that. Rest up and watch the sky next time.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
                             Label: "battle_button"
+                        },
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
                         }
                     ],
                     Texts: [

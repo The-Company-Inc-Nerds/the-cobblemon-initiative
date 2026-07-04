@@ -88,8 +88,8 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_villain_admin_2"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_villain_admin_2"
                                         }
                                     ],
                                     Cmd: "tbcs attach villain_admin_2 @s"
@@ -100,11 +100,11 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_villain_admin_2"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_villain_admin_2"
                                         }
                                     ],
-                                    Cmd: "tbcs battle GEN_9_DOUBLES @s vs villain_admin_2 onwin {1: ['cobbledollars give @1 4500', 'tag @1 add defeated_villain_admin_2', '@2 say Reconciled. The numbers were always going to find you. They are very patient. So were you, once.', 'easy_npc delete @2'], 2: ['@2 say Variance contained. Asset re-secured. Please do not make me file that memo a second time.']}"
+                                    Cmd: "tbcs battle GEN_9_DOUBLES @s vs villain_admin_2 onwin {1: ['cobbledollars give @1 4500', 'tag @1 add defeated_villain_admin_2', '@2 say Reconciled. The numbers were always going to find you. They are very patient. So were you, once.', 'easy_npc delete @2'], 2: ['@1 say Variance contained. Asset re-secured. Please do not make me file that memo a second time.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

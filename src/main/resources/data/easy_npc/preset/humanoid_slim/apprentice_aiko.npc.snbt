@@ -44,6 +44,17 @@
                         }
                     ],
                     Priority: 30,
+                    Buttons: [
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
+                        }
+                    ],
                     Texts: [
                         {
                             Text: "You beat the garden and the gardener. Take the climb to Cicada - and tell her the yanma flew true."
@@ -77,8 +88,8 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_takehara_apprentice"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_takehara_apprentice"
                                         }
                                     ],
                                     Cmd: "tbcs attach takehara_apprentice @s"
@@ -89,11 +100,11 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_takehara_apprentice"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_takehara_apprentice"
                                         }
                                     ],
-                                    Cmd: "tbcs battle GEN_9_DOUBLES @s vs takehara_apprentice onwin {1: ['tag @1 add defeated_takehara_apprentice', '@2 say Grown, pruned, and beaten fairly. Cicada will want to see the trainer who walked through my garden.'], 2: ['@2 say The greenhouse keeps what it catches. Rest up and come through again.']}"
+                                    Cmd: "tbcs battle GEN_9_DOUBLES @s vs takehara_apprentice onwin {1: ['tag @1 add defeated_takehara_apprentice', '@2 say Grown, pruned, and beaten fairly. Cicada will want to see the trainer who walked through my garden.'], 2: ['@1 say The greenhouse keeps what it catches. Rest up and come through again.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

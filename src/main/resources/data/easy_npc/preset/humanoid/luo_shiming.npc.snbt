@@ -49,6 +49,17 @@
                         }
                     ],
                     Priority: 40,
+                    Buttons: [
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
+                        }
+                    ],
                     Texts: [
                         {
                             Text: "One field on this road pays its hands in coin again. If that spreads, my wager days are done and I will not miss them."
@@ -69,6 +80,17 @@
                         }
                     ],
                     Priority: 30,
+                    Buttons: [
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
+                        }
+                    ],
                     Texts: [
                         {
                             Text: "You doubled my humility instead of my pay. The fields teach worse lessons — take the coin and no hard feelings."
@@ -102,8 +124,8 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_sq_rt2_wager"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_sq_rt2_wager"
                                         }
                                     ],
                                     Cmd: "tbcs attach sq_rt2_wager @s"
@@ -114,11 +136,11 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_sq_rt2_wager"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_sq_rt2_wager"
                                         }
                                     ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs sq_rt2_wager onwin {1: ['cobbledollars give @1 380', 'tag @1 add defeated_sq_rt2_wager', '@2 say Doubled the wrong way. Take the stake — it was won fair, which is more than my pay can say.'], 2: ['cobbledollars remove @1 120', '@2 say The stake stays with the crew. It buys a real dinner tonight, so no hard feelings.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs sq_rt2_wager onwin {1: ['cobbledollars give @1 380', 'tag @1 add defeated_sq_rt2_wager', '@2 say Doubled the wrong way. Take the stake — it was won fair, which is more than my pay can say.'], 2: ['cobbledollars remove @2 120', '@1 say The stake stays with the crew. It buys a real dinner tonight, so no hard feelings.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

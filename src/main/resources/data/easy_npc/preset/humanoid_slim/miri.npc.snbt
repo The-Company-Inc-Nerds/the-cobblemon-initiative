@@ -44,6 +44,17 @@
                         }
                     ],
                     Priority: 20,
+                    Buttons: [
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
+                        }
+                    ],
                     Texts: [
                         {
                             Text: "The kelp is pressed, labeled, and shelved. The herbarium lives another quarter on sixteen fronds and spite."
@@ -93,8 +104,8 @@
                                 },
                                 {
                                     Type: "PLAYER_TAG",
-                                    Operation: "NOT_EQUALS",
-                                    Name: "quest_assist_collect_done"
+                                    Operation: "EQUALS",
+                                    Name: "no_quest_assist_collect_done"
                                 }
                             ],
                             Label: "kelp_button"

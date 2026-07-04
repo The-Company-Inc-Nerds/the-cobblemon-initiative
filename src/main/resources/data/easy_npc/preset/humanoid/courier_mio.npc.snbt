@@ -44,6 +44,17 @@
                         }
                     ],
                     Priority: 40,
+                    Buttons: [
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
+                        }
+                    ],
                     Texts: [
                         {
                             Text: "Why are you standing here talking to me? The bell does not ring itself. GO!"
@@ -87,8 +98,8 @@
                             Conditions: [
                                 {
                                     Type: "PLAYER_TAG",
-                                    Operation: "NOT_EQUALS",
-                                    Name: "race_daily_claimed"
+                                    Operation: "EQUALS",
+                                    Name: "no_race_daily_claimed"
                                 }
                             ],
                             Label: "rematch_button"

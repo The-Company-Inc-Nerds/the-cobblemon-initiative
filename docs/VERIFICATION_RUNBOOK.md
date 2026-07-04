@@ -67,6 +67,115 @@ Round 3's flip was still wrong — this time the grammar was pulled from the **d
 5. Win any trainer battle → prize money actually lands (was dead in every build so far).
 6. NPC dialog buttons execute (no `Blocked execute-as-user command root …` lines in the log) — needs the new security.cfg in the instance's `config/easy_npc/` (fresh mrpack install, or copy it into the existing instance).
 
+## Round 6 results (2026-07-04, showrunner 0.4.3-alpha.1 session) → 0.4.3-alpha.2
+
+The showrunner's pokedex experiment (removing one condition made the entry open) exposed
+the round's headline bug, bytecode-confirmed in the 6.25.0 jar:
+
+| Finding | Root cause | Fix |
+|---|---|---|
+| pokedex entry / Running Shoes entry / census taker "unreachable" | **Easy NPC's PLAYER_TAG condition IGNORES the Operation field** — `PlayerTagCondition.evaluate` is just `tags.contains(name)`, so NOT_EQUALS behaves as "player HAS the tag" (the opposite of intended). Every not-gate in the pipeline was dead, including the round-5 battle-button gates. | All negations lowered to `EQUALS no_<tag>` — inverse tags maintained every tick by the generated band_tags function (`tag @a[tag=!X] add no_X` / `tag @a[tag=X] remove no_X`). Snippets + template updated. Full recompile. |
+| Starter screen "did not work" | Unchanged from Round 5: the command executes and Cobblemon refuses (`starterSelected: true` in the test save, refusal suppressed). On the mid-progress world the (broken) post_starter gate ALSO fell back to the default entry, re-showing the starter button — consistent with the report. | Retest on a fresh world, or set `"starterSelected": false` in `cobblemonplayerdata/<uuid>.json` with the world closed. |
+| Missions not on the sidebar (mom / dead letter) | Mom's errand only rendered on the MAIN line pre-badge-1; the dead-letter tag was likely never set (accepted during the allowlist-blocked era). | Opening chain now ALSO renders as a side line (slot 81) on any world state the moment `mom_sent_to_lab` is set; re-accept the letter from Marlow to light its line. |
+| Top "Objective" boss bar unwanted | Showrunner call. | Removed everywhere (load/show/hide/render/set_gym); `bossbar remove` on load clears it from existing worlds. Sidebar main line carries the story. |
+| Dialogs missing a close button | "Give me a moment" was removed round-5; other entries never had one. | content_compile auto-appends a **Goodbye** close button to any entry without one (`"no_goodbye": true` opts out for forced encounters). |
+| Paid heal heals a broke player | By design pre-round-6; showrunner wants a hard gate. | `heal_paid` gates on `execute store result … cobbledollars pay @s 100` (bytecode-verified: pay checks the source balance before mutating, self-pay is net-zero, fail returns 0 — NOTE `store success` would NOT work, pay soft-fails). |
+| JEI still enabled | `.jar.disabled` path was not honored in the launcher install test. | Shelved — flag removed from modpack.json; build_mrpack.py keeps `"disabled": true` support if revisited. |
+
+**Round 7 canary list (0.4.3-alpha.2):**
+1. Fresh world (or reset `starterSelected`): Mom runs up once → "I am ready" → errand accepted → sidebar gains "• Choose a partner at the Sango lab" within a second; no boss bar anywhere.
+2. Professor: Choose a partner → starter screen OPENS; close dialog, re-open → "take the Pokedex" entry (no locked buttons); take it → sidebar line advances to "Show Mom your Pokedex".
+3. Mom: Running Shoes entry now opens (was the same NOT_EQUALS deadlock); every dialog has a Goodbye.
+4. Census taker's first dialog opens and its accept button works.
+5. Accept the dead letter from Marlow → "• Deliver it" side line lights.
+6. Paid heal with <100 CD → red "Payment declined." actionbar, NO heal; with ≥100 CD → heal + fee.
+7. Dialog battle vs an undefeated trainer STARTS (the round-5 gate was inverted by the same condition bug — battles were only offered AFTER defeat).
+
+## Round 7 results (2026-07-04, full-logic deep dive, pre-release audit) → 0.4.3-alpha.2 (same build)
+
+A four-lens walkthrough of every flow (battle stack from the decompiled TBCS/rctmod/rctapi
+jars, opening chain, economy, HUD/refresh) — the showrunner's rctmod question answered and
+five more latent breaks found and fixed:
+
+| Finding | Root cause | Fix |
+|---|---|---|
+| **rctmod-native battle locking: NOT usable.** | `tbcs` is a third mod (TBCS 0.14.1-beta) that calls rctapi's BattleManager directly — it BYPASSES all rctmod requirement/defeat tracking; rctmod's own locks + fail dialogs only exist in its spawned-TrainerMob flow, which this pack disables (globalSpawnChance=0, initialSeries empty), and enabling it would fight LevelCapManager. | Keep the Easy NPC Condition gates + onwin defeat tags — they are the only working lock for tbcs battles. |
+| The quest sidebar could NEVER show any lines | Vanilla 1.21.1 hides `#`-prefixed score holders from the sidebar (`PlayerScoreEntry.isHidden`, bytecode-verified) — every displayed row rode `#main`/`#side_*`. | All displayed rows renamed to `q.*` fake players; `#` stays scratch-only. (15-row sidebar cap noted; slot scores rank survivors.) |
+| Loss fees never charged; the PLAYER spoke the trainer's defeat taunt | TBCS substitutes `@1/@2` WINNERS-FIRST — in the lose list @1=NPC, @2=player; our lose branches assumed the win-branch order. | Lose lists mirrored (`remove @2`, `@1 say`) in the compiler, all snippets, and the template; recompiled. |
+| HUD dead past the Royal League | Champion latches `royal_league_champion` (defeat_tag override), render gated on never-set `defeated_royal_champion`; Founder latches `company_overthrown`, render + Mom's homecoming gated on never-set `defeated_villain_final_boss`. | Render re-gated on `royal_league_champion`; `reveal/founder_defeated` now also grants `defeated_villain_final_boss`; new "▶ Face The Founder" branch covers Board-cleared-Founder-alive. |
+| Opening-chain main line dead on a fresh world | `memory_fragment` is only ever SET by badge grants; unset scores fail `matches 0`. | Render defines it to 0 first (unset-guard). |
+| ESC on the starter screen desynced the chain | `chose_starter` was granted by the button CLICK, not the selection. | Java `STARTER_CHOSEN` hook grants the tag on the actual pick; the button action was removed. |
+| "Stabilizing" could RAISE instability | `hq_stabilize` hard-set idx to 25 — a full-liberation player could arrive below 25. | Downward-only clamp (`matches 26..` → set 25); idempotent under its known double-fire. |
+| Mom's shoes unreachable at 4+ badges | `pokedex_return` (28) was outranked by `warming` (30). | Priority 45 (self-hides via not_tag). |
+| 28 shipped battle buttons target empty/missing trainer teams | 20 `{}` trainer files (Royal League + shrines) + 18 missing files (DJ, Board, admins, grunts 3-11); rctapi refuses empty teams (insufficientPokemon). | content_compile now WARNS per affected battle; casting tracked in TODO §1.B — content work, not code. |
+
+**Round 8 session script (first session on 0.4.3-alpha.2, ~45-60 min, ordered so later
+steps reuse earlier state). Use a FRESH throwaway copy of the world for §B; the old
+test save has `starterSelected: true` + stale tags (reset via cobblemonplayerdata JSON
+if you must reuse it).**
+
+☐ SETUP (5 min)
+  ☐ Open world → log: ZERO `Failed to load function`, ZERO advancement parse errors.
+  ☐ `/cobblemon-initiative install check` → "bundled preset map loaded" + "ExecAsUser allowlist: OK".
+  ☐ PACK-BUILT INSTANCE (mrpack built with --with-map after 2026-07-04): the world opens
+    PRE-INSTALLED — hardcore + gamerules already baked into level.dat, shop already
+    badge_0, NPC refresh + sight registrations self-arm (log: "NPC Sight storage was
+    empty — seeded N registration(s)").
+  ☐ AUTO-INSTALL (pack only): ~2s after first join → "[The Company, Inc.] This world has
+    been provisioned…" chat line, log "[Auto-Install] Dispatched…", zones + frontiers
+    applied, NO kick (world already hardcore). Second boot: no re-run (world latch).
+    Bare-mod instance (§G): NO auto-install line — the marker only ships in the pack.
+  ☐ `/cobblemon-initiative install run` (still verify once) → "NPC preset refresh armed
+    for 63 mapped NPC(s); N loaded now…" (no unconditional "refreshed"), zones added,
+    shop seeded badge_0. On a NOT-yet-hardcore world the disconnect screen shows
+    "§6The Cobblemon Initiative / §cHardcore mode enabled." (the word Hardcore is new);
+    on a pre-baked world it just reports "already hardcore". Re-open.
+
+☐ A. HUD (2 min)
+  ☐ NO gold boss bar anywhere (removed even on old worlds).
+  ☐ Sidebar shows "⚜ THE INITIATIVE" WITH LINES (fresh world: "▶ Talk to Mom"). This never worked before — # holders were invisible.
+  ☐ `/ca quest hide` clears it; `/ca quest show` brings it back.
+
+☐ B. OPENING CHAIN (10 min, fresh world)
+  ☐ Mom runs up ONCE; after the dialog she never re-approaches (walk away/relog).
+  ☐ Her first dialog: no "Give me a moment"; "I am ready…" + auto "Goodbye" present.
+  ☐ Accept the errand → main line flips to "Visit Professor Acacia at the lab" AND side line "• Choose a partner at the Sango lab" appears within ~1s.
+  ☐ Professor → "Choose a partner" → starter screen OPENS. Press ESC → `/tag @s list` has NO chose_starter; button still offered.
+  ☐ Click again, actually pick → chose_starter appears; HUD flips to "Take the Pokedex from Acacia".
+  ☐ Re-talk → "A good match…" entry, UNGATED "Take the Pokedex" → pokédex item + got_pokedex + HUD flips to "Show Mom your Pokedex". (This was the NOT_EQUALS deadlock.)
+  ☐ Re-talk → post-pokédex entry ("How is the Pokedex coming along?").
+  ☐ Mom → Running Shoes entry OPENS (same deadlock class) → take shoes → side line clears, main line = "▶ Defeat the Takehara Falls Gym".
+
+☐ C. ECONOMY (10 min)
+  ☐ `/cobbledollars query <you>` → then `/function cobblemon_initiative:economy/payout {amount:100}` → ~100 CD credited + gold "Company Verified Rate" actionbar.
+  ☐ `/cobbledollars set @s 50` → nurse heal → red "Payment declined.", NO heal, balance still 50. `/cobbledollars set @s 500` → heal + fee (400 left).
+  ☐ Any dialog payout button (census SIGN etc.) → money lands with receipt.
+  ☐ WIN a dialog battle vs an undefeated trainer → battle STARTS (round-5 gates were inverted), prize credited once, defeat tag set, re-talk = already-beaten line.
+  ☐ LOSE a fee battle (wager/villain grunt, weak team) → fee DEDUCTED FROM YOU and the NPC (not you) speaks the taunt. (Both were inverted: fee hit the NPC's UUID, you spoke the line.)
+
+☐ D. TOWNS 1-3 QUESTS (15 min)
+  ☐ Census taker's FIRST dialog opens (was condition-blocked); accept → HUD line; finish → +500 + paper.
+  ☐ Marlow → take the dead letter → "• deliver" side line lights within 1s; deliver to Lucian.
+  ☐ Price check accept → "Price checks noted 0/3"; each note increments.
+  ☐ Spot-check 3-4 random NPCs: every dialog has a working exit (Goodbye or native close).
+
+☐ E. NPC REFRESH (5 min)
+  ☐ Walk toward any mapped NPC's chunk → log `[NPC Refresh] Applied …` once; casting correct (e.g. Dr. Asha nameplate).
+  ☐ `/cobblemon-initiative shop badge_1` → "Applied shop tier" log; `shop refresh` errors-free.
+
+☐ F. ENDGAME LADDER, forced tags (3 min, throwaway world/undo after)
+  ☐ `/scoreboard players set @s memory_fragment 10` + `/tag @s add defeated_villain_boss` + `/tag @s add royal_league_champion` → "▶ Hunt the Board of Directors".
+  ☐ Add all four `/tag @s add defeated_board_{madeline,matt,micah,lauren}` → "▶ Face The Founder".
+  ☐ `/tag @s add defeated_villain_final_boss` → "▶ Hunt the Ender Dragon".
+
+☐ G. STANDALONE, separate bare instance (10 min)
+  ☐ New instance: Fabric 0.19.3 + fabric-api + fabric-language-kotlin + Cobblemon + Easy NPC (+config_ui) + CobbleDollars + RCTAPI + rctmod + TBCS + architectury + OUR JAR. NO config folder, no overrides.
+  ☐ Launch → log: `[Easy NPC compat] Patched … security.cfg — ensured 18 ExecAsUser command root(s)…`.
+  ☐ World + any NPC with a command button → the button works on the FIRST press.
+  ☐ `/cobblemon-initiative install check` → "ExecAsUser allowlist: OK".
+
+☐ POST-SESSION LOG SWEEP: grep the log for `Blocked execute-as-user`, `Failed to load function`, `Unknown or incomplete command`, `[NPC Refresh] Import failed` — all four should be absent. Any failure: save the full log to dev/ (log-0.4.3-alpha.2) as usual.
+
 ## Phase 0 — Boot & wiring (5 min)
 
 1. **Datapack parse** — start the world, check the log.

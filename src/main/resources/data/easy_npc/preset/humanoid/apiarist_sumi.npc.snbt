@@ -44,6 +44,17 @@
                         }
                     ],
                     Priority: 30,
+                    Buttons: [
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
+                        }
+                    ],
                     Texts: [
                         {
                             Text: "The little one settling in? Combee do best with a trainer who moves with the seasons. She will bloom right around the time you earn it."
@@ -73,8 +84,8 @@
                             Conditions: [
                                 {
                                     Type: "PLAYER_TAG",
-                                    Operation: "NOT_EQUALS",
-                                    Name: "work_fetch_done"
+                                    Operation: "EQUALS",
+                                    Name: "no_work_fetch_done"
                                 }
                             ],
                             Label: "honey_button"

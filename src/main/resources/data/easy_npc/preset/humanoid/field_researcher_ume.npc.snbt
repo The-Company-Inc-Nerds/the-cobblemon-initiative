@@ -44,6 +44,17 @@
                         }
                     ],
                     Priority: 50,
+                    Buttons: [
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
+                        }
+                    ],
                     Texts: [
                         {
                             Text: "The wager is settled and logged. Payroll flagged it as recreational data collection, which is the nicest thing payroll has ever said about anyone."
@@ -93,8 +104,8 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_sq_headcount_wager"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_sq_headcount_wager"
                                         }
                                     ],
                                     Cmd: "tbcs attach sq_headcount_wager @s"
@@ -105,11 +116,11 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_sq_headcount_wager"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_sq_headcount_wager"
                                         }
                                     ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs sq_headcount_wager onwin {1: ['cobbledollars give @1 900', 'tag @1 add defeated_sq_headcount_wager', '@2 say Documented. The purse is yours and the appendix is thicker for it.'], 2: ['@2 say The stake goes to science. Payroll will find that hilarious.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs sq_headcount_wager onwin {1: ['cobbledollars give @1 900', 'tag @1 add defeated_sq_headcount_wager', '@2 say Documented. The purse is yours and the appendix is thicker for it.'], 2: ['@1 say The stake goes to science. Payroll will find that hilarious.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -118,8 +129,8 @@
                             Conditions: [
                                 {
                                     Type: "PLAYER_TAG",
-                                    Operation: "NOT_EQUALS",
-                                    Name: "defeated_sq_headcount_wager"
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_sq_headcount_wager"
                                 }
                             ],
                             Label: "wager_button"
@@ -154,8 +165,8 @@
                         },
                         {
                             Type: "PLAYER_TAG",
-                            Operation: "NOT_EQUALS",
-                            Name: "census_paid"
+                            Operation: "EQUALS",
+                            Name: "no_census_paid"
                         }
                     ],
                     Priority: 30,
@@ -202,8 +213,8 @@
                         },
                         {
                             Type: "PLAYER_TAG",
-                            Operation: "NOT_EQUALS",
-                            Name: "census_done"
+                            Operation: "EQUALS",
+                            Name: "no_census_done"
                         }
                     ],
                     Priority: 20,
@@ -273,8 +284,8 @@
                             Conditions: [
                                 {
                                     Type: "PLAYER_TAG",
-                                    Operation: "NOT_EQUALS",
-                                    Name: "census_accepted"
+                                    Operation: "EQUALS",
+                                    Name: "no_census_accepted"
                                 }
                             ],
                             Label: "accept_button"

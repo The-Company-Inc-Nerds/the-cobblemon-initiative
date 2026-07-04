@@ -88,8 +88,8 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_nifl_leader"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_nifl_leader"
                                         }
                                     ],
                                     Cmd: "tbcs attach nifl_leader @s"
@@ -100,11 +100,11 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_nifl_leader"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_nifl_leader"
                                         }
                                     ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs nifl_leader onwin {1: ['cobbledollars give @1 5400', 'tag @1 add defeated_nifl_leader', '@2 say Cold sharpens what it does not kill. You came through clear and unbroken. The Glacier Badge is yours.'], 2: ['@2 say The frost takes the hurried and the warm. Slow down. Go still. The ice will teach you, if you let it.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs nifl_leader onwin {1: ['cobbledollars give @1 5400', 'tag @1 add defeated_nifl_leader', '@2 say Cold sharpens what it does not kill. You came through clear and unbroken. The Glacier Badge is yours.'], 2: ['@1 say The frost takes the hurried and the warm. Slow down. Go still. The ice will teach you, if you let it.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

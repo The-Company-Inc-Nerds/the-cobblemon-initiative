@@ -35,6 +35,26 @@ public class NpcSightInit implements ModInitializer {
     ServerLifecycleEvents.SERVER_STARTED.register(server -> {
       storage.load(server);
       LOGGER.info("NPC Sight loaded {} registered NPC(s).", storage.size());
+
+      // Self-heal on a fresh world (standalone-friendly — no `install run` required):
+      // seed the sight registrations from the shipped register_sight function when
+      // the world has none. Idempotent (`npcsight add` rejects existing UUIDs and
+      // never resets the one-shot `fired` latch).
+      if (storage.size() == 0) {
+        net.minecraft.resources.ResourceLocation fn =
+          net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(
+            "cobblemon_initiative", "dialog/register_sight");
+        if (server.getFunctions().get(fn).isPresent()) {
+          server.getCommands().performPrefixedCommand(
+            server.createCommandSourceStack().withPermission(4).withSuppressedOutput(),
+            "function cobblemon_initiative:dialog/register_sight"
+          );
+          LOGGER.info(
+            "NPC Sight storage was empty — seeded {} registration(s) from register_sight.",
+            storage.size()
+          );
+        }
+      }
     });
 
     ServerLifecycleEvents.SERVER_STOPPING.register(server -> {

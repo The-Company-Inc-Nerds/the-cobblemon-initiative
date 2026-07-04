@@ -86,7 +86,7 @@ As money wobbles, **Company wheat traders** appear offering an "alternative" cur
 The Company's people increasingly **recognize your face**. Early grunts manage a confused "have we met?"; mid-journey it sharpens to "you're supposed to be dead"; late, some refuse to raise a hand against you while others panic. The escalation is gated on your badge progress, so it tracks the same arc your memories do.
 
 ### The Quest HUD
-A boss bar shows your current objective and progress, with a togglable sidebar log — all derived from your existing progress, no separate tracking to maintain. Toggle it with `/ca quest show`, `/ca quest hide`, and `/ca quest refresh`.
+A togglable sidebar shows your current objective on its main line, with side-quest lines listed beneath it — all derived from your existing progress, no separate tracking to maintain. Toggle it with `/ca quest show`, `/ca quest hide`, and `/ca quest refresh`.
 
 ### NPC Sight
 Certain NPCs actually *see* you — a per-tick line-of-sight check determines whether an NPC can spot the player, which in turn can trigger dialogue, pursuit, or a one-time approach. Practically: line of sight matters. You can be noticed.

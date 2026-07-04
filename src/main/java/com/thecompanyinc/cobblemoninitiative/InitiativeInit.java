@@ -6,6 +6,8 @@ import com.cobblemon.mod.common.api.battles.model.actor.BattleActor;
 import com.cobblemon.mod.common.api.events.CobblemonEvents;
 import com.cobblemon.mod.common.battles.actor.PlayerBattleActor;
 import com.thecompanyinc.cobblemoninitiative.command.CobblemonInitiativeCommands;
+import com.thecompanyinc.cobblemoninitiative.compat.EasyNpcSecurityConfig;
+import com.thecompanyinc.cobblemoninitiative.install.AutoInstall;
 import com.thecompanyinc.cobblemoninitiative.install.InstallCommand;
 import com.thecompanyinc.cobblemoninitiative.config.ConfigLoader;
 import com.thecompanyinc.cobblemoninitiative.config.TrainerConfig;
@@ -45,6 +47,11 @@ public class InitiativeInit implements ModInitializer {
   @Override
   public void onInitialize() {
     LOGGER.info("Initializing The Cobblemon Initiative...");
+
+    // Standalone guarantee (no mrpack required): Easy NPC blocks every dialog-button
+    // command unless its root is allowlisted in security.cfg. Easy NPC reads that file
+    // lazily (first button press), so patching here reliably precedes the first read.
+    EasyNpcSecurityConfig.ensureAllowlist();
 
     ModItems.register();
 
@@ -86,6 +93,10 @@ public class InitiativeInit implements ModInitializer {
       lootChestManager.onBlockBroken(state, pos)
     );
 
+    // Pack-only first-join auto-install: runs `install run` once per fresh world when
+    // the mrpack's marker config is present; inert on bare-mod installs.
+    AutoInstall.init();
+
     CommandRegistrationCallback.EVENT.register(
       (dispatcher, registryAccess, environment) -> {
         CobblemonInitiativeCommands.register(dispatcher);
@@ -122,6 +133,18 @@ public class InitiativeInit implements ModInitializer {
   }
 
   private void registerBattleEvents() {
+    // The opening chain gates on chose_starter. The tag is granted HERE, on the actual
+    // Cobblemon starter selection, not by the professor's dialog button — a player who
+    // opens the starter screen and presses ESC picks nothing, and a button-granted tag
+    // would desync the whole chain (professor tiers, HUD, Mom's shoes).
+    CobblemonEvents.STARTER_CHOSEN.subscribe(Priority.NORMAL, event -> {
+      ServerPlayer starterPlayer = event.getPlayer();
+      if (starterPlayer != null) {
+        starterPlayer.addTag("chose_starter");
+      }
+      return Unit.INSTANCE;
+    });
+
     CobblemonEvents.BATTLE_VICTORY.subscribe(Priority.NORMAL, event -> {
       PokemonBattle battle = event.getBattle();
 

@@ -64,8 +64,8 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_villain_grunt_8"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_villain_grunt_8"
                                         }
                                     ],
                                     Cmd: "tbcs attach villain_grunt_8 @s"
@@ -76,17 +76,26 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_villain_grunt_8"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_villain_grunt_8"
                                         }
                                     ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_grunt_8 onwin {1: ['cobbledollars give @1 480', 'tag @1 add defeated_villain_grunt_8', '@2 say Headquarters does not like surprises on the senior floor. You are a very large surprise.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 320', '@2 say Intrusion contained. The Company thanks you for testing our security.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_grunt_8 onwin {1: ['cobbledollars give @1 480', 'tag @1 add defeated_villain_grunt_8', '@2 say Headquarters does not like surprises on the senior floor. You are a very large surprise.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 320', '@1 say Intrusion contained. The Company thanks you for testing our security.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
                             Label: "yes_button"
+                        },
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
                         }
                     ],
                     Texts: [
@@ -125,8 +134,8 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_villain_grunt_8"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_villain_grunt_8"
                                         }
                                     ],
                                     Cmd: "tbcs attach villain_grunt_8 @s"
@@ -137,17 +146,26 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_villain_grunt_8"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_villain_grunt_8"
                                         }
                                     ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_grunt_8 onwin {1: ['cobbledollars give @1 480', 'tag @1 add defeated_villain_grunt_8', '@2 say Headquarters does not like surprises on the senior floor. You are a very large surprise.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 320', '@2 say Intrusion contained. The Company thanks you for testing our security.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_grunt_8 onwin {1: ['cobbledollars give @1 480', 'tag @1 add defeated_villain_grunt_8', '@2 say Headquarters does not like surprises on the senior floor. You are a very large surprise.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 320', '@1 say Intrusion contained. The Company thanks you for testing our security.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
                             Label: "yes_button"
+                        },
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
                         }
                     ],
                     Texts: [

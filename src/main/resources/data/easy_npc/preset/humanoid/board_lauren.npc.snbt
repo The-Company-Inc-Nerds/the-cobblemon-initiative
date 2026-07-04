@@ -84,8 +84,8 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_board_lauren"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_board_lauren"
                                         }
                                     ],
                                     Cmd: "tbcs attach board_lauren @s"
@@ -96,17 +96,26 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_board_lauren"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_board_lauren"
                                         }
                                     ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs board_lauren onwin {1: ['cobbledollars give @1 9000', 'tag @1 add defeated_board_lauren', '@2 say Then we will tell a new story. Yours. I never did get to write the ending I wanted. Perhaps that is fair.', 'execute as @1 at @1 run function cobblemon_initiative:reveal/board_fell', 'easy_npc delete @2'], 2: ['@2 say Revised, not ended. The narrative stands. The founder retired, and that is all the region will ever read.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs board_lauren onwin {1: ['cobbledollars give @1 9000', 'tag @1 add defeated_board_lauren', '@2 say Then we will tell a new story. Yours. I never did get to write the ending I wanted. Perhaps that is fair.', 'execute as @1 at @1 run function cobblemon_initiative:reveal/board_fell', 'easy_npc delete @2'], 2: ['@1 say Revised, not ended. The narrative stands. The founder retired, and that is all the region will ever read.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
                             Label: "yes_button"
+                        },
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
                         }
                     ],
                     Texts: [

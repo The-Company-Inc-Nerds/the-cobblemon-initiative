@@ -88,8 +88,8 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_fairy_shrine_leader"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_fairy_shrine_leader"
                                         }
                                     ],
                                     Cmd: "tbcs attach fairy_shrine_leader @s"
@@ -100,11 +100,11 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_fairy_shrine_leader"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_fairy_shrine_leader"
                                         }
                                     ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs fairy_shrine_leader onwin {1: ['cobbledollars give @1 2500', 'tag @1 add defeated_fairy_shrine_leader', '@2 say The light has chosen to follow you. Be gentle with what it shows you.'], 2: ['@2 say The radiance turns away for now. Come back when your heart is steadier.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs fairy_shrine_leader onwin {1: ['cobbledollars give @1 2500', 'tag @1 add defeated_fairy_shrine_leader', '@2 say The light has chosen to follow you. Be gentle with what it shows you.'], 2: ['@1 say The radiance turns away for now. Come back when your heart is steadier.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

@@ -64,8 +64,8 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_villain_grunt_10"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_villain_grunt_10"
                                         }
                                     ],
                                     Cmd: "tbcs attach villain_grunt_10 @s"
@@ -76,17 +76,26 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_villain_grunt_10"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_villain_grunt_10"
                                         }
                                     ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_grunt_10 onwin {1: ['cobbledollars give @1 580', 'tag @1 add defeated_villain_grunt_10', '@2 say I was the wall they put between the public and the truth. You just walked through a wall.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 380', '@2 say Threat eliminated. The Company reminds you: verified trust, verified value.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_grunt_10 onwin {1: ['cobbledollars give @1 580', 'tag @1 add defeated_villain_grunt_10', '@2 say I was the wall they put between the public and the truth. You just walked through a wall.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 380', '@1 say Threat eliminated. The Company reminds you: verified trust, verified value.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
                             Label: "yes_button"
+                        },
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
                         }
                     ],
                     Texts: [
@@ -125,8 +134,8 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_villain_grunt_10"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_villain_grunt_10"
                                         }
                                     ],
                                     Cmd: "tbcs attach villain_grunt_10 @s"
@@ -137,17 +146,26 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_villain_grunt_10"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_villain_grunt_10"
                                         }
                                     ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_grunt_10 onwin {1: ['cobbledollars give @1 580', 'tag @1 add defeated_villain_grunt_10', '@2 say I was the wall they put between the public and the truth. You just walked through a wall.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 380', '@2 say Threat eliminated. The Company reminds you: verified trust, verified value.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_grunt_10 onwin {1: ['cobbledollars give @1 580', 'tag @1 add defeated_villain_grunt_10', '@2 say I was the wall they put between the public and the truth. You just walked through a wall.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 380', '@1 say Threat eliminated. The Company reminds you: verified trust, verified value.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
                             Label: "yes_button"
+                        },
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
                         }
                     ],
                     Texts: [

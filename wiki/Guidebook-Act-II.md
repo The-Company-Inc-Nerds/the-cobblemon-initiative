@@ -163,9 +163,9 @@ The **Dark Urge whisper** system escalates with your progress. After the HQ raid
 
 ## THE HQ RAID — climax of Act II
 
-> **Location:** `[1590 51 1028]` · **Unlocks:** after Gym 7 · **Boss:** Acting CEO DJ
+> **Location:** `[1590 51 1028]` · **Unlocks:** after Gym 7 + **4 liberated wheat fields** · **Boss:** Acting CEO DJ
 
-This is not a gym. After the Electric Badge, the HQ becomes assailable, and Act II resolves by **storming the office tower** and fighting up the org chart.
+This is not a gym. After the Electric Badge — and once you've **liberated 4 wheat fields** (DJ won't take the meeting while the fields still feed the Company; the quest HUD reads *"Liberate wheat fields, then raid HQ"* until then) — the HQ becomes assailable, and Act II resolves by **storming the office tower** and fighting up the org chart.
 
 ### The climb
 The raid is a gauntlet up the Company's corporate ladder. The exact roster you face depends on your progress, but the structure is the ascent itself:
@@ -243,7 +243,7 @@ The traders are wired to NPC Sight (`can_see_player`) and these tags; the more o
 ## Quick reference
 
 - **Check your standing:** `/cobblemon-initiative progress` (badges, defeated trainers, cap) and `/cobblemon-initiative levelcap`.
-- **Quest HUD:** `/ca quest show|hide|refresh` — the boss bar tracks your current objective; through Act II it walks you toward the HQ.
+- **Quest HUD:** `/ca quest show|hide|refresh` — the sidebar's main line tracks your current objective; through Act II it walks you toward the HQ.
 - **Start the Ground Shrine:** `/cobblemon-initiative shrine ground start` · **bail out:** `/shrine-abort`.
 - Full command list: [[Commands]]. How these systems wire together: [[Architecture Data Flows]].
 

@@ -64,8 +64,8 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_villain_grunt_9"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_villain_grunt_9"
                                         }
                                     ],
                                     Cmd: "tbcs attach villain_grunt_9 @s"
@@ -76,17 +76,26 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_villain_grunt_9"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_villain_grunt_9"
                                         }
                                     ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_grunt_9 onwin {1: ['cobbledollars give @1 500', 'tag @1 add defeated_villain_grunt_9', '@2 say I held this corridor through two reorganisations. I will not be the one who explains how you passed.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 330', '@2 say Breach neutralised. Return to the lobby and someone will see to your account.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_grunt_9 onwin {1: ['cobbledollars give @1 500', 'tag @1 add defeated_villain_grunt_9', '@2 say I held this corridor through two reorganisations. I will not be the one who explains how you passed.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 330', '@1 say Breach neutralised. Return to the lobby and someone will see to your account.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
                             Label: "yes_button"
+                        },
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
                         }
                     ],
                     Texts: [
@@ -125,8 +134,8 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_villain_grunt_9"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_villain_grunt_9"
                                         }
                                     ],
                                     Cmd: "tbcs attach villain_grunt_9 @s"
@@ -137,17 +146,26 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_villain_grunt_9"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_villain_grunt_9"
                                         }
                                     ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_grunt_9 onwin {1: ['cobbledollars give @1 500', 'tag @1 add defeated_villain_grunt_9', '@2 say I held this corridor through two reorganisations. I will not be the one who explains how you passed.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 330', '@2 say Breach neutralised. Return to the lobby and someone will see to your account.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_grunt_9 onwin {1: ['cobbledollars give @1 500', 'tag @1 add defeated_villain_grunt_9', '@2 say I held this corridor through two reorganisations. I will not be the one who explains how you passed.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 330', '@1 say Breach neutralised. Return to the lobby and someone will see to your account.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
                             Label: "yes_button"
+                        },
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
                         }
                     ],
                     Texts: [

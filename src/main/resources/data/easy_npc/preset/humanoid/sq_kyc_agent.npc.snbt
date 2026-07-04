@@ -49,6 +49,17 @@
                         }
                     ],
                     Priority: 40,
+                    Buttons: [
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
+                        }
+                    ],
                     Texts: [
                         {
                             Text: "The survey window for this district has closed due to a scheduling conflict. All records are final. Please disperse."
@@ -82,8 +93,8 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_sq_kyc_agent"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_sq_kyc_agent"
                                         }
                                     ],
                                     Cmd: "tbcs attach sq_kyc_agent @s"
@@ -94,11 +105,11 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_sq_kyc_agent"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_sq_kyc_agent"
                                         }
                                     ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs sq_kyc_agent onwin {1: ['cobbledollars give @1 460', 'tag @1 add defeated_sq_kyc_agent', '@2 say There has been a scheduling conflict. The survey is suspended. This visit never reached the district office.', 'give @1 cobblemon:super_potion 2', 'easy_npc delete @2'], 2: ['@2 say Thank you for your participation. Your responses have been recorded against you.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs sq_kyc_agent onwin {1: ['cobbledollars give @1 460', 'tag @1 add defeated_sq_kyc_agent', '@2 say There has been a scheduling conflict. The survey is suspended. This visit never reached the district office.', 'give @1 cobblemon:super_potion 2', 'easy_npc delete @2'], 2: ['@1 say Thank you for your participation. Your responses have been recorded against you.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -151,8 +162,8 @@
                         },
                         {
                             Type: "PLAYER_TAG",
-                            Operation: "NOT_EQUALS",
-                            Name: "defeated_sq_kyc_agent"
+                            Operation: "EQUALS",
+                            Name: "no_defeated_sq_kyc_agent"
                         }
                     ],
                     Priority: 10,
@@ -192,11 +203,22 @@
                     Conditions: [
                         {
                             Type: "PLAYER_TAG",
-                            Operation: "NOT_EQUALS",
-                            Name: "defeated_takehara_leader"
+                            Operation: "EQUALS",
+                            Name: "no_defeated_takehara_leader"
                         }
                     ],
                     Priority: 0,
+                    Buttons: [
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
+                        }
+                    ],
                     Texts: [
                         {
                             Text: "This district is not yet scheduled for verification. Consult the posted timetable. There is no posted timetable. That is intentional."

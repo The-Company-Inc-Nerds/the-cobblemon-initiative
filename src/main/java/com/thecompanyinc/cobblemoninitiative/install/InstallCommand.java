@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.thecompanyinc.cobblemoninitiative.NuzlockeInit;
+import com.thecompanyinc.cobblemoninitiative.compat.EasyNpcSecurityConfig;
 import com.thecompanyinc.cobblemoninitiative.config.NuzlockeConfig;
 import com.thecompanyinc.cobblemoninitiative.economy.ShopTierManager;
 import com.thecompanyinc.cobblemoninitiative.mapfrontiers.MapFrontiersBridge;
@@ -44,9 +45,11 @@ import org.slf4j.LoggerFactory;
  * <p><b>check</b> — reports current vs. target gamerule values and how many NPC
  * preset mappings are registered.
  *
- * <p><b>run</b> — applies all gamerules from install.json, then delegates NPC preset
- * application to the existing npc-map storage (same logic as
- * {@code /cobblemon-initiative npc-map apply}).
+ * <p><b>run</b> — applies all gamerules from install.json, seeds the CobbleDollars
+ * shop, installs zones + Map Frontiers, then ARMS the NPC preset refresh: the bundled
+ * uuid→preset map ({@link com.thecompanyinc.cobblemoninitiative.npcmap.NpcPresetRefreshManager})
+ * re-imports each mapped NPC as its chunk loads (a one-shot import can only reach
+ * loaded NPCs). The npc-map storage replay below it is a legacy dev path.
  *
  * <p>Mod dependencies belong in {@code fabric.mod.json}; the launcher resolves them.
  * NPC position/home data lives in the Easy NPC SNBT preset files; no coordinates are
@@ -117,15 +120,21 @@ public class InstallCommand {
     );
     sb.append("\n");
 
+    sb.append("\n  NPC presets: ")
+      .append(NpcPresetRefreshManager.hasBundledMap() ? "bundled preset map loaded" : "bundled preset map MISSING")
+      .append(" — 'install run' arms a per-chunk-load refresh for every mapped NPC.\n");
+    sb.append("  Easy NPC ExecAsUser allowlist: ")
+      .append(
+        EasyNpcSecurityConfig.isAllowlistComplete()
+          ? "OK (dialog buttons can execute commands)."
+          : "INCOMPLETE — dialog buttons would be silently blocked; relaunch the game (the mod patches config/easy_npc/security.cfg on startup)."
+      );
+
     NpcMapStorage storage = NpcMapInit.getStorage();
     int mapped = storage != null ? storage.size() : 0;
-    sb.append("\n  NPC presets: ")
+    sb.append("\n  Legacy npc-map storage: ")
       .append(mapped)
-      .append(" mapping(s) in npc-map storage.\n")
-      .append("  Run '/cobblemon-initiative npc-map apply' to apply them,\n")
-      .append(
-        "  or '/function cobblemon_initiative:update_npc_presets' after running generate_npc_function."
-      );
+      .append(" mapping(s) (dev tool; '/cobblemon-initiative npc-map apply' replays them onto loaded NPCs).");
 
     int zoneCount = config.zones != null ? config.zones.size() : 0;
     sb.append("\n\n  Zones: ")
@@ -603,15 +612,20 @@ public class InstallCommand {
           true
         );
     }
-    server.execute(() -> {
-      for (ServerPlayer p : server.getPlayerList().getPlayers()) {
-        p.connection.disconnect(
-          Component.literal(
-            "§6The Cobblemon Initiative\n\n§cHardcore mode enabled.\n§7Re-open the world to begin your adventure."
-          )
-        );
-      }
-    });
+    // The kick exists ONLY so the client reloads into hardcore — on a world that was
+    // already hardcore (e.g. pre-baked by build-mrpack, or a re-run) there is nothing
+    // to reload, and kicking would wreck the auto-install first-join experience.
+    if (hardcoreFlipped) {
+      server.execute(() -> {
+        for (ServerPlayer p : server.getPlayerList().getPlayers()) {
+          p.connection.disconnect(
+            Component.literal(
+              "§6The Cobblemon Initiative\n\n§cHardcore mode enabled.\n§7Re-open the world to begin your adventure."
+            )
+          );
+        }
+      });
+    }
 
     return 1;
   }

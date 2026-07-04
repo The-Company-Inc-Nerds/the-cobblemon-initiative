@@ -88,8 +88,8 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_deepcore_leader"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_deepcore_leader"
                                         }
                                     ],
                                     Cmd: "tbcs attach deepcore_leader @s"
@@ -100,11 +100,11 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_deepcore_leader"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_deepcore_leader"
                                         }
                                     ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs deepcore_leader onwin {1: ['cobbledollars give @1 2800', 'tag @1 add defeated_deepcore_leader', '@2 say Now that is a punch with weight behind it. The Iron Badge is earned, not given. You earned it.'], 2: ['@2 say Get up. Always get up. The mat is not where you live. Train harder and find me again.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs deepcore_leader onwin {1: ['cobbledollars give @1 2800', 'tag @1 add defeated_deepcore_leader', '@2 say Now that is a punch with weight behind it. The Iron Badge is earned, not given. You earned it.'], 2: ['@1 say Get up. Always get up. The mat is not where you live. Train harder and find me again.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

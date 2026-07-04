@@ -49,6 +49,17 @@
                         }
                     ],
                     Priority: 40,
+                    Buttons: [
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
+                        }
+                    ],
                     Texts: [
                         {
                             Text: "Word came down the path - the Takehara badge. The flock called it before the newspapers did."
@@ -69,6 +80,17 @@
                         }
                     ],
                     Priority: 30,
+                    Buttons: [
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
+                        }
+                    ],
                     Texts: [
                         {
                             Text: "You beat me fair. The road is yours to walk, today and always."
@@ -102,8 +124,8 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_sq_regular_spotter"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_sq_regular_spotter"
                                         }
                                     ],
                                     Cmd: "tbcs attach sq_regular_spotter @s"
@@ -114,17 +136,26 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_sq_regular_spotter"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_sq_regular_spotter"
                                         }
                                     ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs sq_regular_spotter onwin {1: ['cobbledollars give @1 200', 'tag @1 add defeated_sq_regular_spotter', '@2 say Sharp. My eyes are good but your team is better.'], 2: ['@2 say I saw that coming. Literally. It is my whole thing.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs sq_regular_spotter onwin {1: ['cobbledollars give @1 200', 'tag @1 add defeated_sq_regular_spotter', '@2 say Sharp. My eyes are good but your team is better.'], 2: ['@1 say I saw that coming. Literally. It is my whole thing.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
                             Label: "battle_button"
+                        },
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
                         }
                     ],
                     Texts: [

@@ -44,6 +44,17 @@
                         }
                     ],
                     Priority: 20,
+                    Buttons: [
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
+                        }
+                    ],
                     Texts: [
                         {
                             Text: "There it is. The finest worst fish on this coast, flopping like it owes the sea money. I have never been happier with a trade."
@@ -83,8 +94,8 @@
                             Conditions: [
                                 {
                                     Type: "PLAYER_TAG",
-                                    Operation: "NOT_EQUALS",
-                                    Name: "traded_sefu"
+                                    Operation: "EQUALS",
+                                    Name: "no_traded_sefu"
                                 }
                             ],
                             Label: "trade_button"

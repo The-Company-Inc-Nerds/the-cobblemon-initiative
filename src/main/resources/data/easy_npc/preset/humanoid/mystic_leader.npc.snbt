@@ -88,8 +88,8 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_mystic_leader"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_mystic_leader"
                                         }
                                     ],
                                     Cmd: "tbcs attach mystic_leader @s"
@@ -100,11 +100,11 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_mystic_leader"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_mystic_leader"
                                         }
                                     ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs mystic_leader onwin {1: ['cobbledollars give @1 2400', 'tag @1 add defeated_mystic_leader', '@2 say The marsh saw something true in you. So did I. Hold onto it — you will need it.'], 2: ['@2 say Charm is not enough here. Neither is force. Find the balance and the marsh will let you pass.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs mystic_leader onwin {1: ['cobbledollars give @1 2400', 'tag @1 add defeated_mystic_leader', '@2 say The marsh saw something true in you. So did I. Hold onto it — you will need it.'], 2: ['@1 say Charm is not enough here. Neither is force. Find the balance and the marsh will let you pass.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

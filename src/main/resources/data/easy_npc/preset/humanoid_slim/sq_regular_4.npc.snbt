@@ -49,6 +49,17 @@
                         }
                     ],
                     Priority: 40,
+                    Buttons: [
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
+                        }
+                    ],
                     Texts: [
                         {
                             Text: "The falls badge already? The meadow talks fast. Word beat you back down the path."
@@ -69,6 +80,17 @@
                         }
                     ],
                     Priority: 30,
+                    Buttons: [
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
+                        }
+                    ],
                     Texts: [
                         {
                             Text: "You had the better team and the better feet. The road is yours."
@@ -102,8 +124,8 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_sq_regular_4"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_sq_regular_4"
                                         }
                                     ],
                                     Cmd: "tbcs attach sq_regular_4 @s"
@@ -114,17 +136,26 @@
                                     Conditions: [
                                         {
                                             Type: "PLAYER_TAG",
-                                            Operation: "NOT_EQUALS",
-                                            Name: "defeated_sq_regular_4"
+                                            Operation: "EQUALS",
+                                            Name: "no_defeated_sq_regular_4"
                                         }
                                     ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs sq_regular_4 onwin {1: ['cobbledollars give @1 220', 'tag @1 add defeated_sq_regular_4', '@2 say Fair and square. The dandelions saw the whole thing - they will tell the wind, and the wind tells everyone.'], 2: ['@2 say The meadow keeps its own. Sit a moment, catch your breath, and we go again whenever.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs sq_regular_4 onwin {1: ['cobbledollars give @1 220', 'tag @1 add defeated_sq_regular_4', '@2 say Fair and square. The dandelions saw the whole thing - they will tell the wind, and the wind tells everyone.'], 2: ['@1 say The meadow keeps its own. Sit a moment, catch your breath, and we go again whenever.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
                             Label: "battle_button"
+                        },
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
                         }
                     ],
                     Texts: [
