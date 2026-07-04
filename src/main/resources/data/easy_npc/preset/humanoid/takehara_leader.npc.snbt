@@ -74,16 +74,37 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @initiator[tag=defeated_takehara_leader] run say You hold the Falls Badge already. Go on — the route north is waiting."
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "EQUALS",
+                                            Name: "defeated_takehara_leader"
+                                        }
+                                    ],
+                                    Cmd: "say You hold the Falls Badge already. Go on — the route north is waiting."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @initiator[tag=defeated_takehara_leader] run tbcs attach takehara_leader @initiator"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_takehara_leader"
+                                        }
+                                    ],
+                                    Cmd: "tbcs attach takehara_leader @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @initiator[tag=defeated_takehara_leader] run tbcs battle GEN_9_SINGLES @initiator vs takehara_leader onwin {1: ['cobbledollars give @1 1200', 'tag @1 add defeated_takehara_leader', '@2 say Patience wins. Carry it to the next gym.'], 2: ['@2 say The woods will still be here. So will I. Come back ready.']}"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_takehara_leader"
+                                        }
+                                    ],
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs takehara_leader onwin {1: ['cobbledollars give @1 1200', 'tag @1 add defeated_takehara_leader', '@2 say Patience wins. Carry it to the next gym.'], 2: ['@2 say The woods will still be here. So will I. Come back ready.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

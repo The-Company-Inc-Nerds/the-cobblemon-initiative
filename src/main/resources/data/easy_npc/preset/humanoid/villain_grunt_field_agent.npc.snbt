@@ -56,16 +56,37 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @initiator[tag=defeated_villain_grunt_1] run say I already filed the incident report. Move along."
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "EQUALS",
+                                            Name: "defeated_villain_grunt_1"
+                                        }
+                                    ],
+                                    Cmd: "say I already filed the incident report. Move along."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_grunt_1] run tbcs attach villain_grunt_1 @initiator"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_villain_grunt_1"
+                                        }
+                                    ],
+                                    Cmd: "tbcs attach villain_grunt_1 @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_grunt_1] run tbcs battle GEN_9_SINGLES @initiator vs villain_grunt_1 onwin {1: ['cobbledollars give @1 230', 'tag @1 add defeated_villain_grunt_1', '@2 say This goes in my performance review, does it not.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 100', '@2 say Asset recovered. The Company thanks you.']}"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_villain_grunt_1"
+                                        }
+                                    ],
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_grunt_1 onwin {1: ['cobbledollars give @1 230', 'tag @1 add defeated_villain_grunt_1', '@2 say This goes in my performance review, does it not.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 100', '@2 say Asset recovered. The Company thanks you.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -100,16 +121,37 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @initiator[tag=defeated_villain_grunt_1] run say I already filed the incident report. Move along."
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "EQUALS",
+                                            Name: "defeated_villain_grunt_1"
+                                        }
+                                    ],
+                                    Cmd: "say I already filed the incident report. Move along."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_grunt_1] run tbcs attach villain_grunt_1 @initiator"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_villain_grunt_1"
+                                        }
+                                    ],
+                                    Cmd: "tbcs attach villain_grunt_1 @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_grunt_1] run tbcs battle GEN_9_SINGLES @initiator vs villain_grunt_1 onwin {1: ['cobbledollars give @1 230', 'tag @1 add defeated_villain_grunt_1', '@2 say This goes in my performance review, does it not.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 100', '@2 say Asset recovered. The Company thanks you.']}"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_villain_grunt_1"
+                                        }
+                                    ],
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_grunt_1 onwin {1: ['cobbledollars give @1 230', 'tag @1 add defeated_villain_grunt_1', '@2 say This goes in my performance review, does it not.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 100', '@2 say Asset recovered. The Company thanks you.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -150,7 +192,7 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute as @initiator run function cobblemon_initiative:sidequest/memo/surrender_letter"
+                                    Cmd: "function cobblemon_initiative:sidequest/memo/surrender_letter"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -164,12 +206,12 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "cobbledollars remove @initiator 250"
+                                    Cmd: "cobbledollars remove @s 250"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "tag @initiator add paid_handling_fee"
+                                    Cmd: "tag @s add paid_handling_fee"
                                 },
                                 {
                                     Type: "COMMAND",
@@ -186,16 +228,37 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @initiator[tag=defeated_villain_grunt_1] run say I already filed the incident report. Move along."
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "EQUALS",
+                                            Name: "defeated_villain_grunt_1"
+                                        }
+                                    ],
+                                    Cmd: "say I already filed the incident report. Move along."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_grunt_1] run tbcs attach villain_grunt_1 @initiator"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_villain_grunt_1"
+                                        }
+                                    ],
+                                    Cmd: "tbcs attach villain_grunt_1 @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_grunt_1] run tbcs battle GEN_9_SINGLES @initiator vs villain_grunt_1 onwin {1: ['cobbledollars give @1 230', 'tag @1 add defeated_villain_grunt_1', '@2 say This goes in my performance review, does it not.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 100', '@2 say Asset recovered. The Company thanks you.']}"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_villain_grunt_1"
+                                        }
+                                    ],
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_grunt_1 onwin {1: ['cobbledollars give @1 230', 'tag @1 add defeated_villain_grunt_1', '@2 say This goes in my performance review, does it not.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 100', '@2 say Asset recovered. The Company thanks you.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -236,16 +299,37 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @initiator[tag=defeated_villain_grunt_1] run say I already filed the incident report. Move along."
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "EQUALS",
+                                            Name: "defeated_villain_grunt_1"
+                                        }
+                                    ],
+                                    Cmd: "say I already filed the incident report. Move along."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_grunt_1] run tbcs attach villain_grunt_1 @initiator"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_villain_grunt_1"
+                                        }
+                                    ],
+                                    Cmd: "tbcs attach villain_grunt_1 @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_grunt_1] run tbcs battle GEN_9_SINGLES @initiator vs villain_grunt_1 onwin {1: ['cobbledollars give @1 230', 'tag @1 add defeated_villain_grunt_1', '@2 say This goes in my performance review, does it not.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 100', '@2 say Asset recovered. The Company thanks you.']}"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_villain_grunt_1"
+                                        }
+                                    ],
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_grunt_1 onwin {1: ['cobbledollars give @1 230', 'tag @1 add defeated_villain_grunt_1', '@2 say This goes in my performance review, does it not.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 100', '@2 say Asset recovered. The Company thanks you.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -293,12 +377,12 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "cobbledollars remove @initiator 120"
+                                    Cmd: "cobbledollars remove @s 120"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "tag @initiator add paid_checkpoint_fee"
+                                    Cmd: "tag @s add paid_checkpoint_fee"
                                 },
                                 {
                                     Type: "COMMAND",
@@ -322,16 +406,37 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @initiator[tag=defeated_villain_grunt_1] run say I already filed the incident report. Move along."
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "EQUALS",
+                                            Name: "defeated_villain_grunt_1"
+                                        }
+                                    ],
+                                    Cmd: "say I already filed the incident report. Move along."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_grunt_1] run tbcs attach villain_grunt_1 @initiator"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_villain_grunt_1"
+                                        }
+                                    ],
+                                    Cmd: "tbcs attach villain_grunt_1 @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_grunt_1] run tbcs battle GEN_9_SINGLES @initiator vs villain_grunt_1 onwin {1: ['cobbledollars give @1 230', 'tag @1 add defeated_villain_grunt_1', '@2 say This goes in my performance review, does it not.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 100', '@2 say Asset recovered. The Company thanks you.']}"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_villain_grunt_1"
+                                        }
+                                    ],
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_grunt_1 onwin {1: ['cobbledollars give @1 230', 'tag @1 add defeated_villain_grunt_1', '@2 say This goes in my performance review, does it not.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 100', '@2 say Asset recovered. The Company thanks you.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -369,12 +474,12 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "cobbledollars remove @initiator 120"
+                                    Cmd: "cobbledollars remove @s 120"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "tag @initiator add paid_checkpoint_fee"
+                                    Cmd: "tag @s add paid_checkpoint_fee"
                                 },
                                 {
                                     Type: "COMMAND",
@@ -398,16 +503,37 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @initiator[tag=defeated_villain_grunt_1] run say I already filed the incident report. Move along."
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "EQUALS",
+                                            Name: "defeated_villain_grunt_1"
+                                        }
+                                    ],
+                                    Cmd: "say I already filed the incident report. Move along."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_grunt_1] run tbcs attach villain_grunt_1 @initiator"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_villain_grunt_1"
+                                        }
+                                    ],
+                                    Cmd: "tbcs attach villain_grunt_1 @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_grunt_1] run tbcs battle GEN_9_SINGLES @initiator vs villain_grunt_1 onwin {1: ['cobbledollars give @1 230', 'tag @1 add defeated_villain_grunt_1', '@2 say This goes in my performance review, does it not.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 100', '@2 say Asset recovered. The Company thanks you.']}"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_villain_grunt_1"
+                                        }
+                                    ],
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_grunt_1 onwin {1: ['cobbledollars give @1 230', 'tag @1 add defeated_villain_grunt_1', '@2 say This goes in my performance review, does it not.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 100', '@2 say Asset recovered. The Company thanks you.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -540,17 +666,17 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "loot give @initiator loot cobblemon_initiative:npc_gift/memo_44c"
+                                    Cmd: "loot give @s loot cobblemon_initiative:npc_gift/memo_44c"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "tag @initiator add memo_heard"
+                                    Cmd: "tag @s add memo_heard"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "tag @initiator remove memo_loiter"
+                                    Cmd: "tag @s remove memo_loiter"
                                 },
                                 {
                                     Type: "COMMAND",
@@ -588,16 +714,37 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @initiator[tag=defeated_villain_grunt_1] run say I already filed the incident report. Move along."
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "EQUALS",
+                                            Name: "defeated_villain_grunt_1"
+                                        }
+                                    ],
+                                    Cmd: "say I already filed the incident report. Move along."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_grunt_1] run tbcs attach villain_grunt_1 @initiator"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_villain_grunt_1"
+                                        }
+                                    ],
+                                    Cmd: "tbcs attach villain_grunt_1 @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_grunt_1] run tbcs battle GEN_9_SINGLES @initiator vs villain_grunt_1 onwin {1: ['cobbledollars give @1 230', 'tag @1 add defeated_villain_grunt_1', '@2 say This goes in my performance review, does it not.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 100', '@2 say Asset recovered. The Company thanks you.']}"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_villain_grunt_1"
+                                        }
+                                    ],
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_grunt_1 onwin {1: ['cobbledollars give @1 230', 'tag @1 add defeated_villain_grunt_1', '@2 say This goes in my performance review, does it not.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 100', '@2 say Asset recovered. The Company thanks you.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

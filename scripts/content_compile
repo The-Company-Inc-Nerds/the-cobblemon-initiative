@@ -260,31 +260,70 @@ def resolve_ref_lines(ref: str, registers: dict, lore: dict) -> list[str]:
 # ─── Actions ─────────────────────────────────────────────────────────────────
 
 _DIALOG_SEL = re.compile(r"@[sp](?![\w-])")
+_EXEC_AS_PREFIX = re.compile(r"^execute as (@initiator|@s) run ")
 
-def dialog_cmd(cmd: str) -> str:
+def dialog_cmd(cmd: str, as_player: bool) -> str:
     """Rewrite a dialog-issued command for the real Easy NPC execution context.
 
-    RUNTIME-VERIFIED (2026-07-03 in-game session): a command fired from a dialog button
-    does NOT execute as the interacting player — @s binds to the NPC/server context and
-    ExecAsUser does not change that. Easy NPC substitutes @initiator with the interacting
-    player, so every @s/@p token becomes @initiator, and a bare `function ...` call is
-    wrapped in `execute as @initiator run ...` so the callee sees the player as @s.
+    BYTECODE-VERIFIED against Easy NPC 6.25.0 (CommandExecutor):
+
+    as_player=True (ExecAsUser): the command source IS the interacting player
+    (player.createCommandSourceStack(), elevated to the action PermLevel) — so @s
+    binds to the player directly and @p is normalized to @s. CRITICAL: 6.25's
+    isParseSuccessful() rejects every redirect chain, which silently blocks ANY
+    `execute ...`-rooted ExecAsUser command ("Blocked execute-as-user command root
+    execute" in the log) — so player commands must never be wrapped in `execute`;
+    guards belong in action Conditions instead (see battle_actions).
+
+    as_player=False (entity path): the source is the NPC and `execute` is allowed.
+    @s/@p become @initiator (Easy NPC substitutes the interacting player's name
+    before dispatch), and a bare `function ...` call is wrapped in
+    `execute as @initiator run ...` so the callee sees the player as @s.
+
     TBCS onwin payloads keep their own token language (@1/@2) — the transform never
     touches anything after ` onwin ` in a command.
     """
     if " onwin " in cmd:
         head, tail = cmd.split(" onwin ", 1)
-        head = _DIALOG_SEL.sub("@initiator", head)
-        out = head + " onwin " + tail
     else:
-        out = _DIALOG_SEL.sub("@initiator", cmd)
-    if out.startswith("function "):
-        out = "execute as @initiator run " + out
-    return out
+        head, tail = cmd, None
+
+    if as_player:
+        head = _EXEC_AS_PREFIX.sub("", head)  # legacy authored wrapper — redundant + blocked
+        head = _DIALOG_SEL.sub("@s", head)
+        if head.startswith("execute "):
+            raise CompileError(
+                "as_player command may not be execute-rooted (Easy NPC 6.25 blocks "
+                "ExecAsUser redirect chains) — move the guard into the action gate: "
+                + cmd
+            )
+    else:
+        head = _DIALOG_SEL.sub("@initiator", head)
+        if head.startswith("function ") and tail is None:
+            head = "execute as @initiator run " + head
+
+    return head if tail is None else head + " onwin " + tail
 
 
 def command_action(cmd: str, as_player: bool, gate: dict | None, where: str) -> OrderedDict:
     check_command(cmd, where)
+    lowered = dialog_cmd(cmd, as_player)
+    if "@initiator[" in lowered:
+        # Easy NPC substitutes @initiator with the player NAME before dispatch, and
+        # selector arguments cannot attach to a plain name ("PlayerName[tag=x]" never
+        # parses) — such a command is guaranteed dead at runtime. Gate on the action
+        # Conditions (gate=) instead.
+        raise CompileError(
+            f"{where}: '@initiator[' cannot survive Easy NPC's name substitution — "
+            f"move the selector guard into the action gate: {cmd}"
+        )
+    return command_action_raw(lowered, as_player, gate, where)
+
+
+def command_action_raw(cmd: str, as_player: bool, gate: dict | None, where: str) -> OrderedDict:
+    """command_action without the dialog_cmd rewrite — for generated commands whose
+    selectors are already in their final execution-context form (e.g. `tbcs attach … @s`
+    on the entity path, where @s must stay the NPC)."""
     pairs = [("Type", s("COMMAND"))]
     if as_player:
         pairs.append(("ExecAsUser", execasuser()))
@@ -292,7 +331,7 @@ def command_action(cmd: str, as_player: bool, gate: dict | None, where: str) -> 
         conds, _ = gate_conditions(gate)
         if conds:
             pairs.append(("Conditions", lst(conds)))
-    pairs.append(("Cmd", s(dialog_cmd(cmd))))
+    pairs.append(("Cmd", s(cmd)))
     return comp(pairs)
 
 def announce_action(a: dict, where: str) -> OrderedDict:
@@ -309,12 +348,13 @@ def announce_action(a: dict, where: str) -> OrderedDict:
     else:
         raise CompileError(f"unknown announce target: {mode!r}")
     # built deterministically from quote-free text; the inner quotes are escaped by s().
+    # Announcements run on the entity path (source = NPC, @p → @initiator name sub).
     pairs = [("Type", s("COMMAND"))]
     if a.get("gate"):
         conds, _ = gate_conditions(a["gate"])
         if conds:
             pairs.append(("Conditions", lst(conds)))
-    pairs.append(("Cmd", s(dialog_cmd(cmd))))
+    pairs.append(("Cmd", s(dialog_cmd(cmd, False))))
     return comp(pairs)
 
 def build_onwin(win: list[str], lose: list[str], where: str) -> str:
@@ -334,12 +374,16 @@ def battle_actions(ch: dict, where: str) -> list:
     fmt = b.get("format", "GEN_9_SINGLES")
     dt = b.get("defeat_tag", f"defeated_{trainer}")
     acts = []
+    # Entity-path guards via action Conditions, not execute selectors: an
+    # `@p[tag=…]`/`@s[tag=…]` guard would compile to `@initiator[tag=…]`, and Easy NPC's
+    # name substitution turns that into "PlayerName[tag=x]" — which never parses. Raw
+    # commands: `@s` in attach must stay the NPC (the entity-path source).
     if b.get("already_beaten_line"):
         check_text(b["already_beaten_line"], where)
-        acts.append(command_action(
-            f"execute if entity @p[tag={dt}] run say {b['already_beaten_line']}", False, None, where))
-    acts.append(command_action(
-        f"execute unless entity @p[tag={dt}] run tbcs attach {trainer} @s", False, None, where))
+        acts.append(command_action_raw(
+            f"say {b['already_beaten_line']}", False, {"tag": dt}, where))
+    acts.append(command_action_raw(
+        f"tbcs attach {trainer} @s", False, {"not_tag": dt}, where))
     win = []
     if b.get("prize"):
         win.append(f"cobbledollars give @1 {int(b['prize'])}")
@@ -358,9 +402,12 @@ def battle_actions(ch: dict, where: str) -> list:
         lose.append(f"@2 say {b['lose_line']}")
     lose += list(b.get("on_lose", []))
     onwin = build_onwin(win, lose, where)
+    # Bare tbcs + a not_tag action Condition: the ExecAsUser source is the player, and an
+    # `execute unless entity @s[tag=…] run` guard would be silently blocked (Easy NPC 6.25
+    # rejects every execute-rooted ExecAsUser command — see dialog_cmd).
     acts.append(command_action(
-        f"execute unless entity @s[tag={dt}] run tbcs battle {fmt} @s vs {trainer} onwin {onwin}",
-        True, None, where))
+        f"tbcs battle {fmt} @s vs {trainer} onwin {onwin}",
+        True, {"not_tag": dt}, where))
     acts.append(comp([("Type", s("CLOSE_DIALOG"))]))
     return acts
 
@@ -370,8 +417,14 @@ def give_actions(ch: dict, where: str) -> list:
         raise CompileError(f"{where}: do:give but character has no 'loot' block")
     table = loot["table"]; key = loot.get("key", "gift")
     if loot["type"] == "one_time":
-        return [command_action(f"execute unless entity @p[tag=gift_{key}_claimed] run loot give @p loot {table}", False, None, where),
-                command_action(f"tag @p add gift_{key}_claimed", False, None, where)]
+        # ExecAsUser + a shared not_tag Condition: both actions see the same pre-click tag
+        # snapshot, so the give and the claim latch fire (or skip) together. The old
+        # entity-path `execute unless entity @p[tag=…]` guard could never parse after
+        # Easy NPC's @initiator name substitution — it marked claimed without giving.
+        return [command_action(f"loot give @s loot {table}", True,
+                               {"not_tag": f"gift_{key}_claimed"}, where),
+                command_action(f"tag @s add gift_{key}_claimed", True,
+                               {"not_tag": f"gift_{key}_claimed"}, where)]
     # daily / one_time_item — minimal v1 (daily-uniqueness left to a future quest expansion)
     warn(f"{where}: loot.type {loot['type']!r} compiled as an unguarded `loot give` (v1 limitation).")
     return [command_action(f"loot give @p loot {table}", False, None, where)]

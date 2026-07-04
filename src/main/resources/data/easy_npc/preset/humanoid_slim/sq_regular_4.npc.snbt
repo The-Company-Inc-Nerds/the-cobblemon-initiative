@@ -88,16 +88,37 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @initiator[tag=defeated_sq_regular_4] run say We settled it. Mind the pollen on the way up - it clings to winners too."
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "EQUALS",
+                                            Name: "defeated_sq_regular_4"
+                                        }
+                                    ],
+                                    Cmd: "say We settled it. Mind the pollen on the way up - it clings to winners too."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @initiator[tag=defeated_sq_regular_4] run tbcs attach sq_regular_4 @initiator"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_sq_regular_4"
+                                        }
+                                    ],
+                                    Cmd: "tbcs attach sq_regular_4 @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @initiator[tag=defeated_sq_regular_4] run tbcs battle GEN_9_SINGLES @initiator vs sq_regular_4 onwin {1: ['cobbledollars give @1 220', 'tag @1 add defeated_sq_regular_4', '@2 say Fair and square. The dandelions saw the whole thing - they will tell the wind, and the wind tells everyone.'], 2: ['@2 say The meadow keeps its own. Sit a moment, catch your breath, and we go again whenever.']}"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_sq_regular_4"
+                                        }
+                                    ],
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs sq_regular_4 onwin {1: ['cobbledollars give @1 220', 'tag @1 add defeated_sq_regular_4', '@2 say Fair and square. The dandelions saw the whole thing - they will tell the wind, and the wind tells everyone.'], 2: ['@2 say The meadow keeps its own. Sit a moment, catch your breath, and we go again whenever.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

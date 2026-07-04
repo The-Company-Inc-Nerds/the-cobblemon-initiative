@@ -82,7 +82,7 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "cobbledollars remove @initiator 150"
+                                    Cmd: "cobbledollars remove @s 150"
                                 },
                                 {
                                     Type: "COMMAND",
@@ -90,16 +90,37 @@
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @initiator[tag=defeated_sq_hz_analyst] run say One adjustment per quarter. The model is still crying in a spreadsheet somewhere."
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "EQUALS",
+                                            Name: "defeated_sq_hz_analyst"
+                                        }
+                                    ],
+                                    Cmd: "say One adjustment per quarter. The model is still crying in a spreadsheet somewhere."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @initiator[tag=defeated_sq_hz_analyst] run tbcs attach sq_hz_analyst @initiator"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_sq_hz_analyst"
+                                        }
+                                    ],
+                                    Cmd: "tbcs attach sq_hz_analyst @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @initiator[tag=defeated_sq_hz_analyst] run tbcs battle GEN_9_SINGLES @initiator vs sq_hz_analyst onwin {1: ['cobbledollars give @1 300', 'tag @1 add defeated_sq_hz_analyst', '@2 say Refund issued, doubled, logged as a confidence event. The model did not see you coming. Neither did the model maker.', 'execute as @1 run function cobblemon_initiative:sidequest/minutes/billable_hours'], 2: ['@2 say The stake stays with the house. Customer confidence: measurably improved. Thank you for participating in the figures.']}"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_sq_hz_analyst"
+                                        }
+                                    ],
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs sq_hz_analyst onwin {1: ['cobbledollars give @1 300', 'tag @1 add defeated_sq_hz_analyst', '@2 say Refund issued, doubled, logged as a confidence event. The model did not see you coming. Neither did the model maker.', 'execute as @1 run function cobblemon_initiative:sidequest/minutes/billable_hours'], 2: ['@2 say The stake stays with the house. Customer confidence: measurably improved. Thank you for participating in the figures.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -144,7 +165,7 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "cobbledollars remove @initiator 150"
+                                    Cmd: "cobbledollars remove @s 150"
                                 },
                                 {
                                     Type: "COMMAND",
@@ -152,16 +173,37 @@
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @initiator[tag=defeated_sq_hz_analyst] run say One adjustment per quarter. The model is still crying in a spreadsheet somewhere."
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "EQUALS",
+                                            Name: "defeated_sq_hz_analyst"
+                                        }
+                                    ],
+                                    Cmd: "say One adjustment per quarter. The model is still crying in a spreadsheet somewhere."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @initiator[tag=defeated_sq_hz_analyst] run tbcs attach sq_hz_analyst @initiator"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_sq_hz_analyst"
+                                        }
+                                    ],
+                                    Cmd: "tbcs attach sq_hz_analyst @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @initiator[tag=defeated_sq_hz_analyst] run tbcs battle GEN_9_SINGLES @initiator vs sq_hz_analyst onwin {1: ['cobbledollars give @1 300', 'tag @1 add defeated_sq_hz_analyst', '@2 say Refund issued, doubled, logged as a confidence event. The model did not see you coming. Neither did the model maker.', 'execute as @1 run function cobblemon_initiative:sidequest/minutes/billable_hours'], 2: ['@2 say The stake stays with the house. Customer confidence: measurably improved. Thank you for participating in the figures.']}"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_sq_hz_analyst"
+                                        }
+                                    ],
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs sq_hz_analyst onwin {1: ['cobbledollars give @1 300', 'tag @1 add defeated_sq_hz_analyst', '@2 say Refund issued, doubled, logged as a confidence event. The model did not see you coming. Neither did the model maker.', 'execute as @1 run function cobblemon_initiative:sidequest/minutes/billable_hours'], 2: ['@2 say The stake stays with the house. Customer confidence: measurably improved. Thank you for participating in the figures.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -206,7 +248,7 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "cobbledollars remove @initiator 150"
+                                    Cmd: "cobbledollars remove @s 150"
                                 },
                                 {
                                     Type: "COMMAND",
@@ -214,16 +256,37 @@
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @initiator[tag=defeated_sq_hz_analyst] run say One adjustment per quarter. The model is still crying in a spreadsheet somewhere."
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "EQUALS",
+                                            Name: "defeated_sq_hz_analyst"
+                                        }
+                                    ],
+                                    Cmd: "say One adjustment per quarter. The model is still crying in a spreadsheet somewhere."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @initiator[tag=defeated_sq_hz_analyst] run tbcs attach sq_hz_analyst @initiator"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_sq_hz_analyst"
+                                        }
+                                    ],
+                                    Cmd: "tbcs attach sq_hz_analyst @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @initiator[tag=defeated_sq_hz_analyst] run tbcs battle GEN_9_SINGLES @initiator vs sq_hz_analyst onwin {1: ['cobbledollars give @1 300', 'tag @1 add defeated_sq_hz_analyst', '@2 say Refund issued, doubled, logged as a confidence event. The model did not see you coming. Neither did the model maker.', 'execute as @1 run function cobblemon_initiative:sidequest/minutes/billable_hours'], 2: ['@2 say The stake stays with the house. Customer confidence: measurably improved. Thank you for participating in the figures.']}"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_sq_hz_analyst"
+                                        }
+                                    ],
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs sq_hz_analyst onwin {1: ['cobbledollars give @1 300', 'tag @1 add defeated_sq_hz_analyst', '@2 say Refund issued, doubled, logged as a confidence event. The model did not see you coming. Neither did the model maker.', 'execute as @1 run function cobblemon_initiative:sidequest/minutes/billable_hours'], 2: ['@2 say The stake stays with the house. Customer confidence: measurably improved. Thank you for participating in the figures.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -271,7 +334,7 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "cobbledollars remove @initiator 150"
+                                    Cmd: "cobbledollars remove @s 150"
                                 },
                                 {
                                     Type: "COMMAND",
@@ -279,16 +342,37 @@
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @initiator[tag=defeated_sq_hz_analyst] run say One adjustment per quarter. The model is still crying in a spreadsheet somewhere."
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "EQUALS",
+                                            Name: "defeated_sq_hz_analyst"
+                                        }
+                                    ],
+                                    Cmd: "say One adjustment per quarter. The model is still crying in a spreadsheet somewhere."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @initiator[tag=defeated_sq_hz_analyst] run tbcs attach sq_hz_analyst @initiator"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_sq_hz_analyst"
+                                        }
+                                    ],
+                                    Cmd: "tbcs attach sq_hz_analyst @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @initiator[tag=defeated_sq_hz_analyst] run tbcs battle GEN_9_SINGLES @initiator vs sq_hz_analyst onwin {1: ['cobbledollars give @1 300', 'tag @1 add defeated_sq_hz_analyst', '@2 say Refund issued, doubled, logged as a confidence event. The model did not see you coming. Neither did the model maker.', 'execute as @1 run function cobblemon_initiative:sidequest/minutes/billable_hours'], 2: ['@2 say The stake stays with the house. Customer confidence: measurably improved. Thank you for participating in the figures.']}"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_sq_hz_analyst"
+                                        }
+                                    ],
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs sq_hz_analyst onwin {1: ['cobbledollars give @1 300', 'tag @1 add defeated_sq_hz_analyst', '@2 say Refund issued, doubled, logged as a confidence event. The model did not see you coming. Neither did the model maker.', 'execute as @1 run function cobblemon_initiative:sidequest/minutes/billable_hours'], 2: ['@2 say The stake stays with the house. Customer confidence: measurably improved. Thank you for participating in the figures.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -326,7 +410,7 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "cobbledollars remove @initiator 150"
+                                    Cmd: "cobbledollars remove @s 150"
                                 },
                                 {
                                     Type: "COMMAND",
@@ -334,16 +418,37 @@
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @initiator[tag=defeated_sq_hz_analyst] run say One adjustment per quarter. The model is still crying in a spreadsheet somewhere."
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "EQUALS",
+                                            Name: "defeated_sq_hz_analyst"
+                                        }
+                                    ],
+                                    Cmd: "say One adjustment per quarter. The model is still crying in a spreadsheet somewhere."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @initiator[tag=defeated_sq_hz_analyst] run tbcs attach sq_hz_analyst @initiator"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_sq_hz_analyst"
+                                        }
+                                    ],
+                                    Cmd: "tbcs attach sq_hz_analyst @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @initiator[tag=defeated_sq_hz_analyst] run tbcs battle GEN_9_SINGLES @initiator vs sq_hz_analyst onwin {1: ['cobbledollars give @1 300', 'tag @1 add defeated_sq_hz_analyst', '@2 say Refund issued, doubled, logged as a confidence event. The model did not see you coming. Neither did the model maker.', 'execute as @1 run function cobblemon_initiative:sidequest/minutes/billable_hours'], 2: ['@2 say The stake stays with the house. Customer confidence: measurably improved. Thank you for participating in the figures.']}"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_sq_hz_analyst"
+                                        }
+                                    ],
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs sq_hz_analyst onwin {1: ['cobbledollars give @1 300', 'tag @1 add defeated_sq_hz_analyst', '@2 say Refund issued, doubled, logged as a confidence event. The model did not see you coming. Neither did the model maker.', 'execute as @1 run function cobblemon_initiative:sidequest/minutes/billable_hours'], 2: ['@2 say The stake stays with the house. Customer confidence: measurably improved. Thank you for participating in the figures.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

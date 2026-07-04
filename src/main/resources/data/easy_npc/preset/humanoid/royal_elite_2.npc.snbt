@@ -74,16 +74,37 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @initiator[tag=defeated_royal_elite_2] run say My rocks remember you. Pass through — Luna is expecting the same trainer who cracked them."
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "EQUALS",
+                                            Name: "defeated_royal_elite_2"
+                                        }
+                                    ],
+                                    Cmd: "say My rocks remember you. Pass through — Luna is expecting the same trainer who cracked them."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @initiator[tag=defeated_royal_elite_2] run tbcs attach royal_elite_2 @initiator"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_royal_elite_2"
+                                        }
+                                    ],
+                                    Cmd: "tbcs attach royal_elite_2 @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @initiator[tag=defeated_royal_elite_2] run tbcs battle GEN_9_SINGLES @initiator vs royal_elite_2 onwin {1: ['cobbledollars give @1 6500', 'tag @1 add defeated_royal_elite_2', '@2 say Stone yields to the steady hand. You did not break against me. Luna waits in the cold hall.'], 2: ['@2 say You hit hard, but the mountain hits back. Come again when you can outlast it.']}"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_royal_elite_2"
+                                        }
+                                    ],
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs royal_elite_2 onwin {1: ['cobbledollars give @1 6500', 'tag @1 add defeated_royal_elite_2', '@2 say Stone yields to the steady hand. You did not break against me. Luna waits in the cold hall.'], 2: ['@2 say You hit hard, but the mountain hits back. Come again when you can outlast it.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

@@ -88,16 +88,37 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @initiator[tag=defeated_sq_regular_spotter] run say You are free to pass. My eyes only work once per trainer."
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "EQUALS",
+                                            Name: "defeated_sq_regular_spotter"
+                                        }
+                                    ],
+                                    Cmd: "say You are free to pass. My eyes only work once per trainer."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @initiator[tag=defeated_sq_regular_spotter] run tbcs attach sq_regular_spotter @initiator"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_sq_regular_spotter"
+                                        }
+                                    ],
+                                    Cmd: "tbcs attach sq_regular_spotter @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @initiator[tag=defeated_sq_regular_spotter] run tbcs battle GEN_9_SINGLES @initiator vs sq_regular_spotter onwin {1: ['cobbledollars give @1 200', 'tag @1 add defeated_sq_regular_spotter', '@2 say Sharp. My eyes are good but your team is better.'], 2: ['@2 say I saw that coming. Literally. It is my whole thing.']}"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_sq_regular_spotter"
+                                        }
+                                    ],
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs sq_regular_spotter onwin {1: ['cobbledollars give @1 200', 'tag @1 add defeated_sq_regular_spotter', '@2 say Sharp. My eyes are good but your team is better.'], 2: ['@2 say I saw that coming. Literally. It is my whole thing.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

@@ -74,16 +74,37 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @initiator[tag=defeated_cyber_leader] run say Circuit Badge already lit up, good. Listen to me — the towers downtown are wall to wall with grey suits now. They are not here to trade. Whatever you remember, this is where it starts catching up with you."
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "EQUALS",
+                                            Name: "defeated_cyber_leader"
+                                        }
+                                    ],
+                                    Cmd: "say Circuit Badge already lit up, good. Listen to me — the towers downtown are wall to wall with grey suits now. They are not here to trade. Whatever you remember, this is where it starts catching up with you."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @initiator[tag=defeated_cyber_leader] run tbcs attach cyber_leader @initiator"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_cyber_leader"
+                                        }
+                                    ],
+                                    Cmd: "tbcs attach cyber_leader @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @initiator[tag=defeated_cyber_leader] run tbcs battle GEN_9_SINGLES @initiator vs cyber_leader onwin {1: ['cobbledollars give @1 4300', 'tag @1 add defeated_cyber_leader', '@2 say Fast hands, faster head. You read the surge before it landed. The Circuit Badge is yours, and you have earned the city talking about you.'], 2: ['@2 say Too slow on the draw. Electricity does not wait and neither do I. Sharpen up and reconnect with me.']}"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_cyber_leader"
+                                        }
+                                    ],
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs cyber_leader onwin {1: ['cobbledollars give @1 4300', 'tag @1 add defeated_cyber_leader', '@2 say Fast hands, faster head. You read the surge before it landed. The Circuit Badge is yours, and you have earned the city talking about you.'], 2: ['@2 say Too slow on the draw. Electricity does not wait and neither do I. Sharpen up and reconnect with me.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

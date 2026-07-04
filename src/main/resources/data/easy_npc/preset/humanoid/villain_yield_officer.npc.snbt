@@ -50,16 +50,37 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @initiator[tag=defeated_villain_yield_officer] run say The gate is yours. The manager is not. He is by the barn, and he is on the phone about me."
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "EQUALS",
+                                            Name: "defeated_villain_yield_officer"
+                                        }
+                                    ],
+                                    Cmd: "say The gate is yours. The manager is not. He is by the barn, and he is on the phone about me."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_yield_officer] run tbcs attach villain_yield_officer @initiator"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_villain_yield_officer"
+                                        }
+                                    ],
+                                    Cmd: "tbcs attach villain_yield_officer @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_yield_officer] run tbcs battle GEN_9_SINGLES @initiator vs villain_yield_officer onwin {1: ['cobbledollars give @1 280', 'tag @1 add defeated_villain_yield_officer', '@2 say Perimeter integrity report: compromised. By one resident. I am not writing that down.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 100', '@2 say Asset protected. The Company thanks you for stress-testing our procedures.']}"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_villain_yield_officer"
+                                        }
+                                    ],
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_yield_officer onwin {1: ['cobbledollars give @1 280', 'tag @1 add defeated_villain_yield_officer', '@2 say Perimeter integrity report: compromised. By one resident. I am not writing that down.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 100', '@2 say Asset protected. The Company thanks you for stress-testing our procedures.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -94,16 +115,37 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @initiator[tag=defeated_villain_yield_officer] run say The gate is yours. The manager is not. He is by the barn, and he is on the phone about me."
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "EQUALS",
+                                            Name: "defeated_villain_yield_officer"
+                                        }
+                                    ],
+                                    Cmd: "say The gate is yours. The manager is not. He is by the barn, and he is on the phone about me."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_yield_officer] run tbcs attach villain_yield_officer @initiator"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_villain_yield_officer"
+                                        }
+                                    ],
+                                    Cmd: "tbcs attach villain_yield_officer @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_yield_officer] run tbcs battle GEN_9_SINGLES @initiator vs villain_yield_officer onwin {1: ['cobbledollars give @1 280', 'tag @1 add defeated_villain_yield_officer', '@2 say Perimeter integrity report: compromised. By one resident. I am not writing that down.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 100', '@2 say Asset protected. The Company thanks you for stress-testing our procedures.']}"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_villain_yield_officer"
+                                        }
+                                    ],
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_yield_officer onwin {1: ['cobbledollars give @1 280', 'tag @1 add defeated_villain_yield_officer', '@2 say Perimeter integrity report: compromised. By one resident. I am not writing that down.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 100', '@2 say Asset protected. The Company thanks you for stress-testing our procedures.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -131,16 +173,37 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @initiator[tag=defeated_villain_yield_officer] run say The gate is yours. The manager is not. He is by the barn, and he is on the phone about me."
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "EQUALS",
+                                            Name: "defeated_villain_yield_officer"
+                                        }
+                                    ],
+                                    Cmd: "say The gate is yours. The manager is not. He is by the barn, and he is on the phone about me."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_yield_officer] run tbcs attach villain_yield_officer @initiator"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_villain_yield_officer"
+                                        }
+                                    ],
+                                    Cmd: "tbcs attach villain_yield_officer @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_yield_officer] run tbcs battle GEN_9_SINGLES @initiator vs villain_yield_officer onwin {1: ['cobbledollars give @1 280', 'tag @1 add defeated_villain_yield_officer', '@2 say Perimeter integrity report: compromised. By one resident. I am not writing that down.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 100', '@2 say Asset protected. The Company thanks you for stress-testing our procedures.']}"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_villain_yield_officer"
+                                        }
+                                    ],
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_yield_officer onwin {1: ['cobbledollars give @1 280', 'tag @1 add defeated_villain_yield_officer', '@2 say Perimeter integrity report: compromised. By one resident. I am not writing that down.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 100', '@2 say Asset protected. The Company thanks you for stress-testing our procedures.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -177,16 +240,37 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @initiator[tag=defeated_villain_yield_officer] run say The gate is yours. The manager is not. He is by the barn, and he is on the phone about me."
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "EQUALS",
+                                            Name: "defeated_villain_yield_officer"
+                                        }
+                                    ],
+                                    Cmd: "say The gate is yours. The manager is not. He is by the barn, and he is on the phone about me."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_yield_officer] run tbcs attach villain_yield_officer @initiator"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_villain_yield_officer"
+                                        }
+                                    ],
+                                    Cmd: "tbcs attach villain_yield_officer @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_yield_officer] run tbcs battle GEN_9_SINGLES @initiator vs villain_yield_officer onwin {1: ['cobbledollars give @1 280', 'tag @1 add defeated_villain_yield_officer', '@2 say Perimeter integrity report: compromised. By one resident. I am not writing that down.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 100', '@2 say Asset protected. The Company thanks you for stress-testing our procedures.']}"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_villain_yield_officer"
+                                        }
+                                    ],
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_yield_officer onwin {1: ['cobbledollars give @1 280', 'tag @1 add defeated_villain_yield_officer', '@2 say Perimeter integrity report: compromised. By one resident. I am not writing that down.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 100', '@2 say Asset protected. The Company thanks you for stress-testing our procedures.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

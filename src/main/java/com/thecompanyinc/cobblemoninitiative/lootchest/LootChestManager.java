@@ -177,11 +177,13 @@ public class LootChestManager {
     for (Container c : halves) c.setChanged();
 
     if (placed > 0) {
-      player.sendSystemMessage(
-        Component.literal(
-          "§6§l[Supply Cache] §r§7Someone stocked this before you arrived."
-        )
-      );
+      if (LootChestConfig.get().isAnnounceUnplacedChests()) {
+        player.sendSystemMessage(
+          Component.literal(
+            "§6§l[Supply Cache] §r§7Someone stocked this before you arrived."
+          )
+        );
+      }
       InitiativeInit.LOGGER.debug(
         "Stocked unplaced chest at {} with {} item stack(s) (tier {}) for {}",
         pos,

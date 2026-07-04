@@ -50,16 +50,37 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @initiator[tag=defeated_sq_bracket_3] run say Champion. The ladder resets weekly, if you feel like defending the title."
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "EQUALS",
+                                            Name: "defeated_sq_bracket_3"
+                                        }
+                                    ],
+                                    Cmd: "say Champion. The ladder resets weekly, if you feel like defending the title."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @initiator[tag=defeated_sq_bracket_3] run tbcs attach sq_bracket_3 @initiator"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_sq_bracket_3"
+                                        }
+                                    ],
+                                    Cmd: "tbcs attach sq_bracket_3 @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @initiator[tag=defeated_sq_bracket_3] run tbcs battle GEN_9_SINGLES @initiator vs sq_bracket_3 onwin {1: ['tag @1 add defeated_sq_bracket_3', '@2 say Krabby concedes. The Invitational has its champion — the liaison at the podium holds your envelope.'], 2: ['@2 say The harbour keeps its title another week. Entry stands if you want another run.']}"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_sq_bracket_3"
+                                        }
+                                    ],
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs sq_bracket_3 onwin {1: ['tag @1 add defeated_sq_bracket_3', '@2 say Krabby concedes. The Invitational has its champion — the liaison at the podium holds your envelope.'], 2: ['@2 say The harbour keeps its title another week. Entry stands if you want another run.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -108,16 +129,37 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @initiator[tag=defeated_sq_bracket_3] run say Champion. The ladder resets weekly, if you feel like defending the title."
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "EQUALS",
+                                            Name: "defeated_sq_bracket_3"
+                                        }
+                                    ],
+                                    Cmd: "say Champion. The ladder resets weekly, if you feel like defending the title."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @initiator[tag=defeated_sq_bracket_3] run tbcs attach sq_bracket_3 @initiator"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_sq_bracket_3"
+                                        }
+                                    ],
+                                    Cmd: "tbcs attach sq_bracket_3 @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @initiator[tag=defeated_sq_bracket_3] run tbcs battle GEN_9_SINGLES @initiator vs sq_bracket_3 onwin {1: ['tag @1 add defeated_sq_bracket_3', '@2 say Krabby concedes. The Invitational has its champion — the liaison at the podium holds your envelope.'], 2: ['@2 say The harbour keeps its title another week. Entry stands if you want another run.']}"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_sq_bracket_3"
+                                        }
+                                    ],
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs sq_bracket_3 onwin {1: ['tag @1 add defeated_sq_bracket_3', '@2 say Krabby concedes. The Invitational has its champion — the liaison at the podium holds your envelope.'], 2: ['@2 say The harbour keeps its title another week. Entry stands if you want another run.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -191,12 +233,12 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "cobbledollars remove @initiator 150"
+                                    Cmd: "cobbledollars remove @s 150"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "tag @initiator add invit_entered"
+                                    Cmd: "tag @s add invit_entered"
                                 },
                                 {
                                     Type: "COMMAND",

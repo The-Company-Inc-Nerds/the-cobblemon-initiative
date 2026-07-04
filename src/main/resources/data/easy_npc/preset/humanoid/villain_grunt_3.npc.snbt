@@ -50,16 +50,37 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @initiator[tag=defeated_villain_grunt_3] run say I billed for that loss already. I do not double-book a beating. Move along."
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "EQUALS",
+                                            Name: "defeated_villain_grunt_3"
+                                        }
+                                    ],
+                                    Cmd: "say I billed for that loss already. I do not double-book a beating. Move along."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_grunt_3] run tbcs attach villain_grunt_3 @initiator"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_villain_grunt_3"
+                                        }
+                                    ],
+                                    Cmd: "tbcs attach villain_grunt_3 @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_grunt_3] run tbcs battle GEN_9_SINGLES @initiator vs villain_grunt_3 onwin {1: ['cobbledollars give @1 230', 'tag @1 add defeated_villain_grunt_3', '@2 say I am only contracted through Friday. This was not in the statement of work.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 150', '@2 say Invoice settled. The Regional Office thanks you for your business.']}"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_villain_grunt_3"
+                                        }
+                                    ],
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_grunt_3 onwin {1: ['cobbledollars give @1 230', 'tag @1 add defeated_villain_grunt_3', '@2 say I am only contracted through Friday. This was not in the statement of work.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 150', '@2 say Invoice settled. The Regional Office thanks you for your business.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -94,16 +115,37 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @initiator[tag=defeated_villain_grunt_3] run say I billed for that loss already. I do not double-book a beating. Move along."
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "EQUALS",
+                                            Name: "defeated_villain_grunt_3"
+                                        }
+                                    ],
+                                    Cmd: "say I billed for that loss already. I do not double-book a beating. Move along."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_grunt_3] run tbcs attach villain_grunt_3 @initiator"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_villain_grunt_3"
+                                        }
+                                    ],
+                                    Cmd: "tbcs attach villain_grunt_3 @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_grunt_3] run tbcs battle GEN_9_SINGLES @initiator vs villain_grunt_3 onwin {1: ['cobbledollars give @1 230', 'tag @1 add defeated_villain_grunt_3', '@2 say I am only contracted through Friday. This was not in the statement of work.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 150', '@2 say Invoice settled. The Regional Office thanks you for your business.']}"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_villain_grunt_3"
+                                        }
+                                    ],
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_grunt_3 onwin {1: ['cobbledollars give @1 230', 'tag @1 add defeated_villain_grunt_3', '@2 say I am only contracted through Friday. This was not in the statement of work.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 150', '@2 say Invoice settled. The Regional Office thanks you for your business.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -131,16 +173,37 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @initiator[tag=defeated_villain_grunt_3] run say I billed for that loss already. I do not double-book a beating. Move along."
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "EQUALS",
+                                            Name: "defeated_villain_grunt_3"
+                                        }
+                                    ],
+                                    Cmd: "say I billed for that loss already. I do not double-book a beating. Move along."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_grunt_3] run tbcs attach villain_grunt_3 @initiator"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_villain_grunt_3"
+                                        }
+                                    ],
+                                    Cmd: "tbcs attach villain_grunt_3 @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_grunt_3] run tbcs battle GEN_9_SINGLES @initiator vs villain_grunt_3 onwin {1: ['cobbledollars give @1 230', 'tag @1 add defeated_villain_grunt_3', '@2 say I am only contracted through Friday. This was not in the statement of work.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 150', '@2 say Invoice settled. The Regional Office thanks you for your business.']}"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_villain_grunt_3"
+                                        }
+                                    ],
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_grunt_3 onwin {1: ['cobbledollars give @1 230', 'tag @1 add defeated_villain_grunt_3', '@2 say I am only contracted through Friday. This was not in the statement of work.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 150', '@2 say Invoice settled. The Regional Office thanks you for your business.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

@@ -77,39 +77,32 @@
                     Label: "post_pokedex"
                 },
                 {
-                    Priority: 10,
-                    Buttons: [
+                    Conditions: [
                         {
-                            Name: "Choose a partner",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "openstarterscreen @initiator"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "tag @initiator add chose_starter"
-                                },
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "starter_button"
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "chose_starter"
                         },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "NOT_EQUALS",
+                            Name: "got_pokedex"
+                        }
+                    ],
+                    Priority: 12,
+                    Buttons: [
                         {
                             Name: "Take the Pokedex",
                             Actions: [
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "give @initiator cobblemon:pokedex_red"
+                                    Cmd: "give @s cobblemon:pokedex_red"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "tag @initiator add got_pokedex"
+                                    Cmd: "tag @s add got_pokedex"
                                 },
                                 {
                                     Type: "COMMAND",
@@ -120,19 +113,60 @@
                                     Cmd: "pokedex_words"
                                 }
                             ],
-                            Conditions: [
+                            Label: "pokedex_button"
+                        },
+                        {
+                            Name: "Who were the people who found me?",
+                            Actions: [
                                 {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "chose_starter"
-                                },
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "NOT_EQUALS",
-                                    Name: "got_pokedex"
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "the_strangers"
                                 }
                             ],
-                            Label: "pokedex_button"
+                            Label: "ask_button"
+                        },
+                        {
+                            Name: "Not yet",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "A good match. I have watched a hundred first meetings and I am never wrong."
+                        },
+                        {
+                            Text: "One more thing before you take a single step past the gate. Take the Pokedex. Records matter more than they used to around here."
+                        }
+                    ],
+                    Name: "Acacia — take the Pokedex",
+                    Label: "post_starter"
+                },
+                {
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "Choose a partner",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "openstarterscreen @s"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add chose_starter"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "starter_button"
                         },
                         {
                             Name: "Who were the people who found me?",
@@ -193,8 +227,7 @@
                             Name: "I will be careful",
                             Actions: [
                                 {
-                                    Type: "OPEN_NAMED_DIALOG",
-                                    Cmd: "default"
+                                    Type: "OPEN_DEFAULT_DIALOG"
                                 }
                             ],
                             Label: "back_button"

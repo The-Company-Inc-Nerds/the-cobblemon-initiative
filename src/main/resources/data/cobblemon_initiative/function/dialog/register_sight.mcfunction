@@ -40,6 +40,7 @@ npcsight mode f63c8581-cfc3-474b-8484-2d6e4bd36b8f dialog
 npcsight add 74b1c524-0c3c-4a19-943d-f6f05c0e7f94 5 default
 npcsight mode 74b1c524-0c3c-4a19-943d-f6f05c0e7f94 approach_once
 npcsight meettag 74b1c524-0c3c-4a19-943d-f6f05c0e7f94 met_mom
+npcsight stoptag 74b1c524-0c3c-4a19-943d-f6f05c0e7f94 met_mom
 # Field Agent (company_canvasser)
 npcsight add 77d7fb8d-a289-4b8c-a275-1333dd3226d8 10
 npcsight mode 77d7fb8d-a289-4b8c-a275-1333dd3226d8 dialog

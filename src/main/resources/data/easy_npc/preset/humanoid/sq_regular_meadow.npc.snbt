@@ -88,16 +88,37 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @initiator[tag=defeated_sq_regular_meadow] run say Rematch some other picnic. The fruit is going soft."
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "EQUALS",
+                                            Name: "defeated_sq_regular_meadow"
+                                        }
+                                    ],
+                                    Cmd: "say Rematch some other picnic. The fruit is going soft."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @initiator[tag=defeated_sq_regular_meadow] run tbcs attach sq_regular_meadow @initiator"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_sq_regular_meadow"
+                                        }
+                                    ],
+                                    Cmd: "tbcs attach sq_regular_meadow @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @initiator[tag=defeated_sq_regular_meadow] run tbcs battle GEN_9_SINGLES @initiator vs sq_regular_meadow onwin {1: ['cobbledollars give @1 150', 'tag @1 add defeated_sq_regular_meadow', '@2 say Oh, they liked that. They always fight better for an audience.'], 2: ['@2 say The meadow looks after its own. No hard feelings - have a snack before you go.']}"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_sq_regular_meadow"
+                                        }
+                                    ],
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs sq_regular_meadow onwin {1: ['cobbledollars give @1 150', 'tag @1 add defeated_sq_regular_meadow', '@2 say Oh, they liked that. They always fight better for an audience.'], 2: ['@2 say The meadow looks after its own. No hard feelings - have a snack before you go.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

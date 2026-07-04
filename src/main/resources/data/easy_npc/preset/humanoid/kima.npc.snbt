@@ -90,16 +90,37 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @initiator[tag=defeated_sq_bracket_2] run say The final waits with the Harbourmaster. Do not leave the podium standing empty."
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "EQUALS",
+                                            Name: "defeated_sq_bracket_2"
+                                        }
+                                    ],
+                                    Cmd: "say The final waits with the Harbourmaster. Do not leave the podium standing empty."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @initiator[tag=defeated_sq_bracket_2] run tbcs attach sq_bracket_2 @initiator"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_sq_bracket_2"
+                                        }
+                                    ],
+                                    Cmd: "tbcs attach sq_bracket_2 @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @initiator[tag=defeated_sq_bracket_2] run tbcs battle GEN_9_SINGLES @initiator vs sq_bracket_2 onwin {1: ['cobbledollars give @1 150', 'tag @1 add defeated_sq_bracket_2', '@2 say Corphish and Shellos both. Fine. The final waits in the harbour office.'], 2: ['@2 say The net catches what the net catches. Mend your team and come back.']}"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_sq_bracket_2"
+                                        }
+                                    ],
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs sq_bracket_2 onwin {1: ['cobbledollars give @1 150', 'tag @1 add defeated_sq_bracket_2', '@2 say Corphish and Shellos both. Fine. The final waits in the harbour office.'], 2: ['@2 say The net catches what the net catches. Mend your team and come back.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

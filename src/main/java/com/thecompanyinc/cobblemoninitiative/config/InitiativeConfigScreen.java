@@ -566,6 +566,23 @@ public class InitiativeConfigScreen {
 
     lootChests.addEntry(
       entryBuilder
+        .startBooleanToggle(
+          Component.literal("Announce Supply Caches"),
+          lootChestConfig.isAnnounceUnplacedChests()
+        )
+        .setDefaultValue(lootChestDefaults.isAnnounceUnplacedChests())
+        .setTooltip(
+          Component.literal(
+            "Send the \"[Supply Cache]\" chat line when an unplaced chest is stocked. "
+            + "Off by default to keep stream chat clean."
+          )
+        )
+        .setSaveConsumer(lootChestConfig::setAnnounceUnplacedChests)
+        .build()
+    );
+
+    lootChests.addEntry(
+      entryBuilder
         .startIntSlider(
           Component.literal("Loot Stacks (×)"),
           (int) Math.round(lootChestConfig.getStackMultiplier() * 10),

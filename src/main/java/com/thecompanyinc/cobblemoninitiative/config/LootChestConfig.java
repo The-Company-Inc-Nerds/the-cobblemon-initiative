@@ -48,6 +48,12 @@ public class LootChestConfig {
   private boolean oneTimePerChest = true;
 
   /**
+   * When true, sends the "[Supply Cache]" chat line the first time an unplaced
+   * chest is stocked. Off by default to keep stream chat clean.
+   */
+  private boolean announceUnplacedChests = false;
+
+  /**
    * Scales the NUMBER of item stacks stocked into a chest, relative to what the
    * loot tables roll. 1.0 = the tables' default count of stacks, 0.5 = half,
    * 0 = none, up to 3.0 = triple (extra stacks come from re-rolling the tables).
@@ -112,6 +118,7 @@ public class LootChestConfig {
   public boolean isGiveMinecraftPool() { return giveMinecraftPool; }
   public boolean isGiveCobblemonPool() { return giveCobblemonPool; }
   public boolean isOneTimePerChest() { return oneTimePerChest; }
+  public boolean isAnnounceUnplacedChests() { return announceUnplacedChests; }
   // Getters clamp too: Gson loads a hand-edited config straight into the fields
   // (bypassing the setters), so clamping on read keeps the documented 0.0..3.0
   // range — and bounds the per-open loot roll — even for out-of-range edits.
@@ -122,6 +129,7 @@ public class LootChestConfig {
   public void setGiveMinecraftPool(boolean v) { this.giveMinecraftPool = v; }
   public void setGiveCobblemonPool(boolean v) { this.giveCobblemonPool = v; }
   public void setOneTimePerChest(boolean v) { this.oneTimePerChest = v; }
+  public void setAnnounceUnplacedChests(boolean v) { this.announceUnplacedChests = v; }
   public void setStackMultiplier(double v) { this.stackMultiplier = clamp(v); }
   public void setItemMultiplier(double v) { this.itemMultiplier = clamp(v); }
 

@@ -123,17 +123,17 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "clear @initiator minecraft:rabbit_stew"
+                                    Cmd: "clear @s minecraft:rabbit_stew"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "tag @initiator remove carrying_supper"
+                                    Cmd: "tag @s remove carrying_supper"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "tag @initiator add supper_delivered"
+                                    Cmd: "tag @s add supper_delivered"
                                 },
                                 {
                                     Type: "COMMAND",
@@ -175,16 +175,37 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @initiator[tag=defeated_sq_rt2_haoran] run say One a day. Grandfather says pride compounds worse than interest."
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "EQUALS",
+                                            Name: "defeated_sq_rt2_haoran"
+                                        }
+                                    ],
+                                    Cmd: "say One a day. Grandfather says pride compounds worse than interest."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @initiator[tag=defeated_sq_rt2_haoran] run tbcs attach sq_rt2_haoran @initiator"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_sq_rt2_haoran"
+                                        }
+                                    ],
+                                    Cmd: "tbcs attach sq_rt2_haoran @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @initiator[tag=defeated_sq_rt2_haoran] run tbcs battle GEN_9_SINGLES @initiator vs sq_rt2_haoran onwin {1: ['cobbledollars give @1 260', 'tag @1 add defeated_sq_rt2_haoran', '@2 say You mean it more than I do. There is the purse — I will win it back off the next traveler, watch me.'], 2: ['@2 say Phanpy eats first tonight. House rule — winner picks the bowl order.']}"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_sq_rt2_haoran"
+                                        }
+                                    ],
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs sq_rt2_haoran onwin {1: ['cobbledollars give @1 260', 'tag @1 add defeated_sq_rt2_haoran', '@2 say You mean it more than I do. There is the purse — I will win it back off the next traveler, watch me.'], 2: ['@2 say Phanpy eats first tonight. House rule — winner picks the bowl order.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -221,16 +242,37 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @initiator[tag=defeated_sq_rt2_haoran] run say One a day. Grandfather says pride compounds worse than interest."
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "EQUALS",
+                                            Name: "defeated_sq_rt2_haoran"
+                                        }
+                                    ],
+                                    Cmd: "say One a day. Grandfather says pride compounds worse than interest."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @initiator[tag=defeated_sq_rt2_haoran] run tbcs attach sq_rt2_haoran @initiator"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_sq_rt2_haoran"
+                                        }
+                                    ],
+                                    Cmd: "tbcs attach sq_rt2_haoran @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @initiator[tag=defeated_sq_rt2_haoran] run tbcs battle GEN_9_SINGLES @initiator vs sq_rt2_haoran onwin {1: ['cobbledollars give @1 260', 'tag @1 add defeated_sq_rt2_haoran', '@2 say You mean it more than I do. There is the purse — I will win it back off the next traveler, watch me.'], 2: ['@2 say Phanpy eats first tonight. House rule — winner picks the bowl order.']}"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_sq_rt2_haoran"
+                                        }
+                                    ],
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs sq_rt2_haoran onwin {1: ['cobbledollars give @1 260', 'tag @1 add defeated_sq_rt2_haoran', '@2 say You mean it more than I do. There is the purse — I will win it back off the next traveler, watch me.'], 2: ['@2 say Phanpy eats first tonight. House rule — winner picks the bowl order.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

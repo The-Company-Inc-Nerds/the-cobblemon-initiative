@@ -81,12 +81,26 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @initiator[tag=defeated_board_madeline] run tbcs attach board_madeline @initiator"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_board_madeline"
+                                        }
+                                    ],
+                                    Cmd: "tbcs attach board_madeline @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @initiator[tag=defeated_board_madeline] run tbcs battle GEN_9_SINGLES @initiator vs board_madeline onwin {1: ['cobbledollars give @1 9000', 'tag @1 add defeated_board_madeline', '@2 say The motion fails. After all these years, the motion finally fails. I did so enjoy carrying it.', 'execute as @1 at @1 run function cobblemon_initiative:reveal/board_fell', 'easy_npc delete @2'], 2: ['@2 say Removed again. Try to stay removed this time. It is so much paperwork otherwise.']}"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_board_madeline"
+                                        }
+                                    ],
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs board_madeline onwin {1: ['cobbledollars give @1 9000', 'tag @1 add defeated_board_madeline', '@2 say The motion fails. After all these years, the motion finally fails. I did so enjoy carrying it.', 'execute as @1 at @1 run function cobblemon_initiative:reveal/board_fell', 'easy_npc delete @2'], 2: ['@2 say Removed again. Try to stay removed this time. It is so much paperwork otherwise.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

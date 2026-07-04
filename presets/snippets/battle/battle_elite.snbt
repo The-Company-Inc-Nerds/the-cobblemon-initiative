@@ -21,7 +21,64 @@ DialogData: {
                         {
                             Type: "COMMAND",
                             ExecAsUser: 1b,
-                            Cmd: "execute if entity @s[tag=defeated_takehara_leader,tag=defeated_hua_zhan_leader,tag=defeated_mystic_leader,tag=defeated_deepcore_leader,tag=defeated_gaviota_leader,tag=defeated_kalahar_leader,tag=defeated_cyber_leader,tag=defeated_ryujin_leader,tag=defeated_nifl_leader,tag=defeated_scorchspire_leader] unless entity @s[tag=defeated_%%TRAINER_ID%%] run tbcs battle %%BATTLE_FORMAT:GEN_9_SINGLES|GEN_9_DOUBLES=GEN_9_SINGLES%% @s vs %%TRAINER_ID%% onwin {1: ['cobbledollars give @1 %%PRIZE=8000%%', 'tag @1 add defeated_%%TRAINER_ID%%', 'execute as @1 run function cobblemon_initiative:rewards/badge_reward_combo {badges:10}', '@2 say %%WIN_LINE=A worthy heir to the throne. Pass.%%'], 2: ['@2 say %%LOSE_LINE=The League does not bend. Train, and return.%%']}"
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "defeated_takehara_leader"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "defeated_hua_zhan_leader"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "defeated_mystic_leader"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "defeated_deepcore_leader"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "defeated_gaviota_leader"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "defeated_kalahar_leader"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "defeated_cyber_leader"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "defeated_ryujin_leader"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "defeated_nifl_leader"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "defeated_scorchspire_leader"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "NOT_EQUALS",
+                                    Name: "defeated_%%TRAINER_ID%%"
+                                }
+                            ],
+                            Cmd: "tbcs battle %%BATTLE_FORMAT:GEN_9_SINGLES|GEN_9_DOUBLES=GEN_9_SINGLES%% @s vs %%TRAINER_ID%% onwin {1: ['cobbledollars give @1 %%PRIZE=8000%%', 'tag @1 add defeated_%%TRAINER_ID%%', 'execute as @1 run function cobblemon_initiative:rewards/badge_reward_combo {badges:10}', '@2 say %%WIN_LINE=A worthy heir to the throne. Pass.%%'], 2: ['@2 say %%LOSE_LINE=The League does not bend. Train, and return.%%']}"
                         },
                         {
                             Type: "CLOSE_DIALOG"

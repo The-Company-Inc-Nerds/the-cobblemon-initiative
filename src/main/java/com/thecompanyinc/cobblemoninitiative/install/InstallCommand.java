@@ -435,19 +435,32 @@ public class InstallCommand {
               .findFirst()
               .orElse(null);
           }
-          int n = MapFrontiersBridge.createFrontiers(config.zones, owner);
-          final int created = n;
-          ctx
-            .getSource()
-            .sendSuccess(
-              () ->
+          // Guarded: an exception here must not abort cmdRun — the branded disconnect
+          // at the end would silently never be scheduled.
+          try {
+            int n = MapFrontiersBridge.createFrontiers(config.zones, owner);
+            final int created = n;
+            ctx
+              .getSource()
+              .sendSuccess(
+                () ->
+                  Component.literal(
+                    "[Install] Map Frontiers: " +
+                      created +
+                      " frontier(s) created."
+                  ),
+                true
+              );
+          } catch (Exception e) {
+            LOGGER.error("[Install] Map Frontiers frontier creation failed", e);
+            ctx
+              .getSource()
+              .sendFailure(
                 Component.literal(
-                  "[Install] Map Frontiers: " +
-                    created +
-                    " frontier(s) created."
-                ),
-              true
-            );
+                  "[Install] Map Frontiers frontier creation failed (see log): " + e.getMessage()
+                )
+              );
+          }
         } else {
           ctx
             .getSource()
@@ -468,21 +481,34 @@ public class InstallCommand {
     // refresh is ARMED here: NpcPresetRefreshManager re-imports each mapped NPC the first
     // time its chunk loads; NPCs loaded right now are queued immediately.
     if (NpcPresetRefreshManager.hasBundledMap()) {
-      NpcPresetRefreshManager.ArmResult armed =
-        NpcPresetRefreshManager.armFullRefresh(server);
-      ctx
-        .getSource()
-        .sendSuccess(
-          () ->
+      // Guarded: an exception here must not abort cmdRun (the branded disconnect at the
+      // end would silently never be scheduled).
+      try {
+        NpcPresetRefreshManager.ArmResult armed =
+          NpcPresetRefreshManager.armFullRefresh(server);
+        ctx
+          .getSource()
+          .sendSuccess(
+            () ->
+              Component.literal(
+                "[Install] NPC preset refresh armed for " +
+                  armed.mapped() +
+                  " mapped NPC(s); " +
+                  armed.loadedNow() +
+                  " loaded now, the rest apply as their chunks load."
+              ),
+            true
+          );
+      } catch (Exception e) {
+        LOGGER.error("[Install] NPC preset refresh arming failed", e);
+        ctx
+          .getSource()
+          .sendFailure(
             Component.literal(
-              "[Install] NPC preset refresh armed for " +
-                armed.mapped() +
-                " mapped NPC(s); " +
-                armed.loadedNow() +
-                " loaded now, the rest apply as their chunks load."
-            ),
-          true
-        );
+              "[Install] NPC preset refresh failed (see log): " + e.getMessage()
+            )
+          );
+      }
     } else {
       ctx
         .getSource()
@@ -581,7 +607,7 @@ public class InstallCommand {
       for (ServerPlayer p : server.getPlayerList().getPlayers()) {
         p.connection.disconnect(
           Component.literal(
-            "§6The Cobblemon Initiative\n\n§cmode enabled.\n§7Re-open the world to begin your adventure."
+            "§6The Cobblemon Initiative\n\n§cHardcore mode enabled.\n§7Re-open the world to begin your adventure."
           )
         );
       }

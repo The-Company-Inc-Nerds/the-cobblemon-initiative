@@ -74,16 +74,37 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @initiator[tag=defeated_ryujin_leader] run say The Sovereign Badge sits on you like it was forged for you. I have ruled this Keep a long time, and I have learned to know a king when one walks through my gate. You walk like one. You should ask yourself why."
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "EQUALS",
+                                            Name: "defeated_ryujin_leader"
+                                        }
+                                    ],
+                                    Cmd: "say The Sovereign Badge sits on you like it was forged for you. I have ruled this Keep a long time, and I have learned to know a king when one walks through my gate. You walk like one. You should ask yourself why."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @initiator[tag=defeated_ryujin_leader] run tbcs attach ryujin_leader @initiator"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_ryujin_leader"
+                                        }
+                                    ],
+                                    Cmd: "tbcs attach ryujin_leader @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @initiator[tag=defeated_ryujin_leader] run tbcs battle GEN_9_SINGLES @initiator vs ryujin_leader onwin {1: ['cobbledollars give @1 4900', 'tag @1 add defeated_ryujin_leader', '@2 say A dragon does not bow. You made it kneel anyway. The Sovereign Badge is yours, and few hands have ever closed around it.'], 2: ['@2 say Power without command is just noise. A dragon hears only those who do not flinch. Steel yourself and climb the Keep again.']}"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_ryujin_leader"
+                                        }
+                                    ],
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs ryujin_leader onwin {1: ['cobbledollars give @1 4900', 'tag @1 add defeated_ryujin_leader', '@2 say A dragon does not bow. You made it kneel anyway. The Sovereign Badge is yours, and few hands have ever closed around it.'], 2: ['@2 say Power without command is just noise. A dragon hears only those who do not flinch. Steel yourself and climb the Keep again.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

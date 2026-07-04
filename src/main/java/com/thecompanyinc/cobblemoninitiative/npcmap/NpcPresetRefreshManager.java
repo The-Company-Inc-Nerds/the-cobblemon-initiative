@@ -7,7 +7,6 @@ import com.google.gson.JsonObject;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
@@ -200,7 +199,10 @@ public final class NpcPresetRefreshManager {
         GSON.toJson(root, writer);
       }
       dirty = false;
-    } catch (IOException e) {
+    } catch (Exception e) {
+      // Exception, not IOException: Gson throws JsonIOException (a RuntimeException),
+      // and save() is reached synchronously from `install run` — an escape here would
+      // abort the command before the branded disconnect is scheduled.
       LOGGER.error("[NPC Refresh] Error saving state: {}", e.getMessage());
     }
   }

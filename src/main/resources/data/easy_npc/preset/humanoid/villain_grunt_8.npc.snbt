@@ -50,16 +50,37 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @initiator[tag=defeated_villain_grunt_8] run say You already cleared my checkpoint the hard way. I am not standing in that doorway twice. Move along."
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "EQUALS",
+                                            Name: "defeated_villain_grunt_8"
+                                        }
+                                    ],
+                                    Cmd: "say You already cleared my checkpoint the hard way. I am not standing in that doorway twice. Move along."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_grunt_8] run tbcs attach villain_grunt_8 @initiator"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_villain_grunt_8"
+                                        }
+                                    ],
+                                    Cmd: "tbcs attach villain_grunt_8 @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_grunt_8] run tbcs battle GEN_9_SINGLES @initiator vs villain_grunt_8 onwin {1: ['cobbledollars give @1 480', 'tag @1 add defeated_villain_grunt_8', '@2 say Headquarters does not like surprises on the senior floor. You are a very large surprise.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 320', '@2 say Intrusion contained. The Company thanks you for testing our security.']}"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_villain_grunt_8"
+                                        }
+                                    ],
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_grunt_8 onwin {1: ['cobbledollars give @1 480', 'tag @1 add defeated_villain_grunt_8', '@2 say Headquarters does not like surprises on the senior floor. You are a very large surprise.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 320', '@2 say Intrusion contained. The Company thanks you for testing our security.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -90,16 +111,37 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @initiator[tag=defeated_villain_grunt_8] run say You already cleared my checkpoint the hard way. I am not standing in that doorway twice. Move along."
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "EQUALS",
+                                            Name: "defeated_villain_grunt_8"
+                                        }
+                                    ],
+                                    Cmd: "say You already cleared my checkpoint the hard way. I am not standing in that doorway twice. Move along."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_grunt_8] run tbcs attach villain_grunt_8 @initiator"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_villain_grunt_8"
+                                        }
+                                    ],
+                                    Cmd: "tbcs attach villain_grunt_8 @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_grunt_8] run tbcs battle GEN_9_SINGLES @initiator vs villain_grunt_8 onwin {1: ['cobbledollars give @1 480', 'tag @1 add defeated_villain_grunt_8', '@2 say Headquarters does not like surprises on the senior floor. You are a very large surprise.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 320', '@2 say Intrusion contained. The Company thanks you for testing our security.']}"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_villain_grunt_8"
+                                        }
+                                    ],
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_grunt_8 onwin {1: ['cobbledollars give @1 480', 'tag @1 add defeated_villain_grunt_8', '@2 say Headquarters does not like surprises on the senior floor. You are a very large surprise.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 320', '@2 say Intrusion contained. The Company thanks you for testing our security.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

@@ -63,16 +63,37 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @initiator[tag=defeated_takehara_apprentice] run say You already pruned me once. The arena is up the falls - Cicada is waiting."
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "EQUALS",
+                                            Name: "defeated_takehara_apprentice"
+                                        }
+                                    ],
+                                    Cmd: "say You already pruned me once. The arena is up the falls - Cicada is waiting."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @initiator[tag=defeated_takehara_apprentice] run tbcs attach takehara_apprentice @initiator"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_takehara_apprentice"
+                                        }
+                                    ],
+                                    Cmd: "tbcs attach takehara_apprentice @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @initiator[tag=defeated_takehara_apprentice] run tbcs battle GEN_9_DOUBLES @initiator vs takehara_apprentice onwin {1: ['tag @1 add defeated_takehara_apprentice', '@2 say Grown, pruned, and beaten fairly. Cicada will want to see the trainer who walked through my garden.'], 2: ['@2 say The greenhouse keeps what it catches. Rest up and come through again.']}"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_takehara_apprentice"
+                                        }
+                                    ],
+                                    Cmd: "tbcs battle GEN_9_DOUBLES @s vs takehara_apprentice onwin {1: ['tag @1 add defeated_takehara_apprentice', '@2 say Grown, pruned, and beaten fairly. Cicada will want to see the trainer who walked through my garden.'], 2: ['@2 say The greenhouse keeps what it catches. Rest up and come through again.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

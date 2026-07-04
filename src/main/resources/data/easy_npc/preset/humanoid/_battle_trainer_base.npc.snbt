@@ -37,12 +37,19 @@
               Actions: [
                 {
                   Type: "COMMAND",
-                  Cmd: "tbcs attach TRAINER_ID @initiator"
+                  Cmd: "tbcs attach TRAINER_ID @s"
                 },
                 {
                   Type: "COMMAND",
                   ExecAsUser: 1b,
-                  Cmd: "tbcs battle GEN_9_SINGLES @initiator vs TRAINER_ID onwin {2: ['cobbledollars remove @1 100'], 1: ['@2 say You win!']}"
+                  Conditions: [
+                    {
+                      Type: "PLAYER_TAG",
+                      Operation: "NOT_EQUALS",
+                      Name: "defeated_TRAINER_ID"
+                    }
+                  ],
+                  Cmd: "tbcs battle GEN_9_SINGLES @s vs TRAINER_ID onwin {2: ['cobbledollars remove @1 100'], 1: ['tag @1 add defeated_TRAINER_ID', '@2 say You win!']}"
                 },
                 {
                   Type: "CLOSE_DIALOG"

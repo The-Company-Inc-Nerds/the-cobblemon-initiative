@@ -50,16 +50,37 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @initiator[tag=defeated_villain_grunt_10] run say You broke me once on this floor. I have nothing left to guard from you. Move along."
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "EQUALS",
+                                            Name: "defeated_villain_grunt_10"
+                                        }
+                                    ],
+                                    Cmd: "say You broke me once on this floor. I have nothing left to guard from you. Move along."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_grunt_10] run tbcs attach villain_grunt_10 @initiator"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_villain_grunt_10"
+                                        }
+                                    ],
+                                    Cmd: "tbcs attach villain_grunt_10 @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_grunt_10] run tbcs battle GEN_9_SINGLES @initiator vs villain_grunt_10 onwin {1: ['cobbledollars give @1 580', 'tag @1 add defeated_villain_grunt_10', '@2 say I was the wall they put between the public and the truth. You just walked through a wall.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 380', '@2 say Threat eliminated. The Company reminds you: verified trust, verified value.']}"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_villain_grunt_10"
+                                        }
+                                    ],
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_grunt_10 onwin {1: ['cobbledollars give @1 580', 'tag @1 add defeated_villain_grunt_10', '@2 say I was the wall they put between the public and the truth. You just walked through a wall.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 380', '@2 say Threat eliminated. The Company reminds you: verified trust, verified value.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -90,16 +111,37 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @initiator[tag=defeated_villain_grunt_10] run say You broke me once on this floor. I have nothing left to guard from you. Move along."
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "EQUALS",
+                                            Name: "defeated_villain_grunt_10"
+                                        }
+                                    ],
+                                    Cmd: "say You broke me once on this floor. I have nothing left to guard from you. Move along."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_grunt_10] run tbcs attach villain_grunt_10 @initiator"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_villain_grunt_10"
+                                        }
+                                    ],
+                                    Cmd: "tbcs attach villain_grunt_10 @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_grunt_10] run tbcs battle GEN_9_SINGLES @initiator vs villain_grunt_10 onwin {1: ['cobbledollars give @1 580', 'tag @1 add defeated_villain_grunt_10', '@2 say I was the wall they put between the public and the truth. You just walked through a wall.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 380', '@2 say Threat eliminated. The Company reminds you: verified trust, verified value.']}"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_villain_grunt_10"
+                                        }
+                                    ],
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_grunt_10 onwin {1: ['cobbledollars give @1 580', 'tag @1 add defeated_villain_grunt_10', '@2 say I was the wall they put between the public and the truth. You just walked through a wall.', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 380', '@2 say Threat eliminated. The Company reminds you: verified trust, verified value.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

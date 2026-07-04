@@ -74,16 +74,37 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @initiator[tag=defeated_groundskeeper_aya] run say One exhibition per guest. The tree needs its rest and the stairs need my broom."
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "EQUALS",
+                                            Name: "defeated_groundskeeper_aya"
+                                        }
+                                    ],
+                                    Cmd: "say One exhibition per guest. The tree needs its rest and the stairs need my broom."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @initiator[tag=defeated_groundskeeper_aya] run tbcs attach groundskeeper_aya @initiator"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_groundskeeper_aya"
+                                        }
+                                    ],
+                                    Cmd: "tbcs attach groundskeeper_aya @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @initiator[tag=defeated_groundskeeper_aya] run tbcs battle GEN_9_SINGLES @initiator vs groundskeeper_aya onwin {1: ['cobbledollars give @1 300', 'tag @1 add defeated_groundskeeper_aya', '@2 say Well swept. The tree fooled you for half a round at least — that is all it ever asks. Three hundred, as agreed.'], 2: ['@2 say The tree is rock, dear. All that grass coaching in this town and nobody thinks to check the bark.']}"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_groundskeeper_aya"
+                                        }
+                                    ],
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs groundskeeper_aya onwin {1: ['cobbledollars give @1 300', 'tag @1 add defeated_groundskeeper_aya', '@2 say Well swept. The tree fooled you for half a round at least — that is all it ever asks. Three hundred, as agreed.'], 2: ['@2 say The tree is rock, dear. All that grass coaching in this town and nobody thinks to check the bark.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

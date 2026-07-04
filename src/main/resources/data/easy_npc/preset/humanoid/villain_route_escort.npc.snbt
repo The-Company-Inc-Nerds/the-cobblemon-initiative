@@ -50,16 +50,37 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @initiator[tag=defeated_villain_route_escort] run say Protocol satisfied. I see nothing on this road anymore, least of all you."
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "EQUALS",
+                                            Name: "defeated_villain_route_escort"
+                                        }
+                                    ],
+                                    Cmd: "say Protocol satisfied. I see nothing on this road anymore, least of all you."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_route_escort] run tbcs attach villain_route_escort @initiator"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_villain_route_escort"
+                                        }
+                                    ],
+                                    Cmd: "tbcs attach villain_route_escort @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_route_escort] run tbcs battle GEN_9_SINGLES @initiator vs villain_route_escort onwin {1: ['cobbledollars give @1 340', 'tag @1 add defeated_villain_route_escort', '@2 say Escort detail terminated. By a pedestrian. The wagon is your problem now.', 'easy_npc delete @2'], 2: ['@2 say Corridor secured. Please exit the assessment zone at your earliest convenience.']}"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_villain_route_escort"
+                                        }
+                                    ],
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_route_escort onwin {1: ['cobbledollars give @1 340', 'tag @1 add defeated_villain_route_escort', '@2 say Escort detail terminated. By a pedestrian. The wagon is your problem now.', 'easy_npc delete @2'], 2: ['@2 say Corridor secured. Please exit the assessment zone at your earliest convenience.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -94,16 +115,37 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @initiator[tag=defeated_villain_route_escort] run say Protocol satisfied. I see nothing on this road anymore, least of all you."
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "EQUALS",
+                                            Name: "defeated_villain_route_escort"
+                                        }
+                                    ],
+                                    Cmd: "say Protocol satisfied. I see nothing on this road anymore, least of all you."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_route_escort] run tbcs attach villain_route_escort @initiator"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_villain_route_escort"
+                                        }
+                                    ],
+                                    Cmd: "tbcs attach villain_route_escort @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_route_escort] run tbcs battle GEN_9_SINGLES @initiator vs villain_route_escort onwin {1: ['cobbledollars give @1 340', 'tag @1 add defeated_villain_route_escort', '@2 say Escort detail terminated. By a pedestrian. The wagon is your problem now.', 'easy_npc delete @2'], 2: ['@2 say Corridor secured. Please exit the assessment zone at your earliest convenience.']}"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_villain_route_escort"
+                                        }
+                                    ],
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_route_escort onwin {1: ['cobbledollars give @1 340', 'tag @1 add defeated_villain_route_escort', '@2 say Escort detail terminated. By a pedestrian. The wagon is your problem now.', 'easy_npc delete @2'], 2: ['@2 say Corridor secured. Please exit the assessment zone at your earliest convenience.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -131,16 +173,37 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @initiator[tag=defeated_villain_route_escort] run say Protocol satisfied. I see nothing on this road anymore, least of all you."
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "EQUALS",
+                                            Name: "defeated_villain_route_escort"
+                                        }
+                                    ],
+                                    Cmd: "say Protocol satisfied. I see nothing on this road anymore, least of all you."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_route_escort] run tbcs attach villain_route_escort @initiator"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_villain_route_escort"
+                                        }
+                                    ],
+                                    Cmd: "tbcs attach villain_route_escort @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_route_escort] run tbcs battle GEN_9_SINGLES @initiator vs villain_route_escort onwin {1: ['cobbledollars give @1 340', 'tag @1 add defeated_villain_route_escort', '@2 say Escort detail terminated. By a pedestrian. The wagon is your problem now.', 'easy_npc delete @2'], 2: ['@2 say Corridor secured. Please exit the assessment zone at your earliest convenience.']}"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_villain_route_escort"
+                                        }
+                                    ],
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_route_escort onwin {1: ['cobbledollars give @1 340', 'tag @1 add defeated_villain_route_escort', '@2 say Escort detail terminated. By a pedestrian. The wagon is your problem now.', 'easy_npc delete @2'], 2: ['@2 say Corridor secured. Please exit the assessment zone at your earliest convenience.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

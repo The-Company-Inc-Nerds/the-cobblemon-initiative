@@ -81,16 +81,37 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @initiator[tag=defeated_villain_admin] run say The floor is yours to cross. I already logged the variance. Go on up."
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "EQUALS",
+                                            Name: "defeated_villain_admin"
+                                        }
+                                    ],
+                                    Cmd: "say The floor is yours to cross. I already logged the variance. Go on up."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_admin] run tbcs attach villain_admin @initiator"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_villain_admin"
+                                        }
+                                    ],
+                                    Cmd: "tbcs attach villain_admin @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_admin] run tbcs battle GEN_9_DOUBLES @initiator vs villain_admin onwin {1: ['cobbledollars give @1 3000', 'tag @1 add defeated_villain_admin', '@2 say Filed under closed. I will note you were polite about it. That goes a long way, up where you are headed.', 'easy_npc delete @2'], 2: ['@2 say Recorded, escorted, and forgotten. The Company thanks you for your cooperation.']}"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_villain_admin"
+                                        }
+                                    ],
+                                    Cmd: "tbcs battle GEN_9_DOUBLES @s vs villain_admin onwin {1: ['cobbledollars give @1 3000', 'tag @1 add defeated_villain_admin', '@2 say Filed under closed. I will note you were polite about it. That goes a long way, up where you are headed.', 'easy_npc delete @2'], 2: ['@2 say Recorded, escorted, and forgotten. The Company thanks you for your cooperation.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -130,16 +151,37 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @initiator[tag=defeated_villain_admin] run say The floor is yours to cross. I already logged the variance. Go on up."
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "EQUALS",
+                                            Name: "defeated_villain_admin"
+                                        }
+                                    ],
+                                    Cmd: "say The floor is yours to cross. I already logged the variance. Go on up."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_admin] run tbcs attach villain_admin @initiator"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_villain_admin"
+                                        }
+                                    ],
+                                    Cmd: "tbcs attach villain_admin @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_admin] run tbcs battle GEN_9_DOUBLES @initiator vs villain_admin onwin {1: ['cobbledollars give @1 3000', 'tag @1 add defeated_villain_admin', '@2 say Filed under closed. I will note you were polite about it. That goes a long way, up where you are headed.', 'easy_npc delete @2'], 2: ['@2 say Recorded, escorted, and forgotten. The Company thanks you for your cooperation.']}"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_villain_admin"
+                                        }
+                                    ],
+                                    Cmd: "tbcs battle GEN_9_DOUBLES @s vs villain_admin onwin {1: ['cobbledollars give @1 3000', 'tag @1 add defeated_villain_admin', '@2 say Filed under closed. I will note you were polite about it. That goes a long way, up where you are headed.', 'easy_npc delete @2'], 2: ['@2 say Recorded, escorted, and forgotten. The Company thanks you for your cooperation.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

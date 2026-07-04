@@ -74,16 +74,37 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @initiator[tag=defeated_sq_canvasser] run say Our engagement is complete. Per policy I cannot lose twice to the same resident."
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "EQUALS",
+                                            Name: "defeated_sq_canvasser"
+                                        }
+                                    ],
+                                    Cmd: "say Our engagement is complete. Per policy I cannot lose twice to the same resident."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @initiator[tag=defeated_sq_canvasser] run tbcs attach sq_canvasser @initiator"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_sq_canvasser"
+                                        }
+                                    ],
+                                    Cmd: "tbcs attach sq_canvasser @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @initiator[tag=defeated_sq_canvasser] run tbcs battle GEN_9_SINGLES @initiator vs sq_canvasser onwin {1: ['cobbledollars give @1 280', 'tag @1 add defeated_sq_canvasser', '@2 say Noted. The route survey will describe you as a headwind.'], 2: ['@2 say Your objection has been processed and declined.']}"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_sq_canvasser"
+                                        }
+                                    ],
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs sq_canvasser onwin {1: ['cobbledollars give @1 280', 'tag @1 add defeated_sq_canvasser', '@2 say Noted. The route survey will describe you as a headwind.'], 2: ['@2 say Your objection has been processed and declined.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -104,7 +125,7 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "cobbledollars remove @initiator 150"
+                                    Cmd: "cobbledollars remove @s 150"
                                 },
                                 {
                                     Type: "COMMAND",

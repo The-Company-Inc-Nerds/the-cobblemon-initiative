@@ -74,16 +74,37 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @initiator[tag=defeated_fire_shrine_leader] run say The flame has already tasted you. Ash does not need to be lit twice."
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "EQUALS",
+                                            Name: "defeated_fire_shrine_leader"
+                                        }
+                                    ],
+                                    Cmd: "say The flame has already tasted you. Ash does not need to be lit twice."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @initiator[tag=defeated_fire_shrine_leader] run tbcs attach fire_shrine_leader @initiator"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_fire_shrine_leader"
+                                        }
+                                    ],
+                                    Cmd: "tbcs attach fire_shrine_leader @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @initiator[tag=defeated_fire_shrine_leader] run tbcs battle GEN_9_SINGLES @initiator vs fire_shrine_leader onwin {1: ['cobbledollars give @1 2500', 'tag @1 add defeated_fire_shrine_leader', '@2 say The flame takes its measure of you and is satisfied. Burn brightly, and burn long.'], 2: ['@2 say The fire spits you back out. Temper yourself and return when you will not break.']}"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_fire_shrine_leader"
+                                        }
+                                    ],
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs fire_shrine_leader onwin {1: ['cobbledollars give @1 2500', 'tag @1 add defeated_fire_shrine_leader', '@2 say The flame takes its measure of you and is satisfied. Burn brightly, and burn long.'], 2: ['@2 say The fire spits you back out. Temper yourself and return when you will not break.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

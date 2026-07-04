@@ -81,16 +81,37 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @initiator[tag=royal_league_champion] run say Champion. The title fits you stranger than most — like a coat you used to own. Whatever waits past here, walk in as yourself."
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "EQUALS",
+                                            Name: "royal_league_champion"
+                                        }
+                                    ],
+                                    Cmd: "say Champion. The title fits you stranger than most — like a coat you used to own. Whatever waits past here, walk in as yourself."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @initiator[tag=royal_league_champion] run tbcs attach royal_champion @initiator"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "royal_league_champion"
+                                        }
+                                    ],
+                                    Cmd: "tbcs attach royal_champion @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @initiator[tag=royal_league_champion] run tbcs battle GEN_9_SINGLES @initiator vs royal_champion onwin {1: ['cobbledollars give @1 12000', 'tag @1 add royal_league_champion', '@2 say So the throne goes to the one who built thrones. I always wondered who you would be when you remembered.'], 2: ['@2 say Not yet. The seat keeps itself for the one who can hold it. Come back when you are ready to take what is yours.']}"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "royal_league_champion"
+                                        }
+                                    ],
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs royal_champion onwin {1: ['cobbledollars give @1 12000', 'tag @1 add royal_league_champion', '@2 say So the throne goes to the one who built thrones. I always wondered who you would be when you remembered.'], 2: ['@2 say Not yet. The seat keeps itself for the one who can hold it. Come back when you are ready to take what is yours.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -130,16 +151,37 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @initiator[tag=royal_league_champion] run say Champion. The title fits you stranger than most — like a coat you used to own. Whatever waits past here, walk in as yourself."
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "EQUALS",
+                                            Name: "royal_league_champion"
+                                        }
+                                    ],
+                                    Cmd: "say Champion. The title fits you stranger than most — like a coat you used to own. Whatever waits past here, walk in as yourself."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @initiator[tag=royal_league_champion] run tbcs attach royal_champion @initiator"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "royal_league_champion"
+                                        }
+                                    ],
+                                    Cmd: "tbcs attach royal_champion @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @initiator[tag=royal_league_champion] run tbcs battle GEN_9_SINGLES @initiator vs royal_champion onwin {1: ['cobbledollars give @1 12000', 'tag @1 add royal_league_champion', '@2 say So the throne goes to the one who built thrones. I always wondered who you would be when you remembered.'], 2: ['@2 say Not yet. The seat keeps itself for the one who can hold it. Come back when you are ready to take what is yours.']}"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "royal_league_champion"
+                                        }
+                                    ],
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs royal_champion onwin {1: ['cobbledollars give @1 12000', 'tag @1 add royal_league_champion', '@2 say So the throne goes to the one who built thrones. I always wondered who you would be when you remembered.'], 2: ['@2 say Not yet. The seat keeps itself for the one who can hold it. Come back when you are ready to take what is yours.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

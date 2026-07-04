@@ -56,16 +56,37 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @initiator[tag=defeated_villain_yield_analyst] run say The audit is suspended. Repeat engagements do not compound. Take it up with the badge."
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "EQUALS",
+                                            Name: "defeated_villain_yield_analyst"
+                                        }
+                                    ],
+                                    Cmd: "say The audit is suspended. Repeat engagements do not compound. Take it up with the badge."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_yield_analyst] run tbcs attach villain_yield_analyst @initiator"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_villain_yield_analyst"
+                                        }
+                                    ],
+                                    Cmd: "tbcs attach villain_yield_analyst @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_yield_analyst] run tbcs battle GEN_9_SINGLES @initiator vs villain_yield_analyst onwin {1: ['cobbledollars give @1 480', 'tag @1 add defeated_villain_yield_analyst', '@2 say Recorded. One loss, assessor. My confidence interval did not include you — which is itself a data point.'], 2: ['@2 say Engagement concluded. Your challenge has been logged as community sentiment, weight zero.']}"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_villain_yield_analyst"
+                                        }
+                                    ],
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_yield_analyst onwin {1: ['cobbledollars give @1 480', 'tag @1 add defeated_villain_yield_analyst', '@2 say Recorded. One loss, assessor. My confidence interval did not include you — which is itself a data point.'], 2: ['@2 say Engagement concluded. Your challenge has been logged as community sentiment, weight zero.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -101,12 +122,12 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "cobbledollars give @initiator 150"
+                                    Cmd: "cobbledollars give @s 150"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "tag @initiator add goodwill_paid"
+                                    Cmd: "tag @s add goodwill_paid"
                                 },
                                 {
                                     Type: "COMMAND",
@@ -130,16 +151,37 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @initiator[tag=defeated_villain_yield_analyst] run say The audit is suspended. Repeat engagements do not compound. Take it up with the badge."
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "EQUALS",
+                                            Name: "defeated_villain_yield_analyst"
+                                        }
+                                    ],
+                                    Cmd: "say The audit is suspended. Repeat engagements do not compound. Take it up with the badge."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_yield_analyst] run tbcs attach villain_yield_analyst @initiator"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_villain_yield_analyst"
+                                        }
+                                    ],
+                                    Cmd: "tbcs attach villain_yield_analyst @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_yield_analyst] run tbcs battle GEN_9_SINGLES @initiator vs villain_yield_analyst onwin {1: ['cobbledollars give @1 480', 'tag @1 add defeated_villain_yield_analyst', '@2 say Recorded. One loss, assessor. My confidence interval did not include you — which is itself a data point.'], 2: ['@2 say Engagement concluded. Your challenge has been logged as community sentiment, weight zero.']}"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_villain_yield_analyst"
+                                        }
+                                    ],
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_yield_analyst onwin {1: ['cobbledollars give @1 480', 'tag @1 add defeated_villain_yield_analyst', '@2 say Recorded. One loss, assessor. My confidence interval did not include you — which is itself a data point.'], 2: ['@2 say Engagement concluded. Your challenge has been logged as community sentiment, weight zero.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -191,17 +233,17 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "loot give @initiator loot cobblemon_initiative:npc_gift/rezoning_memo"
+                                    Cmd: "loot give @s loot cobblemon_initiative:npc_gift/rezoning_memo"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "tag @initiator add yield_report_taken"
+                                    Cmd: "tag @s add yield_report_taken"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "tag @initiator remove audit_loiter"
+                                    Cmd: "tag @s remove audit_loiter"
                                 },
                                 {
                                     Type: "COMMAND",
@@ -256,16 +298,37 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @initiator[tag=defeated_villain_yield_analyst] run say The audit is suspended. Repeat engagements do not compound. Take it up with the badge."
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "EQUALS",
+                                            Name: "defeated_villain_yield_analyst"
+                                        }
+                                    ],
+                                    Cmd: "say The audit is suspended. Repeat engagements do not compound. Take it up with the badge."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_yield_analyst] run tbcs attach villain_yield_analyst @initiator"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_villain_yield_analyst"
+                                        }
+                                    ],
+                                    Cmd: "tbcs attach villain_yield_analyst @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_yield_analyst] run tbcs battle GEN_9_SINGLES @initiator vs villain_yield_analyst onwin {1: ['cobbledollars give @1 480', 'tag @1 add defeated_villain_yield_analyst', '@2 say Recorded. One loss, assessor. My confidence interval did not include you — which is itself a data point.'], 2: ['@2 say Engagement concluded. Your challenge has been logged as community sentiment, weight zero.']}"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_villain_yield_analyst"
+                                        }
+                                    ],
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_yield_analyst onwin {1: ['cobbledollars give @1 480', 'tag @1 add defeated_villain_yield_analyst', '@2 say Recorded. One loss, assessor. My confidence interval did not include you — which is itself a data point.'], 2: ['@2 say Engagement concluded. Your challenge has been logged as community sentiment, weight zero.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -303,16 +366,37 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @initiator[tag=defeated_villain_yield_analyst] run say The audit is suspended. Repeat engagements do not compound. Take it up with the badge."
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "EQUALS",
+                                            Name: "defeated_villain_yield_analyst"
+                                        }
+                                    ],
+                                    Cmd: "say The audit is suspended. Repeat engagements do not compound. Take it up with the badge."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_yield_analyst] run tbcs attach villain_yield_analyst @initiator"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_villain_yield_analyst"
+                                        }
+                                    ],
+                                    Cmd: "tbcs attach villain_yield_analyst @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_yield_analyst] run tbcs battle GEN_9_SINGLES @initiator vs villain_yield_analyst onwin {1: ['cobbledollars give @1 480', 'tag @1 add defeated_villain_yield_analyst', '@2 say Recorded. One loss, assessor. My confidence interval did not include you — which is itself a data point.'], 2: ['@2 say Engagement concluded. Your challenge has been logged as community sentiment, weight zero.']}"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_villain_yield_analyst"
+                                        }
+                                    ],
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_yield_analyst onwin {1: ['cobbledollars give @1 480', 'tag @1 add defeated_villain_yield_analyst', '@2 say Recorded. One loss, assessor. My confidence interval did not include you — which is itself a data point.'], 2: ['@2 say Engagement concluded. Your challenge has been logged as community sentiment, weight zero.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -326,12 +410,12 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "cobbledollars remove @initiator 150"
+                                    Cmd: "cobbledollars remove @s 150"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "tag @initiator add paid_survey_decline"
+                                    Cmd: "tag @s add paid_survey_decline"
                                 },
                                 {
                                     Type: "COMMAND",
@@ -379,16 +463,37 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @initiator[tag=defeated_villain_yield_analyst] run say The audit is suspended. Repeat engagements do not compound. Take it up with the badge."
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "EQUALS",
+                                            Name: "defeated_villain_yield_analyst"
+                                        }
+                                    ],
+                                    Cmd: "say The audit is suspended. Repeat engagements do not compound. Take it up with the badge."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_yield_analyst] run tbcs attach villain_yield_analyst @initiator"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_villain_yield_analyst"
+                                        }
+                                    ],
+                                    Cmd: "tbcs attach villain_yield_analyst @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_yield_analyst] run tbcs battle GEN_9_SINGLES @initiator vs villain_yield_analyst onwin {1: ['cobbledollars give @1 480', 'tag @1 add defeated_villain_yield_analyst', '@2 say Recorded. One loss, assessor. My confidence interval did not include you — which is itself a data point.'], 2: ['@2 say Engagement concluded. Your challenge has been logged as community sentiment, weight zero.']}"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_villain_yield_analyst"
+                                        }
+                                    ],
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_yield_analyst onwin {1: ['cobbledollars give @1 480', 'tag @1 add defeated_villain_yield_analyst', '@2 say Recorded. One loss, assessor. My confidence interval did not include you — which is itself a data point.'], 2: ['@2 say Engagement concluded. Your challenge has been logged as community sentiment, weight zero.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -402,12 +507,12 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "cobbledollars remove @initiator 150"
+                                    Cmd: "cobbledollars remove @s 150"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "tag @initiator add paid_survey_decline"
+                                    Cmd: "tag @s add paid_survey_decline"
                                 },
                                 {
                                     Type: "COMMAND",
@@ -551,17 +656,17 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "loot give @initiator loot cobblemon_initiative:npc_gift/rezoning_memo"
+                                    Cmd: "loot give @s loot cobblemon_initiative:npc_gift/rezoning_memo"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "tag @initiator add yield_report_taken"
+                                    Cmd: "tag @s add yield_report_taken"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "tag @initiator remove audit_loiter"
+                                    Cmd: "tag @s remove audit_loiter"
                                 },
                                 {
                                     Type: "COMMAND",
@@ -599,16 +704,37 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @initiator[tag=defeated_villain_yield_analyst] run say The audit is suspended. Repeat engagements do not compound. Take it up with the badge."
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "EQUALS",
+                                            Name: "defeated_villain_yield_analyst"
+                                        }
+                                    ],
+                                    Cmd: "say The audit is suspended. Repeat engagements do not compound. Take it up with the badge."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_yield_analyst] run tbcs attach villain_yield_analyst @initiator"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_villain_yield_analyst"
+                                        }
+                                    ],
+                                    Cmd: "tbcs attach villain_yield_analyst @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_yield_analyst] run tbcs battle GEN_9_SINGLES @initiator vs villain_yield_analyst onwin {1: ['cobbledollars give @1 480', 'tag @1 add defeated_villain_yield_analyst', '@2 say Recorded. One loss, assessor. My confidence interval did not include you — which is itself a data point.'], 2: ['@2 say Engagement concluded. Your challenge has been logged as community sentiment, weight zero.']}"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_villain_yield_analyst"
+                                        }
+                                    ],
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_yield_analyst onwin {1: ['cobbledollars give @1 480', 'tag @1 add defeated_villain_yield_analyst', '@2 say Recorded. One loss, assessor. My confidence interval did not include you — which is itself a data point.'], 2: ['@2 say Engagement concluded. Your challenge has been logged as community sentiment, weight zero.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

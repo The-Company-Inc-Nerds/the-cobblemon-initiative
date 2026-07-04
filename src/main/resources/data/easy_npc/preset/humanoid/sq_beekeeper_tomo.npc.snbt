@@ -61,22 +61,22 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "give @initiator minecraft:honey_bottle 4"
+                                    Cmd: "give @s minecraft:honey_bottle 4"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "give @initiator minecraft:honeycomb 8"
+                                    Cmd: "give @s minecraft:honeycomb 8"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute as @initiator run function cobblemon_initiative:economy/payout {amount:350}"
+                                    Cmd: "function cobblemon_initiative:economy/payout {amount:350}"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "tag @initiator add sting_futures_paid"
+                                    Cmd: "tag @s add sting_futures_paid"
                                 },
                                 {
                                     Type: "COMMAND",
@@ -147,27 +147,27 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "give @initiator minecraft:honey_bottle 3"
+                                    Cmd: "give @s minecraft:honey_bottle 3"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "give @initiator minecraft:honeycomb 8"
+                                    Cmd: "give @s minecraft:honeycomb 8"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "give @initiator cobblemon:potion 2"
+                                    Cmd: "give @s cobblemon:potion 2"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute as @initiator run function cobblemon_initiative:economy/payout {amount:350}"
+                                    Cmd: "function cobblemon_initiative:economy/payout {amount:350}"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "tag @initiator add sting_reward_paid"
+                                    Cmd: "tag @s add sting_reward_paid"
                                 },
                                 {
                                     Type: "COMMAND",
@@ -426,7 +426,7 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "tag @initiator add sting_seal_1"
+                                    Cmd: "tag @s add sting_seal_1"
                                 },
                                 {
                                     Type: "COMMAND",
@@ -466,7 +466,7 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "tag @initiator add sting_seal_2"
+                                    Cmd: "tag @s add sting_seal_2"
                                 },
                                 {
                                     Type: "COMMAND",
@@ -506,7 +506,7 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "tag @initiator add sting_seal_3"
+                                    Cmd: "tag @s add sting_seal_3"
                                 },
                                 {
                                     Type: "COMMAND",
@@ -545,16 +545,37 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @initiator[tag=defeated_sq_sting_agent] run say Our engagement is concluded and filed. Do not disturb."
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "EQUALS",
+                                            Name: "defeated_sq_sting_agent"
+                                        }
+                                    ],
+                                    Cmd: "say Our engagement is concluded and filed. Do not disturb."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @initiator[tag=defeated_sq_sting_agent] run tbcs attach sq_sting_agent @initiator"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_sq_sting_agent"
+                                        }
+                                    ],
+                                    Cmd: "tbcs attach sq_sting_agent @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @initiator[tag=defeated_sq_sting_agent] run tbcs battle GEN_9_SINGLES @initiator vs sq_sting_agent onwin {1: ['cobbledollars give @1 280', 'tag @1 add defeated_sq_sting_agent', '@2 say Asset intervention failed. Noting hostile local fauna and one uncooperative individual.', 'tag @1 add sting_seal_4_clear', 'give @1 cobblemon:poke_ball 2'], 2: ['@2 say The valuation stands. The Company thanks this route for its cooperation.']}"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_sq_sting_agent"
+                                        }
+                                    ],
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs sq_sting_agent onwin {1: ['cobbledollars give @1 280', 'tag @1 add defeated_sq_sting_agent', '@2 say Asset intervention failed. Noting hostile local fauna and one uncooperative individual.', 'tag @1 add sting_seal_4_clear', 'give @1 cobblemon:poke_ball 2'], 2: ['@2 say The valuation stands. The Company thanks this route for its cooperation.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -575,7 +596,7 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "tag @initiator add sting_seal_4_clear"
+                                    Cmd: "tag @s add sting_seal_4_clear"
                                 },
                                 {
                                     Type: "COMMAND",
@@ -601,7 +622,7 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "tag @initiator add sting_seal_4"
+                                    Cmd: "tag @s add sting_seal_4"
                                 },
                                 {
                                     Type: "COMMAND",
@@ -648,12 +669,12 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute as @initiator run function cobblemon_initiative:sidequest/sting/give_field_memo"
+                                    Cmd: "function cobblemon_initiative:sidequest/sting/give_field_memo"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "tag @initiator add sting_memo_taken"
+                                    Cmd: "tag @s add sting_memo_taken"
                                 },
                                 {
                                     Type: "COMMAND",

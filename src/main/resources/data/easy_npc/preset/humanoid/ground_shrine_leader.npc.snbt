@@ -74,16 +74,37 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @initiator[tag=defeated_ground_shrine_leader] run say The earth already knows your weight. It will not be moved to test you again."
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "EQUALS",
+                                            Name: "defeated_ground_shrine_leader"
+                                        }
+                                    ],
+                                    Cmd: "say The earth already knows your weight. It will not be moved to test you again."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @initiator[tag=defeated_ground_shrine_leader] run tbcs attach ground_shrine_leader @initiator"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_ground_shrine_leader"
+                                        }
+                                    ],
+                                    Cmd: "tbcs attach ground_shrine_leader @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @initiator[tag=defeated_ground_shrine_leader] run tbcs battle GEN_9_SINGLES @initiator vs ground_shrine_leader onwin {1: ['cobbledollars give @1 2500', 'tag @1 add defeated_ground_shrine_leader', '@2 say The earth has taken your measure and held firm. Walk on, and let it remember your tread.'], 2: ['@2 say The ground gives way beneath you yet. Root yourself deeper and return.']}"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_ground_shrine_leader"
+                                        }
+                                    ],
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs ground_shrine_leader onwin {1: ['cobbledollars give @1 2500', 'tag @1 add defeated_ground_shrine_leader', '@2 say The earth has taken your measure and held firm. Walk on, and let it remember your tread.'], 2: ['@2 say The ground gives way beneath you yet. Root yourself deeper and return.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

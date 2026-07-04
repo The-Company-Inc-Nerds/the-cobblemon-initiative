@@ -88,16 +88,37 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @initiator[tag=defeated_sq_rt2_scarecrow] run say The road is yours, trainer. My birds tip their wings when you pass."
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "EQUALS",
+                                            Name: "defeated_sq_rt2_scarecrow"
+                                        }
+                                    ],
+                                    Cmd: "say The road is yours, trainer. My birds tip their wings when you pass."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @initiator[tag=defeated_sq_rt2_scarecrow] run tbcs attach sq_rt2_scarecrow @initiator"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_sq_rt2_scarecrow"
+                                        }
+                                    ],
+                                    Cmd: "tbcs attach sq_rt2_scarecrow @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @initiator[tag=defeated_sq_rt2_scarecrow] run tbcs battle GEN_9_SINGLES @initiator vs sq_rt2_scarecrow onwin {1: ['cobbledollars give @1 230', 'tag @1 add defeated_sq_rt2_scarecrow', '@2 say Sharp work. The crows would scatter for you without a single scarecrow.'], 2: ['@2 say Ha — the birds still earn better than the vouchers do. Rest yours and come back.']}"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_sq_rt2_scarecrow"
+                                        }
+                                    ],
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs sq_rt2_scarecrow onwin {1: ['cobbledollars give @1 230', 'tag @1 add defeated_sq_rt2_scarecrow', '@2 say Sharp work. The crows would scatter for you without a single scarecrow.'], 2: ['@2 say Ha — the birds still earn better than the vouchers do. Rest yours and come back.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -131,16 +152,37 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @initiator[tag=defeated_sq_rt2_scarecrow] run say The road is yours, trainer. My birds tip their wings when you pass."
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "EQUALS",
+                                            Name: "defeated_sq_rt2_scarecrow"
+                                        }
+                                    ],
+                                    Cmd: "say The road is yours, trainer. My birds tip their wings when you pass."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @initiator[tag=defeated_sq_rt2_scarecrow] run tbcs attach sq_rt2_scarecrow @initiator"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_sq_rt2_scarecrow"
+                                        }
+                                    ],
+                                    Cmd: "tbcs attach sq_rt2_scarecrow @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @initiator[tag=defeated_sq_rt2_scarecrow] run tbcs battle GEN_9_SINGLES @initiator vs sq_rt2_scarecrow onwin {1: ['cobbledollars give @1 230', 'tag @1 add defeated_sq_rt2_scarecrow', '@2 say Sharp work. The crows would scatter for you without a single scarecrow.'], 2: ['@2 say Ha — the birds still earn better than the vouchers do. Rest yours and come back.']}"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_sq_rt2_scarecrow"
+                                        }
+                                    ],
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs sq_rt2_scarecrow onwin {1: ['cobbledollars give @1 230', 'tag @1 add defeated_sq_rt2_scarecrow', '@2 say Sharp work. The crows would scatter for you without a single scarecrow.'], 2: ['@2 say Ha — the birds still earn better than the vouchers do. Rest yours and come back.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

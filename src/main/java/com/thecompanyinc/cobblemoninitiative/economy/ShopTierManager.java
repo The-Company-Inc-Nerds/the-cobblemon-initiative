@@ -150,9 +150,14 @@ public final class ShopTierManager {
         "function cobblemon_initiative:granary/apply_" + tier
       );
       // The function can only retier a LOADED keeper (Easy NPC preset import updates
-      // in place only for loaded entities). Record a pending override so an unloaded
-      // keeper picks up the tier preset the next time its chunk loads.
-      NpcPresetRefreshManager.queueTierOverride(server, tier);
+      // in place only for loaded entities). Record a sticky override so an unloaded
+      // keeper picks up the tier preset the next time its chunk loads. Guarded — this
+      // runs inside `install run` and gym-reward paths that must not abort.
+      try {
+        NpcPresetRefreshManager.queueTierOverride(server, tier);
+      } catch (Exception e) {
+        InitiativeInit.LOGGER.error("Failed to queue granary tier override for {}", tier, e);
+      }
       InitiativeInit.LOGGER.info(
         "Applied shop tier {} (CobbleDollars reloaded, granary retiered).",
         tier

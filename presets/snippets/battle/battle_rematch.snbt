@@ -17,7 +17,14 @@ DialogData: {
                         {
                             Type: "COMMAND",
                             ExecAsUser: 1b,
-                            Cmd: "execute if entity @s[tag=defeated_%%TRAINER_ID%%] run tbcs battle %%BATTLE_FORMAT:GEN_9_SINGLES|GEN_9_DOUBLES=GEN_9_SINGLES%% @s vs %%TRAINER_ID%% onwin {1: ['cobbledollars give @1 %%PRIZE=120%%', '@2 say %%WIN_LINE=Still sharp. Keep it that way.%%'], 2: ['@2 say %%LOSE_LINE=Off your game today. Run it back when you are ready.%%']}"
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "defeated_%%TRAINER_ID%%"
+                                }
+                            ],
+                            Cmd: "tbcs battle %%BATTLE_FORMAT:GEN_9_SINGLES|GEN_9_DOUBLES=GEN_9_SINGLES%% @s vs %%TRAINER_ID%% onwin {1: ['cobbledollars give @1 %%PRIZE=120%%', '@2 say %%WIN_LINE=Still sharp. Keep it that way.%%'], 2: ['@2 say %%LOSE_LINE=Off your game today. Run it back when you are ready.%%']}"
                         },
                         {
                             Type: "CLOSE_DIALOG"

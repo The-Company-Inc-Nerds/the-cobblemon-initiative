@@ -74,16 +74,37 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @initiator[tag=defeated_scorchspire_leader] run say Ember Badge already forged onto you. This is the last gate, you understand. Past me there is only the League, and past the League there is only whatever it is you keep half remembering. Go and meet it."
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "EQUALS",
+                                            Name: "defeated_scorchspire_leader"
+                                        }
+                                    ],
+                                    Cmd: "say Ember Badge already forged onto you. This is the last gate, you understand. Past me there is only the League, and past the League there is only whatever it is you keep half remembering. Go and meet it."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @initiator[tag=defeated_scorchspire_leader] run tbcs attach scorchspire_leader @initiator"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_scorchspire_leader"
+                                        }
+                                    ],
+                                    Cmd: "tbcs attach scorchspire_leader @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @initiator[tag=defeated_scorchspire_leader] run tbcs battle GEN_9_SINGLES @initiator vs scorchspire_leader onwin {1: ['cobbledollars give @1 6000', 'tag @1 add defeated_scorchspire_leader', '@2 say You walked into the fire and came out hotter than the spire. The Ember Badge is yours. Nothing stands between you and the Royal League now but the road.'], 2: ['@2 say Fire does not forgive the unready. You burned bright but you burned out. Bank your coals and climb the spire again.']}"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_scorchspire_leader"
+                                        }
+                                    ],
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs scorchspire_leader onwin {1: ['cobbledollars give @1 6000', 'tag @1 add defeated_scorchspire_leader', '@2 say You walked into the fire and came out hotter than the spire. The Ember Badge is yours. Nothing stands between you and the Royal League now but the road.'], 2: ['@2 say Fire does not forgive the unready. You burned bright but you burned out. Bank your coals and climb the spire again.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

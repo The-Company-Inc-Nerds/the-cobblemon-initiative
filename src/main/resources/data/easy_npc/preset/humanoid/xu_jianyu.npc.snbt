@@ -88,16 +88,37 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @initiator[tag=defeated_sq_rt2_kite] run say The kites only mark a trainer once. Fly on."
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "EQUALS",
+                                            Name: "defeated_sq_rt2_kite"
+                                        }
+                                    ],
+                                    Cmd: "say The kites only mark a trainer once. Fly on."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @initiator[tag=defeated_sq_rt2_kite] run tbcs attach sq_rt2_kite @initiator"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_sq_rt2_kite"
+                                        }
+                                    ],
+                                    Cmd: "tbcs attach sq_rt2_kite @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @initiator[tag=defeated_sq_rt2_kite] run tbcs battle GEN_9_SINGLES @initiator vs sq_rt2_kite onwin {1: ['cobbledollars give @1 300', 'tag @1 add defeated_sq_rt2_kite', '@2 say Grounded. The kites called the wind wrong and so did I.'], 2: ['@2 say I saw the whole battle before it started. The ledge does that. Rest up and watch the sky next time.']}"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_sq_rt2_kite"
+                                        }
+                                    ],
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs sq_rt2_kite onwin {1: ['cobbledollars give @1 300', 'tag @1 add defeated_sq_rt2_kite', '@2 say Grounded. The kites called the wind wrong and so did I.'], 2: ['@2 say I saw the whole battle before it started. The ledge does that. Rest up and watch the sky next time.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

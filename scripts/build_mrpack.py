@@ -87,9 +87,12 @@ def primary_file(v, slug):
     return f
 
 
-def file_entry(f, path_prefix, env=None):
+def file_entry(f, path_prefix, env=None, suffix=""):
+    # suffix=".disabled": Fabric Loader only loads *.jar files, and Prism / the Modrinth
+    # App both show mods/<name>.jar.disabled as a disabled mod with a one-click enable
+    # toggle — the mechanism for shipping a mod off-by-default (e.g. JEI).
     entry = {
-        "path": path_prefix + f["filename"],
+        "path": path_prefix + f["filename"] + suffix,
         "hashes": {"sha1": f["hashes"]["sha1"], "sha512": f["hashes"]["sha512"]},
         "downloads": [f["url"]],
         "fileSize": f["size"],
@@ -110,8 +113,10 @@ def find_file_by_name(versions, filename):
 
 def resolve_mod(mr, e, mc):
     """Resolve a `mods` entry to a mods/ files[] entry: by exact filename if pinned,
-    else by version_number (newest Fabric build if null)."""
+    else by version_number (newest Fabric build if null). Entries with "disabled": true
+    ship as mods/<name>.jar.disabled (off by default; one-click enable in the launcher)."""
     versions = mr.versions(e["slug"])
+    suffix = ".disabled" if e.get("disabled") else ""
     if e.get("filename"):
         f = find_file_by_name(versions, e["filename"])
         if f is None:
@@ -120,9 +125,9 @@ def resolve_mod(mr, e, mc):
             v = choose_version(versions, e["slug"], None, mc, require_fabric=True)
             f = primary_file(v, e["slug"])
             print(f"    [warn] {e.get('note', e['slug'])}: '{e['filename']}' not on Modrinth; using {f['filename']}")
-        return e.get("version") or "", file_entry(f, "mods/")
+        return e.get("version") or "", file_entry(f, "mods/", suffix=suffix)
     v = choose_version(versions, e["slug"], e.get("version"), mc, require_fabric=True)
-    return v.get("version_number"), file_entry(primary_file(v, e["slug"]), "mods/")
+    return v.get("version_number"), file_entry(primary_file(v, e["slug"]), "mods/", suffix=suffix)
 
 
 def resolve_pack(mr, item, mc, path_prefix, env=None):

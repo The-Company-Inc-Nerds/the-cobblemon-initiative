@@ -50,16 +50,37 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @initiator[tag=defeated_wheat_trader_ambush] run say No. We are not doing that twice. Word went out about you."
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "EQUALS",
+                                            Name: "defeated_wheat_trader_ambush"
+                                        }
+                                    ],
+                                    Cmd: "say No. We are not doing that twice. Word went out about you."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @initiator[tag=defeated_wheat_trader_ambush] run tbcs attach wheat_trader_ambush @initiator"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_wheat_trader_ambush"
+                                        }
+                                    ],
+                                    Cmd: "tbcs attach wheat_trader_ambush @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @initiator[tag=defeated_wheat_trader_ambush] run tbcs battle GEN_9_SINGLES @initiator vs wheat_trader_ambush onwin {1: ['cobbledollars give @1 400', 'tag @1 add defeated_wheat_trader_ambush', '@2 say Fine. Fine! Take the fields. Take the ledgers. I never liked grain anyway.'], 2: ['@2 say Filed. The Company thanks you for your final contribution.']}"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_wheat_trader_ambush"
+                                        }
+                                    ],
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs wheat_trader_ambush onwin {1: ['cobbledollars give @1 400', 'tag @1 add defeated_wheat_trader_ambush', '@2 say Fine. Fine! Take the fields. Take the ledgers. I never liked grain anyway.'], 2: ['@2 say Filed. The Company thanks you for your final contribution.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -143,7 +164,7 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "tag @initiator add heard_wheat_pitch"
+                                    Cmd: "tag @s add heard_wheat_pitch"
                                 },
                                 {
                                     Type: "OPEN_TRADING_SCREEN"
@@ -157,7 +178,7 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "tag @initiator add heard_wheat_pitch"
+                                    Cmd: "tag @s add heard_wheat_pitch"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

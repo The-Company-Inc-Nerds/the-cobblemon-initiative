@@ -50,16 +50,37 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @initiator[tag=defeated_villain_site_manager] run say The field is out of my portfolio. Enjoy the produce. It never suited the ledger anyway."
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "EQUALS",
+                                            Name: "defeated_villain_site_manager"
+                                        }
+                                    ],
+                                    Cmd: "say The field is out of my portfolio. Enjoy the produce. It never suited the ledger anyway."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_site_manager] run tbcs attach villain_site_manager @initiator"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_villain_site_manager"
+                                        }
+                                    ],
+                                    Cmd: "tbcs attach villain_site_manager @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_site_manager] run tbcs battle GEN_9_SINGLES @initiator vs villain_site_manager onwin {1: ['cobbledollars give @1 520', 'tag @1 add defeated_villain_site_manager', '@2 say Noted. The parcel is — the parcel was. I will be filing this under force majeure.', 'execute as @1 run function cobblemon_initiative:liberation/free_field {field:farm_1}', 'loot give @1 loot cobblemon_initiative:npc_gift/transition_order', 'tag @1 add field_1_transition_taken', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 150', '@2 say Yield secured. Your visit has been logged as agricultural tourism.']}"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_villain_site_manager"
+                                        }
+                                    ],
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_site_manager onwin {1: ['cobbledollars give @1 520', 'tag @1 add defeated_villain_site_manager', '@2 say Noted. The parcel is — the parcel was. I will be filing this under force majeure.', 'execute as @1 run function cobblemon_initiative:liberation/free_field {field:farm_1}', 'loot give @1 loot cobblemon_initiative:npc_gift/transition_order', 'tag @1 add field_1_transition_taken', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 150', '@2 say Yield secured. Your visit has been logged as agricultural tourism.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -101,16 +122,37 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @initiator[tag=defeated_villain_site_manager] run say The field is out of my portfolio. Enjoy the produce. It never suited the ledger anyway."
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "EQUALS",
+                                            Name: "defeated_villain_site_manager"
+                                        }
+                                    ],
+                                    Cmd: "say The field is out of my portfolio. Enjoy the produce. It never suited the ledger anyway."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_site_manager] run tbcs attach villain_site_manager @initiator"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_villain_site_manager"
+                                        }
+                                    ],
+                                    Cmd: "tbcs attach villain_site_manager @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_site_manager] run tbcs battle GEN_9_SINGLES @initiator vs villain_site_manager onwin {1: ['cobbledollars give @1 520', 'tag @1 add defeated_villain_site_manager', '@2 say Noted. The parcel is — the parcel was. I will be filing this under force majeure.', 'execute as @1 run function cobblemon_initiative:liberation/free_field {field:farm_1}', 'loot give @1 loot cobblemon_initiative:npc_gift/transition_order', 'tag @1 add field_1_transition_taken', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 150', '@2 say Yield secured. Your visit has been logged as agricultural tourism.']}"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_villain_site_manager"
+                                        }
+                                    ],
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_site_manager onwin {1: ['cobbledollars give @1 520', 'tag @1 add defeated_villain_site_manager', '@2 say Noted. The parcel is — the parcel was. I will be filing this under force majeure.', 'execute as @1 run function cobblemon_initiative:liberation/free_field {field:farm_1}', 'loot give @1 loot cobblemon_initiative:npc_gift/transition_order', 'tag @1 add field_1_transition_taken', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 150', '@2 say Yield secured. Your visit has been logged as agricultural tourism.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -145,16 +187,37 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @initiator[tag=defeated_villain_site_manager] run say The field is out of my portfolio. Enjoy the produce. It never suited the ledger anyway."
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "EQUALS",
+                                            Name: "defeated_villain_site_manager"
+                                        }
+                                    ],
+                                    Cmd: "say The field is out of my portfolio. Enjoy the produce. It never suited the ledger anyway."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_site_manager] run tbcs attach villain_site_manager @initiator"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_villain_site_manager"
+                                        }
+                                    ],
+                                    Cmd: "tbcs attach villain_site_manager @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_site_manager] run tbcs battle GEN_9_SINGLES @initiator vs villain_site_manager onwin {1: ['cobbledollars give @1 520', 'tag @1 add defeated_villain_site_manager', '@2 say Noted. The parcel is — the parcel was. I will be filing this under force majeure.', 'execute as @1 run function cobblemon_initiative:liberation/free_field {field:farm_1}', 'loot give @1 loot cobblemon_initiative:npc_gift/transition_order', 'tag @1 add field_1_transition_taken', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 150', '@2 say Yield secured. Your visit has been logged as agricultural tourism.']}"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_villain_site_manager"
+                                        }
+                                    ],
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_site_manager onwin {1: ['cobbledollars give @1 520', 'tag @1 add defeated_villain_site_manager', '@2 say Noted. The parcel is — the parcel was. I will be filing this under force majeure.', 'execute as @1 run function cobblemon_initiative:liberation/free_field {field:farm_1}', 'loot give @1 loot cobblemon_initiative:npc_gift/transition_order', 'tag @1 add field_1_transition_taken', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 150', '@2 say Yield secured. Your visit has been logged as agricultural tourism.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -218,16 +281,37 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute if entity @initiator[tag=defeated_villain_site_manager] run say The field is out of my portfolio. Enjoy the produce. It never suited the ledger anyway."
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "EQUALS",
+                                            Name: "defeated_villain_site_manager"
+                                        }
+                                    ],
+                                    Cmd: "say The field is out of my portfolio. Enjoy the produce. It never suited the ledger anyway."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_site_manager] run tbcs attach villain_site_manager @initiator"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_villain_site_manager"
+                                        }
+                                    ],
+                                    Cmd: "tbcs attach villain_site_manager @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "execute unless entity @initiator[tag=defeated_villain_site_manager] run tbcs battle GEN_9_SINGLES @initiator vs villain_site_manager onwin {1: ['cobbledollars give @1 520', 'tag @1 add defeated_villain_site_manager', '@2 say Noted. The parcel is — the parcel was. I will be filing this under force majeure.', 'execute as @1 run function cobblemon_initiative:liberation/free_field {field:farm_1}', 'loot give @1 loot cobblemon_initiative:npc_gift/transition_order', 'tag @1 add field_1_transition_taken', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 150', '@2 say Yield secured. Your visit has been logged as agricultural tourism.']}"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "NOT_EQUALS",
+                                            Name: "defeated_villain_site_manager"
+                                        }
+                                    ],
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_site_manager onwin {1: ['cobbledollars give @1 520', 'tag @1 add defeated_villain_site_manager', '@2 say Noted. The parcel is — the parcel was. I will be filing this under force majeure.', 'execute as @1 run function cobblemon_initiative:liberation/free_field {field:farm_1}', 'loot give @1 loot cobblemon_initiative:npc_gift/transition_order', 'tag @1 add field_1_transition_taken', 'easy_npc delete @2'], 2: ['cobbledollars remove @1 150', '@2 say Yield secured. Your visit has been logged as agricultural tourism.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
