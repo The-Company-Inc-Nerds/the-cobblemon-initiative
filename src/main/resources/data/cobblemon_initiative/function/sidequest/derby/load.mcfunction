@@ -10,7 +10,7 @@ scoreboard objectives add ci_fish_total dummy
 scoreboard objectives add ci_classic_win dummy
 execute unless score #init ci_classic matches 1 run bossbar add cobblemon_initiative:sango_classic [{"text":"THE SANGO CLASSIC","color":"aqua","bold":true}]
 scoreboard players set #init ci_classic 1
-bossbar set cobblemon_initiative:sango_classic color aqua
+bossbar set cobblemon_initiative:sango_classic color blue
 bossbar set cobblemon_initiative:sango_classic style notched_10
 bossbar set cobblemon_initiative:sango_classic max 360
 execute unless score #on ci_classic matches -2147483648..2147483647 run scoreboard players set #on ci_classic 0

@@ -153,7 +153,7 @@ def generate(
         f"# Requires permission level 2+",
         f"#",
         f"# Each line applies a preset to a specific in-world Easy NPC by UUID.",
-        f"# Command: easy_npc preset import data <uuid> <resource_location>",
+        f"# Command: easy_npc preset import data <resource_location> <uuid>  (Easy NPC 6.25: location FIRST — runtime-verified)",
         "",
     ]
 
@@ -161,7 +161,7 @@ def generate(
         rl = resolve_preset(preset, namespace, entity_type)
         if label:
             lines.append(f"# {label}")
-        lines.append(f"easy_npc preset import data {uuid_str} {rl}")
+        lines.append(f"easy_npc preset import data {rl} {uuid_str}")
         lines.append("")
 
     return "\n".join(lines)

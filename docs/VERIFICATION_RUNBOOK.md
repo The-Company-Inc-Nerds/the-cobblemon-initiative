@@ -22,6 +22,28 @@ Tested by the showrunner; outcomes and what changed:
 | Shop (badge_0 + Medicine row) | ✅ VERIFIED |
 | Paid heal function heals + charges 100 | ✅ VERIFIED. "No Heal my team button" is expected pre-import: the casting presets (Asha=Medcrest, Lila, Anong) only appear after `update_npc_presets` runs with the new mappings. Underfunded heal: covered by the clamp finding — the fee takes what's there (to 0) and the heal still fires, which is the designed fail-soft. Re-check the button after import. |
 
+
+## Round 2 results (2026-07-03 evening, log-0.4.0-alpha.1) + the fix wave → 0.4.1-alpha.1
+
+The full PrismLauncher log explained everything:
+
+| Finding | Root cause | Fix |
+|---|---|---|
+| No Dr. Asha rename / no dialog changes | **`update_npc_presets` never loaded** — `easy_npc preset import data <uuid> <preset>` is the WRONG argument order; Easy NPC 6.25 wants **`<preset_location> <uuid>`** (decompiled from PresetCommand). Install printed "refreshed" but dispatched a function that did not exist. | Both generators + the Java legacy path flipped; function regenerates clean. |
+| All 34 `granary/apply_*` failed to load | Same wrong argument order | Same fix |
+| `payout` did nothing | Two causes: it was run **without its required argument** (macro functions hard-fail argless — the log shows the bare call), and every dialog path was moot since presets never imported | None needed — retest as `function cobblemon_initiative:economy/payout {amount:100}` **with the braces** |
+| 7 loot tables failed to parse (`provisional_id`, `memo_44c`, `dead_letter`, `quarterly_minutes`, `rezoning_memo`, `silent_stakeholder`, `supper_pail`) | 1.21.1 `set_lore` **requires `mode`** | `"mode": "replace_all"` added to all; this also un-breaks the 3 functions that loot-give them (`ghost_reward`, `hear_minutes`, `recover_memo`) |
+| `derby/load` failed to load | `bossbar … color aqua` — aqua is not a bossbar color | → `blue` |
+| `right_of_way/arm` failed to load | `%%UUID%%` placeholders break function parse | placeholder lines commented; uncomment at placement |
+
+**Round 3 (0.4.1-alpha.1) — the same canary list, now expected to pass:**
+1. World load: **zero** `Failed to load function` / `Couldn't parse element` lines (was ~40).
+2. `/cobblemon-initiative install run` → walk to Asha → nameplate **Dr. Asha** + heal button.
+   ⚠ If she does NOT rename: the one remaining unknown is whether `preset import data`
+   applies onto an EXISTING uuid — report exactly what chat says and I'll switch strategies.
+3. `function cobblemon_initiative:economy/payout {amount:100}` (with braces!) → ~100 CD + gold rate line.
+4. Census SIGN → +500 + the ID paper (now that both the loot table and @initiator paths are fixed).
+
 ## Phase 0 — Boot & wiring (5 min)
 
 1. **Datapack parse** — start the world, check the log.

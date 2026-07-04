@@ -493,7 +493,7 @@ public class InstallCommand {
       int applied = 0;
       for (NpcMapEntry e : storage.getAll()) {
         try {
-          String cmd = "easy_npc preset import data " + e.uuid + " " + e.preset;
+          String cmd = "easy_npc preset import data " + e.preset + " " + e.uuid;
           server.getCommands().performPrefixedCommand(silentOp, cmd);
           applied++;
         } catch (Exception ex) {

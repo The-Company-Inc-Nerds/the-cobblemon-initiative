@@ -174,7 +174,7 @@ public class NpcMapCommand {
     int count = 0;
     for (NpcMapEntry entry : entries) {
       try {
-        String cmd = "easy_npc preset import data " + entry.uuid + " " + entry.preset;
+        String cmd = "easy_npc preset import data " + entry.preset + " " + entry.uuid;
         CommandSourceStack src = server.createCommandSourceStack()
           .withPermission(4)
           .withSuppressedOutput();

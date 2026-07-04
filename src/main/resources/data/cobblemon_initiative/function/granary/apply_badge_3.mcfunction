@@ -4,4 +4,4 @@
 # (or manually: /function cobblemon_initiative:granary/apply_badge_3).
 
 # Granary Keeper
-easy_npc preset import data e9c7b916-9b03-417b-808a-10cc4439148b cobblemon_initiative:humanoid/granary_keeper_badge_3
+easy_npc preset import data cobblemon_initiative:humanoid/granary_keeper_badge_3 e9c7b916-9b03-417b-808a-10cc4439148b

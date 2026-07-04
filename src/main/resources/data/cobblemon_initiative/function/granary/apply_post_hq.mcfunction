@@ -4,4 +4,4 @@
 # (or manually: /function cobblemon_initiative:granary/apply_post_hq).
 
 # Granary Keeper
-easy_npc preset import data e9c7b916-9b03-417b-808a-10cc4439148b cobblemon_initiative:humanoid/granary_keeper_post_hq
+easy_npc preset import data cobblemon_initiative:humanoid/granary_keeper_post_hq e9c7b916-9b03-417b-808a-10cc4439148b
