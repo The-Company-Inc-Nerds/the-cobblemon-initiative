@@ -187,6 +187,16 @@ public class PlayerProgressManager {
       grantRewards(player, trainer);
 
       spawnDefeatPokemon(player, trainer);
+
+      // LINCHPIN (round 11): the level-cap ladder (levelcaps.json) keys on EARNED
+      // achievements, but nothing granted a trainer's achievementOnDefeat — so gym-badge
+      // and champion caps never rose past base (latent: unnoticed until a gym leader is
+      // beaten). Grant it here (Set, idempotent) BEFORE updateLevelCap below. Only ids
+      // present in levelcaps.json move the cap; others are harmless.
+      String earned = trainer.getAchievementOnDefeat();
+      if (earned != null && !earned.isBlank()) {
+        progress.addAchievement(earned);
+      }
     }
 
     grantShrineCrystal(player, trainerId);
@@ -456,6 +466,30 @@ public class PlayerProgressManager {
         );
         InitiativeInit.LOGGER.info(
           "Player {} earned all_shrines achievement",
+          player.getName().getString()
+        );
+      }
+    }
+
+    // Endgame cap: the Champion unlocks 85; clearing the Board of Directors (act 3, the
+    // gate right before the Founder) unlocks the final cap of 100 so the player can train
+    // up for the level-100 mirror. Board members carry no per-trainer achievement, so the
+    // cap rides this derived one (mirrors all_badges). updateLevelCap() runs right after.
+    if (!progress.hasAchievement("board_cleared")) {
+      List<com.thecompanyinc.cobblemoninitiative.config.TrainerConfig> board =
+        InitiativeInit.getConfigLoader().getAllTrainers().stream()
+          .filter(t -> "board_member".equals(t.getTrainerType()))
+          .toList();
+      boolean allBoard = !board.isEmpty() &&
+        board.stream().allMatch(t -> progress.hasDefeatedTrainer(t.getId()));
+
+      if (allBoard) {
+        progress.addAchievement("board_cleared");
+        player.sendSystemMessage(
+          Component.literal("§6§l[Level Cap] §r§eThe Board has fallen. Cap raised to 100 — one chair remains.")
+        );
+        InitiativeInit.LOGGER.info(
+          "Player {} cleared the Board — cap 100 unlocked",
           player.getName().getString()
         );
       }

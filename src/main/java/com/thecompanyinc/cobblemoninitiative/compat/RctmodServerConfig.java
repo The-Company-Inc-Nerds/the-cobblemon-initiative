@@ -53,8 +53,14 @@ public final class RctmodServerConfig {
       // Neutralize the 15 fallback too, so even if rctmod's clamp is ever reached its
       // cap can never sit below ours (our ladder tops out at 100).
       setIntIfPresent(k, config, "initialLevelCapCached", 100);
+      // Disable rctmod's own trainer SPAWNING on any world too — our shipped trainer
+      // JSONs are already spawnWeightFactor:0, but zeroing the global chance means the
+      // per-world serverconfig/rctmod-server.toml is now FULLY irrelevant (a map swap
+      // that resets it to rctmod defaults changes nothing).
+      setDoubleIfPresent(k, config, "globalSpawnChanceCached", 0.0);
+      setDoubleIfPresent(k, config, "globalSpawnChanceMinimumCached", 0.0);
       LOGGER.info("[rctmod compat] Healed server config: allowOverLeveling=true, "
-        + "initialSeries={} (badge level-cap ladder is enforced by this mod).", SERIES);
+        + "initialSeries={}, spawning off (badge level-cap ladder enforced by this mod).", SERIES);
     } catch (Throwable t) {
       LOGGER.warn("[rctmod compat] Could not heal rctmod server config — if the world's "
         + "serverconfig/rctmod-server.toml lacks allowOverLeveling=true, the level cap may "
@@ -122,7 +128,19 @@ public final class RctmodServerConfig {
     } catch (NoSuchFieldException ignored) {
       // field name drift across rctmod builds — non-fatal, allowOverLeveling already covers it
     } catch (Exception e) {
-      LOGGER.debug("[rctmod compat] initialLevelCapCached not set: {}", e.toString());
+      LOGGER.debug("[rctmod compat] {} not set: {}", field, e.toString());
+    }
+  }
+
+  private static void setDoubleIfPresent(Class<?> k, Object o, String field, double v) {
+    try {
+      Field f = k.getDeclaredField(field);
+      f.setAccessible(true);
+      f.setDouble(o, v);
+    } catch (NoSuchFieldException ignored) {
+      // field name drift — non-fatal, spawnWeightFactor:0 on our trainer JSONs already covers it
+    } catch (Exception e) {
+      LOGGER.debug("[rctmod compat] {} not set: {}", field, e.toString());
     }
   }
 }

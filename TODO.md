@@ -67,6 +67,19 @@ Harvest Road villains, Deng camp, garden stations).
   ace=cap+2 curve (scale off the existing leader/trainer levels for that gym).
 - [ ] 🔍 Existing-world one-time repairs (runbook §J): magikarp respawn, stale
   takehara defeat tags, `/rctmod player set series cobblemon-initiative`.
+- [ ] 💻 **PRUNING PASS — after the alpha.13 smoke test** (showrunner 2026-07-05):
+  once smoke results are in (so we know what's actually live), sweep the **git-tracked**
+  tree for stale / unused / needs-updating — code AND files. Scope: dead classes/methods
+  + unreferenced functions/commands; orphaned data (presets/dialogs/loot/trainer configs
+  not referenced by any character or function); superseded approaches; docs drifted from
+  code; build/config cruft. NOT the gitignored maps/cache/dist/build. This is DISCOVERY,
+  broader than §2 (the pre-identified dev-tool strip) — good fit for a workflow (finders
+  → verify each candidate is truly unused → report before deleting). **Candidates already
+  spotted this session** (verify before cutting): `dialog-src/dialog/sq_lucian_deliveries.json`
+  (stale pre-merge dup of sq_personnel_file), `sq_perf_review_guide.json` (merge file not
+  wired to a character), JEI `.disabled` support in build_mrpack (shelved), `level.dat.bak`
+  in the staged map, `docs/QUEST_OPTIONS_TOWNS_1-2.md` (planning doc — still current?),
+  the 28 empty/missing `{}` trainer teams (future-act, NOT stale — pre-wired, leave).
 
 ### Phase 1 — Map authoring sprint 🧱 (parallelizable with Phase 2 wiring)
 Author in batches; each batch unblocks Claude wiring the same day:
@@ -247,3 +260,34 @@ Map-authoring aids. Strip each once its authoring is baked in.
 
 *Removal details mirror the dev-only cleanup notes. `install/`, `mapfrontiers/` packages and
 `install.json` (with baked vertex data) all STAY in the shipped mod.*
+
+---
+
+## 3. FUTURE / SHOWRUNNER DESIGN IDEAS (not on the 1.0 critical path)
+
+- [ ] 🧱💻 **Legends-style legendary boss battles** (showrunner idea 2026-07-05 — I'll
+  scope this later). Pokémon Legends: Arceus "noble/frenzied" flavour: an aggressive
+  **Easy NPC Cobblemon** (`easy_npc:cobblemon_npc`, COBBLEMON_ENTITY renderer, so it
+  shows the actual legendary model) that ATTACKS the player in real time; on defeat it
+  **spawns the real catchable/battleable legendary** (a genuine Cobblemon Pokémon) so
+  the player then does a normal capture/battle. Two-phase encounter: dodge/fight the
+  boss NPC → earn the actual mon.
+  - Fits the 5 elemental shrine challenges (already gate legendaries) and/or standalone
+    world encounters; boss NPC placed via the `placement:{x,y,z}` latch system.
+  - CONFIRMED engine hooks (jar-verified — see `docs/EASY_NPC_REFERENCE.md`):
+    - COBBLEMON_ENTITY render is **species-only** (no aspects/forms) — fine for most
+      legendaries; a regional/form legendary needs the render-only **clone-species**
+      recipe (ENGINE_FINDINGS §2, the growlithe_hisui pattern).
+    - AGGRESSION EXISTS: objective `ATTACK_PLAYER` (targeting) + a melee/ranged goal
+      (`MELEE_ATTACK` / `ZOMBIE_ATTACK` / `BOW_ATTACK` / `CROSSBOW_ATTACK` / `GUN_ATTACK`,
+      with SpeedModifier / AttackInterval / AttackRadius) makes the boss actually chase
+      and hit the player. `EntityAttribute` toggles hittability (IsAttackableByPlayers,
+      IsInvulnerable, IsKnockbackResistant); `BaseAttributes` sets HP/attack/etc.
+    - ON-DEFEAT SPAWN: Easy NPC HAS an **`ON_DEATH` action event** (ActionEventSet) — put
+      the real-legendary spawn there (`spawnpokemon`/`pokespawn`/`givepokemon`,
+      as-player/ExecAsUser per the command-lowering rules). Latch once-per-legendary
+      (respawn only via admin/shrine reset).
+  - STILL TO VERIFY when scoped: whether the COBBLEMON_NPC entity's AI actually issues
+    melee damage as configured (attack objectives are registered for PathfinderMob — the
+    cobblemon_npc is one — but confirm damage output in-world), and tune HP/attack to the
+    badge-era cap. Everything else is documented in EASY_NPC_REFERENCE.md.

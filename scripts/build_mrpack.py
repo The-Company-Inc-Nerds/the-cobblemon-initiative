@@ -22,6 +22,7 @@ Run from the repo root (the `build-mrpack` dev-shell command handles that).
 """
 import argparse
 import glob
+import hashlib
 import json
 import os
 import re
@@ -46,7 +47,7 @@ def bake_install_into_level_dat(level_dat: str) -> None:
     try:
         import sys as _sys
         _sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-        from nbt_read import read_nbt_file, TAG_COMPOUND, TAG_STRING, TAG_BYTE
+        from nbt_read import read_nbt_file, TAG_COMPOUND, TAG_STRING, TAG_BYTE, TAG_INT
         from nbt_write import write_nbt_file
 
         with open(INSTALL_JSON) as fh:
@@ -75,13 +76,16 @@ def bake_install_into_level_dat(level_dat: str) -> None:
             dtag["hardcore"] = (TAG_BYTE, 1)
             dtag["Difficulty"] = (TAG_BYTE, DIFFICULTY_BYTE["hard"])
 
-        # Sanitize the map author's saved host-player state: with playerdata/ empty,
-        # the singleplayer host INHERITS Data.Player — which ships an infinite
-        # minecraft:speed effect (+ its serialized movement_speed modifier) and
-        # adventure mode. The Running Shoes are the ONLY sanctioned speed source.
-        stripped = _strip_player_speed(dtag)
-        if stripped:
-            print(f"    stripped from Data.Player: {', '.join(stripped)}")
+        # Reset the host player. Builders send full saves they've PLAYED/TESTED on, so
+        # Data.Player carries THEIR inventory, position, XP, effects (incl. the map's
+        # baked infinite speed), and even a party — and with playerdata/ empty the
+        # singleplayer host INHERITS it. Removing Data.Player entirely gives a clean
+        # survival host that spawns fresh at the world spawn (baked correctly, e.g.
+        # Sango 2615/109/2843). Also force the world default gametype to survival.
+        if "Player" in dtag:
+            del dtag["Player"]
+            print("    removed Data.Player (fresh host spawns at world spawn)")
+        dtag["GameType"] = (TAG_INT, 0)
 
         write_nbt_file(level_dat, root_name, tree, gzipped=True)
         print(f"    baked install: {len(gamerules)} gamerule(s)"
@@ -92,57 +96,19 @@ def bake_install_into_level_dat(level_dat: str) -> None:
               f"run '/cobblemon-initiative install run' in-game instead.")
 
 
-def _strip_player_speed(dtag) -> list:
-    """Remove the baked infinite speed effect + its attribute modifier (and force
-    survival) from level.dat's Data.Player. Returns a list of what was stripped."""
-    from nbt_read import TAG_COMPOUND, TAG_INT
-    stripped = []
-    player = dtag.get("Player")
-    if not player or player[0] != TAG_COMPOUND:
-        return stripped
-    ptag = player[1]
-
-    effects = ptag.get("active_effects")
-    if effects:
-        item_tag, items = effects[1]
-        kept = [e for e in items
-                if not (isinstance(e, dict) and e.get("id", (0, ""))[1] == "minecraft:speed")]
-        if len(kept) != len(items):
-            stripped.append("infinite minecraft:speed effect")
-            if kept:
-                ptag["active_effects"] = (effects[0], (item_tag, kept))
-            else:
-                del ptag["active_effects"]
-
-    attributes = ptag.get("attributes")
-    if attributes:
-        item_tag, items = attributes[1]
-        for attr in items:
-            if not isinstance(attr, dict):
-                continue
-            if attr.get("id", (0, ""))[1] != "minecraft:generic.movement_speed":
-                continue
-            mods = attr.get("modifiers")
-            if not mods:
-                continue
-            mtag, mitems = mods[1]
-            kept = [m for m in mitems
-                    if not (isinstance(m, dict) and m.get("id", (0, ""))[1] == "minecraft:effect.speed")]
-            if len(kept) != len(mitems):
-                stripped.append("movement_speed effect modifier")
-                if kept:
-                    attr["modifiers"] = (mods[0], (mtag, kept))
-                else:
-                    del attr["modifiers"]
-
-    if ptag.get("playerGameType", (0, 0))[1] != 0:
-        ptag["playerGameType"] = (TAG_INT, 0)
-        stripped.append("playerGameType -> survival")
-    if dtag.get("GameType", (0, 0))[1] != 0:
-        dtag["GameType"] = (TAG_INT, 0)
-        stripped.append("GameType -> survival")
-    return stripped
 MANIFEST = os.path.join(MRPACK_DIR, "modpack.json")
+# --cache: content-addressed local store of downloaded mod/pack jars (gitignored).
+# Reused across builds so a rebuild+reinstall never re-downloads the unchanged deps.
+CACHE_DIR = os.path.join(MRPACK_DIR, "cache")
+
+# Per-player / session state that must NOT ship (players start fresh). Terrain (region),
+# entities (incl. builder-placed NPCs), easy_npc/, poi/, data/ all stay. Applied when
+# copying a bundled world so a builder's full-map export can be dropped in wholesale.
+WORLD_USERDATA_STRIP = (
+    "session.lock", "playerdata", "stats", "advancements",
+    "cobblemonplayerdata", "cobbledollarsplayerdata", "pokedex",
+    "pokemon",  # Cobblemon per-player PC + party storage (pcstore / playerpartystore)
+)
 
 # Resource packs and shaders are client-side only; declaring it keeps dedicated-server
 # installs from pulling client assets. (This pack is single-player, so it is hygiene.)
@@ -282,6 +248,52 @@ def copy_into(entry, dest_dir):
         shutil.copy2(entry, dst)
 
 
+def _sha1(path):
+    h = hashlib.sha1()
+    with open(path, "rb") as fh:
+        for chunk in iter(lambda: fh.read(1 << 20), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+def cache_fetch(url, sha1, size):
+    """Return a local path to the file with this sha1, downloading into CACHE_DIR
+    (content-addressed) only if it isn't already cached + intact. Reused across builds."""
+    os.makedirs(CACHE_DIR, exist_ok=True)
+    cached = os.path.join(CACHE_DIR, sha1)
+    if os.path.isfile(cached) and _sha1(cached) == sha1:
+        return cached
+    tmp = cached + ".part"
+    req = urllib.request.Request(url, headers={"User-Agent": UA})
+    with urllib.request.urlopen(req, timeout=120) as r, open(tmp, "wb") as out:
+        shutil.copyfileobj(r, out)
+    got = _sha1(tmp)
+    if got != sha1:
+        os.remove(tmp)
+        raise SystemExit(f"[cache] sha1 mismatch for {url}\n  expected {sha1}\n  got      {got}")
+    os.replace(tmp, cached)
+    return cached
+
+
+def bundle_cached_files(entries, overrides):
+    """--cache: pull every manifest file entry into CACHE_DIR and copy it into the pack's
+    overrides/<path>, so the installed pack is self-contained (launcher downloads nothing
+    but our own jar). Returns count of bytes served from cache vs freshly downloaded."""
+    from_cache = downloaded = 0
+    for e in entries:
+        sha1 = e["hashes"]["sha1"]
+        already = os.path.isfile(os.path.join(CACHE_DIR, sha1))
+        src = cache_fetch(e["downloads"][0], sha1, e.get("fileSize", 0))
+        dst = os.path.join(overrides, *e["path"].split("/"))
+        os.makedirs(os.path.dirname(dst), exist_ok=True)
+        shutil.copy2(src, dst)
+        if already:
+            from_cache += 1
+        else:
+            downloaded += 1
+    return from_cache, downloaded
+
+
 def main():
     ap = argparse.ArgumentParser(description="Build a Modrinth .mrpack for UPM 2.")
     ap.add_argument("--name")
@@ -291,6 +303,11 @@ def main():
     ap.add_argument("--map-dir", default="mrpack/maps")
     ap.add_argument("--out-dir", default="dist")
     ap.add_argument("--skip-build", action="store_true", help="do not run `gradle build` first")
+    ap.add_argument("--cache", action="store_true",
+                    help="download every dep jar into mrpack/cache/ (content-addressed, "
+                         "reused across builds) and BUNDLE them into overrides/mods etc. — "
+                         "the installed pack downloads nothing but our own jar. First build "
+                         "populates the cache; later builds reuse it.")
     args = ap.parse_args()
 
     if not os.path.isfile(MANIFEST):
@@ -362,13 +379,17 @@ def main():
             print(f"  [warn] {len(datapacks)} datapack(s) configured but no world bundled — "
                   "datapacks attach to a world; re-run with --with-map.")
 
+    # --cache: bundle every dep into overrides (below) instead of listing it for the
+    # launcher to download. The manifest then carries ZERO files[] (only our own jar,
+    # which is always an override) — a self-contained pack.
+    bundled = files if args.cache else []
     index = {
         "formatVersion": 1,
         "game": "minecraft",
         "versionId": version,
         "name": name,
         "summary": summary,
-        "files": files,
+        "files": [] if args.cache else files,
         "dependencies": {"minecraft": mc, "fabric-loader": loader_ver},
     }
 
@@ -381,6 +402,13 @@ def main():
             json.dump(index, fh, indent=2)
 
         copy_into(mod_jar, os.path.join(overrides, "mods"))
+
+        # --cache: pull all deps from the local cache into overrides (self-contained pack).
+        if bundled:
+            print(f"Bundling {len(bundled)} dep(s) from {CACHE_DIR}/ (download-once cache):")
+            reused, fresh = bundle_cached_files(bundled, overrides)
+            print(f"  [OK] {reused} from cache, {fresh} downloaded → overrides/ "
+                  f"(installed pack re-downloads nothing but our own jar)")
 
         # Verbatim passthrough: mrpack/overrides/ -> the pack's overrides/ root, for
         # instance-root files not on Modrinth — e.g. options.txt (keybinds / video /
@@ -411,8 +439,10 @@ def main():
             wname = os.path.basename(w)
             print(f"  world: {wname}")
             wdst = os.path.join(overrides, "saves", wname)
-            shutil.copytree(w, wdst,
-                            symlinks=False, ignore=shutil.ignore_patterns("session.lock"))
+            # Strip per-player/session state so a builder's full-map export can be dropped
+            # in wholesale — players start fresh; terrain + entities + easy_npc/ ship.
+            shutil.copytree(w, wdst, symlinks=False,
+                            ignore=shutil.ignore_patterns(*WORLD_USERDATA_STRIP))
             bake_install_into_level_dat(os.path.join(wdst, "level.dat"))
 
         # Shop seed: the same badge_0 catalog `install run` copies at runtime, shipped

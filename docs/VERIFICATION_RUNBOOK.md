@@ -240,9 +240,15 @@ if you must reuse it).**
     AllTheMons active — bare-mod installs show the gray substitute, cosmetic only).
   ☐ LEVEL CAP (re-spaced ladder alpha.10): XP stops exactly at 15 pre-badge (actionbar
     "Level cap 15 — the next badge raises it"); a Totodile CANNOT reach 18/Croconaw
-    before gym 1; beat gym 1 → cap 22 immediately; rare candy at cap refused but NOT
-    consumed. Cicada's ace is 17 (cap+2 — you fight underleveled). rctmod's own
-    actionbar warning must NOT appear (allowOverLeveling true).
+    before gym 1; rare candy at cap refused but NOT consumed. Cicada's ace is 17 (cap+2
+    — you fight underleveled). rctmod's own actionbar warning must NOT appear.
+  ☐ LINCHPIN REGRESSION (alpha.11 — was silently broken): beating the gym-1 LEADER must
+    raise the cap to 22 ("§6Level cap increased to §e22") AND let your team pass 15. If
+    the cap stays 15 after the badge, the achievementOnDefeat grant regressed.
+  ☐ ENDGAME LADDER (future-act, forced tags OK): `/cobblemon-initiative` grant of the
+    champion achievement → cap 85; defeating all four board_member trainers →
+    "§6[Level Cap] The Board has fallen. Cap raised to 100" + cap 100. (Champion/Board/
+    Founder teams are unauthored stubs; test the cap wiring via forced defeats.)
   ☐ AUDIT FIXES (alpha.8): beat kalahar trainer NPCs (when placed) → the RIGHT id is
     credited (names were swapped); after any gym apprentice/leader win
     `/rctmod player get progress` MUST show the id (the alpha.7 dispatch was silently

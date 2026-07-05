@@ -18,6 +18,7 @@ execute unless score #amb_hoothoot ci_ambient matches 0.. run scoreboard players
 execute unless score #amb_magikarp ci_ambient matches 0.. run scoreboard players set #amb_magikarp ci_ambient 0
 execute unless score #amb_mrmime ci_ambient matches 0.. run scoreboard players set #amb_mrmime ci_ambient 0
 execute unless score #amb_sentret ci_ambient matches 0.. run scoreboard players set #amb_sentret ci_ambient 0
+execute unless score #amb_company_courier ci_ambient matches 0.. run scoreboard players set #amb_company_courier ci_ambient 0
 execute unless score #amb_sango_company_liaison ci_ambient matches 0.. run scoreboard players set #amb_sango_company_liaison ci_ambient 0
 execute unless score #amb_agent_yield_lead ci_ambient matches 0.. run scoreboard players set #amb_agent_yield_lead ci_ambient 0
 execute unless score #amb_agent_yield_second ci_ambient matches 0.. run scoreboard players set #amb_agent_yield_second ci_ambient 0

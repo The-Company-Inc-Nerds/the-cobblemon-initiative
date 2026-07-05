@@ -17,6 +17,7 @@ execute if score #amb_hoothoot ci_ambient matches 0 if entity @a[x=2521.5,y=106,
 execute if score #amb_magikarp ci_ambient matches 0 if entity @a[x=2568.5,y=111,z=2855.5,distance=..40] run function cobblemon_initiative:ambient/place/magikarp
 execute if score #amb_mrmime ci_ambient matches 0 if entity @a[x=2605.5,y=109,z=2846.5,distance=..40] run function cobblemon_initiative:ambient/place/mrmime
 execute if score #amb_sentret ci_ambient matches 0 if entity @a[x=2588.5,y=107,z=2957.5,distance=..40] run function cobblemon_initiative:ambient/place/sentret
+execute if score #amb_company_courier ci_ambient matches 0 if entity @a[x=2592.5,y=111,z=2815.5,distance=..40] run function cobblemon_initiative:ambient/place/company_courier
 execute if score #amb_sango_company_liaison ci_ambient matches 0 if entity @a[x=2581.5,y=111,z=2822.5,distance=..40] run function cobblemon_initiative:ambient/place/sango_company_liaison
 execute if score #amb_agent_yield_lead ci_ambient matches 0 if entity @a[x=2010.5,y=169,z=2465.5,distance=..40] run function cobblemon_initiative:ambient/place/agent_yield_lead
 execute if score #amb_agent_yield_second ci_ambient matches 0 if entity @a[x=2014.5,y=169,z=2465.5,distance=..40] run function cobblemon_initiative:ambient/place/agent_yield_second

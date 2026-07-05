@@ -6,7 +6,10 @@ intuition, wiki pages, or mod documentation. When something here names a file or
 re-verify it still exists before relying on it.
 
 Companion documents: `docs/VERIFICATION_RUNBOOK.md` (round-by-round bug history +
-canary lists), `TODO.md` (work plan), `CLAUDE.md` (project overview).
+canary lists), `TODO.md` (work plan), `CLAUDE.md` (project overview),
+`docs/EASY_NPC_REFERENCE.md` (**the full Easy NPC 6.25.0 config grammar** — every enum
++ NBT tag/type/default, decompiled from the pinned jar; consult it before authoring any
+new NPC field this doc's §2 doesn't already cover).
 
 ---
 
@@ -100,6 +103,18 @@ nix develop -c javap -p -c <extracted>.class
   every server start, so no disk write needed (the bundled toml stays correct as
   belt-and-braces). All field/method names bytecode-verified present. Install command
   does NOT touch rctmod (can't — file-patch is too late in the load order).
+  ROUND 12 (2026-07-05): the heal ALSO zeroes `globalSpawnChanceCached` +
+  `globalSpawnChanceMinimumCached` (rctmod trainer spawning off — already guaranteed by
+  our shipped `spawnWeightFactor:0` trainer JSONs, now doubly so). NET: rctmod's
+  per-world `serverconfig/rctmod-server.toml` is FULLY IRRELEVANT — every setting we
+  care about (over-leveling, series, cap, spawning) is forced at runtime on ANY world.
+  This is why serverconfig doesn't need to "move to overrides": it's per-world (Forge
+  Config API Port ignores SERVER configs placed in global `config/`), and it no longer
+  matters what a map swap resets it to. The other serverconfig files (easy_npc/* render
+  support + skin templates, cobblemon/main.json) are stock defaults with no edits we
+  depend on. Global `config/` (security.cfg, shop seed) is the layer that ships in
+  `mrpack/overrides/` — that split (per-world serverconfig self-healed; global config
+  overridden) is the standalone contract.
 - `tbcs` is its OWN mod; `tbcs battle` calls rctapi `BattleManager.startBattle` directly
   and **bypasses all rctmod gating** (requirements, defeat memory, cooldowns, level
   caps). rctmod's native locks + fail dialogs exist only in its spawned-TrainerMob flow,
@@ -259,13 +274,15 @@ nix develop -c javap -p -c <extracted>.class
   TICK LATER (immediate kill would race the deferred CLOSE_DIALOG packet). The
   hisuian stand-in renders via the `cobblemon_initiative:growlithe_hisui` clone
   species (see §2) — the GIVEN starter stays `growlithe hisuian=true`.
-- **Map speed buff**: the map author baked an infinite Speed I into level.dat's
-  `Data.Player` (inherited by the host because playerdata/ is empty). Stripped at
-  build time (`_strip_player_speed` in build_mrpack — also forces survival), staged map
-  cleaned 2026-07-04 (incl. level.dat.bak — a re-staged map export would reintroduce
-  it, the bake covers that), and `install run` runs `effect clear @a minecraft:speed`
-  for already-shipped copies. Running Shoes (+30% movement_speed, walking ≈ vanilla
-  sprint) are the only sanctioned speed source.
+- **Map speed buff / host-player reset**: the map author baked an infinite Speed I into
+  level.dat's `Data.Player` (inherited by the host because playerdata/ is empty). As of
+  2026-07-05 `bake_install_into_level_dat` REMOVES `Data.Player` entirely (builders send
+  full saves they've PLAYED on → Data.Player carries their inventory/pos/party/effects,
+  incl. the speed) — the fresh host then spawns at the baked world spawn (Sango
+  2615/109/2843) in survival. This supersedes the old `_strip_player_speed` surgical
+  strip (removed). `install run` still runs `effect clear @a minecraft:speed` for
+  already-shipped copies. Running Shoes (+30% movement_speed) are the only sanctioned
+  speed source.
 - Economy: sidequest payouts route through `economy/payout {amount:N}` (skew +
   actionbar receipt) — never call `pay_macro` directly (needs paid+rate+raw). Battle
   prizes stay flat in onwin. `hq_stabilize` clamps DOWNWARD only.
@@ -307,6 +324,18 @@ nix develop -c javap -p -c <extracted>.class
   the alpha suffix (or patch) and rebuilds under the new name — one jar name per
   round so dev/log-<version> maps to exactly one change set. The MINOR version bumps
   only after a 100% smoke-test pass (showrunner's call).**
+- **Dep cache + map updates** (`build-mrpack`, 2026-07-05): `--cache` downloads every
+  dependency jar once into `mrpack/cache/` (content-addressed by sha1, gitignored) and
+  BUNDLES them into `overrides/` with an empty manifest `files[]` — the installed pack
+  re-downloads nothing but our own jar (rebuild+reinstall test loop stops re-pulling
+  ~93 mods + AllTheMons). Map updates: a bundled world's per-player state
+  (`playerdata/stats/advancements/cobblemon*playerdata/pokedex/session.lock`) is now
+  STRIPPED at build (`WORLD_USERDATA_STRIP`); `level.dat` is REBAKED from `install.json`
+  (never hand-preserve it — add new level.dat settings to install.json + extend the
+  bake); NPCs travel in the export's `entities/` + `easy_npc/` (411 `*.npc.nbt`), and
+  preset content is applied at RUNTIME, not baked — so dropping a builder's full export
+  in wholesale + rebuild is the whole workflow (see `mrpack/maps/README.md`). Block-only
+  merge (terrain-only export, keep current NPCs) = copy `region/poi/DIM*` across.
 - **Install-command pre-baking** (`build-mrpack --with-map`, since 2026-07-04): the
   bundled world COPY gets install.json's gamerules + difficulty + hardcore baked
   straight into `level.dat` (scripts/nbt_write.py, round-trip byte-verified), and the
@@ -347,6 +376,24 @@ nix develop -c javap -p -c <extracted>.class
     = previous chain link) + character with `battle.trainer` + body (uuid/placement).
     Series progress + badge + prize wire themselves (BATTLE_VICTORY name match →
     onTrainerDefeated + `rctmod player add progress <name> after <id>`).
+  - *New NPC skin* (jar-verified round 11b): SkinData types — `DEFAULT` (built-in
+    `HumanoidSkinVariant` enum: STEVE/ALEX/SECURITY_01/KNIGHT_01/PROFESSOR_01/…),
+    `PLAYER_SKIN` (Mojang name/UUID), `CUSTOM` (LOCAL FILE), `SECURE/INSECURE_REMOTE_URL`.
+    REMOTE URL is limited to a hardcoded 4-domain allowlist (`UrlValidator`:
+    minecraftskins.com / novaskin.me / mcskins.top / skinmc.net) AND the host must
+    actually serve the raw 64×64 PNG — minecraftskins.com hotlink-protects and serves a
+    ~300-byte blank stub to the game, so URL skins from it silently render blank (this
+    is why the courier URL "didn't load"). RELIABLE = **CUSTOM local skin**: PNG at
+    `config/easy_npc/skin/<skinmodel>/<dashed-uuid>.png` (skinmodel = lowercased
+    `SkinModel` enum, e.g. `humanoid`), keyed by UUID; preset carries
+    `SkinData{Type:"CUSTOM", UUID:[I;i0,i1,i2,i3]}` (the same UUID as int-array). The
+    `Content` base64 field is NOT rendered in 6.25 — must be a file. **rctmod ships 1560
+    ready 64×64 trainer skins** at `assets/rctmod/textures/trainers/single/*.png`
+    (grunt/scientist/gentleman/worker/boss/team_* — perfect Company villains): extract
+    one, drop it at `config/easy_npc/skin/humanoid/<uuid>.png`, reference by UUID
+    (`skin:{type:"custom","uuid":[…]}`). Skins ship via `mrpack/overrides/config/…`
+    (cosmetic → mrpack-only is acceptable; bare-mod shows DEFAULT). content_compile
+    `skin_node` handles `type:"custom"`/`"url"`; world merge keeps an explicit skin.
   - *New quest reward*: money via `economy/payout {amount:N}`; add a training pack
     (`loot give @s loot cobblemon_initiative:npc_gift/training_<tier>`) ONLY at the
     one-time completion latch — tier by payout (≤260 minor / 300–400 standard /
@@ -402,10 +449,21 @@ today's to-do list:
   10e to all 10 rosters against the re-spaced ladder — aces
   17/24/32/39/46/52/58/64/70/76. The 24 future-authored team files MUST follow the same
   rule for their gym. Never re-tune by moving the cap ladder — the enforced ladder
-  **15 (start) / 22 / 30 / 37 / 44 / 50 / 56 / 62 / 68 / 74 / 80 / 100 (champ)** is
-  canon across levelcaps.json + ProgressionConfig.baseLevelCap(15) + HUD + wiki +
-  CLAUDE.md — always move the teams. Start cap 15 gates pre-gym-1 evolutions
-  (Totodile→Croconaw @18); this is why 15 not 20.
+  **15 (start) / 22 / 30 / 37 / 44 / 50 / 56 / 62 / 68 / 74 / 80 (gym10) / 85 (Champion)
+  / 100 (Board cleared → the Founder)** is canon across levelcaps.json +
+  ProgressionConfig.baseLevelCap(15) + HUD + wiki + CLAUDE.md — always move the teams.
+  Start cap 15 gates pre-gym-1 evolutions (Totodile→Croconaw @18). Endgame: Champion
+  ace target ~85 (its team is unauthored — empty stub); the Founder is a SINGLE level
+  **100** mirror; Battle Frontier is post-game in the 85–100 band.
+- **LEVEL-CAP LINCHPIN (round 11 bug fix)**: `updateLevelCap` keys on
+  `progress.hasAchievement(<levelcaps achievementId>)`, but `onTrainerDefeated` never
+  wrote a trainer's `achievementOnDefeat` to `earnedAchievements` — so EVERY badge/
+  champion cap step was dead (cap frozen at base). Now granted in `onTrainerDefeated`
+  (Set, idempotent, before `updateLevelCap`). The 100 rung rides a derived achievement
+  `board_cleared`, granted in `checkMultiTrainerAchievements` when all `board_member`
+  trainers are defeated (board members carry no per-trainer achievement, and the
+  Founder's own `company_overthrown` fires too late — after the fight). Only ids in
+  levelcaps.json move the cap, so granting achievementOnDefeat broadly is safe.
 
 **Shelved**: JEI disable-by-default (`.jar.disabled` not honored in the launcher
 install test; `build_mrpack.py` keeps `"disabled": true` support).
