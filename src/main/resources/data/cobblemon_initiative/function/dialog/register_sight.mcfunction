@@ -37,7 +37,7 @@ npcsight mode 21267950-7513-4328-81c9-e4dbed59678e dialog
 npcsight add f63c8581-cfc3-474b-8484-2d6e4bd36b8f 12 sighted
 npcsight mode f63c8581-cfc3-474b-8484-2d6e4bd36b8f dialog
 # Nalia (nalia_mom)
-npcsight add 74b1c524-0c3c-4a19-943d-f6f05c0e7f94 5 default
+npcsight add 74b1c524-0c3c-4a19-943d-f6f05c0e7f94 12 default
 npcsight mode 74b1c524-0c3c-4a19-943d-f6f05c0e7f94 approach_once
 npcsight meettag 74b1c524-0c3c-4a19-943d-f6f05c0e7f94 met_mom
 npcsight stoptag 74b1c524-0c3c-4a19-943d-f6f05c0e7f94 met_mom

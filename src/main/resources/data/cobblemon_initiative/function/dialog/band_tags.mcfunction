@@ -40,6 +40,12 @@ execute as @a unless score @s cd_instability matches 8.. run tag @s remove cd_in
 execute as @a if score @s ci_notices matches 3.. run tag @s add ci_notices_gte_3
 execute as @a unless score @s ci_notices matches 3.. run tag @s remove ci_notices_gte_3
 
+execute as @a if score @s dex_caught matches 15.. run tag @s add dex_gte_15
+execute as @a unless score @s dex_caught matches 15.. run tag @s remove dex_gte_15
+
+execute as @a if score @s dex_caught matches 30.. run tag @s add dex_gte_30
+execute as @a unless score @s dex_caught matches 30.. run tag @s remove dex_gte_30
+
 execute as @a if score @s fields_liberated matches 1.. run tag @s add fields_liberated_gte_1
 execute as @a unless score @s fields_liberated matches 1.. run tag @s remove fields_liberated_gte_1
 
@@ -64,6 +70,8 @@ tag @a[tag=!census_paid] add no_census_paid
 tag @a[tag=census_paid] remove no_census_paid
 tag @a[tag=!census_processed] add no_census_processed
 tag @a[tag=census_processed] remove no_census_processed
+tag @a[tag=!ci_starters_spawned] add no_ci_starters_spawned
+tag @a[tag=ci_starters_spawned] remove no_ci_starters_spawned
 tag @a[tag=!classic_active] add no_classic_active
 tag @a[tag=classic_active] remove no_classic_active
 tag @a[tag=!classic_rod_given] add no_classic_rod_given
@@ -420,6 +428,8 @@ tag @a[tag=!seal_pond] add no_seal_pond
 tag @a[tag=seal_pond] remove no_seal_pond
 tag @a[tag=!seal_terrace] add no_seal_terrace
 tag @a[tag=seal_terrace] remove no_seal_terrace
+tag @a[tag=!second_starter_claimed] add no_second_starter_claimed
+tag @a[tag=second_starter_claimed] remove no_second_starter_claimed
 tag @a[tag=!seen_clean_square] add no_seen_clean_square
 tag @a[tag=seen_clean_square] remove no_seen_clean_square
 tag @a[tag=!seen_rezoning_notice] add no_seen_rezoning_notice
@@ -466,6 +476,8 @@ tag @a[tag=!supper_taken] add no_supper_taken
 tag @a[tag=supper_taken] remove no_supper_taken
 tag @a[tag=!survey_done] add no_survey_done
 tag @a[tag=survey_done] remove no_survey_done
+tag @a[tag=!third_starter_claimed] add no_third_starter_claimed
+tag @a[tag=third_starter_claimed] remove no_third_starter_claimed
 tag @a[tag=!took_route_manifest] add no_took_route_manifest
 tag @a[tag=took_route_manifest] remove no_took_route_manifest
 tag @a[tag=!traded_sefu] add no_traded_sefu

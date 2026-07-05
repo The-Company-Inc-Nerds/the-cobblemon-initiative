@@ -1,6 +1,7 @@
 # Cascade Ascent — one-time first-clear reward (doc reward fork B).
 # economy/payout is the verified skew-aware entry point (computes rate/raw for pay_macro).
 function cobblemon_initiative:economy/payout {amount:500}
+loot give @s loot cobblemon_initiative:npc_gift/training_major
 give @s cobblemon:super_potion 2
 give @s minecraft:emerald 1
 tag @s add sq_cascade_done

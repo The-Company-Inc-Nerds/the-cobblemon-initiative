@@ -75,6 +75,14 @@ def bake_install_into_level_dat(level_dat: str) -> None:
             dtag["hardcore"] = (TAG_BYTE, 1)
             dtag["Difficulty"] = (TAG_BYTE, DIFFICULTY_BYTE["hard"])
 
+        # Sanitize the map author's saved host-player state: with playerdata/ empty,
+        # the singleplayer host INHERITS Data.Player — which ships an infinite
+        # minecraft:speed effect (+ its serialized movement_speed modifier) and
+        # adventure mode. The Running Shoes are the ONLY sanctioned speed source.
+        stripped = _strip_player_speed(dtag)
+        if stripped:
+            print(f"    stripped from Data.Player: {', '.join(stripped)}")
+
         write_nbt_file(level_dat, root_name, tree, gzipped=True)
         print(f"    baked install: {len(gamerules)} gamerule(s)"
               f"{', difficulty=' + difficulty if difficulty else ''}"
@@ -82,6 +90,58 @@ def bake_install_into_level_dat(level_dat: str) -> None:
     except Exception as e:
         print(f"    [warn] install bake failed for {level_dat}: {e} — "
               f"run '/cobblemon-initiative install run' in-game instead.")
+
+
+def _strip_player_speed(dtag) -> list:
+    """Remove the baked infinite speed effect + its attribute modifier (and force
+    survival) from level.dat's Data.Player. Returns a list of what was stripped."""
+    from nbt_read import TAG_COMPOUND, TAG_INT
+    stripped = []
+    player = dtag.get("Player")
+    if not player or player[0] != TAG_COMPOUND:
+        return stripped
+    ptag = player[1]
+
+    effects = ptag.get("active_effects")
+    if effects:
+        item_tag, items = effects[1]
+        kept = [e for e in items
+                if not (isinstance(e, dict) and e.get("id", (0, ""))[1] == "minecraft:speed")]
+        if len(kept) != len(items):
+            stripped.append("infinite minecraft:speed effect")
+            if kept:
+                ptag["active_effects"] = (effects[0], (item_tag, kept))
+            else:
+                del ptag["active_effects"]
+
+    attributes = ptag.get("attributes")
+    if attributes:
+        item_tag, items = attributes[1]
+        for attr in items:
+            if not isinstance(attr, dict):
+                continue
+            if attr.get("id", (0, ""))[1] != "minecraft:generic.movement_speed":
+                continue
+            mods = attr.get("modifiers")
+            if not mods:
+                continue
+            mtag, mitems = mods[1]
+            kept = [m for m in mitems
+                    if not (isinstance(m, dict) and m.get("id", (0, ""))[1] == "minecraft:effect.speed")]
+            if len(kept) != len(mitems):
+                stripped.append("movement_speed effect modifier")
+                if kept:
+                    attr["modifiers"] = (mods[0], (mtag, kept))
+                else:
+                    del attr["modifiers"]
+
+    if ptag.get("playerGameType", (0, 0))[1] != 0:
+        ptag["playerGameType"] = (TAG_INT, 0)
+        stripped.append("playerGameType -> survival")
+    if dtag.get("GameType", (0, 0))[1] != 0:
+        dtag["GameType"] = (TAG_INT, 0)
+        stripped.append("GameType -> survival")
+    return stripped
 MANIFEST = os.path.join(MRPACK_DIR, "modpack.json")
 
 # Resource packs and shaders are client-side only; declaring it keeps dedicated-server

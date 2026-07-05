@@ -26,8 +26,9 @@ public class ProgressionConfig {
 
   private static ProgressionConfig instance;
 
-  /** Starting level cap before any gym badge is earned. */
-  private int baseLevelCap = 20;
+  /** Starting level cap before any gym badge is earned. 15 = brutal hardcore Nuzlocke
+   *  (gates pre-gym-1 evolutions, e.g. Totodile→Croconaw @18). Ladder in levelcaps.json. */
+  private int baseLevelCap = 15;
 
   /** Fallback cap reported once every badge/champion milestone is earned. */
   private int championLevelCap = 100;

@@ -136,15 +136,37 @@ if you must reuse it).**
   ☐ Sidebar shows "⚜ THE INITIATIVE" WITH LINES (fresh world: "▶ Talk to Mom"). This never worked before — # holders were invisible.
   ☐ `/ca quest hide` clears it; `/ca quest show` brings it back.
 
-☐ B. OPENING CHAIN (10 min, fresh world)
-  ☐ Mom runs up ONCE; after the dialog she never re-approaches (walk away/relog).
+☐ B. OPENING CHAIN (10 min, fresh world — REVISED 2026-07-04: starter trio replaces the
+     vanilla starter screen entirely; the objective-wipe fix un-bricked Mom's walk-up)
+  ☐ NO vanilla starter toast/prompt appears at any point (InitiativeInit marks every
+    joining player prompted+selected).
+  ☐ Mom WALKS UP once (sight range now 12 — she should cross the room to you); after
+    the dialog she never re-approaches (walk away/relog).
   ☐ Her first dialog: no "Give me a moment"; "I am ready…" + auto "Goodbye" present.
   ☐ Accept the errand → main line flips to "Visit Professor Acacia at the lab" AND side line "• Choose a partner at the Sango lab" appears within ~1s.
-  ☐ Professor → "Choose a partner" → starter screen OPENS. Press ESC → `/tag @s list` has NO chose_starter; button still offered.
-  ☐ Click again, actually pick → chose_starter appears; HUD flips to "Take the Pokedex from Acacia".
-  ☐ Re-talk → "A good match…" entry, UNGATED "Take the Pokedex" → pokédex item + got_pokedex + HUD flips to "Show Mom your Pokedex". (This was the NOT_EQUALS deadlock.)
+  ☐ Professor → "Choose a partner" → THREE starter NPCs (Skiddo / Totodile / Hisuian Growlithe
+    ) spawn at the lab-side spots (2675/2676 128 2899-2903) rendered as the actual
+    Pokémon models (COBBLEMON_ENTITY visuals). Click the button AGAIN →
+    no duplicates (ci_starters_spawned latch).
+    KNOWN-COSMETIC: the Growlithe stand-in renders as BASE Growlithe (Easy NPC's
+    renderer is species-only) — the given Pokémon must still BE Hisuian (next check).
+  ☐ Talk to a starter → cry + flavor + "Choose <name>" → Pokémon (level 5) lands in the
+    party AND chose_starter is set in the same click; HUD flips to "Take the Pokedex".
+    If Growlithe chosen: summary screen shows HISUIAN Growlithe (fire/rock typing).
+  ☐ Talk to the OTHER two → cry + "…is waiting" hint mentioning the Pokédex thresholds
+    (+ Goodbye). The chosen one → cry only.
+  ☐ DEX-UNLOCK LADDER (forced scores OK for smoke): `/scoreboard players set @s
+    dex_caught 15` → within 2s talk to an unclaimed starter → Lv25 offer entry; claim →
+    second_starter_claimed; third starter still cry+hint. Then `set 30` → last starter
+    offers Lv40; claim → all three cry-only. (Live signal: dex_caught mirrors CAUGHT
+    entries every 40 ticks — catch a Pokémon, watch `/scoreboard players get @s
+    dex_caught` tick up. NOTE: forced scores are OVERWRITTEN by the mirror within 2s —
+    do the talk-and-claim inside that window, or catch real Pokémon.)
+  ☐ Professor re-talk → "A good match…" entry, UNGATED "Take the Pokedex" → pokédex item + got_pokedex + HUD flips to "Show Mom your Pokedex".
   ☐ Re-talk → post-pokédex entry ("How is the Pokedex coming along?").
-  ☐ Mom → Running Shoes entry OPENS (same deadlock class) → take shoes → side line clears, main line = "▶ Defeat the Takehara Falls Gym".
+  ☐ Mom → Running Shoes entry OPENS → take shoes → side line clears, main line = "▶ Defeat the Takehara Falls Gym". Shoes now +30% (walking ≈ vanilla sprint) — F3 or a timed run; confirm NO other speed source (the map's baked Speed I is stripped at build + `effect clear` in install).
+  ☐ PURSUIT REGRESSION CHECK (same fix class): any pursue-mode sight NPC (survey wagon
+    spotter etc.) actually chases when it sees you — pursuit was dead for all 5.
 
 ☐ C. ECONOMY (10 min)
   ☐ `/cobbledollars query <you>` → then `/function cobblemon_initiative:economy/payout {amount:100}` → ~100 CD credited + gold "Company Verified Rate" actionbar.
@@ -174,7 +196,85 @@ if you must reuse it).**
   ☐ World + any NPC with a command button → the button works on the FIRST press.
   ☐ `/cobblemon-initiative install check` → "ExecAsUser allowlist: OK".
 
-☐ POST-SESSION LOG SWEEP: grep the log for `Blocked execute-as-user`, `Failed to load function`, `Unknown or incomplete command`, `[NPC Refresh] Import failed` — all four should be absent. Any failure: save the full log to dev/ (log-0.4.3-alpha.2) as usual.
+☐ H. AMBIENT LIFE (5 min, added 0.4.3-alpha.4 — spread across the town visits above)
+  ☐ Sango: Mr. Mime pops in near Mom's house on approach (proximity spawn, ~40 blocks),
+    Magikarp beside Deka at the pond, Hoothoot near Elder Nuru, Sentret at Oma's lane —
+    each renders as the actual Pokémon, nameplate on mouse-over, dialog = cry + flavor
+    + Goodbye. NONE clipping into walls/furniture (offsets are best-guess: if one is
+    stuck, note coords — one-line fixes in ambient/tick + ambient/spawn/<key>).
+  ☐ Wanderers actually wander: Kofi, Taya, Elder Nuru (Sango), Sayuri (museum) drift a
+    few blocks and drift BACK (soft home tether); they still face you when you walk up.
+  ☐ Anchors did NOT start wandering: lane doors (Fara/Kele/Dakarai), stall merchants,
+    both nurses, Mom, Acacia all stay put.
+  ☐ Takehara: Chansey inside the Pokemon Center, Combee at Masumi's apiary, Psyduck by
+    Genji. Hua Zhan: Chansey in the Center, Meowth at the Pokemart, Wooloo at the mill.
+  ☐ Relog → no duplicate companions (#amb_* world latches on ci_ambient hold).
+  ☐ Log has no "Unknown Cobblemon species" lines (would mean a bad cobblemon_model id).
+
+☐ I. REWARDS RETUNE (5 min, added 0.4.3-alpha.5 — fold into C/D above)
+  ☐ Beat gym leader 1 (Cicada) → CD prize + badge + shop tier, NO emeralds anywhere in
+    the reward toast/inventory (legacy 5×emerald config entries removed from all 10 gyms).
+  ☐ Complete any small errand (census 250 / adjuncts / clinic beat) → payout receipt PLUS
+    a training pack lands: 3× Exp. Candy XS + 1× S (minor tier).
+  ☐ Complete a 300–400 quest (sweetwater / museum donation / dead letter) → 2× Exp.
+    Candy S + 1× M (standard).
+  ☐ Complete a finale (derby first win / cascade first clear / sprint first win / night
+    watch / invitational / roof meeting / pending review SIGN) → 1× Exp. Candy L + ONE
+    random vitamin (major). Refuse-fork mirror: census_refused path gets the same major
+    pack from Elder Sentinel alongside his potion kit.
+  ☐ REPEAT the derby / gold-time cascade / daily sprint → money only, NO items (farm-loop
+    guard). The preferred-provider rx_button daily stays clinic potions only.
+  ☐ Log sweep: no `Unknown loot table` for cobblemon_initiative:npc_gift/training_*.
+
+☐ J. ROUND-9 FIXES (0.4.3-alpha.6 — smoke-test round 2 responses)
+  ☐ EXISTING-WORLD REPAIRS FIRST (one-time, current test world only):
+    `/kill` the in-wall Magikarp then `/scoreboard players set #amb_magikarp ci_ambient 0`
+    (respawns at Deka's other side, 2568.5 111 2855.5). If gym-1 staff show beaten
+    lines on an unbeaten save: `/tag @s remove defeated_takehara_apprentice` (+ _jr_apprentice,
+    _leader) — stale tags from earlier test rounds; `/tag @s list` to audit.
+  ☐ Party open → NO "You have not yet selected a starter" message (DATA_SYNCHRONIZED
+    fix; works mid-world after one relog).
+  ☐ Starter offers: each shows "Keep looking" → closes without choosing; choose one →
+    that stand-in DESPAWNS within a tick; other two remain.
+  ☐ Hisuian Growlithe stand-in renders the HISUIAN model (clone species; needs
+    AllTheMons active — bare-mod installs show the gray substitute, cosmetic only).
+  ☐ LEVEL CAP (re-spaced ladder alpha.10): XP stops exactly at 15 pre-badge (actionbar
+    "Level cap 15 — the next badge raises it"); a Totodile CANNOT reach 18/Croconaw
+    before gym 1; beat gym 1 → cap 22 immediately; rare candy at cap refused but NOT
+    consumed. Cicada's ace is 17 (cap+2 — you fight underleveled). rctmod's own
+    actionbar warning must NOT appear (allowOverLeveling true).
+  ☐ AUDIT FIXES (alpha.8): beat kalahar trainer NPCs (when placed) → the RIGHT id is
+    credited (names were swapped); after any gym apprentice/leader win
+    `/rctmod player get progress` MUST show the id (the alpha.7 dispatch was silently
+    unparseable — targets go before "after"); hua_zhan apprentice's roselia now has
+    stunspore (no Model validation warn for it in the log).
+  ☐ RCTMOD SELF-HEAL (alpha.10): log shows `[rctmod compat] Healed server config:
+    allowOverLeveling=true, initialSeries=cobblemon-initiative` at server start — on
+    EVERY world incl. a bare fresh world / dev run-client (this is the fix for the
+    per-world-config gap; no /rctmod command needed anymore). `/rctmod player get series`
+    → cobblemon-initiative for a fresh player. On a bare-mod standalone instance the same
+    log line must appear (proves the invariant holds without the mrpack).
+  ☐ RCTMOD SERIES (legacy worlds only): a player saved BEFORE alpha.10 with series
+    "empty" is auto-migrated on join (`[rctmod compat] Placed <name> into series …`). After beating the gym-1 apprentice or leader:
+    `/rctmod player get series` shows cobblemon-initiative and
+    `/rctmod player get progress` reflects the win (our BATTLE_VICTORY dispatches
+    `rctmod player add progress after <id>` — tbcs wins never register on their own).
+    NOTE: `/rctmod player get level_cap` will show the NEXT-KEY-TRAINER model
+    (~15-18 early), NOT our badge ladder — that readout is bookkeeping only;
+    enforcement is ours (allowOverLeveling stays true).
+  ☐ PLACEMENTS: walk the roof → both yield agents flank Mayor Suzune; Harvest Road →
+    route surveyor/escort/wagon + Firstfurrow officer/site manager + Deng camp pair +
+    watch lantern; Hua Zhan gym gate → yield analyst + rezoning board; four garden
+    stations; branch office → receptionist + mezzanine analyst; Sango wheat field →
+    company liaison. Lumo now recast at the docks (uuid wired from dev CSV).
+  ☐ STILL NEED SHOWRUNNER COORDS (compile warns, not placed): hua_zhan_leader (!),
+    hz_greenhouse_docent, apiarist_sumi, courier_mio, field_researcher_ume,
+    forewoman_tetsu, company_surveyor, doc props + notice posts ×3, sq_kyc_agent,
+    checkpoint grunt pair. Sight arming for spawned villains (route pair, checkpoint
+    pair, yield officer/analyst) is a manual `npcsight add <uuid>` pass — latch
+    spawns get random uuids.
+
+☐ POST-SESSION LOG SWEEP: grep the log for `Blocked execute-as-user`, `Failed to load function`, `Unknown or incomplete command`, `[NPC Refresh] Import failed` — all four should be absent. Any failure: save the full log to dev/ (log-0.4.3-alpha.6) as usual.
 
 ## Phase 0 — Boot & wiring (5 min)
 

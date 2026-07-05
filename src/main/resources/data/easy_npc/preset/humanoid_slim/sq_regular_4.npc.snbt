@@ -255,9 +255,26 @@
             }
         },
         ObjectiveData: {
-            HasObjectives: 0b,
+            HasObjectives: 1b,
             HasTravelTarget: 0b,
-            ObjectiveDataSet: []
+            ObjectiveDataSet: [
+                {
+                    Type: "LOOK_AT_PLAYER",
+                    Prio: 9,
+                    Id: "ambient_look_player",
+                    LookDistance: 8.0f
+                },
+                {
+                    Type: "LOOK_RANDOM_AROUND",
+                    Prio: 10,
+                    Id: "ambient_look_random"
+                },
+                {
+                    Type: "LOOK_AT_RESET",
+                    Prio: 9,
+                    Id: "ambient_look_reset"
+                }
+            ]
         },
         OnGround: 1b,
         PersistenceRequired: 0b,

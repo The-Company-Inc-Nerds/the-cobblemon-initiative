@@ -7,6 +7,7 @@ import com.cobblemon.mod.common.api.events.CobblemonEvents;
 import com.cobblemon.mod.common.battles.actor.PlayerBattleActor;
 import com.thecompanyinc.cobblemoninitiative.command.CobblemonInitiativeCommands;
 import com.thecompanyinc.cobblemoninitiative.compat.EasyNpcSecurityConfig;
+import com.thecompanyinc.cobblemoninitiative.dex.DexScoreManager;
 import com.thecompanyinc.cobblemoninitiative.install.AutoInstall;
 import com.thecompanyinc.cobblemoninitiative.install.InstallCommand;
 import com.thecompanyinc.cobblemoninitiative.config.ConfigLoader;
@@ -97,6 +98,9 @@ public class InitiativeInit implements ModInitializer {
     // the mrpack's marker config is present; inert on bare-mod installs.
     AutoInstall.init();
 
+    // Mirror Pokédex caught-count into the dex_caught scoreboard (starter unlock gates).
+    DexScoreManager.init();
+
     CommandRegistrationCallback.EVENT.register(
       (dispatcher, registryAccess, environment) -> {
         CobblemonInitiativeCommands.register(dispatcher);
@@ -119,8 +123,19 @@ public class InitiativeInit implements ModInitializer {
       progressManager.loadProgress(server);
       shrineChallengeManager.loadPaths(server);
       lootChestManager.load(server);
+      // Standalone guarantee: force rctmod's allowOverLeveling + our series into its live
+      // config cache on ANY world (bundled map bakes it; fresh/bare worlds get defaults
+      // that would re-enable rctmod's clamp and fight our badge ladder). SERVER_STARTED is
+      // after the per-world serverconfig loads, before any player joins.
+      com.thecompanyinc.cobblemoninitiative.compat.RctmodServerConfig.healServerConfig(server);
       LOGGER.info("Loaded player progress data.");
     });
+
+    // Migrate players saved under the wrong/empty rctmod series (new players are placed by
+    // the healed initialSeries; this only fixes pre-existing stat.dat).
+    net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents.JOIN.register(
+      (handler, sender, server) ->
+        com.thecompanyinc.cobblemoninitiative.compat.RctmodServerConfig.ensurePlayerSeries(handler.player));
 
     ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
       progressManager.saveProgress(server);
@@ -133,14 +148,68 @@ public class InitiativeInit implements ModInitializer {
   }
 
   private void registerBattleEvents() {
-    // The opening chain gates on chose_starter. The tag is granted HERE, on the actual
-    // Cobblemon starter selection, not by the professor's dialog button — a player who
-    // opens the starter screen and presses ESC picks nothing, and a button-granted tag
-    // would desync the whole chain (professor tiers, HUD, Mom's shoes).
+    // Showrunner design (2026-07-04): the vanilla Cobblemon starter flow is CLOSED —
+    // starters come from the three stand-in NPCs Acacia spawns (givepokemonother +
+    // chose_starter, atomic in one dialog click).
+    // BYTECODE-VERIFIED ORDER BUG (round 9): Cobblemon syncs ClientGeneralPlayerData
+    // during SYNC_DATA_PACK_CONTENTS — BEFORE Fabric's ENTITY_LOAD fires — and nothing
+    // re-syncs, so a hook there mutates the cached data AFTER the client already heard
+    // starterSelected=false ("You have not yet selected a starter…" on party open).
+    // DATA_SYNCHRONIZED at Priority.HIGHEST runs before Cobblemon's own NORMAL-priority
+    // subscriber, whose syncAllToPlayer then ships the corrected flags — no extra packet.
+    CobblemonEvents.DATA_SYNCHRONIZED.subscribe(Priority.HIGHEST, joining -> {
+      try {
+        var data = com.cobblemon.mod.common.Cobblemon.playerDataManager.getGenericData(joining);
+        data.setStarterPrompted(true);
+        data.setStarterSelected(true);
+        com.cobblemon.mod.common.Cobblemon.playerDataManager.saveSingle(
+          data,
+          com.cobblemon.mod.common.api.storage.player.PlayerInstancedDataStoreTypes.INSTANCE.getGENERAL());
+      } catch (Exception e) {
+        LOGGER.warn("Could not close the vanilla starter flow for {}", joining.getName().getString(), e);
+      }
+      return Unit.INSTANCE;
+    });
+
+    // Belt-and-braces: if the vanilla starter path ever fires anyway (config drift,
+    // admin command), keep the chain in sync.
     CobblemonEvents.STARTER_CHOSEN.subscribe(Priority.NORMAL, event -> {
       ServerPlayer starterPlayer = event.getPlayer();
       if (starterPlayer != null) {
         starterPlayer.addTag("chose_starter");
+      }
+      return Unit.INSTANCE;
+    });
+
+    // LEVEL CAP ENFORCEMENT (round 9, bytecode-verified): nothing enforced our badge
+    // ladder before — rctmod's own clamp (the only real one) derives its cap from its
+    // SERIES graph, and with initialSeries="empty" that is frozen at initialLevelCap
+    // (15) forever; rctmod has NO command or API to set a per-player cap. So the pack
+    // config flips rctmod's kill switch (allowOverLeveling=true) and WE clamp with the
+    // exact semantics rctmod uses: cap the gain at experience-to-cap, never cancel
+    // (candies are auto-refunded by Cobblemon when the applied gain is 0).
+    CobblemonEvents.EXPERIENCE_GAINED_EVENT_PRE.subscribe(Priority.NORMAL, ev -> {
+      var owner = ev.getPokemon().getOwnerPlayer();
+      if (owner instanceof ServerPlayer sp && levelCapManager != null) {
+        int cap = levelCapManager.getLevelCap(sp);
+        int maxGain = Math.max(0, ev.getPokemon().getExperienceToLevel(cap));
+        if (ev.getExperience() > maxGain) {
+          ev.setExperience(maxGain);
+          sp.displayClientMessage(
+            Component.literal("§6Level cap §e" + cap + "§6 — the next badge raises it."), true);
+        }
+      }
+      return Unit.INSTANCE;
+    });
+
+    // Belt-and-braces for paths that adjust the level directly on level-up.
+    CobblemonEvents.LEVEL_UP_EVENT.subscribe(Priority.NORMAL, ev -> {
+      var owner = ev.getPokemon().getOwnerPlayer();
+      if (owner instanceof ServerPlayer sp && levelCapManager != null) {
+        int cap = levelCapManager.getLevelCap(sp);
+        if (ev.getNewLevel() > cap) {
+          ev.setNewLevel(cap);
+        }
       }
       return Unit.INSTANCE;
     });
@@ -175,6 +244,26 @@ public class InitiativeInit implements ModInitializer {
                   trainer.getId()
                 );
                 progressManager.onTrainerDefeated(player, trainer.getId());
+
+                // Keep rctmod's native series graph in step (round 10): players enter
+                // the cobblemon-initiative series via initialSeries, but tbcs battles
+                // bypass rctmod entirely — its defeat memory never advances on its own.
+                // Only gym apprentices + leaders are graph nodes (mobs/trainers/single).
+                // Enforcement stays OURS (EXPERIENCE clamp above; allowOverLeveling on):
+                // rctmod's next-key-trainer cap model can't express the badge ladder.
+                String type = trainer.getTrainerType();
+                if ("apprentice".equals(type) || "leader".equals(type)) {
+                  var server = player.getServer();
+                  if (server != null) {
+                    // Grammar (bytecode, round 10b): targets go BEFORE the after
+                    // literal — `player add progress <targets> after <trainerId>`.
+                    // `after` marks the id + all its graph prerequisites.
+                    server.getCommands().performPrefixedCommand(
+                      server.createCommandSourceStack().withSuppressedOutput(),
+                      "rctmod player add progress " + player.getGameProfile().getName()
+                        + " after " + trainer.getId());
+                  }
+                }
                 break;
               }
             }

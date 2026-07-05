@@ -37,6 +37,37 @@ session, in this order (each failure comes back to Claude as a bug report):
 5. While the client is open: capture **Sodium + BSL settings** → `mrpack/overrides/`
    (§1.F) and run the **`cobbledollars give @s` smoke-test** (§1.B).
 
+### Phase 0.5 — Round 9–10 follow-ups (2026-07-04, v0.4.3-alpha.8)
+
+**WORKFLOW CHANGE 🧱→💻:** NPCs no longer require in-world placement + UUID recording —
+a `placement: {x,y,z}` field in the character JSON auto-spawns them once per world
+(compiler-generated proximity latches; see ENGINE_FINDINGS §3/§4). In-world placement
+is still fine (uuid wins over placement); use whichever is easier per NPC. 30 latches
+already live (10 companions + 20 authored-coordinate NPCs incl. the roof agents,
+Harvest Road villains, Deng camp, garden stations).
+
+- [ ] 🧱 **Coordinates needed** (compile warns until authored; give Claude coords or
+  place bodies): **hua_zhan_leader (gym 2 has NO leader body!)**, hz_greenhouse_docent,
+  apiarist_sumi, courier_mio, field_researcher_ume, forewoman_tetsu, company_surveyor,
+  doc_ledger_barrel, doc_portrait_crate, notice_post_1–3, sq_kyc_agent,
+  villain_grunt_2 + villain_grunt_field_agent (checkpoint tent pair).
+- [ ] 🧱💻 **Gym interior casting**: no dialog carriers exist for takehara/hua_zhan
+  trainer_1–4 + hz jr_apprentice/apprentice — decide bodies (CSV or placement) and
+  Claude wires the battle dialogs.
+- [ ] 💻 **Sight arming after latch spawns**: latch-spawned villains get random uuids —
+  the authored `npcsight add <uuid>` registrations (route pair, checkpoint pair,
+  yield officer/analyst) need a manual pass per world, or a future auto-register hook.
+- [x] 💻 **Cap ladder re-space + gym retune** (round 10e, alpha.10): start cap 15
+  (gates pre-gym-1 evos), ladder 15/22/30/37/44/50/56/62/68/74/80/100; leader ace =
+  entry-cap **+2** (aces 17/24/32/39/46/52/58/64/70/76), roster shifted in step.
+  levelcaps.json + ProgressionConfig + CLAUDE.md table + docs updated. See
+  ENGINE_FINDINGS §5.
+- [ ] 💻 **Gyms 3–10 roster COMPLETION** (future act): 24 missing team files
+  ({town}_{trainer_3,trainer_4,jr_apprentice} × 8) — author teams following the same
+  ace=cap+2 curve (scale off the existing leader/trainer levels for that gym).
+- [ ] 🔍 Existing-world one-time repairs (runbook §J): magikarp respawn, stale
+  takehara defeat tags, `/rctmod player set series cobblemon-initiative`.
+
 ### Phase 1 — Map authoring sprint 🧱 (parallelizable with Phase 2 wiring)
 Author in batches; each batch unblocks Claude wiring the same day:
 1. **Zones** via `zone-mapper` (draw towns/routes/shrines/HQ/frontier; FARM zones get

@@ -3,6 +3,7 @@
 # component goes through the skew-aware payout.
 loot give @s loot cobblemon_initiative:npc_gift/silent_stakeholder
 function cobblemon_initiative:economy/payout {amount:400}
+loot give @s loot cobblemon_initiative:npc_gift/training_major
 tag @s add perf_review_ghost
 tag @s add perf_review_resolved
 tellraw @s [{"text":"SILENT STAKEHOLDER","color":"gold","bold":true},{"text":" — you moved like the brood underground: unseen and patient. The rafter cache finds its way into your bag.","color":"gray"}]

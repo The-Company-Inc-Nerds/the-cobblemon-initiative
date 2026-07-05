@@ -1,0 +1,64 @@
+{
+  "_comment": "RENDER-ONLY clone species for the Easy NPC starter stand-in (bytecode-verified recipe 2026-07-04): Easy NPC 6.25.0's COBBLEMON_ENTITY renderer is species-only (no aspects, ever \u2014 verified; no upstream version adds it), so the Hisuian LOOK needs its own species id. Hisui-form stats hoisted from cobblemon:growlithe's forms[0]; implemented:false keeps it out of random rolls, /giveallpokemon and the Pokedex GUI; no dex_entries are shipped (second lock); bare-name references ('growlithe') can NEVER hit this id (getByName is hardcoded to the cobblemon namespace). The real starter stays 'growlithe hisuian=true'. Renders via assets/cobblemon_initiative/bedrock/pokemon/resolvers/growlithe_hisui/ pointing at the AllTheMons-shipped model/texture \u2014 without AllTheMons the stand-in falls back to the substitute model (cosmetic only).",
+  "implemented": false,
+  "name": "Growlithe",
+  "nationalPokedexNumber": 58,
+  "primaryType": "fire",
+  "secondaryType": "rock",
+  "maleRatio": 0.75,
+  "height": 8,
+  "weight": 227,
+  "baseScale": 0.75,
+  "hitbox": {
+    "width": 1.1,
+    "height": 1.15,
+    "fixed": false
+  },
+  "catchRate": 190,
+  "baseExperienceYield": 70,
+  "experienceGroup": "slow",
+  "baseStats": {
+    "hp": 60,
+    "attack": 75,
+    "defence": 45,
+    "special_attack": 65,
+    "special_defence": 50,
+    "speed": 55
+  },
+  "abilities": [
+    "intimidate",
+    "flashfire",
+    "h:rockhead"
+  ],
+  "moves": [
+    "1:leer",
+    "1:ember"
+  ],
+  "evolutions": [],
+  "labels": [
+    "standin"
+  ],
+  "behaviour": {
+    "resting": {
+      "canSleep": true,
+      "willSleepOnBed": true,
+      "light": "0-4",
+      "drowsyChance": 0.0333,
+      "rouseChance": 0.0042
+    },
+    "entityInteract": {
+      "avoidedBySkeleton": true,
+      "avoidedByFox": true
+    },
+    "moving": {
+      "swim": {
+        "avoidsWater": true,
+        "canSwimInLava": true
+      }
+    },
+    "combat": {
+      "willDefendOwner": true
+    },
+    "fireImmune": true
+  }
+}

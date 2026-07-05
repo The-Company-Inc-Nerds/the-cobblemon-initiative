@@ -348,6 +348,12 @@ public class InstallCommand {
       .getSource()
       .sendSuccess(() -> Component.literal("[Install] Game mode set to survival."), true);
 
+    // The map author left an infinite minecraft:speed effect on the saved host-player
+    // state. build-mrpack strips it from bundled worlds at build time; this covers
+    // already-shipped copies. Clearing the effect also drops its speed modifier —
+    // the Running Shoes are the only sanctioned speed source.
+    server.getCommands().performPrefixedCommand(silentOp, "effect clear @a minecraft:speed");
+
     // Promote the world to hardcore (after gamerules, since hardcore locks difficulty to hard)
     boolean hardcoreFlipped = false;
     if (config.hardcore) {

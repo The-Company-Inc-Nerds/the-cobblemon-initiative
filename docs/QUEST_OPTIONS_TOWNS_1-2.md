@@ -18,7 +18,7 @@ lenses (*classic* / *dread* / *spectacle* / *blend*) are complements; any subset
   by the Java STARTER_CHOSEN hook on the actual Cobblemon starter pick, ESC-proof, not by
   the dialog button) →
   gated **Take the Pokedex** button (`cobblemon:pokedex_red`, `got_pokedex`) → return to
-  Mom → **Running Shoes** (unbreakable +10% speed leather boots via
+  Mom → **Running Shoes** (unbreakable +30% speed leather boots via
   `loot_table/npc_gift/running_shoes.json`, `got_running_shoes`) → send-off west down the
   Blossom Path. Quest HUD walks all four steps pre-badge (`quest/render`, boss bar 0..4).
   *[2026-07-04: the quest HUD is sidebar-only now — the objective boss bar was removed; the

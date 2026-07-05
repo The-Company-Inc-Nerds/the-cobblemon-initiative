@@ -8,6 +8,7 @@ tag @s add homecoming_paid
 # 2) The first honest sale of the season, paid through the skewed rail — economy/payout applies the
 #    instability haircut, and the haircut shorting even this sale is the point of the scene.
 function cobblemon_initiative:economy/payout {amount:380}
+loot give @s loot cobblemon_initiative:npc_gift/training_standard
 
 # 3) The hamper — 8 bread, 6 oran berries, 1 potion (premium: nothing on the road sells it this early).
 give @s minecraft:bread 8

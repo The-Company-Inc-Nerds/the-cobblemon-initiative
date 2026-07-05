@@ -70,6 +70,9 @@
                             Text: "How is the Pokedex coming along? Slowly, I imagine. Good. The slow records are the honest ones."
                         },
                         {
+                            Text: "The other two partners stay with me for now. Fifteen entries in that Pokedex and I will release a second to you. Thirty, and the last one goes too. Records buy trust — around here, nothing else does."
+                        },
+                        {
                             Text: "Your mother will want to see that Pokedex before you leave town. Go and show her. She waited longer than you know."
                         }
                     ],
@@ -154,8 +157,52 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "EQUALS",
+                                            Name: "no_ci_starters_spawned"
+                                        }
+                                    ],
+                                    Cmd: "easy_npc preset import_new data easy_npc:preset/humanoid/starter_skiddo.npc.snbt 2675.5 128 2899.5"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "EQUALS",
+                                            Name: "no_ci_starters_spawned"
+                                        }
+                                    ],
+                                    Cmd: "easy_npc preset import_new data easy_npc:preset/humanoid/starter_hisuian_growlithe.npc.snbt 2676.5 128 2901.5"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "EQUALS",
+                                            Name: "no_ci_starters_spawned"
+                                        }
+                                    ],
+                                    Cmd: "easy_npc preset import_new data easy_npc:preset/humanoid/starter_totodile.npc.snbt 2675.5 128 2903.5"
+                                },
+                                {
+                                    Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "openstarterscreen @s"
+                                    Conditions: [
+                                        {
+                                            Type: "PLAYER_TAG",
+                                            Operation: "EQUALS",
+                                            Name: "no_ci_starters_spawned"
+                                        }
+                                    ],
+                                    Cmd: "tag @s add ci_starters_spawned"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "title @initiator actionbar [{\"text\":\"Three partners wait beside Acacia. Speak to the one that answers back.\"}]"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

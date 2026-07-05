@@ -62,6 +62,14 @@ HUMANOID_DIR = PRESET_ROOT / "humanoid"
 # equipment, sounds, home) into the compiled preset — so `preset import` no longer resets a
 # placed NPC to a default Steve.
 WORLD_NPCS   = PROJECT_ROOT / "mrpack/maps/The Cobblemon Initiative/easy_npc/npcs"
+# Showrunner-authored VISUAL overrides (in-game preset exports, SNBT). When
+# dialog-src/visuals/<id>.npc.snbt exists, its visual identity keys (entity type,
+# renderer, model, skin, sounds, attributes, display) are merged into the compiled
+# preset — used e.g. for the starter stand-ins rendered via Easy NPC's
+# COBBLEMON_ENTITY renderer (RenderData.EntityModel = a Cobblemon species id).
+# Behavioral keys (ActionData, DialogData, ObjectiveData, Navigation, CustomName)
+# always come from the pipeline, never the export.
+VISUALS_DIR  = DIALOG_SRC / "visuals"
 SNIPPET_DIR  = PROJECT_ROOT / "presets/snippets"
 NPC_PRESETS  = PROJECT_ROOT / "npc_presets.json"
 FUNCTION_DIR = PROJECT_ROOT / "src/main/resources/data/cobblemon_initiative/function"
@@ -136,7 +144,7 @@ OP_NBT = {"eq": "EQUALS", "ne": "NOT_EQUALS", "gt": "GREATER_THAN",
           "lt": "LESS_THAN", "gte": "GREATER_THAN_OR_EQUAL", "lte": "LESS_THAN_OR_EQUAL"}
 # logical gate name -> the scoreboard objective the runtime actually maintains
 LOGICAL_OBJ = {"badges": "memory_fragment", "cd_instability": "cd_instability",
-               "fields_liberated": "fields_liberated"}
+               "fields_liberated": "fields_liberated", "dex": "dex_caught"}
 # recognition tier -> (logical, op, value); 'early' is unconditional (lowest tier)
 RECOG_BAND = {"early": None, "mid": ("badges", "gte", 3), "late": ("badges", "gte", 7)}
 
@@ -195,7 +203,7 @@ def gate_conditions(gate: dict) -> tuple[list, list | None]:
             if band:
                 lab, op, val = band
                 conds.append(player_tag(band_tag(lab, LOGICAL_OBJ[lab], op, val), True))
-        elif k in ("badges", "cd_instability", "fields_liberated"):
+        elif k in ("badges", "cd_instability", "fields_liberated", "dex"):
             conds.append(player_tag(band_tag(k, LOGICAL_OBJ[k], v["op"], v["value"]), True))
         elif k == "score":
             conds.append(player_tag(band_tag(v["objective"], v["objective"], v["op"], v["value"]), True))
@@ -637,8 +645,15 @@ def apply_triggers(tree, ch: dict):
     return tree
 
 def apply_movement(tree, mv: dict | None):
-    if not mv:
-        return tree
+    """BYTECODE-VERIFIED (Easy NPC 6.25.0): an NPC with an EMPTY ObjectiveDataSet can
+    never receive its first objective at runtime — FollowObjective.getObjectiveData
+    null-returns when !hasObjectives(), so `easy_npc objective … set follow player`
+    (NpcSight approach/pursue) silently fails forever. Worse, preset import REPLACES
+    the live objective set with the preset's (even an empty one). Every compiled
+    character therefore gets a movement objective — default ambient_stationary_look
+    (head-tracking idle) when the character declares none."""
+    mv = dict(mv or {})
+    mv.setdefault("objective", "ambient_stationary_look")
     if mv.get("objective"):
         tree = apply_nondialog_snippet(tree, "ambient/" + mv["objective"]) \
             if (SNIPPET_DIR / ("ambient/" + mv["objective"] + ".snbt")).is_file() \
@@ -705,7 +720,60 @@ def compile_character(ch: dict, dialogs: dict, registers: dict, lore: dict):
         out = apply_nondialog_snippet(out, "trade/" + ch["trade"]["snippet"])
     if ch.get("skin"):
         out = sm.set_path(out, ["data", "SkinData"], skin_node(ch["skin"]))
+    out = apply_visuals(out, ch)
     return out
+
+
+# data.* keys adopted from a dialog-src/visuals/<id>.npc.snbt export (showrunner's
+# in-game visual pass): entity type + renderer + look/sound identity. Behavioral keys
+# (ActionData, DialogData, ObjectiveData, Navigation, CustomName*) stay the pipeline's.
+VISUAL_ADOPT = [
+    "id", "VariantType", "RenderData", "ModelData", "SkinData", "SoundData",
+    "attributes", "EntityAttribute", "DisplayAttribute",
+]
+
+
+def apply_visuals(tree, ch: dict):
+    cid = ch["id"]
+    vf = VISUALS_DIR / f"{cid}.npc.snbt"
+    if vf.is_file():
+        visual, _ = sm.load_source(str(vf))
+    elif ch.get("cobblemon_model"):
+        # Species-only shortcut: no per-NPC in-game export needed. The template is the
+        # showrunner's dev export reduced to identity fields; only the species varies.
+        # BYTECODE (Easy NPC 6.25.0 CobblemonNPCRenderer): EntityModel must be the exact
+        # Cobblemon registry id (lowercase, punctuation stripped — "mrmime", not
+        # "mr_mime"); unknown ids log "Unknown Cobblemon species" and render nothing.
+        species = str(ch["cobblemon_model"]).strip().lower()
+        if not re.fullmatch(r"[a-z0-9]+", species):
+            raise CompileError(
+                f"{cid}: cobblemon_model {species!r} is not a bare Cobblemon species id "
+                f"(lowercase alphanumeric, punctuation stripped — e.g. 'mrmime')")
+        tf = VISUALS_DIR / "_cobblemon_template.npc.snbt"
+        if not tf.is_file():
+            raise CompileError(f"{cid}: cobblemon_model needs {tf}")
+        visual = sm.parse_snbt(tf.read_text().replace("%%SPECIES%%", species).strip())
+    else:
+        return tree
+    vdata = visual.get("data", {})
+    for key in VISUAL_ADOPT:
+        if key in vdata:
+            tree = sm.set_path(tree, ["data", key], vdata[key])
+    # entityTypeId in the metadata must match data.id (preset browser grouping).
+    vmeta = visual.get("PresetMetadata", {})
+    if "entityTypeId" in vmeta:
+        meta = OrderedDict(tree.get("PresetMetadata", OrderedDict()))
+        meta["entityTypeId"] = vmeta["entityTypeId"]
+        if "variantType" in vmeta:
+            meta["variantType"] = vmeta["variantType"]
+        tree = sm.set_path(tree, ["PresetMetadata"], meta)
+    # Spawned NPCs (no uuid) never pass merge_world, which is where uuid'd NPCs get
+    # their CustomName — name them here so the nameplate matches the casting.
+    if not (ch.get("uuid") or "").strip():
+        raw = "'" + json.dumps({"text": ch["display_name"], "color": "#FFFFFF"},
+                               ensure_ascii=False) + "'"
+        tree = sm.set_path(tree, ["data", "CustomName"], _snbt_value(raw))
+    return tree
 
 
 # ─── World merge (builder NPC data -> compiled preset) ───────────────────────
@@ -789,6 +857,53 @@ def merge_world(tree, ch: dict):
         meta["entityTypeId"] = s(f"easy_npc:{etype}")
         tree = sm.set_path(tree, ["PresetMetadata"], meta)
     return tree, etype
+
+
+# ─── Placement latches (spawn never-placed NPCs at authored coords) ─────────
+
+PLACE_DIR          = FUNCTION_DIR / "ambient" / "place"
+PLACEMENTS_FN      = FUNCTION_DIR / "ambient" / "placements.mcfunction"
+PLACEMENTS_INIT_FN = FUNCTION_DIR / "ambient" / "placements_init.mcfunction"
+
+
+def write_placements(chars: list, etypes: dict) -> int:
+    """Characters with `placement` and NO uuid get a once-per-world proximity latch:
+    #amb_<key> on ci_ambient (0 = pending), spawn via `easy_npc preset import_new`
+    only when a player is within 40 blocks (import into unloaded chunks is undefined).
+    Latch is set BEFORE the import (AutoInstall rule) — a failed import never re-fires;
+    to redo one: kill the body + `scoreboard players set #amb_<key> ci_ambient 0`.
+    Keys strip the `companion_` prefix for continuity with pre-generator worlds."""
+    entries = []
+    for ch in chars:
+        pl = ch.get("placement")
+        if not pl:
+            continue
+        if (ch.get("uuid") or "").strip():
+            warn(f"{ch['id']}: placement ignored — the character has a uuid (world body wins).")
+            continue
+        cid = ch["id"]
+        key = cid[len("companion_"):] if cid.startswith("companion_") else cid
+        x, y, z = pl["x"], pl["y"], pl["z"]
+        fx = x + 0.5 if float(x).is_integer() else x
+        fz = z + 0.5 if float(z).is_integer() else z
+        entries.append((cid, key, fx, y, fz, etypes.get(cid, "humanoid")))
+
+    PLACE_DIR.mkdir(parents=True, exist_ok=True)
+    for old in PLACE_DIR.glob("*.mcfunction"):
+        old.unlink()
+    head = "# AUTO-GENERATED by scripts/content_compile from character `placement` fields — do not edit.\n"
+    init = [head + "scoreboard objectives add ci_ambient dummy"]
+    tick = [head.rstrip()]
+    for cid, key, fx, y, fz, etype in entries:
+        init.append(f"execute unless score #amb_{key} ci_ambient matches 0.. run scoreboard players set #amb_{key} ci_ambient 0")
+        tick.append(f"execute if score #amb_{key} ci_ambient matches 0 if entity @a[x={fx},y={y},z={fz},distance=..40] run function {NS}:ambient/place/{key}")
+        (PLACE_DIR / f"{key}.mcfunction").write_text(
+            f"# {cid} — latch FIRST; reset #amb_{key} to 0 (+ kill the body) to respawn.\n"
+            f"scoreboard players set #amb_{key} ci_ambient 1\n"
+            f"easy_npc preset import_new data easy_npc:preset/{etype}/{cid}.npc.snbt {fx} {y} {fz}\n")
+    PLACEMENTS_INIT_FN.write_text("\n".join(init) + "\n")
+    PLACEMENTS_FN.write_text("\n".join(tick) + "\n")
+    return len(entries)
 
 
 # ─── npc_presets.json / sight manifest ───────────────────────────────────────
@@ -904,6 +1019,10 @@ def main() -> None:
             compiled.append((ch["id"], text, etype))
             merge_mapping(mappings, ch, etype)
             sight += sight_lines_for(ch)
+            if (ch.get("act") == "1" and not (ch.get("uuid") or "").strip()
+                    and not ch.get("placement") and not ch["id"].startswith("starter_")):
+                warn(f"{ch['id']}: act-1 character with no uuid and no placement — "
+                     f"it exists nowhere in the world until one is authored.")
         except (CompileError, KeyError, SystemExit) as e:
             errors.append(f"{ch['id']}: {e}")
 
@@ -972,12 +1091,16 @@ def main() -> None:
     # npc_presets.json (merged)
     NPC_PRESETS.write_text(json.dumps({"mappings": mappings}, indent=2) + "\n")
 
+    # Placement latches (spawn never-placed NPCs at their authored coords)
+    n_placed = write_placements(chars, {cid: et for cid, _, et in compiled})
+
     wired = wire_tick()
 
     print(f"\nWrote {len(compiled)} preset(s) to {HUMANOID_DIR.relative_to(PROJECT_ROOT)}")
     print(f"Wrote {BAND_TAGS_FN.relative_to(PROJECT_ROOT)} ({len(BAND_REGISTRY)} band-tags)")
     print(f"Wrote {SIGHT_FN.relative_to(PROJECT_ROOT)} ({sum(1 for c in chars if c.get('sight') and c.get('uuid'))} NPCs)")
     print(f"Merged UUID mappings into {NPC_PRESETS.name}")
+    print(f"Wrote {PLACEMENTS_FN.relative_to(PROJECT_ROOT)} ({n_placed} placement latches)")
     print(f"tick wiring: {wired or 'no tick.json found — add ' + NS + ':dialog/band_tags to your tick tag manually'}")
 
     if not args.no_generate:
