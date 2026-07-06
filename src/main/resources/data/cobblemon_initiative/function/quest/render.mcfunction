@@ -63,6 +63,16 @@ execute if entity @s[tag=mom_sent_to_lab,tag=!chose_starter] run scoreboard play
 execute if entity @s[tag=chose_starter,tag=!got_pokedex] run scoreboard players display name q.side_opening ci_quest [{"text":"• Take the Pokedex from Acacia","color":"gray"}]
 execute if entity @s[tag=got_pokedex,tag=!got_running_shoes] run scoreboard players display name q.side_opening ci_quest [{"text":"• Show Mom your Pokedex","color":"gray"}]
 
+# Dex-unlock partners: fill the Pokedex (15 / 30 CAUGHT) then talk to Prof. Acacia to
+# unlock the next starter, then claim it from the lab stand-in. dex_gte_15/30 are band tags.
+scoreboard players reset q.side_partner ci_quest
+execute if entity @s[tag=chose_starter,tag=dex_gte_15,tag=!second_starter_claimed] run scoreboard players set q.side_partner ci_quest 79
+execute if entity @s[tag=chose_starter,tag=dex_gte_15,tag=!second_starter_unlocked] run scoreboard players display name q.side_partner ci_quest [{"text":"• A second partner awaits — see Prof. Acacia","color":"gray"}]
+execute if entity @s[tag=second_starter_unlocked,tag=!second_starter_claimed] run scoreboard players display name q.side_partner ci_quest [{"text":"• Claim your second partner at the lab","color":"gray"}]
+execute if entity @s[tag=second_starter_claimed,tag=dex_gte_30,tag=!third_starter_claimed] run scoreboard players set q.side_partner ci_quest 79
+execute if entity @s[tag=second_starter_claimed,tag=dex_gte_30,tag=!third_starter_unlocked] run scoreboard players display name q.side_partner ci_quest [{"text":"• A third partner awaits — see Prof. Acacia","color":"gray"}]
+execute if entity @s[tag=third_starter_unlocked,tag=!third_starter_claimed] run scoreboard players display name q.side_partner ci_quest [{"text":"• Claim your third partner at the lab","color":"gray"}]
+
 # Wheat War: shows the fields side line once the war is active AND the reveal has landed
 # (heard_wheat_pitch — set by the Hua Zhan traders or the greenhouse catwalk; canon: the
 # word never prints before the reveal).

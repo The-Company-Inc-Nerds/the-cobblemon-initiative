@@ -12,25 +12,66 @@ line under it for anything you notice.
 **How to fill:** put an `x` in the one box that applies (`[ ]`), then type on the
 `comment:` line beneath it. Deeper detail / root causes live in `docs/VERIFICATION_RUNBOOK.md`.
 
-- **Build under test:** `0.4.3-alpha.15`  (note the `dev/log-<version>` here when you capture a log)
-- **Tester / date:** Cole J. Calamos / 07-05-2026
-- **World:** [ ] fresh mrpack install  ☐ dev run-client  ☐ bare-mod standalone
+- **Build under test:** `0.4.3-alpha.17`  (note the `dev/log-<version>` here when you capture a log)
+- **Tester / date:** ______________________
+- **World:** ☐ fresh mrpack install  ☐ dev run-client  ☐ bare-mod standalone
 
-> Fresh world → **no manual setup**. Install self-runs, NPCs spawn on approach, and the
-> rctmod series/cap is forced at startup. (The only per-world command you might use is
-> `/cobblemon-initiative install run` if auto-install didn't fire — item 0.2.)
+> Fresh world → **no manual setup**. (The only per-world command you might use is
+> `/cobblemon-initiative install run` if auto-install didn't fire.)
 
-> **Fixed in alpha.15 (re-verify):** cap now **15** on a fresh player (was 20) · placed
-> NPCs now show their real name + an rctmod skin (were "humanoid" + Steve) · chosen
-> starter stand-in now despawns (per-species tag) · route/gym trainers get the fresh
-> dialog (stale preset re-imported by the content-version bump) · roof agents at
-> 2014/169/2464 & /2466, Firstfurrow at 1586/90/2487 & 1603/89/2488 · Marlow nameplate
-> (was "Taya") · mom Goodbye off the first page · quieter rctmod join log.
+> **alpha.16 verbal results (2026-07-06):** skins ✅ · grunts spawn ✅ · spawn ❌ (off by a
+> few blocks — root cause `spawnRadius 10`, fixed) · gym interior trainers ❌ (no bodies
+> existed — 8 created) · design change: Company nameplates → normal names (applied).
+> Unreported alpha.16 items (cap 15, starter despawn, dex quest, Marlow/mom) carry over below.
+
+## ★ Re-verify (alpha.17) — just these; assume everything else still works
+
+- **R1** — Spawn is EXACTLY 2612/109/2841 (inside the house — spawnRadius now 0)
+  - ✅ [ ]   💬 [ ]   ❌ [ ]
+  - comment: 
+- **R2** — Company nameplates are **normal names** (courier "Musa", roof suits "Noboru"/"Chiyo", Firstfurrow "Ming"/"Jun", KYC "Femi") — no job-title nameplates left
+  - ✅ [ ]   💬 [ ]   ❌ [ ]
+  - comment: 
+- **R3** — **Takehara gym tower:** 2 trainers on the y138 floor (Koji, Yuki) + 2 on y151 (Shin, Taro); each hails, battles once, shows a defeat line after (no re-battle)
+  - ✅ [ ]   💬 [ ]   ❌ [ ]
+  - comment: 
+- **R4** — Beating tower trainers still credits gym progression (Sora → Aiko → Cicada chain unaffected)
+  - ✅ [ ]   💬 [ ]   ❌ [ ]
+  - comment: 
+- **R5** — **Hua Zhan gardens:** the 4 wardens stand at their stations (Lin/moss, Mei/orchard, Fang/terrace, Xiu/pond); beating one lets you press that plaque's seal
+  - ✅ [ ]   💬 [ ]   ❌ [ ]
+  - comment: 
+- **R6** — Frostfallow Farm (farm_8) now has hostile mob spawns like the other fields
+  - ✅ [ ]   💬 [ ]   ❌ [ ]
+  - comment: 
+
+**Carry-over from alpha.16 (only if not already checked):**
+
+- **C1** — Cap is **15** on a fresh player; XP stops there; beating gym 1 → 22
+  - ✅ [ ]   💬 [ ]   ❌ [ ]
+  - comment: 
+- **C2** — Choose a starter → the **chosen** stand-in despawns (incl. Hisuian Growlithe); other two stay as cry-only
+  - ✅ [ ]   💬 [ ]   ❌ [ ]
+  - comment: 
+- **C3** — **Dex quest:** at 15 caught, side line → Acacia → "Claim at the lab" → claim. Same at 30.
+  - ✅ [ ]   💬 [ ]   ❌ [ ]
+  - comment: 
+- **C4** — "Marlow" nameplate; mom's Goodbye is **not** on her first page
+  - ✅ [ ]   💬 [ ]   ❌ [ ]
+  - comment: 
+
+> **Fishing (resolved 2026-07-05):** Sango already has TWO fishing events — the Sango
+> Classic derby (Deka) and the Shorefront Invitational (Tayo/Kofi/Lumo/Kima, lv 8–13).
+> The Invitational is level-locked to Act 1 and staked to the Sango wheat-field paymaster,
+> so it CANNOT move to Gaviota (cap 58). Plan: (1) retheme the Invitational's "shorefront/
+> docks/harbour" dressing to a **savanna pond/lakeside** — dialog-text reskin only, no world
+> building — to fix the biome mismatch; (2) build a NEW cap-58 marquee "**Gaviota Open**" at
+> the actual port as the primary fishing hub. Both DEFERRED to a post-smoke-test round;
+> awaiting greenlight on the Gaviota Open sketch. See memory `fishing-content-map`.
+> ~~Gym interior trainer_1–4 still need bodies~~ — DONE in alpha.17 (all 8 bodied,
+> placement-latched at the gym-config coords; skin polish deferred).
 >
-> **Still open / needs your input:** spawn puts you on a roof — send me the bed coords ·
-> dex-ladder-as-side-quest redesign (talk to prof first) — confirm the flow · Sango
-> "docks" flavor is actually a savanna (Invitational re-theme — larger) · gym interior
-> trainer_1–4 still need bodies (casting).
+> Full checklist below is reference/first-run only — you don't need to re-run it.
 
 ---
 

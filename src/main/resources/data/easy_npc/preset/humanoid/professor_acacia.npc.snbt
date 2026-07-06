@@ -294,6 +294,100 @@
                     ],
                     Name: "The Strangers",
                     Label: "the_strangers"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "chose_starter"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "no_second_starter_unlocked"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "dex_gte_15"
+                        }
+                    ],
+                    Priority: 17,
+                    Buttons: [
+                        {
+                            Name: "See the partner",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add second_starter_unlocked"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "title @initiator actionbar [{\"text\":\"A partner is ready to choose at the lab.\",\"color\":\"gold\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "second_partner_btn"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Fifteen species catalogued already — the lab noticed before I did. There is a second partner here who has been waiting for a trainer with your eye. Go on, they are ready."
+                        }
+                    ],
+                    Name: "Acacia — a second partner",
+                    Label: "second_partner"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "second_starter_claimed"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "no_third_starter_unlocked"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "dex_gte_30"
+                        }
+                    ],
+                    Priority: 18,
+                    Buttons: [
+                        {
+                            Name: "See the partner",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add third_starter_unlocked"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "title @initiator actionbar [{\"text\":\"A partner is ready to choose at the lab.\",\"color\":\"gold\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "third_partner_btn"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Thirty entries. That is not luck, that is a trainer. The last of the three has waited longest — the lab is yours, go and choose."
+                        }
+                    ],
+                    Name: "Acacia — the last partner",
+                    Label: "third_partner"
                 }
             ]
         },

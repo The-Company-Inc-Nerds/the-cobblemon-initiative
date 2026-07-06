@@ -789,7 +789,8 @@ import nbt_read  # noqa: E402  (binary NBT -> SNBT, for the world merge)
 
 # data.* fields adopted verbatim from the world NPC: the builders' visual + audio identity.
 # Quest-functional fields (DialogData, ActionData, ObjectiveData, TradingData, attributes)
-# stay OURS. SkinData is adopted unless the character declares an explicit "skin" override.
+# stay OURS. SkinData + VariantType are adopted UNLESS the character declares an explicit
+# "skin" (then the specified skin fully wins — showrunner rule).
 WORLD_ADOPT = [
     "SkinData", "VariantType", "ModelData", "Profession", "LeftHanded",
     "ArmorItems", "HandItems", "ArmorDropChances", "HandDropChances",
@@ -829,9 +830,13 @@ def merge_world(tree, ch: dict):
         etype = wid[1].split(":", 1)[1]
         tree = sm.set_path(tree, ["data", "id"], _snbt_value(f'"easy_npc:{etype}"'))
 
+    # A character-declared `skin` FULLY wins over the builder's world data: skip both the
+    # builder SkinData AND its VariantType (the skin-variant selector) — otherwise a
+    # CUSTOM/URL skin can be overridden by a builder variant. Showrunner rule 2026-07-06.
+    skin_override = bool(ch.get("skin"))
     for key in WORLD_ADOPT:
-        if key == "SkinData" and ch.get("skin"):
-            continue  # explicit character skin wins
+        if skin_override and key in ("SkinData", "VariantType"):
+            continue
         node = world.get(key)
         if node is not None:
             tree = sm.set_path(tree, ["data", key], _snbt_value(nbt_read.to_snbt(node)))
@@ -856,9 +861,10 @@ def merge_world(tree, ch: dict):
     raw = "'" + json.dumps(name_json, ensure_ascii=False) + "'"
     tree = sm.set_path(tree, ["data", "CustomName"], _snbt_value(raw))
 
-    # PresetMetadata mirrors the variant so the Easy NPC UI previews correctly.
+    # PresetMetadata mirrors the variant so the Easy NPC UI previews correctly — but not
+    # when a character skin overrode the variant above (keep the preset self-consistent).
     vt = world.get("VariantType")
-    if vt is not None:
+    if vt is not None and not skin_override:
         meta = OrderedDict(tree.get("PresetMetadata", OrderedDict()))
         meta["variantType"] = s(vt[1])
         meta["entityTypeId"] = s(f"easy_npc:{etype}")

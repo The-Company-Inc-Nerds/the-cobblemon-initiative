@@ -6,4 +6,4 @@ function cobblemon_initiative:ambient/placements
 # the claimed one dies; the other two remain as cry-only per the design.
 execute if entity @a[tag=claimed_starter_skiddo] run kill @e[type=easy_npc:cobblemon_npc,tag=ci_standin_skiddo]
 execute if entity @a[tag=claimed_starter_totodile] run kill @e[type=easy_npc:cobblemon_npc,tag=ci_standin_totodile]
-execute if entity @a[tag=claimed_starter_growlithe] run kill @e[type=easy_npc:cobblemon_npc,tag=ci_standin_growlithe]
+execute if entity @a[tag=claimed_starter_hisuian_growlithe] run kill @e[type=easy_npc:cobblemon_npc,tag=ci_standin_growlithe]

@@ -412,7 +412,7 @@ nix develop -c javap -p -c <extracted>.class
     one, drop it at `config/easy_npc/skin/humanoid/<uuid>.png`, reference by UUID
     (`skin:{type:"custom","uuid":[…]}`). Skins ship via `mrpack/overrides/config/…`
     (cosmetic → mrpack-only is acceptable; bare-mod shows DEFAULT). content_compile
-    `skin_node` handles `type:"custom"`/`"url"`; world merge keeps an explicit skin.
+    `skin_node` handles `type:"custom"`/`"url"`; world merge: an explicit character `skin` FULLY wins over the builder — skips both the world SkinData AND VariantType (showrunner rule 2026-07-06), so a specified skin is never overridden by a builder variant.
   - *New quest reward*: money via `economy/payout {amount:N}`; add a training pack
     (`loot give @s loot cobblemon_initiative:npc_gift/training_<tier>`) ONLY at the
     one-time completion latch — tier by payout (≤260 minor / 300–400 standard /
