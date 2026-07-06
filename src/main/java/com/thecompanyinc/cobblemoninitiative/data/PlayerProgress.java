@@ -7,7 +7,7 @@ public class PlayerProgress {
   private UUID playerId;
   private Set<String> defeatedTrainers = new HashSet<>();
   private Set<String> earnedAchievements = new HashSet<>();
-  private int currentLevelCap = 20;
+  private int currentLevelCap = 15;
 
   public PlayerProgress(UUID playerId) {
     this.playerId = playerId;

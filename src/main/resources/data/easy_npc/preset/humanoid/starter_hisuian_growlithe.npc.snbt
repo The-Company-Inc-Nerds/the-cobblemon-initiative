@@ -106,10 +106,6 @@
                                     Cmd: "title @initiator actionbar [{\"text\":\"Hisuian Growlithe joined you. The lab is empty now.\"}]"
                                 },
                                 {
-                                    Type: "COMMAND",
-                                    Cmd: "tag @initiator add ci_claimed_standin"
-                                },
-                                {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
@@ -177,10 +173,6 @@
                                 {
                                     Type: "COMMAND",
                                     Cmd: "title @initiator actionbar [{\"text\":\"Hisuian Growlithe joined you. One partner still waits at the lab.\"}]"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    Cmd: "tag @initiator add ci_claimed_standin"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -264,10 +256,6 @@
                                 {
                                     Type: "COMMAND",
                                     Cmd: "title @initiator actionbar [{\"text\":\"Hisuian Growlithe joined you. Acacia has one more thing for you.\"}]"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    Cmd: "tag @initiator add ci_claimed_standin"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -454,6 +442,7 @@
             }
         ],
         id: "easy_npc:cobblemon_npc",
-        CustomName: '{"text": "Hisuian Growlithe", "color": "#FFFFFF"}'
+        CustomName: '{"text": "Hisuian Growlithe", "color": "#FFFFFF"}',
+        Tags: ["ci_standin_growlithe"]
     }
 }

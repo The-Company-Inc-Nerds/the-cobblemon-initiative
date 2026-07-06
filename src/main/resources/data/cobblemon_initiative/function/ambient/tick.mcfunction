@@ -1,6 +1,9 @@
 # Proximity spawn checks for all latch-placed NPCs (generated from `placement` fields).
 function cobblemon_initiative:ambient/placements
-# Claimed starter stand-ins despawn one tick after the choose click (the choose
-# button tags the NPC entity-path; killing NEXT tick lets the dialog CLOSE packet
-# go out first — killing mid-action-list would race the deferred close).
-kill @e[type=easy_npc:cobblemon_npc,tag=ci_claimed_standin]
+# Despawn a starter stand-in once its species is claimed. The choose button tags the
+# PLAYER claimed_starter_<id> (entity-path @s resolves to the player), so we kill the
+# matching stand-in — tagged ci_standin_<species> in its preset NBT — from here. Only
+# the claimed one dies; the other two remain as cry-only per the design.
+execute if entity @a[tag=claimed_starter_skiddo] run kill @e[type=easy_npc:cobblemon_npc,tag=ci_standin_skiddo]
+execute if entity @a[tag=claimed_starter_totodile] run kill @e[type=easy_npc:cobblemon_npc,tag=ci_standin_totodile]
+execute if entity @a[tag=claimed_starter_growlithe] run kill @e[type=easy_npc:cobblemon_npc,tag=ci_standin_growlithe]

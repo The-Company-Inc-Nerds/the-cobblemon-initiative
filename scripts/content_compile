@@ -721,6 +721,19 @@ def compile_character(ch: dict, dialogs: dict, registers: dict, lore: dict):
     if ch.get("skin"):
         out = sm.set_path(out, ["data", "SkinData"], skin_node(ch["skin"]))
     out = apply_visuals(out, ch)
+    # CustomName for SPAWNED NPCs (no uuid → never pass merge_world, which is where uuid'd
+    # NPCs get named). Without this, Easy NPC shows the entity type ("humanoid") — the
+    # placement-latch roster (roof agents, route villains, courier, companions) all hit it.
+    if not (ch.get("uuid") or "").strip():
+        raw = "'" + json.dumps({"text": ch["display_name"], "color": "#FFFFFF"},
+                               ensure_ascii=False) + "'"
+        out = sm.set_path(out, ["data", "CustomName"], _snbt_value(raw))
+        out = sm.set_path(out, ["data", "CustomNameVisible"], sm.parse_snbt("{K:1b}")["K"])
+    # Persistent scoreboard/selector tags baked onto the entity (data.Tags). Used to
+    # target spawned NPCs by tag from datapack (e.g. despawn the chosen starter stand-in).
+    if ch.get("entity_tags"):
+        lst = ",".join('"%s"' % t for t in ch["entity_tags"])
+        out = sm.set_path(out, ["data", "Tags"], sm.parse_snbt("{K:[%s]}" % lst)["K"])
     return out
 
 
@@ -767,13 +780,7 @@ def apply_visuals(tree, ch: dict):
         if "variantType" in vmeta:
             meta["variantType"] = vmeta["variantType"]
         tree = sm.set_path(tree, ["PresetMetadata"], meta)
-    # Spawned NPCs (no uuid) never pass merge_world, which is where uuid'd NPCs get
-    # their CustomName — name them here so the nameplate matches the casting.
-    if not (ch.get("uuid") or "").strip():
-        raw = "'" + json.dumps({"text": ch["display_name"], "color": "#FFFFFF"},
-                               ensure_ascii=False) + "'"
-        tree = sm.set_path(tree, ["data", "CustomName"], _snbt_value(raw))
-    return tree
+    return tree  # CustomName for no-uuid NPCs is set in compile_character (all of them)
 
 
 # ─── World merge (builder NPC data -> compiled preset) ───────────────────────

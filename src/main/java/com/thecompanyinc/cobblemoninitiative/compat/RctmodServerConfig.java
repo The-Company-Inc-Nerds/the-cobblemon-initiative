@@ -82,8 +82,11 @@ public final class RctmodServerConfig {
           player.getGameProfile().getName(), SERIES, cur);
       }
     } catch (Throwable t) {
-      LOGGER.warn("[rctmod compat] Could not set series for {} — series progress may not "
-        + "track; enforcement is unaffected.", player.getGameProfile().getName(), t);
+      // getData isn't ready at connection time on some paths — harmless: new players are
+      // already placed by the healed initialSeries; this only migrates old wrong-series
+      // saves. Quiet by design (no stack spam), enforcement is unaffected.
+      LOGGER.debug("[rctmod compat] deferred series check for {}: {}",
+        player.getGameProfile().getName(), t.toString());
     }
   }
 

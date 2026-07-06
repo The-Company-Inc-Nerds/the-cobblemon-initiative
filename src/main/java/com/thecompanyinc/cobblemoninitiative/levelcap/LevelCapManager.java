@@ -17,27 +17,28 @@ public class LevelCapManager {
     this.configLoader = configLoader;
   }
 
+  /** Cap = base (levelcaps.json root) raised by every EARNED cap achievement. Computed
+   *  FRESH from achievements — never a stale persisted field. (Was returning the stored
+   *  currentLevelCap, which defaulted to 20 and only refreshed on a trainer defeat, so a
+   *  fresh player was clamped at 20 until their first gym win.) */
+  private int computeLevelCap(PlayerProgress progress) {
+    int cap = ProgressionConfig.get().getBaseLevelCap();
+    for (LevelCapConfig c : configLoader.getLevelCaps()) {
+      if (progress.hasAchievement(c.getAchievementId()) && c.getLevelCap() > cap) {
+        cap = c.getLevelCap();
+      }
+    }
+    return cap;
+  }
+
   public int getLevelCap(ServerPlayer player) {
-    PlayerProgress progress =
-      InitiativeInit.getProgressManager().getProgress(player);
-    return progress.getCurrentLevelCap();
+    return computeLevelCap(InitiativeInit.getProgressManager().getProgress(player));
   }
 
   public void updateLevelCap(ServerPlayer player) {
     PlayerProgress progress =
       InitiativeInit.getProgressManager().getProgress(player);
-    List<LevelCapConfig> levelCaps = configLoader.getLevelCaps();
-
-    int newCap = ProgressionConfig.get().getBaseLevelCap();
-
-    for (LevelCapConfig cap : levelCaps) {
-      if (progress.hasAchievement(cap.getAchievementId())) {
-        if (cap.getLevelCap() > newCap) {
-          newCap = cap.getLevelCap();
-        }
-      }
-    }
-
+    int newCap = computeLevelCap(progress);
     if (newCap != progress.getCurrentLevelCap()) {
       progress.setCurrentLevelCap(newCap);
       player.sendSystemMessage(

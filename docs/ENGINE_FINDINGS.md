@@ -89,6 +89,17 @@ nix develop -c javap -p -c <extracted>.class
   (`allowOverLeveling=true` + the InitiativeInit clamp): rctmod's native cap model is
   "next undefeated key trainer's level" (~15-16 pre-gym-1), which cannot express the
   badge ladder (15/22/30…) — re-enabling its clamp would recreate the frozen-cap bug.
+  **SERIES GRAPH CYCLE = StackOverflow CRASH AT WORLD START (round 12b)**: rctmod's
+  `SeriesManager$SeriesGraph.initCount` recurses the requiredDefeats graph with NO cycle
+  guard — any cycle hard-crashes the server the moment a player in that series loads.
+  The graph edges come from BOTH `mobs/trainers/single/*.json` AND `mobs/trainers/
+  groups/*.json` (floor-trainer prereqs — the round-10b rotation audit fixed singles but
+  MISSED groups; takehara/hua_zhan/mystic groups carried the same one-town rotation,
+  closing the loop takehara_apprentice→trainer_1→[group]hua_zhan_leader→…→
+  takehara_apprentice). Latent until round 10 wired initialSeries (empty series = graph
+  never built). RULE: any requiredDefeats edit must re-run the cycle check over
+  singles+groups (group file `<town>_trainer.json` applies to `<town>_trainer_N` ids);
+  correct pattern = gym-N floor/apprentice gate on leader(N-1), gym 1 gates on nothing.
   STANDALONE SELF-HEAL (round 11): rctmod's config is a PER-WORLD serverconfig, so the
   bundled map bakes `allowOverLeveling=true`+`initialSeries="cobblemon-initiative"` but
   fresh/dev/bare worlds get rctmod DEFAULTS (`allowOverLeveling=false`,
@@ -324,6 +335,14 @@ nix develop -c javap -p -c <extracted>.class
   the alpha suffix (or patch) and rebuilds under the new name — one jar name per
   round so dev/log-<version> maps to exactly one change set. The MINOR version bumps
   only after a 100% smoke-test pass (showrunner's call).**
+- **Pack settings** (`mrpack/settings.json`, tracked, 2026-07-05): human-facing build
+  config — `packName`, `packSummary`, `packSlug` (→ `.mrpack` filename), `packVersion`
+  (null = mod version from build.gradle.kts), `mapName`, and optional
+  `minecraft`/`fabricLoader`. Precedence: CLI flag > settings.json > modpack.json >
+  gradle files > default. `mapName` renames the bundled world's save folder AND sets its
+  in-game display name (`level.dat` `LevelName`, set in `bake_install_into_level_dat`) —
+  only when exactly one world is bundled. Keeps display config out of the mods manifest;
+  `modpack.json` stays the mods/packs list.
 - **Dep cache + map updates** (`build-mrpack`, 2026-07-05): `--cache` downloads every
   dependency jar once into `mrpack/cache/` (content-addressed by sha1, gitignored) and
   BUNDLES them into `overrides/` with an empty manifest `files[]` — the installed pack

@@ -9,16 +9,28 @@ line under it for anything you notice.
 | 💬 | **Works, with comment** — functions but see note |
 | ❌ | **Not working** — broken / regressed |
 
-**How to fill:** put an `x` in the one box that applies (`[x]`), then type on the
+**How to fill:** put an `x` in the one box that applies (`[ ]`), then type on the
 `comment:` line beneath it. Deeper detail / root causes live in `docs/VERIFICATION_RUNBOOK.md`.
 
-- **Build under test:** `0.4.3-alpha.13`  (note the `dev/log-<version>` here when you capture a log)
-- **Tester / date:** ______________________
-- **World:** ☐ fresh mrpack install  ☐ dev run-client  ☐ bare-mod standalone
+- **Build under test:** `0.4.3-alpha.15`  (note the `dev/log-<version>` here when you capture a log)
+- **Tester / date:** Cole J. Calamos / 07-05-2026
+- **World:** [ ] fresh mrpack install  ☐ dev run-client  ☐ bare-mod standalone
 
 > Fresh world → **no manual setup**. Install self-runs, NPCs spawn on approach, and the
 > rctmod series/cap is forced at startup. (The only per-world command you might use is
 > `/cobblemon-initiative install run` if auto-install didn't fire — item 0.2.)
+
+> **Fixed in alpha.15 (re-verify):** cap now **15** on a fresh player (was 20) · placed
+> NPCs now show their real name + an rctmod skin (were "humanoid" + Steve) · chosen
+> starter stand-in now despawns (per-species tag) · route/gym trainers get the fresh
+> dialog (stale preset re-imported by the content-version bump) · roof agents at
+> 2014/169/2464 & /2466, Firstfurrow at 1586/90/2487 & 1603/89/2488 · Marlow nameplate
+> (was "Taya") · mom Goodbye off the first page · quieter rctmod join log.
+>
+> **Still open / needs your input:** spawn puts you on a roof — send me the bed coords ·
+> dex-ladder-as-side-quest redesign (talk to prof first) — confirm the flow · Sango
+> "docks" flavor is actually a savanna (Invitational re-theme — larger) · gym interior
+> trainer_1–4 still need bodies (casting).
 
 ---
 
@@ -139,7 +151,7 @@ line under it for anything you notice.
   - ✅ [ ]   💬 [ ]   ❌ [ ]
   - comment: 
 - **3.6** — Nurse heal while broke → red "Payment declined", no heal, balance unchanged; with funds → heal + fee
-  - ✅ [ ]   💬 [ ]   ❌ [ ]
+  - ✅ x ]   💬 [ ]   ❌ [ ]
   - comment: 
 - **3.7** — Win a dialog battle vs undefeated trainer → prize credited **once**; re-talk = already-beaten line
   - ✅ [ ]   💬 [ ]   ❌ [ ]
@@ -252,7 +264,7 @@ line under it for anything you notice.
 - **9.4** — `[NPC Refresh] Import failed` — absent
   - ✅ [ ]   💬 [ ]   ❌ [ ]
   - comment: 
-- **9.5** — Full log saved to `dev/log-0.4.3-alpha.13` if anything failed
+- **9.5** — Full log saved to `dev/log-0.4.3-alpha.15` if anything failed
   - ✅ [ ]   💬 [ ]   ❌ [ ]
   - comment: 
 

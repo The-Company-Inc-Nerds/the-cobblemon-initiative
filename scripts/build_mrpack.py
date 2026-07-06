@@ -40,10 +40,11 @@ INSTALL_JSON = "src/main/resources/data/cobblemon_initiative/install.json"
 DIFFICULTY_BYTE = {"peaceful": 0, "easy": 1, "normal": 2, "hard": 3}
 
 
-def bake_install_into_level_dat(level_dat: str) -> None:
+def bake_install_into_level_dat(level_dat: str, level_name: str = None) -> None:
     """Pre-apply install.json's world-side settings to a bundled world COPY:
     gamerules (all NBT strings), difficulty, and the hardcore bit. Mirrors what
-    `/cobblemon-initiative install run` does live; failures warn, never abort."""
+    `/cobblemon-initiative install run` does live; failures warn, never abort.
+    `level_name` (from settings.json mapName) sets the in-game world display name."""
     try:
         import sys as _sys
         _sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -87,6 +88,10 @@ def bake_install_into_level_dat(level_dat: str) -> None:
             print("    removed Data.Player (fresh host spawns at world spawn)")
         dtag["GameType"] = (TAG_INT, 0)
 
+        if level_name:
+            dtag["LevelName"] = (TAG_STRING, level_name)
+            print(f"    set in-game world name → {level_name!r}")
+
         write_nbt_file(level_dat, root_name, tree, gzipped=True)
         print(f"    baked install: {len(gamerules)} gamerule(s)"
               f"{', difficulty=' + difficulty if difficulty else ''}"
@@ -97,6 +102,9 @@ def bake_install_into_level_dat(level_dat: str) -> None:
 
 
 MANIFEST = os.path.join(MRPACK_DIR, "modpack.json")
+# Human-facing pack settings (optional; overrides modpack.json / gradle / the map folder
+# name). Keeps the display config out of the mods manifest. CLI flags still win over it.
+SETTINGS_JSON = os.path.join(MRPACK_DIR, "settings.json")
 # --cache: content-addressed local store of downloaded mod/pack jars (gitignored).
 # Reused across builds so a rebuild+reinstall never re-downloads the unchanged deps.
 CACHE_DIR = os.path.join(MRPACK_DIR, "cache")
@@ -212,6 +220,20 @@ def resolve_pack(mr, item, mc, path_prefix, env=None):
     return v.get("version_number"), primary_file(v, item["slug"])
 
 
+def load_pack_settings():
+    """Optional mrpack/settings.json — human-facing pack config (packName, packSummary,
+    packVersion, packSlug, mapName, minecraft, fabricLoader). All keys optional; absent
+    file → {}. Ignored keys starting with '_' (comments)."""
+    try:
+        with open(SETTINGS_JSON) as fh:
+            return {k: v for k, v in json.load(fh).items() if not k.startswith("_")}
+    except FileNotFoundError:
+        return {}
+    except Exception as e:
+        print(f"  [warn] {SETTINGS_JSON}: {e} — ignoring.")
+        return {}
+
+
 def read_setting(path, pattern, default=None):
     try:
         with open(path) as fh:
@@ -315,12 +337,18 @@ def main():
     with open(MANIFEST) as fh:
         cfg = json.load(fh)
 
-    mc = cfg.get("minecraft") or read_setting("build.gradle.kts", r"minecraft:([0-9][^\"\s]*)", "1.21.1")
-    loader_ver = cfg.get("fabricLoader") or read_setting("build.gradle.kts", r"fabric-loader:([0-9][^\"\s]*)", "0.17.2")
-    name = args.name or cfg.get("name") or read_setting("settings.gradle.kts", r'rootProject\.name\s*=\s*"([^"]+)"', "modpack")
-    slug_name = read_setting("settings.gradle.kts", r'rootProject\.name\s*=\s*"([^"]+)"', "modpack")
-    version = args.version or read_setting("build.gradle.kts", r'(?m)^version\s*=\s*"([^"]+)"', "0.0.0")
-    summary = cfg.get("summary", name)
+    # Precedence: CLI flag > mrpack/settings.json > modpack.json > gradle files > default.
+    st = load_pack_settings()
+    mc = st.get("minecraft") or cfg.get("minecraft") or read_setting("build.gradle.kts", r"minecraft:([0-9][^\"\s]*)", "1.21.1")
+    loader_ver = st.get("fabricLoader") or cfg.get("fabricLoader") or read_setting("build.gradle.kts", r"fabric-loader:([0-9][^\"\s]*)", "0.17.2")
+    name = args.name or st.get("packName") or cfg.get("name") or read_setting("settings.gradle.kts", r'rootProject\.name\s*=\s*"([^"]+)"', "modpack")
+    slug_name = st.get("packSlug") or read_setting("settings.gradle.kts", r'rootProject\.name\s*=\s*"([^"]+)"', "modpack")
+    version = args.version or st.get("packVersion") or read_setting("build.gradle.kts", r'(?m)^version\s*=\s*"([^"]+)"', "0.0.0")
+    summary = st.get("packSummary") or cfg.get("summary") or name
+    map_name = st.get("mapName")  # optional: renames the bundled world's folder + in-game name
+    if st:
+        print(f"  settings.json → name={name!r}, version={version}"
+              + (f", mapName={map_name!r}" if map_name else ""))
 
     mods = cfg.get("mods") or []
     resourcepacks = cfg.get("resourcepacks") or []
@@ -344,7 +372,13 @@ def main():
         worlds = [d for d in sorted(glob.glob(os.path.join(args.map_dir, "*"))) if os.path.isdir(d)]
         if not worlds:
             print(f"  [warn] --with-map: no world folders in {args.map_dir}/ — skipping map + Modrinth datapacks.")
+    # Dest folder name per bundled world — settings.mapName renames it (folder + LevelName)
+    # when exactly one world is bundled; otherwise the source folder name is kept.
     world_names = [os.path.basename(w) for w in worlds]
+    if map_name and len(worlds) == 1:
+        world_names = [map_name]
+    elif map_name and len(worlds) > 1:
+        print(f"  [warn] mapName set but {len(worlds)} worlds bundled — keeping folder names.")
 
     files = []
 
@@ -435,15 +469,17 @@ def main():
         # install opens ready — no `/cobblemon-initiative install run` needed for
         # those. (Config-side pieces ship as overrides below; NPC preset refresh and
         # sight registrations self-arm/self-seed in the mod on a fresh world.)
-        for w in worlds:
-            wname = os.path.basename(w)
-            print(f"  world: {wname}")
+        for w, wname in zip(worlds, world_names):
+            src_name = os.path.basename(w)
+            print(f"  world: {src_name}" + (f" → {wname}" if wname != src_name else ""))
             wdst = os.path.join(overrides, "saves", wname)
             # Strip per-player/session state so a builder's full-map export can be dropped
             # in wholesale — players start fresh; terrain + entities + easy_npc/ ship.
-            shutil.copytree(w, wdst, symlinks=False,
+            # dirs_exist_ok: under --cache the AllTheMons datapack was already bundled into
+            # this world's datapacks/, so wdst exists — merge the world into it.
+            shutil.copytree(w, wdst, symlinks=False, dirs_exist_ok=True,
                             ignore=shutil.ignore_patterns(*WORLD_USERDATA_STRIP))
-            bake_install_into_level_dat(os.path.join(wdst, "level.dat"))
+            bake_install_into_level_dat(os.path.join(wdst, "level.dat"), level_name=wname)
 
         # Shop seed: the same badge_0 catalog `install run` copies at runtime, shipped
         # as a config override so the opening shop is right on first launch.
@@ -491,7 +527,11 @@ def main():
                     z.write(full, os.path.relpath(full, tmp))
 
     size_mb = os.path.getsize(out_path) / 1e6
-    print(f"\nWrote {out_path} ({size_mb:.1f} MB) — {len(files)} indexed files + this mod bundled.")
+    if args.cache:
+        print(f"\nWrote {out_path} ({size_mb:.1f} MB) — self-contained: {len(bundled)} deps "
+              f"+ this mod bundled in overrides/, manifest files[] empty (installs offline).")
+    else:
+        print(f"\nWrote {out_path} ({size_mb:.1f} MB) — {len(files)} indexed files + this mod bundled.")
     if not args.with_map:
         print(f"(No map bundled. Use --with-map to include world folders from ./{args.map_dir}/.)")
 
