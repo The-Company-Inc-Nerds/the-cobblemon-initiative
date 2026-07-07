@@ -2,6 +2,12 @@
 # (button gate: farm_1_free + not homecoming_paid — this function is only reachable from there).
 # The emotional payload of the farm-liberation backbone: liberate farm_1 and the camp walks home on camera.
 
+# 0) Walk teardown (round 13c) — soft no-ops when the escort never started.
+tag @s remove homecoming_walking
+easy_npc objective @e[tag=deng_old,limit=1] remove follow player
+easy_npc objective @e[tag=deng_granny,limit=1] remove follow player
+easy_npc objective @e[tag=deng_haoran,limit=1] remove follow player
+
 # 1) Latch FIRST so a double-click cannot double-pay.
 tag @s add homecoming_paid
 
@@ -14,6 +20,17 @@ loot give @s loot cobblemon_initiative:npc_gift/training_standard
 give @s minecraft:bread 8
 give @s cobblemon:oran_berry 6
 give @s cobblemon:potion 1
+# Rolled side item (review B6 weighted drip): the fixed hamper is the FLOOR; one rolled
+# extra rides on top, announced. Bonus-only, latched one-time — no farm loop.
+execute store result score #hamper cd_calc run random value 1..4
+execute if score #hamper cd_calc matches 1 run give @s cobblemon:sitrus_berry 1
+execute if score #hamper cd_calc matches 1 run tellraw @s [{"text":"Granny Yun adds: ","color":"gray"},{"text":"a Sitrus Berry, saved for a good day.","color":"gold"}]
+execute if score #hamper cd_calc matches 2 run give @s cobblemon:cheri_berry 2
+execute if score #hamper cd_calc matches 2 run tellraw @s [{"text":"Granny Yun adds: ","color":"gray"},{"text":"two Cheri Berries off the fence row.","color":"gold"}]
+execute if score #hamper cd_calc matches 3 run give @s minecraft:pumpkin_pie 2
+execute if score #hamper cd_calc matches 3 run tellraw @s [{"text":"Granny Yun adds: ","color":"gray"},{"text":"two slices of pie — packed for a siege, as ever.","color":"gold"}]
+execute if score #hamper cd_calc matches 4 run give @s cobblemon:pecha_berry 2
+execute if score #hamper cd_calc matches 4 run tellraw @s [{"text":"Granny Yun adds: ","color":"gray"},{"text":"two Pecha Berries, sweet ones, for the road back.","color":"gold"}]
 
 # 4) VERIFIER FIX 2: the walk home is wired, not implied. The showrunner tags the three bodies at
 #    placement (deng_old / deng_granny / deng_haoran, plus deng_camp on all three); this moves them

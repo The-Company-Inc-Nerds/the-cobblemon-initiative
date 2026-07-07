@@ -74,37 +74,43 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "defeated_mystic_leader"
-                                        }
-                                    ],
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_mystic_leader"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "say You carry the Charm Badge. The marsh whispers your name when you walk it, you know. It has done that since before you arrived."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_mystic_leader"
-                                        }
-                                    ],
-                                    Cmd: "tbcs attach mystic_leader @s"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_mystic_leader"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:mystic_leader @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_mystic_leader"
-                                        }
-                                    ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs mystic_leader onwin {1: ['cobbledollars give @1 2400', 'tag @1 add defeated_mystic_leader', '@2 say The marsh saw something true in you. So did I. Hold onto it — you will need it.'], 2: ['@1 say Charm is not enough here. Neither is force. Find the balance and the marsh will let you pass.']}"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_mystic_leader"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:mystic_leader onwin {1: ['cobbledollars give @1 2400', 'tag @1 add defeated_mystic_leader', '@2 say The marsh saw something true in you. So did I. Hold onto it — you will need it.'], 2: ['@1 say Charm is not enough here. Neither is force. Find the balance and the marsh will let you pass.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

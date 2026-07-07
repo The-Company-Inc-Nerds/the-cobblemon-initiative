@@ -1,5 +1,6 @@
 {
   "type": "minecraft:chest",
+  "_comment": "Preferred Provider daily prescription (review B6 weighted drip): one rolled item, potion-weighted so the floor never drops below useful — potion w4 / antidote w2 / paralyze_heal w2 / super_potion w1 (item ids jar-verified vs Cobblemon 1.7.3). Bonus-only variance on a repeatable: the roll can never pay less than a usable cure.",
   "pools": [
     {
       "name": "prescription",
@@ -9,6 +10,24 @@
         {
           "type": "minecraft:item",
           "name": "cobblemon:potion",
+          "weight": 4,
+          "functions": [{ "function": "minecraft:set_count", "count": 1 }]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "cobblemon:antidote",
+          "weight": 2,
+          "functions": [{ "function": "minecraft:set_count", "count": 1 }]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "cobblemon:paralyze_heal",
+          "weight": 2,
+          "functions": [{ "function": "minecraft:set_count", "count": 1 }]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "cobblemon:super_potion",
           "weight": 1,
           "functions": [{ "function": "minecraft:set_count", "count": 1 }]
         }

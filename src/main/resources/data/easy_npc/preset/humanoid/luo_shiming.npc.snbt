@@ -110,52 +110,92 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "defeated_sq_rt2_wager"
-                                        }
-                                    ],
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_sq_rt2_wager"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "say One wager a day is all my nerves can carry. The gate is that way, trainer."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_sq_rt2_wager"
-                                        }
-                                    ],
-                                    Cmd: "tbcs attach sq_rt2_wager @s"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_sq_rt2_wager"
+                                            },
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_declined_sq_rt2_wager"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:sq_rt2_wager @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_sq_rt2_wager"
-                                        }
-                                    ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs sq_rt2_wager onwin {1: ['cobbledollars give @1 380', 'tag @1 add defeated_sq_rt2_wager', '@2 say Doubled the wrong way. Take the stake — it was won fair, which is more than my pay can say.'], 2: ['cobbledollars remove @2 120', '@1 say The stake stays with the crew. It buys a real dinner tonight, so no hard feelings.']}"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_sq_rt2_wager"
+                                            },
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_declined_sq_rt2_wager"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:sq_rt2_wager onwin {1: ['cobbledollars give @1 380', 'tag @1 add defeated_sq_rt2_wager', '@2 say Doubled the wrong way. Take the stake — it was won fair, which is more than my pay can say.', 'execute as @1 run function cobblemon_initiative:economy/wager_sweetener'], 2: ['cobbledollars remove @2 120', '@1 say The stake stays with the crew. It buys a real dinner tonight, so no hard feelings.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_declined_sq_rt2_wager"
                                 }
                             ],
                             Label: "wager_button"
                         },
                         {
-                            Name: "Keep your coin",
+                            Name: "Pay 60 CD to bow out",
                             Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:route/decline_sq_rt2_wager"
+                                },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "decline_button"
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_sq_rt2_wager"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_declined_sq_rt2_wager"
+                                }
+                            ],
+                            Label: "bow_out_button"
                         }
                     ],
                     Texts: [

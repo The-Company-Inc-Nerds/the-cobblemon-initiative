@@ -70,41 +70,47 @@
                     Priority: 10,
                     Buttons: [
                         {
-                            Name: "Challenge the warden of the water",
+                            Name: "Wake the statue of the water",
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "defeated_hua_zhan_trainer_4"
-                                        }
-                                    ],
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_hua_zhan_trainer_4"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "say The pond has already answered you. The seal waits in the stones at the waterline."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_hua_zhan_trainer_4"
-                                        }
-                                    ],
-                                    Cmd: "tbcs attach hua_zhan_trainer_4 @s"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_hua_zhan_trainer_4"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:hua_zhan_trainer_4 @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_hua_zhan_trainer_4"
-                                        }
-                                    ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs hua_zhan_trainer_4 onwin {1: ['tag @1 add defeated_hua_zhan_trainer_4', '@2 say No more, no less, and no refunds — the pond showed exactly what you brought, and it was enough. The seal will take your hand now.'], 2: ['@1 say The water shows what you brought. Today it showed the bottom of the pond.']}"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_hua_zhan_trainer_4"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:hua_zhan_trainer_4 onwin {1: ['tag @1 add defeated_hua_zhan_trainer_4', '@2 say No more, no less, and no refunds — the pond showed exactly what you brought, and it was enough. The stone kneels to you now. The seal will take your hand.', '@2 execute at @s run particle minecraft:totem_of_undying ~ ~1.2 ~ 0.4 0.9 0.4 0.08 120 force', '@2 execute at @s run particle minecraft:end_rod ~ ~1 ~ 0.3 0.8 0.3 0.02 60 force', '@2 execute at @s run playsound minecraft:block.beacon.activate master @a ~ ~ ~ 1 1.3', 'effect give @2 minecraft:glowing 60 0 true'], 2: ['@1 say The water shows what you brought. Today it showed the bottom of the pond. The statue has knelt for a hundred years — it can wait for you to try again.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -131,10 +137,10 @@
                     ],
                     Texts: [
                         {
-                            Text: "Last of the four gardens. The pond pair drinks sun and water both, and answers to neither — the plaque behind me says so, and the plaque has never lied."
+                            Text: "Last of the four gardens. The old botany carved its fourth warden kneeling at the waterline, fist to the stones, reading the pond — and my partner drinks sun and water both, and answers to neither. The plaque behind me says so, and the plaque has never lied."
                         },
                         {
-                            Text: "Strange. The water went still when you walked up, and for a heartbeat it held a face I almost knew. The old botany says the pond only shows what was already yours. Shall we find out what you brought?"
+                            Text: "Strange. The water went still when you walked up, and for a heartbeat it held a face this stone almost knew. The old botany says the pond only shows what was already yours. Wake the statue, and we will find out what you brought."
                         }
                     ],
                     Name: "Xiu — warden of the water",
@@ -211,13 +217,22 @@
         Invulnerable: 0b,
         LeftHanded: 0b,
         ModelData: {
+            Pose: "CUSTOM",
             DefaultPose: "STANDING",
-            Pose: "VANILLA",
-            Position: {},
-            Rotation: {},
-            Scale: {},
-            Visible: {
-                Boots: 1b
+            Rotation: {
+                Head: [0.5f, 0.0f, 0.0f, 1.0f],
+                RightArm: [-0.3f, 0.0f, 0.1f, 1.0f],
+                LeftArm: [-1.05f, 0.0f, -0.15f, 1.0f],
+                RightLeg: [1.5f, 0.0f, -0.05f, 1.0f],
+                LeftLeg: [-1.6f, 0.0f, 0.05f, 1.0f]
+            },
+            Position: {
+                Head: [0.0f, 4.0f, 0.0f],
+                Body: [0.0f, 4.0f, 0.0f],
+                RightArm: [0.0f, 4.0f, 0.0f],
+                LeftArm: [0.0f, 4.0f, 0.0f],
+                RightLeg: [0.0f, 4.0f, 0.0f],
+                LeftLeg: [0.0f, 4.0f, 0.0f]
             }
         },
         Navigation: {
@@ -264,9 +279,9 @@
             DisableLayers: 0b,
             Name: "",
             Timestamp: 0L,
-            Type: "DEFAULT",
+            Type: "CUSTOM",
             URL: "",
-            UUID: [I; 0, 0, 0, 0]
+            UUID: [I; 928440459, 472735091, -1797694658, -410214223]
         },
         SoundData: {
             SoundDataSet: [

@@ -17,6 +17,75 @@
                     {
                         Type: "OPEN_DEFAULT_DIALOG"
                     }
+                ],
+                ON_DISTANCE_CLOSE: [
+                    {
+                        Type: "COMMAND",
+                        ConditionDataSet: {
+                            ConditionDataSet: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_sq_rt2_kite"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_declined_sq_rt2_kite"
+                                }
+                            ]
+                        },
+                        Cmd: "say The kites marked you three bends back — eye contact is a contract out here!"
+                    }
+                ],
+                ON_DISTANCE_TOUCH: [
+                    {
+                        Type: "COMMAND",
+                        ConditionDataSet: {
+                            ConditionDataSet: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "dex_gte_2"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_sq_rt2_kite"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_declined_sq_rt2_kite"
+                                }
+                            ]
+                        },
+                        Cmd: "tbcs attach rctmod:sq_rt2_kite @s"
+                    },
+                    {
+                        Type: "COMMAND",
+                        ExecAsUser: 1b,
+                        ConditionDataSet: {
+                            ConditionDataSet: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "dex_gte_2"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_sq_rt2_kite"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_declined_sq_rt2_kite"
+                                }
+                            ]
+                        },
+                        Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:sq_rt2_kite onwin {1: ['cobbledollars give @1 300', 'tag @1 add defeated_sq_rt2_kite', '@2 say Grounded. The kites called the wind wrong and so did I.'], 2: ['@1 say I saw the whole battle before it started. The ledge does that. Rest up and watch the sky next time.']}"
+                    }
                 ]
             }
         },
@@ -110,43 +179,92 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "defeated_sq_rt2_kite"
-                                        }
-                                    ],
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_sq_rt2_kite"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "say The kites only mark a trainer once. Fly on."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_sq_rt2_kite"
-                                        }
-                                    ],
-                                    Cmd: "tbcs attach sq_rt2_kite @s"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_sq_rt2_kite"
+                                            },
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_declined_sq_rt2_kite"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:sq_rt2_kite @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_sq_rt2_kite"
-                                        }
-                                    ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs sq_rt2_kite onwin {1: ['cobbledollars give @1 300', 'tag @1 add defeated_sq_rt2_kite', '@2 say Grounded. The kites called the wind wrong and so did I.'], 2: ['@1 say I saw the whole battle before it started. The ledge does that. Rest up and watch the sky next time.']}"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_sq_rt2_kite"
+                                            },
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_declined_sq_rt2_kite"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:sq_rt2_kite onwin {1: ['cobbledollars give @1 300', 'tag @1 add defeated_sq_rt2_kite', '@2 say Grounded. The kites called the wind wrong and so did I.'], 2: ['@1 say I saw the whole battle before it started. The ledge does that. Rest up and watch the sky next time.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_declined_sq_rt2_kite"
+                                }
+                            ],
                             Label: "battle_button"
+                        },
+                        {
+                            Name: "Pay 150 CD to bow out",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:route/decline_sq_rt2_kite"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_sq_rt2_kite"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_declined_sq_rt2_kite"
+                                }
+                            ],
+                            Label: "bow_out_button"
                         },
                         {
                             Name: "Goodbye",

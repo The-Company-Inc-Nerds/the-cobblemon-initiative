@@ -54,6 +54,15 @@ public class LootChestConfig {
   private boolean announceUnplacedChests = false;
 
   /**
+   * Chance (0.0..1.0) that an unplaced chest rolls EMPTY on first open: it is marked
+   * claimed like any other (never re-rolls) but no loot is stocked — the chest just
+   * opens as the plain empty container it appears to be. Default 0.75 (showrunner,
+   * 0.5.0-alpha.1: most map chests were cleaned out long ago; finding a stocked one
+   * should feel like luck). 0.0 = every chest stocks (pre-0.5.0 behavior).
+   */
+  private double emptyChestChance = 0.75;
+
+  /**
    * Scales the NUMBER of item stacks stocked into a chest, relative to what the
    * loot tables roll. 1.0 = the tables' default count of stacks, 0.5 = half,
    * 0 = none, up to 3.0 = triple (extra stacks come from re-rolling the tables).
@@ -122,6 +131,7 @@ public class LootChestConfig {
   // Getters clamp too: Gson loads a hand-edited config straight into the fields
   // (bypassing the setters), so clamping on read keeps the documented 0.0..3.0
   // range — and bounds the per-open loot roll — even for out-of-range edits.
+  public double getEmptyChestChance() { return clamp01(emptyChestChance); }
   public double getStackMultiplier() { return clamp(stackMultiplier); }
   public double getItemMultiplier() { return clamp(itemMultiplier); }
 
@@ -130,8 +140,10 @@ public class LootChestConfig {
   public void setGiveCobblemonPool(boolean v) { this.giveCobblemonPool = v; }
   public void setOneTimePerChest(boolean v) { this.oneTimePerChest = v; }
   public void setAnnounceUnplacedChests(boolean v) { this.announceUnplacedChests = v; }
+  public void setEmptyChestChance(double v) { this.emptyChestChance = clamp01(v); }
   public void setStackMultiplier(double v) { this.stackMultiplier = clamp(v); }
   public void setItemMultiplier(double v) { this.itemMultiplier = clamp(v); }
 
   private static double clamp(double v) { return Math.max(0.0, Math.min(3.0, v)); }
+  private static double clamp01(double v) { return Math.max(0.0, Math.min(1.0, v)); }
 }

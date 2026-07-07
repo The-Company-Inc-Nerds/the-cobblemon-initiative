@@ -40,6 +40,54 @@
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
+                            Name: "fields_liberated_gte_1"
+                        }
+                    ],
+                    Priority: 32,
+                    Buttons: [
+                        {
+                            Name: "Ask about the queen",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "queen_cell"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_sq_combee_granted"
+                                }
+                            ],
+                            Label: "queen_button"
+                        },
+                        {
+                            Name: "Leave",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Have you heard? A Company field came off the books out west — fence down, family back on it, no press release. My contract says in perpetuity. Perpetuity looked a great deal more perpetual last month."
+                        },
+                        {
+                            Text: "The bees knew first, if you believe an old keeper. The hum changed the same week. Whatever you are doing out on those roads — the terrace notices."
+                        }
+                    ],
+                    Name: "Masumi - the mortal contract",
+                    Label: "fields_echo"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
                             Name: "defeated_takehara_leader"
                         },
                         {

@@ -112,37 +112,43 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "defeated_sq_bracket_2"
-                                        }
-                                    ],
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_sq_bracket_2"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "say The final waits with the Harbourmaster. Do not leave the podium standing empty."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_sq_bracket_2"
-                                        }
-                                    ],
-                                    Cmd: "tbcs attach sq_bracket_2 @s"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_sq_bracket_2"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:sq_bracket_2 @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_sq_bracket_2"
-                                        }
-                                    ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs sq_bracket_2 onwin {1: ['cobbledollars give @1 150', 'tag @1 add defeated_sq_bracket_2', '@2 say Corphish and Shellos both. Fine. The final waits in the harbour office.'], 2: ['@1 say The net catches what the net catches. Mend your team and come back.']}"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_sq_bracket_2"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:sq_bracket_2 onwin {1: ['cobbledollars give @1 150', 'tag @1 add defeated_sq_bracket_2', '@2 say Corphish and Shellos both. Fine. The final waits in the harbour office.', 'execute as @1 run function cobblemon_initiative:sidequest/invitational/round_2'], 2: ['@1 say The net catches what the net catches. Mend your team and come back.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

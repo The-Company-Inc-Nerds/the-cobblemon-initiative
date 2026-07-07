@@ -50,37 +50,43 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "defeated_villain_site_manager"
-                                        }
-                                    ],
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_villain_site_manager"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "say The field is out of my portfolio. Enjoy the produce. It never suited the ledger anyway."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_villain_site_manager"
-                                        }
-                                    ],
-                                    Cmd: "tbcs attach villain_site_manager @s"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_site_manager"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:villain_site_manager @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_villain_site_manager"
-                                        }
-                                    ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_site_manager onwin {1: ['cobbledollars give @1 520', 'tag @1 add defeated_villain_site_manager', '@2 say Noted. The parcel is — the parcel was. I will be filing this under force majeure.', 'execute as @1 run function cobblemon_initiative:liberation/free_field {field:farm_1}', 'loot give @1 loot cobblemon_initiative:npc_gift/transition_order', 'tag @1 add field_1_transition_taken', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 150', '@1 say Yield secured. Your visit has been logged as agricultural tourism.']}"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_site_manager"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:villain_site_manager onwin {1: ['cobbledollars give @1 520', 'tag @1 add defeated_villain_site_manager', '@2 say Noted. The parcel is — the parcel was. I will be filing this under force majeure.', 'execute as @1 run function cobblemon_initiative:liberation/free_field {field:farm_1}', 'loot give @1 loot cobblemon_initiative:npc_gift/transition_order', 'tag @1 add field_1_transition_taken', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 150', '@1 say Yield secured. Your visit has been logged as agricultural tourism.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -96,13 +102,24 @@
                             Label: "yes_button"
                         },
                         {
-                            Name: "Goodbye",
+                            Name: "About the officer at the gate",
                             Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "tellraw @initiator [{\"text\":\"The Manager does not look up. Clear my perimeter first, resident. I do not take unscheduled meetings.\",\"color\":\"gray\"}]"
+                                },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "goodbye_button"
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_villain_yield_officer"
+                                }
+                            ],
+                            Label: "blocked_button"
                         }
                     ],
                     Texts: [
@@ -131,37 +148,43 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "defeated_villain_site_manager"
-                                        }
-                                    ],
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_villain_site_manager"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "say The field is out of my portfolio. Enjoy the produce. It never suited the ledger anyway."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_villain_site_manager"
-                                        }
-                                    ],
-                                    Cmd: "tbcs attach villain_site_manager @s"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_site_manager"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:villain_site_manager @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_villain_site_manager"
-                                        }
-                                    ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_site_manager onwin {1: ['cobbledollars give @1 520', 'tag @1 add defeated_villain_site_manager', '@2 say Noted. The parcel is — the parcel was. I will be filing this under force majeure.', 'execute as @1 run function cobblemon_initiative:liberation/free_field {field:farm_1}', 'loot give @1 loot cobblemon_initiative:npc_gift/transition_order', 'tag @1 add field_1_transition_taken', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 150', '@1 say Yield secured. Your visit has been logged as agricultural tourism.']}"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_site_manager"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:villain_site_manager onwin {1: ['cobbledollars give @1 520', 'tag @1 add defeated_villain_site_manager', '@2 say Noted. The parcel is — the parcel was. I will be filing this under force majeure.', 'execute as @1 run function cobblemon_initiative:liberation/free_field {field:farm_1}', 'loot give @1 loot cobblemon_initiative:npc_gift/transition_order', 'tag @1 add field_1_transition_taken', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 150', '@1 say Yield secured. Your visit has been logged as agricultural tourism.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -177,13 +200,24 @@
                             Label: "yes_button"
                         },
                         {
-                            Name: "Goodbye",
+                            Name: "About the officer at the gate",
                             Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "tellraw @initiator [{\"text\":\"The Manager does not look up. Clear my perimeter first, resident. I do not take unscheduled meetings.\",\"color\":\"gray\"}]"
+                                },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "goodbye_button"
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_villain_yield_officer"
+                                }
+                            ],
+                            Label: "blocked_button"
                         }
                     ],
                     Texts: [
@@ -205,37 +239,43 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "defeated_villain_site_manager"
-                                        }
-                                    ],
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_villain_site_manager"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "say The field is out of my portfolio. Enjoy the produce. It never suited the ledger anyway."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_villain_site_manager"
-                                        }
-                                    ],
-                                    Cmd: "tbcs attach villain_site_manager @s"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_site_manager"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:villain_site_manager @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_villain_site_manager"
-                                        }
-                                    ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_site_manager onwin {1: ['cobbledollars give @1 520', 'tag @1 add defeated_villain_site_manager', '@2 say Noted. The parcel is — the parcel was. I will be filing this under force majeure.', 'execute as @1 run function cobblemon_initiative:liberation/free_field {field:farm_1}', 'loot give @1 loot cobblemon_initiative:npc_gift/transition_order', 'tag @1 add field_1_transition_taken', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 150', '@1 say Yield secured. Your visit has been logged as agricultural tourism.']}"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_site_manager"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:villain_site_manager onwin {1: ['cobbledollars give @1 520', 'tag @1 add defeated_villain_site_manager', '@2 say Noted. The parcel is — the parcel was. I will be filing this under force majeure.', 'execute as @1 run function cobblemon_initiative:liberation/free_field {field:farm_1}', 'loot give @1 loot cobblemon_initiative:npc_gift/transition_order', 'tag @1 add field_1_transition_taken', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 150', '@1 say Yield secured. Your visit has been logged as agricultural tourism.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -299,37 +339,43 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "defeated_villain_site_manager"
-                                        }
-                                    ],
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_villain_site_manager"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "say The field is out of my portfolio. Enjoy the produce. It never suited the ledger anyway."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_villain_site_manager"
-                                        }
-                                    ],
-                                    Cmd: "tbcs attach villain_site_manager @s"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_site_manager"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:villain_site_manager @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_villain_site_manager"
-                                        }
-                                    ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_site_manager onwin {1: ['cobbledollars give @1 520', 'tag @1 add defeated_villain_site_manager', '@2 say Noted. The parcel is — the parcel was. I will be filing this under force majeure.', 'execute as @1 run function cobblemon_initiative:liberation/free_field {field:farm_1}', 'loot give @1 loot cobblemon_initiative:npc_gift/transition_order', 'tag @1 add field_1_transition_taken', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 150', '@1 say Yield secured. Your visit has been logged as agricultural tourism.']}"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_site_manager"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:villain_site_manager onwin {1: ['cobbledollars give @1 520', 'tag @1 add defeated_villain_site_manager', '@2 say Noted. The parcel is — the parcel was. I will be filing this under force majeure.', 'execute as @1 run function cobblemon_initiative:liberation/free_field {field:farm_1}', 'loot give @1 loot cobblemon_initiative:npc_gift/transition_order', 'tag @1 add field_1_transition_taken', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 150', '@1 say Yield secured. Your visit has been logged as agricultural tourism.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -345,13 +391,24 @@
                             Label: "yes_button"
                         },
                         {
-                            Name: "Goodbye",
+                            Name: "About the officer at the gate",
                             Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "tellraw @initiator [{\"text\":\"The Manager does not look up. Clear my perimeter first, resident. I do not take unscheduled meetings.\",\"color\":\"gray\"}]"
+                                },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "goodbye_button"
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_villain_yield_officer"
+                                }
+                            ],
+                            Label: "blocked_button"
                         }
                     ],
                     Texts: [

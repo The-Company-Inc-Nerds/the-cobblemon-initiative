@@ -57,7 +57,7 @@
                     ],
                     Texts: [
                         {
-                            Text: "The rows have accepted you — and the sap does not bead for tourists."
+                            Text: "The rows have accepted you — and the stone does not hum for tourists."
                         },
                         {
                             Text: "The orchard plaque hangs among the trunks beside me. Press your hand to the seal while the wood is still warm from the match."
@@ -70,41 +70,47 @@
                     Priority: 10,
                     Buttons: [
                         {
-                            Name: "Challenge the warden of the rows",
+                            Name: "Wake the statue of the rows",
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "defeated_hua_zhan_trainer_2"
-                                        }
-                                    ],
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_hua_zhan_trainer_2"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "say The orchard already counts you. The seal is on the plaque among the trunks."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_hua_zhan_trainer_2"
-                                        }
-                                    ],
-                                    Cmd: "tbcs attach hua_zhan_trainer_2 @s"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_hua_zhan_trainer_2"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:hua_zhan_trainer_2 @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_hua_zhan_trainer_2"
-                                        }
-                                    ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs hua_zhan_trainer_2 onwin {1: ['tag @1 add defeated_hua_zhan_trainer_2', '@2 say The graft holds — yours does, I mean. The seal will take your hand now.'], 2: ['@1 say Years to set a graft, one frost night to end it. Warm up and walk the rows again.']}"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_hua_zhan_trainer_2"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:hua_zhan_trainer_2 onwin {1: ['tag @1 add defeated_hua_zhan_trainer_2', '@2 say The graft holds — yours does, I mean. The stone bows as far as stone can. The seal will take your hand now.', '@2 execute at @s run particle minecraft:totem_of_undying ~ ~1.2 ~ 0.4 0.9 0.4 0.08 120 force', '@2 execute at @s run particle minecraft:end_rod ~ ~1 ~ 0.3 0.8 0.3 0.02 60 force', '@2 execute at @s run playsound minecraft:block.beacon.activate master @a ~ ~ ~ 1 1.3', 'effect give @2 minecraft:glowing 60 0 true'], 2: ['@1 say Years to set a graft, one frost night to end it. The statue keeps reaching. Warm up and walk the rows again.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -131,10 +137,10 @@
                     ],
                     Texts: [
                         {
-                            Text: "Mind the rows. Every tree here carries wood from a tree that no longer stands — nothing in this orchard is ever really gone, and neither is its warden. Second garden of four."
+                            Text: "Mind the rows. Every tree here carries wood from a tree that no longer stands — nothing in this orchard is ever really gone, and neither is its warden. The old botany carved me reaching for a harvest that never ends. Second monument of four."
                         },
                         {
-                            Text: "The old botany says a graft is a promise between two trees, and a trainer and a partner are the same promise made twice a day. Show me yours has taken."
+                            Text: "The old botany says a graft is a promise between two trees, and a trainer and a partner are the same promise made twice a day. Wake the stone and show me yours has taken."
                         }
                     ],
                     Name: "Mei — warden of the orchard rows",
@@ -211,13 +217,14 @@
         Invulnerable: 0b,
         LeftHanded: 0b,
         ModelData: {
+            Pose: "CUSTOM",
             DefaultPose: "STANDING",
-            Pose: "VANILLA",
-            Position: {},
-            Rotation: {},
-            Scale: {},
-            Visible: {
-                Boots: 1b
+            Rotation: {
+                Head: [-0.45f, 0.0f, 0.0f, 1.0f],
+                RightArm: [-3.0f, 0.0f, 0.25f, 1.0f],
+                LeftArm: [-3.0f, 0.0f, -0.25f, 1.0f],
+                RightLeg: [0.0f, 0.0f, -0.08f, 1.0f],
+                LeftLeg: [0.0f, 0.0f, 0.08f, 1.0f]
             }
         },
         Navigation: {
@@ -264,9 +271,9 @@
             DisableLayers: 0b,
             Name: "",
             Timestamp: 0L,
-            Type: "DEFAULT",
+            Type: "CUSTOM",
             URL: "",
-            UUID: [I; 0, 0, 0, 0]
+            UUID: [I; 1465568200, 54549265, -1284212746, -1752572920]
         },
         SoundData: {
             SoundDataSet: [

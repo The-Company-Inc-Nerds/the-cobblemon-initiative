@@ -10,3 +10,4 @@ bossbar set cobblemon_initiative:cascade style notched_10
 bossbar set cobblemon_initiative:cascade visible false
 # A relog mid-run abandons the attempt cleanly (tags persist; timer state resets).
 tag @a remove ci_ascending
+scoreboard objectives add ci_cascade_day dummy

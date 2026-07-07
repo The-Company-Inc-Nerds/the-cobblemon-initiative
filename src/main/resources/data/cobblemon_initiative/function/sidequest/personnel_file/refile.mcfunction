@@ -5,4 +5,4 @@
 function cobblemon_initiative:economy/payout {amount:4000}
 loot give @s loot cobblemon_initiative:npc_gift/training_grand
 tag @s add file_refiled
-title @s actionbar [{"text":"The file is closed. ","color":"gold"},{"text":"He files it under a name he declines to read aloud.","color":"gray"}]
+title @s actionbar [{"text":"The file is closed. ","color":"gold"},{"text":"She files it under a name she declines to read aloud.","color":"gray"}]

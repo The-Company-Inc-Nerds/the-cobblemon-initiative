@@ -81,46 +81,8 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "title @initiator actionbar [{\"text\":\"Stake accepted: 300 CD against a 900 CD purse.\",\"color\":\"yellow\"}]"
-                                },
-                                {
-                                    Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "cobbledollars remove @s 300"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "defeated_sq_headcount_wager"
-                                        }
-                                    ],
-                                    Cmd: "say The appendix is full. One wager per respondent."
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_sq_headcount_wager"
-                                        }
-                                    ],
-                                    Cmd: "tbcs attach sq_headcount_wager @s"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_sq_headcount_wager"
-                                        }
-                                    ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs sq_headcount_wager onwin {1: ['cobbledollars give @1 900', 'tag @1 add defeated_sq_headcount_wager', '@2 say Documented. The purse is yours and the appendix is thicker for it.'], 2: ['@1 say The stake goes to science. Payroll will find that hilarious.']}"
+                                    Cmd: "function cobblemon_initiative:route/stake_sq_headcount_wager"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -131,18 +93,40 @@
                                     Type: "PLAYER_TAG",
                                     Operation: "EQUALS",
                                     Name: "no_defeated_sq_headcount_wager"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_declined_sq_headcount_wager"
                                 }
                             ],
                             Label: "wager_button"
                         },
                         {
-                            Name: "The data can wait",
+                            Name: "Pay 150 CD to bow out",
                             Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:route/decline_sq_headcount_wager"
+                                },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "leave_button"
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_sq_headcount_wager"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_declined_sq_headcount_wager"
+                                }
+                            ],
+                            Label: "bow_out_button"
                         }
                     ],
                     Texts: [
@@ -151,6 +135,9 @@
                         },
                         {
                             Text: "One last line item, if you are game - an exhibition match for the behavioral appendix. Your stake, three hundred. The purse, nine hundred. The Company does love a measurable outcome."
+                        },
+                        {
+                            Text: "Imani at the town desk and I compare intake sometimes. Her residents resolve. My payees do not. Same system, one desk apart - I have stopped editorializing about that too."
                         }
                     ],
                     Name: "Ume - census closed",

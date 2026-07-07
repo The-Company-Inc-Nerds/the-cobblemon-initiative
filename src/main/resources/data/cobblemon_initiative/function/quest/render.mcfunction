@@ -8,6 +8,9 @@
 # memory_fragment is only ever SET by badge grants (1..10); an unset score fails every
 # `matches` test, which would kill the whole pre-badge ladder — define it as 0 first.
 execute unless score @s memory_fragment matches 0.. run scoreboard players set @s memory_fragment 0
+# ci_papers_held is recomputed every tick by sidequest/personnel_file/papers_tick; zero-init
+# here too so the filing-day suppression tests below never fail on a fresh player.
+execute unless score @s ci_papers_held matches 0.. run scoreboard players set @s ci_papers_held 0
 
 # Keep the main sidebar line present (top of list). (The old top "Objective" boss bar
 # was removed — showrunner call, 2026-07-04; the sidebar main line carries the story.)
@@ -96,18 +99,24 @@ execute if entity @s[tag=hz_price_check_active] unless entity @s[tag=hz_prices_d
 execute if entity @s[tag=hz_price_check_active] unless entity @s[tag=hz_prices_done] run function cobblemon_initiative:sidequest/price_check/set_prices with storage cobblemon_initiative:quest
 
 scoreboard players reset q.side_minutes ci_quest
-execute if entity @s[tag=hz_minutes_heard,tag=!hz_minutes_filed] run scoreboard players set q.side_minutes ci_quest 77
-execute if entity @s[tag=hz_minutes_heard,tag=!hz_minutes_filed] run scoreboard players display name q.side_minutes ci_quest [{"text":"• Deliver the minutes to Lucian in Sango","color":"gray"}]
+# Discovery stage: warned but not yet heard — points at the top-floor door (round 13).
+execute if entity @s[tag=hz_office_warned,tag=!hz_minutes_heard] run scoreboard players set q.side_minutes ci_quest 77
+execute if entity @s[tag=hz_office_warned,tag=!hz_minutes_heard] run scoreboard players display name q.side_minutes ci_quest [{"text":"• Ears on the top-floor door","color":"gray"}]
+execute if entity @s[tag=hz_minutes_heard,tag=!hz_minutes_filed] if score @s ci_papers_held matches ..1 run scoreboard players set q.side_minutes ci_quest 77
+execute if entity @s[tag=hz_minutes_heard,tag=!hz_minutes_filed] if score @s ci_papers_held matches ..1 run scoreboard players display name q.side_minutes ci_quest [{"text":"• Deliver the minutes to Lucian in Sango","color":"gray"}]
 
 # Verified Growth (reveal spine): tour pointer until the catwalk reveal lands.
 scoreboard players reset q.side_green ci_quest
 execute if entity @s[tag=hz_arrived,tag=!wheat_named] run scoreboard players set q.side_green ci_quest 79
-execute if entity @s[tag=hz_arrived,tag=!wheat_named] run scoreboard players display name q.side_green ci_quest [{"text":"• Tour the Company greenhouse","color":"gray"}]
+execute if entity @s[tag=hz_arrived,tag=!wheat_named] run scoreboard players display name q.side_green ci_quest [{"text":"• Tour the Verified Growth greenhouse","color":"gray"}]
 
-# Grain In, Goods Out (the Miller Walk): survey line while active.
+# Grain In, Goods Out (the Miller Walk): survey line while active; flips to the report
+# leg once both survey halves are logged (hz_saw_pitch + hz_saw_granary — the grain_survey
+# tick loggers, `Noted (n/3)` pattern).
 scoreboard players reset q.side_survey ci_quest
 execute if entity @s[tag=hz_survey_active,tag=!hz_survey_paid] run scoreboard players set q.side_survey ci_quest 76
 execute if entity @s[tag=hz_survey_active,tag=!hz_survey_paid] run scoreboard players display name q.side_survey ci_quest [{"text":"• Survey the grain market for the miller","color":"gray"}]
+execute if entity @s[tag=hz_survey_active,tag=hz_saw_pitch,tag=hz_saw_granary,tag=!hz_survey_paid] run scoreboard players display name q.side_survey ci_quest [{"text":"• Report the survey to Guo the Miller","color":"gray"}]
 
 # ── beat-3 side objectives: the rest of the board (slots 73..58, one per quest) ──
 # Same contract as the blocks above: reset the holder unconditionally, then set + name it
@@ -130,7 +139,7 @@ execute if entity @s[tag=ci_ascending,tag=!sq_cascade_done] run scoreboard playe
 scoreboard players reset q.side_classic ci_quest
 execute if entity @s[tag=classic_rod_given,tag=!sango_classic_champion] run scoreboard players set q.side_classic ci_quest 72
 execute if entity @s[tag=classic_active,tag=!sango_classic_champion] run scoreboard players set q.side_classic ci_quest 72
-execute if score q.side_classic ci_quest matches 72 run scoreboard players display name q.side_classic ci_quest [{"text":"• Five fish before the bar empties","color":"gray"}]
+execute if score q.side_classic ci_quest matches 72 run scoreboard players display name q.side_classic ci_quest [{"text":"• Three fish before the bar empties","color":"gray"}]
 
 # Roadside Work Orders — NIGHT SHIFT (the one contract with an accept latch). Staged text:
 # cull while on shift, collect once the quota latches; off when Tetsu pays.
@@ -151,23 +160,30 @@ execute if entity @s[tag=sq_museum_brush,tag=!sq_museum_donation_done] run score
 scoreboard players reset q.side_memo ci_quest
 execute if entity @s[tag=ckpt_warned,tag=!memo_heard] run scoreboard players set q.side_memo ci_quest 69
 execute if entity @s[tag=ckpt_warned,tag=!memo_heard] run scoreboard players display name q.side_memo ci_quest [{"text":"• Ears on the checkpoint tent","color":"gray"}]
-execute if entity @s[tag=memo_heard,tag=!memo_delivered] run scoreboard players set q.side_memo ci_quest 69
-execute if entity @s[tag=memo_heard,tag=!memo_delivered] run scoreboard players display name q.side_memo ci_quest [{"text":"• Bring Memo 44-C to Lucian","color":"gray"}]
+execute if entity @s[tag=memo_heard,tag=!memo_delivered] if score @s ci_papers_held matches ..1 run scoreboard players set q.side_memo ci_quest 69
+execute if entity @s[tag=memo_heard,tag=!memo_delivered] if score @s ci_papers_held matches ..1 run scoreboard players display name q.side_memo ci_quest [{"text":"• Bring Memo 44-C to Lucian","color":"gray"}]
 
 # No Such Recipient (Marlow's dead letter): carry leg, then the report-back leg — delivered
 # or surrendered, both end at Marlow (marlow_thanks_done).
 scoreboard players reset q.side_letter ci_quest
-execute if entity @s[tag=carrying_dead_letter] run scoreboard players set q.side_letter ci_quest 68
-execute if entity @s[tag=carrying_dead_letter] run scoreboard players display name q.side_letter ci_quest [{"text":"• Walk the dead letter to Lucian","color":"gray"}]
+execute if entity @s[tag=carrying_dead_letter] if score @s ci_papers_held matches ..1 run scoreboard players set q.side_letter ci_quest 68
+execute if entity @s[tag=carrying_dead_letter] if score @s ci_papers_held matches ..1 run scoreboard players display name q.side_letter ci_quest [{"text":"• Walk the dead letter to Lucian","color":"gray"}]
 execute if entity @s[tag=letter_delivered,tag=!marlow_thanks_done] run scoreboard players set q.side_letter ci_quest 68
 execute if entity @s[tag=letter_surrendered,tag=!marlow_thanks_done] run scoreboard players set q.side_letter ci_quest 68
 execute unless entity @s[tag=carrying_dead_letter] if score q.side_letter ci_quest matches 68 run scoreboard players display name q.side_letter ci_quest [{"text":"• Tell Marlow how it ended","color":"gray"}]
 
 # The Incomplete File (Lucian, run-long): active from open_file; goes dormant once the
 # notices are filed and wakes for the post-HQ refile (mirrors the stage-3 dialog gate).
+# A seller (sold_docs) killed the quest at the courier cart — the rebuild line is gated
+# off and replaced by a permanent dark-red tombstone (the record belongs to the Company).
+# During the badge-1-to-3 dark window (docs filed, notices not yet briefed) the line
+# reads as a wait state instead of a stale errand.
 scoreboard players reset q.side_file ci_quest
-execute if entity @s[tag=file_opened,tag=!notices_filed] run scoreboard players set q.side_file ci_quest 67
-execute if entity @s[tag=file_opened,tag=!notices_filed] run scoreboard players display name q.side_file ci_quest [{"text":"• Rebuild the record for Lucian","color":"gray"}]
+execute if entity @s[tag=file_opened,tag=!notices_filed,tag=!sold_docs] run scoreboard players set q.side_file ci_quest 67
+execute if entity @s[tag=file_opened,tag=!notices_filed,tag=!sold_docs] run scoreboard players display name q.side_file ci_quest [{"text":"• Rebuild the record for Lucian","color":"gray"}]
+execute if entity @s[tag=docs_filed,tag=!notices_filed,tag=!sold_docs] if score @s memory_fragment matches ..2 run scoreboard players display name q.side_file ci_quest [{"text":"• Lucian waits on a third badge","color":"gray"}]
+execute if entity @s[tag=sold_docs] run scoreboard players set q.side_file ci_quest 67
+execute if entity @s[tag=sold_docs] run scoreboard players display name q.side_file ci_quest [{"text":"• The record is Company property now","color":"dark_red"}]
 execute if entity @s[tag=notices_filed,tag=defeated_villain_boss,tag=!file_refiled] run scoreboard players set q.side_file ci_quest 67
 execute if entity @s[tag=notices_filed,tag=defeated_villain_boss,tag=!file_refiled] run scoreboard players display name q.side_file ci_quest [{"text":"• The file can close — see Lucian","color":"gray"}]
 
@@ -193,8 +209,8 @@ execute if entity @s[tag=ci_sprinting,tag=!race_won] run scoreboard players disp
 scoreboard players reset q.side_audit ci_quest
 execute if entity @s[tag=audit_warned,tag=!yield_report_taken] run scoreboard players set q.side_audit ci_quest 63
 execute if entity @s[tag=audit_warned,tag=!yield_report_taken] run scoreboard players display name q.side_audit ci_quest [{"text":"• The gym gate audit — get the draft","color":"gray"}]
-execute if entity @s[tag=yield_report_taken,tag=!scrub_report_filed] run scoreboard players set q.side_audit ci_quest 63
-execute if entity @s[tag=yield_report_taken,tag=!scrub_report_filed] run scoreboard players display name q.side_audit ci_quest [{"text":"• File the yield report with Lucian","color":"gray"}]
+execute if entity @s[tag=yield_report_taken,tag=!scrub_report_filed] if score @s ci_papers_held matches ..1 run scoreboard players set q.side_audit ci_quest 63
+execute if entity @s[tag=yield_report_taken,tag=!scrub_report_filed] if score @s ci_papers_held matches ..1 run scoreboard players display name q.side_audit ci_quest [{"text":"• File the yield report with Lucian","color":"gray"}]
 
 # Sting Operation (Beekeeper Tomo): the seal walk, from the first confirm (sting_seal_1)
 # to the payout (sting_reward_paid).
@@ -217,11 +233,29 @@ execute if entity @s[tag=census_accepted,tag=!census_paid] run scoreboard player
 # Tenants of Record (the Deng camp): from farm_1 liberation (farm_1_free bridge latch)
 # until the homecoming pays out at Old Deng (homecoming_paid).
 scoreboard players reset q.side_deng ci_quest
-execute if entity @s[tag=farm_1_free,tag=!homecoming_paid] run scoreboard players set q.side_deng ci_quest 59
-execute if entity @s[tag=farm_1_free,tag=!homecoming_paid] run scoreboard players display name q.side_deng ci_quest [{"text":"• Walk the Deng family home","color":"gray"}]
+execute if entity @s[tag=farm_1_free,tag=!homecoming_paid,tag=!homecoming_walking] run scoreboard players set q.side_deng ci_quest 59
+execute if entity @s[tag=farm_1_free,tag=!homecoming_paid,tag=!homecoming_walking] run scoreboard players display name q.side_deng ci_quest [{"text":"• Walk the Deng family home","color":"gray"}]
+execute if entity @s[tag=homecoming_walking,tag=!homecoming_paid] run scoreboard players set q.side_deng ci_quest 59
+execute if entity @s[tag=homecoming_walking,tag=!homecoming_paid] run scoreboard players display name q.side_deng ci_quest [{"text":"• Lead the Dengs to the Firstfurrow gate","color":"gray"}]
 
 # Right of Way (Harvest Road survey detail): the ambush itself has no accept latch (sight-
 # triggered by design); only the manifest leg is trackable — wagon paper in hand until Lucian pays.
 scoreboard players reset q.side_manifest ci_quest
-execute if entity @s[tag=took_route_manifest,tag=!manifest_paid] run scoreboard players set q.side_manifest ci_quest 58
-execute if entity @s[tag=took_route_manifest,tag=!manifest_paid] run scoreboard players display name q.side_manifest ci_quest [{"text":"• Bring the route manifest to Lucian","color":"gray"}]
+execute if entity @s[tag=took_route_manifest,tag=!manifest_paid] if score @s ci_papers_held matches ..1 run scoreboard players set q.side_manifest ci_quest 58
+execute if entity @s[tag=took_route_manifest,tag=!manifest_paid] if score @s ci_papers_held matches ..1 run scoreboard players display name q.side_manifest ci_quest [{"text":"• Bring the route manifest to Lucian","color":"gray"}]
+
+# Preferred Provider (Dr. Asha's clinic restock): from the accepted list (clinic_supply_started)
+# until the bundle lands (clinic_stocked). The daily rx that follows is a walk-up, untracked.
+scoreboard players reset q.side_clinic ci_quest
+execute if entity @s[tag=clinic_supply_started,tag=!clinic_stocked] run scoreboard players set q.side_clinic ci_quest 57
+execute if entity @s[tag=clinic_supply_started,tag=!clinic_stocked] run scoreboard players display name q.side_clinic ci_quest [{"text":"• Clinic list: 8 oran, 4 pecha, 2 cheri","color":"gray"}]
+
+# FILING DAY aggregate (slot 75 — the formerly-vacant hole between survey 76 and prices 74):
+# when the player is carrying TWO OR MORE unfiled Company papers (ci_papers_held, recomputed
+# by sidequest/personnel_file/papers_tick), the five individual "…to Lucian" deliver lines
+# above suppress themselves (their `if score ..1` guards) and this one line takes their
+# place — one trip, one ritual, one desk. Macro render mirrors quest/set_wheat.
+scoreboard players reset q.side_papers ci_quest
+execute if score @s ci_papers_held matches 2.. run scoreboard players set q.side_papers ci_quest 75
+execute if score @s ci_papers_held matches 2.. store result storage cobblemon_initiative:quest papers int 1 run scoreboard players get @s ci_papers_held
+execute if score @s ci_papers_held matches 2.. run function cobblemon_initiative:quest/set_papers with storage cobblemon_initiative:quest

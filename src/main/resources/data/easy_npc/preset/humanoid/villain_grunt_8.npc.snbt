@@ -17,6 +17,45 @@
                     {
                         Type: "OPEN_DEFAULT_DIALOG"
                     }
+                ],
+                ON_DISTANCE_TOUCH: [
+                    {
+                        Type: "COMMAND",
+                        ConditionDataSet: {
+                            ConditionDataSet: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "dex_gte_2"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_villain_grunt_8"
+                                }
+                            ]
+                        },
+                        Cmd: "tbcs attach rctmod:villain_grunt_8 @s"
+                    },
+                    {
+                        Type: "COMMAND",
+                        ExecAsUser: 1b,
+                        ConditionDataSet: {
+                            ConditionDataSet: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "dex_gte_2"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_villain_grunt_8"
+                                }
+                            ]
+                        },
+                        Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:villain_grunt_8 onwin {1: ['cobbledollars give @1 480', 'tag @1 add defeated_villain_grunt_8', '@2 say Headquarters does not like surprises on the senior floor. You are a very large surprise.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 320', '@1 say Intrusion contained. The Company thanks you for testing our security.']}"
+                    }
                 ]
             }
         },
@@ -50,52 +89,49 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "defeated_villain_grunt_8"
-                                        }
-                                    ],
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_villain_grunt_8"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "say You already cleared my checkpoint the hard way. I am not standing in that doorway twice. Move along."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_villain_grunt_8"
-                                        }
-                                    ],
-                                    Cmd: "tbcs attach villain_grunt_8 @s"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_grunt_8"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:villain_grunt_8 @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_villain_grunt_8"
-                                        }
-                                    ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_grunt_8 onwin {1: ['cobbledollars give @1 480', 'tag @1 add defeated_villain_grunt_8', '@2 say Headquarters does not like surprises on the senior floor. You are a very large surprise.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 320', '@1 say Intrusion contained. The Company thanks you for testing our security.']}"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_grunt_8"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:villain_grunt_8 onwin {1: ['cobbledollars give @1 480', 'tag @1 add defeated_villain_grunt_8', '@2 say Headquarters does not like surprises on the senior floor. You are a very large surprise.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 320', '@1 say Intrusion contained. The Company thanks you for testing our security.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
                             Label: "yes_button"
-                        },
-                        {
-                            Name: "Goodbye",
-                            Actions: [
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "goodbye_button"
                         }
                     ],
                     Texts: [
@@ -120,52 +156,49 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "defeated_villain_grunt_8"
-                                        }
-                                    ],
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_villain_grunt_8"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "say You already cleared my checkpoint the hard way. I am not standing in that doorway twice. Move along."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_villain_grunt_8"
-                                        }
-                                    ],
-                                    Cmd: "tbcs attach villain_grunt_8 @s"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_grunt_8"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:villain_grunt_8 @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_villain_grunt_8"
-                                        }
-                                    ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_grunt_8 onwin {1: ['cobbledollars give @1 480', 'tag @1 add defeated_villain_grunt_8', '@2 say Headquarters does not like surprises on the senior floor. You are a very large surprise.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 320', '@1 say Intrusion contained. The Company thanks you for testing our security.']}"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_grunt_8"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:villain_grunt_8 onwin {1: ['cobbledollars give @1 480', 'tag @1 add defeated_villain_grunt_8', '@2 say Headquarters does not like surprises on the senior floor. You are a very large surprise.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 320', '@1 say Intrusion contained. The Company thanks you for testing our security.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
                             Label: "yes_button"
-                        },
-                        {
-                            Name: "Goodbye",
-                            Actions: [
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "goodbye_button"
                         }
                     ],
                     Texts: [

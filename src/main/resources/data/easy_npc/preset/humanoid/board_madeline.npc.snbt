@@ -81,26 +81,30 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_board_madeline"
-                                        }
-                                    ],
-                                    Cmd: "tbcs attach board_madeline @s"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_board_madeline"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:board_madeline @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_board_madeline"
-                                        }
-                                    ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs board_madeline onwin {1: ['cobbledollars give @1 9000', 'tag @1 add defeated_board_madeline', '@2 say The motion fails. After all these years, the motion finally fails. I did so enjoy carrying it.', 'execute as @1 at @1 run function cobblemon_initiative:reveal/board_fell', 'easy_npc delete @2'], 2: ['@1 say Removed again. Try to stay removed this time. It is so much paperwork otherwise.']}"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_board_madeline"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:board_madeline onwin {1: ['cobbledollars give @1 9000', 'tag @1 add defeated_board_madeline', '@2 say The motion fails. After all these years, the motion finally fails. I did so enjoy carrying it.', 'execute as @1 at @1 run function cobblemon_initiative:reveal/board_fell', 'easy_npc delete @2'], 2: ['@1 say Removed again. Try to stay removed this time. It is so much paperwork otherwise.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

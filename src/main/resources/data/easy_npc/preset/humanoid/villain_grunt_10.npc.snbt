@@ -17,6 +17,45 @@
                     {
                         Type: "OPEN_DEFAULT_DIALOG"
                     }
+                ],
+                ON_DISTANCE_TOUCH: [
+                    {
+                        Type: "COMMAND",
+                        ConditionDataSet: {
+                            ConditionDataSet: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "dex_gte_2"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_villain_grunt_10"
+                                }
+                            ]
+                        },
+                        Cmd: "tbcs attach rctmod:villain_grunt_10 @s"
+                    },
+                    {
+                        Type: "COMMAND",
+                        ExecAsUser: 1b,
+                        ConditionDataSet: {
+                            ConditionDataSet: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "dex_gte_2"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_villain_grunt_10"
+                                }
+                            ]
+                        },
+                        Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:villain_grunt_10 onwin {1: ['cobbledollars give @1 580', 'tag @1 add defeated_villain_grunt_10', '@2 say I was the wall they put between the public and the truth. You just walked through a wall.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 380', '@1 say Threat eliminated. The Company reminds you: verified trust, verified value.']}"
+                    }
                 ]
             }
         },
@@ -50,52 +89,49 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "defeated_villain_grunt_10"
-                                        }
-                                    ],
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_villain_grunt_10"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "say You broke me once on this floor. I have nothing left to guard from you. Move along."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_villain_grunt_10"
-                                        }
-                                    ],
-                                    Cmd: "tbcs attach villain_grunt_10 @s"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_grunt_10"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:villain_grunt_10 @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_villain_grunt_10"
-                                        }
-                                    ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_grunt_10 onwin {1: ['cobbledollars give @1 580', 'tag @1 add defeated_villain_grunt_10', '@2 say I was the wall they put between the public and the truth. You just walked through a wall.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 380', '@1 say Threat eliminated. The Company reminds you: verified trust, verified value.']}"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_grunt_10"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:villain_grunt_10 onwin {1: ['cobbledollars give @1 580', 'tag @1 add defeated_villain_grunt_10', '@2 say I was the wall they put between the public and the truth. You just walked through a wall.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 380', '@1 say Threat eliminated. The Company reminds you: verified trust, verified value.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
                             Label: "yes_button"
-                        },
-                        {
-                            Name: "Goodbye",
-                            Actions: [
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "goodbye_button"
                         }
                     ],
                     Texts: [
@@ -120,52 +156,49 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "defeated_villain_grunt_10"
-                                        }
-                                    ],
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_villain_grunt_10"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "say You broke me once on this floor. I have nothing left to guard from you. Move along."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_villain_grunt_10"
-                                        }
-                                    ],
-                                    Cmd: "tbcs attach villain_grunt_10 @s"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_grunt_10"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:villain_grunt_10 @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_villain_grunt_10"
-                                        }
-                                    ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_grunt_10 onwin {1: ['cobbledollars give @1 580', 'tag @1 add defeated_villain_grunt_10', '@2 say I was the wall they put between the public and the truth. You just walked through a wall.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 380', '@1 say Threat eliminated. The Company reminds you: verified trust, verified value.']}"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_grunt_10"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:villain_grunt_10 onwin {1: ['cobbledollars give @1 580', 'tag @1 add defeated_villain_grunt_10', '@2 say I was the wall they put between the public and the truth. You just walked through a wall.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 380', '@1 say Threat eliminated. The Company reminds you: verified trust, verified value.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
                             Label: "yes_button"
-                        },
-                        {
-                            Name: "Goodbye",
-                            Actions: [
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "goodbye_button"
                         }
                     ],
                     Texts: [

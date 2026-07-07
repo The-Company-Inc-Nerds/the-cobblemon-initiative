@@ -12,7 +12,7 @@ DialogData: {
                         },
                         {
                             Type: "COMMAND",
-                            Cmd: "execute unless entity @p[tag=defeated_%%TRAINER_ID%%] run tbcs attach %%TRAINER_ID%% @s"
+                            Cmd: "execute unless entity @p[tag=defeated_%%TRAINER_ID%%] run tbcs attach rctmod:%%TRAINER_ID%% @s"
                         },
                         {
                             Type: "COMMAND",
@@ -24,7 +24,7 @@ DialogData: {
                                     Name: "no_defeated_%%TRAINER_ID%%"
                                 }
                             ],
-                            Cmd: "tbcs battle %%BATTLE_FORMAT:GEN_9_SINGLES|GEN_9_DOUBLES=GEN_9_SINGLES%% @s vs %%TRAINER_ID%% onwin {1: ['cobbledollars give @1 %%PRIZE=2000%%', 'tag @1 add defeated_%%TRAINER_ID%%', 'execute as @1 run function cobblemon_initiative:rewards/badge_reward_combo {badges:%%BADGE_TIER:1|2|3|4|5|6|7|8|9|10=1%%}', '@2 say %%WIN_LINE=Earned, not given. Take the badge.%%'], 2: ['@1 say %%LOSE_LINE=Train harder. The cap exists for a reason.%%']}"
+                            Cmd: "tbcs battle %%BATTLE_FORMAT:GEN_9_SINGLES|GEN_9_DOUBLES=GEN_9_SINGLES%% @s vs rctmod:%%TRAINER_ID%% onwin {1: ['cobbledollars give @1 %%PRIZE=2000%%', 'tag @1 add defeated_%%TRAINER_ID%%', 'execute as @1 run function cobblemon_initiative:rewards/badge_reward_combo {badges:%%BADGE_TIER:1|2|3|4|5|6|7|8|9|10=1%%}', '@2 say %%WIN_LINE=Earned, not given. Take the badge.%%'], 2: ['@1 say %%LOSE_LINE=Train harder. The cap exists for a reason.%%']}"
                         },
                         {
                             Type: "CLOSE_DIALOG"

@@ -1,13 +1,16 @@
-# Paid nurse healing. Run as the player (a healer NPC's heal button). Charges a flat fee,
-# then fully heals the party — ONLY if the player can afford it.
-# Balance gate (bytecode-verified, CobbleDollars 2.0.0-Beta-5.1): `pay` checks the SOURCE
-# balance before any mutation and a self-pay is net-zero (deduct then re-read then add on
-# the same live field). The fail path soft-fails (returns 0 WITHOUT throwing), so `store
-# success` would read 1 either way — `store result` is the reliable signal: 0 = broke,
-# amount (100) = paid. Reset first so a parse-denied line can't leave a stale score.
-scoreboard players set #heal_ok cd_calc 0
-execute store result score #heal_ok cd_calc run cobbledollars pay @s 100
-execute if score #heal_ok cd_calc matches 1.. run cobbledollars remove @s 100
-execute if score #heal_ok cd_calc matches 1.. run healpokemon @s
-execute if score #heal_ok cd_calc matches 1.. run title @s actionbar [{"text":"Your team is fully healed. ","color":"green"},{"text":"Service fee: 100 CobbleDollars.","color":"gray"}]
-execute if score #heal_ok cd_calc matches 0 run title @s actionbar [{"text":"Payment declined. ","color":"red"},{"text":"The Company does not extend credit. (100 CD required)","color":"gray"}]
+# Paid nurse healing. Run as the player (a healer NPC's heal button — all four nurses
+# route here, so the fee is tuned in one place).
+# FEE RIDES THE INSTABILITY INDEX (quest-flow review B3, 2026-07-06):
+#   fee = 100 + 2 x #idx cd_instability
+# 100 at a stable index, 116 after gym 1, ~212 at the act-2 peak — and visible relief
+# when liberations claw the index back. NOT a random price: cd_instability is the ONLY
+# sanctioned price driver (randomness invariants, ENGINE_FINDINGS §3). The live fee is
+# printed on the receipt and on the decline line; heal buttons say "posted rate".
+# Compute -> storage -> macro (heal_paid_fee) carries $(fee) into the pay probe.
+scoreboard players set #fee cd_calc 100
+scoreboard players set #fee_var cd_calc 0
+execute if score #idx cd_instability matches 0.. run scoreboard players operation #fee_var cd_calc = #idx cd_instability
+scoreboard players operation #fee_var cd_calc *= #two cd_const
+scoreboard players operation #fee cd_calc += #fee_var cd_calc
+execute store result storage cobblemon_initiative:economy fee int 1 run scoreboard players get #fee cd_calc
+function cobblemon_initiative:economy/heal_paid_fee with storage cobblemon_initiative:economy

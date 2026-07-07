@@ -1,9 +1,10 @@
 # ADJUSTED RETAIL — the payout. Run as the player (via payout.mcfunction guard).
-# 260 CD face value through the skew-aware rail: economy/payout prints the
+# 260 CD face value through the skew-aware rail: payout_company prints the BRANDED
 # Company Verified Rate actionbar (rate = 100 - min(idx/4, 25)), so the shortfall
-# lands on camera right after the player logged everyone else getting shorted.
+# lands on camera right after the player logged everyone else getting shorted —
+# this quest is the attribution moment, one of the four deliberately-branded receipts.
 # The dialog reaction (paid_out entry) points at that yellow line — no rate digits in text.
-function cobblemon_initiative:economy/payout {amount:260}
+function cobblemon_initiative:economy/payout_company {amount:260}
 loot give @s loot cobblemon_initiative:npc_gift/training_minor
 loot give @s loot cobblemon_initiative:npc_gift/price_check
 tag @s add hz_prices_done

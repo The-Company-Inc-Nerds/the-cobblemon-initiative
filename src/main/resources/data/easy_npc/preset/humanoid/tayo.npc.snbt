@@ -50,37 +50,43 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "defeated_sq_bracket_3"
-                                        }
-                                    ],
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_sq_bracket_3"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "say Champion. The ladder resets weekly, if you feel like defending the title."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_sq_bracket_3"
-                                        }
-                                    ],
-                                    Cmd: "tbcs attach sq_bracket_3 @s"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_sq_bracket_3"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:sq_bracket_3 @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_sq_bracket_3"
-                                        }
-                                    ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs sq_bracket_3 onwin {1: ['tag @1 add defeated_sq_bracket_3', '@2 say Krabby concedes. The Invitational has its champion — the liaison at the podium holds your envelope.'], 2: ['@1 say The harbour keeps its title another week. Entry stands if you want another run.']}"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_sq_bracket_3"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:sq_bracket_3 onwin {1: ['tag @1 add defeated_sq_bracket_3', '@2 say Krabby concedes. The Invitational has its champion — the liaison at the podium holds your envelope.', 'execute as @1 run function cobblemon_initiative:sidequest/invitational/round_3'], 2: ['@1 say The harbour keeps its title another week. Entry stands if you want another run.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -129,37 +135,43 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "defeated_sq_bracket_3"
-                                        }
-                                    ],
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_sq_bracket_3"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "say Champion. The ladder resets weekly, if you feel like defending the title."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_sq_bracket_3"
-                                        }
-                                    ],
-                                    Cmd: "tbcs attach sq_bracket_3 @s"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_sq_bracket_3"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:sq_bracket_3 @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_sq_bracket_3"
-                                        }
-                                    ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs sq_bracket_3 onwin {1: ['tag @1 add defeated_sq_bracket_3', '@2 say Krabby concedes. The Invitational has its champion — the liaison at the podium holds your envelope.'], 2: ['@1 say The harbour keeps its title another week. Entry stands if you want another run.']}"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_sq_bracket_3"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:sq_bracket_3 onwin {1: ['tag @1 add defeated_sq_bracket_3', '@2 say Krabby concedes. The Invitational has its champion — the liaison at the podium holds your envelope.', 'execute as @1 run function cobblemon_initiative:sidequest/invitational/round_3'], 2: ['@1 say The harbour keeps its title another week. Entry stands if you want another run.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

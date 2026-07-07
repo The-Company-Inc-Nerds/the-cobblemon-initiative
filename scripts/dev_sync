@@ -1,0 +1,538 @@
+#!/usr/bin/env python3
+"""Sync the gradle dev run/ directory to the installed .mrpack stack.
+
+`gradle runClient` only carries the hand-pinned gradle deps (see the "Dev-only runtime
+companions" block in build.gradle.kts) — crucially MISSING tbcs and rctmod, so dialog
+battles cannot run in dev. Fabric Loader in a development environment runtime-remaps
+intermediary-mapped release jars found in run/mods/ (RuntimeModRemapper, driven by the
+fabric.remapClasspathFile system property loom sets on run configs — verified in this
+repo 2026-07-06: run/.fabric/processedMods/tbcs-*.jar had every intermediary ref
+rewritten to mojmap). So this tool populates run/ from the SAME manifest + resolution +
+cache machinery build_mrpack uses:
+
+  - run/mods/            every mrpack/modpack.json `mods` jar, MINUS the ones the
+                         gradle dev classpath already provides (duplicate top-level
+                         mod ids hard-crash the loader), MINUS a cosmetic/perf list
+                         under --lean
+  - run/config/ etc.     mrpack/overrides/* synced verbatim (parity is the point),
+                         plus build_mrpack's two config seeds (badge_0 shop catalog,
+                         pack-only auto-install marker)
+  - run/resourcepacks/   manifest `resourcepacks` + staged mrpack/resourcepacks/*;
+                         run/options.txt gets the pack's enabled-pack list (the pack's
+                         own mechanism is a shipped options.txt override) — AllTheMons
+                         must end up ACTIVE (the Hisuian starter render depends on it)
+  - run/saves/  --world  the bundled world, with the SAME build-time bakes build_mrpack
+                         applies to its staged copy (user-data strip, level.dat install
+                         bake incl. the sanitized host tag at spawn, LevelName, stale
+                         rctmod-trainer strip, Modrinth + staged datapacks)
+
+Resolution metadata (Modrinth filename/sha1/url per manifest entry) is cached in
+run/mods/.dev_sync.json, so re-runs are offline; jars come from the content-addressed
+mrpack/cache/ shared with `build-mrpack --cache`. A cold cache resolves and downloads
+exactly the way build_mrpack would (network; downloads are printed). Delete
+.dev_sync.json to force re-resolution (only matters for entries pinned by neither
+filename nor version).
+
+Idempotent: a second run with no changes reports everything up to date. --clean removes
+run/mods jars this tool previously placed that are no longer wanted (tracked in
+.dev_sync.json's owned list; jars it did not place are never deleted).
+"""
+import argparse
+import glob
+import json
+import os
+import shutil
+import sys
+import zipfile
+
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+REPO_ROOT = os.path.dirname(SCRIPT_DIR)
+sys.path.insert(0, SCRIPT_DIR)
+os.chdir(REPO_ROOT)  # build_mrpack's paths (mrpack/, src/, build.gradle.kts) are repo-root-relative
+
+import build_mrpack as bm
+
+RUN_DIR = "run"
+MODS_DIR = os.path.join(RUN_DIR, "mods")
+STATE_FILE = os.path.join(MODS_DIR, ".dev_sync.json")
+
+# Fabric mod ids the gradle dev classpath already provides — copying the pack's jar for
+# any of these into run/mods duplicates a top-level mod id and hard-crashes the loader.
+# MUST TRACK build.gradle.kts (the "Dev-only runtime companions" block + the compile
+# deps above it). Every id below was read from the actual jar's fabric.mod.json (both
+# the gradle-cache dev jar and the pack's cached release jar) on 2026-07-06 — when a
+# gradle dep is added/removed, re-derive its id from the jar, don't guess.
+GRADLE_PROVIDED_IDS = {
+    "cobblemon-initiative",     # our own mod (loom dev classes; build_mrpack bundles it separately)
+    "minecraft", "java", "fabricloader", "mixinextras",  # game / loader builtins (safety net)
+    "fabric-api",               # modRuntimeOnly fabric-api (fat jar; provides 'fabric' + all module ids)
+    "fabric-language-kotlin",   # modRuntimeOnly
+    "cobblemon",                # modImplementation com.cobblemon
+    "rctapi",                   # modImplementation curse.maven radical-cobblemon-trainers-api
+    "cloth-config",             # modApi (nests cloth-basic-math)
+    "modmenu",                  # modApi (dev 11.0.3 vs pack 11.0.4 — same id, dev wins)
+    "easy_npc",                 # modRuntimeOnly Epm6R3P2
+    "easy_npc_config_ui",       # modRuntimeOnly uTGjf7vA
+    "easy_npc_bundle",          # pack-only convenience bundle: nests exactly the two Easy NPC jars above
+    "architectury",             # modRuntimeOnly lhGA9TYQ
+    "commonnetworking",         # modRuntimeOnly HIuqnQpi (Common Network)
+    "forgeconfigapiport",       # modRuntimeOnly ohNO6lps
+    "cobbledollars",            # modRuntimeOnly curse.maven
+    "journeymap",               # modRuntimeOnly curse.maven
+    "journeymap-api-fabric",    # modLocalRuntime standalone API jar (the pack only nests it inside journeymap)
+    "mapfrontiers",             # modRuntimeOnly curse.maven
+}
+
+# --lean: pure client polish (renderer/perf stack, particles, menu/HUD cosmetics) that a
+# dev boot does not need. Leaf mods only — nothing outside this set depends on anything
+# inside it (fancymenu's own deps konkrete+melody and craftpresence's unilib are skipped
+# WITH their parent). Default (no --lean) is FULL parity. Ids read from the jars.
+LEAN_SKIP_IDS = {
+    # renderer / performance stack
+    "sodium", "sodium-extra", "sodiumextras", "sodiumleafculling", "sodiumoptionsapi",
+    "reeses-sodium-options", "sspb", "iris", "lithium", "krypton", "entityculling",
+    "ferritecore",
+    # ambient / particle polish
+    "particlerain", "particular", "fallingleaves", "visuality", "wakes",
+    "make_bubbles_pop", "presencefootsteps", "ambientenvironment", "lambdynlights",
+    # texture / model polish
+    "citresewn", "continuity", "entity_model_features", "entity_texture_features",
+    # menu / HUD cosmetics
+    "fancymenu", "konkrete", "melody",          # fancymenu + its two Keksuccino libs
+    "craftpresence", "unilib",                  # Discord presence + its lib
+    "betterpingdisplay", "notenoughanimations", "betterthirdperson", "bhmenu",
+    "dynamiccrosshair", "enhanced_attack_indicator",
+}
+
+# mrpack/overrides top-level entries NOT synced verbatim: options.txt is merged by the
+# resourcepack step (the pack's enable mechanism), icon.png is launcher-only.
+OVERRIDE_SKIP_TOP = {"options.txt", "icon.png"}
+
+OPTIONS_SRC = os.path.join(bm.MRPACK_DIR, "overrides", "options.txt")
+OPTIONS_DST = os.path.join(RUN_DIR, "options.txt")
+
+
+# ── State (ownership + resolution cache) ────────────────────────────────────────
+
+
+def load_state():
+    try:
+        with open(STATE_FILE) as fh:
+            state = json.load(fh)
+    except (FileNotFoundError, ValueError):
+        state = {}
+    state.setdefault("owned_mods", {})   # filename -> sha1 of jars THIS TOOL placed
+    state.setdefault("resolution", {})   # manifest-entry key -> {filename, sha1, url, size}
+    return state
+
+
+def save_state(state):
+    os.makedirs(MODS_DIR, exist_ok=True)
+    state["_comment"] = ("Written by scripts/dev_sync. owned_mods = run/mods jars the tool "
+                         "placed (only these are ever deleted, via --clean); resolution = "
+                         "cached Modrinth metadata so re-runs are offline.")
+    with open(STATE_FILE, "w") as fh:
+        json.dump(state, fh, indent=2, sort_keys=True)
+
+
+class LazyModrinth:
+    """Construct bm.Modrinth only if something actually needs the network."""
+
+    def __init__(self):
+        self._mr = None
+
+    def __call__(self):
+        if self._mr is None:
+            self._mr = bm.Modrinth()
+        return self._mr
+
+
+def resolve_entry(mr, state, kind, entry, mc):
+    """Resolve one manifest entry to {filename, sha1, url, size} via build_mrpack's
+    machinery, memoized in the state file keyed by the entry's own pin fields."""
+    key = "|".join([kind, entry["slug"], str(entry.get("version")),
+                    str(entry.get("filename")), str(bool(entry.get("disabled")))])
+    cached = state["resolution"].get(key)
+    if cached and os.path.isfile(os.path.join(bm.CACHE_DIR, cached["sha1"])):
+        return cached
+    if kind == "mod":
+        _ver, fe = bm.resolve_mod(mr(), entry, mc)
+        res = {"filename": fe["path"].split("/", 1)[1], "sha1": fe["hashes"]["sha1"],
+               "url": fe["downloads"][0], "size": fe["fileSize"]}
+    else:
+        _ver, f = bm.resolve_pack(mr(), entry, mc, "")
+        res = {"filename": f["filename"], "sha1": f["hashes"]["sha1"],
+               "url": f["url"], "size": f["size"]}
+    state["resolution"][key] = res
+    return res
+
+
+def fetch_cached(res):
+    """Local cache path for a resolved entry, downloading (printed) only on a cold cache."""
+    if not os.path.isfile(os.path.join(bm.CACHE_DIR, res["sha1"])):
+        print(f"    downloading {res['filename']} ...")
+    return bm.cache_fetch(res["url"], res["sha1"], res.get("size", 0))
+
+
+# ── Jar inspection ───────────────────────────────────────────────────────────────
+
+
+def jar_mod_meta(path):
+    """(id, depends-dict, provides-list) from a jar's fabric.mod.json; (None, {}, [])
+    for non-mod zips / unreadable files. strict=False: some upstream fabric.mod.json
+    files (fancymenu) carry raw control characters."""
+    try:
+        with zipfile.ZipFile(path) as z:
+            if "fabric.mod.json" not in z.namelist():
+                return None, {}, []
+            meta = json.loads(z.read("fabric.mod.json").decode("utf-8", "replace"), strict=False)
+            return meta.get("id"), dict(meta.get("depends") or {}), list(meta.get("provides") or [])
+    except (zipfile.BadZipFile, OSError, ValueError):
+        return None, {}, []
+
+
+# ── Steps ────────────────────────────────────────────────────────────────────────
+
+
+def sync_mods(cfg, mc, mr, state, lean, clean):
+    """Resolve every manifest mod, exclude gradle-provided (and --lean) ids, and place
+    the rest in run/mods/. Returns summary counts."""
+    os.makedirs(MODS_DIR, exist_ok=True)
+    desired = {}        # filename -> {sha1, id, cache path}
+    excluded_gradle, excluded_lean, disabled = [], [], []
+    warnings = []
+
+    print(f"Resolving {len(cfg['mods'])} manifest mods (mc {mc}):")
+    for e in sorted(cfg["mods"], key=lambda m: (m.get("note") or m["slug"]).lower()):
+        if e.get("disabled"):
+            disabled.append(e.get("note") or e["slug"])  # ships .jar.disabled — not loaded in the pack either
+            continue
+        res = resolve_entry(mr, state, "mod", e, mc)
+        src = fetch_cached(res)
+        mod_id, depends, provides = jar_mod_meta(src)
+        if mod_id is None:
+            warnings.append(f"{res['filename']}: no fabric.mod.json — copied anyway")
+        if mod_id in GRADLE_PROVIDED_IDS:
+            excluded_gradle.append(mod_id)
+            continue
+        if lean and mod_id in LEAN_SKIP_IDS:
+            excluded_lean.append(mod_id)
+            continue
+        desired[res["filename"]] = {"sha1": res["sha1"], "id": mod_id, "src": src,
+                                    "depends": depends, "provides": provides}
+
+    # Stale OWNED jars (placed by an earlier run, no longer wanted). An id that is about
+    # to be re-placed under a new filename (version bump) or that now collides with a
+    # gradle-provided id would duplicate a top-level mod id and crash the loader — those
+    # go unconditionally; the benign rest only under --clean.
+    desired_ids = {d["id"] for d in desired.values() if d["id"]}
+    stale = [fn for fn in state["owned_mods"] if fn not in desired]
+    kept_stale = []
+    for fn in stale:
+        path = os.path.join(MODS_DIR, fn)
+        if not os.path.isfile(path):
+            del state["owned_mods"][fn]
+            continue
+        stale_id, _, _ = jar_mod_meta(path)
+        collides = stale_id and (stale_id in desired_ids or stale_id in GRADLE_PROVIDED_IDS)
+        if clean or collides:
+            os.remove(path)
+            del state["owned_mods"][fn]
+            print(f"  removed {'(id collision) ' if collides and not clean else ''}stale owned jar: {fn}")
+        else:
+            kept_stale.append(fn)
+    if kept_stale:
+        print(f"  [warn] {len(kept_stale)} stale owned jar(s) kept (not in current selection): "
+              f"{', '.join(kept_stale)} — re-run with --clean to remove.")
+
+    copied = current = 0
+    for fn, d in sorted(desired.items()):
+        dst = os.path.join(MODS_DIR, fn)
+        if os.path.isfile(dst) and bm._sha1(dst) == d["sha1"]:
+            current += 1
+        else:
+            shutil.copy2(d["src"], dst)
+            copied += 1
+            print(f"  mod: {fn}")
+        state["owned_mods"][fn] = d["sha1"]  # adopt identical pre-existing files too
+
+    # Safety audits: duplicate top-level ids within run/mods, foreign jars colliding
+    # with gradle-provided ids, and declared deps nothing on the dev runtime satisfies.
+    seen_ids = {}
+    for fn in sorted(os.listdir(MODS_DIR)):
+        if not fn.endswith(".jar"):
+            continue
+        jid, _, _ = jar_mod_meta(os.path.join(MODS_DIR, fn))
+        if not jid:
+            continue
+        if jid in seen_ids:
+            warnings.append(f"DUPLICATE mod id '{jid}' in run/mods ({seen_ids[jid]} + {fn}) — the loader will crash")
+        elif jid in GRADLE_PROVIDED_IDS and fn not in state["owned_mods"]:
+            warnings.append(f"run/mods/{fn} (id '{jid}') duplicates a gradle-provided mod — remove it")
+        seen_ids[jid] = fn
+
+    available = set(GRADLE_PROVIDED_IDS) | desired_ids | {"fabric"}
+    for d in desired.values():
+        available.update(d["provides"])
+    for fn, d in sorted(desired.items()):
+        for dep in d["depends"]:
+            if dep in available or dep.startswith("fabric-"):  # fabric-api fat jar carries every module
+                continue
+            warnings.append(f"{fn} declares a dependency on '{dep}' that nothing on the dev "
+                            f"runtime obviously satisfies (may be nested in another jar)")
+    for w in warnings:
+        print(f"  [warn] {w}")
+    print(f"  [OK] mods: {copied} copied, {current} already current, "
+          f"{len(excluded_gradle)} gradle-provided, {len(excluded_lean)} lean-skipped, "
+          f"{len(disabled)} disabled in pack")
+    return {"copied": copied, "current": current, "gradle": len(excluded_gradle),
+            "lean": len(excluded_lean), "disabled": len(disabled)}
+
+
+def sync_tree(src_root, dst_root):
+    """Recursively sync src into dst, overwriting differing files (each one printed).
+    Returns (updated, unchanged) counts."""
+    updated = unchanged = 0
+    for root, _dirs, files in os.walk(src_root):
+        for fn in files:
+            src = os.path.join(root, fn)
+            rel = os.path.relpath(src, src_root)
+            dst = os.path.join(dst_root, rel)
+            if os.path.isfile(dst):
+                with open(src, "rb") as a, open(dst, "rb") as b:
+                    if a.read() == b.read():
+                        unchanged += 1
+                        continue
+                print(f"  overwrote: {os.path.join(dst_root, rel)}")
+            else:
+                print(f"  new: {os.path.join(dst_root, rel)}")
+            os.makedirs(os.path.dirname(dst), exist_ok=True)
+            shutil.copy2(src, dst)
+            updated += 1
+    return updated, unchanged
+
+
+def sync_overrides():
+    """mrpack/overrides/<dir>/ -> run/<dir>/ verbatim (config/, journeymap/,
+    shaderpacks/, ...), plus build_mrpack's two config seeds."""
+    print("Syncing pack overrides -> run/:")
+    updated = unchanged = 0
+    src_root = os.path.join(bm.MRPACK_DIR, "overrides")
+    for top in sorted(os.listdir(src_root)):
+        if top in OVERRIDE_SKIP_TOP:
+            continue
+        src = os.path.join(src_root, top)
+        if os.path.isdir(src):
+            u, s = sync_tree(src, os.path.join(RUN_DIR, top))
+            updated += u
+            unchanged += s
+        else:
+            # Loose instance-root override file (none today beyond the skipped two):
+            # place it at run/<name> like the launcher would.
+            dst = os.path.join(RUN_DIR, top)
+            if os.path.isfile(dst) and open(src, "rb").read() == open(dst, "rb").read():
+                unchanged += 1
+            else:
+                shutil.copy2(src, dst)
+                print(f"  override file: {dst}")
+                updated += 1
+
+    # The same config seeds build_mrpack ships in the pack overrides.
+    shop_seed = "src/main/resources/cobbledollars_tiers/badge_0.json"
+    shop_dst = os.path.join(RUN_DIR, "config", "cobbledollars", "default_shop.json")
+    if os.path.isfile(shop_seed) and not os.path.exists(shop_dst):
+        os.makedirs(os.path.dirname(shop_dst), exist_ok=True)
+        shutil.copy2(shop_seed, shop_dst)
+        print("  config seed: cobbledollars/default_shop.json (badge_0 catalog)")
+        updated += 1
+    marker = os.path.join(RUN_DIR, "config", "cobblemon-initiative-autoinstall.json")
+    if not os.path.isfile(marker):
+        bm.write_autoinstall_marker(os.path.join(RUN_DIR, "config"))
+        print("  config seed: cobblemon-initiative-autoinstall.json (first-join auto-install)")
+        updated += 1
+    print(f"  [OK] overrides: {updated} updated, {unchanged} unchanged")
+    return updated, unchanged
+
+
+def read_options_list(path, key):
+    """The JSON list on the `<key>:` line of an options.txt, or None if absent."""
+    try:
+        with open(path) as fh:
+            for line in fh:
+                if line.startswith(key + ":"):
+                    return json.loads(line.split(":", 1)[1])
+    except (OSError, ValueError):
+        pass
+    return None
+
+
+def sync_options():
+    """Make run/options.txt enable the pack's resource packs. The shipped pack's own
+    mechanism is a full options.txt override, so a missing run/options.txt gets the
+    pack file verbatim; an existing one only has its resourcePacks line merged (pack
+    list first, in pack order — later entries win in MC — user extras appended)."""
+    pack_list = read_options_list(OPTIONS_SRC, "resourcePacks")
+    if pack_list is None:
+        print("  [warn] no resourcePacks line in mrpack/overrides/options.txt — skipping options sync.")
+        return "missing pack options"
+    if not os.path.isfile(OPTIONS_DST):
+        shutil.copy2(OPTIONS_SRC, OPTIONS_DST)
+        print("  options.txt: copied the pack's file verbatim (keybinds/video/audio parity)")
+        status = "copied from pack"
+    else:
+        user_list = read_options_list(OPTIONS_DST, "resourcePacks") or []
+        merged = pack_list + [p for p in user_list if p not in pack_list]
+        if merged == user_list:
+            status = "resourcePacks already merged"
+        else:
+            with open(OPTIONS_DST) as fh:
+                lines = fh.readlines()
+            new_line = "resourcePacks:" + json.dumps(merged, separators=(",", ":")) + "\n"
+            for i, line in enumerate(lines):
+                if line.startswith("resourcePacks:"):
+                    lines[i] = new_line
+                    break
+            else:
+                lines.append(new_line)
+            with open(OPTIONS_DST, "w") as fh:
+                fh.writelines(lines)
+            added = [p for p in merged if p not in user_list]
+            print(f"  options.txt: merged resourcePacks (+{len(added)}: {', '.join(added)})")
+            status = f"merged (+{len(added)})"
+    active = read_options_list(OPTIONS_DST, "resourcePacks") or []
+    allthemons = [p for p in active if "AllTheMons" in p]
+    if allthemons:
+        print(f"  [OK] AllTheMons ACTIVE in options.txt ({allthemons[0]})")
+    else:
+        print("  [warn] AllTheMons is NOT in the enabled resource packs — the Hisuian starter "
+              "stand-in will render as the substitute model.")
+    return status
+
+
+def sync_packs(cfg, mc, mr, state):
+    """Manifest resourcepacks/shaderpacks + staged mrpack/{resourcepacks,shaderpacks}
+    into the matching run/ dirs, then wire options.txt."""
+    print("Syncing resource/shader packs:")
+    placed = current = 0
+    for kind, sub in (("rp", "resourcepacks"), ("sp", "shaderpacks")):
+        dst_dir = os.path.join(RUN_DIR, sub)
+        os.makedirs(dst_dir, exist_ok=True)
+        for item in cfg.get(sub) or []:
+            res = resolve_entry(mr, state, kind, item, mc)
+            src = fetch_cached(res)
+            dst = os.path.join(dst_dir, res["filename"])
+            if os.path.isfile(dst) and bm._sha1(dst) == res["sha1"]:
+                current += 1
+            else:
+                shutil.copy2(src, dst)
+                print(f"  {sub[:-1]}: {res['filename']}")
+                placed += 1
+        for e in bm.staged_entries(sub):
+            dst = os.path.join(dst_dir, os.path.basename(e))
+            if os.path.isfile(e) and os.path.isfile(dst) and bm._sha1(dst) == bm._sha1(e):
+                current += 1
+                continue
+            bm.copy_into(e, dst_dir)
+            print(f"  staged {sub[:-1]}: {os.path.basename(e)}")
+            placed += 1
+    options_status = sync_options()
+    print(f"  [OK] packs: {placed} placed, {current} already current")
+    return {"placed": placed, "current": current, "options": options_status}
+
+
+def sync_world(cfg, mc, mr, state, fresh):
+    """Copy the bundled world into run/saves/ with build_mrpack's exact build-time
+    bakes (user-data strip, level.dat install bake + LevelName, stale rctmod-trainer
+    strip, Modrinth + staged datapacks). Never overwrites unless --fresh-world."""
+    worlds = [d for d in sorted(glob.glob(os.path.join(bm.MRPACK_DIR, "maps", "*"))) if os.path.isdir(d)]
+    if not worlds:
+        print("  [warn] --world: no world folders in mrpack/maps/ — nothing to copy.")
+        return "no source world"
+    map_name = bm.load_pack_settings().get("mapName")
+    names = [os.path.basename(w) for w in worlds]
+    if map_name and len(worlds) == 1:
+        names = [map_name]
+    status = []
+    for src, name in zip(worlds, names):
+        dst = os.path.join(RUN_DIR, "saves", name)
+        if (os.path.islink(dst) or os.path.isdir(dst)) and not fresh:
+            hint = ("a SYMLINK into the source map — dev sessions MUTATE mrpack/maps through it"
+                    if os.path.islink(dst) else "e.g. a stale manual copy")
+            print(f"  world: run/saves/{name} already exists — REFUSING to overwrite.\n"
+                  f"         If this save predates dev_sync ({hint}), re-run with\n"
+                  f"         --fresh-world to replace it with the pack's baked copy.")
+            status.append(f"{name}: exists (use --fresh-world)")
+            continue
+        if os.path.islink(dst):
+            # Remove only the link — never rmtree through it into the source map.
+            print(f"  world: removing symlink run/saves/{name} (--fresh-world; target untouched)")
+            os.unlink(dst)
+        elif os.path.isdir(dst):
+            print(f"  world: deleting run/saves/{name} (--fresh-world)")
+            shutil.rmtree(dst)
+        print(f"  world: {os.path.basename(src)} -> run/saves/{name} (this copies ~GBs, be patient)")
+        shutil.copytree(src, dst, symlinks=False,
+                        ignore=shutil.ignore_patterns(*bm.WORLD_USERDATA_STRIP))
+        bm.bake_install_into_level_dat(os.path.join(dst, "level.dat"), level_name=name)
+        if os.path.isfile(os.path.join(dst, "level.dat.bak")):
+            bm.bake_install_into_level_dat(os.path.join(dst, "level.dat.bak"), level_name=name)
+        world_dp = os.path.join(dst, "datapacks", "data.zip")
+        if os.path.isfile(world_dp):
+            bm.strip_rctmod_trainers(world_dp)
+        dp_dir = os.path.join(dst, "datapacks")
+        os.makedirs(dp_dir, exist_ok=True)
+        for item in cfg.get("datapacks") or []:
+            res = resolve_entry(mr, state, "dp", item, mc)
+            shutil.copy2(fetch_cached(res), os.path.join(dp_dir, res["filename"]))
+            print(f"    datapack: {res['filename']}")
+        for e in bm.staged_entries("datapacks"):
+            bm.copy_into(e, dp_dir)
+            print(f"    staged datapack: {os.path.basename(e)}")
+        status.append(f"{name}: copied fresh + baked")
+    return "; ".join(status)
+
+
+def main():
+    ap = argparse.ArgumentParser(
+        description="Sync run/ (gradle runClient/runServer) to the .mrpack stack.")
+    ap.add_argument("--world", action="store_true",
+                    help="also copy the bundled world into run/saves/ with the pack's build-time bakes")
+    ap.add_argument("--fresh-world", action="store_true",
+                    help="with --world: delete and re-copy an existing run/saves world")
+    ap.add_argument("--lean", action="store_true",
+                    help="skip the documented cosmetic/perf mod list for faster dev boots (default: full parity)")
+    ap.add_argument("--clean", action="store_true",
+                    help="remove run/mods jars this tool placed that are no longer in the current selection")
+    args = ap.parse_args()
+
+    if not os.path.isfile(bm.MANIFEST):
+        raise SystemExit(f"Missing {bm.MANIFEST} — the pack manifest.")
+    with open(bm.MANIFEST) as fh:
+        cfg = json.load(fh)
+    st = bm.load_pack_settings()
+    mc = st.get("minecraft") or cfg.get("minecraft") \
+        or bm.read_setting("build.gradle.kts", r"minecraft:([0-9][^\"\s]*)", "1.21.1")
+
+    state = load_state()
+    mr = LazyModrinth()
+
+    mods = sync_mods(cfg, mc, mr, state, args.lean, args.clean)
+    cfg_updated, cfg_unchanged = sync_overrides()
+    packs = sync_packs(cfg, mc, mr, state)
+    world_status = sync_world(cfg, mc, mr, state, args.fresh_world) if args.world \
+        else "not requested (--world to sync)"
+    save_state(state)
+
+    fresh_work = mods["copied"] + cfg_updated + packs["placed"] + ("copied fresh" in world_status)
+    print(f"\nSummary{' (--lean)' if args.lean else ''}"
+          f"{': everything up to date' if fresh_work == 0 else ''}:")
+    print(f"  mods:          {mods['copied'] + mods['current']} in run/mods "
+          f"({mods['copied']} copied, {mods['current']} current); excluded: "
+          f"{mods['gradle']} gradle-provided, {mods['lean']} by --lean, {mods['disabled']} pack-disabled")
+    print(f"  configs:       {cfg_updated} updated, {cfg_unchanged} unchanged (mrpack/overrides -> run/)")
+    print(f"  packs:         {packs['placed']} placed, {packs['current']} current; options.txt: {packs['options']}")
+    print(f"  world:         {world_status}")
+
+
+if __name__ == "__main__":
+    main()

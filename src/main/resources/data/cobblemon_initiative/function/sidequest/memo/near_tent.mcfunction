@@ -4,7 +4,7 @@
 
 # Seen by either agent: reset the countdown and flash the warning.
 execute if entity @e[tag=checkpoint_agent,distance=..14,scores={can_see_player=1}] run scoreboard players reset @s ci_loiter
-execute if entity @e[tag=checkpoint_agent,distance=..14,scores={can_see_player=1}] run title @s actionbar [{"text":"EYES ON YOU","color":"red","bold":true}]
+execute if entity @e[tag=checkpoint_agent,distance=..14,scores={can_see_player=1}] run title @s actionbar [{"text":"EYES ON YOU","color":"red","bold":true},{"text":" — the count starts over","color":"gray"}]
 
 # Unseen: count up (only while the eavesdrop is not yet armed).
 execute if entity @s[tag=!memo_loiter] unless entity @e[tag=checkpoint_agent,distance=..14,scores={can_see_player=1}] run scoreboard players add @s ci_loiter 1

@@ -79,70 +79,92 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "defeated_sq_kyc_agent"
-                                        }
-                                    ],
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_sq_kyc_agent"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "say The survey window has closed. Records are final."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_sq_kyc_agent"
-                                        }
-                                    ],
-                                    Cmd: "tbcs attach sq_kyc_agent @s"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_sq_kyc_agent"
+                                            },
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_declined_sq_kyc_agent"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:sq_kyc_agent @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_sq_kyc_agent"
-                                        }
-                                    ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs sq_kyc_agent onwin {1: ['cobbledollars give @1 460', 'tag @1 add defeated_sq_kyc_agent', '@2 say There has been a scheduling conflict. The survey is suspended. This visit never reached the district office.', 'give @1 cobblemon:super_potion 2', 'easy_npc delete @2'], 2: ['@1 say Thank you for your participation. Your responses have been recorded against you.']}"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_sq_kyc_agent"
+                                            },
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_declined_sq_kyc_agent"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:sq_kyc_agent onwin {1: ['cobbledollars give @1 460', 'tag @1 add defeated_sq_kyc_agent', '@2 say There has been a scheduling conflict. The survey is suspended. This visit never reached the district office.', 'give @1 cobblemon:super_potion 2', 'easy_npc delete @2'], 2: ['@1 say Thank you for your participation. Your responses have been recorded against you.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_declined_sq_kyc_agent"
                                 }
                             ],
                             Label: "fight_button"
                         },
                         {
-                            Name: "Decline the interview - pay 150 CD",
+                            Name: "Pay 150 CD to bow out",
                             Actions: [
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "cobbledollars remove @s 150"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    Cmd: "title @initiator actionbar [{\"text\":\"Interview declined. A 150 CD processing fee has been applied with verified gratitude.\",\"color\":\"gray\"}]"
+                                    Cmd: "function cobblemon_initiative:route/decline_sq_kyc_agent"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "decline_button"
-                        },
-                        {
-                            Name: "Walk away",
-                            Actions: [
+                            Conditions: [
                                 {
-                                    Type: "CLOSE_DIALOG"
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_sq_kyc_agent"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_declined_sq_kyc_agent"
                                 }
                             ],
-                            Label: "walk_button"
+                            Label: "bow_out_button"
                         }
                     ],
                     Texts: [
@@ -152,6 +174,54 @@
                     ],
                     Name: "Agent - the last page",
                     Label: "sketch"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "defeated_takehara_leader"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "census_signed"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "no_defeated_sq_kyc_agent"
+                        }
+                    ],
+                    Priority: 15,
+                    Buttons: [
+                        {
+                            Name: "Answer the survey",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "sketch"
+                                }
+                            ],
+                            Label: "answer_button"
+                        },
+                        {
+                            Name: "Walk away",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "refuse_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Good day, resident. Resident Verification Survey - ah. The desk file reached us. You are pre-verified: household, holdings, signature on record. Pre-verified on every item, in fact, except the last page. The last page is why I still knock. Shall we?"
+                        }
+                    ],
+                    Name: "Agent - pre-verified, mostly",
+                    Label: "survey_preverified"
                 },
                 {
                     Conditions: [

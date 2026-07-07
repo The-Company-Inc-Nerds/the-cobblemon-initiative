@@ -17,6 +17,45 @@
                     {
                         Type: "OPEN_DEFAULT_DIALOG"
                     }
+                ],
+                ON_DISTANCE_TOUCH: [
+                    {
+                        Type: "COMMAND",
+                        ConditionDataSet: {
+                            ConditionDataSet: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "dex_gte_2"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_villain_grunt_6"
+                                }
+                            ]
+                        },
+                        Cmd: "tbcs attach rctmod:villain_grunt_6 @s"
+                    },
+                    {
+                        Type: "COMMAND",
+                        ExecAsUser: 1b,
+                        ConditionDataSet: {
+                            ConditionDataSet: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "dex_gte_2"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_villain_grunt_6"
+                                }
+                            ]
+                        },
+                        Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:villain_grunt_6 onwin {1: ['cobbledollars give @1 340', 'tag @1 add defeated_villain_grunt_6', '@2 say This is a violation of section nine, subsection you. I am required to escalate.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 220', '@1 say Noncompliance noted and corrected. The Company keeps the ledgers honest so you do not have to.']}"
+                    }
                 ]
             }
         },
@@ -50,52 +89,49 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "defeated_villain_grunt_6"
-                                        }
-                                    ],
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_villain_grunt_6"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "say Your file is closed and signed in triplicate. There is nothing left to review. Move along."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_villain_grunt_6"
-                                        }
-                                    ],
-                                    Cmd: "tbcs attach villain_grunt_6 @s"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_grunt_6"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:villain_grunt_6 @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_villain_grunt_6"
-                                        }
-                                    ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_grunt_6 onwin {1: ['cobbledollars give @1 340', 'tag @1 add defeated_villain_grunt_6', '@2 say This is a violation of section nine, subsection you. I am required to escalate.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 220', '@1 say Noncompliance noted and corrected. The Company keeps the ledgers honest so you do not have to.']}"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_grunt_6"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:villain_grunt_6 onwin {1: ['cobbledollars give @1 340', 'tag @1 add defeated_villain_grunt_6', '@2 say This is a violation of section nine, subsection you. I am required to escalate.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 220', '@1 say Noncompliance noted and corrected. The Company keeps the ledgers honest so you do not have to.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
                             Label: "yes_button"
-                        },
-                        {
-                            Name: "Goodbye",
-                            Actions: [
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "goodbye_button"
                         }
                     ],
                     Texts: [
@@ -124,52 +160,49 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "defeated_villain_grunt_6"
-                                        }
-                                    ],
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_villain_grunt_6"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "say Your file is closed and signed in triplicate. There is nothing left to review. Move along."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_villain_grunt_6"
-                                        }
-                                    ],
-                                    Cmd: "tbcs attach villain_grunt_6 @s"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_grunt_6"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:villain_grunt_6 @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_villain_grunt_6"
-                                        }
-                                    ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_grunt_6 onwin {1: ['cobbledollars give @1 340', 'tag @1 add defeated_villain_grunt_6', '@2 say This is a violation of section nine, subsection you. I am required to escalate.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 220', '@1 say Noncompliance noted and corrected. The Company keeps the ledgers honest so you do not have to.']}"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_grunt_6"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:villain_grunt_6 onwin {1: ['cobbledollars give @1 340', 'tag @1 add defeated_villain_grunt_6', '@2 say This is a violation of section nine, subsection you. I am required to escalate.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 220', '@1 say Noncompliance noted and corrected. The Company keeps the ledgers honest so you do not have to.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
                             Label: "yes_button"
-                        },
-                        {
-                            Name: "Goodbye",
-                            Actions: [
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "goodbye_button"
                         }
                     ],
                     Texts: [
@@ -191,52 +224,49 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "defeated_villain_grunt_6"
-                                        }
-                                    ],
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_villain_grunt_6"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "say Your file is closed and signed in triplicate. There is nothing left to review. Move along."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_villain_grunt_6"
-                                        }
-                                    ],
-                                    Cmd: "tbcs attach villain_grunt_6 @s"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_grunt_6"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:villain_grunt_6 @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_villain_grunt_6"
-                                        }
-                                    ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_grunt_6 onwin {1: ['cobbledollars give @1 340', 'tag @1 add defeated_villain_grunt_6', '@2 say This is a violation of section nine, subsection you. I am required to escalate.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 220', '@1 say Noncompliance noted and corrected. The Company keeps the ledgers honest so you do not have to.']}"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_grunt_6"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:villain_grunt_6 onwin {1: ['cobbledollars give @1 340', 'tag @1 add defeated_villain_grunt_6', '@2 say This is a violation of section nine, subsection you. I am required to escalate.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 220', '@1 say Noncompliance noted and corrected. The Company keeps the ledgers honest so you do not have to.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
                             Label: "yes_button"
-                        },
-                        {
-                            Name: "Goodbye",
-                            Actions: [
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "goodbye_button"
                         }
                     ],
                     Texts: [

@@ -67,44 +67,72 @@
                     Label: "beaten"
                 },
                 {
-                    Priority: 10,
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "census_signed"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "no_defeated_sq_canvasser"
+                        }
+                    ],
+                    Priority: 20,
                     Buttons: [
                         {
                             Name: "Answer for the postings",
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "defeated_sq_canvasser"
-                                        }
-                                    ],
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_sq_canvasser"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "say Our engagement is complete. Per policy I cannot lose twice to the same resident."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_sq_canvasser"
-                                        }
-                                    ],
-                                    Cmd: "tbcs attach sq_canvasser @s"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_sq_canvasser"
+                                            },
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_declined_sq_canvasser"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:sq_canvasser @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_sq_canvasser"
-                                        }
-                                    ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs sq_canvasser onwin {1: ['cobbledollars give @1 280', 'tag @1 add defeated_sq_canvasser', '@2 say Noted. The route survey will describe you as a headwind.'], 2: ['@1 say Your objection has been processed and declined.']}"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_sq_canvasser"
+                                            },
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_declined_sq_canvasser"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:sq_canvasser onwin {1: ['cobbledollars give @1 280', 'tag @1 add defeated_sq_canvasser', '@2 say Noted. The route survey will describe you as a headwind.'], 2: ['@1 say Your objection has been processed and declined.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -115,27 +143,14 @@
                                     Type: "PLAYER_TAG",
                                     Operation: "EQUALS",
                                     Name: "defeated_takehara_leader"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_declined_sq_canvasser"
                                 }
                             ],
                             Label: "fight_button"
-                        },
-                        {
-                            Name: "Purchase administrative clearance — 150 CD",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "cobbledollars remove @s 150"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    Cmd: "title @initiator actionbar [{\"text\":\"Clearance purchased. A 150 CD processing fee has been applied with verified gratitude. You may loiter within reason.\",\"color\":\"gray\"}]"
-                                },
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "decline_button"
                         },
                         {
                             Name: "Say nothing and move on",
@@ -145,6 +160,286 @@
                                 }
                             ],
                             Label: "walk_button"
+                        },
+                        {
+                            Name: "Pay 150 CD to bow out",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:route/decline_sq_canvasser"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_sq_canvasser"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_declined_sq_canvasser"
+                                }
+                            ],
+                            Label: "bow_out_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "One moment — Sango forwarded a provisional profile this week. The photograph resolves. The name does not. That is above my pay grade and my glue both, so as far as this canvass is concerned you are a verified resident with an unverified everything else."
+                        },
+                        {
+                            Text: "Same channels as anyone: a fee down one, a fight down the other, or the road. The postings do not paste themselves."
+                        }
+                    ],
+                    Name: "Canvasser — provisional profile",
+                    Label: "census_signed"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "census_refused"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "no_defeated_sq_canvasser"
+                        }
+                    ],
+                    Priority: 18,
+                    Buttons: [
+                        {
+                            Name: "Answer for the postings",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_sq_canvasser"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "say Our engagement is complete. Per policy I cannot lose twice to the same resident."
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_sq_canvasser"
+                                            },
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_declined_sq_canvasser"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:sq_canvasser @s"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_sq_canvasser"
+                                            },
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_declined_sq_canvasser"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:sq_canvasser onwin {1: ['cobbledollars give @1 280', 'tag @1 add defeated_sq_canvasser', '@2 say Noted. The route survey will describe you as a headwind.'], 2: ['@1 say Your objection has been processed and declined.']}"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "defeated_takehara_leader"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_declined_sq_canvasser"
+                                }
+                            ],
+                            Label: "fight_button"
+                        },
+                        {
+                            Name: "Say nothing and move on",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "walk_button"
+                        },
+                        {
+                            Name: "Pay 150 CD to bow out",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:route/decline_sq_canvasser"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_sq_canvasser"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_declined_sq_canvasser"
+                                }
+                            ],
+                            Label: "bow_out_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Ah. The Sango non-signer. Yes, we heard. Declines get their own folder — thinner paper, thicker file. You are in it twice already, which for a person with no name is honestly impressive."
+                        },
+                        {
+                            Text: "Nothing personal. I paste, they file, the folder grows. If you have a grievance about the postings, the channels remain: a fee, a fight, or the road."
+                        }
+                    ],
+                    Name: "Canvasser — the declines folder",
+                    Label: "census_refused"
+                },
+                {
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "Answer for the postings",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_sq_canvasser"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "say Our engagement is complete. Per policy I cannot lose twice to the same resident."
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_sq_canvasser"
+                                            },
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_declined_sq_canvasser"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:sq_canvasser @s"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_sq_canvasser"
+                                            },
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_declined_sq_canvasser"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:sq_canvasser onwin {1: ['cobbledollars give @1 280', 'tag @1 add defeated_sq_canvasser', '@2 say Noted. The route survey will describe you as a headwind.'], 2: ['@1 say Your objection has been processed and declined.']}"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "defeated_takehara_leader"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_declined_sq_canvasser"
+                                }
+                            ],
+                            Label: "fight_button"
+                        },
+                        {
+                            Name: "Say nothing and move on",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "walk_button"
+                        },
+                        {
+                            Name: "Pay 150 CD to bow out",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:route/decline_sq_canvasser"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_sq_canvasser"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_declined_sq_canvasser"
+                                }
+                            ],
+                            Label: "bow_out_button"
                         }
                     ],
                     Texts: [

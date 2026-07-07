@@ -82,60 +82,51 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "cobbledollars remove @s 150"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    Cmd: "title @initiator actionbar [{\"text\":\"Stake logged: 150 CD. The Customer Confidence Challenge is live.\"}]"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "defeated_sq_hz_analyst"
-                                        }
-                                    ],
-                                    Cmd: "say One adjustment per quarter. The model is still crying in a spreadsheet somewhere."
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_sq_hz_analyst"
-                                        }
-                                    ],
-                                    Cmd: "tbcs attach sq_hz_analyst @s"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_sq_hz_analyst"
-                                        }
-                                    ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs sq_hz_analyst onwin {1: ['cobbledollars give @1 300', 'tag @1 add defeated_sq_hz_analyst', '@2 say Refund issued, doubled, logged as a confidence event. The model did not see you coming. Neither did the model maker.', 'execute as @1 run function cobblemon_initiative:sidequest/minutes/billable_hours'], 2: ['@1 say The stake stays with the house. Customer confidence: measurably improved. Thank you for participating in the figures.']}"
+                                    Cmd: "function cobblemon_initiative:route/stake_sq_hz_analyst"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_sq_hz_analyst"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_declined_sq_hz_analyst"
                                 }
                             ],
                             Label: "yes_button"
                         },
                         {
-                            Name: "Walk away",
+                            Name: "Pay 80 CD to bow out",
                             Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:route/decline_sq_hz_analyst"
+                                },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "leave_button"
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_sq_hz_analyst"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_declined_sq_hz_analyst"
+                                }
+                            ],
+                            Label: "bow_out_button"
                         }
                     ],
                     Texts: [
@@ -165,60 +156,51 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "cobbledollars remove @s 150"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    Cmd: "title @initiator actionbar [{\"text\":\"Stake logged: 150 CD. The Customer Confidence Challenge is live.\"}]"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "defeated_sq_hz_analyst"
-                                        }
-                                    ],
-                                    Cmd: "say One adjustment per quarter. The model is still crying in a spreadsheet somewhere."
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_sq_hz_analyst"
-                                        }
-                                    ],
-                                    Cmd: "tbcs attach sq_hz_analyst @s"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_sq_hz_analyst"
-                                        }
-                                    ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs sq_hz_analyst onwin {1: ['cobbledollars give @1 300', 'tag @1 add defeated_sq_hz_analyst', '@2 say Refund issued, doubled, logged as a confidence event. The model did not see you coming. Neither did the model maker.', 'execute as @1 run function cobblemon_initiative:sidequest/minutes/billable_hours'], 2: ['@1 say The stake stays with the house. Customer confidence: measurably improved. Thank you for participating in the figures.']}"
+                                    Cmd: "function cobblemon_initiative:route/stake_sq_hz_analyst"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_sq_hz_analyst"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_declined_sq_hz_analyst"
                                 }
                             ],
                             Label: "yes_button"
                         },
                         {
-                            Name: "Walk away",
+                            Name: "Pay 80 CD to bow out",
                             Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:route/decline_sq_hz_analyst"
+                                },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "leave_button"
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_sq_hz_analyst"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_declined_sq_hz_analyst"
+                                }
+                            ],
+                            Label: "bow_out_button"
                         }
                     ],
                     Texts: [
@@ -237,10 +219,10 @@
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
-                            Name: "no_hz_minutes_heard"
+                            Name: "hz_minutes_heard"
                         }
                     ],
-                    Priority: 15,
+                    Priority: 18,
                     Buttons: [
                         {
                             Name: "Stake 150 CD — take the challenge",
@@ -248,48 +230,22 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "cobbledollars remove @s 150"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    Cmd: "title @initiator actionbar [{\"text\":\"Stake logged: 150 CD. The Customer Confidence Challenge is live.\"}]"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "defeated_sq_hz_analyst"
-                                        }
-                                    ],
-                                    Cmd: "say One adjustment per quarter. The model is still crying in a spreadsheet somewhere."
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_sq_hz_analyst"
-                                        }
-                                    ],
-                                    Cmd: "tbcs attach sq_hz_analyst @s"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_sq_hz_analyst"
-                                        }
-                                    ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs sq_hz_analyst onwin {1: ['cobbledollars give @1 300', 'tag @1 add defeated_sq_hz_analyst', '@2 say Refund issued, doubled, logged as a confidence event. The model did not see you coming. Neither did the model maker.', 'execute as @1 run function cobblemon_initiative:sidequest/minutes/billable_hours'], 2: ['@1 say The stake stays with the house. Customer confidence: measurably improved. Thank you for participating in the figures.']}"
+                                    Cmd: "function cobblemon_initiative:route/stake_sq_hz_analyst"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_sq_hz_analyst"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_declined_sq_hz_analyst"
                                 }
                             ],
                             Label: "stake_button"
@@ -305,13 +261,198 @@
                             Label: "terms_button"
                         },
                         {
-                            Name: "Decline and keep walking",
+                            Name: "Pay 80 CD to bow out",
                             Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:route/decline_sq_hz_analyst"
+                                },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "walk_button"
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_sq_hz_analyst"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_declined_sq_hz_analyst"
+                                }
+                            ],
+                            Label: "bow_out_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Before you say anything. The confidence model flagged an outlier this quarter — one row that bends every forecast it touches. This morning the flag came back from head office with a face attached, and the face is standing on my mezzanine. Do not ask me what the memo says under the black bar. I bill hours, not questions."
+                        },
+                        {
+                            Text: "The Challenge stands regardless. The model would genuinely like more data on you. So would I."
+                        }
+                    ],
+                    Name: "Analyst — the flagged outlier",
+                    Label: "outlier"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "billable_hours_done"
+                        }
+                    ],
+                    Priority: 18,
+                    Buttons: [
+                        {
+                            Name: "Stake 150 CD — take the challenge",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:route/stake_sq_hz_analyst"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_sq_hz_analyst"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_declined_sq_hz_analyst"
+                                }
+                            ],
+                            Label: "stake_button"
+                        },
+                        {
+                            Name: "Ask for the terms in writing",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "confidence_terms"
+                                }
+                            ],
+                            Label: "terms_button"
+                        },
+                        {
+                            Name: "Pay 80 CD to bow out",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:route/decline_sq_hz_analyst"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_sq_hz_analyst"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_declined_sq_hz_analyst"
+                                }
+                            ],
+                            Label: "bow_out_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Before you say anything. The confidence model flagged an outlier this quarter — one row that bends every forecast it touches. This morning the flag came back from head office with a face attached, and the face is standing on my mezzanine. Do not ask me what the memo says under the black bar. I bill hours, not questions."
+                        },
+                        {
+                            Text: "The Challenge stands regardless. The model would genuinely like more data on you. So would I."
+                        }
+                    ],
+                    Name: "Analyst — the flagged outlier",
+                    Label: "outlier__or1"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "no_hz_minutes_heard"
+                        }
+                    ],
+                    Priority: 15,
+                    Buttons: [
+                        {
+                            Name: "Stake 150 CD — take the challenge",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:route/stake_sq_hz_analyst"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_sq_hz_analyst"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_declined_sq_hz_analyst"
+                                }
+                            ],
+                            Label: "stake_button"
+                        },
+                        {
+                            Name: "Ask for the terms in writing",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "confidence_terms"
+                                }
+                            ],
+                            Label: "terms_button"
+                        },
+                        {
+                            Name: "Pay 80 CD to bow out",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:route/decline_sq_hz_analyst"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_sq_hz_analyst"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_declined_sq_hz_analyst"
+                                }
+                            ],
+                            Label: "bow_out_button"
                         }
                     ],
                     Texts: [
@@ -334,60 +475,51 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "cobbledollars remove @s 150"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    Cmd: "title @initiator actionbar [{\"text\":\"Stake logged: 150 CD. The Customer Confidence Challenge is live.\"}]"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "defeated_sq_hz_analyst"
-                                        }
-                                    ],
-                                    Cmd: "say One adjustment per quarter. The model is still crying in a spreadsheet somewhere."
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_sq_hz_analyst"
-                                        }
-                                    ],
-                                    Cmd: "tbcs attach sq_hz_analyst @s"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_sq_hz_analyst"
-                                        }
-                                    ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs sq_hz_analyst onwin {1: ['cobbledollars give @1 300', 'tag @1 add defeated_sq_hz_analyst', '@2 say Refund issued, doubled, logged as a confidence event. The model did not see you coming. Neither did the model maker.', 'execute as @1 run function cobblemon_initiative:sidequest/minutes/billable_hours'], 2: ['@1 say The stake stays with the house. Customer confidence: measurably improved. Thank you for participating in the figures.']}"
+                                    Cmd: "function cobblemon_initiative:route/stake_sq_hz_analyst"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_sq_hz_analyst"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_declined_sq_hz_analyst"
                                 }
                             ],
                             Label: "stake_button"
                         },
                         {
-                            Name: "Decline and keep walking",
+                            Name: "Pay 80 CD to bow out",
                             Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:route/decline_sq_hz_analyst"
+                                },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "walk_button"
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_sq_hz_analyst"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_declined_sq_hz_analyst"
+                                }
+                            ],
+                            Label: "bow_out_button"
                         }
                     ],
                     Texts: [
@@ -410,60 +542,51 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "cobbledollars remove @s 150"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    Cmd: "title @initiator actionbar [{\"text\":\"Stake logged: 150 CD. The Customer Confidence Challenge is live.\"}]"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "defeated_sq_hz_analyst"
-                                        }
-                                    ],
-                                    Cmd: "say One adjustment per quarter. The model is still crying in a spreadsheet somewhere."
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_sq_hz_analyst"
-                                        }
-                                    ],
-                                    Cmd: "tbcs attach sq_hz_analyst @s"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_sq_hz_analyst"
-                                        }
-                                    ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs sq_hz_analyst onwin {1: ['cobbledollars give @1 300', 'tag @1 add defeated_sq_hz_analyst', '@2 say Refund issued, doubled, logged as a confidence event. The model did not see you coming. Neither did the model maker.', 'execute as @1 run function cobblemon_initiative:sidequest/minutes/billable_hours'], 2: ['@1 say The stake stays with the house. Customer confidence: measurably improved. Thank you for participating in the figures.']}"
+                                    Cmd: "function cobblemon_initiative:route/stake_sq_hz_analyst"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_sq_hz_analyst"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_declined_sq_hz_analyst"
                                 }
                             ],
                             Label: "yes_button"
                         },
                         {
-                            Name: "Walk away",
+                            Name: "Pay 80 CD to bow out",
                             Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:route/decline_sq_hz_analyst"
+                                },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "leave_button"
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_sq_hz_analyst"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_declined_sq_hz_analyst"
+                                }
+                            ],
+                            Label: "bow_out_button"
                         }
                     ],
                     Texts: [

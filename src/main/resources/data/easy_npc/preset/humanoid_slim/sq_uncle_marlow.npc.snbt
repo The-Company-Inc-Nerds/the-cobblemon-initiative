@@ -210,7 +210,7 @@
                     ],
                     Texts: [
                         {
-                            Text: "Read the label again if you doubt me. Addressee — record expunged. No such recipient. Mail does not forget people. Systems forget people. Take it to Lucian, the archivist. He keeps what other people delete."
+                            Text: "Read the label again if you doubt me. Addressee — record expunged. No such recipient. Mail does not forget people. Systems forget people. Take it to Lucian, the archivist. She keeps what other people delete."
                         },
                         {
                             Text: "Mind the grey suits on Blossom Path. They have opinions about mail that moves without a barcode."
@@ -218,6 +218,57 @@
                     ],
                     Name: "Marlow — letter in transit",
                     Label: "waiting"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "memo_delivered"
+                        }
+                    ],
+                    Priority: 12,
+                    Buttons: [
+                        {
+                            Name: "Take the dead letter to the archivist",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "loot give @s loot cobblemon_initiative:npc_gift/dead_letter"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add carrying_dead_letter"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "title @initiator actionbar [{\"text\":\"Dead letter received. Deliver it to Lucian the archivist — and mind the checkpoint on Blossom Path.\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "take_letter_button"
+                        },
+                        {
+                            Name: "Not today",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "not_today_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Word slips down the lane faster than their vans ever did — you walked a piece of internal Company distribution to the archivist. Forty-four stroke C, off their network, onto her shelf. Thirty one years I moved paper and never once got to move THEIRS. Ha. Still. One letter left in my own bag, if you have legs today."
+                        }
+                    ],
+                    Name: "Marlow — word travels down the lane",
+                    Label: "memo_word"
                 },
                 {
                     Priority: 10,

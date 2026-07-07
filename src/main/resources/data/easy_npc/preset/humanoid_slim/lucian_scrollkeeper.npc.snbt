@@ -40,6 +40,60 @@
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
+                            Name: "sting_memo_taken"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "no_field_memo_filed"
+                        }
+                    ],
+                    Priority: 77,
+                    Buttons: [
+                        {
+                            Name: "File Field Memo 7-12",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:sidequest/personnel_file/file_field_memo"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "tellraw @initiator [{\"text\":\"Lucian shelves the determinations beside the perpetuity contract and lets the two of them argue.\",\"color\":\"gold\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "file_memo712_button"
+                        },
+                        {
+                            Name: "Keep it for now",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "keep_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Pilot determinations. Honey rejected — assets mobile and armed. I have met the assets; the phrasing is fair. And wheat approved, proceed to Hua Zhan. They wrote down where they are going next and stapled it behind a beehive."
+                        },
+                        {
+                            Text: "This is the same Company that bought a beekeepers yield in perpetuity while rejecting honey as a commodity. Both papers are signed. Both are policy. Hand it here — the archive pays a records fee for live Company paper."
+                        }
+                    ],
+                    Name: "Lucian — Field Memo 7-12",
+                    Label: "memo712_turn_in"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
                             Name: "carrying_dead_letter"
                         },
                         {
@@ -66,6 +120,11 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:sidequest/memo/take_letter"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
                                     Cmd: "tag @s add letter_delivered"
                                 },
                                 {
@@ -75,7 +134,7 @@
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "tellraw @initiator [{\"text\":\"Lucian goes quiet, files the letter under F, and pays a finders fee without saying why. Taya should hear it arrived.\",\"color\":\"gold\"}]"
+                                    Cmd: "tellraw @initiator [{\"text\":\"Lucian goes quiet, files the letter under F, and pays a finders fee without saying why. Marlow should hear it arrived.\",\"color\":\"gold\"}]"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -95,7 +154,7 @@
                     ],
                     Texts: [
                         {
-                            Text: "A dead letter. Return to sender, no such recipient. Addressee — record expunged. I have shelved wars with smaller labels than that. Taya kept this in her bag? Of course she did. Couriers are the last honest database."
+                            Text: "A dead letter. Return to sender, no such recipient. Addressee — record expunged. I have shelved wars with smaller labels than that. Marlow kept this in his bag? Of course he did. Couriers are the last honest database."
                         }
                     ],
                     Name: "Lucian — the dead letter",
@@ -122,11 +181,11 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "tag @s add scrub_report_filed"
+                                    Cmd: "function cobblemon_initiative:sidequest/personnel_file/file_report"
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "tellraw @initiator [{\"text\":\"Lucian cross-references the rezoning against his shelves and files it where arithmetic goes to be audited. The file on what the Company cannot count grows a chapter.\",\"color\":\"gold\"}]"
+                                    Cmd: "tellraw @initiator [{\"text\":\"Lucian cross-references the rezoning against her shelves and files it where arithmetic goes to be audited. The file on what the Company cannot count grows a chapter.\",\"color\":\"gold\"}]"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -149,7 +208,7 @@
                             Text: "A preliminary rezoning for a living garden. Greenspace 7 — the oldest thing in Hua Zhan with roots, graded like a shelf of stock. And in the comparator column, a greenhouse that did not exist last season outranks a garden older than the ledger."
                         },
                         {
-                            Text: "Note the finding. No auditable yield. They wrote down, in an official instrument, that a Venusaur does not produce. The file on what the Company cannot count grows faster than the file on what it can. Hand it here — this one files itself."
+                            Text: "Note the finding. No auditable yield. They wrote down, in an official instrument, that a Venusaur does not produce. The file on what the Company cannot count grows faster than the file on what it can. Hand it here — the records fee files itself too."
                         }
                     ],
                     Name: "Lucian — the yield report",
@@ -259,7 +318,7 @@
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "tellraw @initiator [{\"text\":\"Lucian copies every grade into his own ledger, then files the original where grades go to be forgotten.\",\"color\":\"gold\"}]"
+                                    Cmd: "tellraw @initiator [{\"text\":\"Lucian copies every grade into her own ledger, then files the original where grades go to be forgotten.\",\"color\":\"gold\"}]"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -388,6 +447,11 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:sidequest/memo/take_memo"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
                                     Cmd: "tag @s add memo_delivered"
                                 },
                                 {
@@ -439,7 +503,7 @@
                     Priority: 60,
                     Buttons: [
                         {
-                            Name: "Let him close the file",
+                            Name: "Let her close the file",
                             Actions: [
                                 {
                                     Type: "COMMAND",
@@ -552,6 +616,195 @@
                     ],
                     Name: "Lucian — the three records",
                     Label: "stage1_turnin"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "has_firstfurrow_deed"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "no_deed_read_lucian"
+                        }
+                    ],
+                    Priority: 49,
+                    Buttons: [
+                        {
+                            Name: "Take the deed back",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add deed_read_lucian"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "take_back_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "That is a deed. A real one — pre-Company hand, boundary oaths, a witness column with actual names in it. Old Deng kept this? Then Old Deng out-archived the archive. Let me read it. Reading is not taking; this one goes back in your bag, and it stays with the family it names."
+                        },
+                        {
+                            Text: "There. Copied into my ledger, original returned. Some papers should be filed. Some should be carried home. Knowing which is which is the whole job."
+                        }
+                    ],
+                    Name: "Lucian — the Firstfurrow deed",
+                    Label: "deed_reading"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "census_signed"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "no_id_read_lucian"
+                        }
+                    ],
+                    Priority: 48,
+                    Buttons: [
+                        {
+                            Name: "Pocket the ID",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add id_read_lucian"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "pocket_id_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Hold that up. A Provisional Resident ID — status pending review. So the Drive issued you an identity it admits it cannot verify, took your signature for it, and called the exchange a stipend. Keep it. I do not file forgeries, and I especially do not file the official kind."
+                        },
+                        {
+                            Text: "Noted in the ledger: the Company paid you to exist provisionally. When the review it is pending ever arrives, I want to be in the room."
+                        }
+                    ],
+                    Name: "Lucian — the provisional ID",
+                    Label: "id_reading"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "memo_delivered"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "badges_gte_1"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "memory_fragment_lt_3"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "no_hz_minutes_heard"
+                        }
+                    ],
+                    Priority: 47,
+                    Buttons: [
+                        {
+                            Name: "Read me the histories",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "lore_menu"
+                                }
+                            ],
+                            Label: "histories_button"
+                        },
+                        {
+                            Name: "I will keep my ears open",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Memo forty-four stroke C keeps bothering me. Internal distribution — which means somewhere a branch office files the minutes it is built on. The Eastern District branch in Hua Zhan holds a quarterly review, and no copy of its minutes has ever reached a public shelf."
+                        },
+                        {
+                            Text: "If you are heading east anyway — offices leak at the doors. The archive pays for live Company paper, and minutes are the liveliest paper there is."
+                        }
+                    ],
+                    Name: "Lucian — the eastern branch",
+                    Label: "branch_muse"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "docs_filed"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "no_notices_filed"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "badges_lt_3"
+                        }
+                    ],
+                    Priority: 46,
+                    Buttons: [
+                        {
+                            Name: "Read me the histories",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "lore_menu"
+                                }
+                            ],
+                            Label: "histories_button"
+                        },
+                        {
+                            Name: "Third badge. Noted.",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The three records are filed and the file is quiet — which is not the same as finished. The next chapter is being pasted up in a town you cannot argue with yet. Come back wearing a third badge and I will have work worth the walk."
+                        },
+                        {
+                            Text: "Until then: roads, badges, and anything on Company letterhead you happen to notice. The archive is patient. It is the only patient thing the Company ever built."
+                        }
+                    ],
+                    Name: "Lucian — the file waits",
+                    Label: "stage_bridge"
                 },
                 {
                     Conditions: [
@@ -751,6 +1004,177 @@
                     ],
                     Name: "Lucian — a vacuum in the file",
                     Label: "open_file"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "ci_papers_filed_gte_6"
+                        }
+                    ],
+                    Priority: 13,
+                    Buttons: [
+                        {
+                            Name: "Read me the histories",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "lore_menu"
+                                }
+                            ],
+                            Label: "histories_button"
+                        },
+                        {
+                            Name: "A word, off the record?",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "off_record_offer"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_off_record_started"
+                                }
+                            ],
+                            Label: "offrec_button"
+                        },
+                        {
+                            Name: "Enough for now",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Six filings and counting. You have your own shelf now — I did not plan that, the paper insisted. Boxes here are labeled by name. Yours is labeled by an absence, and it is the heaviest box in the room."
+                        },
+                        {
+                            Text: "Do you know what the Company would pay to know what is on that shelf? Neither do they. That is my favourite line item in the whole archive."
+                        }
+                    ],
+                    Name: "Lucian — a shelf with your handwriting",
+                    Label: "papers_heavy"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "ci_papers_filed_gte_3"
+                        }
+                    ],
+                    Priority: 12,
+                    Buttons: [
+                        {
+                            Name: "Read me the histories",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "lore_menu"
+                                }
+                            ],
+                            Label: "histories_button"
+                        },
+                        {
+                            Name: "A word, off the record?",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "off_record_offer"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_off_record_started"
+                                }
+                            ],
+                            Label: "offrec_button"
+                        },
+                        {
+                            Name: "Enough for now",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Three filings under one hand. The desk is starting to expect you — it saves the good clips for your paper now. Keep walking the roads; the roads keep writing things down."
+                        },
+                        {
+                            Text: "You bring in more Company paper than the Company files honestly. I have started a cross-reference. It has a shape already. I do not like the shape, which usually means it is true."
+                        }
+                    ],
+                    Name: "Lucian — the ledger grows heavier",
+                    Label: "papers_growing"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "perf_review_ghost"
+                        }
+                    ],
+                    Priority: 11,
+                    Buttons: [
+                        {
+                            Name: "Read me the histories",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "lore_menu"
+                                }
+                            ],
+                            Label: "histories_button"
+                        },
+                        {
+                            Name: "A word, off the record?",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "off_record_offer"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_off_record_started"
+                                }
+                            ],
+                            Label: "offrec_button"
+                        },
+                        {
+                            Name: "Enough for now",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Word reached the archive that the Takehara ladder audit closed with zero sightings on record. A whole tower of watchers and not one line item with your name in it. I have shelved careers louder than your footsteps. Whoever taught you to move like a misfiled page — my professional respect."
+                        }
+                    ],
+                    Name: "Lucian — the unsigned audit",
+                    Label: "ghost_regard"
                 },
                 {
                     Priority: 10,
@@ -1181,12 +1605,22 @@
         Invulnerable: 0b,
         LeftHanded: 0b,
         ModelData: {
+            Pose: "CUSTOM",
             DefaultPose: "STANDING",
-            Pose: "VANILLA",
-            Visible: {},
-            Rotation: {},
-            Position: {},
-            Scale: {}
+            Rotation: {
+                RightArm: [-1.1f, -0.15f, 0.0f, 1.0f],
+                LeftArm: [-1.1f, 0.15f, 0.0f, 1.0f],
+                RightLeg: [-1.6f, -0.1f, 0.0f, 1.0f],
+                LeftLeg: [-1.6f, 0.1f, 0.0f, 1.0f]
+            },
+            Position: {
+                Head: [0.0f, 5.0f, 0.0f],
+                Body: [0.0f, 5.0f, 0.0f],
+                RightArm: [0.0f, 5.0f, 0.0f],
+                LeftArm: [0.0f, 5.0f, 0.0f],
+                RightLeg: [0.0f, 5.0f, 0.0f],
+                LeftLeg: [0.0f, 5.0f, 0.0f]
+            }
         },
         Navigation: {
             Home: {
@@ -1251,7 +1685,7 @@
                 id: "minecraft:generic.max_health"
             },
             {
-                base: 0.5d,
+                base: 0.0d,
                 id: "minecraft:generic.movement_speed"
             }
         ],

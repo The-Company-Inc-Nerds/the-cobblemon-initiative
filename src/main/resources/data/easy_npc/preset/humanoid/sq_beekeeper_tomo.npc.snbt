@@ -572,37 +572,43 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "defeated_sq_sting_agent"
-                                        }
-                                    ],
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_sq_sting_agent"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "say Our engagement is concluded and filed. Do not disturb."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_sq_sting_agent"
-                                        }
-                                    ],
-                                    Cmd: "tbcs attach sq_sting_agent @s"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_sq_sting_agent"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:sq_sting_agent @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_sq_sting_agent"
-                                        }
-                                    ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs sq_sting_agent onwin {1: ['cobbledollars give @1 280', 'tag @1 add defeated_sq_sting_agent', '@2 say Asset intervention failed. Noting hostile local fauna and one uncooperative individual.', 'tag @1 add sting_seal_4_clear', 'give @1 cobblemon:poke_ball 2'], 2: ['@1 say The valuation stands. The Company thanks this route for its cooperation.']}"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_sq_sting_agent"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:sq_sting_agent onwin {1: ['cobbledollars give @1 280', 'tag @1 add defeated_sq_sting_agent', '@2 say Asset intervention failed. Noting hostile local fauna and one uncooperative individual.', 'tag @1 add sting_seal_4_clear', 'give @1 cobblemon:poke_ball 2'], 2: ['@1 say The valuation stands. The Company thanks this route for its cooperation.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -668,15 +674,6 @@
                                 }
                             ],
                             Label: "pry_four_button"
-                        },
-                        {
-                            Name: "Step back",
-                            Actions: [
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "step_back_button"
                         }
                     ],
                     Texts: [
@@ -705,7 +702,7 @@
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "tellraw @initiator [{\"text\":\"Field memo secured. Two towns over, someone is already measuring wheat.\",\"color\":\"gold\"}]"
+                                    Cmd: "tellraw @initiator [{\"text\":\"Field memo secured. Two towns over, someone is already measuring wheat — and the archivist in Sango pays a records fee for live Company paper.\",\"color\":\"gold\"}]"
                                 },
                                 {
                                     Type: "OPEN_NAMED_DIALOG",

@@ -39,7 +39,7 @@
                     Priority: 10,
                     Buttons: [
                         {
-                            Name: "Heal my team - 100 CD",
+                            Name: "Heal my team - posted rate",
                             Actions: [
                                 {
                                     Type: "COMMAND",
@@ -54,6 +54,20 @@
                             Label: "heal_button"
                         },
                         {
+                            Name: "What is the word around town?",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:sidequest/rumors/lila"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "rumor_button"
+                        },
+                        {
                             Name: "Not right now",
                             Actions: [
                                 {
@@ -65,7 +79,7 @@
                     ],
                     Texts: [
                         {
-                            Text: "Welcome to the Center. We can restore your team to full health - the Company revised the service schedule last quarter, so there is a small fee now. Verified care, verified invoice."
+                            Text: "Welcome to the Center. We can restore your team to full health - the service schedule was revised last quarter. Nobody will tell me by whom, only that the invoice arrives pre-verified."
                         },
                         {
                             Text: "You look like you have been through it. One hundred CobbleDollars and I will put your whole team right."
@@ -89,7 +103,7 @@
                     ],
                     Texts: [
                         {
-                            Text: "There. Rested and ready. We hope to see you again - the Company certainly hopes so, it is per-visit now."
+                            Text: "There. Rested and ready. We hope to see you again - someone upstream certainly does, it is per-visit now."
                         },
                         {
                             Text: "Your team is in the pink. Do try to keep them that way. The fee does add up, and adding up is rather the point these days."

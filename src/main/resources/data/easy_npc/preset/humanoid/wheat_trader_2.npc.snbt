@@ -17,6 +17,55 @@
                     {
                         Type: "OPEN_DEFAULT_DIALOG"
                     }
+                ],
+                ON_DISTANCE_TOUCH: [
+                    {
+                        Type: "COMMAND",
+                        ConditionDataSet: {
+                            ConditionDataSet: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "wheat_trader_hostile"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "dex_gte_2"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_wheat_trader_ambush"
+                                }
+                            ]
+                        },
+                        Cmd: "tbcs attach rctmod:wheat_trader_ambush @s"
+                    },
+                    {
+                        Type: "COMMAND",
+                        ExecAsUser: 1b,
+                        ConditionDataSet: {
+                            ConditionDataSet: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "wheat_trader_hostile"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "dex_gte_2"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_wheat_trader_ambush"
+                                }
+                            ]
+                        },
+                        Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:wheat_trader_ambush onwin {1: ['cobbledollars give @1 400', 'tag @1 add defeated_wheat_trader_ambush', '@2 say Fine. Fine! Take the fields. Take the ledgers. I never liked grain anyway.'], 2: ['@1 say Filed. The Company thanks you for your final contribution.']}"
+                    }
                 ]
             }
         },
@@ -50,52 +99,49 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "defeated_wheat_trader_ambush"
-                                        }
-                                    ],
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_wheat_trader_ambush"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "say No. We are not doing that twice. Word went out about you."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_wheat_trader_ambush"
-                                        }
-                                    ],
-                                    Cmd: "tbcs attach wheat_trader_ambush @s"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_wheat_trader_ambush"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:wheat_trader_ambush @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_wheat_trader_ambush"
-                                        }
-                                    ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs wheat_trader_ambush onwin {1: ['cobbledollars give @1 400', 'tag @1 add defeated_wheat_trader_ambush', '@2 say Fine. Fine! Take the fields. Take the ledgers. I never liked grain anyway.'], 2: ['@1 say Filed. The Company thanks you for your final contribution.']}"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_wheat_trader_ambush"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:wheat_trader_ambush onwin {1: ['cobbledollars give @1 400', 'tag @1 add defeated_wheat_trader_ambush', '@2 say Fine. Fine! Take the fields. Take the ledgers. I never liked grain anyway.'], 2: ['@1 say Filed. The Company thanks you for your final contribution.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
                             Label: "fight_button"
-                        },
-                        {
-                            Name: "Stand down",
-                            Actions: [
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "leave_button"
                         }
                     ],
                     Texts: [

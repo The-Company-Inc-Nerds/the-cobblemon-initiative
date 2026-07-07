@@ -12,7 +12,7 @@ DialogData: {
                         },
                         {
                             Type: "COMMAND",
-                            Cmd: "execute if entity @p[tag=defeated_%%TRAINER_ID%%] run tbcs attach %%TRAINER_ID%% @s"
+                            Cmd: "execute if entity @p[tag=defeated_%%TRAINER_ID%%] run tbcs attach rctmod:%%TRAINER_ID%% @s"
                         },
                         {
                             Type: "COMMAND",
@@ -24,7 +24,7 @@ DialogData: {
                                     Name: "defeated_%%TRAINER_ID%%"
                                 }
                             ],
-                            Cmd: "tbcs battle %%BATTLE_FORMAT:GEN_9_SINGLES|GEN_9_DOUBLES=GEN_9_SINGLES%% @s vs %%TRAINER_ID%% onwin {1: ['cobbledollars give @1 %%PRIZE=120%%', '@2 say %%WIN_LINE=Still sharp. Keep it that way.%%'], 2: ['@1 say %%LOSE_LINE=Off your game today. Run it back when you are ready.%%']}"
+                            Cmd: "tbcs battle %%BATTLE_FORMAT:GEN_9_SINGLES|GEN_9_DOUBLES=GEN_9_SINGLES%% @s vs rctmod:%%TRAINER_ID%% onwin {1: ['cobbledollars give @1 %%PRIZE=120%%', '@2 say %%WIN_LINE=Still sharp. Keep it that way.%%'], 2: ['@1 say %%LOSE_LINE=Off your game today. Run it back when you are ready.%%']}"
                         },
                         {
                             Type: "CLOSE_DIALOG"

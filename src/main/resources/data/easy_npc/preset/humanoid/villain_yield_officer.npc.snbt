@@ -50,52 +50,49 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "defeated_villain_yield_officer"
-                                        }
-                                    ],
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_villain_yield_officer"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "say The gate is yours. The manager is not. He is by the barn, and he is on the phone about me."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_villain_yield_officer"
-                                        }
-                                    ],
-                                    Cmd: "tbcs attach villain_yield_officer @s"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_yield_officer"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:villain_yield_officer @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_villain_yield_officer"
-                                        }
-                                    ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_yield_officer onwin {1: ['cobbledollars give @1 280', 'tag @1 add defeated_villain_yield_officer', '@2 say Perimeter integrity report: compromised. By one resident. I am not writing that down.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 100', '@1 say Asset protected. The Company thanks you for stress-testing our procedures.']}"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_yield_officer"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:villain_yield_officer onwin {1: ['cobbledollars give @1 280', 'tag @1 add defeated_villain_yield_officer', '@2 say Perimeter integrity report: compromised. By one resident. I am not writing that down.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 100', '@1 say Asset protected. The Company thanks you for stress-testing our procedures.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
                             Label: "yes_button"
-                        },
-                        {
-                            Name: "Goodbye",
-                            Actions: [
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "goodbye_button"
                         }
                     ],
                     Texts: [
@@ -124,52 +121,49 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "defeated_villain_yield_officer"
-                                        }
-                                    ],
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_villain_yield_officer"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "say The gate is yours. The manager is not. He is by the barn, and he is on the phone about me."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_villain_yield_officer"
-                                        }
-                                    ],
-                                    Cmd: "tbcs attach villain_yield_officer @s"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_yield_officer"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:villain_yield_officer @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_villain_yield_officer"
-                                        }
-                                    ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_yield_officer onwin {1: ['cobbledollars give @1 280', 'tag @1 add defeated_villain_yield_officer', '@2 say Perimeter integrity report: compromised. By one resident. I am not writing that down.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 100', '@1 say Asset protected. The Company thanks you for stress-testing our procedures.']}"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_yield_officer"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:villain_yield_officer onwin {1: ['cobbledollars give @1 280', 'tag @1 add defeated_villain_yield_officer', '@2 say Perimeter integrity report: compromised. By one resident. I am not writing that down.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 100', '@1 say Asset protected. The Company thanks you for stress-testing our procedures.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
                             Label: "yes_button"
-                        },
-                        {
-                            Name: "Goodbye",
-                            Actions: [
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "goodbye_button"
                         }
                     ],
                     Texts: [
@@ -191,37 +185,43 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "defeated_villain_yield_officer"
-                                        }
-                                    ],
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_villain_yield_officer"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "say The gate is yours. The manager is not. He is by the barn, and he is on the phone about me."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_villain_yield_officer"
-                                        }
-                                    ],
-                                    Cmd: "tbcs attach villain_yield_officer @s"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_yield_officer"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:villain_yield_officer @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_villain_yield_officer"
-                                        }
-                                    ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_yield_officer onwin {1: ['cobbledollars give @1 280', 'tag @1 add defeated_villain_yield_officer', '@2 say Perimeter integrity report: compromised. By one resident. I am not writing that down.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 100', '@1 say Asset protected. The Company thanks you for stress-testing our procedures.']}"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_yield_officer"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:villain_yield_officer onwin {1: ['cobbledollars give @1 280', 'tag @1 add defeated_villain_yield_officer', '@2 say Perimeter integrity report: compromised. By one resident. I am not writing that down.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 100', '@1 say Asset protected. The Company thanks you for stress-testing our procedures.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -258,52 +258,49 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "defeated_villain_yield_officer"
-                                        }
-                                    ],
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_villain_yield_officer"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "say The gate is yours. The manager is not. He is by the barn, and he is on the phone about me."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_villain_yield_officer"
-                                        }
-                                    ],
-                                    Cmd: "tbcs attach villain_yield_officer @s"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_yield_officer"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:villain_yield_officer @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_villain_yield_officer"
-                                        }
-                                    ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_yield_officer onwin {1: ['cobbledollars give @1 280', 'tag @1 add defeated_villain_yield_officer', '@2 say Perimeter integrity report: compromised. By one resident. I am not writing that down.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 100', '@1 say Asset protected. The Company thanks you for stress-testing our procedures.']}"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_yield_officer"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:villain_yield_officer onwin {1: ['cobbledollars give @1 280', 'tag @1 add defeated_villain_yield_officer', '@2 say Perimeter integrity report: compromised. By one resident. I am not writing that down.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 100', '@1 say Asset protected. The Company thanks you for stress-testing our procedures.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
                             Label: "yes_button"
-                        },
-                        {
-                            Name: "Goodbye",
-                            Actions: [
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "goodbye_button"
                         }
                     ],
                     Texts: [

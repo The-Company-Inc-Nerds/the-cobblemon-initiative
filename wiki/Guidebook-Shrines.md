@@ -8,51 +8,38 @@ _Optional side-content for the brave. Five elemental shrines, five trials, five 
 
 Scattered across the UPM 2 map are **five elemental shrines** — Dragon, Fairy, Ice, Fire, and Ground. Each is guarded by a small cult (four cultists and a robed leader) and wrapped around a **single self-contained challenge**. They are **pure side-content**: nothing in the main story gates on them, and the gym route never demands you clear one.
 
+The cults themselves are a short bracket: the four cultists chain in pairs (the third only fights you after the first, the fourth after the second), and the leader waits until both back-rank cultists are down. Each cultist pays **3× Ultra Ball** on defeat.
+
 Why bother?
 
-- **An elemental shrine crystal** (e.g. `cobblemon-initiative:fire_shrine_crystal`) — a trophy item, one per shrine.
+- **An elemental shrine crystal** — a trophy item, one per shrine.
 - **A bonus loot stack** on the High Priest's defeat. Most shrines drop **10× Rare Candy + 5× Diamonds**. The **Fire shrine is the prize** — its leader, High Priest Ignis, drops a **Master Ball + a Netherite Ingot**.
-- A completion achievement (`<element>_shrine_complete`) and a **title splash**: _"§6§lChallenge Complete!"_
+- A completion achievement per shrine and a golden **title splash**: _"Challenge Complete!"_
 
 > [!WARNING]
-> **Shrines are dangerous on a hardcore Nuzlocke run.** The shrine grounds are safe zones (no Nuzlocke faint damage there), but the *trials themselves* — falling parkour, blind teleport mazes, solo battles — can absolutely end your run. None of this is mandatory. Treat shrines as a flex, not a checkbox.
+> **Shrines are dangerous on a hardcore Nuzlocke run.** The shrine grounds suppress hostile mob spawns and the Dark Urge whisper — but **Nuzlocke faint damage applies everywhere**, shrine grounds included, and the *trials themselves* — falling parkour, hazard-floor ice, blind teleport mazes, solo battles — can absolutely end your run. None of this is mandatory. Treat shrines as a flex, not a checkbox.
+
+> [!NOTE]
+> **Content status (0.5.0):** the five shrine *challenges* — the parkour clocks, the gauntlets, the fairy tests — are live engine content. The shrine **cult battles** (all five leaders and their cultists) are not yet fightable in this build: their battle teams are unfinished placeholders. The Dragon shrine's three hydra stages have their staged teams specced, but advancing the gauntlet depends on those battles existing. The rewards and gating documented on this page are the shipped design.
 
 ---
 
-## How the shrine engine works (briefly)
+## The four trials
 
-All five shrines share **one polymorphic config model** — `ShrineChallengeConfig` — and one runtime manager, `ShrineChallengeManager`. Each shrine is just a small JSON file with a `type` field; the manager branches on that type to apply the right start behaviour, per-tick logic, and completion check. Adding or retuning a shrine is a data edit, not a code change.
+Every shrine wraps exactly **one self-contained trial**, started from its altar NPC or pressure plate (`/cobblemon-initiative shrine <id> start`). There are **four trial styles** across the five shrines:
 
-There are **four challenge types** across the five shrines:
-
-| Type | Shrines | What the engine does |
+| Trial style | Shrines | What you face |
 |------|---------|----------------------|
-| `hydra_gauntlet` | Dragon | Sequential trainer battles; **full party heal between stages** |
-| `fairy_tests` | Fairy | Five stat-checks on your lead Pokémon, then a solo battle |
-| `timed_parkour` | Ice, Fire | Wall-clock countdown; reach the finish line in time |
-| `dark_gauntlet` | Ground | Half health + perpetual blindness + periodic earthquake teleports |
+| Staged battle gauntlet | Dragon | Sequential trainer battles; **full party heal between stages** |
+| Bond trials | Fairy | Five tests of your lead Pokémon's bond, then a solo battle |
+| Timed parkour | Ice, Fire | A wall-clock countdown; reach the finish line in time |
+| Blind gauntlet | Ground | Half health + perpetual blindness + periodic earthquake teleports |
 
-```mermaid
-flowchart TD
-  A["/cobblemon-initiative shrine <id> start<br/>(from an Easy NPC dialog or pressure plate)"] --> B{"config.type"}
-  B -->|hydra_gauntlet| C["Stage 1 message<br/>battle → heal → next stage"]
-  B -->|fairy_tests| D["Present lead Pokemon<br/>run tests → resolve → solo battle"]
-  B -->|timed_parkour| E["Start timer<br/>tick countdown warnings"]
-  B -->|dark_gauntlet| F["Set health to half<br/>apply blindness + earthquakes"]
-  C --> G["completeChallenge()"]
-  D --> G
-  E -->|reach finish in time| G
-  F -->|defeat the leader| G
-  C -.->|"/shrine-abort"| X["clear effects + state<br/>(no penalty)"]
-  D -.->|"/shrine-abort"| X
-  E -.->|"/shrine-abort"| X
-  F -.->|"/shrine-abort"| X
-  G --> H["Crystal + loot + achievement<br/>Challenge Complete! splash"]
-```
-
-The manager runs once per server tick. It only does live work for the two "live" types — `timed_parkour` (counts down the clock, fires warnings, resets on timeout) and `dark_gauntlet` (refreshes blindness, runs the earthquake timer). The other two advance off **battle-victory events**, not the tick loop.
+The parkour clocks and the blind gauntlet's hazards run live the whole time you're inside; the battle-driven trials advance the moment you win the next fight. Whichever way it ends, completion pays the same way: crystal, loot, achievement, and the *"Challenge Complete!"* splash.
 
 > **Bail out any time:** `/shrine-abort` (no OP needed) clears the active challenge and all its effects with **zero penalty**. You can walk back in and restart whenever you like. Starting a shrine while one is already active simply resets the old one. See [[Commands]] for the full shrine command tree.
+
+*(For how one config model and one manager drive all five shrines under the hood, see the shrine challenge flow on [[Architecture Data Flows]].)*
 
 ---
 
@@ -63,17 +50,17 @@ The manager runs once per server tick. It only does live work for the two "live"
 | | |
 |---|---|
 | **Element** | Dragon |
-| **Type** | `hydra_gauntlet` |
+| **Trial** | Staged battle gauntlet |
 | **Guardian** | High Priest Draconis |
 | **Reward** | Dragon Shrine Crystal · 10× Rare Candy · 5× Diamond |
 
-**The trial:** Three trainer battles back to back — the "three heads" of the hydra (`dragon_hydra_1` → `2` → `3`). You must defeat each in order.
+**The trial:** Three staged trainer battles back to back — the "three heads" of the hydra. You must defeat each in order.
 
 **The mercy:** Between heads, **your entire party is fully healed**. You don't get to swap items or rest, but every stage starts you fresh.
 
 **Tips**
 - This is the most *battle-pure* shrine — no environmental tricks, just a triple gauntlet. The danger is purely Nuzlocke risk on the battles themselves.
-- The shrine grounds are a safe zone, so a faint here won't trigger the Nuzlocke damage screen — but a Pokémon lost in a Nuzlocke run is still a Pokémon lost. Bring a deep, type-prepared bench.
+- The shrine grounds keep the mobs and the whispers out, but they do **not** soften a faint — the Nuzlocke damage still lands on you, and a Pokémon lost in a Nuzlocke run is still a Pokémon lost. Bring a deep, type-prepared bench.
 - Healing between stages means you can afford to take some chip damage on head 1 and 2; what matters is winning, not winning clean.
 
 ### Fairy Shrine — "Five Tests of the Heart" ✨
@@ -81,7 +68,7 @@ The manager runs once per server tick. It only does live work for the two "live"
 | | |
 |---|---|
 | **Element** | Fairy |
-| **Type** | `fairy_tests` |
+| **Trial** | Bond trials |
 | **Guardian** | High Priestess Aurora |
 | **Reward** | Fairy Shrine Crystal · 10× Rare Candy · 5× Diamond |
 
@@ -107,23 +94,24 @@ The first four tests are **feedback-only** — run them freely to check where yo
 | | |
 |---|---|
 | **Element** | Ice |
-| **Type** | `timed_parkour` |
+| **Trial** | Timed parkour |
 | **Guardian** | High Priest Glacius |
 | **Reward** | Ice Shrine Crystal · 10× Rare Candy · 5× Diamond |
 | **Time limit** | **180 seconds** |
 
-**The trial:** Reach the summit before the cold claims you. A straight parkour race against a **wall-clock timer** — the engine doesn't care how you move, only that you tag the finish-line command block before the clock hits zero. You'll get countdown warnings at 60s, 30s, 10s, 5s, 3, 2, 1.
+**The trial:** Reach the summit before the cold claims you. A parkour race against a **wall-clock timer** — with a twist the other parkour shrine doesn't have: **the ice itself is a hazard.** Only one recorded safe path across the frozen floor is honest ground; step onto any ice *off* that path and the shrine punishes you — freezing damage, a glass-crack sound, and an instant teleport back to the start tile (the start tile is always safe). Tag the finish before the clock hits zero; you'll get countdown warnings at 60s, 30s, 10s, 5s, 3, 2, 1.
 
 **Tips**
-- 180 seconds is the *generous* parkour (Fire is tighter). Pace, don't sprint blindly.
-- **Timing out is harmless to progress** — the challenge just resets and you can restart. The thing that ends a hardcore run here is **the fall**, not the timer.
+- 180 seconds is the *generous* parkour timer (Fire is tighter) — but the hazard floor means the route matters more than the pace. Learn where the safe line runs before you commit to speed.
+- **Timing out is harmless to progress** — the challenge just resets and you can restart. What ends a hardcore run here is the chip damage of repeated hazard hits stacking onto a fall — the punishment teleport itself is survivable, but it *hurts*.
+- The safe path is authored per-world by the showrunner (and the whole hazard has a master toggle), so walk the course once gently before racing it.
 
 ### Fire Shrine — "Trial by Flame" 🔥
 
 | | |
 |---|---|
 | **Element** | Fire |
-| **Type** | `timed_parkour` |
+| **Trial** | Timed parkour |
 | **Guardian** | High Priest Ignis |
 | **Reward** | **Fire Shrine Crystal · Master Ball · Netherite Ingot** |
 | **Time limit** | **120 seconds** |
@@ -141,14 +129,14 @@ The first four tests are **feedback-only** — run them freely to check where yo
 | | |
 |---|---|
 | **Element** | Ground |
-| **Type** | `dark_gauntlet` |
+| **Trial** | Blind gauntlet |
 | **Guardian** | High Priest Terran |
 | **Reward** | Ground Shrine Crystal · 10× Rare Candy · 5× Diamond |
-| **Target** | Defeat `ground_shrine_leader` |
+| **Target** | Defeat **High Priest Terran** in the dark |
 
 **The trial — the most physically dangerous shrine.** On start the engine:
 
-1. **Halves your health** (`setHealth(maxHealth / 2)`).
+1. **Halves your health.**
 2. **Blinds you**, and **re-applies blindness every 5 seconds** so it never fades — you are effectively sightless for the whole maze.
 3. Runs an **earthquake every 45 seconds**: an explosion sound, brief nausea, and a **random teleport up to 20 blocks** in the horizontal plane with a randomized facing.
 
@@ -166,12 +154,14 @@ You win by finding and defeating **High Priest Terran** somewhere in the dark. `
 
 ## When to attempt each shrine
 
-Shrine cultists are gated behind the matching gym leader (e.g. the Ice shrine cult sits behind defeating **Nifl Town's** leader; the Ground shrine behind **Kalahar Reach**). In practice you'll be ready for a given shrine's *combat* around the time you've earned the corresponding element's badge — but the **environmental hazards** (falls, blind teleports, solo battles) scale with your nerve, not your level cap.
+Four of the five cults are gated behind the matching gym leader: **Fairy** behind Mystic Marsh, **Ground** behind Kalahar Reach, **Dragon** behind Ryujin Keep, **Ice** behind Nifl Town. The **Fire** cult is the exception — it answers only to a **Champion**: it unlocks after the Royal League, not after Scorchspire. In practice you'll be ready for a given shrine's *combat* around the time you've earned the gate — but the **environmental hazards** (falls, hazard ice, blind teleports, solo battles) scale with your nerve, not your level cap.
 
 ```mermaid
 flowchart LR
-  G["Gym badge<br/>(matching element)"] --> S["Shrine cult unlocks"]
+  G["Gym badge<br/>(matching element)"] --> S["Shrine cult unlocks<br/>(Fairy / Ground / Dragon / Ice)"]
+  RC["Royal League Champion"] --> SF["Fire shrine cult unlocks"]
   S --> T{"Pick your trial"}
+  SF --> T
   T --> D["Dragon: out-battle the hydra"]
   T --> F["Fairy: a raised shiny<br/>+ solo nerve"]
   T --> I["Ice / Fire: parkour skill<br/>+ a fall-safe plan"]
@@ -181,8 +171,8 @@ flowchart LR
 **Rules of thumb for a hardcore Nuzlocke:**
 
 - **Lowest risk:** Dragon (battle-only, heals between stages).
-- **Best payoff:** Fire (Master Ball + Netherite) — but mind the tight timer and the fall.
-- **Skill, not risk:** Ice (long timer, forgiving resets).
+- **Best payoff:** Fire (Master Ball + Netherite) — post-Champion only, and mind the tight timer and the fall.
+- **Skill, not risk:** Ice (long timer, forgiving resets — but stay on the safe line; the off-path ice bites).
 - **Commitment risk:** Fairy (solo battle with a Pokémon you can't afford to lose).
 - **Don't unless you're sure:** Ground (half health + blindness + random teleports over unknown terrain).
 
@@ -191,16 +181,16 @@ flowchart LR
 ## Hardcore safety checklist
 
 - **`/shrine-abort` is your panic button.** No permission, no penalty, instant effect-cleanup. Use it the moment a trial turns against you.
-- **Parkour (Ice/Fire):** the timer never kills you — the fall does. Walk the route first; the engine lets you reset for free. Consider a feather-fall / slow-fall buffer if your run allows, and never take the "tight" jump when the safe jump still beats the clock.
+- **Parkour (Ice/Fire):** the timer never kills you — the fall does, and on the Frozen Path so does the **off-path ice** (freeze damage + a punishment teleport back to the start). Walk the route first; the engine lets you reset for free. Consider a feather-fall / slow-fall buffer if your run allows, and never take the "tight" jump when the safe jump still beats the clock.
 - **Dark gauntlet (Ground):** you start at **half HP**, **blind**, and get **teleported up to 20 blocks every 45s**. If there's any drop near the maze, that teleport can throw you into it. This trial is genuinely run-ending — skip it if a death here would hurt.
 - **Fairy resolve:** this is a **solo battle**. On a Nuzlocke, the candidate Pokémon is alone and irreplaceable for the fight. Don't run `resolve` until that Pokémon can clearly win.
-- **The grounds are a safe zone, the trials are not.** Standing at the shrine suspends Nuzlocke faint damage, but a Pokémon lost in a shrine battle — or a player death from a fall — counts exactly the same as anywhere else.
+- **The grounds quiet the world, not the rules.** Standing at the shrine suppresses hostile spawns and the whispers — Nuzlocke faint damage still applies. A Pokémon lost in a shrine battle, the faint damage it deals you, or a player death from a fall all count exactly the same as anywhere else.
 
 ---
 
 ## Related pages
 
 - [[Guidebook Overview]] — the full campaign route and how shrines slot in
-- [[Architecture Overview]] — the `ShrineChallengeManager` engine and subsystem map
+- [[Architecture Overview]] · [[Architecture Data Flows]] — the shrine engine, the subsystem map, and the challenge flow
 - [[Commands]] — `/cobblemon-initiative shrine`, `/shrine-abort`, and the Fairy `test` subcommands
 - [[Guidebook Act II]] · [[Guidebook Act III]] — the main-story beats the shrines sit beside

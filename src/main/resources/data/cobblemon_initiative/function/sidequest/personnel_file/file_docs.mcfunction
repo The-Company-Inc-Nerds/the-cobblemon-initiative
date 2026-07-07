@@ -5,5 +5,11 @@
 function cobblemon_initiative:economy/payout {amount:300}
 give @s cobblemon:potion 3
 give @s cobblemon:antidote 1
+# Lucian actually TAKES the three records — custom_name component predicates matching the
+# exact set_name each give_doc_* writes (lore may be omitted: predicates match per-component;
+# the pattern is runtime-proven in memo/surrender_letter).
+clear @s minecraft:paper[minecraft:custom_name='{"color":"gold","italic":false,"text":"Portrait Backing — sun-faded"}'] 1
+clear @s minecraft:paper[minecraft:custom_name='{"color":"gold","italic":false,"text":"Ledger Page — re-signed"}'] 1
+clear @s minecraft:paper[minecraft:custom_name='{"color":"gold","italic":false,"text":"Founding Charter — Sango"}'] 1
 tag @s add docs_filed
 title @s actionbar [{"text":"Stage one filed. ","color":"gold"},{"text":"Lucian cross-references the three, and goes a little quiet.","color":"gray"}]

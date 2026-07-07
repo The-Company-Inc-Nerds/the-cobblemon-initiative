@@ -18,19 +18,21 @@ ActionData: {
         ON_DISTANCE_TOUCH: [
             {
                 Type: "COMMAND",
-                Cmd: "execute unless entity @p[tag=defeated_%%TRAINER_ID%%] run tbcs attach %%TRAINER_ID%% @s"
+                Cmd: "execute unless entity @p[tag=defeated_%%TRAINER_ID%%] run tbcs attach rctmod:%%TRAINER_ID%% @s"
             },
             {
                 Type: "COMMAND",
                 ExecAsUser: 1b,
-                Conditions: [
-                    {
-                        Type: "PLAYER_TAG",
-                        Operation: "EQUALS",
-                        Name: "no_defeated_%%TRAINER_ID%%"
-                    }
-                ],
-                Cmd: "tbcs battle %%BATTLE_FORMAT:GEN_9_SINGLES|GEN_9_DOUBLES=GEN_9_SINGLES%% @s vs %%TRAINER_ID%% onwin {1: ['cobbledollars give @1 %%PRIZE=150%%', 'tag @1 add defeated_%%TRAINER_ID%%', '@2 say %%WIN_LINE=This goes in my performance review, does it not...%%', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 %%LOSS_FEE=100%%', '@1 say %%LOSE_LINE=Asset recovered. The Company thanks you.%%']}"
+                ConditionDataSet: {
+                    ConditionDataSet: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "no_defeated_%%TRAINER_ID%%"
+                        }
+                    ]
+                },
+                Cmd: "tbcs battle %%BATTLE_FORMAT:GEN_9_SINGLES|GEN_9_DOUBLES=GEN_9_SINGLES%% @s vs rctmod:%%TRAINER_ID%% onwin {1: ['cobbledollars give @1 %%PRIZE=150%%', 'tag @1 add defeated_%%TRAINER_ID%%', '@2 say %%WIN_LINE=This goes in my performance review, does it not...%%', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 %%LOSS_FEE=100%%', '@1 say %%LOSE_LINE=Asset recovered. The Company thanks you.%%']}"
             }
         ]
     }

@@ -74,37 +74,43 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "defeated_ice_shrine_leader"
-                                        }
-                                    ],
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_ice_shrine_leader"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "say The frost already sealed you once. What is frozen does not freeze again."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_ice_shrine_leader"
-                                        }
-                                    ],
-                                    Cmd: "tbcs attach ice_shrine_leader @s"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_ice_shrine_leader"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:ice_shrine_leader @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_ice_shrine_leader"
-                                        }
-                                    ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs ice_shrine_leader onwin {1: ['cobbledollars give @1 2500', 'tag @1 add defeated_ice_shrine_leader', '@2 say The frost has set its seal on you and it will not thaw. Go, and keep your stillness.'], 2: ['@1 say The cold turns you away. Return when your resolve will not crack.']}"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_ice_shrine_leader"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:ice_shrine_leader onwin {1: ['cobbledollars give @1 2500', 'tag @1 add defeated_ice_shrine_leader', '@2 say The frost has set its seal on you and it will not thaw. Go, and keep your stillness.'], 2: ['@1 say The cold turns you away. Return when your resolve will not crack.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

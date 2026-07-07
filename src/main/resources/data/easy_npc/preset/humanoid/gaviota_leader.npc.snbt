@@ -74,37 +74,43 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "defeated_gaviota_leader"
-                                        }
-                                    ],
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_gaviota_leader"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "say Current Badge already, good. The port runs on CobbleDollars, and lately the dock pays come up light. Watch your coin near the water."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_gaviota_leader"
-                                        }
-                                    ],
-                                    Cmd: "tbcs attach gaviota_leader @s"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_gaviota_leader"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:gaviota_leader @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_gaviota_leader"
-                                        }
-                                    ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs gaviota_leader onwin {1: ['cobbledollars give @1 3200', 'tag @1 add defeated_gaviota_leader', '@2 say The tide turned and you turned with it. The Current Badge is yours. The sea does not give those out lightly.'], 2: ['@1 say You fought the current head on. Nobody wins that way. Learn to ride it and the water will carry you back to me.']}"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_gaviota_leader"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:gaviota_leader onwin {1: ['cobbledollars give @1 3200', 'tag @1 add defeated_gaviota_leader', '@2 say The tide turned and you turned with it. The Current Badge is yours, and Surf with it. The sea does not give either out lightly.'], 2: ['@1 say You fought the current head on. Nobody wins that way. Learn to ride it and the water will carry you back to me.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

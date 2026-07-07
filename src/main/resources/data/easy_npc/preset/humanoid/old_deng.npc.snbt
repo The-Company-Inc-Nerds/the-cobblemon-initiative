@@ -40,6 +40,34 @@
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
+                            Name: "homecoming_walking"
+                        }
+                    ],
+                    Priority: 40,
+                    Buttons: [
+                        {
+                            Name: "Keep walking",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "keep_walking_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Lead on. Yun sets the pace and I set the stories — the gate knows the rest of the way."
+                        }
+                    ],
+                    Name: "Old Deng — on the road home",
+                    Label: "walking"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
                             Name: "farm_1_free"
                         },
                         {
@@ -56,7 +84,7 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "function cobblemon_initiative:sidequest/tenants_of_record/homecoming"
+                                    Cmd: "function cobblemon_initiative:sidequest/tenants_of_record/walk"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -530,9 +558,9 @@
             DisableLayers: 0b,
             Name: "",
             Timestamp: 0L,
-            Type: "DEFAULT",
+            Type: "CUSTOM",
             URL: "",
-            UUID: [I; 0, 0, 0, 0]
+            UUID: [I; -617599428, 2050579579, -1704364670, 1531104361]
         },
         SoundData: {
             SoundDataSet: [
@@ -563,6 +591,7 @@
             }
         ],
         id: "easy_npc:humanoid",
-        CustomName: '{"text": "Old Deng", "color": "#FFFFFF"}'
+        CustomName: '{"text": "Old Deng", "color": "#FFFFFF"}',
+        Tags: ["deng_camp", "deng_old"]
     }
 }

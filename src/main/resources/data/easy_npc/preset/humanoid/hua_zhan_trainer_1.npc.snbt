@@ -57,7 +57,7 @@
                     ],
                     Texts: [
                         {
-                            Text: "Fairly grown, fairly cut. The court has no further argument with you."
+                            Text: "Fairly grown, fairly cut. The court has no further argument with you — feel how warm the stone still is."
                         },
                         {
                             Text: "The plaque in the stone beside me carries the first seal. Press your hand to the seal, and the moss will remember you as one of the patient."
@@ -70,41 +70,47 @@
                     Priority: 10,
                     Buttons: [
                         {
-                            Name: "Challenge the warden of the moss court",
+                            Name: "Wake the statue of the moss court",
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "defeated_hua_zhan_trainer_1"
-                                        }
-                                    ],
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_hua_zhan_trainer_1"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "say The court is already yours. The seal is in the stone beside me."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_hua_zhan_trainer_1"
-                                        }
-                                    ],
-                                    Cmd: "tbcs attach hua_zhan_trainer_1 @s"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_hua_zhan_trainer_1"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:hua_zhan_trainer_1 @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_hua_zhan_trainer_1"
-                                        }
-                                    ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs hua_zhan_trainer_1 onwin {1: ['tag @1 add defeated_hua_zhan_trainer_1', '@2 say Patience loses to patience sometimes. The court concedes — the seal will take your hand now.'], 2: ['@1 say The moss remembers every foot that rushed. Wait, grow, and walk the court again.']}"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_hua_zhan_trainer_1"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:hua_zhan_trainer_1 onwin {1: ['tag @1 add defeated_hua_zhan_trainer_1', '@2 say Patience loses to patience sometimes. The stone concedes — the seal will take your hand now.', '@2 execute at @s run particle minecraft:totem_of_undying ~ ~1.2 ~ 0.4 0.9 0.4 0.08 120 force', '@2 execute at @s run particle minecraft:end_rod ~ ~1 ~ 0.3 0.8 0.3 0.02 60 force', '@2 execute at @s run playsound minecraft:block.beacon.activate master @a ~ ~ ~ 1 1.3', 'effect give @2 minecraft:glowing 60 0 true'], 2: ['@1 say The moss remembers every foot that rushed. The statue did not move, and it did not need to. Wait, grow, and walk the court again.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -131,10 +137,10 @@
                     ],
                     Texts: [
                         {
-                            Text: "The moss court judges a challenger the way it judges a cutting — not by how fast you grow but by how well you wait. I have swept this stone longer than the badge has existed, and I have never once hurried."
+                            Text: "The moss court judges a challenger the way it judges a cutting — not by how fast you grow but by how well you wait. The old botany carved four stone wardens over its gardens, and it carved me first, arms folded, so the court would never forget how to stand still."
                         },
                         {
-                            Text: "The old botany allows me two words for visitors: prove it. My partners hold water and hate the torch. Show the court what you hold."
+                            Text: "I have kept this pose longer than the badge has existed, and I have never once hurried. The old botany allows a monument two words for visitors: prove it. My partner holds water and hates the torch. Wake the stone, and show the court what you hold."
                         }
                     ],
                     Name: "Lin — warden of the moss court",
@@ -211,13 +217,18 @@
         Invulnerable: 0b,
         LeftHanded: 0b,
         ModelData: {
+            Pose: "CUSTOM",
             DefaultPose: "STANDING",
-            Pose: "VANILLA",
-            Position: {},
-            Rotation: {},
-            Scale: {},
-            Visible: {
-                Boots: 1b
+            Rotation: {
+                Head: [0.0f, 0.0f, 0.0f, 1.0f],
+                RightArm: [-1.1f, -0.5f, 0.0f, 1.0f],
+                LeftArm: [-1.1f, 0.5f, 0.0f, 1.0f],
+                RightLeg: [0.0f, 0.0f, -0.05f, 1.0f],
+                LeftLeg: [0.0f, 0.0f, 0.05f, 1.0f]
+            },
+            Position: {
+                RightArm: [1.5f, 0.5f, -1.5f],
+                LeftArm: [-1.5f, 0.5f, -1.5f]
             }
         },
         Navigation: {
@@ -264,9 +275,9 @@
             DisableLayers: 0b,
             Name: "",
             Timestamp: 0L,
-            Type: "DEFAULT",
+            Type: "CUSTOM",
             URL: "",
-            UUID: [I; 0, 0, 0, 0]
+            UUID: [I; 59273303, -184656224, -1824359659, 884650298]
         },
         SoundData: {
             SoundDataSet: [

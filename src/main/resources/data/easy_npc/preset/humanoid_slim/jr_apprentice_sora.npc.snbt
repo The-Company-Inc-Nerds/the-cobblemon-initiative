@@ -74,37 +74,43 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "defeated_takehara_jr_apprentice"
-                                        }
-                                    ],
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_takehara_jr_apprentice"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "say We had our bout. Aiko is the one you want now - center of the greenhouse."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_takehara_jr_apprentice"
-                                        }
-                                    ],
-                                    Cmd: "tbcs attach takehara_jr_apprentice @s"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_takehara_jr_apprentice"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:takehara_jr_apprentice @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_takehara_jr_apprentice"
-                                        }
-                                    ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs takehara_jr_apprentice onwin {1: ['tag @1 add defeated_takehara_jr_apprentice', '@2 say Stung and fair. My senior is deeper in, by the tall vines - Aiko. Tell her I softened you up.'], 2: ['@1 say The little bees win again. Patch up and come back through.']}"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_takehara_jr_apprentice"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:takehara_jr_apprentice onwin {1: ['tag @1 add defeated_takehara_jr_apprentice', '@2 say Stung and fair. My senior is deeper in, by the tall vines - Aiko. Tell her I softened you up.'], 2: ['@1 say The little bees win again. Patch up and come back through.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -132,6 +138,83 @@
                     ],
                     Name: "Sora - junior, not gentle",
                     Label: "default"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "takehara_tower_gte_1"
+                        }
+                    ],
+                    Priority: 25,
+                    Buttons: [
+                        {
+                            Name: "Challenge the Jr. Apprentice",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_takehara_jr_apprentice"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "say We had our bout. Aiko is the one you want now - center of the greenhouse."
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_takehara_jr_apprentice"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:takehara_jr_apprentice_weak @s"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_takehara_jr_apprentice"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:takehara_jr_apprentice_weak onwin {1: ['tag @1 add defeated_takehara_jr_apprentice', '@2 say Stung and fair. My senior is deeper in, by the tall vines - Aiko. Tell her I softened you up.'], 2: ['@1 say The little bees win again. Patch up and come back through.']}"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "battle_button"
+                        },
+                        {
+                            Name: "Not yet",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "You went through the tower first? Half my rotation trains up there. Fine — you get the tired half of my team, and I get an early lunch."
+                        }
+                    ],
+                    Name: "Sora - junior, not gentle",
+                    Label: "ready_weakened"
                 }
             ]
         },

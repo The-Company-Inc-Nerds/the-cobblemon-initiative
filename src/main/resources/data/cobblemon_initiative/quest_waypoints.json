@@ -1,0 +1,982 @@
+{
+  "quests": [
+    {
+      "holder": "q.main",
+      "name": "Main Objective",
+      "stages": [
+        {
+          "if_tags": [
+            "defeated_villain_final_boss"
+          ],
+          "label": "Hunt the Ender Dragon"
+        },
+        {
+          "if_tags": [
+            "royal_league_champion"
+          ],
+          "not_tags": [
+            "defeated_villain_final_boss"
+          ],
+          "scores": [
+            {
+              "objective": "quest_hud",
+              "holder": "#board",
+              "op": "gte",
+              "value": 4
+            }
+          ],
+          "label": "Face The Founder",
+          "x": 1590.0,
+          "y": 51.0,
+          "z": 1028.0
+        },
+        {
+          "if_tags": [
+            "royal_league_champion"
+          ],
+          "not_tags": [
+            "defeated_villain_final_boss"
+          ],
+          "scores": [
+            {
+              "objective": "quest_hud",
+              "holder": "#board",
+              "op": "lte",
+              "value": 3
+            }
+          ],
+          "label": "Hunt the Board of Directors"
+        },
+        {
+          "if_tags": [
+            "defeated_villain_boss"
+          ],
+          "not_tags": [
+            "royal_league_champion"
+          ],
+          "scores": [
+            {
+              "objective": "memory_fragment",
+              "op": "eq",
+              "value": 10
+            }
+          ],
+          "label": "Challenge the Royal League",
+          "x": 3528.0,
+          "y": 166.0,
+          "z": 2773.0
+        },
+        {
+          "not_tags": [
+            "defeated_villain_boss"
+          ],
+          "scores": [
+            {
+              "objective": "memory_fragment",
+              "op": "gte",
+              "value": 7
+            },
+            {
+              "objective": "fields_liberated",
+              "op": "lte",
+              "value": 3
+            }
+          ],
+          "label": "Liberate wheat fields, then raid HQ"
+        },
+        {
+          "not_tags": [
+            "defeated_villain_boss"
+          ],
+          "scores": [
+            {
+              "objective": "memory_fragment",
+              "op": "gte",
+              "value": 7
+            },
+            {
+              "objective": "fields_liberated",
+              "op": "gte",
+              "value": 4
+            }
+          ],
+          "label": "Raid Company HQ  [1590 51 1028]",
+          "x": 1590.0,
+          "y": 51.0,
+          "z": 1028.0
+        },
+        {
+          "not_tags": [
+            "mom_sent_to_lab"
+          ],
+          "scores": [
+            {
+              "objective": "memory_fragment",
+              "op": "eq",
+              "value": 0
+            }
+          ],
+          "label": "Talk to Mom",
+          "x": 2607.5,
+          "y": 109.0,
+          "z": 2847.5
+        },
+        {
+          "if_tags": [
+            "mom_sent_to_lab"
+          ],
+          "not_tags": [
+            "chose_starter"
+          ],
+          "scores": [
+            {
+              "objective": "memory_fragment",
+              "op": "eq",
+              "value": 0
+            }
+          ],
+          "label": "Visit Professor Acacia at the lab",
+          "x": 2674.5,
+          "y": 128.0,
+          "z": 2901.5
+        },
+        {
+          "if_tags": [
+            "chose_starter"
+          ],
+          "not_tags": [
+            "got_pokedex"
+          ],
+          "scores": [
+            {
+              "objective": "memory_fragment",
+              "op": "eq",
+              "value": 0
+            }
+          ],
+          "label": "Take the Pokedex from Acacia",
+          "x": 2674.5,
+          "y": 128.0,
+          "z": 2901.5
+        },
+        {
+          "if_tags": [
+            "got_pokedex"
+          ],
+          "not_tags": [
+            "got_running_shoes"
+          ],
+          "scores": [
+            {
+              "objective": "memory_fragment",
+              "op": "eq",
+              "value": 0
+            }
+          ],
+          "label": "Show Mom your Pokedex",
+          "x": 2607.5,
+          "y": 109.0,
+          "z": 2847.5
+        },
+        {
+          "scores": [
+            {
+              "objective": "memory_fragment",
+              "op": "eq",
+              "value": 0
+            }
+          ],
+          "label": "Defeat the Takehara Falls Gym",
+          "x": 2055.5,
+          "y": 138.0,
+          "z": 2460.5
+        },
+        {
+          "scores": [
+            {
+              "objective": "memory_fragment",
+              "op": "eq",
+              "value": 1
+            }
+          ],
+          "label": "Defeat the Hua Zhan City Gym",
+          "x": 1504.0,
+          "y": 86.0,
+          "z": 2042.0
+        },
+        {
+          "scores": [
+            {
+              "objective": "memory_fragment",
+              "op": "eq",
+              "value": 2
+            }
+          ],
+          "label": "Defeat the Mystic Marsh Gym",
+          "x": 1072.0,
+          "y": 64.0,
+          "z": 2459.0
+        },
+        {
+          "scores": [
+            {
+              "objective": "memory_fragment",
+              "op": "eq",
+              "value": 3
+            }
+          ],
+          "label": "Defeat the Deepcore City Gym",
+          "x": 1108.0,
+          "y": 64.0,
+          "z": 3205.0
+        },
+        {
+          "scores": [
+            {
+              "objective": "memory_fragment",
+              "op": "eq",
+              "value": 4
+            }
+          ],
+          "label": "Defeat the Gaviota Port Gym",
+          "x": 570.0,
+          "y": 64.0,
+          "z": 3529.0
+        },
+        {
+          "scores": [
+            {
+              "objective": "memory_fragment",
+              "op": "eq",
+              "value": 5
+            }
+          ],
+          "label": "Defeat the Kalahar Reach Gym",
+          "x": 2042.0,
+          "y": 64.0,
+          "z": 4076.0
+        },
+        {
+          "scores": [
+            {
+              "objective": "memory_fragment",
+              "op": "eq",
+              "value": 6
+            }
+          ],
+          "label": "Defeat the Cyber City Gym",
+          "x": 1500.0,
+          "y": 64.0,
+          "z": 1163.0
+        },
+        {
+          "scores": [
+            {
+              "objective": "memory_fragment",
+              "op": "eq",
+              "value": 7
+            }
+          ],
+          "label": "Defeat the Ryujin Keep Gym",
+          "x": 2249.0,
+          "y": 64.0,
+          "z": 953.0
+        },
+        {
+          "scores": [
+            {
+              "objective": "memory_fragment",
+              "op": "eq",
+              "value": 8
+            }
+          ],
+          "label": "Defeat the Nifl Town Gym",
+          "x": 3590.0,
+          "y": 64.0,
+          "z": 2018.0
+        },
+        {
+          "scores": [
+            {
+              "objective": "memory_fragment",
+              "op": "eq",
+              "value": 9
+            }
+          ],
+          "label": "Defeat the Scorchspire Gym",
+          "x": 3662.0,
+          "y": 64.0,
+          "z": 4542.0
+        }
+      ]
+    },
+    {
+      "holder": "q.side_opening",
+      "name": "Opening Chain",
+      "stages": [
+        {
+          "if_tags": [
+            "mom_sent_to_lab"
+          ],
+          "not_tags": [
+            "chose_starter"
+          ],
+          "label": "Choose a partner at the Sango lab",
+          "x": 2674.5,
+          "y": 128.0,
+          "z": 2901.5
+        },
+        {
+          "if_tags": [
+            "chose_starter"
+          ],
+          "not_tags": [
+            "got_pokedex"
+          ],
+          "label": "Take the Pokedex from Acacia",
+          "x": 2674.5,
+          "y": 128.0,
+          "z": 2901.5
+        },
+        {
+          "if_tags": [
+            "got_pokedex"
+          ],
+          "not_tags": [
+            "got_running_shoes"
+          ],
+          "label": "Show Mom your Pokedex",
+          "x": 2607.5,
+          "y": 109.0,
+          "z": 2847.5
+        }
+      ]
+    },
+    {
+      "holder": "q.side_wheat",
+      "name": "The Wheat War",
+      "stages": [
+        {
+          "if_tags": [
+            "wheat_war_active",
+            "heard_wheat_pitch"
+          ],
+          "label": "Liberate the occupied fields  $(fields)/6"
+        }
+      ]
+    },
+    {
+      "holder": "q.side_partner",
+      "name": "Dex-Unlock Partners",
+      "stages": [
+        {
+          "if_tags": [
+            "chose_starter",
+            "dex_gte_15"
+          ],
+          "not_tags": [
+            "second_starter_unlocked"
+          ],
+          "label": "A second partner awaits — see Prof. Acacia",
+          "x": 2674.5,
+          "y": 128.0,
+          "z": 2901.5
+        },
+        {
+          "if_tags": [
+            "second_starter_unlocked"
+          ],
+          "not_tags": [
+            "second_starter_claimed"
+          ],
+          "label": "Claim your second partner at the lab",
+          "x": 2675.5,
+          "y": 128.0,
+          "z": 2901.0
+        },
+        {
+          "if_tags": [
+            "second_starter_claimed",
+            "dex_gte_30"
+          ],
+          "not_tags": [
+            "third_starter_unlocked"
+          ],
+          "label": "A third partner awaits — see Prof. Acacia",
+          "x": 2674.5,
+          "y": 128.0,
+          "z": 2901.5
+        },
+        {
+          "if_tags": [
+            "third_starter_unlocked"
+          ],
+          "not_tags": [
+            "third_starter_claimed"
+          ],
+          "label": "Claim your third partner at the lab",
+          "x": 2675.5,
+          "y": 128.0,
+          "z": 2901.0
+        }
+      ]
+    },
+    {
+      "holder": "q.side_green",
+      "name": "Verified Growth (The Greenhouse Tour)",
+      "stages": [
+        {
+          "if_tags": [
+            "hz_arrived"
+          ],
+          "not_tags": [
+            "wheat_named"
+          ],
+          "label": "Tour the Verified Growth greenhouse",
+          "x": 1482.5,
+          "y": 87.0,
+          "z": 2166.5
+        }
+      ]
+    },
+    {
+      "holder": "q.side_pilgrim",
+      "name": "The Four Gardens Pilgrimage",
+      "stages": [
+        {
+          "not_tags": [
+            "pilgrimage_done"
+          ],
+          "scores": [
+            {
+              "objective": "quest_hud",
+              "holder": "#seals",
+              "op": "gte",
+              "value": 1
+            }
+          ],
+          "label": "Garden seals  $(seals)/4",
+          "x": 1461.0,
+          "y": 88.0,
+          "z": 2069.0
+        }
+      ]
+    },
+    {
+      "holder": "q.side_minutes",
+      "name": "Minutes of the Quarterly Review",
+      "stages": [
+        {
+          "if_tags": [
+            "hz_office_warned"
+          ],
+          "not_tags": [
+            "hz_minutes_heard"
+          ],
+          "label": "Ears on the top-floor door",
+          "x": 1535.5,
+          "y": 99.0,
+          "z": 1996.5
+        },
+        {
+          "if_tags": [
+            "hz_minutes_heard"
+          ],
+          "not_tags": [
+            "hz_minutes_filed"
+          ],
+          "label": "Deliver the minutes to Lucian in Sango",
+          "x": 2626.5,
+          "y": 118.06,
+          "z": 2776.5
+        }
+      ]
+    },
+    {
+      "holder": "q.side_survey",
+      "name": "Grain In, Goods Out (The Miller Walk)",
+      "stages": [
+        {
+          "if_tags": [
+            "hz_survey_active",
+            "hz_saw_pitch",
+            "hz_saw_granary"
+          ],
+          "not_tags": [
+            "hz_survey_paid"
+          ],
+          "label": "Report the survey to Guo the Miller",
+          "x": 1511.5,
+          "y": 84.0,
+          "z": 1987.5
+        },
+        {
+          "if_tags": [
+            "hz_survey_active"
+          ],
+          "not_tags": [
+            "hz_survey_paid"
+          ],
+          "label": "Survey the grain market for the miller",
+          "x": 1538.5,
+          "y": 86.0,
+          "z": 2001.5
+        }
+      ]
+    },
+    {
+      "holder": "q.side_prices",
+      "name": "Adjusted Retail (The Price Check)",
+      "stages": [
+        {
+          "if_tags": [
+            "hz_price_check_active"
+          ],
+          "not_tags": [
+            "hz_prices_done"
+          ],
+          "label": "Price checks noted  $(prices)/3",
+          "x": 1544.5,
+          "y": 86.0,
+          "z": 2059.5
+        }
+      ]
+    },
+    {
+      "holder": "q.side_ascent",
+      "name": "Cascade Ascent",
+      "stages": [
+        {
+          "if_tags": [
+            "ci_ascending"
+          ],
+          "not_tags": [
+            "sq_cascade_done"
+          ],
+          "label": "Base to crest before the clock dies"
+        }
+      ]
+    },
+    {
+      "holder": "q.side_classic",
+      "name": "Sango Classic",
+      "stages": [
+        {
+          "if_tags": [
+            "classic_rod_given"
+          ],
+          "not_tags": [
+            "sango_classic_champion"
+          ],
+          "label": "Three fish before the bar empties",
+          "x": 2570.5,
+          "y": 111.0,
+          "z": 2856.5
+        },
+        {
+          "if_tags": [
+            "classic_active"
+          ],
+          "not_tags": [
+            "sango_classic_champion"
+          ],
+          "label": "Three fish before the bar empties",
+          "x": 2570.5,
+          "y": 111.0,
+          "z": 2856.5
+        }
+      ]
+    },
+    {
+      "holder": "q.side_shift",
+      "name": "Roadside Work Orders — Night Shift",
+      "stages": [
+        {
+          "if_tags": [
+            "work_night_active"
+          ],
+          "not_tags": [
+            "work_night_paid"
+          ],
+          "label": "Cull eight on Blossom Path tonight",
+          "x": 2185.0,
+          "y": 64.0,
+          "z": 2786.0
+        },
+        {
+          "if_tags": [
+            "work_night_done"
+          ],
+          "not_tags": [
+            "work_night_paid"
+          ],
+          "label": "Collect night pay from Tetsu"
+        }
+      ]
+    },
+    {
+      "holder": "q.side_bones",
+      "name": "Natural History",
+      "stages": [
+        {
+          "if_tags": [
+            "sq_museum_brush"
+          ],
+          "not_tags": [
+            "sq_museum_donation_done"
+          ],
+          "label": "Six bones complete the exhibit",
+          "x": 1902.5,
+          "y": 114.0,
+          "z": 2337.5
+        }
+      ]
+    },
+    {
+      "holder": "q.side_memo",
+      "name": "Per My Last Memo",
+      "stages": [
+        {
+          "if_tags": [
+            "ckpt_warned"
+          ],
+          "not_tags": [
+            "memo_heard"
+          ],
+          "label": "Ears on the checkpoint tent"
+        },
+        {
+          "if_tags": [
+            "memo_heard"
+          ],
+          "not_tags": [
+            "memo_delivered"
+          ],
+          "label": "Bring Memo 44-C to Lucian",
+          "x": 2626.5,
+          "y": 118.06,
+          "z": 2776.5
+        }
+      ]
+    },
+    {
+      "holder": "q.side_letter",
+      "name": "No Such Recipient",
+      "stages": [
+        {
+          "if_tags": [
+            "carrying_dead_letter"
+          ],
+          "label": "Walk the dead letter to Lucian",
+          "x": 2626.5,
+          "y": 118.06,
+          "z": 2776.5
+        },
+        {
+          "if_tags": [
+            "letter_delivered"
+          ],
+          "not_tags": [
+            "marlow_thanks_done",
+            "carrying_dead_letter"
+          ],
+          "label": "Tell Marlow how it ended",
+          "x": 2656.5,
+          "y": 106.0,
+          "z": 2897.5
+        },
+        {
+          "if_tags": [
+            "letter_surrendered"
+          ],
+          "not_tags": [
+            "marlow_thanks_done",
+            "carrying_dead_letter"
+          ],
+          "label": "Tell Marlow how it ended",
+          "x": 2656.5,
+          "y": 106.0,
+          "z": 2897.5
+        }
+      ]
+    },
+    {
+      "holder": "q.side_file",
+      "name": "The Incomplete File",
+      "stages": [
+        {
+          "if_tags": [
+            "sold_docs"
+          ],
+          "label": "The record is Company property now"
+        },
+        {
+          "if_tags": [
+            "docs_filed"
+          ],
+          "not_tags": [
+            "notices_filed",
+            "sold_docs"
+          ],
+          "scores": [
+            {
+              "objective": "memory_fragment",
+              "op": "lte",
+              "value": 2
+            }
+          ],
+          "label": "Lucian waits on a third badge",
+          "x": 2626.5,
+          "y": 118.06,
+          "z": 2776.5
+        },
+        {
+          "if_tags": [
+            "file_opened"
+          ],
+          "not_tags": [
+            "notices_filed",
+            "sold_docs"
+          ],
+          "label": "Rebuild the record for Lucian",
+          "x": 2626.5,
+          "y": 118.06,
+          "z": 2776.5
+        },
+        {
+          "if_tags": [
+            "notices_filed",
+            "defeated_villain_boss"
+          ],
+          "not_tags": [
+            "file_refiled"
+          ],
+          "label": "The file can close — see Lucian",
+          "x": 2626.5,
+          "y": 118.06,
+          "z": 2776.5
+        }
+      ]
+    },
+    {
+      "holder": "q.side_offrec",
+      "name": "Off the Record",
+      "stages": [
+        {
+          "if_tags": [
+            "off_record_started"
+          ],
+          "not_tags": [
+            "off_record_complete"
+          ],
+          "label": "Quiet errands for Lucian",
+          "x": 2626.5,
+          "y": 118.06,
+          "z": 2776.5
+        }
+      ]
+    },
+    {
+      "holder": "q.side_watch",
+      "name": "First Night Watch",
+      "stages": [
+        {
+          "if_tags": [
+            "farm_1_free"
+          ],
+          "not_tags": [
+            "first_watch_done"
+          ],
+          "label": "Light the gate lantern at dusk",
+          "x": 1550.5,
+          "y": 88.0,
+          "z": 2470.5
+        }
+      ]
+    },
+    {
+      "holder": "q.side_sprint",
+      "name": "Quarterly Sprint",
+      "stages": [
+        {
+          "if_tags": [
+            "ci_sprinting"
+          ],
+          "not_tags": [
+            "race_won"
+          ],
+          "label": "Ring the bell at the Takehara arch",
+          "x": 1924.0,
+          "y": 110.0,
+          "z": 2584.0
+        }
+      ]
+    },
+    {
+      "holder": "q.side_audit",
+      "name": "Greenspace 7, Under-Performing",
+      "stages": [
+        {
+          "if_tags": [
+            "audit_warned"
+          ],
+          "not_tags": [
+            "yield_report_taken"
+          ],
+          "label": "The gym gate audit — get the draft",
+          "x": 1505.5,
+          "y": 86.0,
+          "z": 2043.5
+        },
+        {
+          "if_tags": [
+            "yield_report_taken"
+          ],
+          "not_tags": [
+            "scrub_report_filed"
+          ],
+          "label": "File the yield report with Lucian",
+          "x": 2626.5,
+          "y": 118.06,
+          "z": 2776.5
+        }
+      ]
+    },
+    {
+      "holder": "q.side_sting",
+      "name": "Sting Operation",
+      "stages": [
+        {
+          "if_tags": [
+            "sting_seal_1"
+          ],
+          "not_tags": [
+            "sting_reward_paid"
+          ],
+          "label": "Walk the four seals with Tomo",
+          "x": 1920.5,
+          "y": 105.0,
+          "z": 2569.5
+        }
+      ]
+    },
+    {
+      "holder": "q.side_posters",
+      "name": "Notice of Non-Compliance",
+      "stages": [
+        {
+          "if_tags": [
+            "sq_posters_started"
+          ],
+          "not_tags": [
+            "sq_posters_done"
+          ],
+          "label": "Paste three moth prints unseen",
+          "x": 1915.0,
+          "y": 64.0,
+          "z": 2467.0
+        }
+      ]
+    },
+    {
+      "holder": "q.side_census",
+      "name": "Head Count",
+      "stages": [
+        {
+          "if_tags": [
+            "census_accepted"
+          ],
+          "not_tags": [
+            "census_paid"
+          ],
+          "label": "Log a verified capture for Ume"
+        }
+      ]
+    },
+    {
+      "holder": "q.side_deng",
+      "name": "Tenants of Record",
+      "stages": [
+        {
+          "if_tags": [
+            "homecoming_walking"
+          ],
+          "not_tags": [
+            "homecoming_paid"
+          ],
+          "label": "Lead the Dengs to the Firstfurrow gate",
+          "x": 1579.5,
+          "y": 88.0,
+          "z": 2461.5
+        },
+        {
+          "if_tags": [
+            "farm_1_free"
+          ],
+          "not_tags": [
+            "homecoming_paid"
+          ],
+          "label": "Walk the Deng family home",
+          "x": 1478.5,
+          "y": 90.0,
+          "z": 2440.5
+        }
+      ]
+    },
+    {
+      "holder": "q.side_manifest",
+      "name": "Right of Way",
+      "stages": [
+        {
+          "if_tags": [
+            "took_route_manifest"
+          ],
+          "not_tags": [
+            "manifest_paid"
+          ],
+          "label": "Bring the route manifest to Lucian",
+          "x": 2626.5,
+          "y": 118.06,
+          "z": 2776.5
+        }
+      ]
+    },
+    {
+      "holder": "q.side_papers",
+      "name": "Filing Day",
+      "stages": [
+        {
+          "scores": [
+            {
+              "objective": "ci_papers_held",
+              "op": "gte",
+              "value": 2
+            }
+          ],
+          "label": "File with Lucian: $(papers) papers",
+          "x": 2626.5,
+          "y": 118.06,
+          "z": 2776.5
+        }
+      ]
+    },
+    {
+      "holder": "q.side_clinic",
+      "name": "Preferred Provider",
+      "stages": [
+        {
+          "if_tags": [
+            "clinic_supply_started"
+          ],
+          "not_tags": [
+            "clinic_stocked"
+          ],
+          "label": "Clinic list: 8 oran, 4 pecha, 2 cheri",
+          "x": 2677.5,
+          "y": 118.0,
+          "z": 2931.5
+        }
+      ]
+    }
+  ]
+}

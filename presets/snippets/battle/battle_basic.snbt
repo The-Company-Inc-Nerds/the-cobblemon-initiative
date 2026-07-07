@@ -8,12 +8,12 @@ DialogData: {
                     Actions: [
                         {
                             Type: "COMMAND",
-                            Cmd: "tbcs attach %%TRAINER_ID%% @s"
+                            Cmd: "tbcs attach rctmod:%%TRAINER_ID%% @s"
                         },
                         {
                             Type: "COMMAND",
                             ExecAsUser: 1b,
-                            Cmd: "tbcs battle %%BATTLE_FORMAT:GEN_9_SINGLES|GEN_9_DOUBLES=GEN_9_SINGLES%% @s vs %%TRAINER_ID%% onwin {1: ['cobbledollars give @1 %%PRIZE=200%%', 'tag @1 add defeated_%%TRAINER_ID%%', '@2 say %%WIN_LINE=Impossible. The numbers favored me.%%'], 2: ['@1 say %%LOSE_LINE=Better luck next quarter.%%']}"
+                            Cmd: "tbcs battle %%BATTLE_FORMAT:GEN_9_SINGLES|GEN_9_DOUBLES=GEN_9_SINGLES%% @s vs rctmod:%%TRAINER_ID%% onwin {1: ['cobbledollars give @1 %%PRIZE=200%%', 'tag @1 add defeated_%%TRAINER_ID%%', '@2 say %%WIN_LINE=Impossible. The numbers favored me.%%'], 2: ['@1 say %%LOSE_LINE=Better luck next quarter.%%']}"
                         },
                         {
                             Type: "CLOSE_DIALOG"

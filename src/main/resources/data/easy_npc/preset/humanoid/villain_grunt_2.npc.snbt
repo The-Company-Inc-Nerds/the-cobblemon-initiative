@@ -50,52 +50,49 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "defeated_villain_grunt_2"
-                                        }
-                                    ],
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_villain_grunt_2"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "say We have a file open on you now. I do not need a second look. Move along."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_villain_grunt_2"
-                                        }
-                                    ],
-                                    Cmd: "tbcs attach villain_grunt_2 @s"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_grunt_2"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:villain_grunt_2 @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_villain_grunt_2"
-                                        }
-                                    ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_grunt_2 onwin {1: ['cobbledollars give @1 240', 'tag @1 add defeated_villain_grunt_2', '@2 say Logged as an unscheduled deviation. The outpost will note your face.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 110', '@1 say Asset secured. The Company appreciates your cooperation.']}"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_grunt_2"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:villain_grunt_2 onwin {1: ['cobbledollars give @1 240', 'tag @1 add defeated_villain_grunt_2', '@2 say Logged as an unscheduled deviation. The outpost will note your face.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 110', '@1 say Asset secured. The Company appreciates your cooperation.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
                             Label: "yes_button"
-                        },
-                        {
-                            Name: "Goodbye",
-                            Actions: [
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "goodbye_button"
                         }
                     ],
                     Texts: [
@@ -124,52 +121,49 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "defeated_villain_grunt_2"
-                                        }
-                                    ],
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_villain_grunt_2"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "say We have a file open on you now. I do not need a second look. Move along."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_villain_grunt_2"
-                                        }
-                                    ],
-                                    Cmd: "tbcs attach villain_grunt_2 @s"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_grunt_2"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:villain_grunt_2 @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_villain_grunt_2"
-                                        }
-                                    ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_grunt_2 onwin {1: ['cobbledollars give @1 240', 'tag @1 add defeated_villain_grunt_2', '@2 say Logged as an unscheduled deviation. The outpost will note your face.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 110', '@1 say Asset secured. The Company appreciates your cooperation.']}"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_grunt_2"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:villain_grunt_2 onwin {1: ['cobbledollars give @1 240', 'tag @1 add defeated_villain_grunt_2', '@2 say Logged as an unscheduled deviation. The outpost will note your face.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 110', '@1 say Asset secured. The Company appreciates your cooperation.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
                             Label: "yes_button"
-                        },
-                        {
-                            Name: "Goodbye",
-                            Actions: [
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "goodbye_button"
                         }
                     ],
                     Texts: [
@@ -218,16 +212,7 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "cobbledollars remove @s 250"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "tag @s add paid_handling_fee"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    Cmd: "title @initiator actionbar [{\"text\":\"Handling fee logged. The letter remains your liability. The Company thanks you for participating in commerce.\"}]"
+                                    Cmd: "function cobblemon_initiative:route/checkpoint_handling_2"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -240,52 +225,49 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "defeated_villain_grunt_2"
-                                        }
-                                    ],
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_villain_grunt_2"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "say We have a file open on you now. I do not need a second look. Move along."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_villain_grunt_2"
-                                        }
-                                    ],
-                                    Cmd: "tbcs attach villain_grunt_2 @s"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_grunt_2"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:villain_grunt_2 @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_villain_grunt_2"
-                                        }
-                                    ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_grunt_2 onwin {1: ['cobbledollars give @1 240', 'tag @1 add defeated_villain_grunt_2', '@2 say Logged as an unscheduled deviation. The outpost will note your face.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 110', '@1 say Asset secured. The Company appreciates your cooperation.']}"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_grunt_2"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:villain_grunt_2 onwin {1: ['cobbledollars give @1 240', 'tag @1 add defeated_villain_grunt_2', '@2 say Logged as an unscheduled deviation. The outpost will note your face.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 110', '@1 say Asset secured. The Company appreciates your cooperation.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
                             Label: "refuse_button"
-                        },
-                        {
-                            Name: "Step back",
-                            Actions: [
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "back_button"
                         }
                     ],
                     Texts: [
@@ -311,37 +293,43 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "defeated_villain_grunt_2"
-                                        }
-                                    ],
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_villain_grunt_2"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "say We have a file open on you now. I do not need a second look. Move along."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_villain_grunt_2"
-                                        }
-                                    ],
-                                    Cmd: "tbcs attach villain_grunt_2 @s"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_grunt_2"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:villain_grunt_2 @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_villain_grunt_2"
-                                        }
-                                    ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_grunt_2 onwin {1: ['cobbledollars give @1 240', 'tag @1 add defeated_villain_grunt_2', '@2 say Logged as an unscheduled deviation. The outpost will note your face.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 110', '@1 say Asset secured. The Company appreciates your cooperation.']}"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_grunt_2"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:villain_grunt_2 onwin {1: ['cobbledollars give @1 240', 'tag @1 add defeated_villain_grunt_2', '@2 say Logged as an unscheduled deviation. The outpost will note your face.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 110', '@1 say Asset secured. The Company appreciates your cooperation.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -379,16 +367,7 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "cobbledollars remove @s 120"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "tag @s add paid_checkpoint_fee"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    Cmd: "title @initiator actionbar [{\"text\":\"Expedited processing fee received. You have been verified in absentia.\"}]"
+                                    Cmd: "function cobblemon_initiative:route/checkpoint_fee_2"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -408,52 +387,49 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "defeated_villain_grunt_2"
-                                        }
-                                    ],
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_villain_grunt_2"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "say We have a file open on you now. I do not need a second look. Move along."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_villain_grunt_2"
-                                        }
-                                    ],
-                                    Cmd: "tbcs attach villain_grunt_2 @s"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_grunt_2"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:villain_grunt_2 @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_villain_grunt_2"
-                                        }
-                                    ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_grunt_2 onwin {1: ['cobbledollars give @1 240', 'tag @1 add defeated_villain_grunt_2', '@2 say Logged as an unscheduled deviation. The outpost will note your face.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 110', '@1 say Asset secured. The Company appreciates your cooperation.']}"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_grunt_2"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:villain_grunt_2 onwin {1: ['cobbledollars give @1 240', 'tag @1 add defeated_villain_grunt_2', '@2 say Logged as an unscheduled deviation. The outpost will note your face.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 110', '@1 say Asset secured. The Company appreciates your cooperation.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
                             Label: "refuse_button"
-                        },
-                        {
-                            Name: "Walk away",
-                            Actions: [
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "leave_button"
                         }
                     ],
                     Texts: [
@@ -475,52 +451,49 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "defeated_villain_grunt_2"
-                                        }
-                                    ],
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_villain_grunt_2"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "say We have a file open on you now. I do not need a second look. Move along."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_villain_grunt_2"
-                                        }
-                                    ],
-                                    Cmd: "tbcs attach villain_grunt_2 @s"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_grunt_2"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:villain_grunt_2 @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_villain_grunt_2"
-                                        }
-                                    ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_grunt_2 onwin {1: ['cobbledollars give @1 240', 'tag @1 add defeated_villain_grunt_2', '@2 say Logged as an unscheduled deviation. The outpost will note your face.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 110', '@1 say Asset secured. The Company appreciates your cooperation.']}"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_grunt_2"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:villain_grunt_2 onwin {1: ['cobbledollars give @1 240', 'tag @1 add defeated_villain_grunt_2', '@2 say Logged as an unscheduled deviation. The outpost will note your face.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 110', '@1 say Asset secured. The Company appreciates your cooperation.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
                             Label: "yes_button"
-                        },
-                        {
-                            Name: "Goodbye",
-                            Actions: [
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "goodbye_button"
                         }
                     ],
                     Texts: [
@@ -691,6 +664,7 @@
             }
         ],
         id: "easy_npc:humanoid",
-        CustomName: '{"text": "Haruki", "color": "#FFFFFF"}'
+        CustomName: '{"text": "Haruki", "color": "#FFFFFF"}',
+        Tags: ["checkpoint_agent"]
     }
 }

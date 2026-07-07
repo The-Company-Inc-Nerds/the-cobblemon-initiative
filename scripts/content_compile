@@ -35,6 +35,7 @@ import json
 import re
 import subprocess
 import sys
+import uuid as _uuid
 from collections import OrderedDict
 from pathlib import Path
 
@@ -72,6 +73,12 @@ WORLD_NPCS   = PROJECT_ROOT / "mrpack/maps/The Cobblemon Initiative/easy_npc/npc
 VISUALS_DIR  = DIALOG_SRC / "visuals"
 SNIPPET_DIR  = PROJECT_ROOT / "presets/snippets"
 NPC_PRESETS  = PROJECT_ROOT / "npc_presets.json"
+# rctmod trainer textures shipped in our resource pack; skin type "rctmod" copies one
+# into the instance-local Easy NPC custom-skin dir under a deterministic uuid5 name.
+TRAINER_TEX_DIR = (PROJECT_ROOT
+                   / "src/main/resources/resourcepacks/trainer_textures"
+                   / "assets/rctmod/textures/trainers")
+SKIN_OVERRIDE_DIR = PROJECT_ROOT / "mrpack/overrides/config/easy_npc/skin/humanoid"
 FUNCTION_DIR = PROJECT_ROOT / "src/main/resources/data/cobblemon_initiative/function"
 BAND_TAGS_FN = FUNCTION_DIR / "dialog" / "band_tags.mcfunction"
 SIGHT_FN     = FUNCTION_DIR / "dialog" / "register_sight.mcfunction"
@@ -187,6 +194,8 @@ def gate_conditions(gate: dict) -> tuple[list, list | None]:
             conds.append(player_tag(v, False))
         elif k == "all_tags":
             conds += [player_tag(t, True) for t in v]
+        elif k == "not_tags":
+            conds += [player_tag(t, False) for t in v]
         elif k == "any_tags":
             fanout = v
         elif k == "defeated":
@@ -368,7 +377,11 @@ def command_action_raw(cmd: str, as_player: bool, gate: dict | None, where: str)
     if gate:
         conds, _ = gate_conditions(gate)
         if conds:
-            pairs.append(("Conditions", lst(conds)))
+            # ActionDataEntry reads gates ONLY from the doubled key
+            # ConditionDataSet:{ConditionDataSet:[…]} (EASY_NPC_REFERENCE §ActionDataEntry).
+            # A bare "Conditions" list is silently ignored on actions — that key exists
+            # only on dialog entries and buttons.
+            pairs.append(("ConditionDataSet", comp([("ConditionDataSet", lst(conds))])))
     pairs.append(("Cmd", s(cmd)))
     return comp(pairs)
 
@@ -391,7 +404,8 @@ def announce_action(a: dict, where: str) -> OrderedDict:
     if a.get("gate"):
         conds, _ = gate_conditions(a["gate"])
         if conds:
-            pairs.append(("Conditions", lst(conds)))
+            # Same doubled-key rule as command_action_raw — actions ignore "Conditions".
+            pairs.append(("ConditionDataSet", comp([("ConditionDataSet", lst(conds))])))
     pairs.append(("Cmd", s(dialog_cmd(cmd, False))))
     return comp(pairs)
 
@@ -420,27 +434,26 @@ def build_onwin(win: list[str], lose: list[str], where: str) -> str:
         return "[" + ", ".join("'%s'" % c for c in cmds) + "]"
     return "{1: %s, 2: %s}" % (side(win), side(lose))
 
-def battle_actions(ch: dict, where: str) -> list:
+
+def _battle_ids(ch: dict, where: str) -> tuple[str, str]:
+    """(base_trainer, defeat_tag) for a character's battle block."""
     b = ch.get("battle")
     if not b:
         raise CompileError(f"{where}: do:battle but character has no 'battle' block")
-    trainer = b.get("trainer") or ch.get("trainer")
-    if not trainer:
+    base_trainer = b.get("trainer") or ch.get("trainer")
+    if not base_trainer:
         raise CompileError(f"{where}: battle has no trainer")
-    _check_trainer_team(trainer, where)
+    return base_trainer, b.get("defeat_tag", f"defeated_{base_trainer}")
+
+
+def build_battle_command(ch: dict, where: str, trainer: str | None = None) -> str:
+    """The full `tbcs battle … onwin {…}` line a battle button/trigger dispatches
+    (ExecAsUser: @s = the player). Shared by battle_actions and the decline-fee
+    function emitter, so the broke-path battle is byte-identical to the button's."""
+    b = ch["battle"]
+    base_trainer, dt = _battle_ids(ch, where)
+    trainer = trainer or base_trainer
     fmt = b.get("format", "GEN_9_SINGLES")
-    dt = b.get("defeat_tag", f"defeated_{trainer}")
-    acts = []
-    # Entity-path guards via action Conditions, not execute selectors: an
-    # `@p[tag=…]`/`@s[tag=…]` guard would compile to `@initiator[tag=…]`, and Easy NPC's
-    # name substitution turns that into "PlayerName[tag=x]" — which never parses. Raw
-    # commands: `@s` in attach must stay the NPC (the entity-path source).
-    if b.get("already_beaten_line"):
-        check_text(b["already_beaten_line"], where)
-        acts.append(command_action_raw(
-            f"say {b['already_beaten_line']}", False, {"tag": dt}, where))
-    acts.append(command_action_raw(
-        f"tbcs attach {trainer} @s", False, {"not_tag": dt}, where))
     win = []
     if b.get("prize"):
         win.append(f"cobbledollars give @1 {int(b['prize'])}")
@@ -463,13 +476,78 @@ def battle_actions(ch: dict, where: str) -> list:
         lose.append(f"@1 say {b['lose_line']}")
     lose += list(b.get("on_lose", []))
     onwin = build_onwin(win, lose, where)
-    # Bare tbcs + a not_tag action Condition: the ExecAsUser source is the player, and an
+    return f"tbcs battle {fmt} @s vs rctmod:{trainer} onwin {onwin}"
+
+
+# Characters with battle.decline_fee: base_trainer -> info for the generated
+# function/route/decline_<id>.mcfunction (see write_decline_functions).
+DECLINE_REGISTRY: dict[str, dict] = {}
+
+
+def register_decline(ch: dict) -> None:
+    b = ch.get("battle") or {}
+    fee = b.get("decline_fee")
+    if not fee:
+        return
+    where = f"{ch['id']} battle.decline_fee"
+    base_trainer, dt = _battle_ids(ch, where)
+    # The stand-down tag is permanent player state; make sure band_tags maintains the
+    # inverse even if no compiled gate happens to negate it (spec round 13b).
+    NEGATED_TAGS.add(f"declined_{base_trainer}")
+    DECLINE_REGISTRY[base_trainer] = {
+        "fee": int(fee), "defeat_tag": dt, "display": ch["display_name"],
+        "battle_cmd": build_battle_command(ch, where),
+    }
+
+
+def decline_fn_name(base_trainer: str) -> str:
+    return f"{NS}:route/decline_{base_trainer}"
+
+
+def battle_actions(ch: dict, where: str, override: dict | None = None,
+                   trigger_ctx: bool = False) -> list:
+    b = ch.get("battle")
+    base_trainer, dt = _battle_ids(ch, where)
+    # A battle ACTION may override the trainer id ({"do":"battle","trainer":"<id>_weak"})
+    # for gym-weakening variants (round 13). The defeat tag stays keyed to the BASE
+    # trainer so every variant credits the same progression/beaten state.
+    trainer = (override or {}).get("trainer") or base_trainer
+    _check_trainer_team(trainer, where)
+    # Gates: not_tag defeated always; not_tag declined_<base> too when the character
+    # sells a bow-out (battle.decline_fee) — a paid decline stands the trainer down on
+    # BOTH the trigger and button battle paths (spec round 13b). An authored action
+    # gate (e.g. the wheat traders' hostile-state touch ambush) is ANDed in.
+    gate = dict((override or {}).get("gate") or {})
+    negs = list(gate.get("not_tags") or []) + [dt]
+    if b.get("decline_fee"):
+        negs.append(f"declined_{base_trainer}")
+    gate["not_tags"] = negs
+    acts = []
+    # Entity-path guards via action Conditions, not execute selectors: an
+    # `@p[tag=…]`/`@s[tag=…]` guard would compile to `@initiator[tag=…]`, and Easy NPC's
+    # name substitution turns that into "PlayerName[tag=x]" — which never parses. Raw
+    # commands: `@s` in attach must stay the NPC (the entity-path source).
+    # TRIGGER CONTEXT (ON_DISTANCE_*): no beaten-line say (it would fire on every band
+    # entry forever) and no CLOSE_DIALOG (no dialog is open; Easy NPC defers CLOSE last
+    # and it setScreen(null)s whatever screen IS open — the starter-UI bug class).
+    if not trigger_ctx and b.get("already_beaten_line"):
+        check_text(b["already_beaten_line"], where)
+        acts.append(command_action_raw(
+            f"say {b['already_beaten_line']}", False, {"tag": dt}, where))
+    # TBCS resolves trainer ids against its OWN rctapi instance, whose registry it
+    # mirrors from rctmod under NAMESPACE-PREFIXED keys (IdUtils.createTrainerId →
+    # "rctmod:<id>"); lookup is an exact Map.get with no fallback, so a bare id can
+    # NEVER match. Tag names (defeated_<id>) and `rctmod player add progress` ids
+    # stay bare — only the tbcs command token carries the prefix.
+    acts.append(command_action_raw(
+        f"tbcs attach rctmod:{trainer} @s", False, gate, where))
+    # Bare tbcs + not_tag action Conditions: the ExecAsUser source is the player, and an
     # `execute unless entity @s[tag=…] run` guard would be silently blocked (Easy NPC 6.25
     # rejects every execute-rooted ExecAsUser command — see dialog_cmd).
     acts.append(command_action(
-        f"tbcs battle {fmt} @s vs {trainer} onwin {onwin}",
-        True, {"not_tag": dt}, where))
-    acts.append(comp([("Type", s("CLOSE_DIALOG"))]))
+        build_battle_command(ch, where, trainer), True, gate, where))
+    if not trigger_ctx:
+        acts.append(comp([("Type", s("CLOSE_DIALOG"))]))
     return acts
 
 def give_actions(ch: dict, where: str) -> list:
@@ -490,16 +568,27 @@ def give_actions(ch: dict, where: str) -> list:
     warn(f"{where}: loot.type {loot['type']!r} compiled as an unguarded `loot give` (v1 limitation).")
     return [command_action(f"loot give @p loot {table}", False, None, where)]
 
-def lower_action(a: dict, ch: dict, where: str) -> list:
+def lower_action(a: dict, ch: dict, where: str, trigger_ctx: bool = False) -> list:
     do = a["do"]
     if do == "close":        return [comp([("Type", s("CLOSE_DIALOG"))])]
     if do == "open_default": return [comp([("Type", s("OPEN_DEFAULT_DIALOG"))])]
-    if do == "open_dialog":  return [comp([("Type", s("OPEN_NAMED_DIALOG")), ("Cmd", s(a["label"]))])]
+    if do == "open_dialog":
+        # ROUND 13b FIX: an authored gate was silently DROPPED here — actions read gates
+        # only from the doubled ConditionDataSet key (ENGINE_FINDINGS §3), so e.g. Yan's
+        # ON_DISTANCE_NEAR eavesdrop opened for everyone in range regardless of its
+        # audit_loiter gate. Attach the doubled key exactly like command_action_raw.
+        pairs = [("Type", s("OPEN_NAMED_DIALOG"))]
+        if a.get("gate"):
+            conds, _ = gate_conditions(a["gate"])
+            if conds:
+                pairs.append(("ConditionDataSet", comp([("ConditionDataSet", lst(conds))])))
+        pairs.append(("Cmd", s(a["label"])))
+        return [comp(pairs)]
     if do == "trade":        return [comp([("Type", s("OPEN_TRADING_SCREEN"))])]
     if do == "command":      return [command_action(a["cmd"], a.get("as_player", False), a.get("gate"), where)]
     if do == "announce":     return [announce_action(a, where)]
     if do == "heal":         return [command_action("healpokemon @p", False, a.get("gate"), where)]
-    if do == "battle":       return battle_actions(ch, where)
+    if do == "battle":       return battle_actions(ch, where, a, trigger_ctx)
     if do == "give":         return give_actions(ch, where)
     raise CompileError(f"{where}: unknown action {do!r}")
 
@@ -516,6 +605,10 @@ def entry_priority(e: dict) -> int:
         return 0
     return PRIORITY_DEFAULT.get(e["label"], 5)
 
+def _has_battle_action(b: dict) -> bool:
+    return any(a.get("do") == "battle" for a in b.get("actions", []))
+
+
 def build_button(b: dict, ch: dict, where: str) -> OrderedDict:
     check_text(b["text"], f"{where} button {b['label']}")
     acts: list = []
@@ -524,10 +617,18 @@ def build_button(b: dict, ch: dict, where: str) -> OrderedDict:
     pairs = [("Name", s(b["text"]))]
     if acts:
         pairs.append(("Actions", lst(acts)))
+    conds: list = []
     if b.get("gate"):
         conds, _ = gate_conditions(b["gate"])
-        if conds:
-            pairs.append(("Conditions", lst(conds)))
+    # Decline-fee characters: hide battle buttons from a player who paid the bow-out
+    # (the battle ACTIONS are gated anyway — this stops the dead-button class).
+    if _has_battle_action(b) and (ch.get("battle") or {}).get("decline_fee"):
+        base_trainer, _ = _battle_ids(ch, where)
+        inv = player_tag(f"declined_{base_trainer}", False)
+        if not any(c.get("Name") == inv["Name"] for c in conds if isinstance(c, dict)):
+            conds.append(inv)
+    if conds:
+        pairs.append(("Conditions", lst(conds)))
     pairs.append(("Label", s(b["label"])))
     return comp(pairs)
 
@@ -550,6 +651,24 @@ def _has_close_button(e: dict) -> bool:
 GOODBYE_BUTTON = {"label": "goodbye_button", "text": "Goodbye",
                   "actions": [{"do": "close"}]}
 
+
+def _bow_out_button(ch: dict) -> dict | None:
+    """The auto 'Pay <fee> CD to bow out' button for battle.decline_fee characters
+    (round 13b): a bare as_player call into the generated route/decline_<id> function
+    (probe: paid -> receipt + declined_<id> stand-down; broke -> the battle fires).
+    Hidden once the trainer is beaten or already bought off."""
+    b = ch.get("battle") or {}
+    fee = b.get("decline_fee")
+    if not fee:
+        return None
+    base_trainer, dt = _battle_ids(ch, f"{ch['id']} battle.decline_fee")
+    return {"label": "bow_out_button", "text": f"Pay {int(fee)} CD to bow out",
+            "gate": {"not_tags": [dt, f"declined_{base_trainer}"]},
+            "actions": [{"do": "command", "cmd": f"function {decline_fn_name(base_trainer)}",
+                         "as_player": True},
+                        {"do": "close"}]}
+
+
 def build_entry(e: dict, conds: list, ch: dict, registers: dict, lore: dict,
                 label_suffix: str, where: str) -> OrderedDict:
     pairs: list = []
@@ -559,6 +678,17 @@ def build_entry(e: dict, conds: list, ch: dict, registers: dict, lore: dict,
     # Every entry gets a way OUT: auto-append a Goodbye close button unless the entry
     # already has one or opts out ("no_goodbye": true — forced encounters).
     buttons = list(e.get("buttons", []))
+    # Auto bow-out on every entry that offers the battle (skipped when the entry already
+    # wires the decline function itself — the deliberate fee-fork NPCs keep their own
+    # flavored buttons). Deliberately does NOT count as a close button for the
+    # auto-Goodbye rule: route trainers stay leaveable in dialog (the TOUCH trigger is
+    # their enforcement); forced entries opt out via no_goodbye.
+    bow = _bow_out_button(ch)
+    if bow and not e.get("no_bow_out") \
+            and any(_has_battle_action(bt) for bt in e.get("buttons", [])) \
+            and not any("route/decline_" in (a.get("cmd") or "")
+                        for bt in e.get("buttons", []) for a in bt.get("actions", [])):
+        buttons.append(bow)
     if not _has_close_button(e) and not e.get("no_goodbye"):
         buttons.append(GOODBYE_BUTTON)
     if buttons:
@@ -636,12 +766,69 @@ def apply_nondialog_snippet(tree, rel: str, presets: dict | None = None):
         tree = sm.set_path(tree, path, value)
     return tree
 
+def synth_engage_triggers(ch: dict) -> list[dict]:
+    """engage:"touch" (round 13b) — the battle-on-touch mechanism, synthesized through
+    the normal trigger path: ON_DISTANCE_CLOSE hail (entity-path say, 8-block band,
+    ActionGroup de-dupes per band entry) when battle.hail_line is set, plus
+    ON_DISTANCE_TOUCH attach+battle (1.25-block band). Gates ride the doubled
+    ConditionDataSet: not_tag defeated always, not_tag declined_<id> when the
+    character sells a bow-out (a paid decline stands the trainer down — no hail,
+    no ambush, forever)."""
+    engage = ch.get("engage")
+    if not engage:
+        return []
+    if engage != "touch":
+        raise CompileError(f"{ch['id']}: unknown engage mode {engage!r} (only 'touch')")
+    b = ch.get("battle")
+    if not b:
+        raise CompileError(f"{ch['id']}: engage:touch requires a battle block")
+    base_trainer, dt = _battle_ids(ch, f"{ch['id']} engage")
+    negs = [dt]
+    if b.get("decline_fee"):
+        negs.append(f"declined_{base_trainer}")
+    out = []
+    if b.get("hail_line"):
+        check_text(b["hail_line"], f"{ch['id']} battle.hail_line")
+        out.append({"on": "ON_DISTANCE_CLOSE",
+                    "actions": [{"do": "command", "cmd": "say " + b["hail_line"],
+                                 "gate": {"not_tags": list(negs)}}]})
+    out.append({"on": "ON_DISTANCE_TOUCH", "actions": [{"do": "battle"}]})
+    return out
+
+
+# FORCED-BATTLE FAIRNESS FLOOR (quest-flow review B1, 2026-07-06): no forced-touch
+# engagement until the player owns a CAUGHT Pokémon BEYOND the starter. The starter
+# DOES register as CAUGHT (jar-verified, Cobblemon 1.7.3 sources: givepokemonother →
+# PlayerPartyStore.add posts POKEMON_GAINED → PokedexHandler.onPokemonGained →
+# PokedexManager.catch → FormDexRecord knowledge = CAUGHT — the same count
+# DexScoreManager mirrors into dex_caught), so the floor is dex_caught >= 2, NOT the
+# review's assumed dex_gte_1 (which the starter alone would satisfy, protecting no one).
+# Applied to EVERY ON_DISTANCE_TOUCH battle — spotters, route regulars, Company forced
+# grunts alike (the review makes the floor a matrix-wide rule for FORCED starts). The
+# CLOSE-band hail stays ungated: trainers still call out; they just do not jump you.
+DEX_FLOOR = 2
+
+
 def apply_triggers(tree, ch: dict):
-    for tr in ch.get("triggers", []) or []:
-        acts = []
+    # Authored triggers + engage:touch synthesis share the path; actions for the same
+    # event are MERGED into one list (set_path would clobber). All trigger actions
+    # lower in trigger context: no CLOSE_DIALOG, no beaten-line say (battle_actions).
+    events: OrderedDict = OrderedDict()
+    for tr in list(ch.get("triggers") or []) + synth_engage_triggers(ch):
+        acts = events.setdefault(tr["on"], [])
         for a in tr["actions"]:
-            acts += lower_action(a, ch, f"{ch['id']} trigger {tr['on']}")
-        tree = sm.set_path(tree, ["data", "ActionData", "ActionEventSet", tr["on"]], lst(acts))
+            # B1 fairness floor: every TOUCH-band battle (synthesized engage:touch AND
+            # authored ambushes, e.g. the wheat traders') gets the dex_gte_2 band
+            # condition merged into its gate — battle_actions ANDs it onto BOTH the
+            # attach and the tbcs battle action (the doubled ConditionDataSet). Dialog
+            # battle BUTTONS stay ungated: clicking one is not a forced start.
+            if tr["on"] == "ON_DISTANCE_TOUCH" and a.get("do") == "battle":
+                gate = dict(a.get("gate") or {})
+                gate.setdefault("dex", {"op": "gte", "value": DEX_FLOOR})
+                a = {**a, "gate": gate}
+            acts += lower_action(a, ch, f"{ch['id']} trigger {tr['on']}", trigger_ctx=True)
+    for on, acts in events.items():
+        tree = sm.set_path(tree, ["data", "ActionData", "ActionEventSet", on], lst(acts))
     return tree
 
 def apply_movement(tree, mv: dict | None):
@@ -672,12 +859,26 @@ def base_for(ch: dict) -> Path:
                            else "_civilian_base.npc.snbt")
 
 
+def _uuid_int_array(u) -> tuple:
+    """UUID -> Minecraft [I;a,b,c,d] signed 32-bit ints (verified against the courier skin)."""
+    b = u.int
+    parts = [(b >> 96) & 0xFFFFFFFF, (b >> 64) & 0xFFFFFFFF,
+             (b >> 32) & 0xFFFFFFFF, b & 0xFFFFFFFF]
+    return tuple(p - 0x100000000 if p >= 0x80000000 else p for p in parts)
+
+
 def skin_node(skin: dict):
     """Build an Easy NPC SkinData node from a character 'skin' field, baked into the preset so
     `easy_npc preset import` applies the intended skin instead of resetting the NPC to Steve.
       {"type":"url","url":"https://..."}  -> portable remote-URL skin (recommended; ships anywhere)
       {"type":"custom","uuid":[a,b,c,d]}  -> instance-local custom skin
                                              (config/easy_npc/skin/humanoid/<uuid>.png)
+      {"type":"rctmod","texture":"single/takehara_leader"}
+                                          -> CUSTOM skin auto-provisioned from the
+                                             trainer_textures resource pack: deterministic
+                                             uuid5 name, PNG copied into
+                                             mrpack/overrides/config/easy_npc/skin/humanoid/.
+                                             mrpack-only (bare-mod worlds fall back to Steve).
     """
     t = skin.get("type")
     if t == "url":
@@ -691,11 +892,31 @@ def skin_node(skin: dict):
         return sm.parse_snbt(
             '{Content:"",DisableLayers:0b,Name:"",Timestamp:0L,Type:"CUSTOM",URL:"",UUID:[I;%d,%d,%d,%d]}'
             % (int(a), int(b), int(c), int(d)))
-    raise CompileError(f"skin: unknown type {t!r} (use 'url' or 'custom')")
+    if t == "rctmod":
+        tex = str(skin["texture"]).strip()
+        src = TRAINER_TEX_DIR / (tex + ".png")
+        if not src.is_file():
+            raise CompileError(f"skin: rctmod texture not found: {src}")
+        u = _uuid.uuid5(_uuid.NAMESPACE_URL,
+                        "cobblemon-initiative:rctmod-skin:" + tex)
+        dest = SKIN_OVERRIDE_DIR / f"{u}.png"
+        data = src.read_bytes()
+        if not dest.is_file() or dest.read_bytes() != data:
+            dest.parent.mkdir(parents=True, exist_ok=True)
+            dest.write_bytes(data)
+        a, b, c, d = _uuid_int_array(u)
+        return sm.parse_snbt(
+            '{Content:"",DisableLayers:0b,Name:"",Timestamp:0L,Type:"CUSTOM",URL:"",UUID:[I;%d,%d,%d,%d]}'
+            % (a, b, c, d))
+    raise CompileError(f"skin: unknown type {t!r} (use 'url', 'custom' or 'rctmod')")
 
 
 def compile_character(ch: dict, dialogs: dict, registers: dict, lore: dict):
     cid = ch["id"]
+    # battle.decline_fee registers its generated function/tag even when no dialog
+    # button carries do:battle anymore (e.g. wager NPCs whose stake buttons moved
+    # into probe functions) — the hand-authored bow-out buttons still need it.
+    register_decline(ch)
     if "dialog_inline" in ch:
         tree = ch["dialog_inline"]
     else:
@@ -728,6 +949,13 @@ def compile_character(ch: dict, dialogs: dict, registers: dict, lore: dict):
         raw = "'" + json.dumps({"text": ch["display_name"], "color": "#FFFFFF"},
                                ensure_ascii=False) + "'"
         out = sm.set_path(out, ["data", "CustomName"], _snbt_value(raw))
+    # entity_tags: vanilla scoreboard Tags baked into the preset (round 13c) — spawned
+    # bodies carry them from import_new; refreshed uuid'd bodies pick them up on the next
+    # NpcPresetRefreshManager import. Replaces the manual tag-at-placement protocols
+    # (checkpoint_agent, deng_camp, audit_listener...).
+    if ch.get("entity_tags"):
+        tag_list = "[" + ",".join('"%s"' % tg for tg in ch["entity_tags"]) + "]"
+        out = sm.set_path(out, ["data", "Tags"], _snbt_value(tag_list))
         out = sm.set_path(out, ["data", "CustomNameVisible"], sm.parse_snbt("{K:1b}")["K"])
     # Persistent scoreboard/selector tags baked onto the entity (data.Tags). Used to
     # target spawned NPCs by tag from datapack (e.g. despawn the chosen starter stand-in).
@@ -835,6 +1063,10 @@ def merge_world(tree, ch: dict):
     # CUSTOM/URL skin can be overridden by a builder variant. Showrunner rule 2026-07-06.
     skin_override = bool(ch.get("skin"))
     for key in WORLD_ADOPT:
+        # A dialog-src visuals override owns ModelData (poses) the same way an explicit
+        # skin owns SkinData — the builder's world pose must not stomp it (round 13c).
+        if key == "ModelData" and (VISUALS_DIR / f"{ch['id']}.npc.snbt").is_file():
+            continue
         if skin_override and key in ("SkinData", "VariantType"):
             continue
         node = world.get(key)
@@ -872,6 +1104,41 @@ def merge_world(tree, ch: dict):
     return tree, etype
 
 
+# ─── Spawn variants (per-world A/B roster roll — quest-flow review B7) ──────
+# A character flagged `spawn_variants: 2` (placement-latch spawns only) compiles TWICE:
+# the base preset plus a `<id>_b` clone whose battle actions target the `<trainer>_b`
+# rctmod team file. The place function rolls `random value 1..2` ONCE per world (latch
+# semantics unchanged) and imports preset A or B — same displayName, same coords, same
+# defeat tag, so battle credit, tower counting, and every dialog gate are identical
+# across rosters; only the tbcs trainer id (team file) differs. Variance is a
+# sidegrade (same levels), never punishment — the A16 randomness invariants hold.
+
+def spawn_variant_character(ch: dict) -> dict:
+    if ch.get("spawn_variants") != 2:
+        raise CompileError(f"{ch['id']}: spawn_variants must be 2 (A/B) — got {ch.get('spawn_variants')!r}")
+    if (ch.get("uuid") or "").strip():
+        raise CompileError(f"{ch['id']}: spawn_variants needs a placement latch — a uuid'd "
+                           f"world body imports in place and can never roll its preset")
+    if not ch.get("placement"):
+        raise CompileError(f"{ch['id']}: spawn_variants without placement — no latch would ever roll it")
+    b = ch.get("battle")
+    if not b:
+        raise CompileError(f"{ch['id']}: spawn_variants needs a battle block (the variant IS the roster)")
+    if b.get("decline_fee"):
+        raise CompileError(f"{ch['id']}: spawn_variants + decline_fee unsupported — the bow-out "
+                           f"function/tags key on a single trainer id")
+    base_trainer, dt = _battle_ids(ch, f"{ch['id']} spawn_variants")
+    v = json.loads(json.dumps({k: val for k, val in ch.items() if k != "_path"}))
+    v["id"] = ch["id"] + "_b"
+    v["battle"]["trainer"] = base_trainer + "_b"
+    v["battle"]["defeat_tag"] = dt          # credit/progression stays keyed to the base roster
+    if "trainer" in v:
+        v["trainer"] = base_trainer + "_b"
+    v.pop("placement", None)                # the BASE character's latch performs the roll
+    v.pop("sight", None)                    # sight registration (uuid-keyed) never applies here
+    return v
+
+
 # ─── Placement latches (spawn never-placed NPCs at authored coords) ─────────
 
 PLACE_DIR          = FUNCTION_DIR / "ambient" / "place"
@@ -885,7 +1152,10 @@ def write_placements(chars: list, etypes: dict) -> int:
     only when a player is within 40 blocks (import into unloaded chunks is undefined).
     Latch is set BEFORE the import (AutoInstall rule) — a failed import never re-fires;
     to redo one: kill the body + `scoreboard players set #amb_<key> ci_ambient 0`.
-    Keys strip the `companion_` prefix for continuity with pre-generator worlds."""
+    Keys strip the `companion_` prefix for continuity with pre-generator worlds.
+    spawn_variants characters (review B7) roll `random value 1..2` between the latch
+    and the import and take preset A or B; the roll persists on #var_<key> ci_ambient
+    (a latch reset re-rolls — that is the redo semantics, per-world variance)."""
     entries = []
     for ch in chars:
         pl = ch.get("placement")
@@ -899,7 +1169,8 @@ def write_placements(chars: list, etypes: dict) -> int:
         x, y, z = pl["x"], pl["y"], pl["z"]
         fx = x + 0.5 if float(x).is_integer() else x
         fz = z + 0.5 if float(z).is_integer() else z
-        entries.append((cid, key, fx, y, fz, etypes.get(cid, "humanoid")))
+        entries.append((cid, key, fx, y, fz, etypes.get(cid, "humanoid"),
+                        bool(ch.get("spawn_variants"))))
 
     PLACE_DIR.mkdir(parents=True, exist_ok=True)
     for old in PLACE_DIR.glob("*.mcfunction"):
@@ -907,16 +1178,73 @@ def write_placements(chars: list, etypes: dict) -> int:
     head = "# AUTO-GENERATED by scripts/content_compile from character `placement` fields — do not edit.\n"
     init = [head + "scoreboard objectives add ci_ambient dummy"]
     tick = [head.rstrip()]
-    for cid, key, fx, y, fz, etype in entries:
+    for cid, key, fx, y, fz, etype, variants in entries:
         init.append(f"execute unless score #amb_{key} ci_ambient matches 0.. run scoreboard players set #amb_{key} ci_ambient 0")
         tick.append(f"execute if score #amb_{key} ci_ambient matches 0 if entity @a[x={fx},y={y},z={fz},distance=..40] run function {NS}:ambient/place/{key}")
-        (PLACE_DIR / f"{key}.mcfunction").write_text(
-            f"# {cid} — latch FIRST; reset #amb_{key} to 0 (+ kill the body) to respawn.\n"
-            f"scoreboard players set #amb_{key} ci_ambient 1\n"
-            f"easy_npc preset import_new data easy_npc:preset/{etype}/{cid}.npc.snbt {fx} {y} {fz}\n")
+        if variants:
+            (PLACE_DIR / f"{key}.mcfunction").write_text(
+                f"# {cid} — latch FIRST; reset #amb_{key} to 0 (+ kill the body) to respawn (re-rolls).\n"
+                f"# spawn_variants roll (review B7): one per-world `random value 1..2` picks roster\n"
+                f"# A ({cid}) or B ({cid}_b) — same displayName/coords/defeat tag, different team.\n"
+                f"scoreboard players set #amb_{key} ci_ambient 1\n"
+                f"execute store result score #var_{key} ci_ambient run random value 1..2\n"
+                f"execute if score #var_{key} ci_ambient matches 1 run easy_npc preset import_new data easy_npc:preset/{etype}/{cid}.npc.snbt {fx} {y} {fz}\n"
+                f"execute if score #var_{key} ci_ambient matches 2 run easy_npc preset import_new data easy_npc:preset/{etype}/{cid}_b.npc.snbt {fx} {y} {fz}\n")
+        else:
+            (PLACE_DIR / f"{key}.mcfunction").write_text(
+                f"# {cid} — latch FIRST; reset #amb_{key} to 0 (+ kill the body) to respawn.\n"
+                f"scoreboard players set #amb_{key} ci_ambient 1\n"
+                f"easy_npc preset import_new data easy_npc:preset/{etype}/{cid}.npc.snbt {fx} {y} {fz}\n")
     PLACEMENTS_INIT_FN.write_text("\n".join(init) + "\n")
     PLACEMENTS_FN.write_text("\n".join(tick) + "\n")
     return len(entries)
+
+
+# ─── Decline-fee functions (pay to bow out — round 13b) ─────────────────────
+
+ROUTE_FN_DIR = FUNCTION_DIR / "route"
+
+
+def write_decline_functions(registers: dict, prune: bool) -> int:
+    """One function/route/decline_<base_trainer>.mcfunction per battle.decline_fee
+    character. Semantics (spec round 13b, CobbleDollars probe per ENGINE_FINDINGS §2):
+    paid -> remove fee + unbranded Verified Charge receipt (register-sourced:
+    economy#decline_receipt) + permanent declined_<id>; broke -> the SAME tbcs battle
+    line the battle button carries (must-fight). Idempotent: guarded on the declined/
+    defeated tags so a stale click can never double-charge or re-battle."""
+    entry = (registers.get("economy") or {}).get("entries", {}).get("decline_receipt")
+    if DECLINE_REGISTRY and not (entry and entry.get("lines")):
+        raise CompileError(
+            "battle.decline_fee needs registers/economy.json entry 'decline_receipt'")
+    if DECLINE_REGISTRY:
+        ROUTE_FN_DIR.mkdir(parents=True, exist_ok=True)
+    if prune and ROUTE_FN_DIR.is_dir():
+        for old in ROUTE_FN_DIR.glob("decline_*.mcfunction"):
+            if old.name[len("decline_"):-len(".mcfunction")] not in DECLINE_REGISTRY:
+                old.unlink()
+    for base, info in sorted(DECLINE_REGISTRY.items()):
+        fee, dt = info["fee"], info["defeat_tag"]
+        head = entry["lines"][0].replace("{fee}", str(fee))
+        tail = " ".join(entry["lines"][1:])
+        receipt = '[{"text":"%s","color":"gold"}%s]' % (
+            head + (" " if tail else ""),
+            ',{"text":"%s","color":"gray"}' % tail if tail else "")
+        guard = f"unless entity @s[tag=declined_{base}] unless entity @s[tag={dt}]"
+        (ROUTE_FN_DIR / f"decline_{base}.mcfunction").write_text(
+            f"# decline_{base} — pay {fee} CD to bow out of {info['display']}.\n"
+            f"# AUTO-GENERATED by scripts/content_compile from battle.decline_fee — edit the\n"
+            f"# character JSON, not this file. Runs AS the player (bare as_player function call\n"
+            f"# from the bow-out dialog button). CobbleDollars `pay` soft-fails when broke, so\n"
+            f"# gate on `store result` (0 = broke, {fee} = paid) — the heal_paid probe pattern.\n"
+            f"# Paid -> receipt + permanent declined_{base} (stand-down: hail/touch/battle all\n"
+            f"# gate on it). Broke -> the battle fires (must-fight; same line as the button).\n"
+            f"scoreboard players set #decl_ok cd_calc 0\n"
+            f"execute {guard} store result score #decl_ok cd_calc run cobbledollars pay @s {fee}\n"
+            f"execute if score #decl_ok cd_calc matches 1.. run cobbledollars remove @s {fee}\n"
+            f"execute if score #decl_ok cd_calc matches 1.. run tag @s add declined_{base}\n"
+            f"execute if score #decl_ok cd_calc matches 1.. run title @s actionbar {receipt}\n"
+            f"execute if score #decl_ok cd_calc matches 0 {guard} run {info['battle_cmd']}\n")
+    return len(DECLINE_REGISTRY)
 
 
 # ─── npc_presets.json / sight manifest ───────────────────────────────────────
@@ -958,6 +1286,83 @@ def load_kind(folder: str, kinds: tuple) -> dict:
         if d.get("kind") in kinds:
             out[d["id"]] = d
     return out
+
+# ─── Quest waypoint registry (tracked-quest targets) ─────────────────────────
+# Source of truth: dialog-src/registers/quest_targets.json — per sidebar holder, the
+# staged tag conditions (mirroring quest/render.mcfunction) and a target per stage,
+# either {"npc": "<character id>"} (resolved here from placement / world uuid coords)
+# or literal {"x","y","z"}. Emitted for QuestTrackManager as quest_waypoints.json.
+
+QUEST_TARGETS_SRC   = DIALOG_SRC / "registers" / "quest_targets.json"
+QUEST_WAYPOINTS_OUT = (PROJECT_ROOT
+                       / "src/main/resources/data/cobblemon_initiative/quest_waypoints.json")
+
+
+def _npc_world_pos(uuid: str):
+    """Placed NPC's position from world storage: Pos (exact doubles), else
+    Navigation.Home (block ints, centered). nbt_read values are (tag, value) pairs."""
+    path = WORLD_NPCS / f"{uuid}.npc.nbt"
+    if not path.is_file():
+        return None
+    try:
+        _, (_, world) = nbt_read.read_nbt_file(str(path))
+    except Exception:
+        return None
+    pos = world.get("Pos")
+    if pos and len(pos[1][1]) == 3:
+        x, y, z = pos[1][1]
+        return float(x), float(y), float(z)
+    nav = world.get("Navigation")
+    if nav and nav[1].get("Home"):
+        h = nav[1]["Home"][1]
+        return h["X"][1] + 0.5, float(h["Y"][1]), h["Z"][1] + 0.5
+    return None
+
+
+def emit_quest_waypoints(chars: list[dict]) -> int:
+    """Resolve quest_targets.json npc refs to coordinates and write the runtime registry.
+    Returns the emitted stage count, or -1 when no source registry exists (no-op)."""
+    if not QUEST_TARGETS_SRC.is_file():
+        return -1
+    reg = json.loads(QUEST_TARGETS_SRC.read_text())
+    by_id = {c["id"]: c for c in chars}
+    out_quests, n_stages = [], 0
+    for q in reg.get("quests", []):
+        oq = OrderedDict([("holder", q["holder"]), ("name", q.get("name", q["holder"]))])
+        out_stages = []
+        for st in q.get("stages", []):
+            os_ = OrderedDict()
+            for k in ("if_tags", "not_tags", "scores", "label"):
+                if st.get(k):
+                    os_[k] = st[k]
+            tgt = st.get("target")
+            pos = None
+            if tgt and "npc" in tgt:
+                ch = by_id.get(tgt["npc"])
+                if ch is None:
+                    warn(f"quest_targets {q['holder']}: unknown npc {tgt['npc']!r} — "
+                         f"stage ships without a waypoint.")
+                elif ch.get("placement"):
+                    pl = ch["placement"]
+                    pos = (pl["x"] + 0.5, float(pl["y"]), pl["z"] + 0.5)
+                elif (ch.get("uuid") or "").strip():
+                    pos = _npc_world_pos(ch["uuid"].strip())
+                if tgt and "npc" in tgt and ch is not None and pos is None:
+                    warn(f"quest_targets {q['holder']}: npc {tgt['npc']!r} has no "
+                         f"resolvable coords — stage ships without a waypoint.")
+            elif tgt:
+                pos = (float(tgt["x"]), float(tgt["y"]), float(tgt["z"]))
+            if pos:
+                os_["x"], os_["y"], os_["z"] = (round(pos[0], 2), round(pos[1], 2),
+                                                round(pos[2], 2))
+            out_stages.append(os_)
+            n_stages += 1
+        oq["stages"] = out_stages
+        out_quests.append(oq)
+    QUEST_WAYPOINTS_OUT.write_text(
+        json.dumps({"quests": out_quests}, indent=2, ensure_ascii=False) + "\n")
+    return n_stages
+
 
 def load_characters(only: list[str] | None) -> list[dict]:
     chars = []
@@ -1030,6 +1435,15 @@ def main() -> None:
             text = sm.serialize(tree, indent_size=4)
             sm.parse_snbt(text)                # round-trip safety check
             compiled.append((ch["id"], text, etype))
+            if ch.get("spawn_variants"):
+                # B-roster clone (review B7): a second preset the place-function roll
+                # can import; identical everywhere except the tbcs trainer id.
+                vch = spawn_variant_character(ch)
+                vtree = compile_character(vch, dialogs, registers, lore)
+                vtree, vetype = merge_world(vtree, vch)
+                vtext = sm.serialize(vtree, indent_size=4)
+                sm.parse_snbt(vtext)
+                compiled.append((vch["id"], vtext, vetype))
             merge_mapping(mappings, ch, etype)
             sight += sight_lines_for(ch)
             if (ch.get("act") == "1" and not (ch.get("uuid") or "").strip()
@@ -1092,6 +1506,9 @@ def main() -> None:
                     if not (isinstance(v, dict)
                             and v.get("preset", "").split("/")[-1] in orphan_set)}
 
+    # Decline-fee bow-out functions (before band_tags: registers declined_* inverses)
+    n_decline = write_decline_functions(registers, prune=not args.character)
+
     # Band-tags tick fn + sight manifest
     BAND_TAGS_FN.parent.mkdir(parents=True, exist_ok=True)
     BAND_TAGS_FN.write_text(gen_band_tags())
@@ -1109,11 +1526,19 @@ def main() -> None:
 
     wired = wire_tick()
 
+    # Quest-tracker waypoint registry (full runs only — a filtered chars list would
+    # produce spurious unknown-npc warns and a partial emit).
+    if not args.character:
+        n_stages = emit_quest_waypoints(chars)
+        if n_stages >= 0:
+            print(f"Wrote {QUEST_WAYPOINTS_OUT.relative_to(PROJECT_ROOT)} ({n_stages} stages)")
+
     print(f"\nWrote {len(compiled)} preset(s) to {HUMANOID_DIR.relative_to(PROJECT_ROOT)}")
     print(f"Wrote {BAND_TAGS_FN.relative_to(PROJECT_ROOT)} ({len(BAND_REGISTRY)} band-tags)")
     print(f"Wrote {SIGHT_FN.relative_to(PROJECT_ROOT)} ({sum(1 for c in chars if c.get('sight') and c.get('uuid'))} NPCs)")
     print(f"Merged UUID mappings into {NPC_PRESETS.name}")
     print(f"Wrote {PLACEMENTS_FN.relative_to(PROJECT_ROOT)} ({n_placed} placement latches)")
+    print(f"Wrote {ROUTE_FN_DIR.relative_to(PROJECT_ROOT)}/decline_*.mcfunction ({n_decline} bow-out fees)")
     print(f"tick wiring: {wired or 'no tick.json found — add ' + NS + ':dialog/band_tags to your tick tag manually'}")
 
     if not args.no_generate:

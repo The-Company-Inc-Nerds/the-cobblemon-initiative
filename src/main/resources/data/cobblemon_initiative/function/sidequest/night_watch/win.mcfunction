@@ -15,6 +15,17 @@ loot give @s loot cobblemon_initiative:npc_gift/training_major
 give @s minecraft:bread 6
 give @s cobblemon:oran_berry 4
 give @s cobblemon:potion 1
+# Rolled side item (review B6 weighted drip): the fixed hamper is the FLOOR; one rolled
+# extra rides on top, announced. Bonus-only, one-time function — no farm loop.
+execute store result score #hamper cd_calc run random value 1..4
+execute if score #hamper cd_calc matches 1 run give @s cobblemon:cheri_berry 2
+execute if score #hamper cd_calc matches 1 run tellraw @s [{"text":"Tucked under the cloth: ","color":"gray"},{"text":"two Cheri Berries, still dew-cold.","color":"yellow"}]
+execute if score #hamper cd_calc matches 2 run give @s cobblemon:leppa_berry 1
+execute if score #hamper cd_calc matches 2 run tellraw @s [{"text":"Tucked under the cloth: ","color":"gray"},{"text":"a Leppa Berry from the house jar.","color":"yellow"}]
+execute if score #hamper cd_calc matches 3 run give @s minecraft:pumpkin_pie 2
+execute if score #hamper cd_calc matches 3 run tellraw @s [{"text":"Tucked under the cloth: ","color":"gray"},{"text":"two slices of pumpkin pie, watch-night baking.","color":"yellow"}]
+execute if score #hamper cd_calc matches 4 run give @s cobblemon:oran_berry 3
+execute if score #hamper cd_calc matches 4 run tellraw @s [{"text":"Tucked under the cloth: ","color":"gray"},{"text":"three more Oran Berries — the field counts its debts.","color":"yellow"}]
 tellraw @s [{"text":"Night rate paid: ","color":"gray"},{"text":"500 CD","color":"gold"},{"text":" and a breakfast hamper. Culls on the ledger: ","color":"gray"},{"score":{"name":"@s","objective":"nw_total"},"color":"red"},{"text":".","color":"gray"}]
 # VERIFIER FIX (3, minor): the family arrival stays off-camera flavor — no NPC tp
 # (the camp NPCs belong to Tenants of Record and have no known UUIDs at author time).

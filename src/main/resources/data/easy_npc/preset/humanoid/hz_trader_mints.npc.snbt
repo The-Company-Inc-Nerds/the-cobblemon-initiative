@@ -1,0 +1,502 @@
+{
+    PresetMetadata: {
+        author: "TheCompanyInc",
+        category: "Merchant",
+        created: 0L,
+        description: "merchant at Hua Zhan City - East Market Street, Mint Apothecary (act 1). Compiled from dialog-src.",
+        entityTypeId: "easy_npc:humanoid",
+        modified: 0L,
+        name: "Madam Qiu",
+        variantType: "STEVE",
+        version: "1.0.0"
+    },
+    data: {
+        ActionData: {
+            ActionEventSet: {
+                ON_INTERACTION: [
+                    {
+                        Type: "OPEN_DEFAULT_DIALOG"
+                    }
+                ]
+            }
+        },
+        ArmorDropChances: [0.085f, 0.085f, 0.085f, 0.085f],
+        ArmorItems: [
+            {},
+            {},
+            {},
+            {}
+        ],
+        Brain: {
+            memories: {}
+        },
+        CanPickUpLoot: 0b,
+        CustomNameVisible: 1b,
+        DialogData: {
+            Type: "STANDARD",
+            DialogDataSet: [
+                {
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "The forward drawer",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "drawer_forward"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "hz_market_eq_1"
+                                }
+                            ],
+                            Label: "forward_button"
+                        },
+                        {
+                            Name: "The steady drawer",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "drawer_steady"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "hz_market_eq_2"
+                                }
+                            ],
+                            Label: "steady_button"
+                        },
+                        {
+                            Name: "The curio shelf",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "curios"
+                                }
+                            ],
+                            Label: "curio_button"
+                        },
+                        {
+                            Name: "Leave the apothecary",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "A drawer for every temperament, dear. A nature is a negotiation, not a diagnosis — and I hold the better side of the table."
+                        },
+                        {
+                            Text: "Mints. Grown slow, dried slower, priced accordingly. One leaf under the tongue and a stubborn partner reconsiders its posture. Twenty-two hundred is the price of a changed mind, and it has not moved since spring."
+                        },
+                        {
+                            Text: "Half my drawers rest each day — dried mint sulks if the cabinet never closes. Whichever drawer stands open this morning, that is the argument on offer. Dawn turns the key."
+                        }
+                    ],
+                    Name: "Madam Qiu — the mint apothecary",
+                    Label: "default"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Adamant Mint — 2200 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/market/buy_mint_adamant"
+                                }
+                            ],
+                            Label: "buy_adamant_button"
+                        },
+                        {
+                            Name: "Modest Mint — 2200 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/market/buy_mint_modest"
+                                }
+                            ],
+                            Label: "buy_modest_button"
+                        },
+                        {
+                            Name: "Jolly Mint — 2200 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/market/buy_mint_jolly"
+                                }
+                            ],
+                            Label: "buy_jolly_button"
+                        },
+                        {
+                            Name: "Timid Mint — 2200 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/market/buy_mint_timid"
+                                }
+                            ],
+                            Label: "buy_timid_button"
+                        },
+                        {
+                            Name: "The steady drawer",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "drawer_steady"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "hz_market_eq_2"
+                                }
+                            ],
+                            Label: "steady_button"
+                        },
+                        {
+                            Name: "Back to Madam Qiu",
+                            Actions: [
+                                {
+                                    Type: "OPEN_DEFAULT_DIALOG"
+                                }
+                            ],
+                            Label: "back_button"
+                        },
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The forward drawer — tempers that push. Adamant and Jolly for the body, Modest and Timid for the mind. Decide which argument your partner should win."
+                        }
+                    ],
+                    Name: "Madam Qiu — the forward drawer",
+                    Label: "drawer_forward"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Impish Mint — 2200 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/market/buy_mint_impish"
+                                }
+                            ],
+                            Label: "buy_impish_button"
+                        },
+                        {
+                            Name: "Bold Mint — 2200 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/market/buy_mint_bold"
+                                }
+                            ],
+                            Label: "buy_bold_button"
+                        },
+                        {
+                            Name: "Calm Mint — 2200 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/market/buy_mint_calm"
+                                }
+                            ],
+                            Label: "buy_calm_button"
+                        },
+                        {
+                            Name: "Careful Mint — 2200 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/market/buy_mint_careful"
+                                }
+                            ],
+                            Label: "buy_careful_button"
+                        },
+                        {
+                            Name: "The forward drawer",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "drawer_forward"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "hz_market_eq_1"
+                                }
+                            ],
+                            Label: "forward_button"
+                        },
+                        {
+                            Name: "Back to Madam Qiu",
+                            Actions: [
+                                {
+                                    Type: "OPEN_DEFAULT_DIALOG"
+                                }
+                            ],
+                            Label: "back_button"
+                        },
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The steady drawer — tempers that hold. Impish and Bold for the walls, Calm and Careful for the patience behind them. Nothing in this drawer ever starts a fight. Nothing in it loses one quickly either."
+                        }
+                    ],
+                    Name: "Madam Qiu — the steady drawer",
+                    Label: "drawer_steady"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Leaf Stone — 2800 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/market/buy_leaf_stone"
+                                }
+                            ],
+                            Label: "buy_leaf_stone_button"
+                        },
+                        {
+                            Name: "Sun Stone — 2800 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/market/buy_sun_stone"
+                                }
+                            ],
+                            Label: "buy_sun_stone_button"
+                        },
+                        {
+                            Name: "Back to Madam Qiu",
+                            Actions: [
+                                {
+                                    Type: "OPEN_DEFAULT_DIALOG"
+                                }
+                            ],
+                            Label: "back_button"
+                        },
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The curio shelf. Stones out of the greenhouse trade — a leaf for the growers, a sun for the believers. Not herbs, I grant you. But they sell to the same hearts, and the hearts keep asking."
+                        }
+                    ],
+                    Name: "Madam Qiu — the curio shelf",
+                    Label: "curios"
+                }
+            ]
+        },
+        DisplayAttribute: [
+            {
+                Bool: 1b,
+                Type: "VISIBLE"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_AT_DAY"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_AT_NIGHT"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_IN_CREATIVE"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_IN_SPECTATOR"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_IN_STANDARD"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_TO_OWNER"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_TO_TEAM"
+            },
+            {
+                Int: 7,
+                Type: "LIGHT_LEVEL"
+            },
+            {
+                Text: "ALWAYS",
+                Type: "NAME_VISIBILITY"
+            }
+        ],
+        EasyNPCVersion: 3,
+        EntityAttribute: {
+            CanBeHitByProjectile: 0b,
+            CanBeLeashed: 0b,
+            CanBreatheUnderwater: 0b,
+            CanCloseDoor: 0b,
+            CanFloat: 0b,
+            CanOpenDoor: 0b,
+            CanPassDoor: 0b,
+            CanUseNetherPortal: 0b,
+            Freefall: 0b,
+            HealthRegeneration: 0.0d,
+            IsAttackableByMonsters: 0b,
+            IsAttackableByPlayers: 0b,
+            IsInvulnerable: 1b,
+            IsPushable: 0b,
+            NoGravity: 0b,
+            PushEntities: 0b
+        },
+        HandDropChances: [0.085f, 0.085f],
+        HandItems: [
+            {},
+            {}
+        ],
+        Invulnerable: 0b,
+        LeftHanded: 0b,
+        ModelData: {
+            DefaultPose: "STANDING",
+            Pose: "VANILLA",
+            Position: {},
+            Rotation: {},
+            Scale: {},
+            Visible: {
+                Boots: 1b
+            }
+        },
+        Navigation: {
+            Home: {
+                X: 0,
+                Y: 0,
+                Z: 0
+            }
+        },
+        ObjectiveData: {
+            HasObjectives: 1b,
+            HasTravelTarget: 0b,
+            ObjectiveDataSet: [
+                {
+                    Type: "LOOK_AT_PLAYER",
+                    Prio: 9,
+                    Id: "ambient_look_player",
+                    LookDistance: 8.0f
+                },
+                {
+                    Type: "LOOK_RANDOM_AROUND",
+                    Prio: 10,
+                    Id: "ambient_look_random"
+                },
+                {
+                    Type: "LOOK_AT_RESET",
+                    Prio: 9,
+                    Id: "ambient_look_reset"
+                }
+            ]
+        },
+        OnGround: 1b,
+        PersistenceRequired: 0b,
+        PresetUUID: [I; 0, 0, 0, 0],
+        Profession: "NONE",
+        Progression: {
+            AttributeScalingEnabled: 0b,
+            EntityExperience: 1,
+            EntityExperienceLevel: 1
+        },
+        RenderData: {},
+        SkinData: {
+            Content: "",
+            DisableLayers: 0b,
+            Name: "",
+            Timestamp: 0L,
+            Type: "DEFAULT",
+            URL: "",
+            UUID: [I; 0, 0, 0, 0]
+        },
+        SoundData: {
+            SoundDataSet: [
+                {
+                    Name: "minecraft:entity.player.death",
+                    Type: "DEATH"
+                },
+                {
+                    Name: "minecraft:entity.player.hurt",
+                    Type: "HURT"
+                }
+            ]
+        },
+        Status: {
+            finalized: 0b,
+            npc_data_last_saved: 0L,
+            npc_data_last_update: 0L
+        },
+        VariantType: "STEVE",
+        attributes: [
+            {
+                base: 20.0d,
+                id: "minecraft:generic.max_health"
+            },
+            {
+                base: 0.5d,
+                id: "minecraft:generic.movement_speed"
+            }
+        ],
+        id: "easy_npc:humanoid",
+        CustomName: '{"text": "Madam Qiu", "color": "#FFFFFF"}'
+    }
+}

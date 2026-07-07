@@ -118,6 +118,14 @@ several keys (e.g. a trade snippet sets both `Offers` and `TradingData`).
 All battle snippets tag the player `defeated_<TRAINER_ID>` on victory, which
 `quest_defeat`/`quest_bounty`/`battle_rematch` can check.
 
+> **Hand-builder only (round 13b):** `battle_spotter` and `battle_villain_forced` are
+> NOT part of the `dialog-src` → `content_compile` pipeline — compiled characters get
+> touch battles from the `engage: "touch"` character key instead. These two snippets
+> were also fixed in round 13b: action-level gates must use the **doubled**
+> `ConditionDataSet:{ConditionDataSet:[…]}` key (a bare `Conditions` list on an ACTION
+> is silently ignored — Easy NPC reads that key only on dialog entries/buttons, see
+> `docs/ENGINE_FINDINGS.md` §3).
+
 The `battle_spotter` and `battle_villain_forced` snippets are **sight-driven**:
 the contact battle (`ON_DISTANCE_TOUCH`, ≤1.25 blocks) is native Easy NPC, but the
 *approach* comes from registering the NPC in NPC Sight in `pursue` mode — the mod

@@ -18,18 +18,17 @@
 # (hasDefeatedTrainer short-circuits onTrainerDefeated), so this fires exactly once
 # per leader per world. The PLAYER_TAG persists in world data, so the re-reader NPC
 # still works after relog without re-firing the title.
+#
+# TWO-STAGE CEREMONY (2026-07-06): the tags/score latch immediately, but the eerie
+# purple title is DEFERRED 4s (storage + schedule -> memory/frag_title) so the badge
+# triumph layer (rewards/badge_ceremony, fireworks + toast) gets the screen first and
+# the memory beat lands alone in the silence after. Single-player contract: the
+# schedule callback re-targets via @a (the band_tags precedent).
 
 $tag @s add memory_fragment_$(n)
 $scoreboard players set @s memory_fragment $(n)
 
-# Cinematic delivery: clear any lingering title, set styled title + subtitle, then show.
-title @s times 10 70 20
-$title @s subtitle {"text":"$(sub)","color":"dark_gray","italic":true}
-$title @s title {"text":"$(title)","color":"#7A5CA8","bold":true}
-
-# Subtle "shadow self / memory surfacing" sound — quiet, low pitch.
-playsound minecraft:block.sculk_sensor.clicking master @s ~ ~ ~ 0.6 0.5
-playsound minecraft:particle.soul_escape master @s ~ ~ ~ 0.4 0.8
-
-# Chat echo so the line is re-readable in the log during the stream.
-$tellraw @s [{"text":"[Memory] ","color":"#7A5CA8","bold":true},{"text":"$(title)","color":"gray","italic":true}]
+# Stage the fragment text and schedule the reveal (replace semantics — two badges can
+# never land within 4s of each other).
+$data merge storage cobblemon_initiative:memory {frag:{title:"$(title)",sub:"$(sub)"}}
+schedule function cobblemon_initiative:memory/frag_title 4s

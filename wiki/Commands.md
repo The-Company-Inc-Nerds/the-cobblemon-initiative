@@ -13,12 +13,12 @@ Minecraft permission levels run 0–4. This mod uses three of them:
 
 | Level | Meaning | Used by |
 |-------|---------|---------|
-| **0** | Anyone (no OP) | `/shrine-abort`, `/nuzlocke deathscreen`, `/nuzlocke sacrifice` |
-| **2** | Operator | Almost all admin commands; the entire `/cobblemon-initiative` tree |
+| **0** | Anyone (no OP) | `/shrine-abort`, `/nuzlocke deathscreen`, `/nuzlocke sacrifice`, `/cobblemon-initiative track …` |
+| **2** | Operator | Every admin subtree under `/cobblemon-initiative`, plus `/nuzlocke reload`, `/safezone`, most of `/npcsight` |
 | **3** | Operator+ | `/npcsight reload` only |
 
 > [!IMPORTANT]
-> The **entire** `/cobblemon-initiative` command tree (and its `/ca` alias) requires permission level **2**. This includes player-style readouts like `progress` and `levelcap` — in single-player you are OP, so they "just work." `/shrine-abort` is the deliberate exception: it is registered separately with no permission gate so a player can always escape a stuck shrine.
+> The `/cobblemon-initiative` **root has no permission gate**. Instead, every admin subtree (`progress`, `shrine`, `install`, `dev`, …) carries its **own** OP-2 `requires` — brigadier keeps the first-registered node's requirement on merge, so this is the only structure that lets the player-facing **`track`** subtree work at permission 0 (it mirrors `/shrine-abort`). Watch the alias, though: **`/ca` still carries `hasPermission(2)` on its redirect**, so `/ca track` will *not* work for a non-OP player — the `]` / `[` keybinds send the full `cobblemon-initiative track …` command for exactly this reason. In single-player you are OP, so both forms work.
 
 ---
 
@@ -26,52 +26,97 @@ Minecraft permission levels run 0–4. This mod uses three of them:
 
 ```mermaid
 flowchart TD
-  ROOT["/cobblemon-initiative  (alias: /ca)  — OP 2"]
-  ROOT --> PROG["progress"]
-  ROOT --> LCAP["levelcap"]
-  ROOT --> RST["reset"]
-  ROOT --> INFO["info &lt;trainer&gt;"]
-  ROOT --> LIST["list gyms|shrines|groups|all"]
-  ROOT --> DEF["defeat &lt;trainer&gt;"]
-  ROOT --> SHR["shrine &lt;id&gt; start|stop|test|complete"]
-  ROOT --> QST["quest show|hide|refresh"]
-  ROOT --> INST["install check|run"]
-  ROOT --> DEV["DEV-ONLY: npc-map · zone-trace · field-mark"]
+  ROOT["/cobblemon-initiative  — root ungated<br/>(alias /ca — the alias itself is OP 2)"]
+  ROOT --> TRK["track next|prev|clear|status  — perm 0, player-only"]
+  ROOT --> PROG["progress  — OP 2"]
+  ROOT --> LCAP["levelcap  — OP 2"]
+  ROOT --> RST["reset  — OP 2"]
+  ROOT --> INFO["info &lt;trainer&gt;  — OP 2"]
+  ROOT --> LIST["list gyms|shrines|groups|all  — OP 2"]
+  ROOT --> DEF["defeat &lt;trainer&gt;  — OP 2"]
+  ROOT --> SHR["shrine &lt;id&gt; start|stop|test|complete<br/>+ path record|here|clear|show|export  — OP 2"]
+  ROOT --> QST["quest show|hide|refresh  — OP 2"]
+  ROOT --> SHOP["shop refresh|&lt;tier&gt;  — OP 2"]
+  ROOT --> RLD["reload  — OP 2"]
+  ROOT --> INST["install check|verify|run  — OP 2"]
+  ROOT --> DEVT["dev goto|badges|grant|kit  — OP 2"]
+  ROOT --> DEV["DEV-ONLY: npc-map · zone-trace · field-mark  — OP 2"]
 
-  NUZ["/nuzlocke deathscreen|sacrifice|reload"]
-  SZ["/safezone add|remove|list"]
-  NS["/npcsight add|remove|range|dialog|mode|meettag|stoptag|reset|list|info|reload"]
+  NUZ["/nuzlocke deathscreen|sacrifice (0) · reload (2)"]
+  SZ["/safezone add|remove|list  — OP 2"]
+  NS["/npcsight …  — OP 2 (reload: 3)"]
   ABORT["/shrine-abort  — no permission"]
 
   classDef dev fill:#3a2a2a,stroke:#a55,color:#fcc;
   class DEV dev;
+  classDef player fill:#1e3a2a,stroke:#5a5,color:#cfc;
+  class TRK,ABORT player;
 ```
 
 ---
 
-# Gameplay commands
+# Player-facing commands
+
+## `/cobblemon-initiative track` — the quest tracker
+
+**Permission 0, player-only.** Cycles which sidebar quest you are *tracking*. The tracked line gets an aqua **▶** prefix on the Quest HUD, and the quest's current objective is published as a **JourneyMap waypoint** (aqua, session-only — it never pollutes your saved waypoint list). Without JourneyMap installed, a vertical **beam of light** marks the objective in-world instead.
+
+| Command | Description |
+|---------|-------------|
+| `/cobblemon-initiative track next` | Track the next active quest (sidebar order, main objective first). Cycling past the last quest turns tracking off. |
+| `/cobblemon-initiative track prev` | Track the previous active quest; the mirror of `next`. |
+| `/cobblemon-initiative track clear` | Stop tracking. |
+| `/cobblemon-initiative track status` | Chat list of every active quest, with the tracked one marked `▶`. |
+
+**Default keybinds:** **`]`** = track next, **`[`** = track previous — rebindable under the **Cobblemon Initiative** category in Controls. The keybinds simply send the `track next`/`track prev` commands above.
+
+> [!NOTE]
+> Tracking persists per world across relogs. When a tracked quest completes and leaves the sidebar, tracking auto-clears with a *"Quest tracking cleared — objective complete."* notice. Some quest stages are informational and have no map position — the tracker will say *"(no waypoint for this objective)"* and just keep the sidebar highlight. The main objective line already carries its own `▶`, so tracking it changes the map, not the sidebar.
+
+## `/shrine-abort`
+
+| Command | Description | Permission |
+|---------|-------------|------------|
+| `/shrine-abort` | Player-facing escape hatch — aborts the active shrine challenge with no penalty. Equivalent to `/ca shrine <id> stop` but **requires no permission**. | 0 (anyone) |
+
+## `/nuzlocke` (test triggers)
+
+The first two are **player-facing test triggers (no permission)**; `reload` is admin-only.
+
+| Command | Description | Permission |
+|---------|-------------|------------|
+| `/nuzlocke deathscreen` | Triggers the Pokéball faint death screen for testing. Applies **20 damage** to the player — note this 20-damage figure belongs *only* to this test command; a real whiteout is an unblockable kill (see [[Architecture Data Flows]]). | 0 (anyone) |
+| `/nuzlocke sacrifice` | Triggers the sacrifice-selection screen for testing. If the player has only one Pokémon, triggers death instead. | 0 (anyone) |
+| `/nuzlocke reload` | Reloads the Nuzlocke config from disk. | 2 (OP) |
+
+---
+
+# Admin commands
 
 ## `/cobblemon-initiative` &nbsp;(alias `/ca`)
 
-Root command for all Cobblemon Initiative features. `/ca` is a literal redirect to the same tree, so `/ca progress` and `/cobblemon-initiative progress` are identical. **Whole tree requires OP level 2.**
+Root command for all Cobblemon Initiative features. `/ca` is a literal redirect to the same tree (`/ca progress` ≡ `/cobblemon-initiative progress`), but the **alias itself is gated at OP 2** — use the full command name for the permission-0 `track` subtree on a non-OP account. Every subtree below requires **OP level 2**.
 
 ### Progress & level cap
 
 | Command | Description | Args |
 |---------|-------------|------|
-| `/ca progress` | Shows trainers defeated, achievements earned, current level cap, and gym badges earned. | — |
+| `/ca progress` | Shows trainers defeated, achievements earned, current level cap, and gym badges earned (n/10). | — |
 | `/ca levelcap` | Displays the current level cap (unlocked by defeating gym leaders; the cap = highest achieved). | — |
-| `/ca reset` | Clears defeated trainers, clears earned achievements, and resets the level cap to **20**. | — |
+| `/ca reset` | Clears defeated trainers, clears earned achievements, and resets the level cap. | — |
 
 > [!WARNING]
 > `/ca reset` wipes campaign progress for the executing player. On a live hardcore run this is destructive — treat it as a debug/setup tool only.
+
+> [!CAUTION]
+> **Known inconsistency:** `/ca reset` hard-sets the level cap to **20**, but the actual starting cap defined by `levelcaps.json` (and `ProgressionConfig.baseLevelCap`) is **15**. The 20 is a stale hardcode from an older ladder — after a reset, the first cap recalculation (any badge grant, or `/ca dev badges 0`) restores the true base. Do not read the post-reset `20` as the intended starting cap.
 
 ### Trainer inspection
 
 | Command | Description | Args |
 |---------|-------------|------|
 | `/ca info <trainer>` | Detailed trainer readout: ID, category, location, type, group, coordinates, prerequisites, spawn-on-defeat Pokémon, and team size. | `<trainer>` — trainer ID (autocomplete) |
-| `/ca list <gyms\|shrines\|groups\|all>` | Lists trainers by category. `gyms` = gym leaders, `shrines` = shrine challenges, `groups` = trainer groups, `all` = every trainer. | one of `gyms`, `shrines`, `groups`, `all` |
+| `/ca list <gyms\|shrines\|groups\|all>` | Lists trainers by category. `gyms` = gym trainers, `shrines` = shrine challenges, `groups` = trainer groups, `all` = every trainer. | one of `gyms`, `shrines`, `groups`, `all` |
 
 ### Progress control
 
@@ -90,15 +135,53 @@ Shrine flow is phased: **start → (parkour) complete → optional Fairy tests**
 | `/ca shrine <shrine> complete` | Marks the **parkour phase** complete. Wired from a finish-line command block, e.g. `execute as @a[distance=..3] run cobblemon-initiative shrine <shrine> complete`. | `1` success / `0` fail |
 | `/ca shrine <shrine> test <testName>` | Runs one individual **Fairy shrine** test. `<testName>` ∈ `friendship`, `fullness`, `nickname`, `shiny`, `resolve`. Wired from altar dialogs / command blocks. | `1` pass / `0` fail |
 
+#### Safe-path authoring (`shrine … path`)
+
+Authors the **ice-floor safe path** for parkour shrines with the floor hazard enabled (standing on hazard ice off the recorded path deals freeze damage and teleports the player back to the start). Paths persist **per world** in `data/shrine_paths.json`.
+
+| Command | Description |
+|---------|-------------|
+| `/ca shrine <shrine> path record` | Toggle continuous recording — every block you walk over is marked safe. |
+| `/ca shrine <shrine> path here` | Add the single block underfoot to the safe path. |
+| `/ca shrine <shrine> path clear` | Wipe the recorded path for this shrine. |
+| `/ca shrine <shrine> path show` | Particle-highlight the currently recorded safe blocks. |
+| `/ca shrine <shrine> path export` | Print a `safePositions` config snippet for baking into the shrine JSON. |
+
 ### Quest HUD
 
-The Quest HUD (a togglable sidebar — the main line shows the current story objective, with side-quest lines beneath it) is rendered by the datapack. These commands are thin wrappers that dispatch `cobblemon_initiative:quest/{show,hide,refresh}`.
+The Quest HUD (a togglable sidebar — the main line shows the current story objective, with side-quest lines beneath it) is rendered by the datapack. These commands are thin wrappers that dispatch `cobblemon_initiative:quest/{show,hide,refresh}`. For *tracking* a specific quest, see the permission-0 [`track` command](#cobblemon-initiative-track--the-quest-tracker) above.
 
 | Command | Description |
 |---------|-------------|
 | `/ca quest show` | Displays the Quest HUD. |
 | `/ca quest hide` | Hides the Quest HUD. |
 | `/ca quest refresh` | Redraws / recomputes the HUD from current state. |
+
+### Shop tiers
+
+The Pokémart runs a badge-tier catalog managed by `ShopTierManager` — gym leaders and the HQ raid fire these automatically as rewards; the command is also a manual admin/test lever. Applying a tier copies the pre-baked catalog over CobbleDollars' `default_shop.json`, hot-reloads it live, and retiers the Company Granary in lockstep. Base tiers are automatically upgraded to their **liberation-relief** variant (one relief level per 2 liberated fields).
+
+| Command | Description | Args |
+|---------|-------------|------|
+| `/ca shop refresh` | Re-applies the executing player's *current* base tier so the liberation-relief level is re-resolved from `fields_liberated`. Fired by the field-liberation function; safe to run any time. Needs a player source. | — |
+| `/ca shop <tier>` | Applies a specific tier and reloads CobbleDollars. | `tier` ∈ `badge_0` … `badge_7`, `post_hq`, `badge_8` … `badge_10` (autocomplete) |
+
+### Reload
+
+| Command | Description |
+|---------|-------------|
+| `/ca reload` | Re-reads trainers, level caps, shrine challenges, and every runtime config (Nuzlocke, NPC Sight, shrine, loot-chest, progression) without a relaunch. **Reads built resources** — in the dev client run `gradle processResources` first; a packaged jar needs a rebuild. |
+
+### Dev helpers (`dev`)
+
+Warps and progression levers for testing — all OP-2.
+
+| Command | Description | Args |
+|---------|-------------|------|
+| `/ca dev goto <trainer>` | Teleport to a trainer's configured coordinates. | trainer ID (autocompletes only trainers that have coordinates) |
+| `/ca dev badges <n>` | Set progression to **exactly** N gym badges: grants/removes the badge achievements *and* their gym leaders' defeated flags, then recalculates the level cap. | `n` 0–10 |
+| `/ca dev grant <achievement>` | Grant a single achievement and refresh the level cap. | achievement ID (autocompletes the level-cap achievement ids, e.g. `badge_fire`, `royal_league_champion`, `board_cleared`) |
+| `/ca dev kit` | Gives the 5 shrine crystals + 16 Rare Candy + 16 Potions. | — |
 
 ### Install
 
@@ -107,28 +190,17 @@ Applies the packaged world configuration in `install.json`. See [[Architecture O
 | Command | Description |
 |---------|-------------|
 | `/ca install check` | Reports current vs. target state for gamerules, difficulty, hardcore mode, NPC preset mappings, and zones — read-only. |
-| `/ca install run` | Applies all gamerules, difficulty, and hardcore mode from `install.json`; applies NPC presets; creates safe zones and Map Frontiers boundaries; **disconnects players** so the world reloads in hardcore mode when hardcore is newly enabled. |
+| `/ca install verify` | A separate **read-only deep check** — inspects the applied world state in detail without changing anything. |
+| `/ca install run` | Applies all gamerules, difficulty, and hardcore mode from `install.json`; applies NPC presets (arming a full preset refresh); creates safe zones and Map Frontiers boundaries; strips the map-authored infinite Speed effect; **seeds the CobbleDollars shop to the opening `badge_0` catalog**; and **disconnects players only when hardcore is newly flipped** so the world reloads in hardcore mode. |
 
 > [!IMPORTANT]
-> `/ca install run` kicks players to reload the world if it flips hardcore on. This is expected — relog to continue. Run `/ca install check` first to preview exactly what will change.
-
----
-
-## `/nuzlocke`
-
-Nuzlocke death-mechanic controls. The first two are **player-facing test triggers (no permission)**; `reload` is admin-only.
-
-| Command | Description | Permission |
-|---------|-------------|------------|
-| `/nuzlocke deathscreen` | Triggers the Pokéball faint death screen for testing. Applies **20 damage** to the player. | 0 (anyone) |
-| `/nuzlocke sacrifice` | Triggers the sacrifice-selection screen for testing. If the player has only one Pokémon, triggers death instead. | 0 (anyone) |
-| `/nuzlocke reload` | Reloads the Nuzlocke config from disk. | 2 (OP) |
+> `/ca install run` is idempotent and safe to re-run. It only kicks players when it actually flips hardcore on — relog to continue. Run `/ca install check` first to preview what will change. **Modpack installs auto-run `install run` once per fresh world** via a pack-only marker file (`config/cobblemon-initiative-autoinstall.json`); bare-mod installs never auto-run.
 
 ---
 
 ## `/safezone`
 
-Manage safe-zone regions. Inside a safe zone, Pokémon-faint (Nuzlocke) damage is suppressed and mob spawning can be cancelled. **All subcommands require OP level 2.**
+Manage zone regions. Zones drive on-entry announcements, hostile-mob suppression, and Dark Urge whisper suppression. **All subcommands require OP level 2.**
 
 | Command | Description | Args |
 |---------|-------------|------|
@@ -140,7 +212,7 @@ Manage safe-zone regions. Inside a safe zone, Pokémon-faint (Nuzlocke) damage i
 
 ## `/npcsight`
 
-Configure NPC line-of-sight tracking. The NPC Sight system raycasts from each registered NPC's eyes to nearby players each tick and writes a `can_see_player` scoreboard objective that datapacks query — it does **not** run game logic directly. **OP level 2 for all subcommands except `reload` (level 3).** UUID arguments autocomplete (the entity you are currently looking at, or already-registered UUIDs).
+Configure NPC line-of-sight tracking. The NPC Sight system raycasts from each registered NPC's eyes to nearby players on a throttled tick and writes a `can_see_player` scoreboard objective that datapacks query — it does **not** run game logic directly. **OP level 2 for all subcommands except `reload` (level 3).** UUID arguments autocomplete (the entity you are currently looking at, or already-registered UUIDs).
 
 | Command | Description | Args |
 |---------|-------------|------|
@@ -155,14 +227,6 @@ Configure NPC line-of-sight tracking. The NPC Sight system raycasts from each re
 | `/npcsight list` | Lists all registered NPCs: uuid, mode, range, dialog, meetTag, stopTag, fired status, canSeePlayer status. | — |
 | `/npcsight info <uuid>` | Detailed readout for one registered NPC. | `uuid` (registered) |
 | `/npcsight reload` | Reloads the NPC Sight config from disk. | — &nbsp; **(permission level 3)** |
-
----
-
-## `/shrine-abort`
-
-| Command | Description | Permission |
-|---------|-------------|------------|
-| `/shrine-abort` | Player-facing escape hatch — aborts the active shrine challenge with no penalty. Equivalent to `/ca shrine <id> stop` but **requires no permission**. | 0 (anyone) |
 
 ---
 
@@ -191,7 +255,7 @@ Polygon zone editor. `begin` gives a Zone Tracer wand; right-click blocks to add
 | `/ca zone-trace begin <name>` | Starts a session and gives the Zone Tracer wand. `name` = greedy string. |
 | `/ca zone-trace point` | Records the player's current foot position as a vertex. |
 | `/ca zone-trace undo` | Removes the last vertex. |
-| `/ca zone-trace type <value>` | Sets zone type: `TOWN`, `ROUTE`, `SHRINE`, `VILLAIN`, `BATTLE_FRONTIER`, `LANDMARK` (autocomplete). |
+| `/ca zone-trace type <value>` | Sets zone type: `TOWN`, `ROUTE`, `SHRINE`, `VILLAIN`, `BATTLE_FRONTIER`, `LANDMARK` (autocomplete). (`FARM` zones exist in `install.json` but are not yet in the wand's suggestion list.) |
 | `/ca zone-trace color <hex>` | Sets zone colour, e.g. `FF0000` or `#FF0000`. |
 | `/ca zone-trace subtitle <text>` | Sets the on-entry subtitle (greedy string). |
 | `/ca zone-trace announce <true\|false>` | Toggles entry announcement. |
@@ -220,4 +284,5 @@ Wheat-field editor for the Wheat War / field-liberation economy work. Fields are
 ## See also
 
 - [[Architecture Overview]] — how these commands hook into subsystems and data flows.
+- [[Architecture Data Flows]] — the quest-tracker and economy workflows these commands drive.
 - [[Home]] — wiki landing page.

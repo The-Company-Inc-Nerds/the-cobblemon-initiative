@@ -54,6 +54,7 @@ nix develop -c javap -p -c <extracted>.class
 | Easy NPC always defers CLOSE_DIALOG to run LAST regardless of action order, and it maps to `closeContainer()` — vanilla's client handler then `setScreen(null)` UNCONDITIONALLY | A dialog button that opens another screen (e.g. Cobblemon's starter UI) has that screen destroyed in the same tick. Fix: drop the close action (a replacing screen emits no close packet) — or defer the open by a tick via a tag + tick function |
 | Client DEFAULT-preset index is classpath `/data/easy_npc/default_preset/default_preset.index` | Our `preset.index` is repo bookkeeping only; Easy NPC never reads it for DATA presets |
 | `COBBLEMON_ENTITY` renderer (`easy_npc:cobblemon_npc` entity type, `RenderData.EntityModel` = species id): species-only, PERMANENTLY — RenderDataEntry serializes exactly Type/EntityType/EntityModel; `ResourceLocation.tryParse` rejects `growlithe hisuian=true`; the client ghost PokemonEntity's aspect entity-data is never written (server delegate only), so even set aspects would not display. 6.25.0 is the newest upstream build ANYWHERE (Modrinth-checked 2026-07-04); no version has aspect support. Resolution = `PokemonSpecies.getByIdentifier` — ANY namespace, datapack species included, no `implemented` filter; unknown ids poison a static invalid cache until client restart | Forms need a RENDER-ONLY CLONE SPECIES (shipped 2026-07-04 for the Hisuian Growlithe stand-in): `data/cobblemon_initiative/species/custom/growlithe_hisui.json` (Hisui stats hoisted, `implemented:false` = out of random/giveall/dex-GUI; no dex_entries; bare-name lookups are hardcoded to the `cobblemon` namespace so nothing else can ever hit it) + `assets/cobblemon_initiative/bedrock/pokemon/resolvers/growlithe_hisui/` binding its empty-aspects variation to the hisuian model/texture. CAVEAT: those assets ship in AllTheMons, NOT base Cobblemon — without the pack the stand-in falls back to the gray substitute model (cosmetic only). Authoring: in-world exports (`dialog-src/visuals/<id>.npc.snbt`) or the species-only `cobblemon_model` character key |
+| **Multi-text dialogs show ONE page, uniformly at random, per dialog open** (`DialogData.getText` picks a random entry from `Texts[]`; there is no sequencing, no "seen" memory, no weighting) | A `say[]` list is a ROTATION, not a monologue: every line must stand alone. NEVER author sequential/ordered prose across one entry's `say[]` — a viewer gets exactly one of them per open. Sequences ride `open_dialog` page chains. ~398 of ~500 shipped entries already rotate; this is the documented contract for all of them |
 | Movement objectives (all verified in `ObjectiveType`/`ObjectiveUtils` + custom goals; work identically for `cobblemon_npc` — it extends PathfinderMob): `RANDOM_STROLL_AROUND_HOME` (radius 10/7, ~12s interval, 50% of picks biased toward Home — SOFT tether, no hard leash) silently no-ops without `Navigation:{Home:}`; `MOVE_BACK_TO_HOME` (StopDistance, exact-BlockPos path-back) sets NO goal flags so it coexists/jitters with the stroll goal; `RANDOM_STROLL` + `WATER_AVOIDING_RANDOM_STROLL` ignore Home entirely (unbounded drift); village types + FLEE_* are unusable here (vanilla POIs absent / flees players). SNBT: `Type` = exact UPPERCASE enum (typos silently become NONE), `Prio` MUST be written (missing = 0 = outranks everything), `SpeedModifier` double default 0.7 | Wander = the `ambient_wander` snippet (stroll@2 + back-home@3 + looks@9/10) and the preset MUST carry the NPC's real `Navigation.Home` — preset import REPLACES Navigation, so a template Home would slowly migrate NPCs. A strolling NPC opens dialog fine but KEEPS WALKING while the screen is open — never put wander on quest anchors (door/desk/scene NPCs) or NpcSight-registered NPCs |
 
 ### CobbleDollars 2.0.0-Beta-5.1 (`curse.maven:cobbledollars-859232:6604561`)
@@ -133,6 +134,24 @@ nix develop -c javap -p -c <extracted>.class
   `"cobblemon-initiative"` since round 10, for graph bookkeeping only) — and
   enabling it would fight our `LevelCapManager`. → Battle locking stays in Easy NPC
   action Conditions + onwin defeat tags. tbcs wins never register in rctmod.
+- **TBCS REGISTRY IS NAMESPACE-PREFIXED — tbcs command ids MUST be `rctmod:<id>`**
+  (bytecode, round 12c — this is why dialog battles NEVER worked in any build ≤ alpha.17):
+  TBCS keeps its OWN rctapi instance (`RCTApi.initInstance("tbcs")`) and populates it in
+  `TBCS.loadTrainers()` by (a) registering world-dir `trainers/` files as `tbcs:<file>`
+  and (b) MIRRORING every TrainerNPC from the rctmod instance under
+  `IdUtils.createTrainerId("rctmod", id, NPC)` = lowercase `rctmod:<id>` (config
+  `trainerMods=["rctmod"]`, interface default the same). `CommandsContext`
+  tryAttach/battle resolve via `TrainerRegistry.getById` — an EXACT `Map.get`, no
+  prefix fallback — so a bare id throws `No such trainer registered` and the dialog
+  falls through to the beaten line. Our 95 `data/rctmod/trainers/*.json` register fine
+  (mod-jar packs ARE scanned; "Model validation failure" warns do NOT block
+  registration — rctapi registers BEFORE `errors.check()` throws, invalid moves are
+  just dropped). RULE: `tbcs attach rctmod:<id>` / `tbcs battle … vs rctmod:<id>`;
+  tag names (`defeated_<id>`) and `rctmod player add progress` ids stay BARE.
+  `content_compile`, all battle snippets and `_battle_trainer_base` emit the prefix
+  since round 12c. Loading is tick-gated in `ModCommon.onServerTick` (reload-aware,
+  clearNPCs + re-mirror every datapack reload — never register into the "tbcs"
+  instance ourselves, it gets wiped; never ship a world-dir `trainers/` folder).
 - **onwin `@1/@2` substitute WINNERS FIRST** (`concat(getWinners(), getLosers())`).
   Win list (key 1): `@1`=player, `@2`=NPC. Lose list (key 2): `@1`=NPC, `@2`=player —
   lose-side commands are the MIRROR (`cobbledollars remove @2`, `@1 say <taunt>`).
@@ -179,6 +198,32 @@ nix develop -c javap -p -c <extracted>.class
   candy when the applied gain is 0. `LEVEL_UP_EVENT.setNewLevel` is honored (not
   cancelable). Direct `Pokemon.setLevel` bypasses everything (admin only).
 
+### JourneyMap 6.0.0 (`journeymap-fabric-1.21.1-6.0.0`) — client waypoint API (round 12e)
+
+- The v2 API ships INSIDE the mod jar (`META-INF/jars/journeymap-api-fabric-2.0.0-1.21.1.jar`);
+  the official maven artifact `info.journeymap:journeymap-api-fabric:2.0.0-1.21.1` on
+  `https://maven.blamejared.com` is byte-identical to it (verified). `modCompileOnly` +
+  loom remap; never shade; JM stays in `suggests` (mod id for isModLoaded: `journeymap`).
+- PLUGIN DISCOVERY on Fabric: `FabricLoader.getEntrypoints("journeymap",
+  IJourneyMapPlugin.class)` — a fabric.mod.json entrypoint key. The class must ALSO be
+  annotated `@journeymap.api.v2.common.JourneyMapPlugin(apiVersion="2.0.0")` (the
+  common one — `v2.client.JourneyMapPlugin` logs a deprecation warn) and implement
+  `journeymap.api.v2.client.IClientPlugin`. JM RE-INSTANTIATES the class reflectively
+  (public no-arg ctor, side-effect-free — it is constructed twice). Lazy entrypoints =
+  clean soft dep, but NO other class may reference the plugin class (classloading).
+- WAYPOINTS: never implement the `Waypoint` interface (PluginWrapper hard-casts to
+  ClientWaypointImpl) — always `WaypointFactory.createClientWaypoint(modId, BlockPos,
+  name, "minecraft:overworld", persistent)`. `persistent=false` = session-only, never
+  written to the player's waypoint file. Factory defaults: random color (setColor!),
+  beacon+map+in-world+label all ON. `IClientAPI.addWaypoint(modId, wp)` is create AND
+  update; identity key = `wp.getGuid()` (random; `getId()` is derived, not a key).
+- LIFECYCLE: do NOT create waypoints in `initialize()` (the client waypoint factory is
+  installed after plugin init); safe window = after `MAPPING_STARTED`
+  (`ClientEventRegistry.MAPPING_EVENT`). Every dimension change/world exit WIPES all
+  non-persistent waypoints and re-fires MAPPING_STARTED — re-create desired waypoints
+  in that handler, no exit cleanup needed. WaypointStore is unsynchronized: call the
+  API only on the client main thread.
+
 ### Vanilla 1.21.1
 
 - **Sidebar hides `#`-prefixed score holders** (`PlayerScoreEntry.isHidden`); cap 15
@@ -200,12 +245,57 @@ nix develop -c javap -p -c <extracted>.class
   legacy `execute as … run` prefixes stripped, execute-rooted = CompileError; entity
   path → `@s/@p→@initiator`, bare `function` wrapped, `@initiator[` = CompileError.
   Generated NPC-context commands (attach) use `command_action_raw` to skip substitution.
+- **ON_DISTANCE triggers execute COMMAND actions per-player** (round 13b bytecode):
+  bands NEAR 16 / CLOSE 8 / VERY_CLOSE 4 / TOUCH 1.25 (hard-coded radii); ExecAsUser
+  binds the in-range player like a dialog button. ActionGroup de-dupes per band and
+  RESETS ONLY WHEN THE RADIUS EMPTIES — a lost forced battle re-forces on re-approach;
+  an armed trigger will NOT re-fire without a full leave+re-enter (the eavesdrop
+  direct-open in loiter_ready exists because of this). OPEN_NAMED_DIALOG trigger
+  actions ignored authored gates until round 13b (compiler now attaches the doubled
+  ConditionDataSet).
+- **`easy_npc objective <selector> set|remove follow player <name>`** mutates a LOADED
+  NPC's goals live (round 13c, Deng escort): Prio 1, speed 0.7, 2-16 engage band,
+  NATIVE teleport catch-up past 12 blocks; a relog leaves the goal holding a dead
+  player instance — re-arm on a ~100-tick cadence (walk_tick/rearm pattern).
+- **Poses** (round 13c bytecode): `ModelData.Pose: CUSTOM` + per-part
+  `Rotation:[x,y,z,locked]` (radians, absolute; `locked` is never read — [0,0,0,1.0]
+  = freeze-at-neutral idiom), `Position` (px, additive, +y down), `Scale`. Vanilla anim
+  cancels only when ALL 5 critical parts (Head/arms/legs) carry a change; leave Head
+  unchanged to keep look-tracking. `DefaultPose:"SITTING"` does NOTHING for humanoids —
+  sitting = CUSTOM legs -1.6 rad. Body yaw is renderer-level: even frozen statues pivot
+  toward players. Compiler: a dialog-src/visuals override now OWNS ModelData through the
+  world merge (mirrors the skin rule); character `entity_tags` bake vanilla Tags into
+  the preset (replaces every manual tag-at-placement protocol).
 - **Every dialog entry gets an auto-`Goodbye` close button** unless it has a close
   action or sets `"no_goodbye": true` (forced encounters).
+- **Action gates use the DOUBLED key `ConditionDataSet:{ConditionDataSet:[…]}`** —
+  `ActionDataEntry.load` reads ONLY that key (round 12c bytecode + EASY_NPC_REFERENCE
+  §ActionDataEntry); a bare `Conditions` list on an ACTION is silently ignored (that
+  key exists only on dialog ENTRIES and BUTTONS, which is why entry/button gating
+  always worked while every action-level gate — beaten-line `say`s, one-time gives —
+  fired unconditionally until round 12c). `content_compile` emits the doubled key for
+  action gates since round 12c; entries/buttons keep bare `Conditions`.
 - **Sidebar**: objective `ci_quest`, displayed holders `q.main` + `q.side_*` (slots
-  100, 81..58; 75 vacant), scratch stays `#…` on `quest_hud`. No quest boss bar —
+  100, 81..57; 75 vacant — 57 = Preferred Provider clinic, round 12c). The quest
+  TRACKER (round 12e, `questtrack/QuestTrackManager`) re-styles the tracked holder's
+  display every 5 ticks via `ScoreAccess#display` (aqua "▶ " prefix, existing component
+  preserved — macro-rendered lines keep their live numbers); render.mcfunction rewrites
+  win any race and the tracker re-applies. q.main lines already start with "▶ " so
+  tracking main shows no visual change (by design). Active-quest list = holders with a
+  ci_quest score, sorted DESC — never re-derive quest conditions for the list., scratch stays `#…` on `quest_hud`. No quest boss bar —
   `quest/load` actively deletes `cobblemon_initiative:objective`; countdown pitches
-  need fresh dedicated bossbar ids.
+  need fresh dedicated bossbar ids. Slot **75** = the FILING DAY aggregate
+  (`q.side_papers`, 2026-07-06): at `ci_papers_held ≥ 2` (recomputed by
+  `sidequest/personnel_file/papers_tick`) the five individual "…to Lucian" deliver
+  lines suppress themselves and one `• File with Lucian: n papers` line replaces them.
+- **Randomness invariants (2026-07-06, codified after the quest-flow review):**
+  (1) **No random prices anywhere** — the instability index (`cd_instability`) is the
+  ONLY price driver (shop tiers, heal fee proposals, stall quotes all derive from it);
+  never add price jitter. (2) **Numbers a player commits money against are never
+  rolled** — stakes, decline fees, and loss fees stay fixed and are printed on the
+  button/receipt before the click. Randomness is welcome ONLY on bonus/wares/flavor
+  surfaces (rumor rotation, say[] pages, drip loot), never on punishment or committed
+  amounts.
 - **Story-flag canon**: gym progress = `memory_fragment` score (1..10, zero-init in
   render); HQ = `defeated_villain_boss`; champion = `royal_league_champion` (defeat_tag
   override — NOT defeated_royal_champion); Board = `defeated_board_{madeline,matt,micah,lauren}`;
@@ -285,17 +375,28 @@ nix develop -c javap -p -c <extracted>.class
   TICK LATER (immediate kill would race the deferred CLOSE_DIALOG packet). The
   hisuian stand-in renders via the `cobblemon_initiative:growlithe_hisui` clone
   species (see §2) — the GIVEN starter stays `growlithe hisuian=true`.
-- **Map speed buff / host-player reset**: the map author baked an infinite Speed I into
-  level.dat's `Data.Player` (inherited by the host because playerdata/ is empty). As of
-  2026-07-05 `bake_install_into_level_dat` REMOVES `Data.Player` entirely (builders send
-  full saves they've PLAYED on → Data.Player carries their inventory/pos/party/effects,
-  incl. the speed) — the fresh host then spawns at the baked world spawn (Sango
-  2615/109/2843) in survival. This supersedes the old `_strip_player_speed` surgical
-  strip (removed). `install run` still runs `effect clear @a minecraft:speed` for
-  already-shipped copies. Running Shoes (+30% movement_speed) are the only sanctioned
-  speed source.
+- **Map speed buff / host-player reset / SPAWN Y**: the map author baked an infinite
+  Speed I into level.dat's `Data.Player` (inherited by the host because playerdata/ is
+  empty). Round 12c: `bake_install_into_level_dat` REPLACES `Data.Player` with a minimal
+  sanitized host tag (`Pos:[SpawnX+.5, SpawnY, SpawnZ+.5]`, Rotation from SpawnAngle,
+  zero Motion, overworld, survival, DataVersion — deliberately NO UUID/inventory/XP/
+  effects, so the builder state still never ships). WHY A TAG AND NOT DELETION (the
+  round-8 approach): vanilla 1.21.1 IGNORES SpawnY for a brand-new player —
+  `ServerPlayer.<init>` → `adjustSpawnLocation` → `PlayerRespawnLogic.
+  getOverworldRespawnPos(level, x, z)` scans DOWN from the MOTION_BLOCKING heightmap
+  top of the spawn column (even with spawnRadius=0), which put the host on the house
+  ROOF at y=122. `PlayerList.load()` applies level.dat's `Data.Player` verbatim to the
+  singleplayer host BEFORE the first tick — the tag is the only clean way to land an
+  exact interior spawn. Belt-and-braces: `InitiativeInit` snaps un-latched players
+  (`ci_spawn_snapped` tag) to shared spawn on JOIN for dev/bare-mod worlds. build also
+  strips UPM2's 76 stale `data/rctmod/trainers/` from the bundled data.zip (~83 startup
+  warns). `install run` still runs `effect clear @a minecraft:speed` for already-shipped
+  copies. Running Shoes (+30% movement_speed) are the only sanctioned speed source.
 - Economy: sidequest payouts route through `economy/payout {amount:N}` (skew +
-  actionbar receipt) — never call `pay_macro` directly (needs paid+rate+raw). Battle
+  UNBRANDED "Verified Rate" receipt — tone rule 2026-07-06) — never call `pay_macro`
+  directly (needs paid+rate+raw). The Company-branded receipt is `economy/
+  payout_company {amount:N}` and fires ONLY where taking Company money is the point:
+  census sign fork, courier sell fork, Invitational purse, Adjusted Retail. Battle
   prizes stay flat in onwin. `hq_stabilize` clamps DOWNWARD only.
 - **Sidequest training packs (showrunner 2026-07-04): every one-time quest COMPLETION
   payout also grants a training loot table** (`npc_gift/training_{minor≤260,
@@ -308,9 +409,10 @@ nix develop -c javap -p -c <extracted>.class
   Dialog-side = bare `loot give @s loot …` action (allowlisted root) before the payout
   action. Gym leaders pay CD prize + config command rewards only — the legacy
   5×emerald config entries were REMOVED (off-economy currency; CobbleDollars is the
-  point of the plot). `sq_lucian_deliveries.json` + `sq_perf_review_guide.json` are
-  MERGE FILES (not compiled standalone — nothing references them); perf_review_guide
-  carries its training_major for whenever the Takehara guide dialog gets forked.
+  point of the plot). `sq_lucian_deliveries.json` is a MERGE FILE (not compiled
+  standalone — nothing references it). `sq_perf_review_guide.json` was RETIRED
+  2026-07-06: its entries live in `dialog/takehara_guide.json`, the Takehara-only
+  guide fork (the other nine guides keep the shared `gym_guide`).
 - Advancement icons use the HYPHEN namespace (`cobblemon-initiative:badge_icon`) —
   items live under the mod id, datapack under `cobblemon_initiative`.
 - **The mod must work WITHOUT the mrpack.** Anything the mod's correctness depends on

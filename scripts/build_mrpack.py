@@ -48,7 +48,8 @@ def bake_install_into_level_dat(level_dat: str, level_name: str = None) -> None:
     try:
         import sys as _sys
         _sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-        from nbt_read import read_nbt_file, TAG_COMPOUND, TAG_STRING, TAG_BYTE, TAG_INT
+        from nbt_read import (read_nbt_file, TAG_COMPOUND, TAG_STRING, TAG_BYTE,
+                              TAG_INT, TAG_FLOAT, TAG_DOUBLE, TAG_LIST)
         from nbt_write import write_nbt_file
 
         with open(INSTALL_JSON) as fh:
@@ -79,13 +80,41 @@ def bake_install_into_level_dat(level_dat: str, level_name: str = None) -> None:
 
         # Reset the host player. Builders send full saves they've PLAYED/TESTED on, so
         # Data.Player carries THEIR inventory, position, XP, effects (incl. the map's
-        # baked infinite speed), and even a party — and with playerdata/ empty the
-        # singleplayer host INHERITS it. Removing Data.Player entirely gives a clean
-        # survival host that spawns fresh at the world spawn (baked correctly, e.g.
-        # Sango 2615/109/2843). Also force the world default gametype to survival.
-        if "Player" in dtag:
+        # old baked infinite speed — this replacement permanently supersedes that
+        # strip), and even a party — and with playerdata/ empty the singleplayer host
+        # INHERITS it. But DELETING the tag is also wrong: vanilla 1.21.1 ignores
+        # SpawnY for a brand-new player (ServerPlayer's constructor calls
+        # adjustSpawnLocation → PlayerRespawnLogic.getOverworldRespawnPos, which scans
+        # DOWN from the MOTION_BLOCKING heightmap top of the spawn column), so a
+        # tag-less host lands on the spawn house ROOF (y=122 instead of 109). Instead
+        # REPLACE it with a minimal sanitized host tag built from scratch at this
+        # level.dat's own SpawnX/Y/Z — PlayerList.load() then places the host exactly
+        # there. Deliberately NO UUID key (Entity.load would adopt it) and no
+        # Inventory/XP/effects/attributes/food — vanilla readers default all of those.
+        # Pos MUST be 3 doubles (an empty/short list silently reads as 0,0,0).
+        spawn = [dtag.get(k) for k in ("SpawnX", "SpawnY", "SpawnZ")]
+        if all(t and t[0] == TAG_INT for t in spawn):
+            sx, sy, sz = (float(t[1]) for t in spawn)
+            angle = dtag.get("SpawnAngle")
+            yaw = float(angle[1]) if angle else 0.0
+            dv = dtag.get("DataVersion", (TAG_INT, 3955))[1]
+            dtag["Player"] = (TAG_COMPOUND, {
+                "Pos": (TAG_LIST, (TAG_DOUBLE, [sx + 0.5, sy, sz + 0.5])),
+                "Rotation": (TAG_LIST, (TAG_FLOAT, [yaw, 0.0])),
+                "Motion": (TAG_LIST, (TAG_DOUBLE, [0.0, 0.0, 0.0])),
+                "Dimension": (TAG_STRING, "minecraft:overworld"),
+                "playerGameType": (TAG_INT, 0),
+                "DataVersion": (TAG_INT, dv),
+            })
+            print(f"    replaced Data.Player with sanitized host tag at spawn "
+                  f"({sx + 0.5}, {sy}, {sz + 0.5}, yaw {yaw})")
+        elif "Player" in dtag:
+            # No baked spawn to anchor to — fall back to the old bare strip so the
+            # builder's inventory/effects still never ship.
             del dtag["Player"]
-            print("    removed Data.Player (fresh host spawns at world spawn)")
+            print(f"    [warn] {level_dat}: no Spawn X/Y/Z — removed Data.Player only "
+                  "(host will take the vanilla heightmap spawn).")
+        # Also force the world default gametype to survival.
         dtag["GameType"] = (TAG_INT, 0)
 
         if level_name:
@@ -99,6 +128,30 @@ def bake_install_into_level_dat(level_dat: str, level_name: str = None) -> None:
     except Exception as e:
         print(f"    [warn] install bake failed for {level_dat}: {e} — "
               f"run '/cobblemon-initiative install run' in-game instead.")
+
+
+def strip_rctmod_trainers(datapack_zip: str) -> None:
+    """UPM 2's bundled world datapack (datapacks/data.zip) ships 76 stale rctmod
+    trainer JSONs (data/rctmod/trainers/*) that predate this pack — every world load
+    logs ~83 'Model validation failure' warns and pollutes the trainer registry (our
+    real trainers ship in the mod jar). Rewrite the bundled COPY without them; the
+    staged source zip (and data.zip.backup) stay untouched. Failures warn, never abort."""
+    try:
+        with zipfile.ZipFile(datapack_zip) as zin:
+            infos = zin.infolist()
+            keep = [i for i in infos if not i.filename.startswith("data/rctmod/trainers/")]
+            if len(keep) == len(infos):
+                return
+            payload = [(i, zin.read(i)) for i in keep]
+        tmp = datapack_zip + ".tmp"
+        with zipfile.ZipFile(tmp, "w", zipfile.ZIP_DEFLATED, strict_timestamps=False) as zout:
+            for info, data in payload:
+                zout.writestr(info, data)
+        os.replace(tmp, datapack_zip)
+        print(f"    stripped {len(infos) - len(keep)} stale rctmod trainer entries "
+              f"from {os.path.basename(datapack_zip)}")
+    except Exception as e:
+        print(f"    [warn] rctmod trainer strip failed for {datapack_zip}: {e}")
 
 
 MANIFEST = os.path.join(MRPACK_DIR, "modpack.json")
@@ -297,6 +350,24 @@ def cache_fetch(url, sha1, size):
     return cached
 
 
+def write_autoinstall_marker(config_dir):
+    """Write the PACK-ONLY auto-install marker into a config/ dir. Its presence makes
+    the mod run `/cobblemon-initiative install run` once per fresh world shortly after
+    the first join. Shared with scripts/dev_sync so the dev run dir behaves like the
+    installed pack. Returns the marker path."""
+    marker = os.path.join(config_dir, "cobblemon-initiative-autoinstall.json")
+    os.makedirs(config_dir, exist_ok=True)
+    with open(marker, "w") as fh:
+        json.dump({
+            "enabled": True,
+            "_comment": "Shipped by build_mrpack. The Cobblemon Initiative auto-runs "
+                        "'/cobblemon-initiative install run' once per fresh world when this "
+                        "file exists (world latch: data/cobblemon_initiative_autoinstall.json). "
+                        "Delete this file or set enabled=false to go back to manual installs.",
+        }, fh, indent=2)
+    return marker
+
+
 def bundle_cached_files(entries, overrides):
     """--cache: pull every manifest file entry into CACHE_DIR and copy it into the pack's
     overrides/<path>, so the installed pack is self-contained (launcher downloads nothing
@@ -480,6 +551,14 @@ def main():
             shutil.copytree(w, wdst, symlinks=False, dirs_exist_ok=True,
                             ignore=shutil.ignore_patterns(*WORLD_USERDATA_STRIP))
             bake_install_into_level_dat(os.path.join(wdst, "level.dat"), level_name=wname)
+            # level.dat.bak ships too (vanilla's corruption fallback) — bake it the
+            # same way so the builder's Data.Player can't resurface via a .bak restore.
+            if os.path.isfile(os.path.join(wdst, "level.dat.bak")):
+                bake_install_into_level_dat(os.path.join(wdst, "level.dat.bak"), level_name=wname)
+            # UPM 2's own world datapack carries stale rctmod trainers — clean the COPY.
+            world_dp = os.path.join(wdst, "datapacks", "data.zip")
+            if os.path.isfile(world_dp):
+                strip_rctmod_trainers(world_dp)
 
         # Shop seed: the same badge_0 catalog `install run` copies at runtime, shipped
         # as a config override so the opening shop is right on first launch.
@@ -495,16 +574,7 @@ def main():
         # `/cobblemon-initiative install run` once per fresh world shortly after the
         # first join (zones + Map Frontiers — the pieces level.dat baking can't cover).
         # Bare-mod installs never have this file, so nothing auto-runs standalone.
-        marker = os.path.join(overrides, "config", "cobblemon-initiative-autoinstall.json")
-        os.makedirs(os.path.dirname(marker), exist_ok=True)
-        with open(marker, "w") as fh:
-            json.dump({
-                "enabled": True,
-                "_comment": "Shipped by build_mrpack. The Cobblemon Initiative auto-runs "
-                            "'/cobblemon-initiative install run' once per fresh world when this "
-                            "file exists (world latch: data/cobblemon_initiative_autoinstall.json). "
-                            "Delete this file or set enabled=false to go back to manual installs.",
-            }, fh, indent=2)
+        write_autoinstall_marker(os.path.join(overrides, "config"))
         print("  config seed: cobblemon-initiative-autoinstall.json (first-join auto-install)")
 
         # Locally-staged datapacks -> each bundled world's datapacks/.

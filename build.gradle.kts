@@ -1,11 +1,21 @@
 plugins {
     id("java")
+    // Kotlin plugin applied ONLY so Loom engages its Kotlin-@Metadata remapper for mod
+    // deps: without it the remapped Cobblemon dev jar keeps INTERMEDIARY names
+    // (net.minecraft.class_2960) inside Kotlin @Metadata and kotlin-reflect crashes the
+    // 'cobblemon' entrypoint (ClassNotFoundException in SpeciesAdditions.<clinit>).
+    // There are NO Kotlin sources; kotlin.stdlib.default.dependency=false in
+    // gradle.properties keeps the build pure-Java (no stdlib in any configuration).
+    // Version must be >= the deps' metadata version: 2.0.21 failed ("cannot write
+    // metadata for future compiler versions ... 2.2.0" — Cobblemon), 2.2.20 failed the
+    // same way at 2.4.0 (fabric-language-kotlin bundles Kotlin 2.4.0) — so pin 2.4.0.
+    kotlin("jvm") version "2.4.0"
     id("dev.architectury.loom") version "1.14.476"
     id("architectury-plugin") version "3.4-SNAPSHOT"
 }
 
 group = "com.thecompanyinc"
-version = "0.4.3-alpha.17"
+version = "0.5.0-alpha.1"
 
 architectury {
     platformSetupLoomIde()
@@ -14,6 +24,19 @@ architectury {
 
 loom {
     silentMojangMappingsLicense()
+    runs {
+        // Dev-runtime entrypoint ORDER differs from the launcher pack: classpath mods
+        // (Cobblemon, via loom) hit their `main` entrypoints before folder mods from
+        // run/mods. Almanac (folder mod, pack-parity stack) mixes into
+        // ItemStack.setCount and needs its own `main` to have registered its AutoConfig
+        // first — Cobblemon's villager-trade registration otherwise trips it
+        // ("Config ... AlmanacConfigFabric has not been registered"). In the real pack
+        // Almanac-*.jar sorts before Cobblemon-*.jar, so this is dev-only: push
+        // cobblemon (and us, keeping cobblemon-before-initiative order) to the end.
+        configureEach {
+            vmArg("-Dfabric.debug.loadLate=cobblemon,cobblemon-initiative")
+        }
+    }
 }
 
 repositories {
@@ -24,6 +47,7 @@ repositories {
     maven("https://maven.terraformersmc.com/releases/")
     maven("https://cursemaven.com")
     maven("https://api.modrinth.com/maven") // Easy NPC (opted out of CurseForge distribution)
+    maven("https://maven.blamejared.com") // JourneyMap API
 }
 
 dependencies {
@@ -35,6 +59,16 @@ dependencies {
     modImplementation(fabricApi.module("fabric-lifecycle-events-v1", "0.116.12+1.21.1"))
     modImplementation(fabricApi.module("fabric-resource-loader-v0", "0.116.12+1.21.1"))
     modImplementation(fabricApi.module("fabric-events-interaction-v0", "0.116.12+1.21.1"))
+    modImplementation(fabricApi.module("fabric-key-binding-api-v1", "0.116.12+1.21.1"))
+    // JourneyMap soft dep: compile against the API only (byte-identical to the jar-in-jar
+    // the pack's JM build ships); the runtime comes from the modRuntimeOnly line below.
+    modCompileOnly("info.journeymap:journeymap-api-fabric:2.0.0-1.21.1")
+    // …but in DEV the API must also be a runtime mod: Loom strips the `jars` entry from
+    // remapped mods' fabric.mod.json, so JM's nested api jar never loads and JM's main
+    // entrypoint dies (NoClassDefFoundError: journeymap/api/v2/common/CommonAPI). The
+    // standalone jar's mod id is `journeymap-api-fabric` — distinct from `journeymap` and
+    // the (unloaded) nested copy, so the loader sees exactly one provider. Dev-only, never published.
+    modLocalRuntime("info.journeymap:journeymap-api-fabric:2.0.0-1.21.1")
     modImplementation("com.cobblemon:mod:1.7.3+1.21.1") { isTransitive = false }
     modImplementation("com.cobblemon:fabric:1.7.3+1.21.1")
     implementation("com.google.code.gson:gson:2.10.1")
@@ -65,6 +99,7 @@ dependencies {
     modRuntimeOnly("curse.maven:journeymap-32274:8325589")      // journeymap-fabric-1.21.1-6.0.0.jar
     runtimeOnly("com.electronwill.night-config:core:3.8.1")     // JourneyMap/MapFrontiers server entrypoints need night-config >= 3.8 in dev (runServer NoClassDefFoundError otherwise; the launcher pack provides it via jar-in-jar)
     runtimeOnly("com.electronwill.night-config:toml:3.8.1")
+    runtimeOnly("org.graalvm.js:js:22.3.0")                     // Cobblemon's Showdown battle engine: the maven dev artifact references plain org.graalvm.polyglot (the release jar relocates+bundles it as com.cobblemon.mod.relocations.graalvm) — without this the Showdown thread dies (NoClassDefFoundError: org/graalvm/polyglot/HostAccess) and boot hangs. Version = Cobblemon 1.7.3's own graal pin (libs.versions.toml @ release commit)
     modRuntimeOnly("curse.maven:mapfrontiers-366783:7099826")   // MapFrontiers-1.21.1-2.7.0-beta.18-fabric.jar (matches the 2.7.0-beta.18 integration target)
     // Then `run-client` (run dir = ./run); copy/symlink your UPM 2 world into ./run/saves/.
 

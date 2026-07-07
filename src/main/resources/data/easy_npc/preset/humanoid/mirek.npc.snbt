@@ -17,6 +17,75 @@
                     {
                         Type: "OPEN_DEFAULT_DIALOG"
                     }
+                ],
+                ON_DISTANCE_CLOSE: [
+                    {
+                        Type: "COMMAND",
+                        ConditionDataSet: {
+                            ConditionDataSet: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_sq_rt2_scarecrow"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_declined_sq_rt2_scarecrow"
+                                }
+                            ]
+                        },
+                        Cmd: "say My birds marked you a field back — this end of the road settles in battles, not vouchers!"
+                    }
+                ],
+                ON_DISTANCE_TOUCH: [
+                    {
+                        Type: "COMMAND",
+                        ConditionDataSet: {
+                            ConditionDataSet: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "dex_gte_2"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_sq_rt2_scarecrow"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_declined_sq_rt2_scarecrow"
+                                }
+                            ]
+                        },
+                        Cmd: "tbcs attach rctmod:sq_rt2_scarecrow @s"
+                    },
+                    {
+                        Type: "COMMAND",
+                        ExecAsUser: 1b,
+                        ConditionDataSet: {
+                            ConditionDataSet: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "dex_gte_2"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_sq_rt2_scarecrow"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_declined_sq_rt2_scarecrow"
+                                }
+                            ]
+                        },
+                        Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:sq_rt2_scarecrow onwin {1: ['cobbledollars give @1 230', 'tag @1 add defeated_sq_rt2_scarecrow', '@2 say Sharp work. The crows would scatter for you without a single scarecrow.'], 2: ['@1 say Ha — the birds still earn better than the vouchers do. Rest yours and come back.']}"
+                    }
                 ]
             }
         },
@@ -110,40 +179,63 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "defeated_sq_rt2_scarecrow"
-                                        }
-                                    ],
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_sq_rt2_scarecrow"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "say The road is yours, trainer. My birds tip their wings when you pass."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_sq_rt2_scarecrow"
-                                        }
-                                    ],
-                                    Cmd: "tbcs attach sq_rt2_scarecrow @s"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_sq_rt2_scarecrow"
+                                            },
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_declined_sq_rt2_scarecrow"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:sq_rt2_scarecrow @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_sq_rt2_scarecrow"
-                                        }
-                                    ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs sq_rt2_scarecrow onwin {1: ['cobbledollars give @1 230', 'tag @1 add defeated_sq_rt2_scarecrow', '@2 say Sharp work. The crows would scatter for you without a single scarecrow.'], 2: ['@1 say Ha — the birds still earn better than the vouchers do. Rest yours and come back.']}"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_sq_rt2_scarecrow"
+                                            },
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_declined_sq_rt2_scarecrow"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:sq_rt2_scarecrow onwin {1: ['cobbledollars give @1 230', 'tag @1 add defeated_sq_rt2_scarecrow', '@2 say Sharp work. The crows would scatter for you without a single scarecrow.'], 2: ['@1 say Ha — the birds still earn better than the vouchers do. Rest yours and come back.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_declined_sq_rt2_scarecrow"
                                 }
                             ],
                             Label: "battle_button"
@@ -156,6 +248,32 @@
                                 }
                             ],
                             Label: "leave_button"
+                        },
+                        {
+                            Name: "Pay 120 CD to bow out",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:route/decline_sq_rt2_scarecrow"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_sq_rt2_scarecrow"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_declined_sq_rt2_scarecrow"
+                                }
+                            ],
+                            Label: "bow_out_button"
                         }
                     ],
                     Texts: [
@@ -174,40 +292,63 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "defeated_sq_rt2_scarecrow"
-                                        }
-                                    ],
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_sq_rt2_scarecrow"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "say The road is yours, trainer. My birds tip their wings when you pass."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_sq_rt2_scarecrow"
-                                        }
-                                    ],
-                                    Cmd: "tbcs attach sq_rt2_scarecrow @s"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_sq_rt2_scarecrow"
+                                            },
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_declined_sq_rt2_scarecrow"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:sq_rt2_scarecrow @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_sq_rt2_scarecrow"
-                                        }
-                                    ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs sq_rt2_scarecrow onwin {1: ['cobbledollars give @1 230', 'tag @1 add defeated_sq_rt2_scarecrow', '@2 say Sharp work. The crows would scatter for you without a single scarecrow.'], 2: ['@1 say Ha — the birds still earn better than the vouchers do. Rest yours and come back.']}"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_sq_rt2_scarecrow"
+                                            },
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_declined_sq_rt2_scarecrow"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:sq_rt2_scarecrow onwin {1: ['cobbledollars give @1 230', 'tag @1 add defeated_sq_rt2_scarecrow', '@2 say Sharp work. The crows would scatter for you without a single scarecrow.'], 2: ['@1 say Ha — the birds still earn better than the vouchers do. Rest yours and come back.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_declined_sq_rt2_scarecrow"
                                 }
                             ],
                             Label: "battle_button"
@@ -230,6 +371,32 @@
                                 }
                             ],
                             Label: "leave_button"
+                        },
+                        {
+                            Name: "Pay 120 CD to bow out",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:route/decline_sq_rt2_scarecrow"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_sq_rt2_scarecrow"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_declined_sq_rt2_scarecrow"
+                                }
+                            ],
+                            Label: "bow_out_button"
                         }
                     ],
                     Texts: [

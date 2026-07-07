@@ -74,37 +74,43 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "defeated_villain_admin_commander"
-                                        }
-                                    ],
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_villain_admin_commander"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "say The door is open. He is waiting and does not know what for. Go and remind him."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_villain_admin_commander"
-                                        }
-                                    ],
-                                    Cmd: "tbcs attach villain_admin_commander @s"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_admin_commander"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:villain_admin_commander @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_villain_admin_commander"
-                                        }
-                                    ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_admin_commander onwin {1: ['cobbledollars give @1 6000', 'tag @1 add defeated_villain_admin_commander', '@2 say Operations cede. I will hold the door. It is the last order I intend to follow, and the first one I have ever wanted to.', 'easy_npc delete @2'], 2: ['@1 say Contained. Efficient. The way it should have ended years ago. Rest. The door will still be locked tomorrow.']}"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_admin_commander"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:villain_admin_commander onwin {1: ['cobbledollars give @1 6000', 'tag @1 add defeated_villain_admin_commander', '@2 say Operations cede. I will hold the door. It is the last order I intend to follow, and the first one I have ever wanted to.', 'easy_npc delete @2'], 2: ['@1 say Contained. Efficient. The way it should have ended years ago. Rest. The door will still be locked tomorrow.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

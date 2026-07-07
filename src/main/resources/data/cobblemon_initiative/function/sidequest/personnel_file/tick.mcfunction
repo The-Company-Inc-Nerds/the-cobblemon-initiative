@@ -6,6 +6,10 @@
 # IPC, the documented pattern). If she sees such a player, the audit trail resets to zero.
 execute as @a[scores={ci_notices=1..},tag=!notices_filed] at @s if entity @e[tag=surveyor,scores={can_see_player=1..},distance=..24] run function cobblemon_initiative:sidequest/personnel_file/notice_logged
 
+# Pre-pull warning meter: the surveyor is watching before the first notice comes down.
+execute as @a[tag=docs_filed,tag=!notices_filed] unless score @s ci_notices matches 0.. run scoreboard players set @s ci_notices 0
+execute as @a[tag=docs_filed,tag=!notices_filed,scores={ci_notices=0}] at @s if entity @e[tag=surveyor,scores={can_see_player=1..},distance=..24] run title @s actionbar [{"text":"CLIPBOARD UP","color":"red","bold":true},{"text":" — she is watching this stretch of wall","color":"gray"}]
+
 # Stage 1 pickups off real container blocks (no prop-NPCs needed). Once the file is open,
 # a player who reaches the block "finds" the document, one-shot per doc tag.
 #   chest on the cart by Lumo  -> portrait backing

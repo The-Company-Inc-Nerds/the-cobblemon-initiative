@@ -86,52 +86,92 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "defeated_sq_genji_wager"
-                                        }
-                                    ],
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_sq_genji_wager"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "say One wager a visit. My old heart cannot audit two in a day."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_sq_genji_wager"
-                                        }
-                                    ],
-                                    Cmd: "tbcs attach sq_genji_wager @s"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_sq_genji_wager"
+                                            },
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_declined_sq_genji_wager"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:sq_genji_wager @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_sq_genji_wager"
-                                        }
-                                    ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs sq_genji_wager onwin {1: ['cobbledollars give @1 200', 'tag @1 add defeated_sq_genji_wager', '@2 say Ha. The river gives, the river takes. Today it gave. Two hundred, fair and audited.'], 2: ['cobbledollars remove @2 200', '@1 say The house keeps the stake. Call it a consulting fee. No hard feelings, and no refunds - I did work for the Company once, after all.']}"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_sq_genji_wager"
+                                            },
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_declined_sq_genji_wager"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:sq_genji_wager onwin {1: ['cobbledollars give @1 200', 'tag @1 add defeated_sq_genji_wager', '@2 say Ha. The river gives, the river takes. Today it gave. Two hundred, fair and audited.', 'execute as @1 run function cobblemon_initiative:economy/wager_sweetener'], 2: ['cobbledollars remove @2 200', '@1 say The house keeps the stake. Call it a consulting fee. No hard feelings, and no refunds - I did work for the Company once, after all.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_declined_sq_genji_wager"
                                 }
                             ],
                             Label: "wager_button"
                         },
                         {
-                            Name: "Not today",
+                            Name: "Pay 100 CD to bow out",
                             Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:route/decline_sq_genji_wager"
+                                },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "decline_button"
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_sq_genji_wager"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_declined_sq_genji_wager"
+                                }
+                            ],
+                            Label: "bow_out_button"
                         }
                     ],
                     Texts: [

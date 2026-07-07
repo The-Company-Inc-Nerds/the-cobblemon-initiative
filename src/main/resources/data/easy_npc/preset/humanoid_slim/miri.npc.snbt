@@ -41,6 +41,70 @@
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
                             Name: "quest_assist_collect_done"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "quest_assist_mine_done"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "no_dept_of_two_done"
+                        }
+                    ],
+                    Priority: 25,
+                    Buttons: [
+                        {
+                            Name: "Take the grant notice",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "loot give @s loot cobblemon_initiative:npc_gift/withheld_disbursement"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add dept_of_two_done"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "tellraw @initiator [{\"text\":\"DISBURSEMENT WITHHELD, PAYEE UNRESOLVED — the annex closes a ledger against nobody.\",\"color\":\"gold\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "keepsake_button"
+                        },
+                        {
+                            Name: "Keep it for the archive",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "later_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Raan reported in too, so that is the whole faculty — collections and geology, the Department of Two. We tried to close the grant ledger properly. The completion line needs the coordinators countersignature, and the grant ledger lists a coordinator the annex insists never existed. No name, no desk, no severance. Just a title and a hole."
+                        },
+                        {
+                            Text: "So we closed it ourselves and kept the notice. Here — you did the actual fieldwork, you should hold the paperwork the system refuses to. Frame it. It is the most honest document the annex ever produced."
+                        }
+                    ],
+                    Name: "Miri — the Department of Two",
+                    Label: "dept_of_two"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "quest_assist_collect_done"
                         }
                     ],
                     Priority: 20,
@@ -60,7 +124,7 @@
                             Text: "The kelp is pressed, labeled, and shelved. The herbarium lives another quarter on sixteen fronds and spite."
                         },
                         {
-                            Text: "Kofi tracks the whole grant from his kitchen. When all three of us have our samples, he closes the ledger and the annex pays the completion line."
+                            Text: "I filed the completion line and it bounced. The grant ledger wants a coordinators countersignature, and it lists a coordinator the annex insists never existed. I have stopped asking. The kelp does not care who signs."
                         }
                     ],
                     Name: "Miri — herbarium restocked",

@@ -58,9 +58,11 @@ public class ShrineConfig {
   private int darkGauntletBlindnessRefreshTicks = 100;
   /** Nausea/confusion duration (ticks) applied on each earthquake teleport. 0 disables. */
   private int earthquakeNauseaTicks = 60;
-  /** Volume / pitch of the earthquake rumble. */
+  /** Volume / pitch of the earthquake rumble. Pitch floor is 0.5: the sound engine
+   *  clamps below that, and the config UI's 0.5..2.0 bounds flagged the old 0.4
+   *  default as invalid (showrunner, 0.5.0-alpha.1). */
   private float earthquakeSoundVolume = 0.6f;
-  private float earthquakeSoundPitch = 0.4f;
+  private float earthquakeSoundPitch = 0.5f;
 
   // ── Singleton / lifecycle ─────────────────────────────────────────────────────
 
@@ -120,7 +122,9 @@ public class ShrineConfig {
   public int getDarkGauntletBlindnessRefreshTicks() { return darkGauntletBlindnessRefreshTicks; }
   public int getEarthquakeNauseaTicks() { return earthquakeNauseaTicks; }
   public float getEarthquakeSoundVolume() { return earthquakeSoundVolume; }
-  public float getEarthquakeSoundPitch() { return earthquakeSoundPitch; }
+  // Getter clamps: Gson loads a saved config straight into the field (bypassing the
+  // setter), and pre-0.5.0 configs carry the invalid 0.4 default.
+  public float getEarthquakeSoundPitch() { return clampPitch(earthquakeSoundPitch); }
 
   public void setIceCrackSoundVolume(float v) { this.iceCrackSoundVolume = v; }
   public void setIceCrackSoundPitch(float v) { this.iceCrackSoundPitch = v; }
@@ -129,5 +133,7 @@ public class ShrineConfig {
   public void setDarkGauntletBlindnessRefreshTicks(int v) { this.darkGauntletBlindnessRefreshTicks = v; }
   public void setEarthquakeNauseaTicks(int v) { this.earthquakeNauseaTicks = v; }
   public void setEarthquakeSoundVolume(float v) { this.earthquakeSoundVolume = v; }
-  public void setEarthquakeSoundPitch(float v) { this.earthquakeSoundPitch = v; }
+  public void setEarthquakeSoundPitch(float v) { this.earthquakeSoundPitch = clampPitch(v); }
+
+  private static float clampPitch(float v) { return Math.max(0.5f, Math.min(2.0f, v)); }
 }

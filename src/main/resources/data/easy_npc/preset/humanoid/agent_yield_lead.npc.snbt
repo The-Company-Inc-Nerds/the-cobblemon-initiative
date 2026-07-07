@@ -43,52 +43,49 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "defeated_sq_mayor_suits"
-                                        }
-                                    ],
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_sq_mayor_suits"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "say The session is concluded. Do not append yourself further."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_sq_mayor_suits"
-                                        }
-                                    ],
-                                    Cmd: "tbcs attach sq_mayor_suits @s"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_sq_mayor_suits"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:sq_mayor_suits @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_sq_mayor_suits"
-                                        }
-                                    ],
-                                    Cmd: "tbcs battle GEN_9_DOUBLES @s vs sq_mayor_suits onwin {1: ['cobbledollars give @1 460', 'tag @1 add defeated_sq_mayor_suits', '@2 say Filed. Two agents, one trainer, zero signatures. This quarter is a writeoff.', 'easy_npc delete @2'], 2: ['@1 say The mayor will sign now. Yield is inevitable.']}"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_sq_mayor_suits"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_DOUBLES @s vs rctmod:sq_mayor_suits onwin {1: ['cobbledollars give @1 460', 'tag @1 add defeated_sq_mayor_suits', '@2 say Filed. Two agents, one trainer, zero signatures. This quarter is a writeoff.', 'kill @e[type=easy_npc:humanoid,name=Chiyo,x=2014.5,y=169.5,z=2464.5,distance=..8,limit=1]', 'easy_npc delete @2'], 2: ['@1 say The mayor will sign now. Yield is inevitable.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
                             Label: "interrupt_button"
-                        },
-                        {
-                            Name: "Back down the stairs",
-                            Actions: [
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "leave_button"
                         }
                     ],
                     Texts: [

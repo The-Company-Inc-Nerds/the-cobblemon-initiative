@@ -1,5 +1,6 @@
 package com.thecompanyinc.cobblemoninitiative;
 
+import com.thecompanyinc.cobblemoninitiative.questtrack.QuestTrackClient;
 import com.thecompanyinc.cobblemoninitiative.screen.SacrificeSelectionScreen;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -14,6 +15,9 @@ public class NuzlockeClientInit implements ClientModInitializer {
   @Override
   public void onInitializeClient() {
     LOGGER.info("Nuzlocke client initialized!");
+
+    // Quest tracking — ] / [ keybinds + the in-process waypoint poller.
+    QuestTrackClient.init();
 
     ClientTickEvents.END_CLIENT_TICK.register(client -> {
       if (client.player != null && client.screen == null) {

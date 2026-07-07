@@ -280,9 +280,96 @@ if you must reuse it).**
     pair, yield officer/analyst) is a manual `npcsight add <uuid>` pass — latch
     spawns get random uuids.
 
+☐ K. ROUND-12c FIXES (0.5.0-alpha.1 — smoke-round-4 responses; SMOKETEST R1-R10 mirrors this)
+  ☐ THE BATTLE CANARY, finally: WIN a dialog battle end-to-end (any Blossom Path regular).
+    Every `tbcs attach/battle` now passes `rctmod:<id>` (TBCS mirrors rctmod's registry
+    under namespace-prefixed keys, exact-match lookup — bare ids NEVER worked, in any
+    build). Tab-complete `/tbcs battle GEN_9_SINGLES @p vs ` — suggestions must list
+    `rctmod:takehara_leader` etc. Zero `No such trainer registered` in the log.
+  ☐ ACTION GATES LIVE: beaten lines / one-time gives now actually gate (compiler emits the
+    doubled `ConditionDataSet:{ConditionDataSet:[…]}` on ACTIONS; the old bare `Conditions`
+    was silently ignored — the round-4 "everyone acts already-battled" second root cause).
+    Talk to an UNDEFEATED trainer: no beaten line before the battle; after the win: beaten
+    line, no re-battle, prize paid once.
+  ☐ EXISTING-WORLD REPAIRS (any world ≤ alpha.17; fresh mrpack worlds skip this): update
+    pack + `/reload` FIRST, then kill + latch-reset the six placement bodies so they
+    respawn with skins/coords (kill first, THEN reset the score — reversed order can
+    duplicate while standing in latch range):
+      kill @e[type=easy_npc:humanoid,name="Bug Catcher Koji",limit=1]
+      scoreboard players set #amb_takehara_trainer_1 ci_ambient 0
+      (repeat for "Entomologist Yuki"/_2, "Bug Maniac Shin"/_3, "Youngster Taro"/_4,
+       "Old Deng"/#amb_old_deng, "Granny Yun"/#amb_granny_yun)
+    If the roof doubles were already won pre-0.5.0-alpha.1, Chiyo's body is orphaned
+    (nothing despawned her — her partner Noboru carried the battle): stand on the roof, run
+      kill @e[type=easy_npc:humanoid,name=Chiyo,limit=1]
+    Then RE-TAG the fresh Deng/Yun bodies (showrunner-applied tags die with the old body;
+    the homecoming teleport silently no-ops without them):
+      tag @e[type=easy_npc:humanoid,name="Old Deng",limit=1] add deng_old
+      tag @e[type=easy_npc:humanoid,name="Old Deng",limit=1] add deng_camp
+      tag @e[type=easy_npc:humanoid,name="Granny Yun",limit=1] add deng_granny
+      tag @e[type=easy_npc:humanoid,name="Granny Yun",limit=1] add deng_camp
+  ☐ TAKEHARA LADDER GATES: Sora locked until 2/4 tower wins (takehara_tower score →
+    band tag takehara_tower_gte_2), Aiko until Sora, Cicada until Aiko — locked entries
+    show flavor, no battle button.
+  ☐ SPAWN: fresh mrpack world → login line reads exactly (2612.5, 109.0, 2841.5), clean
+    inventory/XP/no effects (minimal Data.Player bake). Dev/bare worlds: the JOIN snap
+    (`ci_spawn_snapped` tag) lands the same point.
+  ☐ DERBY RETUNE: 3 fish / 120s bar / pufferfish + tropical fish count / first win adds a
+    Poké Rod. LUCIAN: stage-1 filing clears the three papers; dead letter + memo cleared
+    on hand-in; her lines read she/her. CLINIC: sidebar line at slot 57 after accept.
+  ☐ TONE PASS (round-4 narrative fear — details in docs/NARRATIVE_AUDIT_2026-07-06.md):
+    civilian payouts print unbranded "Verified Rate"; ONLY census sign / courier sell /
+    Invitational purse / Adjusted Retail keep "Company Verified Rate"; first-join message
+    unlettered; "A checkpoint ahead."; battle UI "Site Assessors" / "Survey Canvasser".
+  ☐ LOG: fresh mrpack build → zero `Model validation failure` (build strips UPM2's 76
+    stale data.zip trainers); dev worlds still show them (harmless, registration proceeds).
+
+☐ L. QUEST TRACKER (0.5.0-alpha.1, round 12e — SMOKETEST R11)
+  ☐ Keys: `]` selects the top sidebar quest (actionbar "Tracking: <name>", aqua);
+    repeat cycles down the list and past the end turns tracking off; `[` reverse.
+    Rebindable under Controls → "The Cobblemon Initiative".
+  ☐ The tracked side line gets an aqua "▶ " prefix (q.main already carries ▶ — no
+    visual change when tracking main, expected). Macro lines (prices 0/3 etc.) keep
+    their live numbers while highlighted.
+  ☐ JourneyMap waypoint appears at the objective (minimap + fullscreen + in-world
+    beacon, aqua), MOVES when the quest stage advances, and vanishes on untrack/
+    completion. It is session-only — check the JM waypoint manager after relog:
+    no permanent "cobblemon-initiative" waypoints accumulate.
+  ☐ Stage advance mid-track: memo quest tent-stage has no coords (unplaced tent) —
+    tracking it says "(no waypoint for this objective)"; once memo_heard, the
+    waypoint appears on Lucian.
+  ☐ Relog: tracking persists (world file cobblemon_initiative_quest_tracking.json);
+    dimension hop + return re-creates the waypoint (MAPPING_STARTED resync).
+  ☐ Un-OPed player can run /cobblemon-initiative track … (perm 0); admin subcommands
+    still require OP 2 (the root gate moved down to each admin literal — spot-check
+    /cobblemon-initiative reset still refuses without OP).
+  ☐ Bare-mod world (no JM): an END_ROD particle column marks the target instead.
+  ☐ CHESTS: open ~8 unplaced map chests — roughly 3 in 4 open plain-empty (claimed
+    either way: re-opening an empty one never stocks it later); ModMenu → Loot
+    Chests → "Empty Chest Chance" 0% restores pre-0.5.0 always-stock.
+  ☐ RUMBLE: ground-shrine earthquake rumble audibly plays (pitch 0.5 — the old 0.4
+    default was below the engine floor; a pre-0.5.0 saved shrine config self-heals
+    on read, no file edit needed).
+
+☐ M. ROUND-13 (0.5.0-alpha.1 late batch — SMOKETEST R3/R13)
+  ☐ TAKEHARA WEAKENING: with 0 tower wins Sora battles immediately (no lock line);
+    beat 1 tower trainer → Sora's say acknowledges the tower + her team is the _weak
+    variant; 2 → Aiko weak; all 4 → Cicada's drained-drills say + weak team. Weak wins
+    still set defeated_takehara_* / badge / cap 22 (the linchpin — verify cap raises).
+  ☐ SHOP: fresh tier-0 shop = 3 ball rows only; badge_1 restores the six.
+  ☐ DERBY: carry 3 salmon in, pay entry → bucket reads 0 of 3 (baseline snapshot).
+  ☐ CASCADE: two gold runs same day → 300 CD once, second run title-only.
+  ☐ SPRINT: first run 120s bar; daily 100s bar (fail = walk back, no pay loss).
+  ☐ GRANARY: arm the ambush (trade + linger) → battle STARTS (was silent pre-13).
+
 ☐ POST-SESSION LOG SWEEP: grep the log for `Blocked execute-as-user`, `Failed to load function`, `Unknown or incomplete command`, `[NPC Refresh] Import failed` — all four should be absent. Any failure: save the full log to dev/ (log-0.4.3-alpha.6) as usual.
 
 ## Phase 0 — Boot & wiring (5 min)
+
+For a run-client session, `scripts/dev_sync --world` once syncs run/ to the .mrpack
+stack (pack mods incl. tbcs + rctmod — dev is battles-capable — configs, resourcepacks,
+bundled world with the build bakes); `--fresh-world` resets the save, `--lean` skips
+cosmetics for faster boots.
 
 1. **Datapack parse** — start the world, check the log.
    ✅ zero `Failed to load function` / `Couldn't parse data file` errors (the beat-2 build
@@ -315,8 +402,9 @@ These commands are used by dozens of quests but are **unverified in this Cobblem
    items exist (ids validated offline, one live confirm).
 10. 🐞 Open the shop (Cobble Trader): **badge_0 tier shows the Medicine row**
     (potion 300 / super 700 / antidote 250 / paralyze_heal 250).
-11. 🐞 Nurse heal: click **Heal my team — 100 CD** on Medcrest (Asha) →
-    party healed AND balance −100.
+11. 🐞 Nurse heal: click **Heal my team — posted rate** on Medcrest (Asha) →
+    party healed AND balance −(100 + 2×`#idx cd_instability`) — 100 flat pre-gym-1
+    (§9 TIER-B: the fee rides the instability index since review B3).
 
 ## Phase 2 — Sango + Blossom Path quests (20 min)
 
@@ -344,8 +432,9 @@ These commands are used by dozens of quests but are **unverified in this Cobblem
     ✅ Cicada's team is **Scolipede/Heracross 17, Vespiquen/Yanmega 18** (🐞 proves the
     RCT regeneration; if you see a lv-24+ Scyther the old files are cached somewhere).
     ✅ badge → cap 30, `frag_1`, shop tier `badge_1`, instability → 8.
-20. **Nurse Lila** charges 100 CD. **Canvasser stealth** (Mei's prints): paste while seen →
-    voided; unseen ×3 → ✅ pay + heal_ball.
+20. **Nurse Lila** charges the posted rate (100 + 2×idx — 116 with gym 1's instability
+    banked; the actionbar receipt prints the live fee). **Canvasser stealth** (Mei's
+    prints): paste while seen → voided; unseen ×3 → ✅ pay + heal_ball.
 21. Mayor Liang roof scene (once roof grunts are placed at 2015,169,2466/2463).
 
 ## Phase 4 — Harvest Road (the new backbone) (15 min)
@@ -388,7 +477,8 @@ These commands are used by dozens of quests but are **unverified in this Cobblem
     ✅ stall dialog digits match the shop's real swing (54/216 at idx 16).
     🐞 This quest also ships the `#idx`-mirror fix — check any `cd_instability`-gated
     dialog band now fires.
-33. **Out of Network**: Anong-nurse heals for 100 CD; berry restock quest pays ~240 CD.
+33. **Out of Network**: Anong-nurse heals at the posted rate (100 + 2×idx — ~132 with
+    both gyms banked); berry restock quest pays ~240 CD.
 34. **Minutes of the Quarterly Review**: branch tower — sneak past reception + mezzanine
     cones (`hz_office_staff` tags) → loiter at the top 8s → minutes paper; ✅ closing line
     is *"there was never a founder"* (the erasure must never regress); file at Lucian →
@@ -412,3 +502,164 @@ canvasser/office) · renamed give/loot component shapes (boots, IDs, books, pape
 world-merge preset import (skin+dialog+rename) · shop tier medicine rows · paid-heal
 function · sight arming via runtime `npcsight add` (right_of_way) · Easy NPC
 sight-dialog fallback when the labeled entry is gated off.
+
+## §7 ROUND-13b — Battle-Engagement Matrix smoke checks (2026-07-06)
+
+Ships: `engage:"touch"` trigger synthesis, `battle.decline_fee` bow-outs (14 generated
+`function/route/decline_*` + 6 hand probe functions), the `open_dialog` gate-drop fix,
+grunt/checkpoint free-exit removal, wheat-trader hostile touch. Fee table:
+meadow 80 / spotter 100 / sq_regular_4 110 / mirek 120 / typetip 130 / haoran 130 /
+xu_jianyu (kite) 150; wager bow-outs luo 60 / genji 100 / hz_analyst 80 / ume 150;
+fee-forks canvasser 150 / KYC 150 / Yan 150 / checkpoint 120 + 250 handling.
+
+1. **Route hail**: approach Bird Keeper Ayo (Blossom Path) undefeated to ~8 blocks →
+   exactly ONE chat hail (`say`); leave the band and re-enter → it repeats (ActionGroup
+   resets when the radius empties). No battle fires at 8 blocks.
+2. **Touch-force**: step inside 1.25 blocks → attach + battle start with NO dialog.
+   Win → `defeated_*`; re-touching a beaten (or bought-off) trainer does nothing and
+   prints nothing (the trigger carries no beaten-line say by design).
+3. **Bow-out, funded**: with ≥110 CD open Zola's dialog → "Pay 110 CD to bow out" →
+   balance −110, gold actionbar receipt *"Verified Charge: 110 CD."* (UNBRANDED — tone
+   rule), tag `declined_sq_regular_4`. Afterwards: no hail, no touch battle, battle
+   button hidden, bow-out button hidden. Permanent.
+4. **Bow-out, broke**: `cobbledollars set @s 0`, click another trainer's bow-out →
+   NO charge, NO receipt, the battle starts immediately (must-fight). Clicking it
+   again post-defeat does nothing (function guards).
+5. **Stake probes**: Lan (branch mezzanine) with 0 CD → red *"Stake declined"*, NO
+   battle (a wager can no longer run stakeless); with ≥150 → *"Stake logged"*, battle,
+   win pays 300 + billable_hours. Ume's 300-CD field wager: same pattern, purse 900.
+6. **Grunt force**: villain_grunt_3..11 + route escort Lei — recognition dialog entries
+   have NO Goodbye and no free exit; pursue → touch at 1.25 forces the battle; grunts
+   still despawn on defeat and never re-trigger.
+7. **Fee-or-fight forks**: checkpoint fee buttons (Sani/Haruki 120; contraband 250)
+   with 0 CD → red payment-declined + THAT agent battles you; funded → the shared
+   `paid_checkpoint_fee`/`paid_handling_fee` tag, no double-charge on re-click, the
+   surrender fork still free. KYC sketch and Yan's survey lost their free walk-aways
+   (fee 150 or fight). Yan REGRESSION: the ON_DISTANCE_NEAR eavesdrop now opens ONLY
+   with `audit_loiter` (its gate was silently dropped before this round — verify a
+   fresh walk-up does NOT get the overheard dialog).
+8. **Wheat traders**: at `fields_liberated` ≥ 4 the hostile entry has no *Stand down*
+   and TOUCHING a trader starts `wheat_trader_ambush`; beating either stands both down
+   (shared defeat tag). Below 4 fields: browse/leave unchanged, no ambush.
+9. **Exemptions/regressions**: Takehara gym ladder untouched (incl. the weakened
+   variants) and the Invitational bracket keeps its free declines; quest-confrontation
+   OUTER hails (fence/corridor/quota) stay leaveable while their recognition battle
+   entries are exit-free; site manager pre-officer players still get the gated
+   "About the officer" close instead of a dead-end.
+
+**Live-world caveat**: placement-latched villains (escort Lei, Lan, Yan, the Harvest
+Road trio, checkpoint pair, …) spawned copies are NOT in `preset_map.json` — content
+updates do not propagate. To pick up round-13b behavior: kill the body +
+`scoreboard players set #amb_<key> ci_ambient 0` (latch key = character id) and walk
+back into the 40-block latch radius. UUID-mapped route trainers (Zola, Ayo, Jabari,
+Kwame, Mirek, Haoran, Xu, Luo) refresh normally via `update_npc_presets` /
+NpcPresetRefreshManager. `dialog/band_tags` (tick) now also maintains `no_declined_*`.
+
+## §8 ROUND-14 — Quest-flow quick wins (Tier A, 2026-07-06)
+
+Ships: courier-SELL aftermath (sidebar tombstone + ASSET LIQUIDATED sting + Sentinel
+cold shoulder), census callbacks (Kazuo/Femi), Lucian badge-1→3 bridge + FILING DAY
+aggregate (`ci_papers_filed/held`, slot 75), Takehara guide fork (`dialog/
+takehara_guide.json` — sq_perf_review_guide merge file retired), deferred ghost reveal
+(+5s SILENT STAKEHOLDER title), liberation ceremony (`<FIELD> — LIBERATED` + fireworks
++ 3 back-echoes), two-stage badge ceremony (`rewards/gym/badge_1..3`, frag title +4s),
+Lila rumor board, paper-hub filings (RZ-7 + Field Memo 7-12 pay 200 + minor), bracket
+round cards + DISBURSEMENT sting + crier fix (three rounds), discovery breadcrumbs
+(Mei/Lucian/Mio/Kele), gossip micro-pass (Lan outlier, stall sign-down ×3, Ning,
+Marlow, Ume↔Imani, Asha), hygiene sweep (Shou/Sayuri names, Sayuri pages, adjunct
+erasure rewrite + Raan 8 coal/4 iron), Miller Walk survey loggers, Kazuo 19/20.
+
+**RELEASE-BLOCKING WORLD SETUP — Takehara sentries (promoted this round):** the
+Performance Review meta is dead until the four tower trainers (Koji/Yuki/Shin/Taro)
+are (a) entity-tagged `takehara_sentry` and (b) npcsight-registered. On any world:
+`tag <entity> add takehara_sentry` ×4 + `npcsight add <uuid> …` ×4 after placement.
+`sidequest/perf_review/tick` now warns ops ONCE per world (red `[setup]` line) when a
+player is inside the tower while zero tagged sentries exist — treat that line in any
+smoke run as a FAILED release gate.
+
+Round-14 canary list:
+1. **Courier SELL**: sell → ASSET LIQUIDATED title + sculk/anvil sting; sidebar flips
+   to dark-red `• The record is Company property now` (never the stale rebuild line);
+   Elder Sentinel opens on the cold shoulder; Lucian still opens stage1_sold.
+2. **Filing day**: hold 2+ Lucian-bound papers → individual deliver lines vanish, one
+   `• File with Lucian: n papers` (slot 75) appears and tracks/waypoints to her desk;
+   file everything → 3+ filings flips Lucian's default greeting (papers_growing).
+3. **Badge 1 two-stage**: beat Cicada → Falls Badge — EARNED + fireworks/toast, then
+   ~4s later the purple memory-fragment title lands alone; a ghost run adds SILENT
+   STAKEHOLDER ~1s after that (5s), never under the badge card.
+4. **Liberation**: free Firstfurrow → FIRSTFURROW — LIBERATED (wheat-gold) + bell +
+   fireworks + `The Company will notice.` subtitle; Tunde/Sentinel/Masumi all gossip
+   it back afterward.
+5. **Bridge window**: docs filed, badges < 3 → Lucian opens on `stage_bridge` (third
+   badge line) and the sidebar reads `• Lucian waits on a third badge`.
+6. **Rumor board**: Lila's word-around-town button prints one gated rumor per click
+   (page_turn sound); with all five quests done it prints the static three-spot page.
+7. **Invitational**: each bracket win shows its round card (winners-first onwin, as
+   the player); podium accept fires DISBURSEMENT COMPLETE *before* the verified-rate
+   receipt; Kofi barks three-rounds copy pre-bracket, go-collect after round 3,
+   champion bark post-podium.
+8. **Retune**: Kazuo now fields Meowth 19 / Koffing 20 (payday/sludge sets) — battle
+   gate + 280 CD prize + 150 decline fee unchanged.
+9. **Regression**: Sango→Takehara opening unchanged except THE ROAD WEST send-off card
+   on the shoes; nurse heal buttons/prices untouched (superseded by §9: buttons read
+   "posted rate" since review B3); the five suppressed deliver lines return the moment
+   held papers drop back to ≤ 1.
+
+## §9 TIER-B — Fairness floor, indexed heal fee, visible randomness, replay variance (2026-07-06)
+
+Ships (showrunner-approved B1/B3/B6/B7; B4 shipped earlier inline): dex_gte_2 forced-
+battle floor on every ON_DISTANCE_TOUCH battle; heal fee = 100 + 2×`#idx
+cd_instability` (macro `economy/heal_paid` → `heal_paid_fee`); the visible-randomness
+set (branded-receipt line-item roll, derby Record Species, Company Morning Memo +
+East Market ware roll on the new `economy/dawn` tick, clinic_rx weighted pool, hamper
+side-item rolls, wager purse sweetener — STAKES STAY FIXED per the §3 invariants);
+tower A/B rosters via the placement-latch roll (`spawn_variants: 2`, presets
+`takehara_trainer_N[_b]`, teams `takehara_trainer_N_b.json`). Spotter stand rolls were
+SKIPPED: Ayo AND Zola are uuid-anchored world bodies (npcsight pursue is uuid-keyed;
+placement latches never run for uuid'd characters), so a spawn-point roll cannot move
+them without orphaning their sight registration — re-scope with the engagement matrix.
+
+Tier-B canary list:
+1. **Fairness floor (B1)**: fresh character, starter only (`dex_caught` = 1 — the
+   starter DOES register as CAUGHT, jar-verified): walk into Ayo/Zola at TOUCH range →
+   the CLOSE-band hail still fires, NO battle starts. Catch anything (`dex_caught` 2,
+   ≤2 s lag) → leave the band, re-approach → forced battle fires. Same check on a
+   wheat-trader hostile touch.
+2. **Heal fee (B3)**: `scoreboard players set #idx cd_instability 8` → heal button →
+   healed, receipt reads "posted rate: 116"; broke → "The Center does not extend
+   credit. (116 CD required)", NO heal. Reset #idx to 0 → 100 flat. Buttons on all
+   four nurses read **Heal my team - posted rate**.
+3. **Branded line-item roll (B6)**: census SIGN fork (or any payout_company) → one
+   gray zero-value ledger line under the actionbar receipt, different across payouts;
+   `set #idx cd_instability 40` → lines come from the nervous pool (re-verification /
+   PLEASE RETAIN). Paid amount NEVER moves with the roll.
+4. **Record Species (B6)**: derby entry prints the CHALKBOARD species; land one of
+   that species in the winning three → RECORD SPECIES LANDED + a skew-aware +75 CD
+   Verified Rate receipt (fires on repeat wins too — money only); win without it →
+   no bonus, no line.
+5. **Dawn roll (B6)**: sleep through a night (or `time add 24000`) → exactly TWO chat
+   lines at dawn: EAST MARKET STREET (orchard/hill day) + one COMPANY MORNING MEMO
+   line (propaganda pool at idx<16, reassurance 16..55, corrupted at 56+ or post-HQ).
+   First-ever load also fires once (latch seeding).
+6. **Ware rotation (B6)**: on an orchard day Auntie Song stocks Leppa (no Lum), Qiu's
+   forward drawer opens (steady unreachable), Bo Huan hangs red/yellow/pink; hill day
+   is the mirror (Lum; steady drawer; blue/green/white). Oran/Sitrus, cures, curios,
+   black jar, tumblestones, basket: always. Prices identical both days.
+7. **Wager sweetener (B6)**: win any of the four wagers (Genji / Ume / Luo / Lan,
+   button AND broke-decline paths) → base purse + "The purse runs heavy — +25/50/75/
+   100 CD over the posted terms." Stakes, decline fees, loss fees: unchanged numbers,
+   printed before the click.
+8. **Drips (B6)**: clinic_rx daily now rolls potion(4)/antidote(2)/paralyze_heal(2)/
+   super_potion(1); night-watch + homecoming hampers add one announced rolled side
+   item on top of their fixed contents.
+9. **Tower A/B (B7)**: fresh world, enter the tower → `scoreboard players get
+   #var_takehara_trainer_1 ci_ambient` reads 1 or 2; a 2-roll body battles
+   `rctmod:takehara_trainer_1_b` (Wurmple/Scatterbug) but still credits
+   `defeated_takehara_trainer_1` — takehara_tower count, Sora's gate, Performance
+   Review, and the badge flow all behave identically. Nameplates read the same
+   (Koji/Yuki/Shin/Taro). The §8 sentry-tag + npcsight world setup is UNCHANGED and
+   still release-blocking. Re-roll: kill body + `scoreboard players set
+   #amb_takehara_trainer_N ci_ambient 0`.
+10. **Regression**: decline/stake literals across §7 unchanged; unbranded `economy/
+    payout` receipts carry NO line-item roll; `_weak` overrides (jr/apprentice/leader
+    only) never intersect the tower A/B files.

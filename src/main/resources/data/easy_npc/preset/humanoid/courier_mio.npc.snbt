@@ -126,6 +126,63 @@
                     Label: "won"
                 },
                 {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "defeated_villain_grunt_1"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "defeated_villain_grunt_2"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "no_race_won"
+                        }
+                    ],
+                    Priority: 12,
+                    Buttons: [
+                        {
+                            Name: "Race the bell",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add ci_sprinting"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:sidequest/sprint/start"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "race_button"
+                        },
+                        {
+                            Name: "Not today",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "no_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "You are the one who folded the checkpoint tent! Route times drop a whole minute when nobody voluntary-verifies you mid-stride. The couriers owe you a drink and I owe you a race. Same rules: start here, ring the bell at the Takehara arch before the bar runs dry. And mind the two watchers past the midpoint - eye contact is a contract with those two. Settle up first, or run wide."
+                        }
+                    ],
+                    Name: "Mio - the route breathes",
+                    Label: "checkpoint_cleared"
+                },
+                {
                     Priority: 10,
                     Buttons: [
                         {
@@ -159,7 +216,7 @@
                     ],
                     Texts: [
                         {
-                            Text: "Petal Courier Mio - fastest feet in Sango, and I have the shin bruises to prove it. I run this path against the bell every morning. Bet you cannot match my time. Start here, ring the delivery bell at the Takehara arch before the bar runs dry. Wild ones on the road are your problem - that is the sport of it. First timers who make it get the insured parcel rate: five hundred CD and the goodies inside."
+                            Text: "Petal Courier Mio - fastest feet in Sango, and I have the shin bruises to prove it. I run this path against the bell every morning. Bet you cannot match my time. Start here, ring the delivery bell at the Takehara arch before the bar runs dry. Wild ones on the road are your problem - that is the sport of it. One warning for free, first-timer: two spotters watch the midpoint verges, and eye contact is a contract with those two. Settle up first, or run wide. Make it anyway and you get the insured parcel rate: five hundred CD and the goodies inside."
                         }
                     ],
                     Name: "Mio - the challenge",

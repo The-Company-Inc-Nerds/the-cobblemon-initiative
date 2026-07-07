@@ -74,37 +74,43 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "defeated_dragon_shrine_leader"
-                                        }
-                                    ],
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_dragon_shrine_leader"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "say The wyrm remembers your weight. There is nothing left for you to prove here."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_dragon_shrine_leader"
-                                        }
-                                    ],
-                                    Cmd: "tbcs attach dragon_shrine_leader @s"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_dragon_shrine_leader"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:dragon_shrine_leader @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_dragon_shrine_leader"
-                                        }
-                                    ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs dragon_shrine_leader onwin {1: ['cobbledollars give @1 2500', 'tag @1 add defeated_dragon_shrine_leader', '@2 say The wyrm has weighed you and found you whole. Go, bearer of the old fire.'], 2: ['@1 say The shrine has not finished with you. Return when your scales have hardened.']}"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_dragon_shrine_leader"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:dragon_shrine_leader onwin {1: ['cobbledollars give @1 2500', 'tag @1 add defeated_dragon_shrine_leader', '@2 say The wyrm has weighed you and found you whole. Go, bearer of the old fire.'], 2: ['@1 say The shrine has not finished with you. Return when your scales have hardened.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

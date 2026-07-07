@@ -21,6 +21,20 @@
                 ON_DISTANCE_NEAR: [
                     {
                         Type: "OPEN_NAMED_DIALOG",
+                        ConditionDataSet: {
+                            ConditionDataSet: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "audit_loiter"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_yield_report_taken"
+                                }
+                            ]
+                        },
                         Cmd: "overheard_valuation"
                     }
                 ]
@@ -56,52 +70,92 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "defeated_villain_yield_analyst"
-                                        }
-                                    ],
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_villain_yield_analyst"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "say The audit is suspended. Repeat engagements do not compound. Take it up with the badge."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_villain_yield_analyst"
-                                        }
-                                    ],
-                                    Cmd: "tbcs attach villain_yield_analyst @s"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_yield_analyst"
+                                            },
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_declined_villain_yield_analyst"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:villain_yield_analyst @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_villain_yield_analyst"
-                                        }
-                                    ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_yield_analyst onwin {1: ['cobbledollars give @1 480', 'tag @1 add defeated_villain_yield_analyst', '@2 say Recorded. One loss, assessor. My confidence interval did not include you — which is itself a data point.'], 2: ['@1 say Engagement concluded. Your challenge has been logged as community sentiment, weight zero.']}"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_yield_analyst"
+                                            },
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_declined_villain_yield_analyst"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:villain_yield_analyst onwin {1: ['cobbledollars give @1 480', 'tag @1 add defeated_villain_yield_analyst', '@2 say Recorded. One loss, assessor. My confidence interval did not include you — which is itself a data point.'], 2: ['@1 say Engagement concluded. Your challenge has been logged as community sentiment, weight zero.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_declined_villain_yield_analyst"
                                 }
                             ],
                             Label: "yes_button"
                         },
                         {
-                            Name: "Goodbye",
+                            Name: "Pay 150 CD to bow out",
                             Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:route/decline_villain_yield_analyst"
+                                },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "goodbye_button"
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_villain_yield_analyst"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_declined_villain_yield_analyst"
+                                }
+                            ],
+                            Label: "bow_out_button"
                         }
                     ],
                     Texts: [
@@ -160,37 +214,53 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "defeated_villain_yield_analyst"
-                                        }
-                                    ],
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_villain_yield_analyst"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "say The audit is suspended. Repeat engagements do not compound. Take it up with the badge."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_villain_yield_analyst"
-                                        }
-                                    ],
-                                    Cmd: "tbcs attach villain_yield_analyst @s"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_yield_analyst"
+                                            },
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_declined_villain_yield_analyst"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:villain_yield_analyst @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_villain_yield_analyst"
-                                        }
-                                    ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_yield_analyst onwin {1: ['cobbledollars give @1 480', 'tag @1 add defeated_villain_yield_analyst', '@2 say Recorded. One loss, assessor. My confidence interval did not include you — which is itself a data point.'], 2: ['@1 say Engagement concluded. Your challenge has been logged as community sentiment, weight zero.']}"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_yield_analyst"
+                                            },
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_declined_villain_yield_analyst"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:villain_yield_analyst onwin {1: ['cobbledollars give @1 480', 'tag @1 add defeated_villain_yield_analyst', '@2 say Recorded. One loss, assessor. My confidence interval did not include you — which is itself a data point.'], 2: ['@1 say Engagement concluded. Your challenge has been logged as community sentiment, weight zero.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -201,6 +271,11 @@
                                     Type: "PLAYER_TAG",
                                     Operation: "EQUALS",
                                     Name: "no_defeated_villain_yield_analyst"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_declined_villain_yield_analyst"
                                 }
                             ],
                             Label: "contest_button"
@@ -307,52 +382,92 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "defeated_villain_yield_analyst"
-                                        }
-                                    ],
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_villain_yield_analyst"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "say The audit is suspended. Repeat engagements do not compound. Take it up with the badge."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_villain_yield_analyst"
-                                        }
-                                    ],
-                                    Cmd: "tbcs attach villain_yield_analyst @s"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_yield_analyst"
+                                            },
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_declined_villain_yield_analyst"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:villain_yield_analyst @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_villain_yield_analyst"
-                                        }
-                                    ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_yield_analyst onwin {1: ['cobbledollars give @1 480', 'tag @1 add defeated_villain_yield_analyst', '@2 say Recorded. One loss, assessor. My confidence interval did not include you — which is itself a data point.'], 2: ['@1 say Engagement concluded. Your challenge has been logged as community sentiment, weight zero.']}"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_yield_analyst"
+                                            },
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_declined_villain_yield_analyst"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:villain_yield_analyst onwin {1: ['cobbledollars give @1 480', 'tag @1 add defeated_villain_yield_analyst', '@2 say Recorded. One loss, assessor. My confidence interval did not include you — which is itself a data point.'], 2: ['@1 say Engagement concluded. Your challenge has been logged as community sentiment, weight zero.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_declined_villain_yield_analyst"
                                 }
                             ],
                             Label: "yes_button"
                         },
                         {
-                            Name: "Goodbye",
+                            Name: "Pay 150 CD to bow out",
                             Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:route/decline_villain_yield_analyst"
+                                },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "goodbye_button"
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_villain_yield_analyst"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_declined_villain_yield_analyst"
+                                }
+                            ],
+                            Label: "bow_out_button"
                         }
                     ],
                     Texts: [
@@ -384,60 +499,53 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "defeated_villain_yield_analyst"
-                                        }
-                                    ],
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_villain_yield_analyst"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "say The audit is suspended. Repeat engagements do not compound. Take it up with the badge."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_villain_yield_analyst"
-                                        }
-                                    ],
-                                    Cmd: "tbcs attach villain_yield_analyst @s"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_yield_analyst"
+                                            },
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_declined_villain_yield_analyst"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:villain_yield_analyst @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_villain_yield_analyst"
-                                        }
-                                    ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_yield_analyst onwin {1: ['cobbledollars give @1 480', 'tag @1 add defeated_villain_yield_analyst', '@2 say Recorded. One loss, assessor. My confidence interval did not include you — which is itself a data point.'], 2: ['@1 say Engagement concluded. Your challenge has been logged as community sentiment, weight zero.']}"
-                                },
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "battle_button"
-                        },
-                        {
-                            Name: "Pay the 150 CD non-engagement consideration",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "cobbledollars remove @s 150"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "tag @s add paid_survey_decline"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    Cmd: "title @initiator actionbar [{\"text\":\"Non-engagement consideration received. Your refusal has been monetized. The Company thanks you for participating in commerce.\"}]"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_yield_analyst"
+                                            },
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_declined_villain_yield_analyst"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:villain_yield_analyst onwin {1: ['cobbledollars give @1 480', 'tag @1 add defeated_villain_yield_analyst', '@2 say Recorded. One loss, assessor. My confidence interval did not include you — which is itself a data point.'], 2: ['@1 say Engagement concluded. Your challenge has been logged as community sentiment, weight zero.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -447,19 +555,36 @@
                                 {
                                     Type: "PLAYER_TAG",
                                     Operation: "EQUALS",
-                                    Name: "no_paid_survey_decline"
+                                    Name: "no_declined_villain_yield_analyst"
                                 }
                             ],
-                            Label: "decline_button"
+                            Label: "battle_button"
                         },
                         {
-                            Name: "Walk past the audit",
+                            Name: "Pay 150 CD to bow out",
                             Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:route/decline_villain_yield_analyst"
+                                },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "leave_button"
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_villain_yield_analyst"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_declined_villain_yield_analyst"
+                                }
+                            ],
+                            Label: "bow_out_button"
                         }
                     ],
                     Texts: [
@@ -481,60 +606,53 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "defeated_villain_yield_analyst"
-                                        }
-                                    ],
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_villain_yield_analyst"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "say The audit is suspended. Repeat engagements do not compound. Take it up with the badge."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_villain_yield_analyst"
-                                        }
-                                    ],
-                                    Cmd: "tbcs attach villain_yield_analyst @s"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_yield_analyst"
+                                            },
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_declined_villain_yield_analyst"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:villain_yield_analyst @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_villain_yield_analyst"
-                                        }
-                                    ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_yield_analyst onwin {1: ['cobbledollars give @1 480', 'tag @1 add defeated_villain_yield_analyst', '@2 say Recorded. One loss, assessor. My confidence interval did not include you — which is itself a data point.'], 2: ['@1 say Engagement concluded. Your challenge has been logged as community sentiment, weight zero.']}"
-                                },
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "battle_button"
-                        },
-                        {
-                            Name: "Pay the 150 CD non-engagement consideration",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "cobbledollars remove @s 150"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "tag @s add paid_survey_decline"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    Cmd: "title @initiator actionbar [{\"text\":\"Non-engagement consideration received. Your refusal has been monetized. The Company thanks you for participating in commerce.\"}]"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_yield_analyst"
+                                            },
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_declined_villain_yield_analyst"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:villain_yield_analyst onwin {1: ['cobbledollars give @1 480', 'tag @1 add defeated_villain_yield_analyst', '@2 say Recorded. One loss, assessor. My confidence interval did not include you — which is itself a data point.'], 2: ['@1 say Engagement concluded. Your challenge has been logged as community sentiment, weight zero.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -544,19 +662,36 @@
                                 {
                                     Type: "PLAYER_TAG",
                                     Operation: "EQUALS",
-                                    Name: "no_paid_survey_decline"
+                                    Name: "no_declined_villain_yield_analyst"
                                 }
                             ],
-                            Label: "decline_button"
+                            Label: "battle_button"
                         },
                         {
-                            Name: "Step back",
+                            Name: "Pay 150 CD to bow out",
                             Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:route/decline_villain_yield_analyst"
+                                },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "back_button"
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_villain_yield_analyst"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_declined_villain_yield_analyst"
+                                }
+                            ],
+                            Label: "bow_out_button"
                         }
                     ],
                     Texts: [
@@ -722,52 +857,92 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "defeated_villain_yield_analyst"
-                                        }
-                                    ],
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_villain_yield_analyst"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "say The audit is suspended. Repeat engagements do not compound. Take it up with the badge."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_villain_yield_analyst"
-                                        }
-                                    ],
-                                    Cmd: "tbcs attach villain_yield_analyst @s"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_yield_analyst"
+                                            },
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_declined_villain_yield_analyst"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:villain_yield_analyst @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_villain_yield_analyst"
-                                        }
-                                    ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_yield_analyst onwin {1: ['cobbledollars give @1 480', 'tag @1 add defeated_villain_yield_analyst', '@2 say Recorded. One loss, assessor. My confidence interval did not include you — which is itself a data point.'], 2: ['@1 say Engagement concluded. Your challenge has been logged as community sentiment, weight zero.']}"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_yield_analyst"
+                                            },
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_declined_villain_yield_analyst"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:villain_yield_analyst onwin {1: ['cobbledollars give @1 480', 'tag @1 add defeated_villain_yield_analyst', '@2 say Recorded. One loss, assessor. My confidence interval did not include you — which is itself a data point.'], 2: ['@1 say Engagement concluded. Your challenge has been logged as community sentiment, weight zero.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_declined_villain_yield_analyst"
                                 }
                             ],
                             Label: "yes_button"
                         },
                         {
-                            Name: "Goodbye",
+                            Name: "Pay 150 CD to bow out",
                             Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:route/decline_villain_yield_analyst"
+                                },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "goodbye_button"
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_villain_yield_analyst"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_declined_villain_yield_analyst"
+                                }
+                            ],
+                            Label: "bow_out_button"
                         }
                     ],
                     Texts: [
@@ -938,6 +1113,7 @@
             }
         ],
         id: "easy_npc:humanoid",
-        CustomName: '{"text": "Yan", "color": "#FFFFFF"}'
+        CustomName: '{"text": "Yan", "color": "#FFFFFF"}',
+        Tags: ["yield_analyst", "audit_listener"]
     }
 }

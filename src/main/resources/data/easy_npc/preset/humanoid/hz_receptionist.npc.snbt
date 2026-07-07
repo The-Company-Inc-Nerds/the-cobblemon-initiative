@@ -77,6 +77,47 @@
                     Label: "nervous"
                 },
                 {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "defeated_sq_mayor_suits"
+                        }
+                    ],
+                    Priority: 15,
+                    Buttons: [
+                        {
+                            Name: "Ask what this branch does",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "about_office"
+                                }
+                            ],
+                            Label: "about_button"
+                        },
+                        {
+                            Name: "Leave the desk",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "One housekeeping note before your inquiry. A stakeholder alignment session in the Takehara district has been — deferred. The field team filed it as weather. Whatever you may have heard on a roof, the branch heard weather. Compliance is appreciated."
+                        },
+                        {
+                            Text: "The ground floor remains for inquiries. The alignment calendar is running a little behind this quarter, for weather reasons."
+                        }
+                    ],
+                    Name: "Reception — a deferred alignment",
+                    Label: "alignment_deferred"
+                },
+                {
                     Priority: 10,
                     Buttons: [
                         {

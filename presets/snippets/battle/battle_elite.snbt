@@ -16,7 +16,7 @@ DialogData: {
                         },
                         {
                             Type: "COMMAND",
-                            Cmd: "execute if entity @p[tag=defeated_takehara_leader,tag=defeated_hua_zhan_leader,tag=defeated_mystic_leader,tag=defeated_deepcore_leader,tag=defeated_gaviota_leader,tag=defeated_kalahar_leader,tag=defeated_cyber_leader,tag=defeated_ryujin_leader,tag=defeated_nifl_leader,tag=defeated_scorchspire_leader] unless entity @p[tag=defeated_%%TRAINER_ID%%] run tbcs attach %%TRAINER_ID%% @s"
+                            Cmd: "execute if entity @p[tag=defeated_takehara_leader,tag=defeated_hua_zhan_leader,tag=defeated_mystic_leader,tag=defeated_deepcore_leader,tag=defeated_gaviota_leader,tag=defeated_kalahar_leader,tag=defeated_cyber_leader,tag=defeated_ryujin_leader,tag=defeated_nifl_leader,tag=defeated_scorchspire_leader] unless entity @p[tag=defeated_%%TRAINER_ID%%] run tbcs attach rctmod:%%TRAINER_ID%% @s"
                         },
                         {
                             Type: "COMMAND",
@@ -78,7 +78,7 @@ DialogData: {
                                     Name: "no_defeated_%%TRAINER_ID%%"
                                 }
                             ],
-                            Cmd: "tbcs battle %%BATTLE_FORMAT:GEN_9_SINGLES|GEN_9_DOUBLES=GEN_9_SINGLES%% @s vs %%TRAINER_ID%% onwin {1: ['cobbledollars give @1 %%PRIZE=8000%%', 'tag @1 add defeated_%%TRAINER_ID%%', 'execute as @1 run function cobblemon_initiative:rewards/badge_reward_combo {badges:10}', '@2 say %%WIN_LINE=A worthy heir to the throne. Pass.%%'], 2: ['@1 say %%LOSE_LINE=The League does not bend. Train, and return.%%']}"
+                            Cmd: "tbcs battle %%BATTLE_FORMAT:GEN_9_SINGLES|GEN_9_DOUBLES=GEN_9_SINGLES%% @s vs rctmod:%%TRAINER_ID%% onwin {1: ['cobbledollars give @1 %%PRIZE=8000%%', 'tag @1 add defeated_%%TRAINER_ID%%', 'execute as @1 run function cobblemon_initiative:rewards/badge_reward_combo {badges:10}', '@2 say %%WIN_LINE=A worthy heir to the throne. Pass.%%'], 2: ['@1 say %%LOSE_LINE=The League does not bend. Train, and return.%%']}"
                         },
                         {
                             Type: "CLOSE_DIALOG"

@@ -81,37 +81,43 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "defeated_villain_admin"
-                                        }
-                                    ],
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_villain_admin"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "say The floor is yours to cross. I already logged the variance. Go on up."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_villain_admin"
-                                        }
-                                    ],
-                                    Cmd: "tbcs attach villain_admin @s"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_admin"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:villain_admin @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_villain_admin"
-                                        }
-                                    ],
-                                    Cmd: "tbcs battle GEN_9_DOUBLES @s vs villain_admin onwin {1: ['cobbledollars give @1 3000', 'tag @1 add defeated_villain_admin', '@2 say Filed under closed. I will note you were polite about it. That goes a long way, up where you are headed.', 'easy_npc delete @2'], 2: ['@1 say Recorded, escorted, and forgotten. The Company thanks you for your cooperation.']}"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_admin"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_DOUBLES @s vs rctmod:villain_admin onwin {1: ['cobbledollars give @1 3000', 'tag @1 add defeated_villain_admin', '@2 say Filed under closed. I will note you were polite about it. That goes a long way, up where you are headed.', 'easy_npc delete @2'], 2: ['@1 say Recorded, escorted, and forgotten. The Company thanks you for your cooperation.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -151,37 +157,43 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "defeated_villain_admin"
-                                        }
-                                    ],
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_villain_admin"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "say The floor is yours to cross. I already logged the variance. Go on up."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_villain_admin"
-                                        }
-                                    ],
-                                    Cmd: "tbcs attach villain_admin @s"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_admin"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:villain_admin @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_villain_admin"
-                                        }
-                                    ],
-                                    Cmd: "tbcs battle GEN_9_DOUBLES @s vs villain_admin onwin {1: ['cobbledollars give @1 3000', 'tag @1 add defeated_villain_admin', '@2 say Filed under closed. I will note you were polite about it. That goes a long way, up where you are headed.', 'easy_npc delete @2'], 2: ['@1 say Recorded, escorted, and forgotten. The Company thanks you for your cooperation.']}"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_admin"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_DOUBLES @s vs rctmod:villain_admin onwin {1: ['cobbledollars give @1 3000', 'tag @1 add defeated_villain_admin', '@2 say Filed under closed. I will note you were polite about it. That goes a long way, up where you are headed.', 'easy_npc delete @2'], 2: ['@1 say Recorded, escorted, and forgotten. The Company thanks you for your cooperation.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

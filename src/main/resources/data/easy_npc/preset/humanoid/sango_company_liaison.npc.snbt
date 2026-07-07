@@ -40,6 +40,37 @@
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
+                            Name: "fields_liberated_gte_1"
+                        }
+                    ],
+                    Priority: 45,
+                    Buttons: [
+                        {
+                            Name: "Good luck with the portfolio",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "You will excuse me if I seem distracted. A parcel in my acreage portfolio was — the memo says decertified. Fence down, family in residence, yield unrecoverable. The Company does not lose ground. The Company reclassifies it. Still. One does notice the direction of the reclassifying."
+                        },
+                        {
+                            Text: "Enjoy the fields. Someone has decided they are not scenery after all, and head office would very much like a word with whoever that is."
+                        }
+                    ],
+                    Name: "Liaison — a portfolio adjustment",
+                    Label: "fields_echo"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
                             Name: "invit_podium_done"
                         }
                     ],
@@ -97,12 +128,17 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:sidequest/invitational/disburse"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
                                     Cmd: "loot give @s loot cobblemon_initiative:npc_gift/training_major"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "function cobblemon_initiative:economy/payout {amount:600}"
+                                    Cmd: "function cobblemon_initiative:economy/payout_company {amount:600}"
                                 },
                                 {
                                     Type: "COMMAND",

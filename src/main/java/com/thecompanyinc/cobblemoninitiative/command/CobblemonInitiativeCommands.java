@@ -32,36 +32,62 @@ public class CobblemonInitiativeCommands {
   ) {
     dispatcher.register(
       Commands.literal("cobblemon-initiative")
-        .requires(source -> source.hasPermission(2))
+        // No root permission gate: the player-facing `track` subtree below must work at
+        // permission 0 (mirrors /shrine-abort). Every admin subtree carries its own
+        // OP-2 requires instead — brigadier keeps the FIRST registered node's
+        // requirement on merge, so a second permission-free registration would not do.
         .then(
-          Commands.literal("progress").executes(
-            CobblemonInitiativeCommands::showProgress
-          )
+          Commands.literal("progress")
+            .requires(source -> source.hasPermission(2))
+            .executes(CobblemonInitiativeCommands::showProgress)
         )
         .then(
-          Commands.literal("levelcap").executes(
-            CobblemonInitiativeCommands::showLevelCap
-          )
+          Commands.literal("levelcap")
+            .requires(source -> source.hasPermission(2))
+            .executes(CobblemonInitiativeCommands::showLevelCap)
         )
         .then(
-          Commands.literal("reset").executes(
-            CobblemonInitiativeCommands::resetProgress
-          )
+          Commands.literal("reset")
+            .requires(source -> source.hasPermission(2))
+            .executes(CobblemonInitiativeCommands::resetProgress)
         )
         .then(
-          Commands.literal("info").then(
-            Commands.argument("trainer", StringArgumentType.string())
-              .suggests((context, builder) ->
-                SharedSuggestionProvider.suggest(
-                  InitiativeInit.getConfigLoader().getTrainerIds(),
-                  builder
-                )
+          Commands.literal("track")
+            .requires(source -> source.getEntity() instanceof ServerPlayer)
+            .then(
+              Commands.literal("next").executes(ctx -> trackCycle(ctx, 1))
+            )
+            .then(
+              Commands.literal("prev").executes(ctx -> trackCycle(ctx, -1))
+            )
+            .then(
+              Commands.literal("clear").executes(
+                CobblemonInitiativeCommands::trackClear
               )
-              .executes(CobblemonInitiativeCommands::showTrainerInfo)
-          )
+            )
+            .then(
+              Commands.literal("status").executes(
+                CobblemonInitiativeCommands::trackStatus
+              )
+            )
+        )
+        .then(
+          Commands.literal("info")
+            .requires(source -> source.hasPermission(2))
+            .then(
+              Commands.argument("trainer", StringArgumentType.string())
+                .suggests((context, builder) ->
+                  SharedSuggestionProvider.suggest(
+                    InitiativeInit.getConfigLoader().getTrainerIds(),
+                    builder
+                  )
+                )
+                .executes(CobblemonInitiativeCommands::showTrainerInfo)
+            )
         )
         .then(
           Commands.literal("list")
+            .requires(source -> source.hasPermission(2))
             .then(
               Commands.literal("gyms").executes(ctx -> listTrainers(ctx, "gym"))
             )
@@ -80,96 +106,104 @@ public class CobblemonInitiativeCommands {
             )
         )
         .then(
-          Commands.literal("defeat").then(
-            Commands.argument("trainer", StringArgumentType.string())
-              .suggests((context, builder) ->
-                SharedSuggestionProvider.suggest(
-                  InitiativeInit.getConfigLoader().getTrainerIds(),
-                  builder
+          Commands.literal("defeat")
+            .requires(source -> source.hasPermission(2))
+            .then(
+              Commands.argument("trainer", StringArgumentType.string())
+                .suggests((context, builder) ->
+                  SharedSuggestionProvider.suggest(
+                    InitiativeInit.getConfigLoader().getTrainerIds(),
+                    builder
+                  )
                 )
-              )
-              .executes(CobblemonInitiativeCommands::markDefeated)
-          )
+                .executes(CobblemonInitiativeCommands::markDefeated)
+            )
         )
         .then(
-          Commands.literal("shrine").then(
-            Commands.argument("shrine", StringArgumentType.word())
-              .suggests((context, builder) ->
-                SharedSuggestionProvider.suggest(
-                  Arrays.asList(
-                    InitiativeInit.getShrineChallengeManager().getShrineIds()
-                  ),
-                  builder
+          Commands.literal("shrine")
+            .requires(source -> source.hasPermission(2))
+            .then(
+              Commands.argument("shrine", StringArgumentType.word())
+                .suggests((context, builder) ->
+                  SharedSuggestionProvider.suggest(
+                    Arrays.asList(
+                      InitiativeInit.getShrineChallengeManager().getShrineIds()
+                    ),
+                    builder
+                  )
                 )
-              )
-              .then(
-                Commands.literal("start").executes(
-                  CobblemonInitiativeCommands::shrineStart
+                .then(
+                  Commands.literal("start").executes(
+                    CobblemonInitiativeCommands::shrineStart
+                  )
                 )
-              )
-              .then(
-                Commands.literal("stop").executes(
-                  CobblemonInitiativeCommands::shrineStop
+                .then(
+                  Commands.literal("stop").executes(
+                    CobblemonInitiativeCommands::shrineStop
+                  )
                 )
-              )
-              .then(
-                Commands.literal("test").then(
-                  Commands.argument("testName", StringArgumentType.word())
-                    .suggests((context, builder) ->
-                      SharedSuggestionProvider.suggest(
-                        List.of("friendship", "fullness", "nickname", "shiny", "resolve"),
-                        builder
+                .then(
+                  Commands.literal("test").then(
+                    Commands.argument("testName", StringArgumentType.word())
+                      .suggests((context, builder) ->
+                        SharedSuggestionProvider.suggest(
+                          List.of("friendship", "fullness", "nickname", "shiny", "resolve"),
+                          builder
+                        )
+                      )
+                      .executes(CobblemonInitiativeCommands::shrineTest)
+                  )
+                )
+                .then(
+                  Commands.literal("complete").executes(
+                    CobblemonInitiativeCommands::shrineComplete
+                  )
+                )
+                .then(
+                  Commands.literal("path")
+                    .then(
+                      Commands.literal("record").executes(
+                        CobblemonInitiativeCommands::shrinePathRecord
                       )
                     )
-                    .executes(CobblemonInitiativeCommands::shrineTest)
+                    .then(
+                      Commands.literal("here").executes(
+                        CobblemonInitiativeCommands::shrinePathHere
+                      )
+                    )
+                    .then(
+                      Commands.literal("clear").executes(
+                        CobblemonInitiativeCommands::shrinePathClear
+                      )
+                    )
+                    .then(
+                      Commands.literal("show").executes(
+                        CobblemonInitiativeCommands::shrinePathShow
+                      )
+                    )
+                    .then(
+                      Commands.literal("export").executes(
+                        CobblemonInitiativeCommands::shrinePathExport
+                      )
+                    )
                 )
-              )
-              .then(
-                Commands.literal("complete").executes(
-                  CobblemonInitiativeCommands::shrineComplete
-                )
-              )
-              .then(
-                Commands.literal("path")
-                  .then(
-                    Commands.literal("record").executes(
-                      CobblemonInitiativeCommands::shrinePathRecord
-                    )
-                  )
-                  .then(
-                    Commands.literal("here").executes(
-                      CobblemonInitiativeCommands::shrinePathHere
-                    )
-                  )
-                  .then(
-                    Commands.literal("clear").executes(
-                      CobblemonInitiativeCommands::shrinePathClear
-                    )
-                  )
-                  .then(
-                    Commands.literal("show").executes(
-                      CobblemonInitiativeCommands::shrinePathShow
-                    )
-                  )
-                  .then(
-                    Commands.literal("export").executes(
-                      CobblemonInitiativeCommands::shrinePathExport
-                    )
-                  )
-              )
-          )
+            )
         )
         .then(
           Commands.literal("quest")
+            .requires(source -> source.hasPermission(2))
             .then(Commands.literal("show").executes(CobblemonInitiativeCommands::questShow))
             .then(Commands.literal("hide").executes(CobblemonInitiativeCommands::questHide))
             .then(Commands.literal("refresh").executes(CobblemonInitiativeCommands::questRefresh))
         )
         .then(
-          Commands.literal("reload").executes(CobblemonInitiativeCommands::reloadAll)
+          Commands.literal("reload")
+            .requires(source -> source.hasPermission(2))
+            .executes(CobblemonInitiativeCommands::reloadAll)
         )
         .then(
           Commands.literal("dev")
+            .requires(source -> source.hasPermission(2))
             .then(
               Commands.literal("goto").then(
                 Commands.argument("trainer", StringArgumentType.word())
@@ -200,6 +234,7 @@ public class CobblemonInitiativeCommands {
         )
         .then(
           Commands.literal("shop")
+            .requires(source -> source.hasPermission(2))
             .then(
               Commands.literal("refresh").executes(CobblemonInitiativeCommands::refreshShopTier)
             )
@@ -241,6 +276,34 @@ public class CobblemonInitiativeCommands {
 
   private static int questRefresh(CommandContext<CommandSourceStack> context) {
     return questDispatch(context, "refresh");
+  }
+
+  // ── Quest tracking (player-facing, permission 0 — driven by the ] / [ keybinds) ──
+
+  /** /cobblemon-initiative track next|prev — cycle the tracked sidebar quest. */
+  private static int trackCycle(
+    CommandContext<CommandSourceStack> context, int direction
+  ) {
+    ServerPlayer player = context.getSource().getPlayer();
+    if (player == null) return 0;
+    InitiativeInit.getQuestTrackManager().cycle(player, direction);
+    return 1;
+  }
+
+  /** /cobblemon-initiative track clear — stop tracking. */
+  private static int trackClear(CommandContext<CommandSourceStack> context) {
+    ServerPlayer player = context.getSource().getPlayer();
+    if (player == null) return 0;
+    InitiativeInit.getQuestTrackManager().clearTracking(player);
+    return 1;
+  }
+
+  /** /cobblemon-initiative track status — list active quests, tracked one marked. */
+  private static int trackStatus(CommandContext<CommandSourceStack> context) {
+    ServerPlayer player = context.getSource().getPlayer();
+    if (player == null) return 0;
+    InitiativeInit.getQuestTrackManager().sendStatus(player);
+    return 1;
   }
 
   /**

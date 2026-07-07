@@ -74,37 +74,43 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "defeated_takehara_trainer_3"
-                                        }
-                                    ],
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_takehara_trainer_3"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "say We battled. It changed me. Taro is across the floor — humble him."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_takehara_trainer_3"
-                                        }
-                                    ],
-                                    Cmd: "tbcs attach takehara_trainer_3 @s"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_takehara_trainer_3"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:takehara_trainer_3 @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_takehara_trainer_3"
-                                        }
-                                    ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs takehara_trainer_3 onwin {1: ['tag @1 add defeated_takehara_trainer_3', '@2 say The shed skins in my collection have witnessed this. Go. GO! Taro is next.'], 2: ['@1 say Nowhere to stand! NOWHERE! Ahem. Genuinely good effort, though.']}"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_takehara_trainer_3"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:takehara_trainer_3 onwin {1: ['tag @1 add defeated_takehara_trainer_3', '@2 say The shed skins in my collection have witnessed this. Go. GO! Taro is next.'], 2: ['@1 say Nowhere to stand! NOWHERE! Ahem. Genuinely good effort, though.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -264,9 +270,9 @@
             DisableLayers: 0b,
             Name: "",
             Timestamp: 0L,
-            Type: "DEFAULT",
+            Type: "CUSTOM",
             URL: "",
-            UUID: [I; 0, 0, 0, 0]
+            UUID: [I; 1793725881, -162311262, -1957906874, 1270057839]
         },
         SoundData: {
             SoundDataSet: [

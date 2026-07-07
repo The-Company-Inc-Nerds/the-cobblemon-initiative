@@ -102,8 +102,10 @@ public final class AutoInstall {
       server.getCommands().performPrefixedCommand(src, "cobblemon-initiative install run");
       LOGGER.info("[Auto-Install] Dispatched 'cobblemon-initiative install run' on first join.");
       for (ServerPlayer p : server.getPlayerList().getPlayers()) {
+        // Unattributed on purpose (tone rule 2026-07-06): the brand must not be the first
+        // line of the run — the chill lands harder without a letterhead at minute zero.
         p.sendSystemMessage(Component.literal(
-          "§6[The Company, Inc.] §7This world has been provisioned. Welcome back to the ledger."
+          "§7This world has been provisioned. Welcome back to the ledger."
         ));
       }
     } catch (Exception e) {

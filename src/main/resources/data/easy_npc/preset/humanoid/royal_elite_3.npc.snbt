@@ -74,37 +74,43 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "defeated_royal_elite_3"
-                                        }
-                                    ],
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_royal_elite_3"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "say You have already walked out of my dark. Drake is just ahead — the air gets heavier from here."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_royal_elite_3"
-                                        }
-                                    ],
-                                    Cmd: "tbcs attach royal_elite_3 @s"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_royal_elite_3"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:royal_elite_3 @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_royal_elite_3"
-                                        }
-                                    ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs royal_elite_3 onwin {1: ['cobbledollars give @1 8000', 'tag @1 add defeated_royal_elite_3', '@2 say Even darkness has a shape, and you found it. Drake is last of the four. Do not let him intimidate you.'], 2: ['@1 say You lost the thread in the gloom. Find it again, and we will dance once more.']}"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_royal_elite_3"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:royal_elite_3 onwin {1: ['cobbledollars give @1 8000', 'tag @1 add defeated_royal_elite_3', '@2 say Even darkness has a shape, and you found it. Drake is last of the four. Do not let him intimidate you.'], 2: ['@1 say You lost the thread in the gloom. Find it again, and we will dance once more.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

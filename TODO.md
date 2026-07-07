@@ -37,6 +37,64 @@ session, in this order (each failure comes back to Claude as a bug report):
 5. While the client is open: capture **Sodium + BSL settings** → `mrpack/overrides/`
    (§1.F) and run the **`cobbledollars give @s` smoke-test** (§1.B).
 
+### Phase 0.4 — Round 12c follow-ups (2026-07-06, v0.5.0-alpha.1 — minor bump per showrunner)
+
+Round 12c fixed the two systemic engine bugs (TBCS `rctmod:` registry keys; action gates
+need the doubled `ConditionDataSet` key — see ENGINE_FINDINGS §2/§3) plus spawn-Y, skins,
+derby retune, Lucian handoff, clinic sidebar, tower gating, and the narrative Tier-1 pass.
+Left open:
+
+- [ ] 🔍 **0.5.0-alpha.1 re-verify** — SMOKETEST R1-R11 (battles starting AT ALL is the linchpin;
+  the runbook's "WIN a dialog battle" canary has never been checked in any build).
+- [ ] 💻 **Narrative Tier 2/3** (showrunner call, plan in `docs/NARRATIVE_AUDIT_2026-07-06.md`):
+  checkpoint → "Resident Verification Drive" front; gate the Sango square occupation;
+  ungated townsfolk defaults (Dakarai/Kele/Fara/Marlow); gate `sango_lore` founder pages;
+  **Ume decision** (faceless client vs branded temptation via `payout_company` — pick one);
+  Takehara naming diet; `grunt_recognition` per-front variants.
+- [x] 💻 **SimpleTMs balance + move economy** (2026-07-07): curated
+  `mrpack/overrides/config/simpletms/main.json` (drops off, rare TR-only in-battle,
+  no blank crafting, TMs finite 8-use unrepairable); 10 gym-leader signature TMs;
+  vendors Torn-Label Tadashi (Sango TRs) + Machine Counter Mika (Takehara badge-gated
+  TMs/TRs). Remaining polish 🧱: verify both vendor **placements in-world** (Tadashi
+  2558/110/2872 Sango back lane, Mika 1904/113/2606 Takehara mart — latch spawns once,
+  finalize before shipping a world) and a **skin dress pass** (both default to Steve).
+- [ ] 💻🧱 **DAYCARE CENTER** (showrunner 2026-07-07 — specced but NOT built; sub-agent
+  limit hit mid-build, build tree stays clean/green). Design: talk to a Sango daycare
+  keeper → deposit up to 2 party Pokémon via a party-picker screen (reuse the
+  `screen/` sacrifice-selection server/client split); each boarded mon appears in the
+  pen as a Pokémon-rendered stand-in (starter stand-in / `cobblemon_model` COBBLEMON_ENTITY
+  route) and gains slow tick-driven XP **always clamped by the live level cap** (reuse
+  `LevelCapManager`'s clamp directly — never trust the event path for self-awarded XP);
+  withdraw returns them to party (PC fallback if full) with the gained levels.
+  New `daycare/` package (DaycareManager 2 slots/player, custody persistence in the
+  world dir per PlayerProgressManager pattern, DaycareConfig w/ ModMenu category:
+  enabled/xpPerInterval/intervalTicks/pen coords/fee base+perLevel). `/cobblemon-initiative
+  daycare deposit|withdraw <slot>|status` at perm 0. **Pickup fee** 100 CD + 100/level
+  gained via the pay-probe (broke → they board longer). HARDCORE INVARIANT: daycare mons
+  can NEVER faint/die/be lost — inert custody + XP drip; custody survives relog/crash,
+  stand-ins re-spawn on SERVER_STARTED if custody non-empty. INVESTIGATE-FIRST when built:
+  Cobblemon 1.7.3 party-remove-into-custody + return API, the XP-award method that our
+  clamp catches, and whether stand-ins are programmatic easy_npc humanoids (RenderData
+  EntityModel = species) or Cobblemon PokemonEntity set uncatchable/unbattleable.
+- [ ] 🧱💻 **Hua Zhan pass** (tester notes round 4 — "a lot of work needed"): recast
+  **Mei Lin as the Hua Zhan nurse**; **Groundskeeper Aya IS the gym-2 leader** (reconcile
+  `groundskeeper_aya.json` vs `hua_zhan_leader.json` team files + the missing leader body —
+  NOTE: "Aya Lian" already exists as a placed CSV body at 1382 93 2060, currently the
+  optional Sudowoodo exhibition duelist — recast that body); **gym-2 adopts the Takehara
+  weakening pattern** (showrunner 2026-07-06: wardens optional, warden-defeat count drains
+  the ladder — 1 → jr _weak, 2 → apprentice _weak, 4 → leader _weak via hz warden-count
+  band tags; Wei's blessing stays the separate pilgrimage reward; seals never hard-gate);
+  **Tau + wheat sellers deal in a custom scrip item** (renamed paper/book — sell it, accept
+  ONLY it as currency); granary wheat-canon leak; Jun's master-plan line; survey wagon
+  unmark; minutes approach_warn; `sq_hz_analyst` displayName rename (sync team file).
+- [ ] 🧱 **Act-2/3 trainer casting** — 19 referenced ids with no team file (board_×4,
+  villain_admin/_2/_commander, villain_boss, villain_final_boss, villain_grunt_3..11) now
+  fail loudly as `No such trainer registered 'rctmod:<id>'`; 10 empty `{}` teams (5 shrine
+  leaders, royal_champion, royal_elite_1-4) register but refuse at battle start.
+- [ ] 🔍 **Existing-world repair** (any world created ≤ alpha.17): kill + latch-reset the six
+  placement bodies (tower ×4, Old Deng, Granny Yun — commands in the runbook), then re-tag
+  Deng/Yun (`deng_old`/`deng_granny`/`deng_camp`) or the homecoming walk no-ops.
+
 ### Phase 0.5 — Round 9–10 follow-ups (2026-07-04, v0.4.3-alpha.8)
 
 **WORKFLOW CHANGE 🧱→💻:** NPCs no longer require in-world placement + UUID recording —
@@ -47,7 +105,10 @@ already live (10 companions + 20 authored-coordinate NPCs incl. the roof agents,
 Harvest Road villains, Deng camp, garden stations).
 
 - [ ] 🧱 **Coordinates needed** (compile warns until authored; give Claude coords or
-  place bodies): **hua_zhan_leader (gym 2 has NO leader body!)**, hz_greenhouse_docent,
+  place bodies — since 0.5.0 placing these ALSO lights their quest-tracker waypoints
+  automatically on recompile, incl. the 8 currently-beamless stages: Ume/census, Tetsu/
+  night pay, checkpoint tent/memo, the four board members): **hua_zhan_leader (gym 2 has
+  NO leader body!)**, hz_greenhouse_docent,
   apiarist_sumi, courier_mio, field_researcher_ume, forewoman_tetsu, company_surveyor,
   doc_ledger_barrel, doc_portrait_crate, notice_post_1–3, sq_kyc_agent,
   villain_grunt_2 + villain_grunt_field_agent (checkpoint tent pair).
@@ -264,6 +325,14 @@ Map-authoring aids. Strip each once its authoring is baked in.
 ---
 
 ## 3. FUTURE / SHOWRUNNER DESIGN IDEAS (not on the 1.0 critical path)
+
+- 🧱💻 **Safari Zone** (showrunner 2026-07-07, "eventually"): a gated zone with its own
+  catch rules — likely candidates: entry fee + limited safari balls (CobbleDollars sink),
+  special/boosted spawns inside a zone polygon (zone system + letmedespawn interplay),
+  no battle damage (catch-only, safari mechanics), timer or ball-count exit. Needs a map
+  location + design session; the zone/SafeZone machinery and the pay-probe give most of
+  the mechanical primitives. Note Nuzlocke interaction: safari catches vs the
+  first-encounter-per-area rule needs a ruling.
 
 - [ ] 🧱💻 **Legends-style legendary boss battles** (showrunner idea 2026-07-05 — I'll
   scope this later). Pokémon Legends: Arceus "noble/frenzied" flavour: an aggressive

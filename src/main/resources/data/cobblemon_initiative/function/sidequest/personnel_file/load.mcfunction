@@ -5,3 +5,8 @@
 # per-board notice tags, so Lucian stage 2 turn-in (gate ci_notices >= 3) only ever opens
 # on a fully unseen pull. Idempotent: objectives add no-ops when already present.
 scoreboard objectives add ci_notices dummy
+# Lucian's ledger scores (recomputed from tags every tick by papers_tick):
+# ci_papers_filed = lifetime filings (drives her band-tag dialog entries);
+# ci_papers_held  = unfiled Company papers in hand (quest/render FILING DAY aggregate).
+scoreboard objectives add ci_papers_filed dummy
+scoreboard objectives add ci_papers_held dummy

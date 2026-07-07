@@ -18,6 +18,9 @@ execute unless score #amb_wooloo ci_ambient matches 0.. run scoreboard players s
 execute unless score #amb_greenspace_plaque_square ci_ambient matches 0.. run scoreboard players set #amb_greenspace_plaque_square ci_ambient 0
 execute unless score #amb_hz_analyst ci_ambient matches 0.. run scoreboard players set #amb_hz_analyst ci_ambient 0
 execute unless score #amb_hz_receptionist ci_ambient matches 0.. run scoreboard players set #amb_hz_receptionist ci_ambient 0
+execute unless score #amb_hz_trader_apricorns ci_ambient matches 0.. run scoreboard players set #amb_hz_trader_apricorns ci_ambient 0
+execute unless score #amb_hz_trader_berries ci_ambient matches 0.. run scoreboard players set #amb_hz_trader_berries ci_ambient 0
+execute unless score #amb_hz_trader_mints ci_ambient matches 0.. run scoreboard players set #amb_hz_trader_mints ci_ambient 0
 execute unless score #amb_rezoning_notice_board ci_ambient matches 0.. run scoreboard players set #amb_rezoning_notice_board ci_ambient 0
 execute unless score #amb_granny_yun ci_ambient matches 0.. run scoreboard players set #amb_granny_yun ci_ambient 0
 execute unless score #amb_old_deng ci_ambient matches 0.. run scoreboard players set #amb_old_deng ci_ambient 0
@@ -28,11 +31,13 @@ execute unless score #amb_mrmime ci_ambient matches 0.. run scoreboard players s
 execute unless score #amb_sentret ci_ambient matches 0.. run scoreboard players set #amb_sentret ci_ambient 0
 execute unless score #amb_company_courier ci_ambient matches 0.. run scoreboard players set #amb_company_courier ci_ambient 0
 execute unless score #amb_sango_company_liaison ci_ambient matches 0.. run scoreboard players set #amb_sango_company_liaison ci_ambient 0
+execute unless score #amb_tr_peddler_tadashi ci_ambient matches 0.. run scoreboard players set #amb_tr_peddler_tadashi ci_ambient 0
 execute unless score #amb_agent_yield_lead ci_ambient matches 0.. run scoreboard players set #amb_agent_yield_lead ci_ambient 0
 execute unless score #amb_agent_yield_second ci_ambient matches 0.. run scoreboard players set #amb_agent_yield_second ci_ambient 0
 execute unless score #amb_chansey_lila ci_ambient matches 0.. run scoreboard players set #amb_chansey_lila ci_ambient 0
 execute unless score #amb_combee ci_ambient matches 0.. run scoreboard players set #amb_combee ci_ambient 0
 execute unless score #amb_psyduck ci_ambient matches 0.. run scoreboard players set #amb_psyduck ci_ambient 0
+execute unless score #amb_tm_counter_mika ci_ambient matches 0.. run scoreboard players set #amb_tm_counter_mika ci_ambient 0
 execute unless score #amb_survey_wagon ci_ambient matches 0.. run scoreboard players set #amb_survey_wagon ci_ambient 0
 execute unless score #amb_villain_route_escort ci_ambient matches 0.. run scoreboard players set #amb_villain_route_escort ci_ambient 0
 execute unless score #amb_villain_route_surveyor ci_ambient matches 0.. run scoreboard players set #amb_villain_route_surveyor ci_ambient 0

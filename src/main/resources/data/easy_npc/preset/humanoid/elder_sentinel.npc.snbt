@@ -17,85 +17,95 @@
                     {
                         Type: "COMMAND",
                         ExecAsUser: 1b,
-                        Conditions: [
-                            {
-                                Type: "PLAYER_TAG",
-                                Operation: "EQUALS",
-                                Name: "census_refused"
-                            },
-                            {
-                                Type: "PLAYER_TAG",
-                                Operation: "EQUALS",
-                                Name: "no_sentinel_kit"
-                            }
-                        ],
+                        ConditionDataSet: {
+                            ConditionDataSet: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "census_refused"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_sentinel_kit"
+                                }
+                            ]
+                        },
                         Cmd: "loot give @s loot cobblemon_initiative:npc_gift/training_major"
                     },
                     {
                         Type: "COMMAND",
                         ExecAsUser: 1b,
-                        Conditions: [
-                            {
-                                Type: "PLAYER_TAG",
-                                Operation: "EQUALS",
-                                Name: "census_refused"
-                            },
-                            {
-                                Type: "PLAYER_TAG",
-                                Operation: "EQUALS",
-                                Name: "no_sentinel_kit"
-                            }
-                        ],
+                        ConditionDataSet: {
+                            ConditionDataSet: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "census_refused"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_sentinel_kit"
+                                }
+                            ]
+                        },
                         Cmd: "give @s cobblemon:potion 2"
                     },
                     {
                         Type: "COMMAND",
                         ExecAsUser: 1b,
-                        Conditions: [
-                            {
-                                Type: "PLAYER_TAG",
-                                Operation: "EQUALS",
-                                Name: "census_refused"
-                            },
-                            {
-                                Type: "PLAYER_TAG",
-                                Operation: "EQUALS",
-                                Name: "no_sentinel_kit"
-                            }
-                        ],
+                        ConditionDataSet: {
+                            ConditionDataSet: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "census_refused"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_sentinel_kit"
+                                }
+                            ]
+                        },
                         Cmd: "give @s cobblemon:antidote 1"
                     },
                     {
                         Type: "COMMAND",
-                        Conditions: [
-                            {
-                                Type: "PLAYER_TAG",
-                                Operation: "EQUALS",
-                                Name: "census_refused"
-                            },
-                            {
-                                Type: "PLAYER_TAG",
-                                Operation: "EQUALS",
-                                Name: "no_sentinel_kit"
-                            }
-                        ],
+                        ConditionDataSet: {
+                            ConditionDataSet: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "census_refused"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_sentinel_kit"
+                                }
+                            ]
+                        },
                         Cmd: "tellraw @initiator [{\"text\":\"Elder Sentinel presses a worn field kit into your hands. The old town does not sign.\",\"color\":\"gray\"}]"
                     },
                     {
                         Type: "COMMAND",
                         ExecAsUser: 1b,
-                        Conditions: [
-                            {
-                                Type: "PLAYER_TAG",
-                                Operation: "EQUALS",
-                                Name: "census_refused"
-                            },
-                            {
-                                Type: "PLAYER_TAG",
-                                Operation: "EQUALS",
-                                Name: "no_sentinel_kit"
-                            }
-                        ],
+                        ConditionDataSet: {
+                            ConditionDataSet: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "census_refused"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_sentinel_kit"
+                                }
+                            ]
+                        },
                         Cmd: "tag @s add sentinel_kit"
                     },
                     {
@@ -119,6 +129,108 @@
         DialogData: {
             Type: "CUSTOM",
             DialogDataSet: [
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "sold_docs"
+                        }
+                    ],
+                    Priority: 30,
+                    Buttons: [
+                        {
+                            Name: "Who built that ledger?",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "the_founder_page"
+                                }
+                            ],
+                            Label: "founder_button"
+                        },
+                        {
+                            Name: "And The Company today?",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "the_company_page"
+                                }
+                            ],
+                            Label: "company_button"
+                        },
+                        {
+                            Name: "Say nothing",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Sit somewhere else. The courier bragged about his purchase before he left town — two founding papers, sold at the cart, cash counted in the road. This town held those pages sixty years against better offers than yours."
+                        },
+                        {
+                            Text: "I will still answer questions. The old do not get to choose their students. But do not expect the chair by the fire, and do not expect me to forget which pocket the money went into."
+                        }
+                    ],
+                    Name: "Elder Sentinel — the sale",
+                    Label: "cold_shoulder"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "fields_liberated_gte_1"
+                        }
+                    ],
+                    Priority: 25,
+                    Buttons: [
+                        {
+                            Name: "Who built that ledger?",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "the_founder_page"
+                                }
+                            ],
+                            Label: "founder_button"
+                        },
+                        {
+                            Name: "And The Company today?",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "the_company_page"
+                                }
+                            ],
+                            Label: "company_button"
+                        },
+                        {
+                            Name: "Thank you, Elder",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Word walks faster than wagons. A Company field came off the ledger this week — fence down, family back, paperwork suddenly very quiet about it. First time in years the grain talk in this square sounded like weather instead of debt."
+                        },
+                        {
+                            Text: "Whoever is doing that out west is spending their luck like it grows back. Sit a moment anyway. The old like to look at people who spend it that way."
+                        }
+                    ],
+                    Name: "Elder Sentinel — word from the west",
+                    Label: "fields_echo"
+                },
                 {
                     Priority: 10,
                     Buttons: [

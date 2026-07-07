@@ -566,6 +566,26 @@ public class InitiativeConfigScreen {
 
     lootChests.addEntry(
       entryBuilder
+        .startIntSlider(
+          Component.literal("Empty Chest Chance"),
+          (int) Math.round(lootChestConfig.getEmptyChestChance() * 100),
+          0,
+          100
+        )
+        .setDefaultValue((int) Math.round(lootChestDefaults.getEmptyChestChance() * 100))
+        .setTextGetter(v -> Component.literal(v + "%"))
+        .setTooltip(
+          Component.literal(
+            "Chance an unplaced chest rolls EMPTY on first open (still claimed, never "
+            + "re-rolls). High by default — finding a stocked cache should feel like luck."
+          )
+        )
+        .setSaveConsumer(v -> lootChestConfig.setEmptyChestChance(v / 100.0))
+        .build()
+    );
+
+    lootChests.addEntry(
+      entryBuilder
         .startBooleanToggle(
           Component.literal("Announce Supply Caches"),
           lootChestConfig.isAnnounceUnplacedChests()

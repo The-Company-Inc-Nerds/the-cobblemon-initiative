@@ -78,6 +78,9 @@
                         },
                         {
                             Text: "The Drive moves west when you do. The Takehara branch handles flagged profiles, clerical errors, and other weather."
+                        },
+                        {
+                            Text: "If you want verification with a smile, my counterpart Ume runs the field intake out on Blossom Path — she pays for verified captures. Her ledger is cheerier than mine. Her payees resolve less."
                         }
                     ],
                     Name: "Census Taker — file forwarded",
@@ -167,15 +170,6 @@
                                 }
                             ],
                             Label: "continue_button"
-                        },
-                        {
-                            Name: "Goodbye",
-                            Actions: [
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "goodbye_button"
                         }
                     ],
                     Texts: [
@@ -198,15 +192,6 @@
                                 }
                             ],
                             Label: "continue_button"
-                        },
-                        {
-                            Name: "Goodbye",
-                            Actions: [
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "goodbye_button"
                         }
                     ],
                     Texts: [
@@ -231,7 +216,7 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "function cobblemon_initiative:economy/payout {amount:500}"
+                                    Cmd: "function cobblemon_initiative:economy/payout_company {amount:500}"
                                 },
                                 {
                                     Type: "COMMAND",
@@ -247,6 +232,14 @@
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
                                     Cmd: "tag @s add census_processed"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "title @initiator subtitle [{\"text\":\"Section 4 applies in perpetuity\",\"color\":\"gray\"}]"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "title @initiator title [{\"text\":\"WAIVER COUNTERSIGNED\",\"color\":\"gold\"}]"
                                 },
                                 {
                                     Type: "COMMAND",
@@ -274,6 +267,14 @@
                                 },
                                 {
                                     Type: "COMMAND",
+                                    Cmd: "title @initiator subtitle [{\"text\":\"The desk notes your handwriting anyway\",\"color\":\"gray\"}]"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "title @initiator title [{\"text\":\"DECLINED ON RECORD\",\"color\":\"dark_red\"}]"
+                                },
+                                {
+                                    Type: "COMMAND",
                                     Cmd: "title @initiator actionbar [{\"text\":\"Refused. Your file is forwarded anyway. The Drive appreciates your feedback.\"}]"
                                 },
                                 {
@@ -282,15 +283,6 @@
                                 }
                             ],
                             Label: "refuse_button"
-                        },
-                        {
-                            Name: "Goodbye",
-                            Actions: [
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "goodbye_button"
                         }
                     ],
                     Texts: [

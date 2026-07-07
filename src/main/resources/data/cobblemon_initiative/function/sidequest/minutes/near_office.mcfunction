@@ -7,7 +7,7 @@
 
 # Seen by any office staff: reset the countdown and flash the warning.
 execute if entity @e[tag=hz_office_staff,scores={can_see_player=1}] run scoreboard players reset @s ci_loiter_hz
-execute if entity @e[tag=hz_office_staff,scores={can_see_player=1}] run title @s actionbar [{"text":"EYES ON YOU","color":"red","bold":true}]
+execute if entity @e[tag=hz_office_staff,scores={can_see_player=1}] run title @s actionbar [{"text":"EYES ON YOU","color":"red","bold":true},{"text":" — the reading starts over","color":"gray"}]
 
 # Unseen: count up.
 execute unless entity @e[tag=hz_office_staff,scores={can_see_player=1}] run scoreboard players add @s ci_loiter_hz 1

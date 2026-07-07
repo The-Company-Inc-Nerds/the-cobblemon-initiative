@@ -74,37 +74,43 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "defeated_royal_elite_2"
-                                        }
-                                    ],
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_royal_elite_2"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "say My rocks remember you. Pass through — Luna is expecting the same trainer who cracked them."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_royal_elite_2"
-                                        }
-                                    ],
-                                    Cmd: "tbcs attach royal_elite_2 @s"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_royal_elite_2"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:royal_elite_2 @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_royal_elite_2"
-                                        }
-                                    ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs royal_elite_2 onwin {1: ['cobbledollars give @1 6500', 'tag @1 add defeated_royal_elite_2', '@2 say Stone yields to the steady hand. You did not break against me. Luna waits in the cold hall.'], 2: ['@1 say You hit hard, but the mountain hits back. Come again when you can outlast it.']}"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_royal_elite_2"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:royal_elite_2 onwin {1: ['cobbledollars give @1 6500', 'tag @1 add defeated_royal_elite_2', '@2 say Stone yields to the steady hand. You did not break against me. Luna waits in the cold hall.'], 2: ['@1 say You hit hard, but the mountain hits back. Come again when you can outlast it.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

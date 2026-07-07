@@ -3,5 +3,5 @@
 # Fired by ShopTierManager after the matching CobbleDollars shop tier swap
 # (or manually: /function cobblemon_initiative:granary/apply_badge_3).
 
-# Granary Keeper (skipped when not loaded)
+# Feng (skipped when not loaded)
 execute as e9c7b916-9b03-417b-808a-10cc4439148b at @s run easy_npc preset import data easy_npc:preset/humanoid/granary_keeper_badge_3.npc.snbt ~ ~ ~ e9c7b916-9b03-417b-808a-10cc4439148b

@@ -74,37 +74,43 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "defeated_takehara_trainer_1"
-                                        }
-                                    ],
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_takehara_trainer_1"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "say You already cleared floor one. Yuki is across the way — mind the silk, she counts every strand."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_takehara_trainer_1"
-                                        }
-                                    ],
-                                    Cmd: "tbcs attach takehara_trainer_1 @s"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_takehara_trainer_1"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:takehara_trainer_1 @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_takehara_trainer_1"
-                                        }
-                                    ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs takehara_trainer_1 onwin {1: ['tag @1 add defeated_takehara_trainer_1', '@2 say Straight through the string! Okay. Floor one is yours, challenger.'], 2: ['@1 say The front door holds! Do not feel bad — Caterpie trains harder than anyone I know.']}"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_takehara_trainer_1"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:takehara_trainer_1 onwin {1: ['tag @1 add defeated_takehara_trainer_1', '@2 say Straight through the string! Okay. Floor one is yours, challenger.'], 2: ['@1 say The front door holds! Do not feel bad — Caterpie trains harder than anyone I know.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -264,9 +270,9 @@
             DisableLayers: 0b,
             Name: "",
             Timestamp: 0L,
-            Type: "DEFAULT",
+            Type: "CUSTOM",
             URL: "",
-            UUID: [I; 0, 0, 0, 0]
+            UUID: [I; 1793725881, -162311262, -1957906874, 1270057839]
         },
         SoundData: {
             SoundDataSet: [

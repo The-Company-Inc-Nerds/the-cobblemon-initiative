@@ -25,6 +25,9 @@ execute as @a unless score @s memory_fragment matches 4.. run tag @s remove badg
 execute as @a if score @s memory_fragment matches 7.. run tag @s add badges_gte_7
 execute as @a unless score @s memory_fragment matches 7.. run tag @s remove badges_gte_7
 
+execute as @a if score @s memory_fragment matches ..2 run tag @s add badges_lt_3
+execute as @a unless score @s memory_fragment matches ..2 run tag @s remove badges_lt_3
+
 execute as @a if score @s cd_instability matches 16.. run tag @s add cd_instability_gte_16
 execute as @a unless score @s cd_instability matches 16.. run tag @s remove cd_instability_gte_16
 
@@ -40,8 +43,17 @@ execute as @a unless score @s cd_instability matches 8.. run tag @s remove cd_in
 execute as @a if score @s ci_notices matches 3.. run tag @s add ci_notices_gte_3
 execute as @a unless score @s ci_notices matches 3.. run tag @s remove ci_notices_gte_3
 
+execute as @a if score @s ci_papers_filed matches 3.. run tag @s add ci_papers_filed_gte_3
+execute as @a unless score @s ci_papers_filed matches 3.. run tag @s remove ci_papers_filed_gte_3
+
+execute as @a if score @s ci_papers_filed matches 6.. run tag @s add ci_papers_filed_gte_6
+execute as @a unless score @s ci_papers_filed matches 6.. run tag @s remove ci_papers_filed_gte_6
+
 execute as @a if score @s dex_caught matches 15.. run tag @s add dex_gte_15
 execute as @a unless score @s dex_caught matches 15.. run tag @s remove dex_gte_15
+
+execute as @a if score @s dex_caught matches 2.. run tag @s add dex_gte_2
+execute as @a unless score @s dex_caught matches 2.. run tag @s remove dex_gte_2
 
 execute as @a if score @s dex_caught matches 30.. run tag @s add dex_gte_30
 execute as @a unless score @s dex_caught matches 30.. run tag @s remove dex_gte_30
@@ -54,6 +66,24 @@ execute as @a unless score @s fields_liberated matches 2.. run tag @s remove fie
 
 execute as @a if score @s fields_liberated matches 4.. run tag @s add fields_liberated_gte_4
 execute as @a unless score @s fields_liberated matches 4.. run tag @s remove fields_liberated_gte_4
+
+execute as @a if score @s hz_market matches 1 run tag @s add hz_market_eq_1
+execute as @a unless score @s hz_market matches 1 run tag @s remove hz_market_eq_1
+
+execute as @a if score @s hz_market matches 2 run tag @s add hz_market_eq_2
+execute as @a unless score @s hz_market matches 2 run tag @s remove hz_market_eq_2
+
+execute as @a if score @s memory_fragment matches ..2 run tag @s add memory_fragment_lt_3
+execute as @a unless score @s memory_fragment matches ..2 run tag @s remove memory_fragment_lt_3
+
+execute as @a if score @s takehara_tower matches 1.. run tag @s add takehara_tower_gte_1
+execute as @a unless score @s takehara_tower matches 1.. run tag @s remove takehara_tower_gte_1
+
+execute as @a if score @s takehara_tower matches 2.. run tag @s add takehara_tower_gte_2
+execute as @a unless score @s takehara_tower matches 2.. run tag @s remove takehara_tower_gte_2
+
+execute as @a if score @s takehara_tower matches 4.. run tag @s add takehara_tower_gte_4
+execute as @a unless score @s takehara_tower matches 4.. run tag @s remove takehara_tower_gte_4
 
 # inverse tags (no_<X> == player does NOT have X)
 tag @a[tag=!assist_coal_in] add no_assist_coal_in
@@ -86,6 +116,36 @@ tag @a[tag=!clinic_stocked] add no_clinic_stocked
 tag @a[tag=clinic_stocked] remove no_clinic_stocked
 tag @a[tag=!company_overthrown] add no_company_overthrown
 tag @a[tag=company_overthrown] remove no_company_overthrown
+tag @a[tag=!declined_sq_canvasser] add no_declined_sq_canvasser
+tag @a[tag=declined_sq_canvasser] remove no_declined_sq_canvasser
+tag @a[tag=!declined_sq_genji_wager] add no_declined_sq_genji_wager
+tag @a[tag=declined_sq_genji_wager] remove no_declined_sq_genji_wager
+tag @a[tag=!declined_sq_headcount_wager] add no_declined_sq_headcount_wager
+tag @a[tag=declined_sq_headcount_wager] remove no_declined_sq_headcount_wager
+tag @a[tag=!declined_sq_hz_analyst] add no_declined_sq_hz_analyst
+tag @a[tag=declined_sq_hz_analyst] remove no_declined_sq_hz_analyst
+tag @a[tag=!declined_sq_kyc_agent] add no_declined_sq_kyc_agent
+tag @a[tag=declined_sq_kyc_agent] remove no_declined_sq_kyc_agent
+tag @a[tag=!declined_sq_regular_4] add no_declined_sq_regular_4
+tag @a[tag=declined_sq_regular_4] remove no_declined_sq_regular_4
+tag @a[tag=!declined_sq_regular_meadow] add no_declined_sq_regular_meadow
+tag @a[tag=declined_sq_regular_meadow] remove no_declined_sq_regular_meadow
+tag @a[tag=!declined_sq_regular_spotter] add no_declined_sq_regular_spotter
+tag @a[tag=declined_sq_regular_spotter] remove no_declined_sq_regular_spotter
+tag @a[tag=!declined_sq_regular_typetip] add no_declined_sq_regular_typetip
+tag @a[tag=declined_sq_regular_typetip] remove no_declined_sq_regular_typetip
+tag @a[tag=!declined_sq_rt2_haoran] add no_declined_sq_rt2_haoran
+tag @a[tag=declined_sq_rt2_haoran] remove no_declined_sq_rt2_haoran
+tag @a[tag=!declined_sq_rt2_kite] add no_declined_sq_rt2_kite
+tag @a[tag=declined_sq_rt2_kite] remove no_declined_sq_rt2_kite
+tag @a[tag=!declined_sq_rt2_scarecrow] add no_declined_sq_rt2_scarecrow
+tag @a[tag=declined_sq_rt2_scarecrow] remove no_declined_sq_rt2_scarecrow
+tag @a[tag=!declined_sq_rt2_wager] add no_declined_sq_rt2_wager
+tag @a[tag=declined_sq_rt2_wager] remove no_declined_sq_rt2_wager
+tag @a[tag=!declined_villain_yield_analyst] add no_declined_villain_yield_analyst
+tag @a[tag=declined_villain_yield_analyst] remove no_declined_villain_yield_analyst
+tag @a[tag=!deed_read_lucian] add no_deed_read_lucian
+tag @a[tag=deed_read_lucian] remove no_deed_read_lucian
 tag @a[tag=!defeated_board_lauren] add no_defeated_board_lauren
 tag @a[tag=defeated_board_lauren] remove no_defeated_board_lauren
 tag @a[tag=!defeated_board_madeline] add no_defeated_board_madeline
@@ -256,18 +316,32 @@ tag @a[tag=!defeated_sq_sting_agent] add no_defeated_sq_sting_agent
 tag @a[tag=defeated_sq_sting_agent] remove no_defeated_sq_sting_agent
 tag @a[tag=!defeated_takehara_apprentice] add no_defeated_takehara_apprentice
 tag @a[tag=defeated_takehara_apprentice] remove no_defeated_takehara_apprentice
+tag @a[tag=!defeated_takehara_apprentice_weak] add no_defeated_takehara_apprentice_weak
+tag @a[tag=defeated_takehara_apprentice_weak] remove no_defeated_takehara_apprentice_weak
 tag @a[tag=!defeated_takehara_jr_apprentice] add no_defeated_takehara_jr_apprentice
 tag @a[tag=defeated_takehara_jr_apprentice] remove no_defeated_takehara_jr_apprentice
+tag @a[tag=!defeated_takehara_jr_apprentice_weak] add no_defeated_takehara_jr_apprentice_weak
+tag @a[tag=defeated_takehara_jr_apprentice_weak] remove no_defeated_takehara_jr_apprentice_weak
 tag @a[tag=!defeated_takehara_leader] add no_defeated_takehara_leader
 tag @a[tag=defeated_takehara_leader] remove no_defeated_takehara_leader
+tag @a[tag=!defeated_takehara_leader_weak] add no_defeated_takehara_leader_weak
+tag @a[tag=defeated_takehara_leader_weak] remove no_defeated_takehara_leader_weak
 tag @a[tag=!defeated_takehara_trainer_1] add no_defeated_takehara_trainer_1
 tag @a[tag=defeated_takehara_trainer_1] remove no_defeated_takehara_trainer_1
+tag @a[tag=!defeated_takehara_trainer_1_b] add no_defeated_takehara_trainer_1_b
+tag @a[tag=defeated_takehara_trainer_1_b] remove no_defeated_takehara_trainer_1_b
 tag @a[tag=!defeated_takehara_trainer_2] add no_defeated_takehara_trainer_2
 tag @a[tag=defeated_takehara_trainer_2] remove no_defeated_takehara_trainer_2
+tag @a[tag=!defeated_takehara_trainer_2_b] add no_defeated_takehara_trainer_2_b
+tag @a[tag=defeated_takehara_trainer_2_b] remove no_defeated_takehara_trainer_2_b
 tag @a[tag=!defeated_takehara_trainer_3] add no_defeated_takehara_trainer_3
 tag @a[tag=defeated_takehara_trainer_3] remove no_defeated_takehara_trainer_3
+tag @a[tag=!defeated_takehara_trainer_3_b] add no_defeated_takehara_trainer_3_b
+tag @a[tag=defeated_takehara_trainer_3_b] remove no_defeated_takehara_trainer_3_b
 tag @a[tag=!defeated_takehara_trainer_4] add no_defeated_takehara_trainer_4
 tag @a[tag=defeated_takehara_trainer_4] remove no_defeated_takehara_trainer_4
+tag @a[tag=!defeated_takehara_trainer_4_b] add no_defeated_takehara_trainer_4_b
+tag @a[tag=defeated_takehara_trainer_4_b] remove no_defeated_takehara_trainer_4_b
 tag @a[tag=!defeated_villain_admin] add no_defeated_villain_admin
 tag @a[tag=defeated_villain_admin] remove no_defeated_villain_admin
 tag @a[tag=!defeated_villain_admin_2] add no_defeated_villain_admin_2
@@ -316,6 +390,8 @@ tag @a[tag=!delivered_2] add no_delivered_2
 tag @a[tag=delivered_2] remove no_delivered_2
 tag @a[tag=!delivered_3] add no_delivered_3
 tag @a[tag=delivered_3] remove no_delivered_3
+tag @a[tag=!dept_of_two_done] add no_dept_of_two_done
+tag @a[tag=dept_of_two_done] remove no_dept_of_two_done
 tag @a[tag=!doc_ledger] add no_doc_ledger
 tag @a[tag=doc_ledger] remove no_doc_ledger
 tag @a[tag=!doc_portrait] add no_doc_portrait
@@ -330,6 +406,8 @@ tag @a[tag=!errand3_done] add no_errand3_done
 tag @a[tag=errand3_done] remove no_errand3_done
 tag @a[tag=!farm_1_free] add no_farm_1_free
 tag @a[tag=farm_1_free] remove no_farm_1_free
+tag @a[tag=!field_memo_filed] add no_field_memo_filed
+tag @a[tag=field_memo_filed] remove no_field_memo_filed
 tag @a[tag=!file_opened] add no_file_opened
 tag @a[tag=file_opened] remove no_file_opened
 tag @a[tag=!file_refiled] add no_file_refiled
@@ -370,6 +448,8 @@ tag @a[tag=!hz_survey_paid] add no_hz_survey_paid
 tag @a[tag=hz_survey_paid] remove no_hz_survey_paid
 tag @a[tag=!hz_tour_stamped] add no_hz_tour_stamped
 tag @a[tag=hz_tour_stamped] remove no_hz_tour_stamped
+tag @a[tag=!id_read_lucian] add no_id_read_lucian
+tag @a[tag=id_read_lucian] remove no_id_read_lucian
 tag @a[tag=!invit_entered] add no_invit_entered
 tag @a[tag=invit_entered] remove no_invit_entered
 tag @a[tag=!invit_podium_done] add no_invit_podium_done
@@ -406,8 +486,6 @@ tag @a[tag=!paid_checkpoint_fee] add no_paid_checkpoint_fee
 tag @a[tag=paid_checkpoint_fee] remove no_paid_checkpoint_fee
 tag @a[tag=!paid_handling_fee] add no_paid_handling_fee
 tag @a[tag=paid_handling_fee] remove no_paid_handling_fee
-tag @a[tag=!paid_survey_decline] add no_paid_survey_decline
-tag @a[tag=paid_survey_decline] remove no_paid_survey_decline
 tag @a[tag=!pilgrimage_done] add no_pilgrimage_done
 tag @a[tag=pilgrimage_done] remove no_pilgrimage_done
 tag @a[tag=!quest_assist_collect_done] add no_quest_assist_collect_done
@@ -416,6 +494,8 @@ tag @a[tag=!quest_assist_mine_done] add no_quest_assist_mine_done
 tag @a[tag=quest_assist_mine_done] remove no_quest_assist_mine_done
 tag @a[tag=!race_daily_claimed] add no_race_daily_claimed
 tag @a[tag=race_daily_claimed] remove no_race_daily_claimed
+tag @a[tag=!race_won] add no_race_won
+tag @a[tag=race_won] remove no_race_won
 tag @a[tag=!royal_league_champion] add no_royal_league_champion
 tag @a[tag=royal_league_champion] remove no_royal_league_champion
 tag @a[tag=!scrub_report_filed] add no_scrub_report_filed
@@ -488,6 +568,10 @@ tag @a[tag=!traded_sefu] add no_traded_sefu
 tag @a[tag=traded_sefu] remove no_traded_sefu
 tag @a[tag=!transition_paid] add no_transition_paid
 tag @a[tag=transition_paid] remove no_transition_paid
+tag @a[tag=!verification_bonus_paid] add no_verification_bonus_paid
+tag @a[tag=verification_bonus_paid] remove no_verification_bonus_paid
+tag @a[tag=!wheat_named] add no_wheat_named
+tag @a[tag=wheat_named] remove no_wheat_named
 tag @a[tag=!work_all_done] add no_work_all_done
 tag @a[tag=work_all_done] remove no_work_all_done
 tag @a[tag=!work_fetch_done] add no_work_fetch_done

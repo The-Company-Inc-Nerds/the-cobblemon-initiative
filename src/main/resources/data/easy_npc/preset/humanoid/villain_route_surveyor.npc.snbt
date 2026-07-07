@@ -50,52 +50,49 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "defeated_villain_route_surveyor"
-                                        }
-                                    ],
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_villain_route_surveyor"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "say The assessment is over. The wagon is not my problem anymore."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_villain_route_surveyor"
-                                        }
-                                    ],
-                                    Cmd: "tbcs attach villain_route_surveyor @s"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_route_surveyor"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:villain_route_surveyor @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_villain_route_surveyor"
-                                        }
-                                    ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_route_surveyor onwin {1: ['cobbledollars give @1 260', 'tag @1 add defeated_villain_route_surveyor', '@2 say Assessment suspended. The corridor is downgraded to scenic.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 100', '@1 say Objection processed and declined. Transit fee waived out of courtesy.']}"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_route_surveyor"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:villain_route_surveyor onwin {1: ['cobbledollars give @1 260', 'tag @1 add defeated_villain_route_surveyor', '@2 say Assessment suspended. The corridor is downgraded to scenic.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 100', '@1 say Objection processed and declined. Transit fee waived out of courtesy.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
                             Label: "yes_button"
-                        },
-                        {
-                            Name: "Goodbye",
-                            Actions: [
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "goodbye_button"
                         }
                     ],
                     Texts: [
@@ -124,52 +121,49 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "defeated_villain_route_surveyor"
-                                        }
-                                    ],
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_villain_route_surveyor"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "say The assessment is over. The wagon is not my problem anymore."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_villain_route_surveyor"
-                                        }
-                                    ],
-                                    Cmd: "tbcs attach villain_route_surveyor @s"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_route_surveyor"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:villain_route_surveyor @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_villain_route_surveyor"
-                                        }
-                                    ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_route_surveyor onwin {1: ['cobbledollars give @1 260', 'tag @1 add defeated_villain_route_surveyor', '@2 say Assessment suspended. The corridor is downgraded to scenic.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 100', '@1 say Objection processed and declined. Transit fee waived out of courtesy.']}"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_route_surveyor"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:villain_route_surveyor onwin {1: ['cobbledollars give @1 260', 'tag @1 add defeated_villain_route_surveyor', '@2 say Assessment suspended. The corridor is downgraded to scenic.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 100', '@1 say Objection processed and declined. Transit fee waived out of courtesy.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
                             Label: "yes_button"
-                        },
-                        {
-                            Name: "Goodbye",
-                            Actions: [
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "goodbye_button"
                         }
                     ],
                     Texts: [
@@ -191,37 +185,43 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "defeated_villain_route_surveyor"
-                                        }
-                                    ],
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_villain_route_surveyor"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "say The assessment is over. The wagon is not my problem anymore."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_villain_route_surveyor"
-                                        }
-                                    ],
-                                    Cmd: "tbcs attach villain_route_surveyor @s"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_route_surveyor"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:villain_route_surveyor @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_villain_route_surveyor"
-                                        }
-                                    ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_route_surveyor onwin {1: ['cobbledollars give @1 260', 'tag @1 add defeated_villain_route_surveyor', '@2 say Assessment suspended. The corridor is downgraded to scenic.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 100', '@1 say Objection processed and declined. Transit fee waived out of courtesy.']}"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_route_surveyor"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:villain_route_surveyor onwin {1: ['cobbledollars give @1 260', 'tag @1 add defeated_villain_route_surveyor', '@2 say Assessment suspended. The corridor is downgraded to scenic.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 100', '@1 say Objection processed and declined. Transit fee waived out of courtesy.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -258,52 +258,49 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "defeated_villain_route_surveyor"
-                                        }
-                                    ],
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_villain_route_surveyor"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "say The assessment is over. The wagon is not my problem anymore."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_villain_route_surveyor"
-                                        }
-                                    ],
-                                    Cmd: "tbcs attach villain_route_surveyor @s"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_route_surveyor"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:villain_route_surveyor @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_villain_route_surveyor"
-                                        }
-                                    ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_route_surveyor onwin {1: ['cobbledollars give @1 260', 'tag @1 add defeated_villain_route_surveyor', '@2 say Assessment suspended. The corridor is downgraded to scenic.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 100', '@1 say Objection processed and declined. Transit fee waived out of courtesy.']}"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_route_surveyor"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:villain_route_surveyor onwin {1: ['cobbledollars give @1 260', 'tag @1 add defeated_villain_route_surveyor', '@2 say Assessment suspended. The corridor is downgraded to scenic.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 100', '@1 say Objection processed and declined. Transit fee waived out of courtesy.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
                             Label: "yes_button"
-                        },
-                        {
-                            Name: "Goodbye",
-                            Actions: [
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "goodbye_button"
                         }
                     ],
                     Texts: [

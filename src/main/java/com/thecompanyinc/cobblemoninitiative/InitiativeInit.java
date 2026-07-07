@@ -16,6 +16,7 @@ import com.thecompanyinc.cobblemoninitiative.data.PlayerProgressManager;
 import com.thecompanyinc.cobblemoninitiative.items.ModItems;
 import com.thecompanyinc.cobblemoninitiative.levelcap.LevelCapManager;
 import com.thecompanyinc.cobblemoninitiative.lootchest.LootChestManager;
+import com.thecompanyinc.cobblemoninitiative.questtrack.QuestTrackManager;
 import com.thecompanyinc.cobblemoninitiative.shrine.ShrineChallengeManager;
 import kotlin.Unit;
 import net.fabricmc.api.ModInitializer;
@@ -44,6 +45,7 @@ public class InitiativeInit implements ModInitializer {
   private static LevelCapManager levelCapManager;
   private static ShrineChallengeManager shrineChallengeManager;
   private static LootChestManager lootChestManager;
+  private static QuestTrackManager questTrackManager;
 
   @Override
   public void onInitialize() {
@@ -78,6 +80,9 @@ public class InitiativeInit implements ModInitializer {
 
     lootChestManager = new LootChestManager();
 
+    questTrackManager = new QuestTrackManager();
+    questTrackManager.loadQuests();
+
     // Map Frontiers integration is applied lazily at /cobblemon-initiative install run
     // (see MapFrontiersBridge); no init-time registration is needed.
 
@@ -86,6 +91,12 @@ public class InitiativeInit implements ModInitializer {
     // Server tick — drives parkour timers and ground-gauntlet effects
     ServerTickEvents.END_SERVER_TICK.register(server ->
       shrineChallengeManager.tick(server)
+    );
+
+    // Quest tracking — 5-tick waypoint resolution + sidebar ▶ highlight, and the
+    // 10-tick particle beam fallback when JourneyMap is absent.
+    ServerTickEvents.END_SERVER_TICK.register(server ->
+      questTrackManager.tick(server)
     );
 
     // Unplaced-chest loot: intercept chest opens; track hand-placed chests.
@@ -123,6 +134,7 @@ public class InitiativeInit implements ModInitializer {
       progressManager.loadProgress(server);
       shrineChallengeManager.loadPaths(server);
       lootChestManager.load(server);
+      questTrackManager.load(server);
       // Standalone guarantee: force rctmod's allowOverLeveling + our series into its live
       // config cache on ANY world (bundled map bakes it; fresh/bare worlds get defaults
       // that would re-enable rctmod's clamp and fight our badge ladder). SERVER_STARTED is
@@ -134,17 +146,56 @@ public class InitiativeInit implements ModInitializer {
     // Migrate players saved under the wrong/empty rctmod series (new players are placed by
     // the healed initialSeries; this only fixes pre-existing stat.dat).
     net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents.JOIN.register(
-      (handler, sender, server) ->
-        com.thecompanyinc.cobblemoninitiative.compat.RctmodServerConfig.ensurePlayerSeries(handler.player));
+      (handler, sender, server) -> {
+        com.thecompanyinc.cobblemoninitiative.compat.RctmodServerConfig.ensurePlayerSeries(handler.player);
+        snapFirstJoinToSpawn(handler.player, server);
+      });
 
     ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
       progressManager.saveProgress(server);
       shrineChallengeManager.savePaths();
       lootChestManager.save();
+      questTrackManager.save(server); // also hands the ▶-highlighted lines back
       LOGGER.info("Saved player progress data.");
     });
 
     LOGGER.info("The Cobblemon Initiative initialized successfully!");
+  }
+
+  // FRESH-WORLD SPAWN SNAP (belt-and-braces; mirrors the RctmodServerConfig self-heal):
+  // vanilla 1.21.1 IGNORES SpawnY for a brand-new player — ServerPlayer's constructor
+  // calls adjustSpawnLocation → PlayerRespawnLogic.getOverworldRespawnPos, which scans
+  // DOWN from the MOTION_BLOCKING heightmap top of the spawn column, so on UPM 2 a
+  // first join lands on the spawn house ROOF (y=122 instead of 109). The mrpack build
+  // bakes a sanitized Data.Player tag that places the bundled-map host correctly; this
+  // covers dev/bare-mod worlds the bake never touches. JOIN fires while the client is
+  // still on the terrain-loading screen, so no roof frame ever renders. The
+  // ci_spawn_snapped player tag (persisted in player NBT, same mechanism as
+  // chose_starter) makes this strictly once per player — set unconditionally after the
+  // first check so it can never re-fire on a player who has since walked away.
+  private static void snapFirstJoinToSpawn(ServerPlayer player, net.minecraft.server.MinecraftServer server) {
+    if (!player.addTag("ci_spawn_snapped")) {
+      return; // tag already present — not a first join
+    }
+    net.minecraft.server.level.ServerLevel overworld = server.overworld();
+    if (player.serverLevel() != overworld) {
+      return; // only the overworld initial spawn — never pull a player across dimensions
+    }
+    net.minecraft.core.BlockPos spawn = overworld.getSharedSpawnPos();
+    double x = spawn.getX() + 0.5;
+    double y = spawn.getY();
+    double z = spawn.getZ() + 0.5;
+    if (player.distanceToSqr(x, y, z) <= 4.0) {
+      return; // already where the map intends (e.g. the mrpack-baked host tag placed them)
+    }
+    player.teleportTo(overworld, x, y, z, overworld.getSharedSpawnAngle(), 0.0f);
+    LOGGER.info(
+      "First join: snapped {} to the shared spawn {} {} {} (vanilla heightmap placement ignores SpawnY).",
+      player.getName().getString(),
+      spawn.getX(),
+      spawn.getY(),
+      spawn.getZ()
+    );
   }
 
   private void registerBattleEvents() {
@@ -295,5 +346,9 @@ public class InitiativeInit implements ModInitializer {
 
   public static LootChestManager getLootChestManager() {
     return lootChestManager;
+  }
+
+  public static QuestTrackManager getQuestTrackManager() {
+    return questTrackManager;
   }
 }

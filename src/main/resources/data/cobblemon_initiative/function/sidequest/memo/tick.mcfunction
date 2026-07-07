@@ -10,6 +10,7 @@
 execute as @a[tag=!ckpt_warned] at @s if entity @e[tag=checkpoint_agent,distance=..30] run function cobblemon_initiative:sidequest/memo/approach_warn
 
 # Leaving the tent area resets loiter progress (the 8 s must be continuous).
+execute as @a[scores={ci_loiter=1..}] at @s unless entity @e[tag=checkpoint_agent,distance=..14] run title @s actionbar [{"text":"Out of earshot.","color":"red"},{"text":" The count starts over at the tent.","color":"gray"}]
 execute as @a[scores={ci_loiter=1..}] at @s unless entity @e[tag=checkpoint_agent,distance=..14] run scoreboard players reset @s ci_loiter
 
 # EYES ON YOU / CLEAR meter + loiter countdown for players at the tent who lack the memo.

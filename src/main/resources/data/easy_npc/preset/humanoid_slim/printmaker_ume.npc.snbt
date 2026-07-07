@@ -356,6 +356,55 @@
                     Label: "posting"
                 },
                 {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "no_defeated_sq_mayor_suits"
+                        }
+                    ],
+                    Priority: 12,
+                    Buttons: [
+                        {
+                            Name: "Take the three moth prints",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add sq_posters_started"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "title @initiator actionbar [{\"text\":\"Re-post the moth prints over three notices — without the canvasser seeing you.\",\"color\":\"yellow\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "take_button"
+                        },
+                        {
+                            Name: "Not my fight",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "decline_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Before the glue complaint — a civic observation. Two grey suits took the gym stairs this morning, briefcases matching, smiles matching. The mayor went up to meet them. He has not come down. Somebody with steadier nerves than a printmaker should go see about that."
+                        },
+                        {
+                            Text: "Meanwhile, down here: Verified Trust, Verified Value, glued straight over my moth-wing prints. Bad glue. Three notices — gym entrance, falls overlook, bridge mural. I want my prints back on top, and I want the canvasser to never see it happen."
+                        }
+                    ],
+                    Name: "Mei - the stairs have visitors",
+                    Label: "suits_watch"
+                },
+                {
                     Priority: 10,
                     Buttons: [
                         {

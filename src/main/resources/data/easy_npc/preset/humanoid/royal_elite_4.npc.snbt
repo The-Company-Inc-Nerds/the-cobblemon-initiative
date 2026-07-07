@@ -74,37 +74,43 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "defeated_royal_elite_4"
-                                        }
-                                    ],
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_royal_elite_4"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "say You have already tamed my dragons. The Champion is through the last door — and she asked for you by description."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_royal_elite_4"
-                                        }
-                                    ],
-                                    Cmd: "tbcs attach royal_elite_4 @s"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_royal_elite_4"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:royal_elite_4 @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_royal_elite_4"
-                                        }
-                                    ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs royal_elite_4 onwin {1: ['cobbledollars give @1 9500', 'tag @1 add defeated_royal_elite_4', '@2 say Dragons bow to no one, and yet here you stand. Only the Champion remains. She has been watching, you know.'], 2: ['@1 say A dragon does not forgive a soft grip. Toughen up and try the storm again.']}"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_royal_elite_4"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:royal_elite_4 onwin {1: ['cobbledollars give @1 9500', 'tag @1 add defeated_royal_elite_4', '@2 say Dragons bow to no one, and yet here you stand. Only the Champion remains. She has been watching, you know.'], 2: ['@1 say A dragon does not forgive a soft grip. Toughen up and try the storm again.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

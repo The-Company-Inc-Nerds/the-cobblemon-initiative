@@ -132,6 +132,13 @@ public class LootChestManager {
       if (partner != null) storage.markClaimed(partner);
     }
 
+    // Empty roll (showrunner, 0.5.0-alpha.1): most map chests were cleaned out long
+    // ago. An empty hit stays claimed (the latch above already fired) and the chest
+    // simply opens as the plain empty container it appears to be — no message.
+    if (level.getRandom().nextDouble() < config.getEmptyChestChance()) {
+      return InteractionResult.PASS;
+    }
+
     // Stock the chest in place, then PASS so vanilla opens the now-filled chest.
     stockChest(serverPlayer, state, level, pos, partner);
     return InteractionResult.PASS;

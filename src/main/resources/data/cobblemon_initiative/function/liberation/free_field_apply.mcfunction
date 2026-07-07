@@ -16,3 +16,11 @@ execute store result storage cobblemon_initiative:economy idx int 1 run scoreboa
 cobblemon-initiative shop refresh
 # Player-facing beat (wheat-gold), in the founder-reclaiming-their-own-system register.
 title @s actionbar {"text":"◆ Field liberated — the commodity currency loses ground.","color":"#C9A227"}
+# CEREMONY: the n/6 counter is the villain arc's scoreboard — give each step its screen.
+# Resolve the field's display name (map seeded in liberation/load; safe fallback first,
+# since a missing names.<field> would leave the previous run's name in storage), stage
+# the liberation count, then hand off to the title/fireworks macro.
+data modify storage cobblemon_initiative:liberation display set value "THE PARCEL"
+$data modify storage cobblemon_initiative:liberation display set from storage cobblemon_initiative:liberation names.$(field)
+execute store result storage cobblemon_initiative:liberation n int 1 run scoreboard players get @s fields_liberated
+function cobblemon_initiative:liberation/ceremony with storage cobblemon_initiative:liberation

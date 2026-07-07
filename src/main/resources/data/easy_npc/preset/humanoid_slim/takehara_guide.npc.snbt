@@ -36,6 +36,87 @@
             Type: "CUSTOM",
             DialogDataSet: [
                 {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "defeated_takehara_trainer_1"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "defeated_takehara_trainer_2"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "defeated_takehara_trainer_3"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "defeated_takehara_trainer_4"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "no_verification_bonus_paid"
+                        }
+                    ],
+                    Priority: 30,
+                    Buttons: [
+                        {
+                            Name: "Collect the Verification Bonus",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "loot give @s loot cobblemon_initiative:npc_gift/training_major"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/payout {amount:600}"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "give @s cobblemon:exp_candy_xs 4"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add verification_bonus_paid"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "title @initiator actionbar [{\"text\":\"Verification Bonus paid in full. The brood thanks you for your thoroughness.\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "bonus_button"
+                        },
+                        {
+                            Name: "Later",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "later_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Full ladder verification confirmed. Koji, Yuki, Shin, Taro — four engagements, four filings, zero omissions. Your diligence has been recorded, and recorded diligence is compensated."
+                        }
+                    ],
+                    Name: "Guide — Verification Bonus",
+                    Label: "verification_bonus"
+                },
+                {
                     Priority: 10,
                     Buttons: [
                         {
@@ -47,6 +128,16 @@
                                 }
                             ],
                             Label: "explain_button"
+                        },
+                        {
+                            Name: "Ask about the brood watch",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "house_rules"
+                                }
+                            ],
+                            Label: "brood_button"
                         },
                         {
                             Name: "I know what I am doing",
@@ -105,6 +196,27 @@
                     ],
                     Name: "How Gyms Work",
                     Label: "explain"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Understood",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "back_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "House rule for the Takehara ladder: the brood sees everything. Koji, Yuki, Shin and Taro are sighted sentries — if one of them marks you, that engagement goes on the books and you fight or you buy your way out. Move like prey through the webs and the tall verges and Cicada will hear you were never seen. Clear the whole field like an exterminator and I will hear about it instead — sweeps get compensated. One more thing: every floor you clear takes a little venom out of Cicadas own team. Ghost past all four and you meet the brood mother at full strength. Either way, the town is a safe zone: nothing in here costs your team what the road does."
+                        }
+                    ],
+                    Name: "Guide — house rules of the brood",
+                    Label: "house_rules"
                 }
             ]
         },

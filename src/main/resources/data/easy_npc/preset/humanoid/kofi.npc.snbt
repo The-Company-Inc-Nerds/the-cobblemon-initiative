@@ -33,8 +33,75 @@
         CanPickUpLoot: 0b,
         CustomNameVisible: 1b,
         DialogData: {
-            Type: "BASIC",
+            Type: "STANDARD",
             DialogDataSet: [
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "invit_podium_done"
+                        }
+                    ],
+                    Priority: 30,
+                    Buttons: [
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Hear it, hear it! The Shorefront champion walks among us — three rounds, one podium, envelope counted and collected! Show some respect or show some footwork!"
+                        },
+                        {
+                            Text: "That one there! Dockhand, net-mender, Harbourmaster — all three, one afternoon! The ladder resets weekly and the harbour is already nervous!"
+                        }
+                    ],
+                    Name: "Crier — the champion walks",
+                    Label: "champion"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "defeated_sq_bracket_3"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "no_invit_podium_done"
+                        }
+                    ],
+                    Priority: 20,
+                    Buttons: [
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Hear it, hear it! The bracket is DECIDED — and the champion has not collected! The liaison at the podium holds the envelope and the envelope holds — well, most of it!"
+                        },
+                        {
+                            Text: "A champion without a purse is just a person who won three fights! The podium, friend! The podium!"
+                        }
+                    ],
+                    Name: "Crier — the envelope waits",
+                    Label: "collect"
+                },
                 {
                     Priority: 10,
                     Buttons: [
@@ -50,13 +117,13 @@
                     ],
                     Texts: [
                         {
-                            Text: "Hear it, hear it! The Shorefront Invitational is open on the docks — two rounds, one purse, one very official banner!"
+                            Text: "Hear it, hear it! The Shorefront Invitational is open on the docks — three rounds, one purse, one very official banner!"
                         },
                         {
-                            Text: "Sign up with Harbourmaster Tayo at the harbour office! Entry one hundred fifty, purse counted, sealed, and verified by The Company, Inc!"
+                            Text: "Sign up with Harbourmaster Tayo at the harbour office! Entry one hundred fifty - purse counted, sealed, and verified!"
                         },
                         {
-                            Text: "Net-mender, then the Harbourmaster herself! Beat them both and the podium is yours — the envelope is already waiting!"
+                            Text: "Dockhand, net-mender, then the Harbourmaster herself! Beat all three and the podium is yours — the envelope is already waiting!"
                         }
                     ],
                     Name: "Crier — hear it",

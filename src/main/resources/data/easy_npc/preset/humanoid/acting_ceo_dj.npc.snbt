@@ -50,26 +50,30 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_villain_boss"
-                                        }
-                                    ],
-                                    Cmd: "tbcs attach villain_boss @s"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_boss"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:villain_boss @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_villain_boss"
-                                        }
-                                    ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs villain_boss onwin {1: ['cobbledollars give @1 8000', 'tag @1 add defeated_villain_boss', '@2 say Keeping it warm. That is all I was ever doing. It was always going to be yours again.', 'function cobblemon_initiative:economy/hq_stabilize', 'easy_npc delete @2'], 2: []}"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_boss"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:villain_boss onwin {1: ['cobbledollars give @1 8000', 'tag @1 add defeated_villain_boss', '@2 say Keeping it warm. That is all I was ever doing. It was always going to be yours again.', 'function cobblemon_initiative:economy/hq_stabilize', 'easy_npc delete @2'], 2: []}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

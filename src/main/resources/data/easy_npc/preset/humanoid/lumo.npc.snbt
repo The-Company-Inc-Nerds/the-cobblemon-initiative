@@ -105,37 +105,43 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "defeated_sq_bracket_1"
-                                        }
-                                    ],
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_sq_bracket_1"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "say You beat me fair. Kima mends nets and breaks challengers — go on up the dock."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_sq_bracket_1"
-                                        }
-                                    ],
-                                    Cmd: "tbcs attach sq_bracket_1 @s"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_sq_bracket_1"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:sq_bracket_1 @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_sq_bracket_1"
-                                        }
-                                    ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs sq_bracket_1 onwin {1: ['cobbledollars give @1 100', 'tag @1 add defeated_sq_bracket_1', '@2 say Wingull down. The bracket said this would happen to somebody.'], 2: ['@1 say The bracket holds. The loss column is nothing to be ashamed of.']}"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_sq_bracket_1"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:sq_bracket_1 onwin {1: ['cobbledollars give @1 100', 'tag @1 add defeated_sq_bracket_1', '@2 say Wingull down. The bracket said this would happen to somebody.', 'execute as @1 run function cobblemon_initiative:sidequest/invitational/round_1'], 2: ['@1 say The bracket holds. The loss column is nothing to be ashamed of.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

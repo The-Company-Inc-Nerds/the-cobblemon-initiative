@@ -67,44 +67,57 @@
                     Label: "beaten"
                 },
                 {
-                    Priority: 10,
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "defeated_takehara_jr_apprentice"
+                        }
+                    ],
+                    Priority: 20,
                     Buttons: [
                         {
                             Name: "Challenge the Apprentice",
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "defeated_takehara_apprentice"
-                                        }
-                                    ],
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_takehara_apprentice"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "say You already pruned me once. The arena is up the falls - Cicada is waiting."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_takehara_apprentice"
-                                        }
-                                    ],
-                                    Cmd: "tbcs attach takehara_apprentice @s"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_takehara_apprentice"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:takehara_apprentice @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_takehara_apprentice"
-                                        }
-                                    ],
-                                    Cmd: "tbcs battle GEN_9_DOUBLES @s vs takehara_apprentice onwin {1: ['tag @1 add defeated_takehara_apprentice', '@2 say Grown, pruned, and beaten fairly. Cicada will want to see the trainer who walked through my garden.'], 2: ['@1 say The greenhouse keeps what it catches. Rest up and come through again.']}"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_takehara_apprentice"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_DOUBLES @s vs rctmod:takehara_apprentice onwin {1: ['tag @1 add defeated_takehara_apprentice', '@2 say Grown, pruned, and beaten fairly. Cicada will want to see the trainer who walked through my garden.'], 2: ['@1 say The greenhouse keeps what it catches. Rest up and come through again.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -131,7 +144,113 @@
                         }
                     ],
                     Name: "Aiko - the apprentice among the vines",
+                    Label: "ready"
+                },
+                {
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The garden has an order. My junior Sora is out among the flowerbeds - settle with her first, and then the vines will make room for you."
+                        },
+                        {
+                            Text: "You skipped a rung. Sora, then me, then the Leader. That is not pride, it is pruning - go find my junior."
+                        }
+                    ],
+                    Name: "Aiko - a skipped rung",
                     Label: "default"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "defeated_takehara_jr_apprentice"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "takehara_tower_gte_2"
+                        }
+                    ],
+                    Priority: 25,
+                    Buttons: [
+                        {
+                            Name: "Challenge the Apprentice",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_takehara_apprentice"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "say You already pruned me once. The arena is up the falls - Cicada is waiting."
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_takehara_apprentice"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:takehara_apprentice_weak @s"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_takehara_apprentice"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_DOUBLES @s vs rctmod:takehara_apprentice_weak onwin {1: ['tag @1 add defeated_takehara_apprentice', '@2 say Grown, pruned, and beaten fairly. Cicada will want to see the trainer who walked through my garden.'], 2: ['@1 say The greenhouse keeps what it catches. Rest up and come through again.']}"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "battle_button"
+                        },
+                        {
+                            Name: "Not yet",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Two of the tower crew came through here grumbling about you. My best vines trained with them this morning — you caught the garden on a slow day."
+                        }
+                    ],
+                    Name: "Aiko - the apprentice among the vines",
+                    Label: "ready_weakened"
                 }
             ]
         },

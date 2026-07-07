@@ -67,44 +67,57 @@
                     Label: "after"
                 },
                 {
-                    Priority: 10,
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "defeated_takehara_apprentice"
+                        }
+                    ],
+                    Priority: 15,
                     Buttons: [
                         {
                             Name: "Challenge the Gym",
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "defeated_takehara_leader"
-                                        }
-                                    ],
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_takehara_leader"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "say You hold the Falls Badge already. Go on — the route north is waiting."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_takehara_leader"
-                                        }
-                                    ],
-                                    Cmd: "tbcs attach takehara_leader @s"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_takehara_leader"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:takehara_leader @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_takehara_leader"
-                                        }
-                                    ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs takehara_leader onwin {1: ['cobbledollars give @1 1200', 'tag @1 add defeated_takehara_leader', '@2 say Patience wins. Carry it to the next gym.'], 2: ['@1 say The woods will still be here. So will I. Come back ready.']}"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_takehara_leader"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:takehara_leader onwin {1: ['cobbledollars give @1 1200', 'tag @1 add defeated_takehara_leader', '@2 say Patience wins. The machine in your bag holds U-turn — strike once, then be gone. Carry both to the next gym.'], 2: ['@1 say The woods will still be here. So will I. Come back ready.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -131,7 +144,113 @@
                         }
                     ],
                     Name: "Cicada — challenge",
+                    Label: "ready"
+                },
+                {
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Aiko signs off on every challenger before I clear my afternoon. You will find her in the greenhouse, among the tall vines."
+                        },
+                        {
+                            Text: "Patience, challenger. The ladder is the lesson here — the tower, then Sora, then Aiko, then me. Come back with the garden behind you."
+                        }
+                    ],
+                    Name: "Cicada — not yet",
                     Label: "default"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "defeated_takehara_apprentice"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "takehara_tower_gte_4"
+                        }
+                    ],
+                    Priority: 17,
+                    Buttons: [
+                        {
+                            Name: "Challenge the Gym",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_takehara_leader"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "say You hold the Falls Badge already. Go on — the route north is waiting."
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_takehara_leader"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:takehara_leader_weak @s"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_takehara_leader"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:takehara_leader_weak onwin {1: ['cobbledollars give @1 1200', 'tag @1 add defeated_takehara_leader', '@2 say Patience wins. The machine in your bag holds U-turn — strike once, then be gone. Carry both to the next gym.'], 2: ['@1 say The woods will still be here. So will I. Come back ready.']}"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "yes_button"
+                        },
+                        {
+                            Name: "I need to prepare",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Koji. Yuki. Shin. Taro. Every name on the tower board, crossed out in one afternoon. My team spent the day running drills for them instead of resting — you have already cost me the fight, challenger. Come take the rest."
+                        }
+                    ],
+                    Name: "Cicada — challenge",
+                    Label: "ready_weakened"
                 }
             ]
         },
@@ -256,13 +375,13 @@
         },
         RenderData: {},
         SkinData: {
-            Type: "SECURE_REMOTE_URL",
-            URL: "https://www.minecraftskins.com/uploads/skins/2021/09/06/emperor-bee-18854978.png?v921",
-            UUID: [I; -286241566, 963460957, -2061259251, 1357015601],
-            Name: "",
             Content: "",
-            Timestamp: 1757709170734L,
-            DisableLayers: 0b
+            DisableLayers: 0b,
+            Name: "",
+            Timestamp: 0L,
+            Type: "CUSTOM",
+            URL: "",
+            UUID: [I; -644562994, 155868617, -1988142537, 1238784558]
         },
         SoundData: {
             SoundDataSet: [

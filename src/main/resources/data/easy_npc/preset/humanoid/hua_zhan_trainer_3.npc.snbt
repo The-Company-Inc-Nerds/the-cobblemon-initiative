@@ -70,41 +70,47 @@
                     Priority: 10,
                     Buttons: [
                         {
-                            Name: "Challenge the warden of the channels",
+                            Name: "Wake the statue of the channels",
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "defeated_hua_zhan_trainer_3"
-                                        }
-                                    ],
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_hua_zhan_trainer_3"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "say The terrace already agreed to you. The seal waits in the retaining wall."
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_hua_zhan_trainer_3"
-                                        }
-                                    ],
-                                    Cmd: "tbcs attach hua_zhan_trainer_3 @s"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_hua_zhan_trainer_3"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:hua_zhan_trainer_3 @s"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Conditions: [
-                                        {
-                                            Type: "PLAYER_TAG",
-                                            Operation: "EQUALS",
-                                            Name: "no_defeated_hua_zhan_trainer_3"
-                                        }
-                                    ],
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs hua_zhan_trainer_3 onwin {1: ['tag @1 add defeated_hua_zhan_trainer_3', '@2 say Invited, not argued with — and the water went with you. The seal will take your hand now.'], 2: ['@1 say The channel runs the way it has always run. Come back when the water invites you.']}"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_hua_zhan_trainer_3"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:hua_zhan_trainer_3 onwin {1: ['tag @1 add defeated_hua_zhan_trainer_3', '@2 say Invited, not argued with — and the water went with you. The salute stands for you now. The seal will take your hand.', '@2 execute at @s run particle minecraft:totem_of_undying ~ ~1.2 ~ 0.4 0.9 0.4 0.08 120 force', '@2 execute at @s run particle minecraft:end_rod ~ ~1 ~ 0.3 0.8 0.3 0.02 60 force', '@2 execute at @s run playsound minecraft:block.beacon.activate master @a ~ ~ ~ 1 1.3', 'effect give @2 minecraft:glowing 60 0 true'], 2: ['@1 say The channel runs the way it has always run. The stone salutes the water, not the hurry. Come back when it invites you.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -131,10 +137,10 @@
                     ],
                     Texts: [
                         {
-                            Text: "Careful on the steps. This terrace was cut by hand, one step a season, because water cannot be argued with — only invited. Challengers are handled the same way."
+                            Text: "Careful on the steps. This terrace was cut by hand, one step a season, because water cannot be argued with — only invited. Challengers are handled the same way. The old botany carved its third warden mid-salute, hand raised to open the channels, and the hand has not come down since."
                         },
                         {
-                            Text: "The old botany says the vines here climb on poison and patience, and I trained under both. Warden of the channels, third garden of four. Shall we see what the water thinks of you?"
+                            Text: "The vines here climb on poison and patience, and this stone was carved under both. Warden of the channels, third monument of four. Wake the statue, and we shall see what the water thinks of you."
                         }
                     ],
                     Name: "Fang — warden of the channels",
@@ -211,13 +217,14 @@
         Invulnerable: 0b,
         LeftHanded: 0b,
         ModelData: {
+            Pose: "CUSTOM",
             DefaultPose: "STANDING",
-            Pose: "VANILLA",
-            Position: {},
-            Rotation: {},
-            Scale: {},
-            Visible: {
-                Boots: 1b
+            Rotation: {
+                Head: [-0.2f, 0.3f, 0.0f, 1.0f],
+                RightArm: [-2.6f, 0.0f, 0.3f, 1.0f],
+                LeftArm: [0.45f, 0.0f, -0.1f, 1.0f],
+                RightLeg: [-0.5f, 0.0f, 0.0f, 1.0f],
+                LeftLeg: [0.5f, 0.0f, 0.0f, 1.0f]
             }
         },
         Navigation: {
@@ -264,9 +271,9 @@
             DisableLayers: 0b,
             Name: "",
             Timestamp: 0L,
-            Type: "DEFAULT",
+            Type: "CUSTOM",
             URL: "",
-            UUID: [I; 0, 0, 0, 0]
+            UUID: [I; -522438802, 936139371, -1941236078, -2125756149]
         },
         SoundData: {
             SoundDataSet: [
