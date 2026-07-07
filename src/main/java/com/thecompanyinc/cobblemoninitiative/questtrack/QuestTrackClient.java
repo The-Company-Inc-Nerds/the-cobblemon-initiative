@@ -4,6 +4,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import com.thecompanyinc.cobblemoninitiative.compat.journeymap.JourneyMapWaypointBridge;
 import java.util.Objects;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -54,6 +55,10 @@ public final class QuestTrackClient {
       }
       pushTrackedWaypoint(client);
     });
+
+    // Reset the push cache on disconnect so a relog re-pushes fresh state instead of
+    // short-circuiting on a stale lastPushed carried over in this static field.
+    ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> lastPushed = null);
   }
 
   private static void sendTrackCommand(Minecraft client, String direction) {

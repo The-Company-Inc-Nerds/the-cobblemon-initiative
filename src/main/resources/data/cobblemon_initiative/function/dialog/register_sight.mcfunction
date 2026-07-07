@@ -30,12 +30,6 @@ npcsight stoptag 535c306c-cb90-43c1-a405-e84099a01b8d defeated_sq_rt2_kite
 npcsight add 7aeca5b3-1f72-4072-a8c4-e6eef877f160 6 open_file
 npcsight mode 7aeca5b3-1f72-4072-a8c4-e6eef877f160 approach_once
 npcsight meettag 7aeca5b3-1f72-4072-a8c4-e6eef877f160 met_lucian
-# Kesi (auditor_a)
-npcsight add 21267950-7513-4328-81c9-e4dbed59678e 12 sighted
-npcsight mode 21267950-7513-4328-81c9-e4dbed59678e dialog
-# Mosi (auditor_b)
-npcsight add f63c8581-cfc3-474b-8484-2d6e4bd36b8f 12 sighted
-npcsight mode f63c8581-cfc3-474b-8484-2d6e4bd36b8f dialog
 # Nalia (nalia_mom)
 npcsight add 74b1c524-0c3c-4a19-943d-f6f05c0e7f94 12 default
 npcsight mode 74b1c524-0c3c-4a19-943d-f6f05c0e7f94 approach_once

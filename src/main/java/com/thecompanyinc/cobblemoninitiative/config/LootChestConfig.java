@@ -54,13 +54,21 @@ public class LootChestConfig {
   private boolean announceUnplacedChests = false;
 
   /**
-   * Chance (0.0..1.0) that an unplaced chest rolls EMPTY on first open: it is marked
-   * claimed like any other (never re-rolls) but no loot is stocked — the chest just
-   * opens as the plain empty container it appears to be. Default 0.75 (showrunner,
-   * 0.5.0-alpha.1: most map chests were cleaned out long ago; finding a stocked one
-   * should feel like luck). 0.0 = every chest stocks (pre-0.5.0 behavior).
+   * When true, an unplaced chest that ALREADY holds items has that content REPLACED by
+   * this system (cleared first, then the empty/stock roll decides what goes in). When
+   * false, a non-empty unplaced chest is left exactly as the map author stocked it —
+   * only genuinely empty unplaced chests are ever touched. Default true (showrunner
+   * 2026-07-07: the mod owns unplaced-chest contents).
    */
-  private double emptyChestChance = 0.75;
+  private boolean overwriteExisting = true;
+
+  /**
+   * Chance (0.0..1.0) that an unplaced chest rolls EMPTY on first open: it is marked
+   * claimed like any other (never re-rolls) but no loot is stocked. With overwriteExisting
+   * on, an empty roll also CLEARS any pre-existing content (the chest genuinely opens
+   * empty). Default 0.60 (showrunner 2026-07-07). 0.0 = every chest stocks.
+   */
+  private double emptyChestChance = 0.60;
 
   /**
    * Scales the NUMBER of item stacks stocked into a chest, relative to what the
@@ -69,9 +77,10 @@ public class LootChestConfig {
    * Clamped to 0.0..3.0. Default 1.0 (reads as 1.0× in the config UI). A fixed internal
    * BASE_LOOT_SCALE in rollLoot keeps the real stack count small — about a third of the
    * legacy amount — so 1.0× is the neutral knob while chests stay lean; the min-1 floor
-   * guarantees at least one stack. Raise toward 3.0× for fuller chests.
+   * guarantees at least one stack. Raise toward 3.0× for fuller chests. Default 2.0×
+   * (showrunner 2026-07-07).
    */
-  private double stackMultiplier = 1.0;
+  private double stackMultiplier = 2.0;
 
   /**
    * Scales the number of ITEMS within each stack, relative to the loot tables'
@@ -127,6 +136,7 @@ public class LootChestConfig {
   public boolean isGiveMinecraftPool() { return giveMinecraftPool; }
   public boolean isGiveCobblemonPool() { return giveCobblemonPool; }
   public boolean isOneTimePerChest() { return oneTimePerChest; }
+  public boolean isOverwriteExisting() { return overwriteExisting; }
   public boolean isAnnounceUnplacedChests() { return announceUnplacedChests; }
   // Getters clamp too: Gson loads a hand-edited config straight into the fields
   // (bypassing the setters), so clamping on read keeps the documented 0.0..3.0
@@ -139,6 +149,7 @@ public class LootChestConfig {
   public void setGiveMinecraftPool(boolean v) { this.giveMinecraftPool = v; }
   public void setGiveCobblemonPool(boolean v) { this.giveCobblemonPool = v; }
   public void setOneTimePerChest(boolean v) { this.oneTimePerChest = v; }
+  public void setOverwriteExisting(boolean v) { this.overwriteExisting = v; }
   public void setAnnounceUnplacedChests(boolean v) { this.announceUnplacedChests = v; }
   public void setEmptyChestChance(double v) { this.emptyChestChance = clamp01(v); }
   public void setStackMultiplier(double v) { this.stackMultiplier = clamp(v); }

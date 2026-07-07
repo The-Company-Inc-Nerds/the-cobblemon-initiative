@@ -977,6 +977,38 @@
           "z": 2931.5
         }
       ]
+    },
+    {
+      "holder": "q.side_lane",
+      "name": "The Lane Looks After Its Own",
+      "stages": [
+        {
+          "if_tags": [
+            "delivered_1",
+            "delivered_2",
+            "delivered_3"
+          ],
+          "not_tags": [
+            "lane_done"
+          ],
+          "label": "Bring the care package back to Oma",
+          "x": 2586.5,
+          "y": 107.0,
+          "z": 2958.5
+        },
+        {
+          "if_tags": [
+            "lane_started"
+          ],
+          "not_tags": [
+            "lane_done"
+          ],
+          "label": "Take Oma's baskets down the lane",
+          "x": 2631.5,
+          "y": 112.0,
+          "z": 2806.5
+        }
+      ]
     }
   ]
 }

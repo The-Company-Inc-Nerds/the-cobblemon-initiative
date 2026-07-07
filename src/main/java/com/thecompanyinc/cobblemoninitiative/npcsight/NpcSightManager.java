@@ -25,10 +25,20 @@ public class NpcSightManager {
 
   // Scoreboard objective shared with legacy datapack consumers
   private static final String SCOREBOARD_OBJ = "can_see_player";
+  // Player tag set by an engage:touch battle trigger while a forced trainer battle runs
+  // (cleared in both onwin branches) — pursuers stand down while it is present.
+  private static final String IN_TRAINER_BATTLE_TAG = "in_trainer_battle";
 
   private final NpcSightStorage storage;
   private NpcSightConfig config;
   private int tickCounter = 0;
+
+  // Tag-keyed sight profiles (round 13e): placement NPCs are discovered by tag each tick,
+  // so no per-world `npcsight add <uuid>` step is needed. sessionData caches the per-entity
+  // behaviour state (pursuing / dialog-fired) between ticks, keyed by the entity's runtime
+  // uuid; entries are evicted when the entity is no longer discovered.
+  private java.util.List<NpcSightProfile> profiles = new java.util.ArrayList<>();
+  private final java.util.Map<java.util.UUID, NpcSightData> sessionData = new java.util.HashMap<>();
 
   // Lazily-resolved Easy NPC mod presence flag
   private Boolean easyNpcPresent = null;
@@ -40,6 +50,16 @@ public class NpcSightManager {
 
   public void reloadConfig(NpcSightConfig newConfig) {
     this.config = newConfig;
+  }
+
+  /** Install the compiler-emitted tag-keyed sight profiles (loaded at SERVER_STARTED). */
+  public void loadProfiles(java.util.List<NpcSightProfile> newProfiles) {
+    this.profiles = (newProfiles == null) ? new java.util.ArrayList<>() : newProfiles;
+    this.sessionData.clear();
+  }
+
+  public int profileCount() {
+    return profiles.size();
   }
 
   public NpcSightConfig getConfig() {
@@ -59,6 +79,39 @@ public class NpcSightManager {
     for (NpcSightData data : snapshot) {
       processNpc(server, data);
     }
+
+    // Tag-based profiles: discover live entities by tag and process each with its cached
+    // session data. Automatic — no per-world uuid registration.
+    if (!profiles.isEmpty()) {
+      processProfiles(server);
+    }
+  }
+
+  /** Discover every live entity carrying a profile tag and process it (round 13e). */
+  private void processProfiles(MinecraftServer server) {
+    java.util.Set<java.util.UUID> seen = new java.util.HashSet<>();
+    for (ServerLevel level : server.getAllLevels()) {
+      for (Entity e : level.getAllEntities()) {
+        if (!e.isAlive() || e instanceof Player) continue;
+        NpcSightProfile profile = matchProfile(e);
+        if (profile == null) continue;
+        seen.add(e.getUUID());
+        NpcSightData data = sessionData.computeIfAbsent(e.getUUID(), profile::toData);
+        processNpcWithEntity(server, data, e);
+      }
+    }
+    // Evict cache entries for entities no longer present (despawned sentries etc.)
+    sessionData.keySet().removeIf(u -> !seen.contains(u));
+  }
+
+  /** First profile whose tag the entity carries, or null. */
+  private NpcSightProfile matchProfile(Entity e) {
+    java.util.Set<String> tags = e.getTags();
+    if (tags.isEmpty()) return null;
+    for (NpcSightProfile p : profiles) {
+      if (tags.contains(p.tag)) return p;
+    }
+    return null;
   }
 
   // ---------------------------------------------------------------------------
@@ -66,8 +119,12 @@ public class NpcSightManager {
   // ---------------------------------------------------------------------------
 
   private void processNpc(MinecraftServer server, NpcSightData data) {
-    Entity npc = findEntity(server, data.uuid);
+    processNpcWithEntity(server, data, findEntity(server, data.uuid));
+  }
 
+  /** Shared per-NPC processing; the entity is resolved by the caller (uuid lookup for the
+   *  registered path, direct hand-off for the tag-discovery path — avoids a re-scan). */
+  private void processNpcWithEntity(MinecraftServer server, NpcSightData data, Entity npc) {
     if (npc == null || !npc.isAlive()) {
       data.canSeePlayer = false;
       return;
@@ -92,6 +149,7 @@ public class NpcSightManager {
     switch (data.effectiveMode()) {
       case NpcSightData.MODE_PURSUE -> handlePursue(server, npc, nearestPlayer, canSee, data);
       case NpcSightData.MODE_APPROACH_ONCE -> handleApproachOnce(server, npc, nearestPlayer, canSee, data);
+      case NpcSightData.MODE_PASSIVE -> { /* scoreboard-only: the quest tick reads it */ }
       default -> handleDialog(server, npc, nearestPlayer, canSee, data);
     }
   }
@@ -188,9 +246,14 @@ public class NpcSightManager {
     }
   }
 
-  /** True when the nearest player carries this NPC's configured stand-down tag. */
+  /** True when the pursuer should stop chasing: the player carries this NPC's stand-down
+   *  tag (defeated), OR the player is in a forced trainer battle (round 13d — the
+   *  engage:touch trigger sets in_trainer_battle at battle start and both onwin branches
+   *  clear it; without this the pursuer kept walking into the player mid-battle). */
   private boolean standDown(NpcSightData data, ServerPlayer player) {
-    return data.hasStopTag() && player != null && player.getTags().contains(data.stopTag);
+    if (player == null) return false;
+    if (player.getTags().contains(IN_TRAINER_BATTLE_TAG)) return true;
+    return data.hasStopTag() && player.getTags().contains(data.stopTag);
   }
 
   // ---------------------------------------------------------------------------

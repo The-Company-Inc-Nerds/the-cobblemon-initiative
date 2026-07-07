@@ -38,7 +38,7 @@
                         Cmd: "say The kites marked you three bends back — eye contact is a contract out here!"
                     }
                 ],
-                ON_DISTANCE_TOUCH: [
+                ON_DISTANCE_VERY_CLOSE: [
                     {
                         Type: "COMMAND",
                         ConditionDataSet: {
@@ -84,7 +84,31 @@
                                 }
                             ]
                         },
-                        Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:sq_rt2_kite onwin {1: ['cobbledollars give @1 300', 'tag @1 add defeated_sq_rt2_kite', '@2 say Grounded. The kites called the wind wrong and so did I.'], 2: ['@1 say I saw the whole battle before it started. The ledge does that. Rest up and watch the sky next time.']}"
+                        Cmd: "tag @s add in_trainer_battle"
+                    },
+                    {
+                        Type: "COMMAND",
+                        ExecAsUser: 1b,
+                        ConditionDataSet: {
+                            ConditionDataSet: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "dex_gte_2"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_sq_rt2_kite"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_declined_sq_rt2_kite"
+                                }
+                            ]
+                        },
+                        Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:sq_rt2_kite onwin {1: ['cobbledollars give @1 300', 'tag @1 add defeated_sq_rt2_kite', '@2 say Grounded. The kites called the wind wrong and so did I.', 'tag @1 remove in_trainer_battle'], 2: ['@1 say I saw the whole battle before it started. The ledge does that. Rest up and watch the sky next time.', 'tag @2 remove in_trainer_battle']}"
                     }
                 ]
             }
@@ -225,7 +249,7 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:sq_rt2_kite onwin {1: ['cobbledollars give @1 300', 'tag @1 add defeated_sq_rt2_kite', '@2 say Grounded. The kites called the wind wrong and so did I.'], 2: ['@1 say I saw the whole battle before it started. The ledge does that. Rest up and watch the sky next time.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:sq_rt2_kite onwin {1: ['cobbledollars give @1 300', 'tag @1 add defeated_sq_rt2_kite', '@2 say Grounded. The kites called the wind wrong and so did I.', 'tag @1 remove in_trainer_battle'], 2: ['@1 say I saw the whole battle before it started. The ledge does that. Rest up and watch the sky next time.', 'tag @2 remove in_trainer_battle']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -265,15 +289,6 @@
                                 }
                             ],
                             Label: "bow_out_button"
-                        },
-                        {
-                            Name: "Goodbye",
-                            Actions: [
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "goodbye_button"
                         }
                     ],
                     Texts: [

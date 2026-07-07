@@ -49,11 +49,16 @@ public class CobblemonInitiativeJmPlugin implements IClientPlugin {
 
     ClientEventRegistry.MAPPING_EVENT.subscribe(getModId(), event -> {
       if (event.getStage() == MappingEvent.Stage.MAPPING_STARTED) {
+        // Do NOT assume JM wiped our non-persistent waypoint: a single-player relog
+        // (quit-to-title → re-enter the same world) does not reliably clear the store,
+        // which orphaned the old waypoint (we dropped its guid) and left it permanent.
+        // We only ever keep ONE waypoint, so removeAllWaypoints(modId) is the safe reset.
         guid = null;
         Desired current = desired;
-        if (current != null) {
-          Minecraft.getInstance().execute(() -> apply(current));
-        }
+        Minecraft.getInstance().execute(() -> {
+          removeAll();
+          if (current != null) apply(current);
+        });
       }
     });
 
@@ -102,14 +107,21 @@ public class CobblemonInitiativeJmPlugin implements IClientPlugin {
   }
 
   private void remove() {
-    if (api == null || guid == null) return;
+    // Clear ALL of our waypoints, not just the tracked guid: after a relog an orphaned
+    // waypoint can exist that we no longer hold a guid for. We keep exactly one, so
+    // removeAllWaypoints is both correct and orphan-proof.
+    removeAll();
+  }
+
+  private void removeAll() {
+    if (api == null) {
+      guid = null;
+      return;
+    }
     try {
-      Waypoint waypoint = api.getWaypoint(getModId(), guid);
-      if (waypoint != null) {
-        api.removeWaypoint(getModId(), waypoint);
-      }
+      api.removeAllWaypoints(getModId());
     } catch (Exception e) {
-      LOGGER.warn("[Quest Track] Could not clear the JourneyMap waypoint: {}", e.getMessage());
+      LOGGER.warn("[Quest Track] Could not clear the JourneyMap waypoint(s): {}", e.getMessage());
     }
     guid = null;
   }

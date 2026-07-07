@@ -23,6 +23,12 @@ public class NpcSightInit implements ModInitializer {
     storage = new NpcSightStorage();
     manager = new NpcSightManager(storage, config);
 
+    // Tag-keyed sight profiles (round 13e) — compiler-emitted jar resource; placement NPCs
+    // carrying a profile tag get their can_see_player wired automatically, no per-world
+    // `npcsight add <uuid>` step. Loaded once from the jar.
+    manager.loadProfiles(loadProfiles());
+    LOGGER.info("NPC Sight loaded {} tag-keyed profile(s).", manager.profileCount());
+
     // Tick processing
     ServerTickEvents.END_SERVER_TICK.register(manager::tick);
 
@@ -63,6 +69,20 @@ public class NpcSightInit implements ModInitializer {
     });
 
     LOGGER.info("NPC Sight initialized.");
+  }
+
+  /** Read the compiler-emitted tag-keyed sight profiles from the jar (may be absent). */
+  private static java.util.List<NpcSightProfile> loadProfiles() {
+    java.io.InputStream in = NpcSightInit.class.getClassLoader()
+      .getResourceAsStream("data/cobblemon_initiative/npcsight_profiles.json");
+    if (in == null) return new java.util.ArrayList<>();
+    try (java.io.Reader r = new java.io.InputStreamReader(in, java.nio.charset.StandardCharsets.UTF_8)) {
+      NpcSightProfile[] arr = new com.google.gson.Gson().fromJson(r, NpcSightProfile[].class);
+      return arr == null ? new java.util.ArrayList<>() : new java.util.ArrayList<>(java.util.Arrays.asList(arr));
+    } catch (Exception e) {
+      LOGGER.warn("Could not read npcsight_profiles.json: {}", e.getMessage());
+      return new java.util.ArrayList<>();
+    }
   }
 
   // ---------------------------------------------------------------------------

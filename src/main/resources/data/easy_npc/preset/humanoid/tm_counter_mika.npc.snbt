@@ -36,55 +36,41 @@
             Type: "STANDARD",
             DialogDataSet: [
                 {
-                    Priority: 10,
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "badges_gte_3"
+                        }
+                    ],
+                    Priority: 13,
                     Buttons: [
                         {
-                            Name: "Browse the TR rack (1 badge)",
+                            Name: "Browse the TR rack",
                             Actions: [
                                 {
                                     Type: "OPEN_NAMED_DIALOG",
                                     Cmd: "tr_rack"
                                 }
                             ],
-                            Conditions: [
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "badges_gte_1"
-                                }
-                            ],
                             Label: "rack_button"
                         },
                         {
-                            Name: "Browse the TM cabinet (2 badges)",
+                            Name: "Browse the TM cabinet",
                             Actions: [
                                 {
                                     Type: "OPEN_NAMED_DIALOG",
                                     Cmd: "tm_cabinet"
                                 }
                             ],
-                            Conditions: [
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "badges_gte_2"
-                                }
-                            ],
                             Label: "cabinet_button"
                         },
                         {
-                            Name: "Unlock the glass cabinet (3 badges)",
+                            Name: "Open the glass cabinet",
                             Actions: [
                                 {
                                     Type: "OPEN_NAMED_DIALOG",
                                     Cmd: "tm_master"
-                                }
-                            ],
-                            Conditions: [
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "badges_gte_3"
                                 }
                             ],
                             Label: "master_button"
@@ -101,10 +87,126 @@
                     ],
                     Texts: [
                         {
-                            Text: "Machine counter. I stock what the League will let me stock for your badge count, and not a disc more — the falls town takes its move ordinances seriously. Records on the near rack, machines in the cabinet, the good machines behind glass."
+                            Text: "Three badges on you. The whole counter is open — rack, cabinet, and the glass. Buy like it matters, because at your level it does."
                         },
                         {
-                            Text: "One badge opens the rack. Two opens the cabinet. Three and I unlock the glass. Come back as you climb — the counter remembers where you are on the ladder even when the rest of the town pretends not to."
+                            Text: "Records, machines, and the moves a leader would rather you did not carry into the rematch. All yours to browse."
+                        }
+                    ],
+                    Name: "Machine Counter Mika",
+                    Label: "tier3"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "badges_gte_2"
+                        }
+                    ],
+                    Priority: 12,
+                    Buttons: [
+                        {
+                            Name: "Browse the TR rack",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "tr_rack"
+                                }
+                            ],
+                            Label: "rack_button"
+                        },
+                        {
+                            Name: "Browse the TM cabinet",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "tm_cabinet"
+                                }
+                            ],
+                            Label: "cabinet_button"
+                        },
+                        {
+                            Name: "Just looking",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Two badges. That opens the machine cabinet on top of the rack — TMs now, eight uses each, no repairs. The glass cabinet waits on a third badge; League ordinance, not me being difficult."
+                        },
+                        {
+                            Text: "Records or machines. What is the team missing today?"
+                        }
+                    ],
+                    Name: "Machine Counter Mika",
+                    Label: "tier2"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "badges_gte_1"
+                        }
+                    ],
+                    Priority: 11,
+                    Buttons: [
+                        {
+                            Name: "Browse the TR rack",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "tr_rack"
+                                }
+                            ],
+                            Label: "rack_button"
+                        },
+                        {
+                            Name: "Just looking",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "One badge — the rack is yours. Records, single use, cheap enough to gamble a move slot on. The machine cabinet needs a second badge before I can sell you anything reusable."
+                        },
+                        {
+                            Text: "Take a look at the rack. A Thunder Wave off a disc has saved more runs than most of what I keep behind glass."
+                        }
+                    ],
+                    Name: "Machine Counter Mika",
+                    Label: "tier1"
+                },
+                {
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "Just looking",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Machine counter. I would love to sell you a move, but the League will not let me stock a thing for a trainer with no badge — ordinance, not opinion. Earn one at the falls gym and the rack opens up."
+                        },
+                        {
+                            Text: "Come back with a badge on your bag and we will talk records and machines. Until then all I can offer is directions to the gym: up the tower, mind the wardens."
                         }
                     ],
                     Name: "Machine Counter Mika",

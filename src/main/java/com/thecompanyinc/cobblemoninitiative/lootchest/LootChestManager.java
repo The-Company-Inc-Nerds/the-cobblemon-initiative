@@ -125,6 +125,14 @@ public class LootChestManager {
       return InteractionResult.PASS;
     }
 
+    // Existing content: with overwriteExisting the mod owns this chest (clear it below,
+    // then the empty/stock roll decides what it holds). Without, a non-empty unplaced
+    // chest is the map author's — leave it untouched and unclaimed.
+    boolean hasContent = chestHasContent(level, pos, partner);
+    if (hasContent && !config.isOverwriteExisting()) {
+      return InteractionResult.PASS;
+    }
+
     // Mark claimed (and persist) BEFORE stocking, so a crash mid-stock can't
     // re-roll the chest. All tier loot tables are present, so the roll won't fail.
     if (config.isOneTimePerChest()) {
@@ -132,9 +140,14 @@ public class LootChestManager {
       if (partner != null) storage.markClaimed(partner);
     }
 
-    // Empty roll (showrunner, 0.5.0-alpha.1): most map chests were cleaned out long
-    // ago. An empty hit stays claimed (the latch above already fired) and the chest
-    // simply opens as the plain empty container it appears to be — no message.
+    // Overwrite: take control of the pre-existing content so the roll below is authoritative
+    // (an empty roll then genuinely opens empty; a stock roll fills a cleared chest).
+    if (hasContent && config.isOverwriteExisting()) {
+      clearChest(level, pos, partner);
+    }
+
+    // Empty roll (showrunner): most map chests were cleaned out long ago. An empty hit
+    // stays claimed (the latch above already fired) and the chest opens empty — no message.
     if (level.getRandom().nextDouble() < config.getEmptyChestChance()) {
       return InteractionResult.PASS;
     }
@@ -142,6 +155,27 @@ public class LootChestManager {
     // Stock the chest in place, then PASS so vanilla opens the now-filled chest.
     stockChest(serverPlayer, state, level, pos, partner);
     return InteractionResult.PASS;
+  }
+
+  // ── Existing content (overwrite support) ────────────────────────────────────────
+
+  private boolean chestHasContent(Level level, BlockPos pos, BlockPos partner) {
+    return containerHasContent(level, pos)
+        || (partner != null && containerHasContent(level, partner));
+  }
+
+  private boolean containerHasContent(Level level, BlockPos p) {
+    if (level.getBlockEntity(p) instanceof Container c) {
+      for (int s = 0; s < c.getContainerSize(); s++) {
+        if (!c.getItem(s).isEmpty()) return true;
+      }
+    }
+    return false;
+  }
+
+  private void clearChest(Level level, BlockPos pos, BlockPos partner) {
+    if (level.getBlockEntity(pos) instanceof Container c0) c0.clearContent();
+    if (partner != null && level.getBlockEntity(partner) instanceof Container c1) c1.clearContent();
   }
 
   // ── Loot ───────────────────────────────────────────────────────────────────────

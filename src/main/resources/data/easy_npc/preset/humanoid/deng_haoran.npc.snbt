@@ -38,7 +38,7 @@
                         Cmd: "say Close enough — this fence is watched, and supper money says you answer for the crossing!"
                     }
                 ],
-                ON_DISTANCE_TOUCH: [
+                ON_DISTANCE_VERY_CLOSE: [
                     {
                         Type: "COMMAND",
                         ConditionDataSet: {
@@ -84,7 +84,31 @@
                                 }
                             ]
                         },
-                        Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:sq_rt2_haoran onwin {1: ['cobbledollars give @1 260', 'tag @1 add defeated_sq_rt2_haoran', '@2 say You mean it more than I do. There is the purse — I will win it back off the next traveler, watch me.'], 2: ['@1 say Phanpy eats first tonight. House rule — winner picks the bowl order.']}"
+                        Cmd: "tag @s add in_trainer_battle"
+                    },
+                    {
+                        Type: "COMMAND",
+                        ExecAsUser: 1b,
+                        ConditionDataSet: {
+                            ConditionDataSet: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "dex_gte_2"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_sq_rt2_haoran"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_declined_sq_rt2_haoran"
+                                }
+                            ]
+                        },
+                        Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:sq_rt2_haoran onwin {1: ['cobbledollars give @1 260', 'tag @1 add defeated_sq_rt2_haoran', '@2 say You mean it more than I do. There is the purse — I will win it back off the next traveler, watch me.', 'tag @1 remove in_trainer_battle'], 2: ['@1 say Phanpy eats first tonight. House rule — winner picks the bowl order.', 'tag @2 remove in_trainer_battle']}"
                     }
                 ]
             }
@@ -290,7 +314,7 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:sq_rt2_haoran onwin {1: ['cobbledollars give @1 260', 'tag @1 add defeated_sq_rt2_haoran', '@2 say You mean it more than I do. There is the purse — I will win it back off the next traveler, watch me.'], 2: ['@1 say Phanpy eats first tonight. House rule — winner picks the bowl order.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:sq_rt2_haoran onwin {1: ['cobbledollars give @1 260', 'tag @1 add defeated_sq_rt2_haoran', '@2 say You mean it more than I do. There is the purse — I will win it back off the next traveler, watch me.', 'tag @1 remove in_trainer_battle'], 2: ['@1 say Phanpy eats first tonight. House rule — winner picks the bowl order.', 'tag @2 remove in_trainer_battle']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -304,15 +328,6 @@
                                 }
                             ],
                             Label: "fight_button"
-                        },
-                        {
-                            Name: "Keep walking",
-                            Actions: [
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "leave_button"
                         },
                         {
                             Name: "Pay 130 CD to bow out",
@@ -406,7 +421,7 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:sq_rt2_haoran onwin {1: ['cobbledollars give @1 260', 'tag @1 add defeated_sq_rt2_haoran', '@2 say You mean it more than I do. There is the purse — I will win it back off the next traveler, watch me.'], 2: ['@1 say Phanpy eats first tonight. House rule — winner picks the bowl order.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:sq_rt2_haoran onwin {1: ['cobbledollars give @1 260', 'tag @1 add defeated_sq_rt2_haoran', '@2 say You mean it more than I do. There is the purse — I will win it back off the next traveler, watch me.', 'tag @1 remove in_trainer_battle'], 2: ['@1 say Phanpy eats first tonight. House rule — winner picks the bowl order.', 'tag @2 remove in_trainer_battle']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -420,15 +435,6 @@
                                 }
                             ],
                             Label: "fight_button"
-                        },
-                        {
-                            Name: "Save it for the fence",
-                            Actions: [
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "decline_button"
                         },
                         {
                             Name: "Pay 130 CD to bow out",

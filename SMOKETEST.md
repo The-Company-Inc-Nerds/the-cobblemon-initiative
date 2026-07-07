@@ -12,7 +12,7 @@ line under it for anything you notice.
 **How to fill:** put an `x` in the one box that applies (`[ ]`), then type on the
 `comment:` line beneath it. Deeper detail / root causes live in `docs/VERIFICATION_RUNBOOK.md`.
 
-- **Build under test:** `0.5.0-alpha.1`  (note the `dev/log-<version>` here when you capture a log)
+- **Build under test:** `0.5.0-alpha.2`  (note the `dev/log-<version>` here when you capture a log)
 - **Tester / date:** Cole J. Calamos / 07-06-2026
 - **World:** [x] fresh mrpack install  ☐ dev run-client  ☐ bare-mod standalone
 
@@ -135,6 +135,55 @@ line under it for anything you notice.
   Machine Counter Mika at the Takehara mart shows the TR rack unlocked at 1 badge, TM cabinet
   LOCKED until 2, glass cabinet LOCKED until 3; a bought TM teaches a legal move and burns a
   use (8 total, no repair); no TMs/TRs drop from wild Pokemon in the overworld
+  - ✅ [ ]   💬 [ ]   ❌ [ ]
+  - comment:
+- **R19** — **Playtest batch 1**: track a quest, relog → its waypoint reappears; change or clear
+  tracking → the old marker is GONE (no permanent orphans, no leftover after tracking changes);
+  Elder Nuru and Elder Sentinel say DIFFERENT things; Fara mentions the market exchange + her
+  tally book (no noticeboard); "The Lane Looks After Its Own" shows a sidebar line + waypoint;
+  Machine Counter Mika shows NO locked buttons (only earned tiers appear per badge count); the
+  two square auditors read Bomani/Jelani (not Kesi/Mosi); companion Pokemon show nicknames
+  (Deka's Magikarp is "Jackpot")
+  - ✅ [ ]   💬 [ ]   ❌ [ ]
+  - comment:
+- **R20** — **Playtest batch 2**: walk near Jabari/Ayo on Blossom Path → they hail at ~8
+  blocks then the battle STARTS on approach (no right-click needed); the trainer does NOT
+  keep chasing you during the battle; there is NO free "Enjoy the picnic" exit — only fight or
+  Pay-to-bow-out; beating Jabari shows the gracious "have a snack" line (not the boast);
+  Takehara tower sentries stand at the 4 new posts; the two Sango square auditors are new
+  bodies (Bomani/Jelani), Kesi/Mosi untouched; unplaced chest with items gets overwritten
+  (60% empty / else ~2x loot), and the ModMenu shows "Overwrite Existing Content"
+  - ✅ [ ]   💬 [ ]   ❌ [ ]
+  - comment:
+- **R21** — **Automatic NPC sight**: on a FRESH world (no manual npcsight commands) the
+  Takehara tower sentries detect you — walk the tower unseen to badge → Performance Review
+  ghost bonus fires; get spotted → "EYES ON YOU". The Sango square auditors and the checkpoint
+  agents work the same with zero setup. Log at startup: "NPC Sight loaded 8 tag-keyed
+  profile(s)". No `npcsight add <uuid>` step needed anywhere
+  - ✅ [ ]   💬 [ ]   ❌ [ ]
+  - comment:
+- **R22** — **NPC noter dev tool**: `/cobblemon-initiative npcnote stick` → whack a statue/NPC
+  (it selects, no damage) → `npcnote note <text>` + `npcnote move` (or right-click a block) →
+  `npcnote log` pastes all notes to chat; relog then `npcnote log` still lists them
+  - ✅ [ ]   💬 [ ]   ❌ [ ]
+  - comment:
+- **R23** — **In-world smoke-test command**: `/cobblemon-initiative smoke list` shows all
+  R-items with status glyphs; `smoke next` gives the first unmarked one; `smoke pass|comment|fail
+  <id> [note]` records a result; `smoke log` dumps them copy-pasteable; results survive a relog
+  (stored in npc_notes.json); startup log reads "DevNote loaded N smoke-test item(s)"
+  - ✅ [ ]   💬 [ ]   ❌ [ ]
+  - comment:
+- **R24** — **Sango secret, Victor → Victini** (after `/function …:update_npc_presets`):
+  Kesi at the granary talks up his silent apprentice (his "Lucky how?" line sets the hook).
+  Walk to Victor at the tower top — he is SILENT (narration only, no speech, no transform)
+  until you have the CLEAN anti-Company record: heard of him from Kesi AND finished the
+  Off the Record errands (`off_record_complete`) WITHOUT being logged by an auditor,
+  never signed the census (`census_signed`), never sold the papers (`sold_docs`). With all
+  of that, talking to Victor → "Reach out" → he despawns in an end-rod/beacon flourish and a
+  Victini NPC appears in his spot → talk to it → "Take my hand" → **Victini joins at level 15**
+  and the tower-top NPC despawns (no duplicate). DISQUALIFIER CHECK: doing Off the Record but
+  getting caught once (`off_record_blown`), or signing the census, or selling the papers, leaves
+  Victor silent forever. Elder Nuru, for the same clean record, gives **3 oran berries once**.
   - ✅ [ ]   💬 [ ]   ❌ [ ]
   - comment:
 

@@ -54,10 +54,11 @@ Left open:
 - [x] 💻 **SimpleTMs balance + move economy** (2026-07-07): curated
   `mrpack/overrides/config/simpletms/main.json` (drops off, rare TR-only in-battle,
   no blank crafting, TMs finite 8-use unrepairable); 10 gym-leader signature TMs;
-  vendors Torn-Label Tadashi (Sango TRs) + Machine Counter Mika (Takehara badge-gated
-  TMs/TRs). Remaining polish 🧱: verify both vendor **placements in-world** (Tadashi
-  2558/110/2872 Sango back lane, Mika 1904/113/2606 Takehara mart — latch spawns once,
-  finalize before shipping a world) and a **skin dress pass** (both default to Steve).
+  Machine Counter Mika (Takehara badge-gated TMs/TRs; Torn-Label Tadashi was cut
+  2026-07-07 per showrunner — Sango is savanna). Remaining polish 🧱: verify Mika's
+  **placement in-world** (1904/113/2606 Takehara mart — latch spawns once, finalize
+  before shipping a world) + badge-tiered ENTRIES not locked buttons; **skin dress
+  pass** (defaults to Steve).
 - [ ] 💻🧱 **DAYCARE CENTER** (showrunner 2026-07-07 — specced but NOT built; sub-agent
   limit hit mid-build, build tree stays clean/green). Design: talk to a Sango daycare
   keeper → deposit up to 2 party Pokémon via a party-picker screen (reuse the
@@ -282,6 +283,14 @@ Author in batches; each batch unblocks Claude wiring the same day:
 ---
 
 ## 2. REMOVE BEFORE 1.0.0 — dev-only tooling
+
+- 💻 **NPC Noter + dev commands** (`devnote/` + DevNoteInit entrypoint, 2026-07-07):
+  in-world review tooling — the `npcnote` NPC review/relocation tool, the `pos`
+  quick-coordinate capture, and the `smoke` in-world smoke-test checklist
+  (`/cobblemon-initiative smoke list|next|show|pass|comment|fail|log|reset`, fed by
+  the compiled `data/cobblemon_initiative/smoketest_items.json`). Strip the whole
+  package + entrypoint like fieldmark/zonetrace; the `smoketest_items.json` compiler
+  stage in `content_compile` can stay (harmless resource) or go with it.
 
 Map-authoring aids. Strip each once its authoring is baked in.
 

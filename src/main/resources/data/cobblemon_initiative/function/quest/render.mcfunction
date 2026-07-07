@@ -238,6 +238,16 @@ execute if entity @s[tag=farm_1_free,tag=!homecoming_paid,tag=!homecoming_walkin
 execute if entity @s[tag=homecoming_walking,tag=!homecoming_paid] run scoreboard players set q.side_deng ci_quest 59
 execute if entity @s[tag=homecoming_walking,tag=!homecoming_paid] run scoreboard players display name q.side_deng ci_quest [{"text":"• Lead the Dengs to the Firstfurrow gate","color":"gray"}]
 
+# The Lane Looks After Its Own (Oma's delivery loop, round 13d — now trackable): deliver
+# leg while any door is unvisited, then the return leg once all three are done.
+scoreboard players reset q.side_lane ci_quest
+execute if entity @s[tag=lane_started,tag=!lane_done,tag=!delivered_1] run scoreboard players set q.side_lane ci_quest 78
+execute if entity @s[tag=lane_started,tag=!lane_done,tag=!delivered_2] run scoreboard players set q.side_lane ci_quest 78
+execute if entity @s[tag=lane_started,tag=!lane_done,tag=!delivered_3] run scoreboard players set q.side_lane ci_quest 78
+execute if score q.side_lane ci_quest matches 78 run scoreboard players display name q.side_lane ci_quest [{"text":"• Take Oma's baskets down the lane","color":"gray"}]
+execute if entity @s[tag=delivered_1,tag=delivered_2,tag=delivered_3,tag=!lane_done] run scoreboard players set q.side_lane ci_quest 78
+execute if entity @s[tag=delivered_1,tag=delivered_2,tag=delivered_3,tag=!lane_done] run scoreboard players display name q.side_lane ci_quest [{"text":"• Bring the care package back to Oma","color":"gray"}]
+
 # Right of Way (Harvest Road survey detail): the ambush itself has no accept latch (sight-
 # triggered by design); only the manifest leg is trackable — wagon paper in hand until Lucian pays.
 scoreboard players reset q.side_manifest ci_quest

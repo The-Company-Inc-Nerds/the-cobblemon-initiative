@@ -245,6 +245,16 @@ nix develop -c javap -p -c <extracted>.class
   legacy `execute as … run` prefixes stripped, execute-rooted = CompileError; entity
   path → `@s/@p→@initiator`, bare `function` wrapped, `@initiator[` = CompileError.
   Generated NPC-context commands (attach) use `command_action_raw` to skip substitution.
+- **NPC SIGHT is TAG-KEYED for placement NPCs** (round 13e): the old npcsight
+  registration was uuid-keyed, so placement-spawned bodies (random uuids) needed a
+  manual per-world `npcsight add <uuid>`. Now the compiler emits tag profiles
+  (`data/cobblemon_initiative/npcsight_profiles.json`) from characters with a `sight`
+  block + `entity_tags` + no uuid; NpcSightManager discovers live entities by tag each
+  tick (session cache keyed by runtime uuid, evicted on despawn). New PASSIVE mode =
+  raycast + write `can_see_player` only, no action (sentries/auditors — the quest tick
+  reads the scoreboard). The sight tag must be UNIQUE to the behaviour (a shared group
+  tag like `deng_camp` would match every body carrying it) — use `sight.tag` to pick, or
+  it defaults to the first entity_tag. uuid NPCs still use register_sight.mcfunction.
 - **ON_DISTANCE triggers execute COMMAND actions per-player** (round 13b bytecode):
   bands NEAR 16 / CLOSE 8 / VERY_CLOSE 4 / TOUCH 1.25 (hard-coded radii); ExecAsUser
   binds the in-range player like a dialog button. ActionGroup de-dupes per band and

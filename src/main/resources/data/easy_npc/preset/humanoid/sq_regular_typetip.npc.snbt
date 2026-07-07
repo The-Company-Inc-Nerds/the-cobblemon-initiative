@@ -38,7 +38,7 @@
                         Cmd: "say Look up, trainer - the sky already called this battle!"
                     }
                 ],
-                ON_DISTANCE_TOUCH: [
+                ON_DISTANCE_VERY_CLOSE: [
                     {
                         Type: "COMMAND",
                         ConditionDataSet: {
@@ -84,7 +84,31 @@
                                 }
                             ]
                         },
-                        Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:sq_regular_typetip onwin {1: ['cobbledollars give @1 250', 'tag @1 add defeated_sq_regular_typetip', '@2 say There it is. Now you know why the bugs hide when the flock passes. Take this potion - you will want it at the falls.'], 2: ['@1 say The sky does not lose to the meadow often. Rest up and try again.']}"
+                        Cmd: "tag @s add in_trainer_battle"
+                    },
+                    {
+                        Type: "COMMAND",
+                        ExecAsUser: 1b,
+                        ConditionDataSet: {
+                            ConditionDataSet: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "dex_gte_2"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_sq_regular_typetip"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_declined_sq_regular_typetip"
+                                }
+                            ]
+                        },
+                        Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:sq_regular_typetip onwin {1: ['cobbledollars give @1 250', 'tag @1 add defeated_sq_regular_typetip', '@2 say There it is. Now you know why the bugs hide when the flock passes. Take this potion - you will want it at the falls.', 'tag @1 remove in_trainer_battle'], 2: ['@1 say The sky does not lose to the meadow often. Rest up and try again.', 'tag @2 remove in_trainer_battle']}"
                     }
                 ]
             }
@@ -225,7 +249,7 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:sq_regular_typetip onwin {1: ['cobbledollars give @1 250', 'tag @1 add defeated_sq_regular_typetip', '@2 say There it is. Now you know why the bugs hide when the flock passes. Take this potion - you will want it at the falls.'], 2: ['@1 say The sky does not lose to the meadow often. Rest up and try again.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:sq_regular_typetip onwin {1: ['cobbledollars give @1 250', 'tag @1 add defeated_sq_regular_typetip', '@2 say There it is. Now you know why the bugs hide when the flock passes. Take this potion - you will want it at the falls.', 'tag @1 remove in_trainer_battle'], 2: ['@1 say The sky does not lose to the meadow often. Rest up and try again.', 'tag @2 remove in_trainer_battle']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -239,15 +263,6 @@
                                 }
                             ],
                             Label: "battle_button"
-                        },
-                        {
-                            Name: "Maybe later",
-                            Actions: [
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "leave_button"
                         },
                         {
                             Name: "Pay 130 CD to bow out",

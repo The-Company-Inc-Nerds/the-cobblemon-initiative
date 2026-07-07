@@ -37,6 +37,9 @@ public class NpcSightData {
   public static final String MODE_DIALOG = "DIALOG";
   public static final String MODE_PURSUE = "PURSUE";
   public static final String MODE_APPROACH_ONCE = "APPROACH_ONCE";
+  // PASSIVE: raycast + write can_see_player only, no action (sentries/auditors — the
+  // datapack quest tick reads the scoreboard and drives the outcome).
+  public static final String MODE_PASSIVE = "PASSIVE";
 
   /**
    * Persistent one-shot latch for {@link #MODE_APPROACH_ONCE}: set true once the NPC has

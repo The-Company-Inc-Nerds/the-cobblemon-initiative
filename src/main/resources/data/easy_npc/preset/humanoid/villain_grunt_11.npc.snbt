@@ -18,7 +18,7 @@
                         Type: "OPEN_DEFAULT_DIALOG"
                     }
                 ],
-                ON_DISTANCE_TOUCH: [
+                ON_DISTANCE_VERY_CLOSE: [
                     {
                         Type: "COMMAND",
                         ConditionDataSet: {
@@ -54,7 +54,26 @@
                                 }
                             ]
                         },
-                        Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:villain_grunt_11 onwin {1: ['cobbledollars give @1 600', 'tag @1 add defeated_villain_grunt_11', '@2 say Past me is the boardroom door. They told me nobody gets past me. They told me a lot of things.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 400', '@1 say Perimeter holds. The board is not receiving visitors. Especially not you.']}"
+                        Cmd: "tag @s add in_trainer_battle"
+                    },
+                    {
+                        Type: "COMMAND",
+                        ExecAsUser: 1b,
+                        ConditionDataSet: {
+                            ConditionDataSet: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "dex_gte_2"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_villain_grunt_11"
+                                }
+                            ]
+                        },
+                        Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:villain_grunt_11 onwin {1: ['cobbledollars give @1 600', 'tag @1 add defeated_villain_grunt_11', '@2 say Past me is the boardroom door. They told me nobody gets past me. They told me a lot of things.', 'tag @1 remove in_trainer_battle', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 400', '@1 say Perimeter holds. The board is not receiving visitors. Especially not you.', 'tag @2 remove in_trainer_battle']}"
                     }
                 ]
             }
@@ -125,7 +144,7 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:villain_grunt_11 onwin {1: ['cobbledollars give @1 600', 'tag @1 add defeated_villain_grunt_11', '@2 say Past me is the boardroom door. They told me nobody gets past me. They told me a lot of things.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 400', '@1 say Perimeter holds. The board is not receiving visitors. Especially not you.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:villain_grunt_11 onwin {1: ['cobbledollars give @1 600', 'tag @1 add defeated_villain_grunt_11', '@2 say Past me is the boardroom door. They told me nobody gets past me. They told me a lot of things.', 'tag @1 remove in_trainer_battle', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 400', '@1 say Perimeter holds. The board is not receiving visitors. Especially not you.', 'tag @2 remove in_trainer_battle']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -192,7 +211,7 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:villain_grunt_11 onwin {1: ['cobbledollars give @1 600', 'tag @1 add defeated_villain_grunt_11', '@2 say Past me is the boardroom door. They told me nobody gets past me. They told me a lot of things.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 400', '@1 say Perimeter holds. The board is not receiving visitors. Especially not you.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:villain_grunt_11 onwin {1: ['cobbledollars give @1 600', 'tag @1 add defeated_villain_grunt_11', '@2 say Past me is the boardroom door. They told me nobody gets past me. They told me a lot of things.', 'tag @1 remove in_trainer_battle', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 400', '@1 say Perimeter holds. The board is not receiving visitors. Especially not you.', 'tag @2 remove in_trainer_battle']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

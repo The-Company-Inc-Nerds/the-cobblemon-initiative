@@ -38,7 +38,7 @@
                         Cmd: "say My birds marked you a field back — this end of the road settles in battles, not vouchers!"
                     }
                 ],
-                ON_DISTANCE_TOUCH: [
+                ON_DISTANCE_VERY_CLOSE: [
                     {
                         Type: "COMMAND",
                         ConditionDataSet: {
@@ -84,7 +84,31 @@
                                 }
                             ]
                         },
-                        Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:sq_rt2_scarecrow onwin {1: ['cobbledollars give @1 230', 'tag @1 add defeated_sq_rt2_scarecrow', '@2 say Sharp work. The crows would scatter for you without a single scarecrow.'], 2: ['@1 say Ha — the birds still earn better than the vouchers do. Rest yours and come back.']}"
+                        Cmd: "tag @s add in_trainer_battle"
+                    },
+                    {
+                        Type: "COMMAND",
+                        ExecAsUser: 1b,
+                        ConditionDataSet: {
+                            ConditionDataSet: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "dex_gte_2"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_sq_rt2_scarecrow"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_declined_sq_rt2_scarecrow"
+                                }
+                            ]
+                        },
+                        Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:sq_rt2_scarecrow onwin {1: ['cobbledollars give @1 230', 'tag @1 add defeated_sq_rt2_scarecrow', '@2 say Sharp work. The crows would scatter for you without a single scarecrow.', 'tag @1 remove in_trainer_battle'], 2: ['@1 say Ha — the birds still earn better than the vouchers do. Rest yours and come back.', 'tag @2 remove in_trainer_battle']}"
                     }
                 ]
             }
@@ -225,7 +249,7 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:sq_rt2_scarecrow onwin {1: ['cobbledollars give @1 230', 'tag @1 add defeated_sq_rt2_scarecrow', '@2 say Sharp work. The crows would scatter for you without a single scarecrow.'], 2: ['@1 say Ha — the birds still earn better than the vouchers do. Rest yours and come back.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:sq_rt2_scarecrow onwin {1: ['cobbledollars give @1 230', 'tag @1 add defeated_sq_rt2_scarecrow', '@2 say Sharp work. The crows would scatter for you without a single scarecrow.', 'tag @1 remove in_trainer_battle'], 2: ['@1 say Ha — the birds still earn better than the vouchers do. Rest yours and come back.', 'tag @2 remove in_trainer_battle']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -239,15 +263,6 @@
                                 }
                             ],
                             Label: "battle_button"
-                        },
-                        {
-                            Name: "Walk on",
-                            Actions: [
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "leave_button"
                         },
                         {
                             Name: "Pay 120 CD to bow out",
@@ -338,7 +353,7 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:sq_rt2_scarecrow onwin {1: ['cobbledollars give @1 230', 'tag @1 add defeated_sq_rt2_scarecrow', '@2 say Sharp work. The crows would scatter for you without a single scarecrow.'], 2: ['@1 say Ha — the birds still earn better than the vouchers do. Rest yours and come back.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:sq_rt2_scarecrow onwin {1: ['cobbledollars give @1 230', 'tag @1 add defeated_sq_rt2_scarecrow', '@2 say Sharp work. The crows would scatter for you without a single scarecrow.', 'tag @1 remove in_trainer_battle'], 2: ['@1 say Ha — the birds still earn better than the vouchers do. Rest yours and come back.', 'tag @2 remove in_trainer_battle']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -362,15 +377,6 @@
                                 }
                             ],
                             Label: "tip_button"
-                        },
-                        {
-                            Name: "Walk on",
-                            Actions: [
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "leave_button"
                         },
                         {
                             Name: "Pay 120 CD to bow out",

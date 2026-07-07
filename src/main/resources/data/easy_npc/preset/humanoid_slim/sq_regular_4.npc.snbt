@@ -38,7 +38,7 @@
                         Cmd: "say You walked right through my sightline - the meadow does not let that slide!"
                     }
                 ],
-                ON_DISTANCE_TOUCH: [
+                ON_DISTANCE_VERY_CLOSE: [
                     {
                         Type: "COMMAND",
                         ConditionDataSet: {
@@ -84,7 +84,31 @@
                                 }
                             ]
                         },
-                        Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:sq_regular_4 onwin {1: ['cobbledollars give @1 220', 'tag @1 add defeated_sq_regular_4', '@2 say Fair and square. The dandelions saw the whole thing - they will tell the wind, and the wind tells everyone.'], 2: ['@1 say The meadow keeps its own. Sit a moment, catch your breath, and we go again whenever.']}"
+                        Cmd: "tag @s add in_trainer_battle"
+                    },
+                    {
+                        Type: "COMMAND",
+                        ExecAsUser: 1b,
+                        ConditionDataSet: {
+                            ConditionDataSet: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "dex_gte_2"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_sq_regular_4"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_declined_sq_regular_4"
+                                }
+                            ]
+                        },
+                        Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:sq_regular_4 onwin {1: ['cobbledollars give @1 220', 'tag @1 add defeated_sq_regular_4', '@2 say Fair and square. The dandelions saw the whole thing - they will tell the wind, and the wind tells everyone.', 'tag @1 remove in_trainer_battle'], 2: ['@1 say The meadow keeps its own. Sit a moment, catch your breath, and we go again whenever.', 'tag @2 remove in_trainer_battle']}"
                     }
                 ]
             }
@@ -225,7 +249,7 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:sq_regular_4 onwin {1: ['cobbledollars give @1 220', 'tag @1 add defeated_sq_regular_4', '@2 say Fair and square. The dandelions saw the whole thing - they will tell the wind, and the wind tells everyone.'], 2: ['@1 say The meadow keeps its own. Sit a moment, catch your breath, and we go again whenever.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:sq_regular_4 onwin {1: ['cobbledollars give @1 220', 'tag @1 add defeated_sq_regular_4', '@2 say Fair and square. The dandelions saw the whole thing - they will tell the wind, and the wind tells everyone.', 'tag @1 remove in_trainer_battle'], 2: ['@1 say The meadow keeps its own. Sit a moment, catch your breath, and we go again whenever.', 'tag @2 remove in_trainer_battle']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -265,15 +289,6 @@
                                 }
                             ],
                             Label: "bow_out_button"
-                        },
-                        {
-                            Name: "Goodbye",
-                            Actions: [
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "goodbye_button"
                         }
                     ],
                     Texts: [

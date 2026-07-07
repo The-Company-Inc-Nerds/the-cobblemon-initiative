@@ -566,6 +566,24 @@ public class InitiativeConfigScreen {
 
     lootChests.addEntry(
       entryBuilder
+        .startBooleanToggle(
+          Component.literal("Overwrite Existing Content"),
+          lootChestConfig.isOverwriteExisting()
+        )
+        .setDefaultValue(lootChestDefaults.isOverwriteExisting())
+        .setTooltip(
+          Component.literal(
+            "When on, an unplaced chest that already holds items has its content REPLACED "
+            + "(cleared, then the empty/stock roll decides). Off leaves non-empty unplaced "
+            + "chests exactly as the map author stocked them."
+          )
+        )
+        .setSaveConsumer(lootChestConfig::setOverwriteExisting)
+        .build()
+    );
+
+    lootChests.addEntry(
+      entryBuilder
         .startIntSlider(
           Component.literal("Empty Chest Chance"),
           (int) Math.round(lootChestConfig.getEmptyChestChance() * 100),

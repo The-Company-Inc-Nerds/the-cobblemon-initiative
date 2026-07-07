@@ -460,6 +460,10 @@ def build_battle_command(ch: dict, where: str, trainer: str | None = None) -> st
     win.append(f"tag @1 add {dt}")
     if b.get("win_line"):
         win.append(f"@2 say {b['win_line']}")
+    # engage:touch (round 13d) — clear the in-battle flag so NpcSight resumes normal
+    # behavior; on a WIN the defeat tag already stops the pursuit, this just tidies up.
+    if ch.get("engage") == "touch":
+        win.append("tag @1 remove in_trainer_battle")
     win += list(b.get("on_win", []))
     despawn = b.get("despawn_on_win",
                     b.get("type") in ("villain_grunt", "villain_management", "gauntlet_boss", "villain_forced"))
@@ -474,6 +478,10 @@ def build_battle_command(ch: dict, where: str, trainer: str | None = None) -> st
         lose.append(f"cobbledollars remove @2 {int(b['loss_fee'])}")
     if b.get("lose_line"):
         lose.append(f"@1 say {b['lose_line']}")
+    # engage:touch — on a LOSS the trainer is NOT defeated, so clearing the in-battle
+    # flag lets NpcSight re-engage on the next approach (the intended re-force).
+    if ch.get("engage") == "touch":
+        lose.append("tag @2 remove in_trainer_battle")
     lose += list(b.get("on_lose", []))
     onwin = build_onwin(win, lose, where)
     return f"tbcs battle {fmt} @s vs rctmod:{trainer} onwin {onwin}"
@@ -541,6 +549,12 @@ def battle_actions(ch: dict, where: str, override: dict | None = None,
     # stay bare — only the tbcs command token carries the prefix.
     acts.append(command_action_raw(
         f"tbcs attach rctmod:{trainer} @s", False, gate, where))
+    # engage:touch (round 13d) — flag the player as in a forced battle BEFORE it starts, so
+    # NpcSight stands the pursuer down (it would otherwise keep chasing mid-battle). Cleared
+    # in both onwin branches. Trigger path only — dialog buttons open with the player already
+    # adjacent, no pursuit to stop.
+    if trigger_ctx and ch.get("engage") == "touch":
+        acts.append(command_action("tag @s add in_trainer_battle", True, gate, where))
     # Bare tbcs + not_tag action Conditions: the ExecAsUser source is the player, and an
     # `execute unless entity @s[tag=…] run` guard would be silently blocked (Easy NPC 6.25
     # rejects every execute-rooted ExecAsUser command — see dialog_cmd).
@@ -678,18 +692,28 @@ def build_entry(e: dict, conds: list, ch: dict, registers: dict, lore: dict,
     # Every entry gets a way OUT: auto-append a Goodbye close button unless the entry
     # already has one or opts out ("no_goodbye": true — forced encounters).
     buttons = list(e.get("buttons", []))
+    entry_has_battle = any(_has_battle_action(bt) for bt in e.get("buttons", []))
+    # FORCED ROUTE BATTLE (round 13d, showrunner): a route trainer that sells a bow-out
+    # must have NO FREE exit from its battle entry — declining costs money. Strip authored
+    # pure-close buttons (e.g. Jabari's free "Enjoy the picnic") and skip the auto-Goodbye;
+    # the paid bow-out below is the only non-battle way out. (Overrides the earlier
+    # "route trainers stay leaveable in dialog" rule — the VERY_CLOSE touch trigger already
+    # forces the fight, so a free dialog leave was a loophole.)
+    forced_route = ch.get("engage") == "touch" and (ch.get("battle") or {}).get("decline_fee")
+    strip_free_exit = bool(forced_route and entry_has_battle)
+    if strip_free_exit:
+        buttons = [bt for bt in buttons
+                   if not (len(bt.get("actions", [])) == 1
+                           and bt["actions"][0].get("do") == "close")]
     # Auto bow-out on every entry that offers the battle (skipped when the entry already
     # wires the decline function itself — the deliberate fee-fork NPCs keep their own
-    # flavored buttons). Deliberately does NOT count as a close button for the
-    # auto-Goodbye rule: route trainers stay leaveable in dialog (the TOUCH trigger is
-    # their enforcement); forced entries opt out via no_goodbye.
+    # flavored buttons).
     bow = _bow_out_button(ch)
-    if bow and not e.get("no_bow_out") \
-            and any(_has_battle_action(bt) for bt in e.get("buttons", [])) \
+    if bow and not e.get("no_bow_out") and entry_has_battle \
             and not any("route/decline_" in (a.get("cmd") or "")
                         for bt in e.get("buttons", []) for a in bt.get("actions", [])):
         buttons.append(bow)
-    if not _has_close_button(e) and not e.get("no_goodbye"):
+    if not _has_close_button(e) and not e.get("no_goodbye") and not strip_free_exit:
         buttons.append(GOODBYE_BUTTON)
     if buttons:
         pairs.append(("Buttons", lst([build_button(b, ch, where) for b in buttons])))
@@ -770,7 +794,7 @@ def synth_engage_triggers(ch: dict) -> list[dict]:
     """engage:"touch" (round 13b) — the battle-on-touch mechanism, synthesized through
     the normal trigger path: ON_DISTANCE_CLOSE hail (entity-path say, 8-block band,
     ActionGroup de-dupes per band entry) when battle.hail_line is set, plus
-    ON_DISTANCE_TOUCH attach+battle (1.25-block band). Gates ride the doubled
+    ON_DISTANCE_VERY_CLOSE attach+battle (4.0-block band — reachable by the pursue). Gates ride the doubled
     ConditionDataSet: not_tag defeated always, not_tag declined_<id> when the
     character sells a bow-out (a paid decline stands the trainer down — no hail,
     no ambush, forever)."""
@@ -792,7 +816,10 @@ def synth_engage_triggers(ch: dict) -> list[dict]:
         out.append({"on": "ON_DISTANCE_CLOSE",
                     "actions": [{"do": "command", "cmd": "say " + b["hail_line"],
                                  "gate": {"not_tags": list(negs)}}]})
-    out.append({"on": "ON_DISTANCE_TOUCH", "actions": [{"do": "battle"}]})
+    # VERY_CLOSE (4.0), not TOUCH (1.25): the NpcSight pursue stops the trainer ~2 blocks
+    # out, which NEVER reaches the 1.25 touch band — so the forced battle never fired
+    # (round 13d bug). 4.0 fires as the pursuer arrives (or as the player walks in).
+    out.append({"on": "ON_DISTANCE_VERY_CLOSE", "actions": [{"do": "battle"}]})
     return out
 
 
@@ -803,7 +830,7 @@ def synth_engage_triggers(ch: dict) -> list[dict]:
 # PokedexManager.catch → FormDexRecord knowledge = CAUGHT — the same count
 # DexScoreManager mirrors into dex_caught), so the floor is dex_caught >= 2, NOT the
 # review's assumed dex_gte_1 (which the starter alone would satisfy, protecting no one).
-# Applied to EVERY ON_DISTANCE_TOUCH battle — spotters, route regulars, Company forced
+# Applied to EVERY forced (VERY_CLOSE) battle — spotters, route regulars, Company forced
 # grunts alike (the review makes the floor a matrix-wide rule for FORCED starts). The
 # CLOSE-band hail stays ungated: trainers still call out; they just do not jump you.
 DEX_FLOOR = 2
@@ -822,7 +849,7 @@ def apply_triggers(tree, ch: dict):
             # condition merged into its gate — battle_actions ANDs it onto BOTH the
             # attach and the tbcs battle action (the doubled ConditionDataSet). Dialog
             # battle BUTTONS stay ungated: clicking one is not a forced start.
-            if tr["on"] == "ON_DISTANCE_TOUCH" and a.get("do") == "battle":
+            if tr["on"] == "ON_DISTANCE_VERY_CLOSE" and a.get("do") == "battle":
                 gate = dict(a.get("gate") or {})
                 gate.setdefault("dex", {"op": "gte", "value": DEX_FLOOR})
                 a = {**a, "gate": gate}
@@ -1255,12 +1282,37 @@ def merge_mapping(mappings: dict, ch: dict, etype: str = "humanoid") -> None:
     preset = ch["id"] if etype == "humanoid" else f"{etype}/{ch['id']}"
     mappings[ch["uuid"].strip()] = {"preset": preset, "label": ch["display_name"]}
 
+# Tag-keyed sight profiles for placement NPCs (round 13e): tag -> {tag,range,mode,...}.
+# Emitted to data/cobblemon_initiative/npcsight_profiles.json; NpcSightManager discovers
+# any live entity carrying the tag and wires its can_see_player automatically — no
+# per-world `npcsight add <uuid>` step.
+SIGHT_PROFILES: "OrderedDict[str, dict]" = OrderedDict()
+
+
 def sight_lines_for(ch: dict) -> list[str]:
     sg = ch.get("sight")
     if not sg:
         return []
     if not ch.get("uuid"):
-        warn(f"{ch['id']}: has 'sight' but no 'uuid' — cannot emit npcsight registration.")
+        # No uuid → a placement-spawned NPC. Register a TAG-keyed profile instead of a
+        # uuid line so the runtime discovers it automatically (sentries, auditors, …).
+        tag = sg.get("tag") or (ch.get("entity_tags") or [None])[0]
+        if not tag:
+            warn(f"{ch['id']}: has 'sight' but no uuid and no entity_tags/sight.tag — "
+                 f"cannot register (add an entity_tag or sight.tag).")
+            return []
+        prof = OrderedDict([("tag", tag), ("range", sg.get("range", 5)),
+                            ("mode", (sg.get("mode") or "PASSIVE").upper())])
+        if sg.get("dialog_label"): prof["dialog"] = sg["dialog_label"]
+        if sg.get("meet_tag"):     prof["meetTag"] = sg["meet_tag"]
+        if sg.get("stop_tag"):     prof["stopTag"] = sg["stop_tag"]
+        prev = SIGHT_PROFILES.get(tag)
+        if prev is not None and prev != prof:
+            warn(f"{ch['id']}: sight profile for tag {tag!r} conflicts with an earlier "
+                 f"character's — keeping the first (all NPCs with a shared sight tag must "
+                 f"share the same range/mode).")
+        else:
+            SIGHT_PROFILES[tag] = prof
         return []
     u = ch["uuid"].strip(); rng = sg.get("range", 5)
     out = [f"# {ch['display_name']} ({ch['id']})"]
@@ -1294,6 +1346,44 @@ def load_kind(folder: str, kinds: tuple) -> dict:
 # or literal {"x","y","z"}. Emitted for QuestTrackManager as quest_waypoints.json.
 
 QUEST_TARGETS_SRC   = DIALOG_SRC / "registers" / "quest_targets.json"
+SMOKETEST_MD  = PROJECT_ROOT / "SMOKETEST.md"
+SMOKETEST_OUT = (PROJECT_ROOT
+                 / "src/main/resources/data/cobblemon_initiative/smoketest_items.json")
+
+
+def emit_smoketest_items() -> int:
+    """Parse SMOKETEST.md's R-items into a runtime list the in-game `smoke` dev command
+    reads, so SMOKETEST.md stays the single source of truth. Each item: {id, text}. Text
+    is the R-line summary (markdown stripped), continuation lines joined, truncated."""
+    if not SMOKETEST_MD.is_file():
+        return -1
+    items = []
+    cur = None
+    for line in SMOKETEST_MD.read_text().splitlines():
+        m = re.match(r"- \*\*(R\d+)\*\* [—-]+ (.*)", line)
+        if m:
+            if cur:
+                items.append(cur)                       # flush the previous item
+            cur = {"id": m.group(1), "text": m.group(2)}
+        elif cur is not None:
+            st = line.strip()
+            if st.startswith("- ✅") or st.startswith("- comment") \
+                    or st.startswith(">") or st.startswith("|"):
+                continue                                # checkbox/comment/formatting — skip
+            if st:
+                cur["text"] += " " + st                 # a wrapped description line
+    if cur:
+        items.append(cur)
+    # strip markdown bold + collapse whitespace; cap length for chat legibility
+    for it in items:
+        it["text"] = re.sub(r"\*\*(.*?)\*\*", r"\1", it["text"]).strip()
+        it["text"] = re.sub(r"\s+", " ", it["text"])
+        if len(it["text"]) > 220:
+            it["text"] = it["text"][:217] + "..."
+    SMOKETEST_OUT.write_text(json.dumps(items, indent=2, ensure_ascii=False) + "\n")
+    return len(items)
+
+
 QUEST_WAYPOINTS_OUT = (PROJECT_ROOT
                        / "src/main/resources/data/cobblemon_initiative/quest_waypoints.json")
 
@@ -1517,6 +1607,19 @@ def main() -> None:
         "# Auto-generated by scripts/content_compile. Run AFTER update_npc_presets.\n"
         f"# /function {NS}:dialog/register_sight   (OP level 2)\n\n"
         + "\n".join(sight) + ("\n" if sight else ""))
+
+    # Tag-keyed sight profiles (round 13e) — full runs only (a filtered --character run
+    # would emit a partial set and clobber the rest).
+    if not args.character:
+        profiles_out = (PROJECT_ROOT
+                        / "src/main/resources/data/cobblemon_initiative/npcsight_profiles.json")
+        profiles_out.write_text(
+            json.dumps(list(SIGHT_PROFILES.values()), indent=2, ensure_ascii=False) + "\n")
+        print(f"Wrote {profiles_out.relative_to(PROJECT_ROOT)} "
+              f"({len(SIGHT_PROFILES)} tag-keyed sight profiles)")
+        n_smoke = emit_smoketest_items()
+        if n_smoke >= 0:
+            print(f"Wrote {SMOKETEST_OUT.relative_to(PROJECT_ROOT)} ({n_smoke} smoke items)")
 
     # npc_presets.json (merged)
     NPC_PRESETS.write_text(json.dumps({"mappings": mappings}, indent=2) + "\n")

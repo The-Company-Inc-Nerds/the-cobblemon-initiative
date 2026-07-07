@@ -1,12 +1,12 @@
 {
     PresetMetadata: {
         author: "TheCompanyInc",
-        category: "Merchant",
+        category: "Civilian",
         created: 0L,
-        description: "merchant at Sango Town - back lane behind the docks (act 1). Compiled from dialog-src.",
+        description: "civilian at Sango Town (act 1). Compiled from dialog-src.",
         entityTypeId: "easy_npc:humanoid",
         modified: 0L,
-        name: "Torn-Label Tadashi",
+        name: "Victor",
         variantType: "STEVE",
         version: "1.0.0"
     },
@@ -36,98 +36,69 @@
             Type: "STANDARD",
             DialogDataSet: [
                 {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "victor_hint"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "off_record_complete"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "no_sold_docs"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "no_census_signed"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "no_off_record_blown"
+                        }
+                    ],
+                    Priority: 30,
+                    Buttons: [
+                        {
+                            Name: "Reach out to him",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add victor_transformed"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "reach_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The boy turns. For the first time his eyes do not read you and do not pass through you — they simply hold you, the way a thing holds still when it has finally been found."
+                        },
+                        {
+                            Text: "You carried for the neighbors and were never once seen. You did not sign their forms. You did not sell the last honest thing. He knows — somehow he has always known, sitting up here where the fields answer him, waiting for the one soul the grey suits could not catch, could not buy, and could not count."
+                        },
+                        {
+                            Text: "A warmth comes up off him like heat off summer grain. The air begins to hum. Whatever Victor was pretending to be, it is done pretending."
+                        }
+                    ],
+                    Name: "Victor",
+                    Label: "transform"
+                },
+                {
                     Priority: 10,
                     Buttons: [
                         {
-                            Name: "TR Swift — 800 CD",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "function cobblemon_initiative:economy/market/buy_tr_swift"
-                                }
-                            ],
-                            Label: "buy_tr_swift_button"
-                        },
-                        {
-                            Name: "TR Bullet Seed — 800 CD",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "function cobblemon_initiative:economy/market/buy_tr_bulletseed"
-                                }
-                            ],
-                            Label: "buy_tr_bulletseed_button"
-                        },
-                        {
-                            Name: "TR Mud-Shot — 900 CD",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "function cobblemon_initiative:economy/market/buy_tr_mudshot"
-                                }
-                            ],
-                            Label: "buy_tr_mudshot_button"
-                        },
-                        {
-                            Name: "TR Protect — 1000 CD",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "function cobblemon_initiative:economy/market/buy_tr_protect"
-                                }
-                            ],
-                            Label: "buy_tr_protect_button"
-                        },
-                        {
-                            Name: "TR Rock Tomb — 1000 CD",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "function cobblemon_initiative:economy/market/buy_tr_rocktomb"
-                                }
-                            ],
-                            Label: "buy_tr_rocktomb_button"
-                        },
-                        {
-                            Name: "TR Aerial Ace — 1100 CD",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "function cobblemon_initiative:economy/market/buy_tr_aerialace"
-                                }
-                            ],
-                            Label: "buy_tr_aerialace_button"
-                        },
-                        {
-                            Name: "TR Thunder Wave — 1200 CD",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "function cobblemon_initiative:economy/market/buy_tr_thunderwave"
-                                }
-                            ],
-                            Label: "buy_tr_thunderwave_button"
-                        },
-                        {
-                            Name: "TR Will-O-Wisp — 1500 CD",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "function cobblemon_initiative:economy/market/buy_tr_willowisp"
-                                }
-                            ],
-                            Label: "buy_tr_willowisp_button"
-                        },
-                        {
-                            Name: "Not today",
+                            Name: "Leave him to his watch",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -138,13 +109,16 @@
                     ],
                     Texts: [
                         {
-                            Text: "Keep your voice down and your options open, friend. Records, not machines — one move, one use, no questions about where the disc has been. The label came off in the rain. The move underneath still works."
+                            Text: "The apprentice sits at the tower's edge, watching the fields. His eyes move to you, weigh you a moment, and return to the grain. He says nothing."
                         },
                         {
-                            Text: "A starter team is a team with holes. I sell the patches. Nothing here evolves you and nothing here is glamorous, but a Thunder Wave in the right slot has saved more runs than any legendary. Take a look."
+                            Text: "Victor does not look up. Whatever he is listening for, it is not you — not yet. The wind moves through the wheat below and he seems to be reading it."
+                        },
+                        {
+                            Text: "For a heartbeat he studies you as though you are a page half-remembered. Then the look empties, and he gazes straight through you at something further off. He does not speak."
                         }
                     ],
-                    Name: "Torn-Label Tadashi",
+                    Name: "Victor",
                     Label: "default"
                 }
             ]
@@ -304,6 +278,7 @@
             }
         ],
         id: "easy_npc:humanoid",
-        CustomName: '{"text": "Torn-Label Tadashi", "color": "#FFFFFF"}'
+        CustomName: '{"text": "Victor", "color": "#FFFFFF"}',
+        Tags: ["victor_apprentice"]
     }
 }
