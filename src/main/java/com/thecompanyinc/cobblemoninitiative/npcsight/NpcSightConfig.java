@@ -27,6 +27,15 @@ public class NpcSightConfig {
   private double dialogRange = 3.0;
 
   /**
+   * Hold distance for sight-driven walk-up (pursue + approach_once): once a following NPC
+   * is within this many blocks of the player it stops pathing and holds, instead of walking
+   * to Easy NPC's ~2-block FOLLOW StopDistance and talking/fighting from inside the player.
+   * Kept below the 4-block ON_DISTANCE_VERY_CLOSE battle band so pursued forced battles still
+   * fire. A pursuer resumes the chase only if the player pulls back past this + the hysteresis.
+   */
+  private double followStopDistance = 3.5;
+
+  /**
    * Default Easy NPC dialog identifier used when an NPC has no per-entity dialog set.
    * Blank string disables the fallback entirely.
    */
@@ -81,6 +90,14 @@ public class NpcSightConfig {
 
   public double getDialogRange() {
     return dialogRange;
+  }
+
+  public double getFollowStopDistance() {
+    return followStopDistance;
+  }
+
+  public void setFollowStopDistance(double v) {
+    this.followStopDistance = v;
   }
 
   public void setDefaultSightRange(int v) {

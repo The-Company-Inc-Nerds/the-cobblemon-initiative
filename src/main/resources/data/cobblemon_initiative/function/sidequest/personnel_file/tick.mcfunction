@@ -10,9 +10,8 @@ execute as @a[scores={ci_notices=1..},tag=!notices_filed] at @s if entity @e[tag
 execute as @a[tag=docs_filed,tag=!notices_filed] unless score @s ci_notices matches 0.. run scoreboard players set @s ci_notices 0
 execute as @a[tag=docs_filed,tag=!notices_filed,scores={ci_notices=0}] at @s if entity @e[tag=surveyor,scores={can_see_player=1..},distance=..24] run title @s actionbar [{"text":"CLIPBOARD UP","color":"red","bold":true},{"text":" — she is watching this stretch of wall","color":"gray"}]
 
-# Stage 1 pickups off real container blocks (no prop-NPCs needed). Once the file is open,
-# a player who reaches the block "finds" the document, one-shot per doc tag.
-#   chest on the cart by Lumo  -> portrait backing
-#   barrel by the farm fountain -> re-signed ledger page
-execute positioned 2591 111 2815 as @a[distance=..3,tag=file_opened,tag=!doc_portrait] run function cobblemon_initiative:sidequest/personnel_file/give_doc_portrait
-execute positioned 2584 107 2925 as @a[distance=..3,tag=file_opened,tag=!doc_ledger] run function cobblemon_initiative:sidequest/personnel_file/give_doc_ledger
+# Stage 1 pickups are CLICK-based, not proximity: the ledger barrel (2584 107 2925) and the
+# portrait chest (2591 111 2815) are handled in Java by docprop.DocPropManager — clicking the
+# container swallows the vanilla open and "finds" the document via give_doc_ledger /
+# give_doc_portrait. (Container open can only be cancelled from Java, not a datapack.) The old
+# walk-near auto-give lived here and was removed 2026-07-08.

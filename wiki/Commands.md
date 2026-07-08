@@ -174,7 +174,7 @@ Reusable, OP-2 commands meant to be called from NPC **dialog buttons** (which ru
 |---------|-------------|------|
 | `/ca trade <take> <give> [level] [tag]` | Removes the **first party Pokémon** whose species matches `<take>` (any slot) and gives a `<give>` at `[level]` (default = the traded mon's level). Sets `[tag]` **only on a completed trade**. No `<take>` → "you have no …" no-op. Backs Old Sefu's Magikarp→Feebas trade. | species, species, 1–100, tag |
 | `/ca turnin <item> <count> [tag]` | Counts `<item>` in the player's inventory; if ≥ `<count>`, removes exactly that many and sets `[tag]`. Else a "you need N" no-op. The fix for the item hand-in pattern (Raan, Dr. Asha). | item id, ≥1, tag |
-| `/ca givemon <species> <level> [tag]` | Creates `<species>` at `<level>` via the Cobblemon API and adds it to the party, optionally tagging on success. Reliable alternative to `givepokemonother`. | species, 1–100, tag |
+| `/ca givemon <properties>` | Parses a full Cobblemon property string (species + any of `level=` / `shiny=` / `gender=` / `hisuian=` …) and adds the result to the party, resolving the player from the command **source** (so it works from both dialog buttons and inside `.mcfunction`s). As of 0.5.0-alpha.5 every Pokémon gift routes through this rather than `givepokemonother` — that command works in dialog buttons but a raw `@s` call inside a function failed ("no pokemon was specified"), so gifts were unified on the source-based command. e.g. `givemon eevee level=5 shiny=true`. | property string |
 
 ### Reload
 

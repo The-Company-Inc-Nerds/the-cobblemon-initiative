@@ -132,32 +132,19 @@ public class CobblemonInitiativeCommands {
                 )
             )
         )
-        // Verified party give (Cobblemon API): creates <species> at <level> and adds it to the
-        // party, optionally tagging on success. The reliable alternative to the unverified
-        // givepokemonother. /cobblemon-initiative givemon <species> <level> [tag]
+        // Verified party give (Cobblemon API): parses a FULL PokemonProperties string and adds
+        // the result to the party, resolving the player from the command SOURCE so it works in
+        // both dialog-button and function contexts. Unifies every Pokémon gift here instead of
+        // givepokemonother (which works in dialog buttons but failed on a raw @s inside a
+        // function). Accepts anything PokemonProperties understands — level=, shiny=, gender=,
+        // hisuian=, etc.
+        // /cobblemon-initiative givemon <properties>   e.g.  eevee level=5 shiny=true
         .then(
           Commands.literal("givemon")
             .requires(source -> source.hasPermission(2))
             .then(
-              Commands.argument("species", StringArgumentType.word())
-                .then(
-                  Commands.argument("level", IntegerArgumentType.integer(1, 100))
-                    .executes(ctx -> givemon(
-                      ctx,
-                      StringArgumentType.getString(ctx, "species"),
-                      IntegerArgumentType.getInteger(ctx, "level"),
-                      null
-                    ))
-                    .then(
-                      Commands.argument("tag", StringArgumentType.word())
-                        .executes(ctx -> givemon(
-                          ctx,
-                          StringArgumentType.getString(ctx, "species"),
-                          IntegerArgumentType.getInteger(ctx, "level"),
-                          StringArgumentType.getString(ctx, "tag")
-                        ))
-                    )
-                )
+              Commands.argument("properties", StringArgumentType.greedyString())
+                .executes(ctx -> givemon(ctx, StringArgumentType.getString(ctx, "properties")))
             )
         )
         .then(
@@ -599,16 +586,12 @@ public class CobblemonInitiativeCommands {
   }
 
   /**
-   * Verified party give (Cobblemon API). Creates {@code species} at {@code level}, adds it to
-   * the player's party, and (when non-null) adds {@code successTag}. The reliable alternative
-   * to the unverified {@code givepokemonother} command for quest gifts.
+   * Verified party give (Cobblemon API). Parses a full {@code PokemonProperties} string (species
+   * + any of level= / shiny= / gender= / hisuian= …) and adds the result to the player's party.
+   * Resolves the player from the command source, so it works in both dialog-button and function
+   * contexts — unlike a raw {@code @s givepokemonother}, which failed inside a .mcfunction.
    */
-  private static int givemon(
-    CommandContext<CommandSourceStack> context,
-    String species,
-    int level,
-    String successTag
-  ) {
+  private static int givemon(CommandContext<CommandSourceStack> context, String properties) {
     ServerPlayer player;
     try {
       player = context.getSource().getPlayerOrException();
@@ -616,31 +599,31 @@ public class CobblemonInitiativeCommands {
       return 0;
     }
 
-    Pokemon given = giveSpecies(player, species, level);
+    Pokemon given = giveProperties(player, properties);
     if (given == null) {
-      player.sendSystemMessage(Component.literal("§cCould not create Pokémon: " + species));
+      player.sendSystemMessage(Component.literal("§cCould not create Pokémon: " + properties));
       return 0;
     }
-    if (successTag != null && !successTag.isBlank()) {
-      player.addTag(successTag);
-    }
     player.sendSystemMessage(
-      Component.literal("§a" + species + " (Lv " + level + ") joined your team.")
+      Component.literal("§a" + given.getSpecies().getName() + " joined your team.")
     );
     return 1;
   }
 
-  /** Create {@code species} at {@code level} via the Cobblemon API and add it to the party. */
-  private static Pokemon giveSpecies(ServerPlayer player, String species, int level) {
+  /** Parse a full PokemonProperties string, create the mon, and add it to the party. */
+  private static Pokemon giveProperties(ServerPlayer player, String properties) {
     try {
-      Pokemon mon = PokemonProperties.Companion
-        .parse(species + " level=" + level)
-        .create();
+      Pokemon mon = PokemonProperties.Companion.parse(properties).create();
       Cobblemon.INSTANCE.getStorage().getParty(player).add(mon);
       return mon;
     } catch (Exception e) {
       return null;
     }
+  }
+
+  /** Create {@code species} at {@code level} and add it to the party (used by {@code trade}). */
+  private static Pokemon giveSpecies(ServerPlayer player, String species, int level) {
+    return giveProperties(player, species + " level=" + level);
   }
 
   private static int showProgress(CommandContext<CommandSourceStack> context) {

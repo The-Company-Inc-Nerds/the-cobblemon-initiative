@@ -1,6 +1,6 @@
 # The Cobblemon Initiative
 
-A single-player **Fabric** mod (Minecraft 1.21.1 + Cobblemon 1.7.3, currently **0.5.0-alpha.4**) built for UPM 2 and played as a live **hardcore + Nuzlocke** production. It layers gym-badge progression, level caps, Nuzlocke death mechanics, an amnesiac-founder mystery, a destabilizing in-world economy, elemental shrine challenges, a full side-quest board with an on-map quest tracker, and progress-scaled loot caches onto a curated journey through ten gyms.
+A single-player **Fabric** mod (Minecraft 1.21.1 + Cobblemon 1.7.3, currently **0.5.0-alpha.5**) built for UPM 2 and played as a live **hardcore + Nuzlocke** production. It layers gym-badge progression, level caps, Nuzlocke death mechanics, an amnesiac-founder mystery, a destabilizing in-world economy, elemental shrine challenges, a full side-quest board with an on-map quest tracker, and progress-scaled loot caches onto a curated journey through ten gyms.
 
 ## 📐 Architecture
 - **[[Architecture Overview]]** — the nine subsystems, the Fabric init/lifecycle flow, runtime-mod integrations, and the recurring design patterns.

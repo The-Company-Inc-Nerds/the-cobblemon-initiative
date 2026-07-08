@@ -842,18 +842,29 @@ def apply_triggers(tree, ch: dict):
     # lower in trigger context: no CLOSE_DIALOG, no beaten-line say (battle_actions).
     events: OrderedDict = OrderedDict()
     for tr in list(ch.get("triggers") or []) + synth_engage_triggers(ch):
-        acts = events.setdefault(tr["on"], [])
+        on = tr["on"]
+        # TOUCH-BAND RETIRED (showrunner 2026-07-08): the 1.25-block ON_DISTANCE_TOUCH band
+        # fires "inside" the player — it reads as the NPC talking/fighting from within you on
+        # camera. Promote every authored touch trigger (battle OR dialog) to the 4-block
+        # ON_DISTANCE_VERY_CLOSE band. engage:touch already synthesizes at VERY_CLOSE, so this
+        # only catches hand-authored triggers (the wheat-trader ambushes); the promotion also
+        # routes those forced battles through the same dex fairness floor below.
+        if on == "ON_DISTANCE_TOUCH":
+            warn(f"{ch['id']}: ON_DISTANCE_TOUCH promoted to ON_DISTANCE_VERY_CLOSE "
+                 f"(touch band retired — too close on camera).")
+            on = "ON_DISTANCE_VERY_CLOSE"
+        acts = events.setdefault(on, [])
         for a in tr["actions"]:
-            # B1 fairness floor: every TOUCH-band battle (synthesized engage:touch AND
-            # authored ambushes, e.g. the wheat traders') gets the dex_gte_2 band
+            # B1 fairness floor: every VERY_CLOSE battle (synthesized engage:touch AND
+            # authored/promoted ambushes, e.g. the wheat traders') gets the dex_gte_2 band
             # condition merged into its gate — battle_actions ANDs it onto BOTH the
             # attach and the tbcs battle action (the doubled ConditionDataSet). Dialog
             # battle BUTTONS stay ungated: clicking one is not a forced start.
-            if tr["on"] == "ON_DISTANCE_VERY_CLOSE" and a.get("do") == "battle":
+            if on == "ON_DISTANCE_VERY_CLOSE" and a.get("do") == "battle":
                 gate = dict(a.get("gate") or {})
                 gate.setdefault("dex", {"op": "gte", "value": DEX_FLOOR})
                 a = {**a, "gate": gate}
-            acts += lower_action(a, ch, f"{ch['id']} trigger {tr['on']}", trigger_ctx=True)
+            acts += lower_action(a, ch, f"{ch['id']} trigger {on}", trigger_ctx=True)
     for on, acts in events.items():
         tree = sm.set_path(tree, ["data", "ActionData", "ActionEventSet", on], lst(acts))
     return tree

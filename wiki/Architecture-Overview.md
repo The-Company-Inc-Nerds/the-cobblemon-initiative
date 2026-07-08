@@ -202,7 +202,7 @@ The mod is the event engine; the datapack is the content layer. On defeat, `Rewa
 
 - **`turnin <item> <count> [tag]`** — inventory scan + exact removal + optional success tag. Replaces the per-quest `clear @s <item> 0` dry-run functions and, crucially, Easy NPC's `has_item` dialog condition, which **does not actually gate** in this build (it silently passed, so hand-ins completed with an empty bag — the root cause fixed this release).
 - **`trade <take> <give> [level] [tag]`** — finds the first party Pokémon of species `<take>` in *any* slot via `PlayerPartyStore`, removes exactly it, adds a `PokemonProperties.parse(…).create()` `<give>`, and tags **only on success** (so the quest latch is all-or-nothing). No fixed-slot assumption.
-- **`givemon <species> <level> [tag]`** — the same create-and-add, standalone; the reliable alternative to the unverified `givepokemonother`.
+- **`givemon <properties>`** — the same create-and-add, standalone, taking a full `PokemonProperties` string (`level=`/`shiny=`/`gender=`/`hisuian=`). It resolves the player from the command **source**, so it works both from dialog buttons and inside `.mcfunction`s. As of 0.5.0-alpha.5 every Pokémon gift routes through it instead of `givepokemonother`: that command works in dialog-button context (the compiler lowers `@s`→`@initiator`), but a raw `@s` call inside a function failed (*"no pokemon was specified"*), so gifts were unified on the source-based command.
 
 They are OP-2 so only dialog buttons (which run at OP-2) call them — a player can't cheese a free trade — and their `cobblemon-initiative` root is kept on the Easy NPC allowlist by `EasyNpcSecurityConfig` (above). Cobblemon is a real `modImplementation` compile dep, so the party/species API is available directly.
 

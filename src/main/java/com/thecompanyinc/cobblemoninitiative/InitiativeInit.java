@@ -15,6 +15,7 @@ import com.thecompanyinc.cobblemoninitiative.config.TrainerConfig;
 import com.thecompanyinc.cobblemoninitiative.data.PlayerProgressManager;
 import com.thecompanyinc.cobblemoninitiative.items.ModItems;
 import com.thecompanyinc.cobblemoninitiative.levelcap.LevelCapManager;
+import com.thecompanyinc.cobblemoninitiative.docprop.DocPropManager;
 import com.thecompanyinc.cobblemoninitiative.lootchest.LootChestManager;
 import com.thecompanyinc.cobblemoninitiative.questtrack.QuestTrackManager;
 import com.thecompanyinc.cobblemoninitiative.shrine.ShrineChallengeManager;
@@ -45,6 +46,7 @@ public class InitiativeInit implements ModInitializer {
   private static LevelCapManager levelCapManager;
   private static ShrineChallengeManager shrineChallengeManager;
   private static LootChestManager lootChestManager;
+  private static DocPropManager docPropManager;
   private static QuestTrackManager questTrackManager;
 
   @Override
@@ -79,6 +81,7 @@ public class InitiativeInit implements ModInitializer {
     shrineChallengeManager.loadChallenges();
 
     lootChestManager = new LootChestManager();
+    docPropManager = new DocPropManager();
 
     questTrackManager = new QuestTrackManager();
     questTrackManager.loadQuests();
@@ -98,6 +101,11 @@ public class InitiativeInit implements ModInitializer {
     ServerTickEvents.END_SERVER_TICK.register(server ->
       questTrackManager.tick(server)
     );
+
+    // THE INCOMPLETE FILE props: click the ledger barrel / portrait chest to "find" the
+    // document. Registered BEFORE LootChest so it wins at the portrait chest during the
+    // pickup window (a non-PASS result short-circuits later UseBlock handlers).
+    UseBlockCallback.EVENT.register(docPropManager::onUse);
 
     // Unplaced-chest loot: intercept chest opens; track hand-placed chests.
     UseBlockCallback.EVENT.register(lootChestManager::onChestUse);

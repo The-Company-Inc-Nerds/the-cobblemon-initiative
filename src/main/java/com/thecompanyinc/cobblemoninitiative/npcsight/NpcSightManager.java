@@ -29,6 +29,10 @@ public class NpcSightManager {
   // (cleared in both onwin branches) — pursuers stand down while it is present.
   private static final String IN_TRAINER_BATTLE_TAG = "in_trainer_battle";
 
+  // Dead band above followStopDistance before a holding pursuer resumes the chase, so an NPC
+  // parked at the hold distance doesn't jitter start/stop when the player drifts a hair.
+  private static final double FOLLOW_RESUME_HYSTERESIS = 2.0;
+
   private final NpcSightStorage storage;
   private NpcSightConfig config;
   private int tickCounter = 0;
@@ -188,22 +192,41 @@ public class NpcSightManager {
   }
 
   /**
-   * PURSUE: walk toward the player while in sight (sight-gated FOLLOW_PLAYER objective). The
-   * battle itself is the preset's {@code ON_DISTANCE_TOUCH} action — no Java battle trigger.
+   * PURSUE: walk toward the player while in sight (sight-gated FOLLOW_PLAYER objective), but
+   * HOLD at {@link NpcSightConfig#getFollowStopDistance()} instead of pathing into the player —
+   * otherwise the trainer walks to Easy NPC's ~2-block FOLLOW StopDistance and keeps shuffling
+   * into you while its dialog is open (showrunner 2026-07-08). The forced battle is the preset's
+   * {@code ON_DISTANCE_VERY_CLOSE} action (4-block band), which the hold distance sits inside, so
+   * the ambush still fires; a gated/declined battle just leaves the trainer standing a few blocks
+   * off. Resume the chase only once the player pulls back past the hold + hysteresis dead band.
    */
   private void handlePursue(
     MinecraftServer server, Entity npc, ServerPlayer nearestPlayer, boolean canSee, NpcSightData data
   ) {
-    boolean shouldPursue = canSee && nearestPlayer != null && !standDown(data, nearestPlayer);
-    if (shouldPursue) {
+    if (!canSee || nearestPlayer == null || standDown(data, nearestPlayer)) {
+      if (data.pursuing) {
+        stopFollow(server, npc);
+        data.pursuing = false;
+      }
+      return;
+    }
+
+    double dist = npc.distanceTo(nearestPlayer);
+    double hold = config.getFollowStopDistance();
+    if (dist <= hold) {
+      // Arrived at conversation range — hold position, do not close the last blocks.
+      if (data.pursuing) {
+        stopFollow(server, npc);
+        data.pursuing = false;
+      }
+    } else if (dist > hold + FOLLOW_RESUME_HYSTERESIS) {
+      // Player pulled away — (re)start the chase.
       if (!data.pursuing) {
         startFollow(server, npc, nearestPlayer);
         data.pursuing = true;
       }
-    } else if (data.pursuing) {
-      stopFollow(server, npc);
-      data.pursuing = false;
     }
+    // Between hold and hold+hysteresis: keep the current state (no start/stop jitter).
   }
 
   /**
@@ -228,8 +251,12 @@ public class NpcSightManager {
       data.pursuing = true;
     }
 
-    // Arrived? (+1 so the NPC's own standing block is not counted against the range)
-    if (npc.distanceTo(nearestPlayer) <= config.getDialogRange() + 1) {
+    // Arrived? Fire+stop by the time she reaches the hold distance, so she opens the meeting
+    // a few blocks off rather than shuffling into the player. dialogRange+1 keeps the NPC's own
+    // standing block from counting; the hold distance is the floor so a small dialogRange can't
+    // let her overshoot.
+    double arrive = Math.max(config.getDialogRange() + 1, config.getFollowStopDistance());
+    if (npc.distanceTo(nearestPlayer) <= arrive) {
       String effectiveDialog = data.hasDialog() ? data.dialogName : config.getDefaultDialogName();
       if (effectiveDialog != null && !effectiveDialog.isBlank()) {
         // Open the (intro) dialog first, then add the meet-tag so the *next* interaction
