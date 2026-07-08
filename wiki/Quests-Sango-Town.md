@@ -36,7 +36,7 @@ Several quests pay a training pack on top of cash. The tiers:
 | No Such Recipient | Uncle Marlow | optional | one-time | yes |
 | The Sango Classic (derby) | Deka | no | re-enterable | yes |
 | Long-Term Growth Vehicle | Deka | no | one-time | no |
-| The Shorefront Invitational | Harbourmaster Tayo | 3 rounds | purse one-time | no |
+| The Waterside Invitational | Pondwarden Tayo | 3 rounds | purse one-time | no |
 | In-Kind Exchange | Old Sefu | no | one-time | no |
 | Adjunct Faculty | Miri & Raan | no | one-time | no |
 | Preferred Provider (clinic) | Dr. Asha | no | mixed | yes |
@@ -104,16 +104,16 @@ Several quests pay a training pack on top of cash. The tiers:
 
 ### Walkthrough
 1. **Deliver bread to Fara** by the noticeboard [2632 112 2806]. She plants a small worry: her change came up one coin short at the market.
-2. **Deliver to Kele at the water.** He teaches the first-catch fishing rule — and offers a **free Magikarp (Lv 5)**: *"worthless collateral is the only thing they never try to take."* Optional; you can take just the bread.
+2. **Deliver to Kele at the water.** He offers a **free Eevee (Lv 5) with a boosted 1/20 shiny chance** — a foundling kit the lane can't keep, *"a hundred shapes sleeping in one small fox."* Optional; you can take just the bread.
 3. **Deliver to Dakarai at the end house.** He presses **400 CD** (flat) into your hand.
 4. **Return to Oma at the west gate:** *"Accept the care package."*
 
 ### Rewards
-- En route: **400 CD** (flat) from Dakarai; optional **free Magikarp Lv 5** from Kele.
+- En route: **400 CD** (flat) from Dakarai; optional **free Eevee Lv 5 (1/20 shiny)** from Kele.
 - Care package: **3 Potions + 8 Oran Berries + 2 Poké Balls + 16 Bread + 200 CD** (flat — *"neighbor money"*, deliberately never skewed). The bread is from Nalia, handed over on her behalf.
 
 > [!TIP]
-> This is the densest free supply drop in Sango — roughly **600 CD** plus potions and balls for a walk down one lane. Do it first. Kele's free Magikarp also covers [In-Kind Exchange](#in-kind-exchange--old-sefus-feebas-trade) so you never need to buy Deka's.
+> This is the densest free supply drop in Sango — roughly **600 CD** plus potions and balls for a walk down one lane. Do it first. Kele's gift is now a free **Eevee with a boosted (1/20) shiny chance** — so the Magikarp for [In-Kind Exchange](#in-kind-exchange--old-sefus-feebas-trade) (and the Victini flag) must be **bought from Deka** (500 CD).
 
 ---
 
@@ -145,7 +145,7 @@ Several quests pay a training pack on top of cash. The tiers:
 
 > **Giver:** Lucian Scrollkeeper, Sango lane between the lab and the west gate [2626.5 118 2776.5] — a quiet **"A word, off the record?"** button on his menu · **No battles, no damage — ever** · **One-time** · HUD-tracked
 
-**How it starts:** Take the ledger satchel from Lucian. Two Company **auditors** (Kesi and Mosi) patrol crossing sight-cones around the census desk — their **sightlines are real**, and being seen only puts an entry "on the record." Break line of sight with buildings and crouch.
+**How it starts:** Take the ledger satchel from Lucian. Two Company **auditors** (**Bomani** and **Jelani**, in Company grunt greys) patrol crossing sight-cones around the census desk — their **sightlines are real**, and being seen only puts an entry "on the record." Break line of sight with buildings and crouch. *(Since 0.5.0-alpha.4 Lucian offers this errand right after you file the Incomplete File, while under three badges — no longer buried.)*
 
 ### Walkthrough
 1. **Errand 1:** carry the **ledger satchel to Oma at her fence** without an auditor logging you. Each sighting flashes *OBSERVATION LOGGED* (a few seconds' grace between logs, zero damage). Hand over: **caught 2 times or fewer pays 250 CD** *(Verified Rate)*; **3+ sightings pays 125 CD** — half the quiet money, fail-soft only.
@@ -244,7 +244,7 @@ flowchart TD
 | **Timeout** | Lose only the entry fee; free re-entry, zero damage |
 
 > [!NOTE]
-> The entry fee comes out of whatever you have — your balance stops at zero, it never goes negative. The champion's **Heal Ball** is deliberately *not* here; it sits at the [Invitational](#the-shorefront-invitational--the-dock-tournament) podium.
+> The entry fee comes out of whatever you have — your balance stops at zero, it never goes negative. The champion's **Heal Ball** is deliberately *not* here; it sits at the [Invitational](#the-waterside-invitational--the-pondside-tournament) podium.
 
 ---
 
@@ -261,22 +261,24 @@ flowchart TD
 **Fork:** *"Just the derby, thanks"* declines with no consequence; the offer stays open.
 
 > [!TIP]
-> **Kele on Nalia's lane gives a Magikarp away free** during the bread round. Do the lane first if you just want trade fodder for Old Sefu — Deka's sales pitch is a 500 CD joke you pay to be in. (Gyarados at 20, though. *"At level twenty you will name a lake after me."*)
+> **Deka's 500 CD Magikarp is now the only Magikarp source** (Kele's lane gift became an Eevee). You need it for Old Sefu's trade **and** for the Victini flag — his sales pitch is a joke you pay to be in, but there is no free fish anymore. (Gyarados at 20, though. *"At level twenty you will name a lake after me."*)
 
 ---
 
-## The Shorefront Invitational — the dock tournament
+## The Waterside Invitational — the pondside tournament
 
-> **Giver:** Harbourmaster Tayo at the harbour office signup desk; barked around the docks by **Kofi**, the wandering crier · **3 battle rounds** · **Purse one-time; the final is refightable** · Not HUD-tracked — remember your bracket position yourself
+> **Giver:** Pondwarden Tayo at the waterside signup desk; barked around the pond by **Kofi**, the wandering crier · **3 battle rounds** · **Purse one-time; the final is refightable** · Not HUD-tracked — remember your bracket position yourself
+>
+> *Reskinned in 0.5.0-alpha.4: Sango is savanna, so the "shorefront/docks/harbour" dressing became a pondside lakeshow — Harbourmaster Tayo → **Pondwarden Tayo**, Dockhand Lumo → **Reedhand Lumo**. The event stays in Sango (it is level-locked to Act 1); a separate cap-58 Gaviota fishing hub is planned later.*
 
 **How it starts:** Talk to Tayo and press **"Pay the 150 CD entry."** (Kofi's bark says "two rounds" — he undersells it. The bracket is three.)
 
 ### The bracket
 | Round | Opponent | Team | Prize *(flat)* |
 |:-----:|----------|------|:--------------:|
-| 1 | Dockhand **Lumo** — first along the dock [2604 110 2822] | Wingull Lv 8, Magikarp Lv 9 | 100 CD |
-| 2 | Net-Mender **Kima** — mid-dock | Corphish Lv 10, Shellos Lv 11 | 150 CD |
-| Final | Harbourmaster **Tayo** | Tentacool Lv 12, Krabby Lv 13 | 0 — the purse is at the podium |
+| 1 | Reedhand **Lumo** — first along the bank [2604 110 2822] | Wingull Lv 8, Magikarp Lv 9 | 100 CD |
+| 2 | Net-Mender **Kima** — mid-bank | Corphish Lv 10, Shellos Lv 11 | 150 CD |
+| Final | Pondwarden **Tayo** | Tentacool Lv 12, Krabby Lv 13 | 0 — the purse is at the podium |
 
 ### The podium
 Collect the champion purse from **Company Liaison Tunde** — who could not be bothered to attend the podium and stands instead at the field fence at the edge of town [2581 111 2822]. Press **"Accept the envelope"**:
@@ -287,24 +289,24 @@ Collect the champion purse from **Company Liaison Tunde** — who could not be b
 ### Choices & notes
 - Asking Tunde *"The envelope was light"* earns a perfectly circular non-explanation.
 - Tayo will *"Run the final back"* any time (weekly-ladder flavor) — refightable, but the purse is claimed once.
-- Walk away whenever you like — *"the sea does not hold grudges and neither does the bracket"* — but the entry is not refunded.
+- Walk away whenever you like — *"the water does not hold grudges and neither does the bracket"* — but the entry is not refunded.
 - All three rounds sit at Lv 8–13, comfortably under the starting cap of 15.
 
 ---
 
 ## In-Kind Exchange — Old Sefu's Feebas trade
 
-> **Giver:** Old Sefu, retired sailor, by the boathouse/seawall (he wanders the shore) · **No battles** · **One-time** · Not HUD-tracked
+> **Giver:** Old Sefu, retired angler, by the pond (he wanders the waterside) · **No battles** · **One-time** · Not HUD-tracked
 
 **How it starts:** Talk to Sefu; press **"Trade your Magikarp for the Feebas."**
 
 1. Hear the pitch: one joke fish for another — *"the only kind of exchange the Company cannot see."* Zero CobbleDollars change hands, by design.
-2. Confirm the trade: **Feebas Lv 10** joins your team; the seal page asks you to part with your Magikarp.
+2. Confirm the trade: your **Magikarp is removed** from your party and **Feebas Lv 10** takes its place.
 
-**Reward:** Feebas Lv 10 — the start of a Milotic project. Costs nothing.
+**Reward:** Feebas Lv 10 — the start of a Milotic project. Costs nothing (but your Magikarp).
 
 > [!NOTE]
-> The Magikarp side of the swap is on your honor — nothing takes or checks the fish. Sango's honest sources: Kele's free gift on the lane, or Deka's 500 CD sale.
+> **Fixed in 0.5.0-alpha.4:** the trade now genuinely **takes the Magikarp** — it uses the mod's species-verified `trade` command (Cobblemon API), which finds the Magikarp in *any* party slot, removes exactly it, and no-ops safely if you have none. Was honor-system before. The Magikarp comes from **Deka's 500 CD sale** — Kele's lane gift is an Eevee now, so there's no free one.
 
 ---
 
@@ -343,6 +345,27 @@ Two independent fetch quests. Their grant *"went in for verification and came ba
 
 > [!TIP]
 > The clinic sells nothing, and potions cost 300 CD at the mart while quests pay 200–600 CD — in this economy, **consumables come from quests, not shops**. Keep the clinic stocked and collect the prescription whenever you pass through.
+
+---
+
+## The Silent Apprentice — Kesi's boy at the tower *(hidden — Victini)*
+
+> **Giver:** Kesi at the granary points you to him · **Hidden secret** · One-time · Not HUD-tracked
+
+Kesi, who owns the Sango granary (his family's — *not* the Company's), keeps a quiet apprentice named **Victor** at the top of the old grain tower. The boy has never spoken a word, but the harvest has been unnaturally good since he arrived. Climb up and Victor says nothing — he only studies you a moment, or looks straight through you.
+
+Victor is **Victini in hiding**, and he reveals himself only to someone who walked Sango clean of the Company. With **all** of the following done, talking to Victor transforms him — he despawns in a flourish, a Victini appears in his place, and taking its hand adds **Victini at Level 15** to your party:
+
+- Heard about him from **Kesi** — ask *"Lucky how?"* at the granary
+- Completed **[The Incomplete File](#the-incomplete-file--lucians-personnel-file)** — filed the founder's papers with Lucian instead of selling them to the courier
+- Completed **[The Lane Looks After Its Own](#the-lane-looks-after-its-own--omas-bread-round)**
+- **Refused** the census at **[Pending Review](#pending-review--the-census-desk-sign-or-refuse)**
+- **Bought Deka's Magikarp** (500 CD) — faith in a fish the world calls worthless, the same "worth from worthlessness" that Victini itself is
+
+Sell the papers or sign the census and Victor stays silent forever. Victini is the reward for siding **fully** against the Company across Sango *and* believing a worthless thing can be a Victory. **Elder Nuru** gives a token **3 oran berries** for the anti-Company trio alone (papers / lane / census — she does not care about the fish): deliberately underwhelming, because the real prize is the one nobody tells you about.
+
+> [!NOTE]
+> *Testing aid:* `/cobblemon-initiative debug victini` (OP-only) prints a ✔/✗ for each of the **five** conditions and the overall verdict. Gate revised in 0.5.0-alpha.4 onto the three accessible anti-Company quests (was tied to Off the Record, which is easy to miss) plus the Kesi hint and the Magikarp-faith flag.
 
 ---
 

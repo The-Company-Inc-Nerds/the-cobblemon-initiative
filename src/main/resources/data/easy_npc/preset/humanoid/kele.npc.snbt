@@ -57,13 +57,13 @@
                     ],
                     Texts: [
                         {
-                            Text: "Feed that fish and forget it, and one day it will forget how to be forgotten. That is the whole of my advice and it cost you a loaf of bread, which is robbery, and I stand by it."
+                            Text: "Feed that kit and let it choose its own shape — one day it will be exactly the thing it needed to become. That is the whole of my advice and it cost you a loaf of bread, which is robbery, and I stand by it."
                         },
                         {
                             Text: "Remember the rule of the water: the first bite on a stretch is the one you keep. It is not superstition. It is just the only way to stay honest when everything else is for sale."
                         },
                         {
-                            Text: "If that Magikarp wants schooling, Deka runs his record quarter off the dock — three fish against the bar. My gift has beaten his clock before. Do not tell him I said so."
+                            Text: "If it wants toughening, Deka runs his record quarter off the pond — three fish against the bar. He also peddles a certain flopping fish nobody else will buy; if you ever need one, he is your man. Do not tell him I sent you."
                         }
                     ],
                     Name: "Kele — the first bite",
@@ -85,26 +85,12 @@
                     Priority: 20,
                     Buttons: [
                         {
-                            Name: "Accept Kele gift",
+                            Name: "Accept Kele's gift",
                             Actions: [
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "givepokemonother @s magikarp level=5"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "tag @s add kele_gift"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "tag @s add delivered_2"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    Cmd: "tellraw @initiator [{\"text\":\"Kele presses a lv 5 Magikarp into your care. Dead weight now. A legal Gyarados before the water gym.\",\"color\":\"gold\"}]"
+                                    Cmd: "function cobblemon_initiative:sidequest/lane/kele_gift"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -117,7 +103,7 @@
                                     Name: "no_kele_gift"
                                 }
                             ],
-                            Label: "take_magikarp_button"
+                            Label: "take_gift_button"
                         },
                         {
                             Name: "Just the bread for now",
@@ -139,7 +125,7 @@
                             Text: "Bread from Oma, and a face I do not know, which is rarer down here than the bread. Set it on the rock. A man in a very clean suit came by last week and offered to buy my water rights — irrigation futures, he called it, very warm about it, would not say for what. I told him the water was not mine to sell. It belongs to whoever is thirsty."
                         },
                         {
-                            Text: "You are starting out, then. Here — take this. Worthless collateral is the only thing they never try to take, so it is the one gift worth giving. Feed it, wait, and do not laugh where it can hear you."
+                            Text: "You are starting out, then. Here — the lane found this one curled up in the reeds and cannot keep it. A hundred shapes sleeping in one small fox, and the choosing is yours. That kind of open future is the one thing the Company can never revise for you. Take it."
                         }
                     ],
                     Name: "Kele at the water",

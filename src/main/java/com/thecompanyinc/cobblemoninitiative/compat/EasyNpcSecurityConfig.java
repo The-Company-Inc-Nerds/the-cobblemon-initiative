@@ -39,9 +39,10 @@ public final class EasyNpcSecurityConfig {
 
   /** Every command root a shipped preset dialog button dispatches via ExecAsUser. */
   private static final Set<String> REQUIRED_ROOTS = Set.of(
-    "advancement", "clear", "cobbledollars", "easy_npc", "execute", "function",
-    "give", "givepokemonother", "healpokemon", "loot", "openstarterscreen",
-    "particle", "playsound", "scoreboard", "tag", "tbcs", "tellraw", "title"
+    "advancement", "clear", "cobbledollars", "cobblemon-initiative", "easy_npc",
+    "execute", "function", "give", "givepokemonother", "healpokemon", "loot",
+    "openstarterscreen", "particle", "playsound", "scoreboard", "tag", "tbcs",
+    "tellraw", "title"
   );
 
   private EasyNpcSecurityConfig() {}

@@ -139,38 +139,13 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "clear @s minecraft:kelp 16"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "loot give @s loot cobblemon_initiative:npc_gift/training_minor"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "function cobblemon_initiative:economy/payout {amount:250}"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "tag @s add quest_assist_collect_done"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    Cmd: "title @initiator actionbar [{\"text\":\"Collections logged. Grant work: another ledger closed.\",\"color\":\"yellow\"}]"
+                                    Cmd: "function cobblemon_initiative:sidequest/turnin/kelp"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
                             Conditions: [
-                                {
-                                    Type: "HAS_ITEM_IN_INVENTORY",
-                                    Operation: "EQUALS",
-                                    Item: "minecraft:kelp",
-                                    Quantity: 16
-                                },
                                 {
                                     Type: "PLAYER_TAG",
                                     Operation: "EQUALS",

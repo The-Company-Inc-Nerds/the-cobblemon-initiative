@@ -122,11 +122,10 @@ execute if entity @s[tag=hz_survey_active,tag=hz_saw_pitch,tag=hz_saw_granary,ta
 # Same contract as the blocks above: reset the holder unconditionally, then set + name it
 # only while the quest is started-and-not-done. All conditions are read-only derivations
 # from tags/scores the quests already latch — no new state.
-# SKIPPED (no accept latch before completion): Performance Review (hidden gym-1 stealth
-# meta; its only player latch, perf_review_resolved, IS the resolution — surfacing it would
-# also spoil the ghost run), Out of Office (Genji rod: walk-up string turn-in, only latch is
-# genji_rod_done), Work Orders INVENTORY + THE CUTTING (walk-up turn-ins, only latches are
-# work_fetch_done / work_mine_done). Grain Survey already rides q.side_survey at 76 above.
+# SKIPPED (no accept latch before completion): Out of Office (Genji rod: walk-up string
+# turn-in, only latch is genji_rod_done), Work Orders INVENTORY + THE CUTTING (walk-up
+# turn-ins, only latches are work_fetch_done / work_mine_done). Grain Survey already rides
+# q.side_survey at 76 above.  (Performance Review gym-1 stealth meta REMOVED 2026-07-07.)
 
 # Cascade Ascent (Shou's board at the falls): live-run pointer only — free retries mean no
 # accept latch, so the line rides the ci_ascending run tag until the first clear.
@@ -134,10 +133,10 @@ scoreboard players reset q.side_ascent ci_quest
 execute if entity @s[tag=ci_ascending,tag=!sq_cascade_done] run scoreboard players set q.side_ascent ci_quest 73
 execute if entity @s[tag=ci_ascending,tag=!sq_cascade_done] run scoreboard players display name q.side_ascent ci_quest [{"text":"• Base to crest before the clock dies","color":"gray"}]
 
-# Sango Classic (Deka's record quarter): lights on the loaner rod (classic_rod_given) OR a
-# live quarter (classic_active — own-rod entrants never take the spare); off at champion.
+# Sango Classic (Deka's record quarter): lights only while a quarter is LIVE (classic_active);
+# off at champion. NOT on classic_rod_given — that latch is permanent, so lighting on it made
+# the derby read as "started" forever after taking the loaner rod (showrunner 2026-07-07).
 scoreboard players reset q.side_classic ci_quest
-execute if entity @s[tag=classic_rod_given,tag=!sango_classic_champion] run scoreboard players set q.side_classic ci_quest 72
 execute if entity @s[tag=classic_active,tag=!sango_classic_champion] run scoreboard players set q.side_classic ci_quest 72
 execute if score q.side_classic ci_quest matches 72 run scoreboard players display name q.side_classic ci_quest [{"text":"• Three fish before the bar empties","color":"gray"}]
 

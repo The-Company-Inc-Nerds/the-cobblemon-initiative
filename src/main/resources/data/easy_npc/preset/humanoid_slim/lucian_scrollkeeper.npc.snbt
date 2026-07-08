@@ -765,6 +765,72 @@
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
+                            Name: "no_off_record_started"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "no_notices_filed"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "badges_lt_3"
+                        }
+                    ],
+                    Priority: 51,
+                    Buttons: [
+                        {
+                            Name: "A word, off the record?",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "off_record_offer"
+                                }
+                            ],
+                            Label: "offrec_button"
+                        },
+                        {
+                            Name: "Read me the histories",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "lore_menu"
+                                }
+                            ],
+                            Label: "histories_button"
+                        },
+                        {
+                            Name: "Third badge. Noted.",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The three records are filed — the ledger remembers its first draft again, and it has you to thank. The next chapter is being pasted up in a town you cannot argue with until you are wearing a third badge, so that part waits on the roads."
+                        },
+                        {
+                            Text: "But there is one thing that will not keep, and it never touches a file. A word off the record, while the two grey coats in the square have their backs turned. If you have the nerve for something quiet, say so."
+                        }
+                    ],
+                    Name: "Lucian — a word off the record",
+                    Label: "off_record_prompt"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "docs_filed"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
                             Name: "no_notices_filed"
                         },
                         {
@@ -1120,61 +1186,6 @@
                     ],
                     Name: "Lucian — the ledger grows heavier",
                     Label: "papers_growing"
-                },
-                {
-                    Conditions: [
-                        {
-                            Type: "PLAYER_TAG",
-                            Operation: "EQUALS",
-                            Name: "perf_review_ghost"
-                        }
-                    ],
-                    Priority: 11,
-                    Buttons: [
-                        {
-                            Name: "Read me the histories",
-                            Actions: [
-                                {
-                                    Type: "OPEN_NAMED_DIALOG",
-                                    Cmd: "lore_menu"
-                                }
-                            ],
-                            Label: "histories_button"
-                        },
-                        {
-                            Name: "A word, off the record?",
-                            Actions: [
-                                {
-                                    Type: "OPEN_NAMED_DIALOG",
-                                    Cmd: "off_record_offer"
-                                }
-                            ],
-                            Conditions: [
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "no_off_record_started"
-                                }
-                            ],
-                            Label: "offrec_button"
-                        },
-                        {
-                            Name: "Enough for now",
-                            Actions: [
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "leave_button"
-                        }
-                    ],
-                    Texts: [
-                        {
-                            Text: "Word reached the archive that the Takehara ladder audit closed with zero sightings on record. A whole tower of watchers and not one line item with your name in it. I have shelved careers louder than your footsteps. Whoever taught you to move like a misfiled page — my professional respect."
-                        }
-                    ],
-                    Name: "Lucian — the unsigned audit",
-                    Label: "ghost_regard"
                 },
                 {
                     Priority: 10,

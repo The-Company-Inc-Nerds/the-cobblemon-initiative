@@ -413,6 +413,7 @@ public class InstallCommand {
           sz.announce = iz.announce;
           sz.subtitle = iz.subtitle != null ? iz.subtitle : "";
           sz.color = iz.color != null ? iz.color : "";
+          sz.type = iz.type != null ? iz.type : "";
           sz.mobsSpawn = iz.mobsSpawn;
           sz.activeWhenObjective = iz.activeWhenObjective;
           sz.activeWhenHolder = iz.activeWhenHolder;

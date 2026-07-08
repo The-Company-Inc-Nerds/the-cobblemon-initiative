@@ -1,5 +1,9 @@
 package com.thecompanyinc.cobblemoninitiative.command;
 
+import com.cobblemon.mod.common.Cobblemon;
+import com.cobblemon.mod.common.api.pokemon.PokemonProperties;
+import com.cobblemon.mod.common.api.storage.party.PlayerPartyStore;
+import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -22,8 +26,15 @@ import java.util.Set;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.commands.arguments.ResourceLocationArgument;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 public class CobblemonInitiativeCommands {
 
@@ -50,6 +61,104 @@ public class CobblemonInitiativeCommands {
           Commands.literal("reset")
             .requires(source -> source.hasPermission(2))
             .executes(CobblemonInitiativeCommands::resetProgress)
+        )
+        // Species-verified party trade (Cobblemon API): removes the FIRST party Pokémon
+        // matching <take> and gives a <give> in its place. If the player has no <take>,
+        // it's a safe no-op. OP-2 so only NPC dialogs (perm-2 context) can call it, never
+        // a player cheesing a free upgrade. /cobblemon-initiative trade <take> <give> [level]
+        .then(
+          Commands.literal("trade")
+            .requires(source -> source.hasPermission(2))
+            .then(
+              Commands.argument("take", StringArgumentType.word())
+                .then(
+                  Commands.argument("give", StringArgumentType.word())
+                    .executes(ctx -> trade(
+                      ctx,
+                      StringArgumentType.getString(ctx, "take"),
+                      StringArgumentType.getString(ctx, "give"),
+                      -1,
+                      null
+                    ))
+                    .then(
+                      Commands.argument("level", IntegerArgumentType.integer(1, 100))
+                        .executes(ctx -> trade(
+                          ctx,
+                          StringArgumentType.getString(ctx, "take"),
+                          StringArgumentType.getString(ctx, "give"),
+                          IntegerArgumentType.getInteger(ctx, "level"),
+                          null
+                        ))
+                        .then(
+                          Commands.argument("tag", StringArgumentType.word())
+                            .executes(ctx -> trade(
+                              ctx,
+                              StringArgumentType.getString(ctx, "take"),
+                              StringArgumentType.getString(ctx, "give"),
+                              IntegerArgumentType.getInteger(ctx, "level"),
+                              StringArgumentType.getString(ctx, "tag")
+                            ))
+                        )
+                    )
+                )
+            )
+        )
+        // Item turn-in helper: counts <item> in the player's inventory; if there are at least
+        // <count>, removes exactly that many and (optionally) adds <success_tag>. Safe no-op
+        // with a "you need N" message otherwise. Replaces the broken has_item dialog gate and
+        // the per-quest clear-dry-run functions. /cobblemon-initiative turnin <item> <count> [tag]
+        .then(
+          Commands.literal("turnin")
+            .requires(source -> source.hasPermission(2))
+            .then(
+              Commands.argument("item", ResourceLocationArgument.id())
+                .then(
+                  Commands.argument("count", IntegerArgumentType.integer(1))
+                    .executes(ctx -> turnin(
+                      ctx,
+                      ResourceLocationArgument.getId(ctx, "item"),
+                      IntegerArgumentType.getInteger(ctx, "count"),
+                      null
+                    ))
+                    .then(
+                      Commands.argument("tag", StringArgumentType.word())
+                        .executes(ctx -> turnin(
+                          ctx,
+                          ResourceLocationArgument.getId(ctx, "item"),
+                          IntegerArgumentType.getInteger(ctx, "count"),
+                          StringArgumentType.getString(ctx, "tag")
+                        ))
+                    )
+                )
+            )
+        )
+        // Verified party give (Cobblemon API): creates <species> at <level> and adds it to the
+        // party, optionally tagging on success. The reliable alternative to the unverified
+        // givepokemonother. /cobblemon-initiative givemon <species> <level> [tag]
+        .then(
+          Commands.literal("givemon")
+            .requires(source -> source.hasPermission(2))
+            .then(
+              Commands.argument("species", StringArgumentType.word())
+                .then(
+                  Commands.argument("level", IntegerArgumentType.integer(1, 100))
+                    .executes(ctx -> givemon(
+                      ctx,
+                      StringArgumentType.getString(ctx, "species"),
+                      IntegerArgumentType.getInteger(ctx, "level"),
+                      null
+                    ))
+                    .then(
+                      Commands.argument("tag", StringArgumentType.word())
+                        .executes(ctx -> givemon(
+                          ctx,
+                          StringArgumentType.getString(ctx, "species"),
+                          IntegerArgumentType.getInteger(ctx, "level"),
+                          StringArgumentType.getString(ctx, "tag")
+                        ))
+                    )
+                )
+            )
         )
         .then(
           Commands.literal("track")
@@ -379,6 +488,159 @@ public class CobblemonInitiativeCommands {
     }
 
     return 1;
+  }
+
+  /**
+   * Species-verified party trade. Finds the first party Pokémon whose species name matches
+   * {@code take} (case-insensitive), removes it, and adds a freshly-created {@code give} in
+   * its place. {@code level <= 0} means "match the traded Pokémon's level". If {@code successTag}
+   * is non-null it is added to the player ONLY on a completed trade — so the caller's quest
+   * latch stays all-or-nothing. Safe no-op with a message when the player has no {@code take}.
+   * Backs the NPC trade dialogs (e.g. Old Sefu's Magikarp→Feebas) so no fixed party slot is
+   * assumed and nothing else is ever removed.
+   */
+  private static int trade(
+    CommandContext<CommandSourceStack> context,
+    String take,
+    String give,
+    int level,
+    String successTag
+  ) {
+    ServerPlayer player;
+    try {
+      player = context.getSource().getPlayerOrException();
+    } catch (Exception e) {
+      return 0;
+    }
+
+    PlayerPartyStore party = Cobblemon.INSTANCE.getStorage().getParty(player);
+    Pokemon toTake = null;
+    for (Pokemon p : party) {
+      if (p != null && p.getSpecies().getName().equalsIgnoreCase(take)) {
+        toTake = p;
+        break;
+      }
+    }
+    if (toTake == null) {
+      player.sendSystemMessage(
+        Component.literal("§cYou have no " + take + " to trade.")
+      );
+      return 0;
+    }
+
+    int giveLevel = level > 0 ? level : toTake.getLevel();
+    party.remove(toTake);
+    giveSpecies(player, give, giveLevel);
+    if (successTag != null && !successTag.isBlank()) {
+      player.addTag(successTag);
+    }
+
+    player.sendSystemMessage(
+      Component.literal("§aTraded your " + take + " for a " + give + ".")
+    );
+    return 1;
+  }
+
+  /**
+   * Item turn-in helper. Counts {@code item} across the player's inventory; if there are at
+   * least {@code count}, removes exactly that many and (when non-null) adds {@code successTag}.
+   * Otherwise a safe no-op with a "you need N" message. Backs the NPC hand-in buttons so the
+   * broken Easy NPC has_item condition is never relied on and a reward can gate on the tag.
+   */
+  private static int turnin(
+    CommandContext<CommandSourceStack> context,
+    ResourceLocation itemId,
+    int count,
+    String successTag
+  ) {
+    ServerPlayer player;
+    try {
+      player = context.getSource().getPlayerOrException();
+    } catch (Exception e) {
+      return 0;
+    }
+
+    Item item = BuiltInRegistries.ITEM.getOptional(itemId).orElse(null);
+    if (item == null || item == Items.AIR) {
+      player.sendSystemMessage(Component.literal("§cUnknown item: " + itemId));
+      return 0;
+    }
+
+    Inventory inv = player.getInventory();
+    int have = 0;
+    for (int i = 0; i < inv.getContainerSize(); i++) {
+      ItemStack s = inv.getItem(i);
+      if (s.is(item)) have += s.getCount();
+    }
+
+    String pretty = itemId.getPath().replace('_', ' ');
+    if (have < count) {
+      player.sendSystemMessage(
+        Component.literal("§cYou need " + count + " " + pretty + " (you have " + have + ").")
+      );
+      return 0;
+    }
+
+    int toRemove = count;
+    for (int i = 0; i < inv.getContainerSize() && toRemove > 0; i++) {
+      ItemStack s = inv.getItem(i);
+      if (s.is(item)) {
+        int take = Math.min(toRemove, s.getCount());
+        s.shrink(take);
+        toRemove -= take;
+      }
+    }
+
+    if (successTag != null && !successTag.isBlank()) {
+      player.addTag(successTag);
+    }
+    player.sendSystemMessage(Component.literal("§aHanded in " + count + " " + pretty + "."));
+    return 1;
+  }
+
+  /**
+   * Verified party give (Cobblemon API). Creates {@code species} at {@code level}, adds it to
+   * the player's party, and (when non-null) adds {@code successTag}. The reliable alternative
+   * to the unverified {@code givepokemonother} command for quest gifts.
+   */
+  private static int givemon(
+    CommandContext<CommandSourceStack> context,
+    String species,
+    int level,
+    String successTag
+  ) {
+    ServerPlayer player;
+    try {
+      player = context.getSource().getPlayerOrException();
+    } catch (Exception e) {
+      return 0;
+    }
+
+    Pokemon given = giveSpecies(player, species, level);
+    if (given == null) {
+      player.sendSystemMessage(Component.literal("§cCould not create Pokémon: " + species));
+      return 0;
+    }
+    if (successTag != null && !successTag.isBlank()) {
+      player.addTag(successTag);
+    }
+    player.sendSystemMessage(
+      Component.literal("§a" + species + " (Lv " + level + ") joined your team.")
+    );
+    return 1;
+  }
+
+  /** Create {@code species} at {@code level} via the Cobblemon API and add it to the party. */
+  private static Pokemon giveSpecies(ServerPlayer player, String species, int level) {
+    try {
+      Pokemon mon = PokemonProperties.Companion
+        .parse(species + " level=" + level)
+        .create();
+      Cobblemon.INSTANCE.getStorage().getParty(player).add(mon);
+      return mon;
+    } catch (Exception e) {
+      return null;
+    }
   }
 
   private static int showProgress(CommandContext<CommandSourceStack> context) {

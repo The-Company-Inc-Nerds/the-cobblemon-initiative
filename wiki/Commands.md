@@ -166,6 +166,16 @@ The Pokémart runs a badge-tier catalog managed by `ShopTierManager` — gym lea
 | `/ca shop refresh` | Re-applies the executing player's *current* base tier so the liberation-relief level is re-resolved from `fields_liberated`. Fired by the field-liberation function; safe to run any time. Needs a player source. | — |
 | `/ca shop <tier>` | Applies a specific tier and reloads CobbleDollars. | `tier` ∈ `badge_0` … `badge_7`, `post_hq`, `badge_8` … `badge_10` (autocomplete) |
 
+### Quest helpers (dialog commands) *(new in 0.5.0-alpha.4)*
+
+Reusable, OP-2 commands meant to be called from NPC **dialog buttons** (which run at OP-2). They use the Cobblemon API / real inventory scans and are **safe no-ops on failure**, so a quest can't half-complete. All three are backed by species/item verification — no fixed party slot or trust in Easy NPC's (broken) `has_item` gate. `cobblemon-initiative`'s root must be on Easy NPC's `security.cfg` allowlist (shipped + self-healed on launch) or dialogs silently can't call them.
+
+| Command | Description | Args |
+|---------|-------------|------|
+| `/ca trade <take> <give> [level] [tag]` | Removes the **first party Pokémon** whose species matches `<take>` (any slot) and gives a `<give>` at `[level]` (default = the traded mon's level). Sets `[tag]` **only on a completed trade**. No `<take>` → "you have no …" no-op. Backs Old Sefu's Magikarp→Feebas trade. | species, species, 1–100, tag |
+| `/ca turnin <item> <count> [tag]` | Counts `<item>` in the player's inventory; if ≥ `<count>`, removes exactly that many and sets `[tag]`. Else a "you need N" no-op. The fix for the item hand-in pattern (Raan, Dr. Asha). | item id, ≥1, tag |
+| `/ca givemon <species> <level> [tag]` | Creates `<species>` at `<level>` via the Cobblemon API and adds it to the party, optionally tagging on success. Reliable alternative to `givepokemonother`. | species, 1–100, tag |
+
 ### Reload
 
 | Command | Description |
@@ -234,6 +244,18 @@ Configure NPC line-of-sight tracking. The NPC Sight system raycasts from each re
 
 > [!CAUTION]
 > The commands in this section are **authoring/editor tools** registered under the `/cobblemon-initiative` tree (OP level 2). They are scheduled for **removal at 1.0.0** once world content is finalized. Do not document them as player-facing features; they exist to build `install.json` / `fields.json` data and to wire NPC presets during development.
+
+## `/cobblemon-initiative` dev tooling (`devnote/`) &nbsp;— *removed at 1.0.0*
+
+Playtest aids added while smoke-testing content (the `devnote/` package — strip with the rest before release).
+
+| Command | Description | Args |
+|---------|-------------|------|
+| `/ca pos ["title"] [note…]` | Prints your x/y/z to chat and records it, with an optional quoted title + trailing note — used to capture placement coords in-world (paste the `npcnote log` dump back to the author). | title, note |
+| `/ca npcnote stick` | Gives the "NPC Noter" stick: whack an NPC to select it (no damage), then `note <text>` / `move` (or right-click a block) to record a comment / relocation. | — |
+| `/ca npcnote log \| clear \| undo` | `log` dumps every recorded note + position to chat (copy-pasteable); `clear`/`undo` manage them. Persists to `<world>/data/npc_notes.json` (survives a relog). | — |
+| `/ca smoke list \| next \| show \| pass \| comment \| fail \| log \| reset` | In-world checklist compiled from `SMOKETEST.md` R-items: mark each pass/comment/fail with a note, then `log` dumps them copy-pasteable to fill back into the file. | id, note |
+| `/ca debug victini` | Prints the **Victini gate** for you: ✔/✗ per condition (`victor_hint`, `docs_filed`, `lane_done`, `census_refused`) plus the overall verdict (VALID / not-yet / TRANSFORMED / JOINED). Reads your tags live. | — |
 
 ## `/cobblemon-initiative npc-map` &nbsp;— *removed at 1.0.0*
 

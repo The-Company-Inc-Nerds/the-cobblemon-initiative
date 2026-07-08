@@ -173,7 +173,7 @@ The pinned top line of the sidebar, from waking up in Sango Town to the end of t
 | Per My Last Memo | The checkpoint tent | Eight unseen seconds buys you the conversation at the tent flap | 400 CD + standard pack at turn-in |
 | Off the Record | Lucian Scrollkeeper | Two quiet carries past the auditors — then get counted on purpose | 550+ CD + standard pack (+ Heal Ball clean sweep) |
 | Pending Review | Imani, the census desk | Sign the Field Liability Policy. Or don't. | 500 CD + ID (sign) *or* the Elder's field kit (refuse); major pack either way |
-| The Lane Looks After Its Own | Oma | A bread round on Mom's lane | ~600 CD flat + supplies + optional free Magikarp |
+| The Lane Looks After Its Own | Oma | A bread round on Mom's lane | ~600 CD flat + supplies + optional free Eevee (1/20 shiny) |
 | Adjunct Faculty | Assistants Miri & Raan | The lab's grant went in for verification and came back as a very polite silence | 250 CD + minor pack each |
 | In-Kind Exchange | Old Sefu | One joke fish for another — the only exchange the Company can't see | Feebas Lv 10 |
 | Preferred Provider | Dr. Asha | Restock the clinic's empty shelf; heals are 100 CD now | Potions + minor pack + 250 CD; daily prescription |

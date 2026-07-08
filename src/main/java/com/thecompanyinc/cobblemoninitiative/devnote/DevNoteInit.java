@@ -387,6 +387,43 @@ public class DevNoteInit implements ModInitializer {
     return n;
   }
 
+  // ── Victini gate check ──────────────────────────────────────────────────────────
+
+  /** Dev readout: is @s currently eligible for the Victor -> Victini transform, and why not?
+   *  Mirrors the gate in victor_apprentice.json (present victor_hint + docs_filed + lane_done
+   *  + census_refused + bought_magikarp). */
+  public static void victiniStatus(net.minecraft.server.level.ServerPlayer p) {
+    var tags = p.getTags();
+    boolean hint   = tags.contains("victor_hint");
+    boolean file   = tags.contains("docs_filed");
+    boolean lane   = tags.contains("lane_done");
+    boolean census = tags.contains("census_refused");
+    boolean karp   = tags.contains("bought_magikarp");
+    boolean transformed = tags.contains("victor_transformed");
+    boolean joined      = tags.contains("victini_joined");
+    boolean valid = hint && file && lane && census && karp;
+
+    p.sendSystemMessage(Component.literal("§b===== VICTINI GATE ====="));
+    p.sendSystemMessage(gateLine("Heard of Victor from Kesi", "victor_hint", hint));
+    p.sendSystemMessage(gateLine("Filed the Incomplete File (kept the papers)", "docs_filed", file));
+    p.sendSystemMessage(gateLine("Completed Down the Lane", "lane_done", lane));
+    p.sendSystemMessage(gateLine("Refused the Company census", "census_refused", census));
+    p.sendSystemMessage(gateLine("Bought Deka's Magikarp (faith in the worthless fish)", "bought_magikarp", karp));
+    if (joined) {
+      p.sendSystemMessage(Component.literal("§d» Victini ALREADY JOINED (victini_joined)."));
+    } else if (transformed) {
+      p.sendSystemMessage(Component.literal("§d» Victor has TRANSFORMED — talk to the Victini to claim it."));
+    } else if (valid) {
+      p.sendSystemMessage(Component.literal("§a» VALID — talking to Victor will transform him."));
+    } else {
+      p.sendSystemMessage(Component.literal("§c» NOT valid yet — clear the §f✗§c lines above."));
+    }
+  }
+
+  private static Component gateLine(String label, String tag, boolean ok) {
+    return Component.literal((ok ? "§a ✔ " : "§c ✗ ") + "§f" + label + " §8(" + tag + ")");
+  }
+
   // ── Formatting ────────────────────────────────────────────────────────────────
 
   private static double round(double v) {

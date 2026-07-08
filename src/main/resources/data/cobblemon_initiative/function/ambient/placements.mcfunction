@@ -32,7 +32,7 @@ execute if score #amb_mrmime ci_ambient matches 0 if entity @a[x=2605.5,y=109,z=
 execute if score #amb_sentret ci_ambient matches 0 if entity @a[x=2588.5,y=107,z=2957.5,distance=..40] run function cobblemon_initiative:ambient/place/sentret
 execute if score #amb_company_courier ci_ambient matches 0 if entity @a[x=2592.5,y=111,z=2815.5,distance=..40] run function cobblemon_initiative:ambient/place/company_courier
 execute if score #amb_sango_company_liaison ci_ambient matches 0 if entity @a[x=2581.5,y=111,z=2822.5,distance=..40] run function cobblemon_initiative:ambient/place/sango_company_liaison
-execute if score #amb_victor ci_ambient matches 0 if entity @a[x=2611.5,y=128,z=2792.5,distance=..40] run function cobblemon_initiative:ambient/place/victor
+execute if score #amb_victor ci_ambient matches 0 if entity @a[x=2522.6,y=131,z=2815.5,distance=..40] run function cobblemon_initiative:ambient/place/victor
 execute if score #amb_agent_yield_lead ci_ambient matches 0 if entity @a[x=2014.5,y=169,z=2466.5,distance=..40] run function cobblemon_initiative:ambient/place/agent_yield_lead
 execute if score #amb_agent_yield_second ci_ambient matches 0 if entity @a[x=2014.5,y=169,z=2464.5,distance=..40] run function cobblemon_initiative:ambient/place/agent_yield_second
 execute if score #amb_chansey_lila ci_ambient matches 0 if entity @a[x=1900.5,y=113,z=2609.5,distance=..40] run function cobblemon_initiative:ambient/place/chansey_lila

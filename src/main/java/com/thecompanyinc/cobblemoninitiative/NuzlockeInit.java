@@ -627,7 +627,6 @@ public class NuzlockeInit implements ModInitializer {
 
   private static void sendZoneEntry(ServerPlayer player, NuzlockeConfig.SafeZone zone) {
     NuzlockeConfig.AnnouncementStyle style = config.getAnnouncementStyle();
-    Component title = buildTitleComponent(zone.name, zone.color);
     // The stored subtitle is the MAP-facing state (Map Frontiers renders it on the label
     // from install run — e.g. a farm's "Corporate owned."). A liberation-gated zone only
     // announces once its latch has tripped, so the announce always shows the freed state.
@@ -636,6 +635,15 @@ public class NuzlockeInit implements ModInitializer {
         ? "Liberated."
         : zone.subtitle;
 
+    // Routes are already labelled with their name on the map (Map Frontiers renders e.g.
+    // "Blossom Path"), so a route's entry toast does NOT repeat the name — it shows only the
+    // flavor line, promoted to the title slot. Everything else keeps name-title + subtitle.
+    boolean routeFlavorOnly =
+      "ROUTE".equalsIgnoreCase(zone.type) && subtitle != null && !subtitle.isEmpty();
+    Component title = routeFlavorOnly
+      ? buildTitleComponent(subtitle, zone.color)
+      : buildTitleComponent(zone.name, zone.color);
+
     if (style == NuzlockeConfig.AnnouncementStyle.TITLE) {
       player.connection.send(new ClientboundSetTitlesAnimationPacket(
         config.getAnnouncementFadeIn(),
@@ -643,15 +651,16 @@ public class NuzlockeInit implements ModInitializer {
         config.getAnnouncementFadeOut()
       ));
       player.connection.send(new ClientboundSetTitleTextPacket(title));
-      if (subtitle != null && !subtitle.isEmpty()) {
+      if (!routeFlavorOnly && subtitle != null && !subtitle.isEmpty()) {
         player.connection.send(new ClientboundSetSubtitleTextPacket(
           Component.literal("§7" + subtitle)
         ));
       }
     } else if (style == NuzlockeConfig.AnnouncementStyle.ACTIONBAR) {
+      // For routes `title` is already the flavor line, so don't append it a second time.
       player.connection.send(new ClientboundSetActionBarTextPacket(
         Component.literal("§e▶ ").append(title).append(Component.literal(
-          subtitle != null && !subtitle.isEmpty() ? " §8— §7" + subtitle : ""
+          !routeFlavorOnly && subtitle != null && !subtitle.isEmpty() ? " §8— §7" + subtitle : ""
         ))
       ));
     } else {

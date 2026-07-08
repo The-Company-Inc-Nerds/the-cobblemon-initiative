@@ -190,22 +190,7 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "clear @s minecraft:honeycomb 8"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "loot give @s loot cobblemon_initiative:npc_gift/training_standard"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "function cobblemon_initiative:economy/payout {amount:300}"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "tag @s add sq_honey_done"
+                                    Cmd: "function cobblemon_initiative:sidequest/turnin/honey"
                                 },
                                 {
                                     Type: "OPEN_NAMED_DIALOG",
@@ -214,10 +199,9 @@
                             ],
                             Conditions: [
                                 {
-                                    Type: "HAS_ITEM_IN_INVENTORY",
+                                    Type: "PLAYER_TAG",
                                     Operation: "EQUALS",
-                                    Item: "minecraft:honeycomb",
-                                    Quantity: 8
+                                    Name: "no_sq_honey_done"
                                 }
                             ],
                             Label: "turn_in_button"
@@ -308,6 +292,11 @@
                                 }
                             ],
                             Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "sq_honey_done"
+                                },
                                 {
                                     Type: "PLAYER_TAG",
                                     Operation: "EQUALS",

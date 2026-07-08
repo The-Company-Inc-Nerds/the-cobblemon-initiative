@@ -159,21 +159,7 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "clear @s cobblemon:dome_fossil 1"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "givepokemonother @s kabuto level=10"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "tag @s add sq_museum_revived"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    Cmd: "tellraw @initiator [{\"text\":\"Ten thousand years of sediment let go. Kabuto lives again.\",\"color\":\"gold\"}]"
+                                    Cmd: "function cobblemon_initiative:sidequest/turnin/dome_fossil"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -184,12 +170,6 @@
                                     Type: "PLAYER_TAG",
                                     Operation: "EQUALS",
                                     Name: "no_sq_museum_revived"
-                                },
-                                {
-                                    Type: "HAS_ITEM_IN_INVENTORY",
-                                    Operation: "EQUALS",
-                                    Item: "cobblemon:dome_fossil",
-                                    Quantity: 1
                                 }
                             ],
                             Label: "revive_dome_button"
@@ -200,21 +180,7 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "clear @s cobblemon:claw_fossil 1"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "givepokemonother @s anorith level=10"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "tag @s add sq_museum_revived"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    Cmd: "tellraw @initiator [{\"text\":\"The claw uncurls after an age asleep. Anorith swims once more.\",\"color\":\"gold\"}]"
+                                    Cmd: "function cobblemon_initiative:sidequest/turnin/claw_fossil"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -225,12 +191,6 @@
                                     Type: "PLAYER_TAG",
                                     Operation: "EQUALS",
                                     Name: "no_sq_museum_revived"
-                                },
-                                {
-                                    Type: "HAS_ITEM_IN_INVENTORY",
-                                    Operation: "EQUALS",
-                                    Item: "cobblemon:claw_fossil",
-                                    Quantity: 1
                                 }
                             ],
                             Label: "revive_claw_button"

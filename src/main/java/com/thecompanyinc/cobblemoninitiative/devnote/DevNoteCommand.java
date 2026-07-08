@@ -148,5 +148,17 @@ public final class DevNoteCommand {
           }))
       )
     );
+
+    // Debug readouts: /cobblemon-initiative debug victini
+    dispatcher.register(
+      Commands.literal("cobblemon-initiative").then(
+        Commands.literal("debug")
+          .requires(src -> src.hasPermission(2))
+          .then(Commands.literal("victini").executes(ctx -> {
+            DevNoteInit.victiniStatus(ctx.getSource().getPlayerOrException());
+            return 1;
+          }))
+      )
+    );
   }
 }

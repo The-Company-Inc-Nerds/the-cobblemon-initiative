@@ -569,13 +569,12 @@ round cards + DISBURSEMENT sting + crier fix (three rounds), discovery breadcrum
 Marlow, Ume↔Imani, Asha), hygiene sweep (Shou/Sayuri names, Sayuri pages, adjunct
 erasure rewrite + Raan 8 coal/4 iron), Miller Walk survey loggers, Kazuo 19/20.
 
-**RELEASE-BLOCKING WORLD SETUP — Takehara sentries (promoted this round):** the
-Performance Review meta is dead until the four tower trainers (Koji/Yuki/Shin/Taro)
-are (a) entity-tagged `takehara_sentry` and (b) npcsight-registered. On any world:
-`tag <entity> add takehara_sentry` ×4 + `npcsight add <uuid> …` ×4 after placement.
-`sidequest/perf_review/tick` now warns ops ONCE per world (red `[setup]` line) when a
-player is inside the tower while zero tagged sentries exist — treat that line in any
-smoke run as a FAILED release gate.
+**REMOVED 2026-07-07 — Takehara Performance Review stealth:** per showrunner, the
+gym-1 tower is a plain battle ladder with no stealth. The `takehara_sentry` sight tags,
+the `sidequest/perf_review/*` functions, the SILENT STAKEHOLDER ghost cache, and the
+per-world sentry tagging/npcsight setup step are all gone. Beating all four tower
+trainers still pays the tower-clear bonus at the guide; the tower-drain (skip the
+ladder → Cicada at full strength) is unchanged. No world-setup step for this anymore.
 
 Round-14 canary list:
 1. **Courier SELL**: sell → ASSET LIQUIDATED title + sculk/anvil sting; sidebar flips

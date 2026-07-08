@@ -111,6 +111,10 @@ public class NuzlockeConfig {
     public String subtitle = "";
     /** Hex color for map labelling, e.g. "#7AAAD0". */
     public String color = "";
+    /** Zone category (TOWN / ROUTE / SHRINE / …), carried from InstallZone. ROUTE zones
+     *  are already labelled on the map, so their entry toast shows only the flavor subtitle,
+     *  not the name. Blank on pre-existing configs until an install run repopulates it. */
+    public String type = "";
 
     public SafeZone() {}
 

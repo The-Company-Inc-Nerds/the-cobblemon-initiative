@@ -80,7 +80,7 @@ Initiative also boots the managers added in 0.5.0:
 - **`DexScoreManager`** (`dex/`) — mirrors the player's Cobblemon Pokédex **CAUGHT** count into the `dex_caught` scoreboard objective every 40 ticks; the dex-unlock starter gates (band tags `dex_gte_15` / `dex_gte_30`) read it.
 - **`ShopTierManager`** (`economy/`) — 12 pre-baked CobbleDollars shop tiers in journey order (`badge_0`…`badge_7`, `post_hq`, `badge_8`…`badge_10`). `applyTier` copies the tier catalog over `config/cobbledollars/default_shop.json`, runs `cobbledollars reload` (hot-swaps the live shop GUI), and retiers the Company Granary in lockstep. Base tiers auto-resolve to their **liberation-relief** variant (`<tier>_relief1/2` — one relief level per 2 liberated fields).
 - **`AutoInstall`** (`install/`) — the pack-only marker pattern: when `config/cobblemon-initiative-autoinstall.json` (dropped by the mrpack build) is present, `install run` auto-runs **once per fresh world** (the latch is written before dispatch so it can never loop). Bare-mod installs have no marker, so nothing auto-runs.
-- **Compat self-heals** (`compat/`) — `EasyNpcSecurityConfig` patches the `ExecAsUser` allowlist in `config/easy_npc/security.cfg` at `onInitialize` (Easy NPC reads that file lazily on the first button press, so patching at init always wins); `RctmodServerConfig` forces `allowOverLeveling=true`, `initialSeries=cobblemon-initiative`, and a global trainer-spawn chance of 0 into rctmod's live config cache at `SERVER_STARTED` **by reflection**, and places joining players into the series — so the badge-ladder caps hold on *any* world, mrpack or not.
+- **Compat self-heals** (`compat/`) — `EasyNpcSecurityConfig` patches the `ExecAsUser` allowlist in `config/easy_npc/security.cfg` at `onInitialize` (Easy NPC reads that file lazily on the first button press, so patching at init always wins). It merges a fixed `REQUIRED_ROOTS` set of every command root a shipped dialog button dispatches — `function`, `tag`, `give`, `givepokemonother`, `tbcs`, `cobbledollars`, and (since 0.5.0-alpha.4) **`cobblemon-initiative`** so the [dialog helper commands](#verified-dialog-command-helpers) can run — into all five role lists. Because it runs every launch, an already-installed world self-heals a missing root without a re-install. `RctmodServerConfig` forces `allowOverLeveling=true`, `initialSeries=cobblemon-initiative`, and a global trainer-spawn chance of 0 into rctmod's live config cache at `SERVER_STARTED` **by reflection**, and places joining players into the series — so the badge-ladder caps hold on *any* world, mrpack or not.
 
 ### 2. Nuzlocke — death mechanics & Dark Urge
 **Entrypoint:** `NuzlockeInit` (server), `NuzlockeClientInit` (client)
@@ -183,7 +183,7 @@ All dialog content is authored against these bytecode-verified quirks of the shi
 
 ## Signature Design Patterns
 
-Four patterns recur across the codebase. Recognizing them makes the rest of the architecture predictable.
+Five patterns recur across the codebase. Recognizing them makes the rest of the architecture predictable.
 
 ### Config-driven trainers
 Every trainer — gym leaders, shrine bosses, Elite Four, villains — is a JSON file under `data/cobblemon_initiative/trainers/`, loaded into memory keyed by `id`. `TrainerConfig` carries identity, category, coordinates, prerequisites, rewards, `spawnOnDefeat`, team, and AI. **Adding a trainer needs only a JSON file plus a sprite — no Java changes.** Level caps work the same way through `levelcaps.json`, and the quest tracker's stage registry through `quest_waypoints.json`.
@@ -196,6 +196,15 @@ The mod is the event engine; the datapack is the content layer. On defeat, `Rewa
 
 ### Load-on-start / save-on-stop persistence
 `PlayerProgressManager`, `NpcSightStorage`, `NpcMapStorage`, `NpcPresetRefreshManager`, `ShrinePathStorage`, `QuestTrackManager`, and `LootChestStorage` all follow one shape: `load()` on `SERVER_STARTED`, `save()` on `SERVER_STOPPING`, Gson JSON in the world directory — `cobblemon_initiative_progress.json`, `_npcsight.json`, `_npcmap.json`, `data/npc_preset_refresh.json`, `data/shrine_paths.json`, `cobblemon_initiative_quest_tracking.json`, and the loot-chest claimed/player-placed ledger. `NuzlockeConfig` is the exception — it persists modpack-wide to `config/cobblemon-initiative.json` rather than per-world, since the run rules are global.
+
+### Verified dialog command helpers
+*(new in 0.5.0-alpha.4)* NPC dialog buttons often need to move Pokémon or items with **quest-grade safety** — take exactly the right Pokémon, never half-complete a hand-in, never trust a client claim. Rather than hand-roll a datapack function per case, three OP-2 gameplay commands in `command/CobblemonInitiativeCommands` do it against the **Cobblemon API** and the real inventory, and are **safe no-ops on failure**:
+
+- **`turnin <item> <count> [tag]`** — inventory scan + exact removal + optional success tag. Replaces the per-quest `clear @s <item> 0` dry-run functions and, crucially, Easy NPC's `has_item` dialog condition, which **does not actually gate** in this build (it silently passed, so hand-ins completed with an empty bag — the root cause fixed this release).
+- **`trade <take> <give> [level] [tag]`** — finds the first party Pokémon of species `<take>` in *any* slot via `PlayerPartyStore`, removes exactly it, adds a `PokemonProperties.parse(…).create()` `<give>`, and tags **only on success** (so the quest latch is all-or-nothing). No fixed-slot assumption.
+- **`givemon <species> <level> [tag]`** — the same create-and-add, standalone; the reliable alternative to the unverified `givepokemonother`.
+
+They are OP-2 so only dialog buttons (which run at OP-2) call them — a player can't cheese a free trade — and their `cobblemon-initiative` root is kept on the Easy NPC allowlist by `EasyNpcSecurityConfig` (above). Cobblemon is a real `modImplementation` compile dep, so the party/species API is available directly.
 
 ---
 

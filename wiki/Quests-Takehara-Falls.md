@@ -20,7 +20,7 @@ This page lists every quest and paid encounter in and around Takehara Falls. For
 | Quest | Giver | Kind | Tracked on HUD | Headline reward |
 |-------|-------|------|:--:|-----------------|
 | [The Brood Tower (Gym 1)](#gym-1--the-brood-tower-falls-badge) | Leader Cicada | gym ladder | main quest | **Falls Badge → cap 22**, 1200 CD |
-| [Performance Review](#performance-review-ghost-or-sweep--the-hidden-gym-meta) | *(nobody announces it)* | hidden stealth meta | hidden | 400–600 CD + gear |
+| [Full Tower Clear](#full-tower-clear--the-tower-clear-bonus) | Gym Guide | beat all 4 tower trainers | no | 600 CD + Exp Candy + training pack |
 | [Cascade Ascent](#cascade-ascent) | Falls Warden Shou | timed climb | yes | 500 CD + major pack |
 | [Quarterly Sprint](#quarterly-sprint) | Petal Courier Mio | timed race | yes | 500 CD + major pack |
 | [Sting Operation](#sting-operation-asset-under-valuation) | Beekeeper Tomo | walk + optional battle | yes | 350 CD + hive goods |
@@ -72,7 +72,7 @@ flowchart LR
 ### Walkthrough
 
 1. *(Optional)* Talk to the **Gym Guide** for the badge / level-cap / hardcore briefing.
-2. *(Optional)* Climb the gym tower. Every tower trainer you beat **drains the ladder above**: one win and Sora's team fights with its training potential zeroed; two and Aiko's does; all four and Leader Cicada's own team comes in drained. Skip the tower entirely if you want the ladder at full strength — or sweep it for the bonus (see [Performance Review](#performance-review-ghost-or-sweep--the-hidden-gym-meta)).
+2. *(Optional)* Climb the gym tower. Every tower trainer you beat **drains the ladder above**: one win and Sora's team fights with its training potential zeroed; two and Aiko's does; all four and Leader Cicada's own team comes in drained. Skip the tower entirely if you want the ladder at full strength — or clear all four for the [tower-clear bonus](#full-tower-clear--the-tower-clear-bonus).
 3. The apprentices are **not in the gym** — beat **Jr. Apprentice Sora** in the flowerbeds (singles), then **Apprentice Aiko** in the greenhouse center (doubles).
 4. Challenge **Leader Cicada** at the arena up the falls. She carries **3× Full Restore** — chip damage alone will not close it, and her Lv 17 Yanmega on a Choice Scarf outspeeds anything at your cap.
 
@@ -92,27 +92,20 @@ flowchart LR
 
 ---
 
-## Performance Review (Ghost or Sweep) — the hidden gym meta
+## Full Tower Clear — the tower-clear bonus
 
 |  |  |
 |---|---|
-| **Giver** | Nobody announces it — the four tower trainers double as watchers, and the result resolves itself |
-| **Location** | The gym tower; the Sweep bonus is claimed at the Gym Guide |
-| **Start** | Automatic — it is running the moment you set foot in the tower |
+| **Giver** | The Gym Guide |
+| **Location** | The gym tower (fight the four floor trainers), then the Gym Guide |
+| **Start** | Automatic — clearing the tower unlocks the bonus |
 | **Repeatable** | One-time |
-| **Tracker** | Hidden (a red **EYES ON YOU** warning flashes each time you're spotted) |
+| **Tracker** | None |
 
-The tower trainers are also **sight sentries**. Every time one of them gets eyes on you, the engagement *goes on the books* — an on-screen warning tells you so. The count is final the moment the Falls Badge lands (nobody can see into Cicada's chamber).
-
-### The two outcomes
-
-- **GHOST** — you beat Cicada without a single sentry ever seeing you: the **Silent Stakeholder** cache lands in your bag automatically. 1× Dusk Ball + the **Auditor's Lens** (a spyglass — *"Sees everything. Reports nothing."*) + **400 CD** (Verified Rate) + a major training pack.
-- **SWEEP** — you were seen, but you cleared **all four** tower trainers: ask the Gym Guide about the **Verification Bonus** after the badge. **600 CD** (Verified Rate) + 4× Exp. Candy XS + a major training pack.
-
-The two are mutually exclusive and deliberately equal in value — audit-proof stealth and a full ladder clear are both "compensable performance."
+Beat **all four** tower trainers (Koji, Yuki, Shin, Taro) and the Gym Guide pays a **tower-clear bonus** — **600 CD** (Verified Rate) + 4× Exp. Candy XS + a major training pack — on top of the [ladder-drain](#the-gym--leader-cicada) effect each win already has on Cicada's team. Skipping the tower leaves the ladder at full strength; clearing it weakens the leader **and** pays out.
 
 > [!NOTE]
-> **As shipped:** two pieces of this quest are still being wired. The Gym Guide's Verification Bonus offer is not yet reachable in the current build, and in a world where the tower watchers haven't been armed by the showrunner, nobody is ever marked as seen — every player Ghosts by default.
+> **Reverted in 0.5.0-alpha.4:** the tower's old "Performance Review" stealth meta — the sight-sentry watchers, the *EYES ON YOU* warnings, the GHOST/Silent Stakeholder cache — was **removed** per showrunner ("there is no reason for a stealth mission here"). The four tower trainers are now plain battle trainers. Only the drain mechanic and this flat tower-clear bonus remain.
 
 ---
 

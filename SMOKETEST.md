@@ -112,8 +112,7 @@ line under it for anything you notice.
   FIRSTFURROW — LIBERATED + bell + Tunde/Sentinel/Masumi react; file 3 papers with Lucian →
   her greeting changes ("the desk saves the good clips"); carry 2+ papers → sidebar shows
   "File with Lucian: n papers" + waypoint; Lila "word around town" rolls different rumors;
-  Invitational rounds get title cards; ghost the gym-1 tower → SILENT STAKEHOLDER 5s after
-  the badge + Lucian acknowledges it
+  Invitational rounds get title cards
   - ✅ [ ]   💬 [ ]   ❌ [ ]
   - comment:
 - **R16** — **Tier B**: fresh starter-only player walks Blossom Path → trainers HAIL but do
@@ -156,10 +155,11 @@ line under it for anything you notice.
   - ✅ [ ]   💬 [ ]   ❌ [ ]
   - comment:
 - **R21** — **Automatic NPC sight**: on a FRESH world (no manual npcsight commands) the
-  Takehara tower sentries detect you — walk the tower unseen to badge → Performance Review
-  ghost bonus fires; get spotted → "EYES ON YOU". The Sango square auditors and the checkpoint
-  agents work the same with zero setup. Log at startup: "NPC Sight loaded 8 tag-keyed
-  profile(s)". No `npcsight add <uuid>` step needed anywhere
+  Sango square auditors (Bomani/Jelani) detect you during Off the Record — cross their sight
+  cones → "OBSERVATION LOGGED"; the checkpoint agents / surveyor / other placement watchers
+  work the same with zero setup. Log at startup: "NPC Sight loaded 7 tag-keyed profile(s)".
+  No `npcsight add <uuid>` step needed anywhere. (Takehara tower stealth was removed — those
+  are plain battle trainers now.)
   - ✅ [ ]   💬 [ ]   ❌ [ ]
   - comment:
 - **R22** — **NPC noter dev tool**: `/cobblemon-initiative npcnote stick` → whack a statue/NPC
@@ -173,17 +173,42 @@ line under it for anything you notice.
   (stored in npc_notes.json); startup log reads "DevNote loaded N smoke-test item(s)"
   - ✅ [ ]   💬 [ ]   ❌ [ ]
   - comment:
-- **R24** — **Sango secret, Victor → Victini** (after `/function …:update_npc_presets`):
-  Kesi at the granary talks up his silent apprentice (his "Lucky how?" line sets the hook).
-  Walk to Victor at the tower top — he is SILENT (narration only, no speech, no transform)
-  until you have the CLEAN anti-Company record: heard of him from Kesi AND finished the
-  Off the Record errands (`off_record_complete`) WITHOUT being logged by an auditor,
-  never signed the census (`census_signed`), never sold the papers (`sold_docs`). With all
-  of that, talking to Victor → "Reach out" → he despawns in an end-rod/beacon flourish and a
-  Victini NPC appears in his spot → talk to it → "Take my hand" → **Victini joins at level 15**
-  and the tower-top NPC despawns (no duplicate). DISQUALIFIER CHECK: doing Off the Record but
-  getting caught once (`off_record_blown`), or signing the census, or selling the papers, leaves
-  Victor silent forever. Elder Nuru, for the same clean record, gives **3 oran berries once**.
+- **R24** — **Sango secret, Victor → Victini**: Kesi at the granary talks up his silent
+  apprentice (his "Lucky how?" line sets the hook). Walk to Victor at the tower top — he is
+  SILENT (narration only, no transform) until you have all **five** conditions: heard of him
+  from Kesi (`victor_hint`) AND filed the founder's papers with Lucian (`docs_filed`) AND
+  finished Down the Lane (`lane_done`) AND refused the Company census (`census_refused`) AND
+  **bought Deka's 500 CD Magikarp** (`bought_magikarp` — faith in the worthless fish). With all
+  five, talking to Victor → "Reach out" → he despawns in an end-rod/beacon flourish and a
+  Victini NPC appears → talk to it → "Take my hand" → **Victini joins at level 15**, no
+  duplicate. Elder Nuru, for the anti-Company **trio only** (papers/lane/census, not the fish),
+  gives **3 oran berries once**. Dev aid: `/cobblemon-initiative debug victini` prints ✔/✗ per
+  condition + verdict — confirm all five land. Also: Kele's lane gift is now a free **Eevee
+  with a 1/20 shiny chance** (not a Magikarp).
+  - ✅ [ ]   💬 [ ]   ❌ [ ]
+  - comment:
+- **R25** — **Route entry titles** (needs an install run to repopulate zone subtitles/type):
+  walk into a route (e.g. Blossom Path) — the mod's title toast shows ONLY the flavor line
+  ("Petals drift over the first road you will ever remember."), NOT the route name repeated,
+  and never a bare "Route 1". Towns/shrines still show name + subtitle as before.
+  - ✅ [ ]   💬 [ ]   ❌ [ ]
+  - comment:
+- **R26** — **Item hand-ins require the items** (Easy NPC has_item was broken): with an
+  EMPTY inventory, the hand-in buttons must NOT complete — Miri (16 kelp), Raan (8 coal /
+  4 raw iron), Dr. Asha (8 oran / 4 pecha / 2 cheri), Masumi (8 honeycomb → no Combee
+  without it), Kenji fossil revivals (no fossil → no Kabuto/Anorith). With the items,
+  each clears them and pays out exactly once. Also: auditors Bomani/Jelani now wear a
+  Company grunt skin; the "Lane Looks After Its Own" marker steps Fara → Kele → Dakarai;
+  the Invitational cast (Pondwarden Tayo / Reedhand Lumo / Net-Mender Kima) reads savanna,
+  not harbour.
+  - ✅ [ ]   💬 [ ]   ❌ [ ]
+  - comment:
+- **R27** — **Sefu trade + Victor skin + derby**: with a Magikarp anywhere in your party,
+  trade with Old Sefu → the Magikarp is REMOVED (any slot) and a Feebas lv 10 is added;
+  with NO Magikarp → "you have no magikarp to trade", nothing given, traded_sefu unset.
+  Victor (human apprentice, tower top) wears the MKS skin. Taking Deka's spare rod does
+  NOT make the Sango Classic appear in the sidebar/tracker — it only shows once a quarter
+  is live (after paying entry).
   - ✅ [ ]   💬 [ ]   ❌ [ ]
   - comment:
 
