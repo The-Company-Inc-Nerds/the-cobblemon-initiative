@@ -16,6 +16,34 @@ and the slimmed README + UPM 2 disclaimer). See `GIT_COMMIT_MSG` / `docs/LORE_BI
 
 ---
 
+## Noble Pokémon encounters (new subsystem, 0.5.0-alpha.6 — code-complete, build-verified)
+
+Legends-Arceus-style encounters: Easy NPC `cobblemon_npc` body → task → body-swap to a real,
+catchable wild Cobblemon. Config-driven engine in `noble/`; two `type`s — **`boss`** (combat
+wear-down) and **`chase`** (friendly flee-and-tag, e.g. Mew). Shipped: 6 combat legendaries
+(Groudon, Kyogre, Rayquaza, Articuno, Zapdos, Moltres) + 1 friendly (Mew). See
+`docs/NOBLE_ENCOUNTERS.md`.
+
+- [x] 💻 Engine: attack primitives, element themes, ambient themes, flyer mechanic, arena
+      ring, stagger boss bar, phase-2 `BattleBuilder.pve` swap + capture/victory matching.
+- [x] 💻 Content: 6 encounter JSONs + `cobblemon_npc` presets + advancements; `/noble` + `/noble-abort`.
+- [ ] 🧱 Set each noble's arena `center`/`dimension` on the UPM map (currently `[0,0,0]` →
+      falls back to the player's position at `/noble start`). Themed sites.
+- [ ] 🧱 Per-noble balance pass: Phase-1 `max_health` + `staggerAtHealthFraction`, body
+      `Root.Scale`, attack damage/cooldowns, Phase-2 `battleSpecies` level (catchable under the cap ladder).
+- [ ] 🧱 Decide the unlock gate/trigger per noble (story-flag-gated `/noble start`, an Easy NPC
+      dialog button — add `noble` to the `EasyNpcSecurityConfig` allowlist if dialog-launched — or a shrine-crystal item).
+- [ ] 🔍 Runtime verify (per `docs/NOBLE_ENCOUNTERS.md`): boss-sized model, bossbar tracks
+      health, native chase+melee, themed attacks telegraph+land, ring teleport-back, stagger→catchable
+      battle, rewards/flag/advancement, clean teardown on abort/logout/death, no block damage.
+      Confirm the Easy NPC `import_new` spawn + `Root.Scale` + `max_health` render as intended.
+- [ ] 💻 (future) Pseudo-legendaries (Tyranitar/Garchomp/Dragonite/Metagross/Salamence/Hydreigon)
+      — data-only once the showrunner picks the set + species presets.
+- [ ] 💻 (future) More friendly/task nobles — the `chase` type is the pattern; new task types
+      (hide-and-seek, fetch, riddle) add a `tick<Type>` branch, all reusing the Phase-2 catch.
+
+---
+
 ## 0. GAME PLAN — the road to 1.0.0 (sequenced 2026-07-02)
 
 The critical path is **verify → author → wire → balance → ship**. Code is largely ahead

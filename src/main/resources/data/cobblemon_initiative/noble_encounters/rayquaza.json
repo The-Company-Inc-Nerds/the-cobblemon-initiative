@@ -1,0 +1,56 @@
+{
+  "id": "rayquaza",
+  "displayName": "§a§lRayquaza — Noble of the Boundless Sky",
+  "element": "dragon",
+  "bodyPreset": "easy_npc:preset/cobblemon/noble_rayquaza.npc.snbt",
+  "bodyTag": "noble_rayquaza_body",
+  "battleSpecies": "rayquaza level=75",
+
+  "startTitle": "§a§lRAYQUAZA",
+  "startSubtitle": "§7The sky serpent descends",
+  "introSeconds": 4,
+
+  "arena": {
+    "center": [0, 0, 0],
+    "radius": 20,
+    "dimension": "minecraft:overworld",
+    "boundaryParticle": "minecraft:flame"
+  },
+  "ambientTheme": null,
+  "flyer": { "hoverHeight": 8.0, "groundedWindowTicks": 120, "airTicks": 180 },
+
+  "stagger": {
+    "staggerAtHealthFraction": 0.15,
+    "bossBarColor": "GREEN",
+    "bossBarOverlay": "NOTCHED_10"
+  },
+
+  "phase1": {
+    "attacks": [
+      { "type": "beam",        "cooldownTicks": 120, "params": { "length": 20.0, "width": 2.5, "windupTicks": 28, "damage": 8.0 } },
+      { "type": "bolt_strike", "cooldownTicks": 150, "params": { "count": 5, "radius": 2.5, "damage": 6.0, "windupTicks": 20, "delayBetween": 8, "tracking": true } },
+      { "type": "dive_charge", "cooldownTicks": 140, "params": { "impactRadius": 5.0, "damage": 9.0, "knockback": 2.0, "windupTicks": 24 } },
+      { "type": "projectile",  "cooldownTicks": 80,  "params": { "count": 2, "speed": 1.2, "spread": 0.1, "damage": 5.0 } }
+    ]
+  },
+
+  "phase2": {
+    "healPartyBeforeBattle": true
+  },
+
+  "rewards": {
+    "storyFlag": { "objective": "defeated_noble_rayquaza", "holder": "@s", "value": 1 },
+    "achievement": "cobblemon_initiative:nobles/rayquaza",
+    "commands": [
+      "loot give {player} loot cobblemon_initiative:npc_gift/training_grand"
+    ]
+  },
+
+  "completeTitle": "§6§lNoble Subdued",
+  "completeSubtitle": "§7Rayquaza acknowledges you",
+  "sounds": {
+    "start": "minecraft:entity.ender_dragon.growl",
+    "stagger": "minecraft:entity.generic.explode",
+    "complete": "minecraft:ui.toast.challenge_complete"
+  }
+}

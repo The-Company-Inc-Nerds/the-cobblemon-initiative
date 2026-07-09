@@ -1,0 +1,56 @@
+{
+  "id": "zapdos",
+  "displayName": "§e§lZapdos — Noble of the Rolling Storm",
+  "element": "electric",
+  "bodyPreset": "easy_npc:preset/cobblemon/noble_zapdos.npc.snbt",
+  "bodyTag": "noble_zapdos_body",
+  "battleSpecies": "zapdos level=70",
+
+  "startTitle": "§e§lZAPDOS",
+  "startSubtitle": "§7The storm has a will",
+  "introSeconds": 4,
+
+  "arena": {
+    "center": [0, 0, 0],
+    "radius": 20,
+    "dimension": "minecraft:overworld",
+    "boundaryParticle": "minecraft:flame"
+  },
+  "ambientTheme": "thunderstorm",
+  "flyer": { "hoverHeight": 7.0, "groundedWindowTicks": 110, "airTicks": 170 },
+
+  "stagger": {
+    "staggerAtHealthFraction": 0.15,
+    "bossBarColor": "YELLOW",
+    "bossBarOverlay": "NOTCHED_10"
+  },
+
+  "phase1": {
+    "attacks": [
+      { "type": "bolt_strike", "cooldownTicks": 110, "params": { "count": 4, "radius": 2.0, "damage": 6.0, "windupTicks": 16, "delayBetween": 9, "tracking": true } },
+      { "type": "beam",        "cooldownTicks": 140, "params": { "length": 18.0, "width": 2.0, "windupTicks": 24, "damage": 7.0 } },
+      { "type": "hazard_zone", "cooldownTicks": 150, "params": { "radius": 4.0, "durationTicks": 100, "pull": "none", "tickDamage": 2.0 } },
+      { "type": "projectile",  "cooldownTicks": 70,  "params": { "count": 3, "speed": 1.3, "spread": 0.15, "damage": 5.0 } }
+    ]
+  },
+
+  "phase2": {
+    "healPartyBeforeBattle": true
+  },
+
+  "rewards": {
+    "storyFlag": { "objective": "defeated_noble_zapdos", "holder": "@s", "value": 1 },
+    "achievement": "cobblemon_initiative:nobles/zapdos",
+    "commands": [
+      "loot give {player} loot cobblemon_initiative:npc_gift/training_grand"
+    ]
+  },
+
+  "completeTitle": "§6§lNoble Subdued",
+  "completeSubtitle": "§7Zapdos acknowledges you",
+  "sounds": {
+    "start": "minecraft:entity.ender_dragon.growl",
+    "stagger": "minecraft:entity.generic.explode",
+    "complete": "minecraft:ui.toast.challenge_complete"
+  }
+}

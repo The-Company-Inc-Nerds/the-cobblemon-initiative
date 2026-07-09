@@ -1,0 +1,56 @@
+{
+  "id": "kyogre",
+  "displayName": "§9§lKyogre — Noble of the Endless Tide",
+  "element": "water",
+  "bodyPreset": "easy_npc:preset/cobblemon/noble_kyogre.npc.snbt",
+  "bodyTag": "noble_kyogre_body",
+  "battleSpecies": "kyogre level=70",
+
+  "startTitle": "§9§lKYOGRE",
+  "startSubtitle": "§7The tide answers its master",
+  "introSeconds": 4,
+
+  "arena": {
+    "center": [0, 0, 0],
+    "radius": 20,
+    "dimension": "minecraft:overworld",
+    "boundaryParticle": "minecraft:flame"
+  },
+  "ambientTheme": "downpour",
+  "flyer": null,
+
+  "stagger": {
+    "staggerAtHealthFraction": 0.15,
+    "bossBarColor": "BLUE",
+    "bossBarOverlay": "NOTCHED_10"
+  },
+
+  "phase1": {
+    "attacks": [
+      { "type": "projectile",  "cooldownTicks": 70,  "params": { "count": 3, "speed": 0.9, "spread": 0.12, "damage": 5.0 } },
+      { "type": "barrage_aoe", "cooldownTicks": 130, "params": { "strikes": 2, "pattern": "line", "radius": 6.0, "damage": 8.0, "knockback": 2.2, "windupTicks": 22, "delayBetween": 6 } },
+      { "type": "hazard_zone", "cooldownTicks": 160, "params": { "radius": 4.0, "durationTicks": 140, "pull": "toward", "tickDamage": 2.0 } },
+      { "type": "beam",        "cooldownTicks": 150, "params": { "length": 16.0, "width": 3.0, "windupTicks": 26, "damage": 8.0 } }
+    ]
+  },
+
+  "phase2": {
+    "healPartyBeforeBattle": true
+  },
+
+  "rewards": {
+    "storyFlag": { "objective": "defeated_noble_kyogre", "holder": "@s", "value": 1 },
+    "achievement": "cobblemon_initiative:nobles/kyogre",
+    "commands": [
+      "loot give {player} loot cobblemon_initiative:npc_gift/training_grand"
+    ]
+  },
+
+  "completeTitle": "§6§lNoble Subdued",
+  "completeSubtitle": "§7Kyogre acknowledges you",
+  "sounds": {
+    "start": "minecraft:entity.ender_dragon.growl",
+    "stagger": "minecraft:entity.generic.explode",
+    "complete": "minecraft:ui.toast.challenge_complete"
+  }
+}

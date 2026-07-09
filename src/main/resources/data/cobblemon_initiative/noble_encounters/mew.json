@@ -1,0 +1,63 @@
+{
+  "id": "mew",
+  "displayName": "§d§lMew — Playful Wonder",
+  "type": "chase",
+  "element": "psychic",
+  "bodyPreset": "easy_npc:preset/cobblemon/noble_mew.npc.snbt",
+  "bodyTag": "noble_mew_body",
+  "battleSpecies": "mew level=70",
+
+  "startTitle": "§d§lMew!",
+  "startSubtitle": "§7Catch me if you can!",
+  "introSeconds": 4,
+
+  "arena": {
+    "center": [0, 0, 0],
+    "radius": 20,
+    "dimension": "minecraft:overworld",
+    "boundaryParticle": "minecraft:enchant"
+  },
+  "ambientTheme": null,
+  "flyer": null,
+
+  "stagger": {
+    "staggerAtHealthFraction": 0.15,
+    "bossBarColor": "PINK",
+    "bossBarOverlay": "NOTCHED_10"
+  },
+
+  "chase": {
+    "tagsRequired": 6,
+    "fleeRadius": 5.0,
+    "touchRadius": 2.0,
+    "fleeSpeed": 0.32,
+    "tagCooldownTicks": 25,
+    "hoverHeight": 2.0,
+    "blinkChance": 0.02,
+    "blinkRange": 7.0
+  },
+
+  "phase1": { "attacks": [] },
+
+  "phase2": {
+    "healPartyBeforeBattle": true
+  },
+
+  "rewards": {
+    "storyFlag": { "objective": "defeated_noble_mew", "holder": "@s", "value": 1 },
+    "achievement": "cobblemon_initiative:nobles/mew",
+    "commands": [
+      "loot give {player} loot cobblemon_initiative:npc_gift/training_grand"
+    ]
+  },
+
+  "staggerTitle": "§d§lGOTCHA!",
+  "staggerSubtitle": "§7Mew tuckered out — now's your chance!",
+  "completeTitle": "§d§lNew Friend!",
+  "completeSubtitle": "§7Mew wants to come along",
+  "sounds": {
+    "start": "minecraft:entity.allay.item_given",
+    "stagger": "minecraft:entity.player.levelup",
+    "complete": "minecraft:ui.toast.challenge_complete"
+  }
+}

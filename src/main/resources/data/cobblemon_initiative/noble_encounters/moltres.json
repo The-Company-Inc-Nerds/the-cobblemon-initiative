@@ -1,0 +1,55 @@
+{
+  "id": "moltres",
+  "displayName": "§6§lMoltres — Noble of the Wildfire",
+  "element": "fire",
+  "bodyPreset": "easy_npc:preset/cobblemon/noble_moltres.npc.snbt",
+  "bodyTag": "noble_moltres_body",
+  "battleSpecies": "moltres level=70",
+
+  "startTitle": "§6§lMOLTRES",
+  "startSubtitle": "§7Ember and updraft",
+  "introSeconds": 4,
+
+  "arena": {
+    "center": [0, 0, 0],
+    "radius": 20,
+    "dimension": "minecraft:overworld",
+    "boundaryParticle": "minecraft:flame"
+  },
+  "ambientTheme": "drought",
+  "flyer": { "hoverHeight": 7.0, "groundedWindowTicks": 120, "airTicks": 170 },
+
+  "stagger": {
+    "staggerAtHealthFraction": 0.15,
+    "bossBarColor": "RED",
+    "bossBarOverlay": "NOTCHED_10"
+  },
+
+  "phase1": {
+    "attacks": [
+      { "type": "bolt_strike", "cooldownTicks": 120, "params": { "count": 3, "radius": 2.0, "damage": 6.0, "windupTicks": 18, "delayBetween": 10, "tracking": true } },
+      { "type": "projectile",  "cooldownTicks": 70,  "params": { "count": 6, "speed": 1.1, "spread": 0.3, "damage": 4.0 } },
+      { "type": "barrage_aoe", "cooldownTicks": 130, "params": { "strikes": 4, "pattern": "random", "radius": 4.0, "damage": 7.0, "knockback": 1.0, "windupTicks": 20, "delayBetween": 8 } }
+    ]
+  },
+
+  "phase2": {
+    "healPartyBeforeBattle": true
+  },
+
+  "rewards": {
+    "storyFlag": { "objective": "defeated_noble_moltres", "holder": "@s", "value": 1 },
+    "achievement": "cobblemon_initiative:nobles/moltres",
+    "commands": [
+      "loot give {player} loot cobblemon_initiative:npc_gift/training_grand"
+    ]
+  },
+
+  "completeTitle": "§6§lNoble Subdued",
+  "completeSubtitle": "§7Moltres acknowledges you",
+  "sounds": {
+    "start": "minecraft:entity.ender_dragon.growl",
+    "stagger": "minecraft:entity.generic.explode",
+    "complete": "minecraft:ui.toast.challenge_complete"
+  }
+}

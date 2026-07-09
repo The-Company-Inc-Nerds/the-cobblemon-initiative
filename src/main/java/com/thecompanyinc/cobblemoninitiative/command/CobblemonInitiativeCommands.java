@@ -1043,6 +1043,8 @@ public class CobblemonInitiativeCommands {
     ShrineConfig.reload();
     LootChestConfig.reload();
     ProgressionConfig.reload();
+    com.thecompanyinc.cobblemoninitiative.noble.NobleEncounterInit.getManager().loadNobles();
+    com.thecompanyinc.cobblemoninitiative.config.NobleConfig.reload();
     context.getSource().sendSuccess(
       () ->
         Component.literal(
