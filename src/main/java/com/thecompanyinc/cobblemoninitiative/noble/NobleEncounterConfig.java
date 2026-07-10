@@ -59,8 +59,9 @@ public class NobleEncounterConfig {
     public int[] center;
     public int radius = 20;
     public String dimension = "minecraft:overworld";
-    /** Particle drawn along the ring boundary each tick (fallback if the element has none). */
-    public String boundaryParticle = "minecraft:flame";
+    /** Optional ring particle override (a simple particle id, e.g. {@code minecraft:enchant});
+     * null = the element's colored dust. */
+    public String boundaryParticle;
   }
 
   /** Present only for flying nobles: hover + descend-to-meleeable rhythm. */
@@ -80,10 +81,23 @@ public class NobleEncounterConfig {
     public String bossBarColor = "RED";
     /** {@code net.minecraft.world.BossEvent.BossBarOverlay} name. */
     public String bossBarOverlay = "NOTCHED_10";
+    /**
+     * Stagger cinematic variant: null = default collapse cocoon; "rebirth" = the Moltres
+     * ember-collapse fake-out; "gotcha" = the friendly chase freeze-frame (auto for
+     * {@code type == "chase"}).
+     */
+    public String script;
   }
 
   public static class Phase1 {
     public List<Attack> attacks = Collections.emptyList();
+    /** Ticks between any two attacks (the global telegraph-spacing gap). */
+    public int attackGapTicks = 25;
+    /**
+     * Body-health fractions (descending) at which the noble enrages — roar, boss-bar tint,
+     * tighter attack cadence. Null = the engine default {0.6, 0.3}.
+     */
+    public double[] rageThresholds;
   }
 
   /** Friendly "chase Mew" task: the noble flees; the player must tag it {@code tagsRequired} times. */
@@ -127,6 +141,10 @@ public class NobleEncounterConfig {
     public String achievement;
     /** Commands run on completion, with {@code {player}}/{@code {uuid}} substitution. */
     public List<String> commands;
+    /** Outcome-specific overrides: run INSTEAD of {@code commands} when present. A caught
+     * noble can pay differently from a knocked-out one (capture-or-lose-it wager). */
+    public List<String> commandsOnCapture;
+    public List<String> commandsOnDefeat;
   }
 
   public static class StoryFlag {
@@ -139,6 +157,22 @@ public class NobleEncounterConfig {
     public String start;
     public String stagger;
     public String complete;
+    /** Phase-1 boss-music loop (a long vanilla track id, played on HOSTILE). Null = none. */
+    public String loop;
+    /** Declared duration of {@code loop} in seconds — the server cannot read ogg length. */
+    public float loopSeconds;
+    /** Species-cry override; default derives {@code cobblemon:pokemon.<species>.cry}
+     * from the first battleSpecies token. */
+    public String cry;
+    /** Pre-encounter approach-cue override (used once arenas are placed). */
+    public String approach;
+    /** Play the global wither-spawn horn when Phase 1 goes live (weather-trio gravitas). */
+    public boolean hornOnStart;
+    /** Nullable per-cue overrides, multiplied into the global sfxVolume/sfxPitch knobs. */
+    public Float startVolume;
+    public Float startPitch;
+    public Float staggerPitch;
+    public Float completePitch;
   }
 
   // ── Getters ─────────────────────────────────────────────────────────────────

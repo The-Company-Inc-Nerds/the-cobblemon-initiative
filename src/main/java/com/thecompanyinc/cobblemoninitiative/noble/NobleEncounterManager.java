@@ -8,12 +8,16 @@ import com.cobblemon.mod.common.api.events.pokemon.PokemonCapturedEvent;
 import com.cobblemon.mod.common.api.pokemon.PokemonProperties;
 import com.cobblemon.mod.common.api.storage.party.PlayerPartyStore;
 import com.cobblemon.mod.common.battles.BattleBuilder;
+import com.cobblemon.mod.common.battles.BattleRegistry;
+import com.cobblemon.mod.common.battles.BattleStartResult;
+import com.cobblemon.mod.common.battles.ErroredBattleStart;
 import com.cobblemon.mod.common.battles.actor.PlayerBattleActor;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.google.gson.Gson;
 import com.thecompanyinc.cobblemoninitiative.InitiativeInit;
 import com.thecompanyinc.cobblemoninitiative.config.NobleConfig;
+import com.thecompanyinc.cobblemoninitiative.noble.NobleEncounterState.DelayedCue;
 import com.thecompanyinc.cobblemoninitiative.noble.NobleEncounterState.Phase;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -21,34 +25,48 @@ import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundLevelEventPacket;
 import net.minecraft.network.protocol.game.ClientboundSetSubtitleTextPacket;
 import net.minecraft.network.protocol.game.ClientboundSetTitleTextPacket;
 import net.minecraft.network.protocol.game.ClientboundSetTitlesAnimationPacket;
+import net.minecraft.network.protocol.game.ClientboundStopSoundPacket;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.BossEvent;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
 
 /**
  * Drives noble boss encounters — the shrine "director" pattern applied to a real-time boss.
  * Phase 1 is an Easy NPC body (native melee + real health); this manager adds the ranged/AoE
- * attacks, arena ring, and stagger boss bar. At stagger it body-swaps to a real Cobblemon and
- * opens a wild battle for the catch. Mirrors
+ * attacks, arena ring, rage escalation, boss-music loop, and the stagger boss bar. At the
+ * stagger threshold it plays a scripted collapse cinematic ({@link Phase#STAGGERED}), then
+ * body-swaps to a real Cobblemon and opens a wild battle for the catch. Mirrors
  * {@link com.thecompanyinc.cobblemoninitiative.shrine.ShrineChallengeManager}.
  */
 public class NobleEncounterManager {
@@ -61,8 +79,8 @@ public class NobleEncounterManager {
     "mew",
   };
 
-  /** Gap (ticks) between successive attacks so telegraphs never overlap. */
-  private static final int ATTACK_GAP_TICKS = 25;
+  /** Rage bands used when a noble JSON declares none (body-health fractions, descending). */
+  private static final double[] DEFAULT_RAGE_THRESHOLDS = { 0.6, 0.3 };
   private static final double[] RING_HEIGHTS = { 0.3, 1.4, 2.5 };
 
   private final Map<UUID, NobleEncounterState> activeStates = new HashMap<>();
@@ -152,11 +170,22 @@ public class NobleEncounterManager {
 
     // Spawn the Phase-1 Easy NPC body; it's discovered by tag in tickIntro.
     spawnBody(server, cfg, state);
+    // Manifestation burst at the arena center — the body doesn't just pop in.
+    ElementTheme element = ElementTheme.resolve(cfg.getElement());
+    NobleFx.burst(level, element.impactParticle(), cx, cy + 1.0, cz, 40, 1.2, 0.05);
+    NobleFx.burst(level, ParticleTypes.CLOUD, cx, cy + 0.5, cz, 20, 1.0, 0.02);
 
     activeStates.put(player.getUUID(), state);
 
+    NobleEncounterConfig.Sounds sounds = cfg.getSounds();
     sendTitle(player, cfg.getStartTitle(), cfg.getStartSubtitle(), 10, 60, 20);
-    NobleFx.playSoundId(level, cx, cy, cz, cfg.getSounds().start, NobleConfig.get().getSfxVolume(), NobleConfig.get().getSfxPitch());
+    NobleFx.playSoundId(level, cx, cy, cz, sounds.start,
+      effVolume(sounds.startVolume), effPitch(sounds.startPitch));
+    // The noble's own voice under the title card (low, distant).
+    NobleFx.playSoundId(level, cx, cy, cz, cryId(cfg), 1.5f * NobleConfig.get().getSfxVolume(), 0.8f);
+    // The sky acknowledges the fight (per-player fake weather; restored in teardown).
+    NobleSkyFx.applyWeather(player, AmbientTheme.resolve(cfg.getAmbientTheme()));
+
     InitiativeInit.LOGGER.info("Player {} started noble encounter {}", player.getName().getString(), nobleId);
     return true;
   }
@@ -207,11 +236,28 @@ public class NobleEncounterManager {
         fail(server, player, state, "§cThe noble bested you.");
         continue;
       }
+      drainDelayedCues(server, state);
       switch (state.getPhase()) {
         case INTRO -> tickIntro(server, player, state, cfg);
         case REALTIME -> tickRealtime(server, player, state, cfg);
+        case STAGGERED -> tickStagger(server, player, state, cfg);
         case BATTLE -> tickBattle(server, player, state, cfg);
         default -> { /* COMPLETE / FAILED already removed */ }
+      }
+    }
+  }
+
+  /** Sounds queued a few ticks out (stagger stings, landing bells) — survive phase changes. */
+  private void drainDelayedCues(MinecraftServer server, NobleEncounterState state) {
+    if (state.getDelayedCues().isEmpty()) return;
+    ServerLevel level = resolveLevel(server, state.getArenaDimension());
+    if (level == null) return;
+    Iterator<DelayedCue> it = state.getDelayedCues().iterator();
+    while (it.hasNext()) {
+      DelayedCue cue = it.next();
+      if (--cue.ticksLeft <= 0) {
+        NobleFx.playSoundId(level, cue.x, cue.y, cue.z, cue.soundId, cue.volume, cue.pitch);
+        it.remove();
       }
     }
   }
@@ -231,12 +277,34 @@ public class NobleEncounterManager {
     }
 
     drawArenaRing(level, state, cfg);
+    AmbientTheme theme = AmbientTheme.resolve(cfg.getAmbientTheme());
+    // Cosmetic wash only — no debuff may land during the intro.
+    theme.tickParticlesOnly(player, level);
+    NobleSkyFx.tickFakeTime(player, level, theme);
+
+    // Element pulse once per intro second — an audible countdown to the fight.
+    int second = (int) (state.getPhaseElapsedMs() / 1000L);
+    if (second != state.getLastIntroSecond()) {
+      state.setLastIntroSecond(second);
+      NobleFx.playSoundId(level, state.getArenaX(), state.getArenaY(), state.getArenaZ(),
+        ElementTheme.resolve(cfg.getElement()).castSoundId(), 0.7f, 0.8f + 0.15f * second);
+    }
 
     if (state.getPhaseElapsedMs() >= cfg.getIntroSeconds() * 1000L) {
       if (state.getBodyUuid() == null) {
-        fail(server, player, state, "§cThe noble failed to manifest (body preset missing?).");
+        fail(server, player, state, "§cThe noble failed to manifest (body preset missing?).", false);
         return;
       }
+      // The fight goes live: full-volume cry + crack, optional world-horn, boss music.
+      NobleFx.playSoundId(level, state.getArenaX(), state.getArenaY(), state.getArenaZ(),
+        cryId(cfg), 3.0f * NobleConfig.get().getSfxVolume(), 1.0f);
+      NobleFx.playSoundId(level, state.getArenaX(), state.getArenaY(), state.getArenaZ(),
+        "minecraft:entity.generic.explode", 1.0f, 0.8f);
+      if (cfg.getSounds().hornOnStart) {
+        player.connection.send(new ClientboundLevelEventPacket(1023 /* wither-spawn horn */,
+          player.blockPosition(), 0, true));
+      }
+      startLoop(player, level, state, cfg);
       state.setPhase(Phase.REALTIME);
     }
   }
@@ -252,47 +320,108 @@ public class NobleEncounterManager {
 
     LivingEntity body = resolveBody(server, state);
     if (body == null) {
-      // The player killed the frenzied body (or it despawned) — treat as subdued → Phase 2.
-      enterStaggerAndSwap(server, player, state, cfg, level);
+      // The player killed the frenzied body (or it despawned) — treat as subdued → stagger.
+      beginStagger(server, player, state, cfg, level);
       return;
     }
 
-    // Boss bar mirrors the body's real health.
-    ServerBossEvent bar = state.getBossBar();
-    if (bar != null && body.getMaxHealth() > 0) {
-      bar.setProgress(Mth.clamp(body.getHealth() / body.getMaxHealth(), 0f, 1f));
+    ElementTheme element = ElementTheme.resolve(cfg.getElement());
+    float frac = body.getMaxHealth() > 0 ? Mth.clamp(body.getHealth() / body.getMaxHealth(), 0f, 1f) : 1f;
+    float last = state.getLastHealthFraction();
+
+    if (last >= 0f) {
+      // Rage bands: downward threshold crossings escalate the fight.
+      double[] thresholds = cfg.getPhase1().rageThresholds != null
+        ? cfg.getPhase1().rageThresholds : DEFAULT_RAGE_THRESHOLDS;
+      int targetTier = 0;
+      for (double t : thresholds) {
+        if (frac <= t) targetTier++;
+      }
+      if (targetTier > state.getRageTier()) {
+        state.setRageTier(targetTier);
+        rageFx(player, state, cfg, level, body, targetTier);
+      }
+      // One-shot "stagger imminent" warning just above the threshold.
+      float warnAt = cfg.getStagger().staggerAtHealthFraction + 0.10f;
+      if (!state.isPreStaggerWarned() && frac <= warnAt && last > warnAt) {
+        state.setPreStaggerWarned(true);
+        NobleFx.playSoundId(level, body.getX(), body.getY(), body.getZ(), cryId(cfg),
+          1.5f * NobleConfig.get().getSfxVolume(), 0.65f);
+        NobleFx.playSoundId(level, body.getX(), body.getY(), body.getZ(),
+          "minecraft:entity.warden.roar", 0.4f, 0.8f);
+      }
+      // Melee hit-confirm: any health drop reads as crunch + bar flash.
+      float delta = last - frac;
+      if (delta > 0.001f) {
+        double hx = body.getX(), hy = body.getY() + body.getBbHeight() * 0.6, hz = body.getZ();
+        NobleFx.burst(level, ParticleTypes.CRIT, hx, hy, hz, 8 + (int) (delta * 300), 0.35, 0.1);
+        NobleFx.playSoundId(level, hx, hy, hz, "minecraft:entity.player.attack.crit",
+          0.8f, Math.min(2.0f, 1.1f + delta * 4f));
+        if (delta >= 0.04f) {
+          NobleFx.playSoundId(level, hx, hy, hz, element.castSoundId(), 0.9f, 1.6f);
+        }
+        state.setBarFlashTicks(3);
+      }
     }
+    state.setLastHealthFraction(frac);
 
     // Stagger threshold.
-    if (body.getHealth() <= body.getMaxHealth() * cfg.getStagger().staggerAtHealthFraction) {
-      enterStaggerAndSwap(server, player, state, cfg, level);
+    if (frac <= cfg.getStagger().staggerAtHealthFraction) {
+      beginStagger(server, player, state, cfg, level);
       return;
     }
 
-    enforceRing(player, state);
+    if (state.getBarFlashTicks() > 0) state.setBarFlashTicks(state.getBarFlashTicks() - 1);
+    boolean danger = !state.getPendingImpacts().isEmpty() || !state.getBeams().isEmpty();
+    boolean grounded = cfg.isFlyer() && !state.isAirborne();
+    updateBossBar(state, cfg, frac, danger, grounded);
+
+    enforceRing(player, state, element);
     drawArenaRing(level, state, cfg);
+    drawEdgeCurtain(level, player, state, element);
 
-    AmbientTheme.resolve(cfg.getAmbientTheme()).tick(player, level, state);
+    AmbientTheme theme = AmbientTheme.resolve(cfg.getAmbientTheme());
+    theme.tick(player, level, state, state.getRageTier());
+    NobleSkyFx.tickFakeTime(player, level, theme);
 
-    if (cfg.isFlyer()) tickFlyer(body, state, cfg, player);
+    // Hardcore heartbeat: the player's hearts are the real boss bar.
+    float playerFrac = player.getMaxHealth() > 0 ? player.getHealth() / player.getMaxHealth() : 1f;
+    if (playerFrac < 0.4f && level.getGameTime() >= state.getNextHeartbeatTick()) {
+      NobleFx.playSoundId(level, player.getX(), player.getY(), player.getZ(),
+        "minecraft:entity.warden.heartbeat", 1.2f * NobleConfig.get().getSfxVolume(),
+        playerFrac < 0.2f ? 1.15f : 0.95f);
+      state.setNextHeartbeatTick(level.getGameTime() + (playerFrac < 0.2f ? 15 : 30));
+    }
+
+    // Boss-music loop re-trigger (positional at the player so it never pumps/fades).
+    if (state.getNextLoopTick() > 0 && level.getGameTime() >= state.getNextLoopTick()) {
+      startLoop(player, level, state, cfg);
+    }
+
+    if (cfg.isFlyer()) tickFlyer(level, body, state, cfg, player, element);
     else tetherBody(body, state);
 
     // Combat: advance transient objects, then maybe fire a new attack.
-    ElementTheme element = ElementTheme.resolve(cfg.getElement());
     NobleAttacks.Context ctx = new NobleAttacks.Context(level, player, body, state, cfg, element);
     NobleAttacks.tickTransients(ctx);
     fireAttacks(state, cfg, ctx);
   }
 
   private void tickBattle(MinecraftServer server, ServerPlayer player, NobleEncounterState state, NobleEncounterConfig cfg) {
+    ServerLevel level = resolveLevel(server, state.getArenaDimension());
+    // Keep the fake sky through the catch battle — vanilla re-syncs time every 20 ticks.
+    if (level != null) {
+      NobleSkyFx.tickFakeTime(player, level, AmbientTheme.resolve(cfg.getAmbientTheme()));
+    }
     // Completion is event-driven (onBattleVictory / onPokemonCaptured). Safety net for a
     // battle that ended some other way (fled): after a short grace, if nothing is battling, end it.
     if (state.getPhaseElapsedMs() < 3000L) return;
-    ServerLevel level = resolveLevel(server, state.getArenaDimension());
     Entity gr = (level != null && state.getBattleEntityUuid() != null) ? level.getEntity(state.getBattleEntityUuid()) : null;
     if (gr == null) {
       fail(server, player, state, "§7The noble slipped away.");
     } else if (gr instanceof PokemonEntity pe && !pe.isBattling()) {
+      // A busy entity is a capture in flight (ball shaking) — pending, not fled.
+      if (pe.isBusy()) return;
       fail(server, player, state, "§7The noble slipped away.");
     }
   }
@@ -305,18 +434,28 @@ public class NobleEncounterManager {
                          NobleEncounterConfig cfg, ServerLevel level) {
     LivingEntity body = resolveBody(server, state);
     if (body == null) { // invulnerable, so shouldn't vanish — but if it does, treat as caught
-      enterStaggerAndSwap(server, player, state, cfg, level);
+      beginStagger(server, player, state, cfg, level);
       return;
     }
     NobleEncounterConfig.Chase c = cfg.getChase() != null ? cfg.getChase() : new NobleEncounterConfig.Chase();
     ElementTheme element = ElementTheme.resolve(cfg.getElement());
 
-    ServerBossEvent bar = state.getBossBar();
-    if (bar != null) bar.setProgress(Mth.clamp((float) state.getTaskProgress() / Math.max(1, c.tagsRequired), 0f, 1f));
+    // Chase runs the same music/sky upkeep as the boss branch (it early-returns above them).
+    NobleSkyFx.tickFakeTime(player, level, AmbientTheme.resolve(cfg.getAmbientTheme()));
+    if (state.getNextLoopTick() > 0 && level.getGameTime() >= state.getNextLoopTick()) {
+      startLoop(player, level, state, cfg);
+    }
 
-    enforceRing(player, state);
+    ServerBossEvent bar = state.getBossBar();
+    if (bar != null) {
+      bar.setProgress(Mth.clamp((float) state.getTaskProgress() / Math.max(1, c.tagsRequired), 0f, 1f));
+      bar.setName(Component.literal(cfg.getDisplayName() + " §7(" + state.getTaskProgress() + "/" + c.tagsRequired + ")"));
+    }
+
+    enforceRing(player, state, element);
     drawArenaRing(level, state, cfg);
-    AmbientTheme.resolve(cfg.getAmbientTheme()).tick(player, level, state);
+    drawEdgeCurtain(level, player, state, element);
+    AmbientTheme.resolve(cfg.getAmbientTheme()).tick(player, level, state, 0);
 
     double hoverY = state.getArenaY() + c.hoverHeight;
     body.setNoGravity(true);
@@ -326,32 +465,68 @@ public class NobleEncounterManager {
     double dz = body.getZ() - player.getZ();
     double dist = Math.sqrt(dx * dx + dz * dz);
 
+    // The escalation: the more it's tagged, the faster and blinkier it gets.
+    double fleeSpeed = c.fleeSpeed * (1.0 + 0.08 * state.getTaskProgress());
+    double blinkChance = c.blinkChance + 0.005 * state.getTaskProgress();
+
+    // Random giggle — the trickster has a voice.
+    int giggle = state.getGiggleTimer() - 1;
+    if (giggle <= 0) {
+      NobleFx.playSoundId(level, body.getX(), body.getY(), body.getZ(), cryId(cfg),
+        0.8f, (float) (1.3 + Math.random() * 0.2));
+      giggle = 60 + (int) (Math.random() * 80);
+    }
+    state.setGiggleTimer(giggle);
+
     // Tag!
     if (dist <= c.touchRadius && state.getTaskCooldown() <= 0) {
       state.setTaskProgress(state.getTaskProgress() + 1);
       state.setTaskCooldown(c.tagCooldownTicks);
       NobleFx.burst(level, element.impactParticle(), body.getX(), body.getY() + 0.6, body.getZ(), 24, 0.4, 0.06);
       NobleFx.burst(level, ParticleTypes.HEART, body.getX(), body.getY() + 1.1, body.getZ(), 6, 0.35, 0.0);
-      NobleFx.playSoundId(level, body.getX(), body.getY(), body.getZ(), element.castSoundId(), 1.0f, 1.6f);
+      // Rising pitch ladder — the audience hears progress toward the last tag.
+      NobleFx.playSoundId(level, body.getX(), body.getY(), body.getZ(), element.castSoundId(),
+        1.0f, Math.min(2.0f, 1.2f + 0.12f * state.getTaskProgress()));
       player.displayClientMessage(Component.literal("§dTagged " + cfg.getDisplayName().replaceAll("§.", "")
         + "! §7(" + state.getTaskProgress() + "/" + c.tagsRequired + ")"), true);
       if (state.getTaskProgress() >= c.tagsRequired) {
-        enterStaggerAndSwap(server, player, state, cfg, level);
+        NobleFx.burst(level, ParticleTypes.FIREWORK, body.getX(), body.getY() + 1.0, body.getZ(), 40, 0.6, 0.1);
+        NobleFx.playSoundId(level, body.getX(), body.getY(), body.getZ(),
+          "minecraft:entity.player.levelup", 1.0f, 1.4f);
+        beginStagger(server, player, state, cfg, level);
         return;
+      }
+      if (state.getTaskProgress() == c.tagsRequired - 1) {
+        player.displayClientMessage(Component.literal("§d§lOne more!"), true);
+        NobleFx.playSoundId(level, body.getX(), body.getY(), body.getZ(), cryId(cfg), 1.0f, 1.4f);
       }
       blinkBody(level, body, state, Math.max(c.blinkRange, c.fleeRadius + 2), hoverY, element);
       return;
     }
 
+    // Near-miss feedback: hot/cold chime outside the tag radius, whiff during the cooldown.
+    if (dist <= c.touchRadius + 1.2 && level.getGameTime() % 5 == 0) {
+      if (dist > c.touchRadius) {
+        float pitch = 0.8f + 1.2f * (float) ((c.touchRadius + 1.2 - dist) / 1.2);
+        NobleFx.playSoundId(level, body.getX(), body.getY(), body.getZ(),
+          "minecraft:block.amethyst_block.chime", 0.6f, Mth.clamp(pitch, 0.5f, 2.0f));
+      } else if (state.getTaskCooldown() > 0 && level.getGameTime() % 10 == 0) {
+        NobleFx.playSoundId(level, body.getX(), body.getY(), body.getZ(),
+          "minecraft:entity.allay.item_thrown", 0.6f, 1.4f);
+      }
+    }
+
     // Flee / idle.
     if (dist <= c.fleeRadius) {
-      if (Math.random() < c.blinkChance) {
+      if (Math.random() < blinkChance) {
         blinkBody(level, body, state, c.blinkRange, hoverY, element);
       } else {
         double nx = dist < 1.0e-3 ? 1 : dx / dist;
         double nz = dist < 1.0e-3 ? 0 : dz / dist;
-        double tx = body.getX() + nx * c.fleeSpeed * 4.0;
-        double tz = body.getZ() + nz * c.fleeSpeed * 4.0;
+        // fleeSpeed is the per-tick teleport step (schema contract) — no hidden multiplier,
+        // or open-field tags become mathematically impossible.
+        double tx = body.getX() + nx * fleeSpeed;
+        double tz = body.getZ() + nz * fleeSpeed;
         double maxR = Math.max(2.0, state.getArenaRadius() - 2);
         double ox = tx - state.getArenaX(), oz = tz - state.getArenaZ();
         double od = Math.sqrt(ox * ox + oz * oz);
@@ -362,11 +537,20 @@ public class NobleEncounterManager {
     } else {
       faceMoveTo(body, body.getX(), hoverY, body.getZ(), player);
     }
+
+    // One-tag-left: it trails hearts as it flees — squeaky, nearly-befriended.
+    if (state.getTaskProgress() == c.tagsRequired - 1 && level.getGameTime() % 3 == 0) {
+      NobleFx.burst(level, ParticleTypes.HEART, body.getX(), body.getY() + 0.8, body.getZ(), 1, 0.2, 0.0);
+    }
   }
 
   private static void blinkBody(ServerLevel level, LivingEntity body, NobleEncounterState state,
                                 double minHop, double hoverY, ElementTheme element) {
-    NobleFx.burst(level, element.impactParticle(), body.getX(), body.getY() + 0.5, body.getZ(), 12, 0.3, 0.05);
+    int progress = state.getTaskProgress();
+    int burst = 12 + 4 * progress;
+    NobleFx.burst(level, element.impactParticle(), body.getX(), body.getY() + 0.5, body.getZ(), burst, 0.3, 0.05);
+    NobleFx.playSoundId(level, body.getX(), body.getY(), body.getZ(),
+      "minecraft:entity.enderman.teleport", 0.7f, Math.min(2.0f, 1.0f + 0.1f * progress));
     double maxR = Math.max(2.0, state.getArenaRadius() - 2);
     for (int i = 0; i < 8; i++) {
       double a = Math.random() * Math.PI * 2;
@@ -376,7 +560,8 @@ public class NobleEncounterManager {
       if (NobleFx.horizontalDistSq(x, z, body.getX(), body.getZ()) >= minHop * minHop) {
         body.moveTo(x, hoverY, z, body.getYRot(), 0f);
         body.setDeltaMovement(0, 0, 0);
-        NobleFx.burst(level, element.impactParticle(), x, hoverY + 0.5, z, 12, 0.3, 0.05);
+        NobleFx.burst(level, element.impactParticle(), x, hoverY + 0.5, z, burst, 0.3, 0.05);
+        NobleFx.playSoundId(level, x, hoverY, z, "minecraft:block.amethyst_block.chime", 0.8f, 1.5f);
         return;
       }
     }
@@ -389,44 +574,222 @@ public class NobleEncounterManager {
     body.hurtMarked = true;
   }
 
-  // ── Transitions ──────────────────────────────────────────────────────────────
+  // ── Stagger cinematic + body-swap ─────────────────────────────────────────────
 
-  private void enterStaggerAndSwap(MinecraftServer server, ServerPlayer player, NobleEncounterState state,
-                                   NobleEncounterConfig cfg, ServerLevel level) {
-    // Despawn the frenzied Easy NPC body.
-    despawnBody(server, state);
+  /**
+   * Enter the scripted collapse: freeze the fight, clear combat state, and let
+   * {@link #tickStagger} run the cocoon → body-swap → title → battle-open beat sheet.
+   * No attacks fire during STAGGERED (fireAttacks only runs in tickRealtime).
+   */
+  private void beginStagger(MinecraftServer server, ServerPlayer player, NobleEncounterState state,
+                            NobleEncounterConfig cfg, ServerLevel level) {
+    stopLoop(player, state, cfg);
 
-    // Tear down the boss bar + lingering combat objects/effects (Cobblemon shows its own battle UI).
-    ServerBossEvent bar = state.getBossBar();
-    if (bar != null) { bar.removeAllPlayers(); state.setBossBar(null); }
+    // Capture where the body stood — the real mon rises there (Y clamped to the floor so a
+    // mid-air flyer stagger doesn't drop the catchable into its own battle).
+    LivingEntity body = resolveBody(server, state);
+    double sx = body != null ? body.getX() : state.getArenaX();
+    double sz = body != null ? body.getZ() : state.getArenaZ();
+    state.setSwapPos(sx, state.getArenaY(), sz);
+
+    // Freeze the body: pinning alone is NOT safe — its native melee could still land on a
+    // low-HP hardcore player mid-cinematic.
+    if (body instanceof Mob mob) mob.setNoAi(true);
+
+    // Clear lingering combat objects/effects; the bar goes white-and-empty for the collapse.
     state.getBolts().clear();
     state.getPendingImpacts().clear();
     state.getBeams().clear();
     state.getHazardZones().clear();
     AmbientTheme.resolve(cfg.getAmbientTheme()).clear(player);
+    ServerBossEvent bar = state.getBossBar();
+    if (bar != null) {
+      bar.setProgress(0f);
+      bar.setColor(BossEvent.BossBarColor.WHITE);
+    }
 
+    NobleEncounterConfig.Sounds sounds = cfg.getSounds();
+    boolean chase = "chase".equals(cfg.getType());
+    NobleFx.playSoundId(level, state.getArenaX(), state.getArenaY(), state.getArenaZ(),
+      sounds.stagger, NobleConfig.get().getSfxVolume(), effPitch(sounds.staggerPitch));
+    if (!chase) {
+      NobleFx.playSoundId(level, sx, state.getArenaY(), sz,
+        "minecraft:entity.elder_guardian.curse", 1.0f * NobleConfig.get().getSfxVolume(), 0.9f);
+      // Wounded bellow a beat later — "the frenzy broke".
+      queueCue(state, 10, cryId(cfg), 1.2f * NobleConfig.get().getSfxVolume(), 0.6f, sx, state.getArenaY(), sz);
+      player.connection.send(new ClientboundLevelEventPacket(1028 /* dragon-death horn */,
+        BlockPos.containing(sx, state.getArenaY(), sz), 0, true));
+      if (ElementTheme.resolve(cfg.getElement()) == ElementTheme.ICE) {
+        // Articuno: the frost shatters off the screen.
+        int ice = Block.getId(Blocks.PACKED_ICE.defaultBlockState());
+        for (int i = 0; i < 3; i++) {
+          player.connection.send(new ClientboundLevelEventPacket(2001 /* block-crack FX */,
+            BlockPos.containing(sx, state.getArenaY() + i, sz), ice, false));
+        }
+        NobleFx.playSoundId(level, sx, state.getArenaY(), sz, "minecraft:block.glass.break", 1.0f, 0.8f);
+      }
+    } else {
+      // Friendly finale: pitched-up happy cry instead of a wounded one.
+      queueCue(state, 10, cryId(cfg), 1.0f, 1.35f, sx, state.getArenaY(), sz);
+    }
+
+    state.setStaggerTicks(0);
+    state.setPhase(Phase.STAGGERED);
+  }
+
+  /** The collapse beat sheet. Scripts: default cocoon, "rebirth" (Moltres), "gotcha" (chase). */
+  private void tickStagger(MinecraftServer server, ServerPlayer player, NobleEncounterState state, NobleEncounterConfig cfg) {
+    ServerLevel level = resolveLevel(server, state.getArenaDimension());
+    if (level == null) return;
+
+    NobleSkyFx.tickFakeTime(player, level, AmbientTheme.resolve(cfg.getAmbientTheme()));
+    ElementTheme element = ElementTheme.resolve(cfg.getElement());
+    // The barrier holds through the cinematic — a panic-sprint out of the ring would open
+    // the battle at range (past ~32 blocks Cobblemon auto-flees it as "slipped away").
+    enforceRing(player, state, element);
+
+    int t = state.getStaggerTicks() + 1;
+    state.setStaggerTicks(t);
+    double sx = state.getSwapX(), sy = state.getSwapY(), sz = state.getSwapZ();
+    String script = cfg.getStagger().script != null
+      ? cfg.getStagger().script
+      : ("chase".equals(cfg.getType()) ? "gotcha" : "default");
+
+    switch (script) {
+      case "rebirth" -> { // ember collapse … near-silence … IGNITION
+        if (t == 1) {
+          NobleFx.playSoundId(level, sx, sy, sz, "minecraft:block.fire.extinguish", 1.0f, 1.0f);
+        }
+        if (t <= 60) {
+          NobleFx.burst(level, ParticleTypes.SMOKE, sx, sy + 1.0 + t * 0.05, sz, 3, 0.4, 0.02);
+          NobleFx.burst(level, ParticleTypes.CAMPFIRE_COSY_SMOKE, sx, sy + 0.5, sz, 1, 0.3, 0.01);
+          if (t <= 20) NobleFx.burst(level, ParticleTypes.LAVA, sx, sy + 2.0, sz, 2, 0.5, 0.0);
+        }
+        if (t == 60) {
+          swapBody(server, player, state, cfg, level, element, false);
+          NobleFx.burst(level, ParticleTypes.FLAME, sx, sy + 1.0, sz, 80, 1.0, 0.12);
+          NobleFx.playSoundId(level, sx, sy, sz, "minecraft:item.firecharge.use", 1.2f, 1.0f);
+        } else if (t == 90) {
+          sendStaggerTitle(player, cfg);
+        } else if (t >= 110) {
+          openBattle(server, player, state, cfg, level);
+        }
+      }
+      case "gotcha" -> { // freeze-frame: three rising chimes, an enchant wrap, then the friend battle
+        if (t == 1 || t == 20 || t == 40) {
+          float pitch = t == 1 ? 1.0f : (t == 20 ? 1.2f : 1.4f);
+          NobleFx.playSoundId(level, sx, sy, sz, "minecraft:entity.allay.item_given", 1.0f, pitch);
+          NobleFx.burst(level, ParticleTypes.HEART, sx, sy + 1.2, sz, 8, 0.5, 0.0);
+        }
+        if (t <= 50) {
+          NobleFx.burst(level, ParticleTypes.ENCHANT, sx, sy + 1.0, sz, 6, 0.8, 0.5);
+        }
+        if (t == 50) {
+          swapBody(server, player, state, cfg, level, element, true);
+        } else if (t == 55) {
+          sendStaggerTitle(player, cfg);
+        } else if (t >= 80) {
+          openBattle(server, player, state, cfg, level);
+        }
+      }
+      default -> { // collapse cocoon: the ring spirals inward and the real noble rises from the burst
+        if (t <= 40) {
+          double frac = t / 40.0;
+          double radius = Math.max(0.6, state.getArenaRadius() * (1.0 - frac));
+          NobleFx.drawRing(level, sx, sy + 0.2 + frac * 2.5, sz, radius,
+            element.telegraphColor(), new double[] { 0.0, 0.8 });
+          NobleFx.burst(level, ParticleTypes.END_ROD, sx, sy + 1.0 + frac * 2.0, sz, 2, 0.5, 0.02);
+          if (t == 40) swapBody(server, player, state, cfg, level, element, false);
+        } else if (t == 45) {
+          sendStaggerTitle(player, cfg);
+        } else if (t >= 70) {
+          openBattle(server, player, state, cfg, level);
+        }
+      }
+    }
+  }
+
+  private void sendStaggerTitle(ServerPlayer player, NobleEncounterConfig cfg) {
     String stTitle = cfg.getStaggerTitle() != null ? cfg.getStaggerTitle() : "§e§lSTAGGERED";
     String stSub = cfg.getStaggerSubtitle() != null ? cfg.getStaggerSubtitle() : "§7" + cfg.getDisplayName();
     sendTitle(player, stTitle, stSub, 5, 40, 15);
-    NobleFx.playSoundId(level, state.getArenaX(), state.getArenaY(), state.getArenaZ(),
-      cfg.getSounds().stagger, NobleConfig.get().getSfxVolume(), 1.0f);
+  }
 
-    // Spawn the REAL Cobblemon at the same spot and open a wild (catchable) battle.
+  /** Despawn the Easy NPC body inside a burst and raise the REAL Cobblemon in its place. */
+  private void swapBody(MinecraftServer server, ServerPlayer player, NobleEncounterState state,
+                        NobleEncounterConfig cfg, ServerLevel level, ElementTheme element, boolean friendly) {
+    despawnBody(server, state);
+    double sx = state.getSwapX(), sy = state.getSwapY(), sz = state.getSwapZ();
+    if (friendly) {
+      NobleFx.burst(level, ParticleTypes.POOF, sx, sy + 0.8, sz, 20, 0.5, 0.05);
+      NobleFx.burst(level, ParticleTypes.HEART, sx, sy + 1.2, sz, 10, 0.5, 0.0);
+    } else {
+      NobleFx.burst(level, ParticleTypes.CLOUD, sx, sy + 0.8, sz, 40, 0.8, 0.08);
+      NobleFx.burst(level, ParticleTypes.EXPLOSION_EMITTER, sx, sy + 0.5, sz, 1, 0.0, 0.0);
+      NobleFx.burst(level, ParticleTypes.FLASH, sx, sy + 1.0, sz, 1, 0.0, 0.0);
+      NobleFx.burst(level, element.impactParticle(), sx, sy + 0.8, sz, 30, 0.7, 0.08);
+    }
+
     try {
       String species = cfg.getBattleSpecies() != null ? cfg.getBattleSpecies() : cfg.getId();
       PokemonProperties props = PokemonProperties.Companion.parse(species);
       PokemonEntity gr = props.createEntity(level);
-      float yaw = (float) (Math.toDegrees(Math.atan2(player.getZ() - state.getArenaZ(), player.getX() - state.getArenaX())) - 90.0);
-      gr.moveTo(state.getArenaX(), state.getArenaY(), state.getArenaZ(), yaw, 0f);
+      float yaw = (float) (Math.toDegrees(Math.atan2(player.getZ() - sz, player.getX() - sx)) - 90.0);
+      gr.moveTo(sx, sy, sz, yaw, 0f);
       gr.setPersistenceRequired();
       level.addFreshEntity(gr);
+      // The real model performs its actual cry animation as it appears.
+      gr.cry();
       state.setBattleEntityUuid(gr.getUUID());
       state.setBattlePokemonUuid(gr.getPokemon().getUuid());
+    } catch (Exception e) {
+      InitiativeInit.LOGGER.error("Failed to spawn noble Phase-2 body for {}", state.getNobleId(), e);
+      fail(server, player, state, "§cThe noble could not be engaged.");
+    }
+  }
 
+  /**
+   * Open the wild (catchable) battle on the already-spawned Phase-2 entity. Called every
+   * tick past the script's battle beat, so returning without a phase change is a natural
+   * retry loop: a ball mid-shake (the entity is busy — a mid-cinematic throw is legal and
+   * completes via onPokemonCaptured) or an errored start (player busy in another battle)
+   * simply waits. Bounded at ~60s, then bails clean.
+   */
+  private void openBattle(MinecraftServer server, ServerPlayer player, NobleEncounterState state,
+                          NobleEncounterConfig cfg, ServerLevel level) {
+    Entity gr = state.getBattleEntityUuid() != null ? level.getEntity(state.getBattleEntityUuid()) : null;
+    if (!(gr instanceof PokemonEntity pe) || !pe.isAlive()) {
+      // Captured/handled during the cinematic — if the state is still here, bail clean.
+      fail(server, player, state, "§cThe noble could not be engaged.");
+      return;
+    }
+
+    int attempts = state.getBattleOpenAttempts() + 1;
+    state.setBattleOpenAttempts(attempts);
+    if (attempts > 1200) {
+      fail(server, player, state, "§cThe noble could not be engaged.");
+      return;
+    }
+
+    // A capture attempt is in flight (the mon is inside a shaking ball) — starting a battle
+    // now would fight a hidden entity and then strand the battle UI when the ball clicks.
+    if (pe.isBusy()) return;
+
+    try {
       if (cfg.getPhase2().healPartyBeforeBattle) healParty(player);
-
-      BattleBuilder.INSTANCE.pve(player, gr);
-      state.setBattleId(gr.getBattleId()); // raw UUID, may be null if the battle didn't start
+      BattleStartResult result = BattleBuilder.INSTANCE.pve(player, pe);
+      if (result instanceof ErroredBattleStart) {
+        // pve reports failure as a result, not an exception (e.g. the player is in another
+        // battle). Stay in STAGGERED — this method re-runs next tick.
+        if (attempts % 40 == 1) {
+          player.displayClientMessage(Component.literal("§7The noble waits..."), true);
+        }
+        return;
+      }
+      // The boss bar hands off to Cobblemon's battle UI.
+      ServerBossEvent bar = state.getBossBar();
+      if (bar != null) { bar.removeAllPlayers(); state.setBossBar(null); }
+      state.setBattleId(pe.getBattleId());
       state.setPhase(Phase.BATTLE);
       InitiativeInit.LOGGER.info("Noble {} staggered — wild battle opened for {}", state.getNobleId(), player.getName().getString());
     } catch (Exception e) {
@@ -435,55 +798,127 @@ public class NobleEncounterManager {
     }
   }
 
-  private void complete(MinecraftServer server, ServerPlayer player, NobleEncounterState state) {
+  private void complete(MinecraftServer server, ServerPlayer player, NobleEncounterState state, boolean captured) {
     NobleEncounterConfig cfg = nobles.get(state.getNobleId());
     if (cfg != null) {
-      grantRewards(server, player, cfg);
+      grantRewards(server, player, cfg, captured);
       sendTitle(player, cfg.getCompleteTitle(), cfg.getCompleteSubtitle(), 10, 70, 30);
       ServerLevel level = resolveLevel(server, state.getArenaDimension());
       if (level != null) {
+        NobleEncounterConfig.Sounds sounds = cfg.getSounds();
         NobleFx.playSoundId(level, player.getX(), player.getY(), player.getZ(),
-          cfg.getSounds().complete, NobleConfig.get().getSfxVolume(), 1.0f);
+          sounds.complete, NobleConfig.get().getSfxVolume(), effPitch(sounds.completePitch));
+        // Caught vs beaten reads by ear: triumphant cry + level-up chime, or a solemn one.
+        if (captured) {
+          NobleFx.playSoundId(level, player.getX(), player.getY(), player.getZ(), cryId(cfg), 1.2f, 1.25f);
+          NobleFx.playSoundId(level, player.getX(), player.getY(), player.getZ(),
+            "minecraft:entity.player.levelup", 1.0f, 1.0f);
+        } else {
+          NobleFx.playSoundId(level, player.getX(), player.getY(), player.getZ(), cryId(cfg), 1.2f, 0.9f);
+        }
+        player.connection.send(new ClientboundLevelEventPacket(2003 /* eye-of-ender shimmer */,
+          player.blockPosition(), 0, false));
+        boolean chase = "chase".equals(cfg.getType());
+        NobleFx.burst(level, chase ? ParticleTypes.HEART : ParticleTypes.FIREWORK,
+          player.getX(), player.getY() + 2.0, player.getZ(), chase ? 40 : 60, 2.5, 0.1);
       }
       player.sendSystemMessage(Component.literal("§6§l[Noble] §r§e" + cfg.getDisplayName() + " §6subdued!"));
     }
     teardown(server, state);
     activeStates.remove(state.getPlayerId());
-    InitiativeInit.LOGGER.info("Player {} completed noble encounter {}", player.getName().getString(), state.getNobleId());
+    InitiativeInit.LOGGER.info("Player {} completed noble encounter {} ({})",
+      player.getName().getString(), state.getNobleId(), captured ? "captured" : "defeated");
   }
 
   private void fail(MinecraftServer server, ServerPlayer player, NobleEncounterState state, String reason) {
+    fail(server, player, state, reason, true);
+  }
+
+  private void fail(MinecraftServer server, ServerPlayer player, NobleEncounterState state, String reason, boolean dreadBeat) {
     player.sendSystemMessage(Component.literal(reason + " §7The noble encounter has ended."));
+    // Cut all combat audio dead — telegraphs, loop remnants, everything on HOSTILE.
+    player.connection.send(new ClientboundStopSoundPacket(null, SoundSource.HOSTILE));
+    // The dread beat plays on a live retreat only — never over the death screen, and never
+    // for a noble that failed to manifest in the first place.
+    NobleEncounterConfig cfg = nobles.get(state.getNobleId());
+    if (dreadBeat && cfg != null && !player.isDeadOrDying()) {
+      ServerLevel level = resolveLevel(server, state.getArenaDimension());
+      if (level != null) {
+        NobleFx.playSoundId(level, state.getArenaX(), state.getArenaY(), state.getArenaZ(), cryId(cfg), 1.0f, 0.5f);
+      }
+      player.addEffect(new MobEffectInstance(MobEffects.DARKNESS, 60, 0, false, false));
+      player.displayClientMessage(Component.literal("§8It watches you go."), true);
+    }
     teardown(server, state);
     activeStates.remove(state.getPlayerId());
     InitiativeInit.LOGGER.info("Player {} noble encounter {} ended: {}", player.getName().getString(), state.getNobleId(), reason);
   }
 
-  /** Idempotent cleanup: boss bar, live bodies, and lingering effects. */
+  /** Idempotent cleanup: boss bar, live bodies, music loop, fake sky, and lingering effects. */
   private void teardown(MinecraftServer server, NobleEncounterState state) {
     ServerBossEvent bar = state.getBossBar();
     if (bar != null) { bar.removeAllPlayers(); state.setBossBar(null); }
 
     despawnBody(server, state);
 
-    // A still-standing Phase-2 wild entity (abort mid-battle) is discarded; a captured one
-    // isn't alive in the world, and a defeated one is already gone.
     ServerLevel level = resolveLevel(server, state.getArenaDimension());
+
+    // Discovery-failure sweep: if the Easy NPC spawned but was never matched by tag
+    // (preset/JSON tag skew, or a teardown racing the one-tick discovery window), the
+    // bodyUuid is null and despawnBody did nothing — find it by tag and remove it, or a
+    // full-AI persisted body is left standing in the hardcore save forever.
+    if (state.getBodyUuid() == null && level != null) {
+      NobleEncounterConfig cfg = nobles.get(state.getNobleId());
+      if (cfg != null) {
+        Entity stray = findBodyByTag(level, cfg.getBodyTag());
+        if (stray != null) {
+          runServerCommand(server, "easy_npc delete " + stray.getUUID());
+          if (stray.isAlive()) stray.discard();
+        }
+      }
+    }
+
+    // The Phase-2 wild entity is always manager-spawned: a captured one isn't alive in the
+    // world and a KO'd one is already gone, so anything still standing is ours to remove.
+    // If it's mid-battle (save-and-quit fires SERVER_STOPPING before players disconnect;
+    // /noble-abort works from inside the battle UI), end the battle first — a skipped
+    // discard here persists a free min_perfect_ivs legendary into the save.
     if (level != null && state.getBattleEntityUuid() != null) {
       Entity gr = level.getEntity(state.getBattleEntityUuid());
-      if (gr != null && gr.isAlive() && !(gr instanceof PokemonEntity pe && pe.isBattling())) gr.discard();
+      if (gr instanceof PokemonEntity pe && pe.isAlive()) {
+        if (pe.isBattling() && pe.getBattleId() != null) {
+          try {
+            PokemonBattle battle = BattleRegistry.getBattle(pe.getBattleId());
+            if (battle != null) battle.stop();
+          } catch (Exception e) {
+            InitiativeInit.LOGGER.warn("Could not stop noble battle during teardown", e);
+          }
+        }
+        pe.discard();
+      } else if (gr != null && gr.isAlive()) {
+        gr.discard();
+      }
     }
 
     ServerPlayer player = server != null ? server.getPlayerList().getPlayer(state.getPlayerId()) : null;
     if (player != null) {
       NobleEncounterConfig cfg = nobles.get(state.getNobleId());
-      if (cfg != null) AmbientTheme.resolve(cfg.getAmbientTheme()).clear(player);
+      if (cfg != null) {
+        AmbientTheme.resolve(cfg.getAmbientTheme()).clear(player);
+        stopLoop(player, state, cfg);
+      }
+      // Real sky back on every exit path (a logout self-heals: vanilla re-sends on join).
+      NobleSkyFx.restore(player, player.serverLevel());
     }
   }
 
   // ── Cobblemon event hooks (subscribed in NobleEncounterInit) ─────────────────
 
   public void onBattleVictory(BattleVictoryEvent event) {
+    // A successful wild capture fires BOTH PokemonCapturedEvent and BattleVictoryEvent —
+    // let onPokemonCaptured own that outcome or a real catch would pay the KO consolation.
+    if (event.getWasWildCapture()) return;
+
     PokemonBattle battle = event.getBattle();
     UUID bid = battle.getBattleId();
     if (bid == null) return;
@@ -498,7 +933,7 @@ public class NobleEncounterManager {
         if (st == null || st.getPhase() != Phase.BATTLE || !bid.equals(st.getBattleId())) continue;
         boolean playerWon = event.getWinners().stream().anyMatch(
           w -> w instanceof PlayerBattleActor p && p.getEntity() == sp);
-        if (playerWon) complete(sp.getServer(), sp, st);
+        if (playerWon) complete(sp.getServer(), sp, st, false);
         else fail(sp.getServer(), sp, st, "§cThe noble bested you.");
         return;
       }
@@ -510,10 +945,10 @@ public class NobleEncounterManager {
     if (player == null) return;
     Pokemon captured = event.getPokemon();
     NobleEncounterState st = activeStates.get(player.getUUID());
-    if (st != null && st.getPhase() == Phase.BATTLE
+    if (st != null && (st.getPhase() == Phase.BATTLE || st.getPhase() == Phase.STAGGERED)
         && st.getBattlePokemonUuid() != null
         && st.getBattlePokemonUuid().equals(captured.getUuid())) {
-      complete(player.getServer(), player, st);
+      complete(player.getServer(), player, st, true);
     }
   }
 
@@ -533,20 +968,76 @@ public class NobleEncounterManager {
     }
     if (state.getGlobalAttackGap() > 0) return;
 
-    // Gather ready attacks and fire one at random.
+    // Gather ready attacks (some are held back until the noble enrages) and fire one at random.
+    int tier = state.getRageTier();
     List<Integer> ready = new ArrayList<>();
     for (int i = 0; i < attacks.size(); i++) {
-      if (cds.getOrDefault(i, 0) <= 0) ready.add(i);
+      if (cds.getOrDefault(i, 0) > 0) continue;
+      NobleEncounterConfig.Attack a = attacks.get(i);
+      int minTier = 0;
+      if (a.params != null && a.params.has("minRageTier") && !a.params.get("minRageTier").isJsonNull()) {
+        minTier = a.params.get("minRageTier").getAsInt();
+      }
+      if (minTier > tier) continue;
+      ready.add(i);
     }
     if (ready.isEmpty()) return;
     int idx = ready.get((int) (Math.random() * ready.size()));
     NobleEncounterConfig.Attack attack = attacks.get(idx);
     NobleAttacks.runAttack(attack, ctx);
-    cds.put(idx, attack.cooldownTicks);
-    state.setGlobalAttackGap(ATTACK_GAP_TICKS);
+    // Rage tightens the cadence: shorter cooldowns and a smaller global gap per tier.
+    cds.put(idx, (int) (attack.cooldownTicks * (1.0 - 0.2 * tier)));
+    state.setGlobalAttackGap(Math.max(6, cfg.getPhase1().attackGapTicks - 5 * tier));
   }
 
-  private void enforceRing(ServerPlayer player, NobleEncounterState state) {
+  /** Roar + nova + shove + bar tint: the noble visibly (and audibly) enrages. */
+  private void rageFx(ServerPlayer player, NobleEncounterState state, NobleEncounterConfig cfg,
+                      ServerLevel level, LivingEntity body, int tier) {
+    ElementTheme element = ElementTheme.resolve(cfg.getElement());
+    NobleFx.burst(level, element.impactParticle(), body.getX(), body.getY() + 1.0, body.getZ(), 40, 0.8, 0.08);
+    NobleFx.burst(level, ParticleTypes.EXPLOSION_EMITTER, body.getX(), body.getY() + 0.5, body.getZ(), 1, 0.0, 0.0);
+    NobleFx.playSoundId(level, body.getX(), body.getY(), body.getZ(), cryId(cfg),
+      1.5f * NobleConfig.get().getSfxVolume(), tier == 1 ? 0.85f : 0.75f);
+    // The roar physically shoves — no damage, pure presence. The tilt is aimed explicitly:
+    // the packet's LivingEntity ctor would read a stale hurtDir (element damage never
+    // writes it) and contradict the knockback direction.
+    NobleFx.knockback(player, body.getX(), body.getZ(), 0.8, 0.3);
+    NobleFx.hurtTilt(player, body.getX(), body.getZ());
+    sendTitle(player, "§c§lENRAGED",
+      "§7" + cfg.getDisplayName().replaceAll("§.", "") + " grows frenzied!", 5, 20, 10);
+  }
+
+  /**
+   * The bar is the one UI element viewers always watch — make it talk. Priority:
+   * melee hit-flash > grounded punish window > rage tint > weakened > telegraph danger.
+   * ServerBossEvent setters no-op + skip broadcast when unchanged, so per-tick is safe.
+   */
+  private void updateBossBar(NobleEncounterState state, NobleEncounterConfig cfg,
+                             float frac, boolean danger, boolean grounded) {
+    ServerBossEvent bar = state.getBossBar();
+    if (bar == null) return;
+    bar.setProgress(Mth.clamp(frac, 0f, 1f));
+
+    BossEvent.BossBarColor color;
+    if (state.getBarFlashTicks() > 0) color = BossEvent.BossBarColor.WHITE;
+    else if (grounded) color = BossEvent.BossBarColor.WHITE;
+    else if (state.getRageTier() >= 2) color = BossEvent.BossBarColor.RED;
+    else if (state.getRageTier() == 1) color = BossEvent.BossBarColor.YELLOW;
+    else if (frac < 0.25f) color = BossEvent.BossBarColor.YELLOW;
+    else color = parseColor(cfg.getStagger().bossBarColor);
+    bar.setColor(color);
+
+    String base = cfg.getDisplayName();
+    String name;
+    if (grounded) name = base + " §f— GROUNDED, STRIKE!";
+    else if (state.getRageTier() > 0) name = "§c‼ §r" + base;
+    else if (frac < 0.25f) name = base + " §e— Weakened!";
+    else if (danger) name = "§c⚠ §r" + base;
+    else name = base;
+    bar.setName(Component.literal(name));
+  }
+
+  private void enforceRing(ServerPlayer player, NobleEncounterState state, ElementTheme element) {
     double r = state.getArenaRadius();
     double distSq = NobleFx.horizontalDistSq(player.getX(), player.getZ(), state.getArenaX(), state.getArenaZ());
     if (distSq <= r * r) return;
@@ -561,11 +1052,39 @@ public class NobleEncounterManager {
     player.displayClientMessage(Component.literal("§cThe arena barrier repels you!"), true);
     NobleFx.playSoundId(player.serverLevel(), player.getX(), player.getY(), player.getZ(),
       "minecraft:block.note_block.bass", 0.7f, 0.6f);
+    // The repel reads as a force field, not a rubber-band glitch.
+    NobleFx.burst(player.serverLevel(), ParticleTypes.GUST, player.getX(), player.getY() + 1.0, player.getZ(), 1, 0.0, 0.0);
+    NobleFx.burst(player.serverLevel(), element.impactParticle(), player.getX(), player.getY() + 1.0, player.getZ(), 12, 0.4, 0.05);
+  }
+
+  /** A localized bright curtain arc when the player nears the (otherwise invisible) wall. */
+  private void drawEdgeCurtain(ServerLevel level, ServerPlayer player, NobleEncounterState state, ElementTheme element) {
+    double r = state.getArenaRadius();
+    double distSq = NobleFx.horizontalDistSq(player.getX(), player.getZ(), state.getArenaX(), state.getArenaZ());
+    if (distSq < (r - 1.5) * (r - 1.5)) return;
+    double angle = Math.atan2(player.getZ() - state.getArenaZ(), player.getX() - state.getArenaX());
+    NobleFx.drawArc(level, state.getArenaX(), state.getArenaY() + 0.2, state.getArenaZ(), r,
+      angle, 0.26, element.telegraphColor());
   }
 
   private void drawArenaRing(ServerLevel level, NobleEncounterState state, NobleEncounterConfig cfg) {
-    NobleFx.drawRing(level, state.getArenaX(), state.getArenaY() + 0.2, state.getArenaZ(),
-      state.getArenaRadius(), ElementTheme.resolve(cfg.getElement()).telegraphColor(), RING_HEIGHTS);
+    ParticleOptions override = resolveSimpleParticle(cfg.getArena().boundaryParticle);
+    if (override != null) {
+      NobleFx.drawRing(level, state.getArenaX(), state.getArenaY() + 0.2, state.getArenaZ(),
+        state.getArenaRadius(), override, RING_HEIGHTS);
+    } else {
+      NobleFx.drawRing(level, state.getArenaX(), state.getArenaY() + 0.2, state.getArenaZ(),
+        state.getArenaRadius(), ElementTheme.resolve(cfg.getElement()).telegraphColor(), RING_HEIGHTS);
+    }
+  }
+
+  /** Resolve a simple (parameter-less) particle id; null for absent/complex/unknown ids. */
+  private static ParticleOptions resolveSimpleParticle(String id) {
+    if (id == null || id.isBlank()) return null;
+    ResourceLocation rl = ResourceLocation.tryParse(id);
+    if (rl == null) return null;
+    var type = BuiltInRegistries.PARTICLE_TYPE.getOptional(rl).orElse(null);
+    return type instanceof SimpleParticleType simple ? simple : null;
   }
 
   private void tetherBody(LivingEntity body, NobleEncounterState state) {
@@ -578,7 +1097,8 @@ public class NobleEncounterManager {
     }
   }
 
-  private void tickFlyer(LivingEntity body, NobleEncounterState state, NobleEncounterConfig cfg, ServerPlayer player) {
+  private void tickFlyer(ServerLevel level, LivingEntity body, NobleEncounterState state,
+                         NobleEncounterConfig cfg, ServerPlayer player, ElementTheme element) {
     NobleEncounterConfig.Flyer f = cfg.getFlyer();
     int t = state.getFlyerTimer() + 1;
     if (state.isAirborne()) {
@@ -587,14 +1107,88 @@ public class NobleEncounterManager {
       body.moveTo(state.getArenaX(), state.getArenaY() + f.hoverHeight, state.getArenaZ(), yaw, 0f);
       body.setDeltaMovement(0, 0, 0);
       body.setNoGravity(true);
-      if (t >= f.airTicks) { state.setAirborne(false); t = 0; }
+      // Track the boss by ear while it's out of reach.
+      if (t % 20 == 0) {
+        NobleFx.playSoundId(level, body.getX(), body.getY(), body.getZ(),
+          "minecraft:entity.phantom.flap", 0.5f, 0.9f);
+      }
+      // Descent telegraph: a particle spiral winds down to the landing point.
+      if (t >= f.airTicks - 20) {
+        double prog = (t - (f.airTicks - 20)) / 20.0;
+        double y = state.getArenaY() + f.hoverHeight * (1.0 - prog);
+        for (int i = 0; i < 3; i++) {
+          double a = t * 0.5 + i * (Math.PI * 2.0 / 3.0);
+          NobleFx.burst(level, element.ambientParticle(),
+            state.getArenaX() + Math.cos(a) * 2.0, y, state.getArenaZ() + Math.sin(a) * 2.0, 1, 0.0, 0.0);
+        }
+      }
+      if (t >= f.airTicks) {
+        state.setAirborne(false);
+        t = 0;
+        // Ground the body THIS tick — the bell must never ring while the boss is still 7
+        // blocks up (it would lie for the ~1s free-fall, shorten the punish window, and the
+        // fall damage would trip a false melee hit-confirm).
+        float landYaw = (float) (Math.toDegrees(Math.atan2(player.getZ() - body.getZ(), player.getX() - body.getX())) - 90.0);
+        body.moveTo(state.getArenaX(), state.getArenaY(), state.getArenaZ(), landYaw, 0f);
+        body.setNoGravity(false);
+        body.fallDistance = 0;
+        // LANDING — thud, gust, then the punish-window bell ("bell = GO").
+        NobleFx.playSoundId(level, body.getX(), body.getY(), body.getZ(), "minecraft:entity.generic.explode", 0.6f, 0.7f);
+        NobleFx.playSoundId(level, body.getX(), body.getY(), body.getZ(), "minecraft:entity.ravager.step", 1.0f, 0.8f);
+        NobleFx.burst(level, ParticleTypes.GUST, body.getX(), body.getY() + 0.3, body.getZ(), 1, 0.0, 0.0);
+        queueCue(state, 5, "minecraft:block.bell.resonate", 1.0f, 1.0f, body.getX(), body.getY(), body.getZ());
+        player.displayClientMessage(Component.literal("§e§lGrounded — strike now!"), true);
+      }
     } else {
       // Grounded window: let its native AI chase + be meleeable.
       body.setNoGravity(false);
       tetherBody(body, state);
-      if (t >= f.groundedWindowTicks) { state.setAirborne(true); t = 0; }
+      if (t % 20 == 0) {
+        int secondsLeft = Math.max(0, (f.groundedWindowTicks - t) / 20);
+        player.displayClientMessage(Component.literal("§eGrounded: " + secondsLeft + "s"), true);
+      }
+      if (t >= f.groundedWindowTicks) {
+        state.setAirborne(true);
+        t = 0;
+        // TAKEOFF — heavy wing-beat and a swoop of wind.
+        NobleFx.playSoundId(level, body.getX(), body.getY(), body.getZ(), "minecraft:entity.ender_dragon.flap", 1.4f, 0.9f);
+        NobleFx.playSoundId(level, body.getX(), body.getY(), body.getZ(), "minecraft:entity.phantom.swoop", 1.0f, 0.8f);
+        NobleFx.burst(level, ParticleTypes.CLOUD, body.getX(), body.getY() + 0.3, body.getZ(), 20, 0.8, 0.05);
+        player.displayClientMessage(Component.literal("§7It takes to the sky — watch above!"), true);
+      }
     }
     state.setFlyerTimer(t);
+  }
+
+  // ── Boss music loop ──────────────────────────────────────────────────────────
+
+  /**
+   * Duck vanilla music and (re-)trigger the per-noble loop on HOSTILE — deliberately not
+   * MUSIC/RECORDS, which Cobblemon pauses during Phase 2. Anchored at the ARENA CENTER at
+   * volume 3.0: variable-range events project 16×volume blocks, so 48 covers the 20-radius
+   * ring plus headroom with a fixed pan origin (a player-anchored one-shot pans hard and
+   * fades below audibility as the player kites the ring). The MUSIC stop re-sends each
+   * cycle because vanilla can schedule a new track mid-fight.
+   */
+  private void startLoop(ServerPlayer player, ServerLevel level, NobleEncounterState state, NobleEncounterConfig cfg) {
+    NobleEncounterConfig.Sounds sounds = cfg.getSounds();
+    if (sounds.loop == null || sounds.loop.isBlank() || sounds.loopSeconds <= 0) return;
+    player.connection.send(new ClientboundStopSoundPacket(null, SoundSource.MUSIC));
+    // Kill any still-playing instance first — a short loopSeconds must never stack copies.
+    ResourceLocation loopId = ResourceLocation.tryParse(sounds.loop);
+    if (loopId != null) player.connection.send(new ClientboundStopSoundPacket(loopId, SoundSource.HOSTILE));
+    NobleFx.playSoundId(level, state.getArenaX(), state.getArenaY(), state.getArenaZ(), sounds.loop,
+      3.0f * NobleConfig.get().getSfxVolume(), 1.0f);
+    state.setNextLoopTick(level.getGameTime() + (long) (sounds.loopSeconds * 20));
+  }
+
+  private void stopLoop(ServerPlayer player, NobleEncounterState state, NobleEncounterConfig cfg) {
+    if (player == null) return;
+    NobleEncounterConfig.Sounds sounds = cfg.getSounds();
+    if (sounds.loop == null || sounds.loop.isBlank()) return;
+    ResourceLocation rl = ResourceLocation.tryParse(sounds.loop);
+    if (rl != null) player.connection.send(new ClientboundStopSoundPacket(rl, SoundSource.HOSTILE));
+    state.setNextLoopTick(0);
   }
 
   // ── Easy NPC body spawn / find / despawn ─────────────────────────────────────
@@ -604,7 +1198,16 @@ public class NobleEncounterManager {
     String cmd = String.format(java.util.Locale.ROOT,
       "easy_npc preset import_new data %s %.2f %.2f %.2f",
       cfg.getBodyPreset(), state.getArenaX(), state.getArenaY(), state.getArenaZ());
-    runServerCommand(server, cmd);
+    // Anchor the command source to the ARENA level — a bare server source is pinned to the
+    // overworld, which would spawn a non-overworld noble's body in the wrong dimension
+    // while discovery searches the right one. (withPosition after withLevel: withLevel
+    // rescales the stack position across dimension coordinate scales.)
+    CommandSourceStack src = server.createCommandSourceStack().withPermission(4).withSuppressedOutput();
+    ServerLevel level = resolveLevel(server, state.getArenaDimension());
+    if (level != null) {
+      src = src.withLevel(level).withPosition(new Vec3(state.getArenaX(), state.getArenaY(), state.getArenaZ()));
+    }
+    runCommand(server, src, cmd);
   }
 
   private void despawnBody(MinecraftServer server, NobleEncounterState state) {
@@ -635,7 +1238,7 @@ public class NobleEncounterManager {
 
   // ── Rewards ──────────────────────────────────────────────────────────────────
 
-  private void grantRewards(MinecraftServer server, ServerPlayer player, NobleEncounterConfig cfg) {
+  private void grantRewards(MinecraftServer server, ServerPlayer player, NobleEncounterConfig cfg, boolean captured) {
     NobleEncounterConfig.Rewards rewards = cfg.getRewards();
     if (rewards == null) return;
     CommandSourceStack playerSrc = player.createCommandSourceStack().withPermission(4).withSuppressedOutput();
@@ -648,8 +1251,12 @@ public class NobleEncounterManager {
     if (rewards.achievement != null) {
       runServerCommand(server, "advancement grant " + player.getName().getString() + " only " + rewards.achievement);
     }
-    if (rewards.commands != null) {
-      for (String raw : rewards.commands) {
+    // Outcome-specific list when present, else the shared one (backward compatible).
+    List<String> commands = captured
+      ? (rewards.commandsOnCapture != null ? rewards.commandsOnCapture : rewards.commands)
+      : (rewards.commandsOnDefeat != null ? rewards.commandsOnDefeat : rewards.commands);
+    if (commands != null) {
+      for (String raw : commands) {
         String cmd = raw.replace("{player}", player.getName().getString()).replace("{uuid}", player.getUUID().toString());
         runCommand(server, playerSrc, cmd);
       }
@@ -669,6 +1276,32 @@ public class NobleEncounterManager {
   }
 
   // ── Small helpers ────────────────────────────────────────────────────────────
+
+  /** The noble's real voice: explicit {@code sounds.cry} override, else derived from the
+   * first battleSpecies token ({@code cobblemon:pokemon.<species>.cry}). */
+  private static String cryId(NobleEncounterConfig cfg) {
+    NobleEncounterConfig.Sounds sounds = cfg.getSounds();
+    if (sounds != null && sounds.cry != null && !sounds.cry.isBlank()) return sounds.cry;
+    String species = cfg.getBattleSpecies() != null ? cfg.getBattleSpecies() : cfg.getId();
+    if (species == null || species.isBlank()) return null;
+    return "cobblemon:pokemon." + species.trim().split("\\s+")[0] + ".cry";
+  }
+
+  private static float effVolume(Float override) {
+    float base = NobleConfig.get().getSfxVolume();
+    return override != null ? override * base : base;
+  }
+
+  private static float effPitch(Float override) {
+    float base = NobleConfig.get().getSfxPitch();
+    return Mth.clamp(override != null ? override * base : base, 0.5f, 2.0f);
+  }
+
+  private static void queueCue(NobleEncounterState state, int ticks, String soundId,
+                               float volume, float pitch, double x, double y, double z) {
+    if (soundId == null) return;
+    state.getDelayedCues().add(new DelayedCue(ticks, soundId, volume, pitch, x, y, z));
+  }
 
   private static void runServerCommand(MinecraftServer server, String cmd) {
     if (server == null) return;

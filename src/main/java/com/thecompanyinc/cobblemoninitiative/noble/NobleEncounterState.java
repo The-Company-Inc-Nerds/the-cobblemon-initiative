@@ -14,10 +14,12 @@ import net.minecraft.server.level.ServerBossEvent;
  */
 public class NobleEncounterState {
 
-  /** Encounter lifecycle. STAGGER is an instantaneous transition, not a resting phase. */
+  /** Encounter lifecycle. STAGGERED is the scripted collapse cinematic between the
+   * real-time fight and the catch battle (no attacks fire during it). */
   public enum Phase {
     INTRO,
     REALTIME,
+    STAGGERED,
     BATTLE,
     COMPLETE,
     FAILED,
@@ -74,9 +76,55 @@ public class NobleEncounterState {
   // ── Ambient theme ────────────────────────────────────────────────────────────
   private int ambientTimer = 0;
 
+  // ── Escalation / feedback (REALTIME) ────────────────────────────────────────
+  /** Body health fraction last tick; -1 until first observed. Drives rage-band crossings
+   * and the melee hit-confirm delta. */
+  private float lastHealthFraction = -1f;
+  /** 0 = calm; rises as rage thresholds are crossed (never decreases — health only drops). */
+  private int rageTier = 0;
+  /** One-shot "stagger imminent" audio warning latch. */
+  private boolean preStaggerWarned = false;
+  /** Boss bar flashes white for this many ticks after a landed melee hit. */
+  private int barFlashTicks = 0;
+  /** Next game-time tick the low-health heartbeat may play. */
+  private long nextHeartbeatTick = 0;
+  /** Next game-time tick the Phase-1 music loop re-triggers; 0 = loop not running. */
+  private long nextLoopTick = 0;
+  /** Last whole intro second announced (element pulse countdown). */
+  private int lastIntroSecond = -1;
+  /** Chase-type random giggle-cry countdown. */
+  private int giggleTimer = 0;
+
+  // ── Stagger cinematic ────────────────────────────────────────────────────────
+  private int staggerTicks = 0;
+  /** Where the body stood at stagger — the Phase-2 mon spawns here (Y clamped to floor). */
+  private double swapX, swapY, swapZ;
+  /** Ticks spent waiting to open the Phase-2 battle (busy target / errored start retries). */
+  private int battleOpenAttempts = 0;
+
+  /** Sounds queued to play N ticks from now (survive phase changes; die with the state). */
+  private final List<DelayedCue> delayedCues = new ArrayList<>();
+
   public NobleEncounterState(UUID playerId, String nobleId) {
     this.playerId = playerId;
     this.nobleId = nobleId;
+  }
+
+  /** A sound scheduled for a few ticks out (stagger stings, landing bells). */
+  public static class DelayedCue {
+    public int ticksLeft;
+    public String soundId;
+    public float volume;
+    public float pitch;
+    public double x, y, z;
+
+    public DelayedCue(int ticksLeft, String soundId, float volume, float pitch, double x, double y, double z) {
+      this.ticksLeft = ticksLeft;
+      this.soundId = soundId;
+      this.volume = volume;
+      this.pitch = pitch;
+      this.x = x; this.y = y; this.z = z;
+    }
   }
 
   /** A telegraphed ground strike: warning particles during windup, then AoE on impact. */
@@ -91,6 +139,8 @@ public class NobleEncounterState {
     public boolean tracking;
     /** If true, telegraph a vertical column (bolt_strike / flame pillar) too. */
     public boolean column;
+    /** Per-attack impact-sound override (JSON {@code impactSound}); null = element default. */
+    public String impactSoundId;
   }
 
   /** A persistent hazard field that ticks damage/effect on players stood in it. */
@@ -109,6 +159,8 @@ public class NobleEncounterState {
     public double vx, vy, vz;
     public int ticksLeft;
     public float damage;
+    /** Per-attack impact-sound override; null = element default. */
+    public String impactSoundId;
   }
 
   /** A telegraphed line attack: warning line during windup, then damage along the segment. */
@@ -120,6 +172,8 @@ public class NobleEncounterState {
     public int ticksLeft;
     public int totalWindup;
     public float damage;
+    /** Per-attack impact-sound override; null = element default. */
+    public String impactSoundId;
   }
 
   // ── Getters / setters ────────────────────────────────────────────────────────
@@ -174,4 +228,32 @@ public class NobleEncounterState {
 
   public int getAmbientTimer() { return ambientTimer; }
   public void setAmbientTimer(int t) { this.ambientTimer = t; }
+
+  public float getLastHealthFraction() { return lastHealthFraction; }
+  public void setLastHealthFraction(float f) { this.lastHealthFraction = f; }
+  public int getRageTier() { return rageTier; }
+  public void setRageTier(int t) { this.rageTier = t; }
+  public boolean isPreStaggerWarned() { return preStaggerWarned; }
+  public void setPreStaggerWarned(boolean v) { this.preStaggerWarned = v; }
+  public int getBarFlashTicks() { return barFlashTicks; }
+  public void setBarFlashTicks(int t) { this.barFlashTicks = t; }
+  public long getNextHeartbeatTick() { return nextHeartbeatTick; }
+  public void setNextHeartbeatTick(long t) { this.nextHeartbeatTick = t; }
+  public long getNextLoopTick() { return nextLoopTick; }
+  public void setNextLoopTick(long t) { this.nextLoopTick = t; }
+  public int getLastIntroSecond() { return lastIntroSecond; }
+  public void setLastIntroSecond(int s) { this.lastIntroSecond = s; }
+  public int getGiggleTimer() { return giggleTimer; }
+  public void setGiggleTimer(int t) { this.giggleTimer = t; }
+
+  public int getStaggerTicks() { return staggerTicks; }
+  public void setStaggerTicks(int t) { this.staggerTicks = t; }
+  public int getBattleOpenAttempts() { return battleOpenAttempts; }
+  public void setBattleOpenAttempts(int v) { this.battleOpenAttempts = v; }
+  public double getSwapX() { return swapX; }
+  public double getSwapY() { return swapY; }
+  public double getSwapZ() { return swapZ; }
+  public void setSwapPos(double x, double y, double z) { this.swapX = x; this.swapY = y; this.swapZ = z; }
+
+  public List<DelayedCue> getDelayedCues() { return delayedCues; }
 }

@@ -35,17 +35,21 @@ public enum AmbientTheme {
     this.periodTicks = periodTicks;
   }
 
-  /** Runs each REALTIME tick for a participating player. */
-  public void tick(ServerPlayer player, ServerLevel level, NobleEncounterState state) {
+  /**
+   * Runs each REALTIME tick for a participating player. {@code escalation} is the rage
+   * tier (0 = calm): themes may intensify as the noble weakens — BLIZZARD holds the
+   * player's frost vignette (ticksFrozen) at a fraction of the freeze threshold, always
+   * strictly below it so freeze damage can never tick (hardcore safety).
+   */
+  public void tick(ServerPlayer player, ServerLevel level, NobleEncounterState state, int escalation) {
     if (this == NONE) return;
 
-    if (particle != null) {
-      for (int i = 0; i < 3; i++) {
-        double px = player.getX() + (RNG.nextDouble() - 0.5) * 10.0;
-        double py = player.getY() + RNG.nextDouble() * 4.0;
-        double pz = player.getZ() + (RNG.nextDouble() - 0.5) * 10.0;
-        level.sendParticles(particle, px, py, pz, 1, 0.0, 0.0, 0.0, 0.0);
-      }
+    tickParticlesOnly(player, level);
+
+    if (this == BLIZZARD && escalation > 0) {
+      float hold = escalation >= 2 ? 0.7f : 0.4f;
+      int target = (int) (player.getTicksRequiredToFreeze() * hold);
+      if (player.getTicksFrozen() < target) player.setTicksFrozen(target);
     }
 
     if (periodTicks <= 0) return;
@@ -55,6 +59,17 @@ public enum AmbientTheme {
       t = 0;
     }
     state.setAmbientTimer(t);
+  }
+
+  /** The particle wash alone — used during the INTRO so no debuff can land before the fight. */
+  public void tickParticlesOnly(ServerPlayer player, ServerLevel level) {
+    if (this == NONE || particle == null) return;
+    for (int i = 0; i < 3; i++) {
+      double px = player.getX() + (RNG.nextDouble() - 0.5) * 10.0;
+      double py = player.getY() + RNG.nextDouble() * 4.0;
+      double pz = player.getZ() + (RNG.nextDouble() - 0.5) * 10.0;
+      level.sendParticles(particle, px, py, pz, 1, 0.0, 0.0, 0.0, 0.0);
+    }
   }
 
   private void applyPeriodic(ServerPlayer player) {

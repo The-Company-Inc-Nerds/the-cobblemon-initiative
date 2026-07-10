@@ -22,12 +22,20 @@ INTRO ── spawn the Phase-1 Easy NPC body at the arena center; find it by its
         │
 REALTIME ── the Easy NPC natively chases + melees; the manager runs the noble's themed
             ranged/AoE attacks, draws the arena ring (teleport-back at the edge), ticks the
-            ambient weather, and mirrors the body's HEALTH onto the boss bar. The player
-            dodges and melees the body down.
+            ambient weather + per-player fake sky, plays the boss-music loop, and mirrors
+            the body's HEALTH onto the boss bar (which talks: ⚠ danger / rage tint /
+            weakened / grounded / melee hit-flash). Crossing the rage bands (default
+            0.6/0.3, `phase1.rageThresholds`) triggers a roar + nova + shove, tightens the
+            attack cadence, and unlocks `minRageTier`-gated attacks. The player dodges and
+            melees the body down (every landed hit reads as crit-spark + bar flash).
         │  body health ≤ staggerAtHealthFraction · maxHealth
-STAGGER ── despawn the Easy NPC → spawn a REAL cobblemon:<species> in its place → open a
-           wild battle (BattleBuilder.pve). The boss bar is removed; Cobblemon's battle UI
-           takes over (the swap is masked by the screen).
+STAGGERED ── a scripted collapse cinematic (~2-5s, no attacks fire): the music stops, the
+           body is frozen (setNoAi) and despawned inside a burst while a REAL
+           cobblemon:<species> rises at its exact spot playing its actual cry animation,
+           then the stagger title lands and the wild battle opens (BattleBuilder.pve).
+           Scripts: default cocoon-spiral; "rebirth" (Moltres ember-collapse fake-out);
+           "gotcha" (friendly chase freeze-frame — auto for chase type). The boss bar goes
+           white-and-empty for the collapse and is removed before Cobblemon's battle UI.
         │
 BATTLE ── the player defeats OR catches the noble. Completion is matched by battle-id
           (BATTLE_VICTORY) or captured-Pokémon uuid (POKEMON_CAPTURED).
@@ -93,10 +101,39 @@ Damage never touches blocks (no explosions) — safe on the UPM map. Global diff
 `NobleConfig.attackDamageMultiplier`.
 
 ### Element themes (`ElementTheme`)
-`element` resolves the particle, telegraph color, damage source, on-hit status, and cast
-sound — so one primitive reads as lava, tidal wave, or blizzard. Keys: `fire`, `water`,
-`ice`, `electric`, `dragon`, `ground`, `rock`, `flying`, `dark`, `steel`, `psychic` (blend
-keys like `ground_fire` resolve to the first recognized token).
+`element` resolves the particle, telegraph color, damage source, on-hit status, cast
+sound, **windup sound** (the accelerating telegraph metronome — soonest impact only,
+white-hot ring flash in the final 5 ticks), and **impact sound** (each element detonates
+with its own voice) — so one primitive reads as lava, tidal wave, or blizzard. Keys:
+`fire`, `water`, `ice`, `electric`, `dragon`, `ground`, `rock`, `flying`, `dark`, `steel`,
+`psychic` (blend keys like `ground_fire` resolve to the first recognized token).
+
+Per-attack overrides ride the opaque `params` object: `castSound`/`castVolume`/`castPitch`
+(the cast voice), `impactSound` (the detonation), and `minRageTier` (hold the move until
+the noble enrages). All cast/windup pitches are multiplied by a rage factor that rises as
+the body weakens, clamped 0.5–2.0.
+
+### Voice, music, sky
+- **Species cries** (`cobblemon:pokemon.<species>.cry`, derived from the first
+  `battleSpecies` token, override via `sounds.cry`): under the start title, at the
+  REALTIME flip (full volume), on each rage band (pitched down per tier), the wounded
+  stagger bellow, and the victory cry (pitch tells caught vs beaten). `NobleFx.playSoundId`
+  falls back to `SoundEvent.createVariableRangeEvent` for unregistered ids — never remove
+  that fallback or every cry silently dies (asset-only events are not in the registry).
+- **Phase-1 boss music**: `sounds.loop` + `sounds.loopSeconds` — vanilla music is ducked
+  (`stopsound` on MUSIC) and the track loops on HOSTILE at the player's position; stopped
+  at stagger + teardown. `sounds.hornOnStart` adds the global wither horn at the flip.
+- **Phase-2 battle theme**: `data/cobblemon_initiative/species_additions/<species>.json`
+  sets Cobblemon's per-species `battleTheme` to `cobblemon_initiative:noble_battle`
+  (events defined in `assets/cobblemon_initiative/sounds.json` as references to vanilla
+  tracks — Cobblemon plays, loops, and ducks it natively; the default wild theme is empty).
+- **Fake sky** (`NobleSkyFx`): per-player weather packets from the ambient theme
+  (downpour/blizzard/thunderstorm → rain; drought → clear + noon time-lock re-sent every
+  10 ticks through BATTLE); restored in teardown on every exit path.
+- **Hardcore heartbeat**: warden heartbeat under 40% player HP, doubling under 20%.
+- **Flyer drama**: takeoff wing-beat + swoop, airborne flap ping every second, descent
+  spiral telegraph, landing thud + **bell = the punish window is open**, actionbar
+  countdown while grounded.
 
 ### Ambient themes (`AmbientTheme`)
 An encounter-level arena aura: a particle wash + a mild, periodically-refreshed status.
@@ -128,16 +165,28 @@ nobles (always meleeable).
   "arena": { "center": [0,0,0], "radius": 20, "dimension": "minecraft:overworld", "boundaryParticle": "minecraft:flame" },
   "ambientTheme": "drought",                           // AmbientTheme key or null
   "flyer": null,                                        // or { hoverHeight, groundedWindowTicks, airTicks }
-  "stagger": { "staggerAtHealthFraction": 0.15, "bossBarColor": "RED", "bossBarOverlay": "NOTCHED_10" },
-  "phase1": { "attacks": [ { "type": "...", "cooldownTicks": N, "params": { ... } } ] },
+  "stagger": { "staggerAtHealthFraction": 0.15, "bossBarColor": "RED", "bossBarOverlay": "NOTCHED_10",
+               "script": null },                       // null | "rebirth" | "gotcha"
+  "phase1": {
+    "attacks": [ { "type": "...", "cooldownTicks": N,
+                   "params": { "...": "…", "castSound": "?", "castVolume": 1.0, "castPitch": 1.0,
+                                "impactSound": "?", "minRageTier": 0 } } ],
+    "attackGapTicks": 25,                               // global telegraph-spacing gap
+    "rageThresholds": [0.6, 0.3]                        // omit for the engine default
+  },
   "phase2": { "healPartyBeforeBattle": true },
   "rewards": {
     "storyFlag": { "objective": "defeated_noble_groudon", "holder": "@s", "value": 1 },
     "achievement": "cobblemon_initiative:nobles/groudon",
-    "commands": [ "loot give {player} loot cobblemon_initiative:npc_gift/training_grand" ]
+    "commands": [ "loot give {player} loot cobblemon_initiative:npc_gift/training_grand" ],
+    "commandsOnCapture": null, "commandsOnDefeat": null // outcome overrides (else "commands")
   },
   "completeTitle": "§6§lNoble Subdued", "completeSubtitle": "§7Groudon acknowledges you",
-  "sounds": { "start": "...", "stagger": "...", "complete": "..." }
+  "sounds": { "start": "...", "stagger": "...", "complete": "...",
+              "loop": "minecraft:music.dragon", "loopSeconds": 125,  // Phase-1 boss music
+              "cry": null,                       // override the derived species cry
+              "hornOnStart": false,              // global wither horn at the REALTIME flip
+              "startVolume": null, "startPitch": null, "staggerPitch": null, "completePitch": null }
 }
 ```
 

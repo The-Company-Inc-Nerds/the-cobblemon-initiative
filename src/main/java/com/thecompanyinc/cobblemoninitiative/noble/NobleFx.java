@@ -3,6 +3,7 @@ package com.thecompanyinc.cobblemoninitiative.noble;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.protocol.game.ClientboundHurtAnimationPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -21,14 +22,21 @@ public final class NobleFx {
 
   private NobleFx() {}
 
-  /** Play a vanilla sound by its resource-location id (sidesteps the SoundEvent/Holder split). */
+  /**
+   * Play a sound by its resource-location id. Registered events resolve through the
+   * registry; unregistered ids (e.g. Cobblemon's asset-only species cries,
+   * {@code cobblemon:pokemon.<species>.cry}) fall back to a variable-range event — the
+   * sound packet carries the holder directly, so the client resolves it from its own
+   * assets. Variable-range events project {@code 16 * max(volume, 1)} blocks, so volume
+   * above 1 legitimately carries farther.
+   */
   public static void playSoundId(ServerLevel level, double x, double y, double z, String soundId, float volume, float pitch) {
     if (soundId == null || soundId.isBlank()) return;
     ResourceLocation rl = ResourceLocation.tryParse(soundId);
     if (rl == null) return;
-    BuiltInRegistries.SOUND_EVENT.getOptional(rl).ifPresent(se ->
-      level.playSound(null, x, y, z, (SoundEvent) se, SoundSource.HOSTILE, volume, pitch)
-    );
+    SoundEvent se = BuiltInRegistries.SOUND_EVENT.getOptional(rl)
+      .orElseGet(() -> SoundEvent.createVariableRangeEvent(rl));
+    level.playSound(null, x, y, z, se, SoundSource.HOSTILE, volume, pitch);
   }
 
   /** A burst of a particle at a point. */
@@ -40,13 +48,43 @@ public final class NobleFx {
   /** Draw a colored dust ring (the arena boundary / a telegraph circle). */
   public static void drawRing(ServerLevel level, double cx, double cy, double cz, double radius,
                               Vector3f color, double[] heights) {
-    DustParticleOptions dust = new DustParticleOptions(color, 1.4f);
+    drawRing(level, cx, cy, cz, radius, color, heights, 1.4f);
+  }
+
+  /** Ring with an explicit dust size (telegraphs flash bigger + white in their final ticks). */
+  public static void drawRing(ServerLevel level, double cx, double cy, double cz, double radius,
+                              Vector3f color, double[] heights, float dustSize) {
+    drawRing(level, cx, cy, cz, radius, (ParticleOptions) new DustParticleOptions(color, dustSize), heights);
+  }
+
+  /** Ring drawn with an arbitrary particle (a noble's authored {@code arena.boundaryParticle}). */
+  public static void drawRing(ServerLevel level, double cx, double cy, double cz, double radius,
+                              ParticleOptions particle, double[] heights) {
     int steps = Math.max(20, (int) (radius * 3));
     for (int i = 0; i < steps; i++) {
       double a = (Math.PI * 2.0 * i) / steps;
       double x = cx + radius * Math.cos(a);
       double z = cz + radius * Math.sin(a);
       for (double h : heights) {
+        level.sendParticles(particle, x, cy + h, z, 1, 0.0, 0.0, 0.0, 0.0);
+      }
+    }
+  }
+
+  /**
+   * Draw a localized vertical dust curtain arc on the ring — the "you are about to hit the
+   * barrier" cue. {@code centerAngle} is the player's azimuth from the arena center;
+   * {@code halfArc} the half-width in radians.
+   */
+  public static void drawArc(ServerLevel level, double cx, double cy, double cz, double radius,
+                             double centerAngle, double halfArc, Vector3f color) {
+    DustParticleOptions dust = new DustParticleOptions(color, 2.0f);
+    int steps = Math.max(6, (int) (radius * halfArc));
+    for (int i = 0; i <= steps; i++) {
+      double a = centerAngle - halfArc + (2.0 * halfArc * i) / steps;
+      double x = cx + radius * Math.cos(a);
+      double z = cz + radius * Math.sin(a);
+      for (double h = 0.0; h <= 3.0; h += 0.5) {
         level.sendParticles(dust, x, cy + h, z, 1, 0.0, 0.0, 0.0, 0.0);
       }
     }
@@ -67,6 +105,16 @@ public final class NobleFx {
     Vec3 add = new Vec3((dx / len) * strength, up, (dz / len) * strength);
     player.setDeltaMovement(player.getDeltaMovement().add(add));
     player.hurtMarked = true; // force the velocity change to sync to the client
+  }
+
+  /**
+   * Directional hurt tilt: element damage sources carry no position, so vanilla's red tilt
+   * is directionless. This override makes the camera tilt away from the attack origin
+   * (cosmetic packet, no damage). Yaw convention matches vanilla hurtDir — no −90 offset.
+   */
+  public static void hurtTilt(ServerPlayer target, double fromX, double fromZ) {
+    float yaw = (float) (Math.toDegrees(Math.atan2(fromZ - target.getZ(), fromX - target.getX())) - target.getYRot());
+    target.connection.send(new ClientboundHurtAnimationPacket(target.getId(), yaw));
   }
 
   /** Horizontal squared distance (cylindrical), ignoring Y — the SafeZone.contains shape. */

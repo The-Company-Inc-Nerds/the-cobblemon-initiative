@@ -41,6 +41,24 @@ wear-down) and **`chase`** (friendly flee-and-tag, e.g. Mew). Shipped: 6 combat 
       — data-only once the showrunner picks the set + species presets.
 - [ ] 💻 (future) More friendly/task nobles — the `chase` type is the pattern; new task types
       (hide-and-seek, fetch, riddle) add a `tick<Type>` branch, all reusing the Phase-2 catch.
+- [x] 💻 **Epic-ness pass, build-order steps 1–5** (design: `docs/NOBLE_EPIC_DESIGN.md`,
+      2026-07-09) — cry-gate fix + species cries everywhere; per-attack/element sound
+      language + telegraph metronome + white-hot final flash; melee hit-confirm, directional
+      hurt tilt, hardcore heartbeat, edge curtain, talking boss bar; rage bands (roar/nova/
+      cadence/`minRageTier`-held moves); overture (fake weather/time via `NobleSkyFx`, horn);
+      Phase-1 music loops + Phase-2 battle themes (`species_additions`); `Phase.STAGGERED`
+      collapse cinematics (default / Moltres "rebirth" / Mew "gotcha"); `min_perfect_ivs=6`
+      prizes + capture-vs-KO reward split. 20 adversarial-review findings fixed (incl.
+      pre-existing: inverted whirlpool pull, undodgeable tracking impacts, 4× chase flee,
+      orphanable Phase-2 legendary on save-and-quit mid-battle).
+- [ ] 🔍 Runtime-verify the epic-ness pass (cries audible, rage bands, stagger scripts,
+      music duck/handoff, sky restore on every exit, capture/KO reward split, Mew chase
+      catchable in open field).
+- [ ] 📐 **Mini-noble "Asset Recovery Program"** (design doc Part 2): two tiers (Wardens
+      gyms 1-6 / Executive Assets 7-10+), deterministic IV/EV/nature/item prize strings,
+      Field Surveyor gating, flee bond, Salamence roamer, Zorua chase. **Blocked on the
+      §2.7 showrunner rulings** (prize levels at-cap vs cap-minus-2, site conflicts with
+      roadmap 16, Articuno/Moltres roster status, Safari Zone ownership).
 
 ---
 

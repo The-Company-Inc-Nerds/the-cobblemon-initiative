@@ -17,34 +17,54 @@ import org.joml.Vector3f;
  * Holder split in the vanilla registry.
  */
 public enum ElementTheme {
-  FIRE(ParticleTypes.FLAME, ParticleTypes.SMOKE, new Vector3f(1.0f, 0.35f, 0.05f), "minecraft:entity.blaze.shoot"),
-  WATER(ParticleTypes.SPLASH, ParticleTypes.DRIPPING_WATER, new Vector3f(0.2f, 0.45f, 0.95f), "minecraft:entity.player.splash"),
-  ICE(ParticleTypes.SNOWFLAKE, ParticleTypes.SNOWFLAKE, new Vector3f(0.6f, 0.85f, 1.0f), "minecraft:block.glass.break"),
-  ELECTRIC(ParticleTypes.ELECTRIC_SPARK, ParticleTypes.ELECTRIC_SPARK, new Vector3f(1.0f, 0.95f, 0.35f), "minecraft:entity.lightning_bolt.thunder"),
-  DRAGON(ParticleTypes.DRAGON_BREATH, ParticleTypes.DRAGON_BREATH, new Vector3f(0.55f, 0.2f, 0.75f), "minecraft:entity.ender_dragon.growl"),
-  GROUND(ParticleTypes.LAVA, ParticleTypes.ASH, new Vector3f(0.6f, 0.42f, 0.2f), "minecraft:entity.generic.explode"),
-  ROCK(ParticleTypes.POOF, ParticleTypes.ASH, new Vector3f(0.7f, 0.65f, 0.5f), "minecraft:block.stone.break"),
-  FLYING(ParticleTypes.CLOUD, ParticleTypes.CLOUD, new Vector3f(0.9f, 0.95f, 1.0f), "minecraft:entity.phantom.swoop"),
-  DARK(ParticleTypes.SQUID_INK, ParticleTypes.SMOKE, new Vector3f(0.25f, 0.1f, 0.35f), "minecraft:entity.wither.shoot"),
-  STEEL(ParticleTypes.CRIT, ParticleTypes.SMOKE, new Vector3f(0.75f, 0.78f, 0.82f), "minecraft:block.anvil.land"),
-  PSYCHIC(ParticleTypes.ENCHANT, ParticleTypes.ENCHANT, new Vector3f(0.95f, 0.4f, 0.9f), "minecraft:block.amethyst_block.chime");
+  FIRE(ParticleTypes.FLAME, ParticleTypes.SMOKE, new Vector3f(1.0f, 0.35f, 0.05f), "minecraft:entity.blaze.shoot",
+    "minecraft:block.fire.ambient", "minecraft:entity.generic.explode"),
+  WATER(ParticleTypes.SPLASH, ParticleTypes.DRIPPING_WATER, new Vector3f(0.2f, 0.45f, 0.95f), "minecraft:entity.player.splash",
+    "minecraft:block.bubble_column.upwards_ambient", "minecraft:entity.player.splash.high_speed"),
+  ICE(ParticleTypes.SNOWFLAKE, ParticleTypes.SNOWFLAKE, new Vector3f(0.6f, 0.85f, 1.0f), "minecraft:block.glass.break",
+    "minecraft:block.glass.place", "minecraft:block.glass.break"),
+  ELECTRIC(ParticleTypes.ELECTRIC_SPARK, ParticleTypes.ELECTRIC_SPARK, new Vector3f(1.0f, 0.95f, 0.35f), "minecraft:entity.lightning_bolt.thunder",
+    "minecraft:block.sculk_sensor.clicking", "minecraft:entity.lightning_bolt.impact"),
+  DRAGON(ParticleTypes.DRAGON_BREATH, ParticleTypes.DRAGON_BREATH, new Vector3f(0.55f, 0.2f, 0.75f), "minecraft:entity.ender_dragon.growl",
+    "minecraft:entity.ender_dragon.ambient", "minecraft:entity.dragon_fireball.explode"),
+  GROUND(ParticleTypes.LAVA, ParticleTypes.ASH, new Vector3f(0.6f, 0.42f, 0.2f), "minecraft:entity.generic.explode",
+    "minecraft:block.gravel.break", "minecraft:entity.generic.explode"),
+  ROCK(ParticleTypes.POOF, ParticleTypes.ASH, new Vector3f(0.7f, 0.65f, 0.5f), "minecraft:block.stone.break",
+    "minecraft:block.stone.break", "minecraft:block.anvil.land"),
+  FLYING(ParticleTypes.CLOUD, ParticleTypes.CLOUD, new Vector3f(0.9f, 0.95f, 1.0f), "minecraft:entity.phantom.swoop",
+    "minecraft:entity.phantom.flap", "minecraft:entity.breeze.wind_burst"),
+  DARK(ParticleTypes.SQUID_INK, ParticleTypes.SMOKE, new Vector3f(0.25f, 0.1f, 0.35f), "minecraft:entity.wither.shoot",
+    "minecraft:entity.warden.listening", "minecraft:entity.wither.hurt"),
+  STEEL(ParticleTypes.CRIT, ParticleTypes.SMOKE, new Vector3f(0.75f, 0.78f, 0.82f), "minecraft:block.anvil.land",
+    "minecraft:block.chain.place", "minecraft:block.anvil.place"),
+  PSYCHIC(ParticleTypes.ENCHANT, ParticleTypes.ENCHANT, new Vector3f(0.95f, 0.4f, 0.9f), "minecraft:block.amethyst_block.chime",
+    "minecraft:block.amethyst_block.resonate", "minecraft:block.amethyst_block.chime");
 
   private final ParticleOptions impactParticle;
   private final ParticleOptions ambientParticle;
   private final Vector3f telegraphColor;
   private final String castSoundId;
+  /** The accelerating telegraph pulse played while an attack arms. */
+  private final String windupSoundId;
+  /** The element's detonation voice (replaces the universal generic explode). */
+  private final String impactSoundId;
 
-  ElementTheme(ParticleOptions impact, ParticleOptions ambient, Vector3f telegraph, String castSound) {
+  ElementTheme(ParticleOptions impact, ParticleOptions ambient, Vector3f telegraph, String castSound,
+               String windupSound, String impactSound) {
     this.impactParticle = impact;
     this.ambientParticle = ambient;
     this.telegraphColor = telegraph;
     this.castSoundId = castSound;
+    this.windupSoundId = windupSound;
+    this.impactSoundId = impactSound;
   }
 
   public ParticleOptions impactParticle() { return impactParticle; }
   public ParticleOptions ambientParticle() { return ambientParticle; }
   public Vector3f telegraphColor() { return telegraphColor; }
   public String castSoundId() { return castSoundId; }
+  public String windupSoundId() { return windupSoundId; }
+  public String impactSoundId() { return impactSoundId; }
 
   /** The damage source themed attacks deal. */
   public DamageSource damageSource(ServerPlayer target) {

@@ -9,11 +9,14 @@ import com.thecompanyinc.cobblemoninitiative.noble.NobleEncounterState.PendingIm
 import com.thecompanyinc.cobblemoninitiative.noble.NobleEncounterState.ProjectileBolt;
 import java.util.Iterator;
 import java.util.Random;
+import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Vector3f;
 
 /**
  * The attack primitive registry: one handler per JSON {@code type}, each themed by the
@@ -39,6 +42,8 @@ public final class NobleAttacks {
     public final NobleEncounterConfig config;
     public final ElementTheme element;
     public final double bodyX, bodyY, bodyZ;
+    /** Cast/windup pitch multiplier that rises as the body weakens — the fight audibly sharpens. */
+    public final float ragePitch;
 
     public Context(ServerLevel level, ServerPlayer target, LivingEntity body,
                    NobleEncounterState state, NobleEncounterConfig config, ElementTheme element) {
@@ -53,6 +58,9 @@ public final class NobleAttacks {
       } else {
         this.bodyX = state.getArenaX(); this.bodyY = state.getArenaY(); this.bodyZ = state.getArenaZ();
       }
+      this.ragePitch = (body != null && body.getMaxHealth() > 0)
+        ? 1.0f + 0.35f * (1.0f - body.getHealth() / body.getMaxHealth())
+        : 1.0f;
     }
   }
 
@@ -74,6 +82,20 @@ public final class NobleAttacks {
 
   private static float mult() { return NobleConfig.get().getAttackDamageMultiplier(); }
 
+  /**
+   * Play an attack's cast voice: JSON {@code castSound}/{@code castVolume}/{@code castPitch}
+   * params override the element default, and the rage multiplier sharpens the pitch as the
+   * body weakens. Pure-JSON per-attack voices — mini-nobles compose signature movesets
+   * without touching Java.
+   */
+  private static void castCue(JsonObject p, Context ctx, double x, double y, double z,
+                              float defVolume, float defPitch) {
+    String sound = pStr(p, "castSound", ctx.element.castSoundId());
+    float volume = (float) pDouble(p, "castVolume", defVolume);
+    float pitch = Mth.clamp((float) pDouble(p, "castPitch", defPitch) * ctx.ragePitch, 0.5f, 2.0f);
+    NobleFx.playSoundId(ctx.level, x, y, z, sound, volume, pitch);
+  }
+
   // ── Handlers ────────────────────────────────────────────────────────────────
 
   private static void projectile(JsonObject p, Context ctx) {
@@ -86,7 +108,7 @@ public final class NobleAttacks {
     Vec3 from = new Vec3(ctx.bodyX, ctx.bodyY + 1.2, ctx.bodyZ);
     Vec3 dir = ctx.target.getEyePosition().subtract(from).normalize();
     NobleFx.burst(ctx.level, ctx.element.impactParticle(), from.x, from.y, from.z, 8, 0.2, 0.02);
-    NobleFx.playSoundId(ctx.level, from.x, from.y, from.z, ctx.element.castSoundId(), 1.0f, 1.0f);
+    castCue(p, ctx, from.x, from.y, from.z, 1.0f, 1.0f);
 
     for (int i = 0; i < count; i++) {
       Vec3 d = dir.add(rand(spread), rand(spread), rand(spread)).normalize().scale(speed);
@@ -95,6 +117,7 @@ public final class NobleAttacks {
       b.vx = d.x; b.vy = d.y; b.vz = d.z;
       b.ticksLeft = life;
       b.damage = dmg * mult();
+      b.impactSoundId = pStr(p, "impactSound", null);
       ctx.state.getBolts().add(b);
     }
   }
@@ -119,9 +142,10 @@ public final class NobleAttacks {
       im.damage = dmg * mult();
       im.knockback = kb;
       im.tracking = tracking && strikes == 1;
+      im.impactSoundId = pStr(p, "impactSound", null);
       ctx.state.getPendingImpacts().add(im);
     }
-    NobleFx.playSoundId(ctx.level, ctx.bodyX, ctx.bodyY, ctx.bodyZ, ctx.element.castSoundId(), 0.9f, 0.8f);
+    castCue(p, ctx, ctx.bodyX, ctx.bodyY, ctx.bodyZ, 0.9f, 0.8f);
   }
 
   private static void boltStrike(JsonObject p, Context ctx) {
@@ -148,9 +172,10 @@ public final class NobleAttacks {
       im.knockback = 0.3;
       im.tracking = tracking && i == 0;
       im.column = true;
+      im.impactSoundId = pStr(p, "impactSound", null);
       ctx.state.getPendingImpacts().add(im);
     }
-    NobleFx.playSoundId(ctx.level, ctx.bodyX, ctx.bodyY, ctx.bodyZ, ctx.element.castSoundId(), 1.0f, 1.2f);
+    castCue(p, ctx, ctx.bodyX, ctx.bodyY, ctx.bodyZ, 1.0f, 1.2f);
   }
 
   private static void diveCharge(JsonObject p, Context ctx) {
@@ -167,6 +192,7 @@ public final class NobleAttacks {
     im.damage = dmg * mult();
     im.knockback = kb;
     im.tracking = true; // slams where the player IS at impact
+    im.impactSoundId = pStr(p, "impactSound", null);
     ctx.state.getPendingImpacts().add(im);
 
     // Visual lunge: fling the body toward the target (manager re-pins it after).
@@ -175,7 +201,7 @@ public final class NobleAttacks {
       ctx.body.setDeltaMovement(toward.x, 0.2, toward.z);
       ctx.body.hurtMarked = true;
     }
-    NobleFx.playSoundId(ctx.level, ctx.bodyX, ctx.bodyY, ctx.bodyZ, ctx.element.castSoundId(), 1.0f, 0.7f);
+    castCue(p, ctx, ctx.bodyX, ctx.bodyY, ctx.bodyZ, 1.0f, 0.7f);
   }
 
   private static void stomp(JsonObject p, Context ctx) {
@@ -185,13 +211,24 @@ public final class NobleAttacks {
     int windup = pInt(p, "windupTicks", 8);
 
     PendingImpact im = new PendingImpact();
-    im.x = ctx.bodyX; im.y = ctx.bodyY; im.z = ctx.bodyZ;
+    // The shockwave lives on the floor even if the body is airborne (the damage check is
+    // horizontal-only — a hover-height telegraph would be an invisible ground AoE).
+    im.x = ctx.bodyX; im.y = Math.min(ctx.bodyY, ctx.state.getArenaY()); im.z = ctx.bodyZ;
     im.radius = range;
     im.totalWindup = windup;
     im.ticksLeft = windup;
     im.damage = dmg * mult();
     im.knockback = kb;
+    im.impactSoundId = pStr(p, "impactSound", null);
     ctx.state.getPendingImpacts().add(im);
+
+    // Rear-up hop (the diveCharge lunge idiom) — the windup finally has a visible tell.
+    // Skipped while a flyer is pinned airborne (the pin re-zeroes velocity every tick).
+    if (ctx.body != null && !(ctx.config.isFlyer() && ctx.state.isAirborne())) {
+      ctx.body.setDeltaMovement(0, 0.35, 0);
+      ctx.body.hurtMarked = true;
+    }
+    castCue(p, ctx, ctx.bodyX, ctx.bodyY, ctx.bodyZ, 1.0f, 0.9f);
   }
 
   private static void beam(JsonObject p, Context ctx) {
@@ -208,8 +245,9 @@ public final class NobleAttacks {
     bm.length = length; bm.width = width;
     bm.totalWindup = windup; bm.ticksLeft = windup;
     bm.damage = dmg * mult();
+    bm.impactSoundId = pStr(p, "impactSound", null);
     ctx.state.getBeams().add(bm);
-    NobleFx.playSoundId(ctx.level, from.x, from.y, from.z, ctx.element.castSoundId(), 1.0f, 0.9f);
+    castCue(p, ctx, from.x, from.y, from.z, 1.0f, 0.9f);
   }
 
   private static void hazardZone(JsonObject p, Context ctx) {
@@ -225,7 +263,7 @@ public final class NobleAttacks {
     z.tickDamage = tickDamage * mult();
     z.pull = switch (pull) { case "toward" -> -1; case "away" -> 1; default -> 0; };
     ctx.state.getHazardZones().add(z);
-    NobleFx.playSoundId(ctx.level, z.x, z.y, z.z, ctx.element.castSoundId(), 0.9f, 0.7f);
+    castCue(p, ctx, z.x, z.y, z.z, 0.9f, 0.7f);
   }
 
   // ── Transient advancement (called every REALTIME tick) ───────────────────────
@@ -251,6 +289,8 @@ public final class NobleAttacks {
       if (dx * dx + dy * dy + dz * dz <= 1.4 * 1.4) {
         hit(ctx, b.damage, b.x, b.z, 0.4, 0.15);
         NobleFx.burst(ctx.level, ctx.element.impactParticle(), b.x, b.y, b.z, 10, 0.2, 0.03);
+        NobleFx.playSoundId(ctx.level, b.x, b.y, b.z,
+          b.impactSoundId != null ? b.impactSoundId : ctx.element.impactSoundId(), 0.6f, 1.2f);
         it.remove();
         continue;
       }
@@ -259,20 +299,43 @@ public final class NobleAttacks {
   }
 
   private static void tickImpacts(Context ctx) {
+    // Metronome only the soonest-landing impact — overlapping barrage windups would
+    // otherwise stack into noise instead of a readable countdown.
+    PendingImpact soonest = null;
+    for (PendingImpact im : ctx.state.getPendingImpacts()) {
+      if (im.ticksLeft > 0 && (soonest == null || im.ticksLeft < soonest.ticksLeft)) soonest = im;
+    }
+
     Iterator<PendingImpact> it = ctx.state.getPendingImpacts().iterator();
     while (it.hasNext()) {
       PendingImpact im = it.next();
-      if (im.tracking && im.ticksLeft > 0) {
+      // Tracking locks in with radius-scaled lead time (~radius / sprint-speed ticks): a
+      // strike that re-aims through its final tick is geometrically undodgeable, which has
+      // no place in a hardcore run.
+      if (im.tracking && im.ticksLeft > Math.max(5, (int) (im.radius * 4))) {
         im.x = ctx.target.getX(); im.y = ctx.target.getY(); im.z = ctx.target.getZ();
       }
       im.ticksLeft--;
 
       if (im.ticksLeft > 0) {
-        // Telegraph: pulsing warning ring (+ optional rising column).
-        NobleFx.drawRing(ctx.level, im.x, im.y + 0.1, im.z, im.radius, ctx.element.telegraphColor(), IMPACT_RING_HEIGHTS);
+        // Telegraph: pulsing warning ring (+ optional rising column). The last 5 ticks
+        // flip white-hot and bigger — the screen-readable "MOVE NOW" cue.
+        boolean armed = im.ticksLeft <= 5;
+        Vector3f ringColor = armed ? new Vector3f(1f, 1f, 1f) : ctx.element.telegraphColor();
+        NobleFx.drawRing(ctx.level, im.x, im.y + 0.1, im.z, im.radius, ringColor,
+          IMPACT_RING_HEIGHTS, armed ? 2.2f : 1.4f);
         if (im.column) {
           for (double h = 0.5; h < 6.0; h += 0.8) {
             NobleFx.burst(ctx.level, ctx.element.impactParticle(), im.x, im.y + h, im.z, 1, 0.1, 0.0);
+          }
+        }
+        // Accelerating metronome tick (barrage strikes queue beyond totalWindup — clamp).
+        if (im == soonest && im.ticksLeft <= im.totalWindup) {
+          double progress = Mth.clamp(1.0 - (double) im.ticksLeft / Math.max(1, im.totalWindup), 0.0, 1.0);
+          int interval = Math.max(2, 8 - (int) (6 * progress));
+          if (im.ticksLeft % interval == 0) {
+            NobleFx.playSoundId(ctx.level, im.x, im.y, im.z, ctx.element.windupSoundId(),
+              0.6f, Mth.clamp((0.8f + 0.8f * (float) progress) * ctx.ragePitch, 0.5f, 2.0f));
           }
         }
         continue;
@@ -281,7 +344,8 @@ public final class NobleAttacks {
       // Impact.
       NobleFx.burst(ctx.level, ctx.element.impactParticle(), im.x, im.y + 0.3, im.z, 30, 0.6, 0.05);
       NobleFx.burst(ctx.level, ParticleTypes.EXPLOSION, im.x, im.y + 0.3, im.z, 1, 0.0, 0.0);
-      NobleFx.playSoundId(ctx.level, im.x, im.y, im.z, "minecraft:entity.generic.explode", 0.8f, 0.9f);
+      NobleFx.playSoundId(ctx.level, im.x, im.y, im.z,
+        im.impactSoundId != null ? im.impactSoundId : ctx.element.impactSoundId(), 0.9f, 0.9f);
       if (NobleFx.horizontalDistSq(ctx.target.getX(), ctx.target.getZ(), im.x, im.z) <= im.radius * im.radius) {
         hit(ctx, im.damage, im.x, im.z, im.knockback, 0.3);
       }
@@ -295,9 +359,16 @@ public final class NobleAttacks {
       PendingBeam bm = it.next();
       bm.ticksLeft--;
       if (bm.ticksLeft > 0) {
+        // Warning line — sparks white-hot for the final 5 ticks; charge hum rises in pitch.
+        ParticleOptions warn = bm.ticksLeft <= 5 ? ParticleTypes.ELECTRIC_SPARK : ParticleTypes.SMOKE;
         for (double d = 0; d <= bm.length; d += 0.8) {
-          NobleFx.burst(ctx.level, ParticleTypes.SMOKE,
+          NobleFx.burst(ctx.level, warn,
             bm.sx + bm.dx * d, bm.sy + bm.dy * d, bm.sz + bm.dz * d, 1, 0.05, 0.0);
+        }
+        if (bm.ticksLeft % 5 == 0) {
+          double progress = Mth.clamp(1.0 - (double) bm.ticksLeft / Math.max(1, bm.totalWindup), 0.0, 1.0);
+          NobleFx.playSoundId(ctx.level, bm.sx, bm.sy, bm.sz, "minecraft:block.beacon.deactivate",
+            0.5f, Mth.clamp((0.6f + 0.8f * (float) progress) * ctx.ragePitch, 0.5f, 2.0f));
         }
         continue;
       }
@@ -310,7 +381,8 @@ public final class NobleAttacks {
       if (dist <= bm.width * 0.5 + 0.5) {
         hit(ctx, bm.damage, ctx.target.getX() - bm.dx, ctx.target.getZ() - bm.dz, 0.6, 0.2);
       }
-      NobleFx.playSoundId(ctx.level, bm.sx, bm.sy, bm.sz, "minecraft:entity.generic.explode", 0.7f, 1.3f);
+      NobleFx.playSoundId(ctx.level, bm.sx, bm.sy, bm.sz,
+        bm.impactSoundId != null ? bm.impactSoundId : ctx.element.impactSoundId(), 0.7f, 1.3f);
       it.remove();
     }
   }
@@ -326,11 +398,17 @@ public final class NobleAttacks {
 
       boolean inside = NobleFx.horizontalDistSq(ctx.target.getX(), ctx.target.getZ(), z.x, z.z) <= z.radius * z.radius;
       if (inside) {
-        if (z.pull == -1) NobleFx.knockback(ctx.target, z.x + (z.x - ctx.target.getX()), z.z + (z.z - ctx.target.getZ()), 0.25, 0.0);
+        // knockback() pushes AWAY from its origin — pulling toward the center means the
+        // origin is the center mirrored ACROSS THE PLAYER (2P − C), not across the center.
+        if (z.pull == -1) NobleFx.knockback(ctx.target,
+          ctx.target.getX() + (ctx.target.getX() - z.x), ctx.target.getZ() + (ctx.target.getZ() - z.z), 0.25, 0.0);
         else if (z.pull == 1) NobleFx.knockback(ctx.target, z.x, z.z, 0.25, 0.05);
         if (z.ticksLeft % 10 == 0) {
           ctx.target.hurt(ctx.element.damageSource(ctx.target), z.tickDamage);
           ctx.element.applyOnHit(ctx.target, 40);
+          NobleFx.hurtTilt(ctx.target, z.x, z.z);
+          // Standing in the lava pool / whirlpool audibly burns.
+          NobleFx.playSoundId(ctx.level, z.x, z.y, z.z, ctx.element.windupSoundId(), 0.4f, 0.7f);
         }
       }
       if (z.ticksLeft <= 0) it.remove();
@@ -344,6 +422,7 @@ public final class NobleAttacks {
     ctx.target.hurt(ctx.element.damageSource(ctx.target), damage);
     ctx.element.applyOnHit(ctx.target, EFFECT_TICKS);
     if (knockback > 0) NobleFx.knockback(ctx.target, fromX, fromZ, knockback, up);
+    NobleFx.hurtTilt(ctx.target, fromX, fromZ);
   }
 
   private static Vec3 pickLocation(String pattern, int i, int strikes, Context ctx, double radius) {
