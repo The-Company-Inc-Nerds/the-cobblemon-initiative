@@ -370,6 +370,36 @@ Player-facing detail — rewards, gating, and the hardcore safety notes — live
 
 ---
 
+## 10. Noble Encounters — Intro → Real-Time Fight → Stagger Cinematic → Catch Battle
+
+One manager (`NobleEncounterManager`, ticked from `END_SERVER_TICK`) drives all seven encounters from per-noble JSON — the shrine "director" pattern applied to a real-time boss. Phase 1's body is an **Easy NPC `cobblemon_npc`** (native chase + melee, real health); the Java side adds only what Easy NPC can't: themed ranged/AoE attacks, the arena ring, rage escalation, music/sky, and the phase orchestration.
+
+```mermaid
+flowchart TD
+  S["/noble start &lt;id&gt;"] --> I["INTRO (4s)<br/>body import by preset, found by tag<br/>fake weather/time + element countdown"]
+  I --> R["REALTIME<br/>dodge + melee the body down<br/>boss music loop · talking boss bar"]
+  R -->|"health ≤ 0.6 / 0.3"| RG["RAGE BAND<br/>roar + nova + shove<br/>faster cadence · minRageTier moves unlock"]
+  RG --> R
+  R -->|"health ≤ staggerAtHealthFraction"| ST["STAGGERED (scripted, no attacks)<br/>default cocoon · Moltres rebirth · Mew gotcha<br/>body despawns → REAL Cobblemon rises (cry anim)"]
+  R -->|"chase type: 6 tags"| ST
+  ST --> B["BATTLE — BattleBuilder.pve<br/>party healed · min_perfect_ivs=6 · battle theme"]
+  B -->|"POKEMON_CAPTURED (uuid match)"| C["COMPLETE — capture rewards<br/>story flag + advancement + titles"]
+  B -->|"BATTLE_VICTORY (battle-id match,<br/>getWasWildCapture guard)"| C2["COMPLETE — KO rewards"]
+  B -->|"fled / entity gone (3s net)"| F["FAILED — 'slipped away'"]
+  R -.->|"/noble-abort · death · logout"| F
+  F --> T["teardown: bar, body, Phase-2 entity<br/>(battle stopped first), music, sky"]
+  C --> T
+  C2 --> T
+```
+
+**Session-only state, exhaustive teardown.** `NobleEncounterState` never persists; every exit path (complete, fail, abort, death, logout, server-stop — from *any* phase, including mid-cinematic) funnels through one idempotent `teardown()` that removes the boss bar, despawns the body (with a by-tag sweep for discovery failures), discards the Phase-2 entity after stopping a live battle (a save-and-quit mid-battle must never persist a perfect-IV legendary into the save), stops the music loop, and restores the real sky.
+
+**The audio path has one load-bearing quirk:** Cobblemon's 1061 species cries are asset-only, never registry-registered — `NobleFx.playSoundId` resolves unregistered ids via `SoundEvent.createVariableRangeEvent` (volume >1 extends range 16×volume). Phase 2's battle theme is pure data: `species_additions/<species>.json` sets Cobblemon's per-species `battleTheme`, which Cobblemon plays, loops, and ducks natively (its default wild theme is empty).
+
+Player-facing detail — the roster, the telegraph language, and the hardcore safety checklist — lives on [[Guidebook Nobles]].
+
+---
+
 ### See also
 
 - [[Architecture Overview]] — subsystems, entrypoints, persistence, and the static structure these flows move through.

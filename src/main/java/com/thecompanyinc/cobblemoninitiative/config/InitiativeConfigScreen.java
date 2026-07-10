@@ -871,6 +871,94 @@ public class InitiativeConfigScreen {
     );
 
     // -------------------------------------------------------------------------
+    // Noble Encounters
+    // -------------------------------------------------------------------------
+    NobleConfig nobleConfig = NobleConfig.load();
+    NobleConfig nobleDefaults = new NobleConfig();
+    ConfigCategory nobles = builder.getOrCreateCategory(Component.literal("Noble Encounters"));
+
+    nobles.addEntry(
+      entryBuilder
+        .startBooleanToggle(Component.literal("Nobles Enabled"), nobleConfig.isNoblesEnabled())
+        .setDefaultValue(nobleDefaults.isNoblesEnabled())
+        .setTooltip(Component.literal("Master switch for the noble boss-encounter subsystem."))
+        .setSaveConsumer(nobleConfig::setNoblesEnabled)
+        .build()
+    );
+    nobles.addEntry(
+      entryBuilder
+        .startFloatField(Component.literal("Arena Size Multiplier"), nobleConfig.getArenaRadiusMultiplier())
+        .setDefaultValue(nobleDefaults.getArenaRadiusMultiplier())
+        .setMin(0.5f).setMax(3.0f)
+        .setTooltip(Component.literal(
+          "Scales every arena's ring radius. 1.4 ≈ double the authored arena AREA; 2.0 = double the radius (4× area). Applies to newly started encounters."))
+        .setSaveConsumer(nobleConfig::setArenaRadiusMultiplier)
+        .build()
+    );
+    nobles.addEntry(
+      entryBuilder
+        .startFloatField(Component.literal("Boss Health Multiplier"), nobleConfig.getBossHealthMultiplier())
+        .setDefaultValue(nobleDefaults.getBossHealthMultiplier())
+        .setMin(0.25f).setMax(4.0f)
+        .setTooltip(Component.literal("Scales the Phase-1 body's max health. Applied when the body spawns; longer or shorter wear-down."))
+        .setSaveConsumer(nobleConfig::setBossHealthMultiplier)
+        .build()
+    );
+    nobles.addEntry(
+      entryBuilder
+        .startFloatField(Component.literal("Boss Attack Damage Multiplier"), nobleConfig.getAttackDamageMultiplier())
+        .setDefaultValue(nobleDefaults.getAttackDamageMultiplier())
+        .setMin(0.0f).setMax(4.0f)
+        .setTooltip(Component.literal("Scales every themed ranged/AoE attack's damage (projectiles, strikes, beams, hazards). Live — the stream-day panic dial."))
+        .setSaveConsumer(nobleConfig::setAttackDamageMultiplier)
+        .build()
+    );
+    nobles.addEntry(
+      entryBuilder
+        .startFloatField(Component.literal("Boss Melee Damage Multiplier"), nobleConfig.getBossMeleeDamageMultiplier())
+        .setDefaultValue(nobleDefaults.getBossMeleeDamageMultiplier())
+        .setMin(0.0f).setMax(4.0f)
+        .setTooltip(Component.literal("Scales the body's native melee hit (the Easy NPC attack). Applied when the body spawns."))
+        .setSaveConsumer(nobleConfig::setBossMeleeDamageMultiplier)
+        .build()
+    );
+    nobles.addEntry(
+      entryBuilder
+        .startBooleanToggle(Component.literal("Boss Bar Enabled"), nobleConfig.isBossBarEnabled())
+        .setDefaultValue(nobleDefaults.isBossBarEnabled())
+        .setTooltip(Component.literal("Show the stagger boss bar (accessibility toggle)."))
+        .setSaveConsumer(nobleConfig::setBossBarEnabled)
+        .build()
+    );
+    nobles.addEntry(
+      entryBuilder
+        .startFloatField(Component.literal("Ring Pushback"), nobleConfig.getRingPushback())
+        .setDefaultValue(nobleDefaults.getRingPushback())
+        .setMin(0.0f).setMax(3.0f)
+        .setTooltip(Component.literal("How far inside the edge the arena barrier places a player who crosses it (blocks)."))
+        .setSaveConsumer(nobleConfig::setRingPushback)
+        .build()
+    );
+    nobles.addEntry(
+      entryBuilder
+        .startFloatField(Component.literal("SFX Volume"), nobleConfig.getSfxVolume())
+        .setDefaultValue(nobleDefaults.getSfxVolume())
+        .setMin(0.0f).setMax(4.0f)
+        .setTooltip(Component.literal("Master volume for noble cues (roars, stingers, music loop)."))
+        .setSaveConsumer(nobleConfig::setSfxVolume)
+        .build()
+    );
+    nobles.addEntry(
+      entryBuilder
+        .startFloatField(Component.literal("SFX Pitch"), nobleConfig.getSfxPitch())
+        .setDefaultValue(nobleDefaults.getSfxPitch())
+        .setMin(0.5f).setMax(2.0f)
+        .setTooltip(Component.literal("Master pitch for noble cues (clamped 0.5–2.0)."))
+        .setSaveConsumer(nobleConfig::setSfxPitch)
+        .build()
+    );
+
+    // -------------------------------------------------------------------------
     // Progression
     // -------------------------------------------------------------------------
     ProgressionConfig progressionConfig = ProgressionConfig.load();
@@ -907,11 +995,13 @@ public class InitiativeConfigScreen {
       sightConfig.save();
       shrineConfig.save();
       lootChestConfig.save();
+      nobleConfig.save();
       progressionConfig.save();
       NuzlockeInit.reloadConfig();
       NpcSightInit.reloadConfig();
       ShrineConfig.reload();
       LootChestConfig.reload();
+      NobleConfig.reload();
       ProgressionConfig.reload();
     });
 

@@ -23,3 +23,4 @@
 - [[Guidebook Act II]]
 - [[Guidebook Act III]]
 - [[Guidebook Shrines]]
+- [[Guidebook Nobles]]

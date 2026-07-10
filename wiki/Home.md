@@ -1,10 +1,10 @@
 # The Cobblemon Initiative
 
-A single-player **Fabric** mod (Minecraft 1.21.1 + Cobblemon 1.7.3, currently **0.5.0-alpha.5**) built for UPM 2 and played as a live **hardcore + Nuzlocke** production. It layers gym-badge progression, level caps, Nuzlocke death mechanics, an amnesiac-founder mystery, a destabilizing in-world economy, elemental shrine challenges, a full side-quest board with an on-map quest tracker, and progress-scaled loot caches onto a curated journey through ten gyms.
+A single-player **Fabric** mod (Minecraft 1.21.1 + Cobblemon 1.7.3, currently **0.5.0-alpha.6**) built for UPM 2 and played as a live **hardcore + Nuzlocke** production. It layers gym-badge progression, level caps, Nuzlocke death mechanics, an amnesiac-founder mystery, a destabilizing in-world economy, elemental shrine challenges, Legends-Arceus-style noble boss encounters, a full side-quest board with an on-map quest tracker, and progress-scaled loot caches onto a curated journey through ten gyms.
 
 ## 📐 Architecture
-- **[[Architecture Overview]]** — the nine subsystems, the Fabric init/lifecycle flow, runtime-mod integrations, and the recurring design patterns.
-- **[[Architecture Data Flows]]** — mermaid workflows for every key system: battle → badge → level cap, faint → Nuzlocke → Dark Urge, NPC Sight, Memory Fragments, the Wheat War economy, the Quest HUD, the quest tracker (`]` / `[` keybinds → `/cobblemon-initiative track` → aqua ▶ sidebar highlight → JourneyMap waypoint, with a light-beam fallback), and the loot-chest system (unplaced chests stocked once from badge-tier loot tables, with a 75% empty roll).
+- **[[Architecture Overview]]** — the ten subsystems, the Fabric init/lifecycle flow, runtime-mod integrations, and the recurring design patterns.
+- **[[Architecture Data Flows]]** — mermaid workflows for every key system: battle → badge → level cap, faint → Nuzlocke → Dark Urge, NPC Sight, Memory Fragments, the Wheat War economy, the Quest HUD, the quest tracker (`]` / `[` keybinds → `/cobblemon-initiative track` → aqua ▶ sidebar highlight → JourneyMap waypoint, with a light-beam fallback), the loot-chest system (unplaced chests stocked once from badge-tier loot tables, with a 75% empty roll), and the noble encounter lifecycle (intro → real-time fight → stagger cinematic → catch battle).
 
 ## ⌨️ Reference
 - **[[Commands]]** — the complete command surface: gameplay, the new player-facing quest tracker, admin/world-setup, and the dev-only authoring tools (flagged for removal at 1.0.0).
@@ -25,6 +25,7 @@ A single-player **Fabric** mod (Minecraft 1.21.1 + Cobblemon 1.7.3, currently **
 - **[[Guidebook Act II]]** — gyms 4–7 (Fighting · Water · Ground · Electric) and the Company HQ raid.
 - **[[Guidebook Act III]]** — gyms 8–10 (Dragon · Ice · Fire), the Royal League, the Board of Directors, and the Founder.
 - **[[Guidebook Shrines]]** — the five optional elemental shrine trials.
+- **[[Guidebook Nobles]]** — the seven Legends-Arceus-style noble boss encounters: real-time dodge-and-melee fights that end in a perfect-IV catch.
 
 ---
 

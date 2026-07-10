@@ -241,8 +241,14 @@ That's it — no Java for a standard noble. Add Java only for a genuinely novel 
 - `/cobblemon-initiative reload` — reload noble configs + `NobleConfig`
 
 ## ModMenu knobs (`NobleConfig`, `config/cobblemon-initiative-noble.json`)
-`noblesEnabled`, `attackDamageMultiplier`, `bossBarEnabled`, `ringPushback`, `sfxVolume`,
-`sfxPitch`. Feel/difficulty only — encounter identity lives in the per-noble JSON.
+Exposed under the **Noble Encounters** category of the ModMenu config screen:
+`noblesEnabled`, `arenaRadiusMultiplier` (scales every arena's authored ring radius —
+default **1.4 ≈ double the arena AREA**; applied at `/noble start`, the JSON radius stays
+canonical; the music-loop range auto-scales to cover the ring), `bossHealthMultiplier` and
+`bossMeleeDamageMultiplier` (applied once to the body's attributes at discovery — the
+preset's authored values stay canonical), `attackDamageMultiplier` (themed ranged/AoE
+damage, live), `bossBarEnabled`, `ringPushback`, `sfxVolume`, `sfxPitch`. Feel/difficulty
+only — encounter identity lives in the per-noble JSON.
 
 ---
 

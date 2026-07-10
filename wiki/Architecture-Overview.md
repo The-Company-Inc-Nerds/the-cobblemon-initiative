@@ -1,4 +1,4 @@
-_The Cobblemon Initiative_ is a single-player Fabric mod for Minecraft 1.21.1 + Cobblemon 1.7.3, built exclusively for the hand-made UPM 2 map and played as a live hardcore + Nuzlocke production. This page maps the codebase at altitude: the nine subsystems, how Fabric boots them, how the mod leans on co-installed runtime mods, and the four design patterns that recur throughout.
+_The Cobblemon Initiative_ is a single-player Fabric mod for Minecraft 1.21.1 + Cobblemon 1.7.3, built exclusively for the hand-made UPM 2 map and played as a live hardcore + Nuzlocke production. This page maps the codebase at altitude: the ten subsystems, how Fabric boots them, how the mod leans on co-installed runtime mods, and the four design patterns that recur throughout.
 
 For the actual event-driven workflows (battle victory, faint, NPC sight, economy, quest tracking), see [[Architecture Data Flows]]. For the full command surface, see [[Commands]]. To get oriented, start at [[Home]].
 
@@ -64,9 +64,9 @@ flowchart TD
 
 ---
 
-## The Nine Subsystems
+## The Ten Subsystems
 
-Each subsystem owns one slice of the game and persists independently. The last three of the six server entrypoints are dev-only authoring tools, flagged for removal at 1.0.0.
+Each subsystem owns one slice of the game and persists independently. Four of the eight server entrypoints (NPC Map, Zone Trace, Field Mark, Dev Note) are dev-only authoring tools, flagged for removal at 1.0.0.
 
 ### 1. Initiative — badge progression & level caps
 **Entrypoint:** `InitiativeInit` (server)
@@ -126,6 +126,12 @@ Registers the custom `cobblemon-initiative:trainer_defeated` criterion once via 
 **Key classes:** `InstallCommand`, `AutoInstall`, `LevelSettingsAccessor`, `PrimaryLevelDataAccessor`, `MapFrontiersBridge`
 
 `/cobblemon-initiative install run` applies gamerules, difficulty, hardcore mode, safe zones, and MapFrontiers boundaries from `install.json`, strips the map-authored infinite Speed effect, arms a full `NpcPresetRefreshManager` refresh (each mapped NPC re-imports its preset as its chunk loads — a one-shot import can only reach loaded NPCs), **seeds the CobbleDollars shop to the opening `badge_0` catalog**, then disconnects players **only when hardcore is newly flipped** so the world reloads in hardcore. `install check` reports current-vs-target without changing anything, and `install verify` is a separate read-only deep check. Hardcore is flipped via the accessor mixins on the level data. Modpack installs auto-run the whole thing once per fresh world via the `AutoInstall` marker.
+
+### 10. Noble — Legends-Arceus boss encounters *(new in 0.5.0)*
+**Entrypoint:** `NobleEncounterInit` (server) — `noble/` package
+**Key classes:** `NobleEncounterManager`, `NobleAttacks`, `ElementTheme`, `AmbientTheme`, `NobleFx`, `NobleSkyFx`, `NobleEncounterConfig`, `NobleEncounterState`, `config/NobleConfig`
+
+Real-time boss fights with a two-phase body-swap. Phase 1 is an **Easy NPC `cobblemon_npc` body** (real species model, real health, native chase + melee) that the player wears down by hand while a per-tick "director" runs config-driven themed attacks (`projectile`, `barrage_aoe`, `beam`, `hazard_zone`, `bolt_strike`, `dive_charge`, `stomp`), rage-band escalation, the arena ring, a talking boss bar, per-player fake weather/time (`NobleSkyFx` packets, restored on every exit path), and a per-noble boss-music loop. At the stagger threshold a scripted `Phase.STAGGERED` cinematic despawns the body and raises a **real catchable Cobblemon** (`PokemonProperties.parse(battleSpecies)` — the shipped seven all carry `min_perfect_ivs=6`) into a `BattleBuilder.pve` wild battle; completion is matched by battle-id (`BATTLE_VICTORY`, guarded by `getWasWildCapture()` against the capture double-fire) or captured-Pokémon UUID (`POKEMON_CAPTURED`), with capture-vs-KO reward splits supported in the JSON schema. Two encounter `type`s share Phase 2: `boss` (combat wear-down) and `chase` (invulnerable flee-and-tag — Mew). Each noble is one JSON + one Easy NPC preset, no code per noble. State is session-only; teardown (death/logout/abort/server-stop, from any phase) removes the bar, the body, the Phase-2 entity (stopping a live battle first), the music, and the sky. See [[Guidebook Nobles]] and `docs/NOBLE_ENCOUNTERS.md`.
 
 ### Dev-only entrypoints (removed at 1.0.0)
 

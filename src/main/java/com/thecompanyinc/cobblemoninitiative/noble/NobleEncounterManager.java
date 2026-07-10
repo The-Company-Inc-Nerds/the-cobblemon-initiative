@@ -56,6 +56,8 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -139,7 +141,8 @@ public class NobleEncounterManager {
 
     NobleEncounterState state = new NobleEncounterState(player.getUUID(), nobleId);
 
-    // Arena: config center if present, else the player's feet (dev convenience).
+    // Arena: config center if present, else the player's feet (dev convenience). The ring
+    // radius scales by the ModMenu multiplier (default 1.4 ≈ double the authored AREA).
     NobleEncounterConfig.Arena arena = cfg.getArena();
     double cx, cy, cz;
     if (arena.center != null && arena.center.length == 3
@@ -148,7 +151,8 @@ public class NobleEncounterManager {
     } else {
       cx = player.getX(); cy = player.getY(); cz = player.getZ();
     }
-    state.setArena(cx, cy, cz, arena.radius, arena.dimension);
+    int radius = Math.max(6, Math.round(arena.radius * NobleConfig.get().getArenaRadiusMultiplier()));
+    state.setArena(cx, cy, cz, radius, arena.dimension);
 
     ServerLevel level = resolveLevel(server, arena.dimension);
     if (level == null) {
@@ -270,9 +274,23 @@ public class NobleEncounterManager {
       Entity body = findBodyByTag(level, cfg.getBodyTag());
       if (body != null) {
         state.setBodyUuid(body.getUUID());
-        // Ensure the body opens at full health regardless of preset attribute-apply order,
-        // so it never spawns below the stagger threshold and skips Phase 1.
-        if (body instanceof LivingEntity le) le.setHealth(le.getMaxHealth());
+        if (body instanceof LivingEntity le) {
+          // ModMenu difficulty scalars, applied exactly once at discovery: the preset's
+          // authored max_health / attack_damage stay the canonical base values.
+          float healthMult = NobleConfig.get().getBossHealthMultiplier();
+          AttributeInstance maxHealth = le.getAttribute(Attributes.MAX_HEALTH);
+          if (maxHealth != null && healthMult != 1.0f) {
+            maxHealth.setBaseValue(maxHealth.getBaseValue() * healthMult);
+          }
+          float meleeMult = NobleConfig.get().getBossMeleeDamageMultiplier();
+          AttributeInstance meleeDamage = le.getAttribute(Attributes.ATTACK_DAMAGE);
+          if (meleeDamage != null && meleeMult != 1.0f) {
+            meleeDamage.setBaseValue(meleeDamage.getBaseValue() * meleeMult);
+          }
+          // Ensure the body opens at full health regardless of preset attribute-apply
+          // order, so it never spawns below the stagger threshold and skips Phase 1.
+          le.setHealth(le.getMaxHealth());
+        }
       }
     }
 
@@ -1177,8 +1195,10 @@ public class NobleEncounterManager {
     // Kill any still-playing instance first — a short loopSeconds must never stack copies.
     ResourceLocation loopId = ResourceLocation.tryParse(sounds.loop);
     if (loopId != null) player.connection.send(new ClientboundStopSoundPacket(loopId, SoundSource.HOSTILE));
+    // Range = 16 × volume: keep it covering the (possibly ModMenu-scaled) ring + headroom.
+    float loopVolume = Math.max(3.0f, (state.getArenaRadius() + 16) / 16.0f) * NobleConfig.get().getSfxVolume();
     NobleFx.playSoundId(level, state.getArenaX(), state.getArenaY(), state.getArenaZ(), sounds.loop,
-      3.0f * NobleConfig.get().getSfxVolume(), 1.0f);
+      loopVolume, 1.0f);
     state.setNextLoopTick(level.getGameTime() + (long) (sounds.loopSeconds * 20));
   }
 

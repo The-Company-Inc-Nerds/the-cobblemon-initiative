@@ -13,8 +13,8 @@ Minecraft permission levels run 0–4. This mod uses three of them:
 
 | Level | Meaning | Used by |
 |-------|---------|---------|
-| **0** | Anyone (no OP) | `/shrine-abort`, `/nuzlocke deathscreen`, `/nuzlocke sacrifice`, `/cobblemon-initiative track …` |
-| **2** | Operator | Every admin subtree under `/cobblemon-initiative`, plus `/nuzlocke reload`, `/safezone`, most of `/npcsight` |
+| **0** | Anyone (no OP) | `/shrine-abort`, `/noble-abort`, `/nuzlocke deathscreen`, `/nuzlocke sacrifice`, `/cobblemon-initiative track …` |
+| **2** | Operator | Every admin subtree under `/cobblemon-initiative`, plus `/noble`, `/nuzlocke reload`, `/safezone`, most of `/npcsight` |
 | **3** | Operator+ | `/npcsight reload` only |
 
 > [!IMPORTANT]
@@ -45,12 +45,14 @@ flowchart TD
   NUZ["/nuzlocke deathscreen|sacrifice (0) · reload (2)"]
   SZ["/safezone add|remove|list  — OP 2"]
   NS["/npcsight …  — OP 2 (reload: 3)"]
+  NB["/noble start|stop|list  — OP 2"]
   ABORT["/shrine-abort  — no permission"]
+  NABORT["/noble-abort  — no permission"]
 
   classDef dev fill:#3a2a2a,stroke:#a55,color:#fcc;
   class DEV dev;
   classDef player fill:#1e3a2a,stroke:#5a5,color:#cfc;
-  class TRK,ABORT player;
+  class TRK,ABORT,NABORT player;
 ```
 
 ---
@@ -78,6 +80,12 @@ flowchart TD
 | Command | Description | Permission |
 |---------|-------------|------------|
 | `/shrine-abort` | Player-facing escape hatch — aborts the active shrine challenge with no penalty. Equivalent to `/ca shrine <id> stop` but **requires no permission**. | 0 (anyone) |
+
+## `/noble-abort`
+
+| Command | Description | Permission |
+|---------|-------------|------------|
+| `/noble-abort` | Player-facing withdrawal from an active [[Guidebook Nobles|noble encounter]] — tears the arena down cleanly (boss bar, body, music loop, fake sky) with **no penalty**. The noble encounter's `/shrine-abort` twin. | 0 (anyone) |
 
 ## `/nuzlocke` (test triggers)
 
@@ -207,6 +215,18 @@ Applies the packaged world configuration in `install.json`. See [[Architecture O
 > `/ca install run` is idempotent and safe to re-run. It only kicks players when it actually flips hardcore on — relog to continue. Run `/ca install check` first to preview what will change. **Modpack installs auto-run `install run` once per fresh world** via a pack-only marker file (`config/cobblemon-initiative-autoinstall.json`); bare-mod installs never auto-run.
 
 ---
+
+## `/noble`
+
+Drives [[Guidebook Nobles|noble boss encounters]]. **All subcommands require OP level 2** — the player-facing escape is the no-permission `/noble-abort` above. Until arenas are placed on the map, `start` opens the encounter at the caller's position; the intended endgame is dialog-button or item triggers running `noble start <id>` (the `noble` root must be added to the Easy NPC command allowlist for that — an open TODO).
+
+| Command | Description |
+|---------|-------------|
+| `/noble start <id>` | Begins the encounter for the calling player. `<id>` ∈ `groudon`, `kyogre`, `rayquaza`, `articuno`, `zapdos`, `moltres`, `mew`. Restarting while one is active resets the old one penalty-free. |
+| `/noble stop` | Aborts the caller's active encounter (the OP twin of `/noble-abort`). |
+| `/noble list` | Lists the registered noble ids. |
+
+Per-noble tuning lives in the jar-baked `noble_encounters/<id>.json` (reloaded by `/ca reload`); global feel/difficulty knobs live in `config/cobblemon-initiative-noble.json` (ModMenu-editable).
 
 ## `/safezone`
 
