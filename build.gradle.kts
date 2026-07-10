@@ -15,7 +15,7 @@ plugins {
 }
 
 group = "com.thecompanyinc"
-version = "0.5.0-alpha.6"
+version = "0.5.0-alpha.9"
 
 architectury {
     platformSetupLoomIde()

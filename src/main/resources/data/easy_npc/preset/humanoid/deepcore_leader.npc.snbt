@@ -20,7 +20,7 @@
                 ]
             }
         },
-        ArmorDropChances: [0.085f, 0.085f, 0.085f, 0.085f],
+        ArmorDropChances: [0.08500000089406967f, 0.08500000089406967f, 0.08500000089406967f, 0.08500000089406967f],
         ArmorItems: [
             {},
             {},
@@ -67,7 +67,14 @@
                     Label: "after"
                 },
                 {
-                    Priority: 10,
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "defeated_deepcore_apprentice"
+                        }
+                    ],
+                    Priority: 15,
                     Buttons: [
                         {
                             Name: "Challenge the Gym",
@@ -110,7 +117,7 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:deepcore_leader onwin {1: ['cobbledollars give @1 2800', 'tag @1 add defeated_deepcore_leader', '@2 say Now that is a punch with weight behind it. The Iron Badge is earned, not given. So is Brick Break — the machine is yours.'], 2: ['@1 say Get up. Always get up. The mat is not where you live. Train harder and find me again.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:deepcore_leader onwin {1: ['cobbledollars give @1 2800', 'tag @1 add defeated_deepcore_leader', '@2 say Now that is a punch with weight behind it. The Iron Badge is earned, not given. So is Drain Punch — the machine is yours. Take what you hit and keep it.'], 2: ['@1 say Get up. Always get up. The mat is not where you live. Train harder and find me again.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -130,79 +137,185 @@
                     ],
                     Texts: [
                         {
-                            Text: "Deepcore City, and I am Bruno. Fighting-types do not ask permission. They close the distance and they make their point with both fists."
+                            Text: "Deepcore City, and I am Leader Bruno. Fighting-types do not ask permission. They close the distance and they make their point with both fists."
                         },
                         {
                             Text: "No tricks down here. Just you, me, and who can stay standing. Win that and the Iron Badge is yours."
                         }
                     ],
                     Name: "Bruno — challenge",
+                    Label: "ready"
+                },
+                {
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "My apprentice Ken reads every challenger before the iron ever reaches me. Find him at the pit — the ladder is trainers, then Striker, then Ken, then me."
+                        },
+                        {
+                            Text: "No shortcuts on this floor. Clear the pit and come back. I do not fight anyone who has not earned the walk down."
+                        }
+                    ],
+                    Name: "Bruno — not yet",
                     Label: "default"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "defeated_deepcore_apprentice"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "deepcore_tower_gte_4"
+                        }
+                    ],
+                    Priority: 17,
+                    Buttons: [
+                        {
+                            Name: "Challenge the Gym",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_deepcore_leader"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "say Iron Badge already on you. Stand tall out there. The grey suits in this city talk soft and hit softer, but they never stop counting."
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_deepcore_leader"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:deepcore_leader_weak @s"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_deepcore_leader"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:deepcore_leader_weak onwin {1: ['cobbledollars give @1 2800', 'tag @1 add defeated_deepcore_leader', '@2 say Now that is a punch with weight behind it. The Iron Badge is earned, not given. So is Drain Punch — the machine is yours. Take what you hit and keep it.'], 2: ['@1 say Get up. Always get up. The mat is not where you live. Train harder and find me again.']}"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "yes_button"
+                        },
+                        {
+                            Name: "I need to prepare",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Kenji. Rio. Every trainer on the floor, laid out in an afternoon — my crew spent the day nursing bruises instead of drilling. You have already knocked the wind out of this gym, challenger. Come take the rest."
+                        }
+                    ],
+                    Name: "Bruno — challenge",
+                    Label: "ready_weakened"
                 }
             ]
         },
         DisplayAttribute: [
             {
-                Bool: 1b,
-                Type: "VISIBLE"
+                Type: "VISIBLE",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_AT_DAY"
+                Type: "VISIBLE_AT_DAY",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_AT_NIGHT"
+                Type: "VISIBLE_AT_NIGHT",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_IN_CREATIVE"
+                Type: "VISIBLE_IN_CREATIVE",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_IN_SPECTATOR"
+                Type: "VISIBLE_IN_SPECTATOR",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_IN_STANDARD"
+                Type: "VISIBLE_IN_STANDARD",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_TO_OWNER"
+                Type: "VISIBLE_TO_OWNER",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_TO_TEAM"
+                Type: "VISIBLE_TO_TEAM",
+                Bool: 1b
             },
             {
-                Int: 7,
-                Type: "LIGHT_LEVEL"
+                Type: "LIGHT_LEVEL",
+                Int: 7
             },
             {
-                Text: "ALWAYS",
-                Type: "NAME_VISIBILITY"
+                Type: "NAME_VISIBILITY",
+                Text: "MID"
             }
         ],
         EasyNPCVersion: 3,
         EntityAttribute: {
-            CanBeHitByProjectile: 0b,
-            CanBeLeashed: 0b,
-            CanBreatheUnderwater: 0b,
-            CanCloseDoor: 0b,
-            CanFloat: 0b,
-            CanOpenDoor: 0b,
-            CanPassDoor: 0b,
-            CanUseNetherPortal: 0b,
-            Freefall: 0b,
-            HealthRegeneration: 0.0d,
             IsAttackableByMonsters: 0b,
-            IsAttackableByPlayers: 0b,
+            CanCloseDoor: 0b,
+            Freefall: 0b,
+            CanUseNetherPortal: 0b,
             IsInvulnerable: 1b,
-            IsPushable: 0b,
+            HealthRegeneration: 0.0d,
             NoGravity: 0b,
-            PushEntities: 0b
+            CanPassDoor: 0b,
+            PushEntities: 0b,
+            CanFloat: 0b,
+            CanBreatheUnderwater: 0b,
+            CanBeLeashed: 0b,
+            CanBeHitByProjectile: 0b,
+            IsPushable: 0b,
+            IsAttackableByPlayers: 0b,
+            CanOpenDoor: 0b
         },
-        HandDropChances: [0.085f, 0.085f],
+        HandDropChances: [0.08500000089406967f, 0.08500000089406967f],
         HandItems: [
             {},
             {}
@@ -212,18 +325,16 @@
         ModelData: {
             DefaultPose: "STANDING",
             Pose: "VANILLA",
-            Position: {},
+            Visible: {},
             Rotation: {},
-            Scale: {},
-            Visible: {
-                Boots: 1b
-            }
+            Position: {},
+            Scale: {}
         },
         Navigation: {
             Home: {
-                X: 0,
-                Y: 0,
-                Z: 0
+                Y: 129,
+                Z: 3191,
+                X: 991
             }
         },
         ObjectiveData: {
@@ -263,19 +374,35 @@
             DisableLayers: 0b,
             Name: "",
             Timestamp: 0L,
-            Type: "DEFAULT",
+            Type: "CUSTOM",
             URL: "",
-            UUID: [I; 0, 0, 0, 0]
+            UUID: [I; 507453131, 890722787, -1223432043, -571581107]
         },
         SoundData: {
             SoundDataSet: [
                 {
-                    Name: "minecraft:entity.player.death",
-                    Type: "DEATH"
+                    Type: "DEATH",
+                    Name: "minecraft:entity.player.death"
                 },
                 {
-                    Name: "minecraft:entity.player.hurt",
-                    Type: "HURT"
+                    Type: "EAT",
+                    Name: "minecraft:entity.generic.eat"
+                },
+                {
+                    Type: "HURT",
+                    Name: "minecraft:entity.player.hurt"
+                },
+                {
+                    Type: "TRADE",
+                    Name: "minecraft:entity.villager.trade"
+                },
+                {
+                    Type: "TRADE_YES",
+                    Name: "minecraft:entity.villager.yes"
+                },
+                {
+                    Type: "TRADE_NO",
+                    Name: "minecraft:entity.villager.no"
                 }
             ]
         },
@@ -296,6 +423,6 @@
             }
         ],
         id: "easy_npc:humanoid",
-        CustomName: '{"text": "Leader Bruno", "color": "#FFFFFF"}'
+        CustomName: '{"text": "Leader Bruno", "color": "#8B4513"}'
     }
 }

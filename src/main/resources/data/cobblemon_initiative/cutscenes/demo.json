@@ -1,0 +1,20 @@
+{
+  "_comment": "Portable demo — run /cutscene play demo anywhere. relative=true means keyframe x,y,z are OFFSETS from your eye at play time (yaw/pitch are absolute degrees). The camera rises, pans a slow arc, then returns; you are dropped into spectator for it and restored to your exact spot + game mode after. For a REAL scene, set relative=false and use absolute world coords, add optional doublePreset (an Easy NPC humanoid preset that bakes Tags:[\"ci_cutscene_double\"] + SkinType PLAYER_SKIN) for a stand-in you, and drive the beat with cues (title / sound / command). Trigger from a dialog button with: cutscene play <id>.",
+  "relative": true,
+  "skippable": true,
+  "doublePreset": "easy_npc:preset/humanoid/player_double.npc.snbt",
+  "ambientWeather": "THUNDERSTORM",
+  "startTitle": "§5Cutscene Rig",
+  "startSubtitle": "§7A test flight",
+  "keyframes": [
+    { "x": 0.0, "y": 4.0, "z": 6.0, "yaw": 180.0, "pitch": 35.0, "ticks": 40 },
+    { "x": 7.0, "y": 5.0, "z": 0.0, "yaw": 270.0, "pitch": 40.0, "ticks": 40 },
+    { "x": 0.0, "y": 6.0, "z": -6.0, "yaw": 0.0, "pitch": 45.0, "ticks": 40 },
+    { "x": 0.0, "y": 0.0, "z": 0.0, "yaw": 0.0, "pitch": 0.0, "ticks": 30 }
+  ],
+  "cues": [
+    { "tick": 0, "sound": "minecraft:entity.ender_dragon.growl", "volume": 0.6, "pitch": 0.8 },
+    { "tick": 80, "title": "§dThe camera obeys.", "subtitle": "§7Rig locked" },
+    { "tick": 150, "subtitle": "§7Restoring..." }
+  ]
+}

@@ -49,6 +49,24 @@ execute as @a unless score @s ci_papers_filed matches 3.. run tag @s remove ci_p
 execute as @a if score @s ci_papers_filed matches 6.. run tag @s add ci_papers_filed_gte_6
 execute as @a unless score @s ci_papers_filed matches 6.. run tag @s remove ci_papers_filed_gte_6
 
+execute as @a if score @s cyber_tower matches 1.. run tag @s add cyber_tower_gte_1
+execute as @a unless score @s cyber_tower matches 1.. run tag @s remove cyber_tower_gte_1
+
+execute as @a if score @s cyber_tower matches 2.. run tag @s add cyber_tower_gte_2
+execute as @a unless score @s cyber_tower matches 2.. run tag @s remove cyber_tower_gte_2
+
+execute as @a if score @s cyber_tower matches 4.. run tag @s add cyber_tower_gte_4
+execute as @a unless score @s cyber_tower matches 4.. run tag @s remove cyber_tower_gte_4
+
+execute as @a if score @s deepcore_tower matches 1.. run tag @s add deepcore_tower_gte_1
+execute as @a unless score @s deepcore_tower matches 1.. run tag @s remove deepcore_tower_gte_1
+
+execute as @a if score @s deepcore_tower matches 2.. run tag @s add deepcore_tower_gte_2
+execute as @a unless score @s deepcore_tower matches 2.. run tag @s remove deepcore_tower_gte_2
+
+execute as @a if score @s deepcore_tower matches 4.. run tag @s add deepcore_tower_gte_4
+execute as @a unless score @s deepcore_tower matches 4.. run tag @s remove deepcore_tower_gte_4
+
 execute as @a if score @s dex_caught matches 15.. run tag @s add dex_gte_15
 execute as @a unless score @s dex_caught matches 15.. run tag @s remove dex_gte_15
 
@@ -67,14 +85,68 @@ execute as @a unless score @s fields_liberated matches 2.. run tag @s remove fie
 execute as @a if score @s fields_liberated matches 4.. run tag @s add fields_liberated_gte_4
 execute as @a unless score @s fields_liberated matches 4.. run tag @s remove fields_liberated_gte_4
 
+execute as @a if score @s gaviota_tower matches 1.. run tag @s add gaviota_tower_gte_1
+execute as @a unless score @s gaviota_tower matches 1.. run tag @s remove gaviota_tower_gte_1
+
+execute as @a if score @s gaviota_tower matches 2.. run tag @s add gaviota_tower_gte_2
+execute as @a unless score @s gaviota_tower matches 2.. run tag @s remove gaviota_tower_gte_2
+
+execute as @a if score @s gaviota_tower matches 4.. run tag @s add gaviota_tower_gte_4
+execute as @a unless score @s gaviota_tower matches 4.. run tag @s remove gaviota_tower_gte_4
+
 execute as @a if score @s hz_market matches 1 run tag @s add hz_market_eq_1
 execute as @a unless score @s hz_market matches 1 run tag @s remove hz_market_eq_1
 
 execute as @a if score @s hz_market matches 2 run tag @s add hz_market_eq_2
 execute as @a unless score @s hz_market matches 2 run tag @s remove hz_market_eq_2
 
+execute as @a if score @s kalahar_tower matches 1.. run tag @s add kalahar_tower_gte_1
+execute as @a unless score @s kalahar_tower matches 1.. run tag @s remove kalahar_tower_gte_1
+
+execute as @a if score @s kalahar_tower matches 2.. run tag @s add kalahar_tower_gte_2
+execute as @a unless score @s kalahar_tower matches 2.. run tag @s remove kalahar_tower_gte_2
+
+execute as @a if score @s kalahar_tower matches 4.. run tag @s add kalahar_tower_gte_4
+execute as @a unless score @s kalahar_tower matches 4.. run tag @s remove kalahar_tower_gte_4
+
 execute as @a if score @s memory_fragment matches ..2 run tag @s add memory_fragment_lt_3
 execute as @a unless score @s memory_fragment matches ..2 run tag @s remove memory_fragment_lt_3
+
+execute as @a if score @s mystic_tower matches 1.. run tag @s add mystic_tower_gte_1
+execute as @a unless score @s mystic_tower matches 1.. run tag @s remove mystic_tower_gte_1
+
+execute as @a if score @s mystic_tower matches 2.. run tag @s add mystic_tower_gte_2
+execute as @a unless score @s mystic_tower matches 2.. run tag @s remove mystic_tower_gte_2
+
+execute as @a if score @s mystic_tower matches 4.. run tag @s add mystic_tower_gte_4
+execute as @a unless score @s mystic_tower matches 4.. run tag @s remove mystic_tower_gte_4
+
+execute as @a if score @s nifl_tower matches 1.. run tag @s add nifl_tower_gte_1
+execute as @a unless score @s nifl_tower matches 1.. run tag @s remove nifl_tower_gte_1
+
+execute as @a if score @s nifl_tower matches 2.. run tag @s add nifl_tower_gte_2
+execute as @a unless score @s nifl_tower matches 2.. run tag @s remove nifl_tower_gte_2
+
+execute as @a if score @s nifl_tower matches 4.. run tag @s add nifl_tower_gte_4
+execute as @a unless score @s nifl_tower matches 4.. run tag @s remove nifl_tower_gte_4
+
+execute as @a if score @s ryujin_tower matches 1.. run tag @s add ryujin_tower_gte_1
+execute as @a unless score @s ryujin_tower matches 1.. run tag @s remove ryujin_tower_gte_1
+
+execute as @a if score @s ryujin_tower matches 2.. run tag @s add ryujin_tower_gte_2
+execute as @a unless score @s ryujin_tower matches 2.. run tag @s remove ryujin_tower_gte_2
+
+execute as @a if score @s ryujin_tower matches 4.. run tag @s add ryujin_tower_gte_4
+execute as @a unless score @s ryujin_tower matches 4.. run tag @s remove ryujin_tower_gte_4
+
+execute as @a if score @s scorchspire_tower matches 1.. run tag @s add scorchspire_tower_gte_1
+execute as @a unless score @s scorchspire_tower matches 1.. run tag @s remove scorchspire_tower_gte_1
+
+execute as @a if score @s scorchspire_tower matches 2.. run tag @s add scorchspire_tower_gte_2
+execute as @a unless score @s scorchspire_tower matches 2.. run tag @s remove scorchspire_tower_gte_2
+
+execute as @a if score @s scorchspire_tower matches 4.. run tag @s add scorchspire_tower_gte_4
+execute as @a unless score @s scorchspire_tower matches 4.. run tag @s remove scorchspire_tower_gte_4
 
 execute as @a if score @s takehara_tower matches 1.. run tag @s add takehara_tower_gte_1
 execute as @a unless score @s takehara_tower matches 1.. run tag @s remove takehara_tower_gte_1
@@ -156,20 +228,44 @@ tag @a[tag=!defeated_board_micah] add no_defeated_board_micah
 tag @a[tag=defeated_board_micah] remove no_defeated_board_micah
 tag @a[tag=!defeated_cyber_apprentice] add no_defeated_cyber_apprentice
 tag @a[tag=defeated_cyber_apprentice] remove no_defeated_cyber_apprentice
+tag @a[tag=!defeated_cyber_apprentice_weak] add no_defeated_cyber_apprentice_weak
+tag @a[tag=defeated_cyber_apprentice_weak] remove no_defeated_cyber_apprentice_weak
+tag @a[tag=!defeated_cyber_jr_apprentice] add no_defeated_cyber_jr_apprentice
+tag @a[tag=defeated_cyber_jr_apprentice] remove no_defeated_cyber_jr_apprentice
+tag @a[tag=!defeated_cyber_jr_apprentice_weak] add no_defeated_cyber_jr_apprentice_weak
+tag @a[tag=defeated_cyber_jr_apprentice_weak] remove no_defeated_cyber_jr_apprentice_weak
 tag @a[tag=!defeated_cyber_leader] add no_defeated_cyber_leader
 tag @a[tag=defeated_cyber_leader] remove no_defeated_cyber_leader
+tag @a[tag=!defeated_cyber_leader_weak] add no_defeated_cyber_leader_weak
+tag @a[tag=defeated_cyber_leader_weak] remove no_defeated_cyber_leader_weak
 tag @a[tag=!defeated_cyber_trainer_1] add no_defeated_cyber_trainer_1
 tag @a[tag=defeated_cyber_trainer_1] remove no_defeated_cyber_trainer_1
 tag @a[tag=!defeated_cyber_trainer_2] add no_defeated_cyber_trainer_2
 tag @a[tag=defeated_cyber_trainer_2] remove no_defeated_cyber_trainer_2
+tag @a[tag=!defeated_cyber_trainer_3] add no_defeated_cyber_trainer_3
+tag @a[tag=defeated_cyber_trainer_3] remove no_defeated_cyber_trainer_3
+tag @a[tag=!defeated_cyber_trainer_4] add no_defeated_cyber_trainer_4
+tag @a[tag=defeated_cyber_trainer_4] remove no_defeated_cyber_trainer_4
 tag @a[tag=!defeated_deepcore_apprentice] add no_defeated_deepcore_apprentice
 tag @a[tag=defeated_deepcore_apprentice] remove no_defeated_deepcore_apprentice
+tag @a[tag=!defeated_deepcore_apprentice_weak] add no_defeated_deepcore_apprentice_weak
+tag @a[tag=defeated_deepcore_apprentice_weak] remove no_defeated_deepcore_apprentice_weak
+tag @a[tag=!defeated_deepcore_jr_apprentice] add no_defeated_deepcore_jr_apprentice
+tag @a[tag=defeated_deepcore_jr_apprentice] remove no_defeated_deepcore_jr_apprentice
+tag @a[tag=!defeated_deepcore_jr_apprentice_weak] add no_defeated_deepcore_jr_apprentice_weak
+tag @a[tag=defeated_deepcore_jr_apprentice_weak] remove no_defeated_deepcore_jr_apprentice_weak
 tag @a[tag=!defeated_deepcore_leader] add no_defeated_deepcore_leader
 tag @a[tag=defeated_deepcore_leader] remove no_defeated_deepcore_leader
+tag @a[tag=!defeated_deepcore_leader_weak] add no_defeated_deepcore_leader_weak
+tag @a[tag=defeated_deepcore_leader_weak] remove no_defeated_deepcore_leader_weak
 tag @a[tag=!defeated_deepcore_trainer_1] add no_defeated_deepcore_trainer_1
 tag @a[tag=defeated_deepcore_trainer_1] remove no_defeated_deepcore_trainer_1
 tag @a[tag=!defeated_deepcore_trainer_2] add no_defeated_deepcore_trainer_2
 tag @a[tag=defeated_deepcore_trainer_2] remove no_defeated_deepcore_trainer_2
+tag @a[tag=!defeated_deepcore_trainer_3] add no_defeated_deepcore_trainer_3
+tag @a[tag=defeated_deepcore_trainer_3] remove no_defeated_deepcore_trainer_3
+tag @a[tag=!defeated_deepcore_trainer_4] add no_defeated_deepcore_trainer_4
+tag @a[tag=defeated_deepcore_trainer_4] remove no_defeated_deepcore_trainer_4
 tag @a[tag=!defeated_dragon_shrine_cultist_1] add no_defeated_dragon_shrine_cultist_1
 tag @a[tag=defeated_dragon_shrine_cultist_1] remove no_defeated_dragon_shrine_cultist_1
 tag @a[tag=!defeated_dragon_shrine_cultist_2] add no_defeated_dragon_shrine_cultist_2
@@ -190,12 +286,24 @@ tag @a[tag=!defeated_fire_shrine_leader] add no_defeated_fire_shrine_leader
 tag @a[tag=defeated_fire_shrine_leader] remove no_defeated_fire_shrine_leader
 tag @a[tag=!defeated_gaviota_apprentice] add no_defeated_gaviota_apprentice
 tag @a[tag=defeated_gaviota_apprentice] remove no_defeated_gaviota_apprentice
+tag @a[tag=!defeated_gaviota_apprentice_weak] add no_defeated_gaviota_apprentice_weak
+tag @a[tag=defeated_gaviota_apprentice_weak] remove no_defeated_gaviota_apprentice_weak
+tag @a[tag=!defeated_gaviota_jr_apprentice] add no_defeated_gaviota_jr_apprentice
+tag @a[tag=defeated_gaviota_jr_apprentice] remove no_defeated_gaviota_jr_apprentice
+tag @a[tag=!defeated_gaviota_jr_apprentice_weak] add no_defeated_gaviota_jr_apprentice_weak
+tag @a[tag=defeated_gaviota_jr_apprentice_weak] remove no_defeated_gaviota_jr_apprentice_weak
 tag @a[tag=!defeated_gaviota_leader] add no_defeated_gaviota_leader
 tag @a[tag=defeated_gaviota_leader] remove no_defeated_gaviota_leader
+tag @a[tag=!defeated_gaviota_leader_weak] add no_defeated_gaviota_leader_weak
+tag @a[tag=defeated_gaviota_leader_weak] remove no_defeated_gaviota_leader_weak
 tag @a[tag=!defeated_gaviota_trainer_1] add no_defeated_gaviota_trainer_1
 tag @a[tag=defeated_gaviota_trainer_1] remove no_defeated_gaviota_trainer_1
 tag @a[tag=!defeated_gaviota_trainer_2] add no_defeated_gaviota_trainer_2
 tag @a[tag=defeated_gaviota_trainer_2] remove no_defeated_gaviota_trainer_2
+tag @a[tag=!defeated_gaviota_trainer_3] add no_defeated_gaviota_trainer_3
+tag @a[tag=defeated_gaviota_trainer_3] remove no_defeated_gaviota_trainer_3
+tag @a[tag=!defeated_gaviota_trainer_4] add no_defeated_gaviota_trainer_4
+tag @a[tag=defeated_gaviota_trainer_4] remove no_defeated_gaviota_trainer_4
 tag @a[tag=!defeated_granary_ambush] add no_defeated_granary_ambush
 tag @a[tag=defeated_granary_ambush] remove no_defeated_granary_ambush
 tag @a[tag=!defeated_ground_shrine_cultist_1] add no_defeated_ground_shrine_cultist_1
@@ -228,28 +336,64 @@ tag @a[tag=!defeated_ice_shrine_leader] add no_defeated_ice_shrine_leader
 tag @a[tag=defeated_ice_shrine_leader] remove no_defeated_ice_shrine_leader
 tag @a[tag=!defeated_kalahar_apprentice] add no_defeated_kalahar_apprentice
 tag @a[tag=defeated_kalahar_apprentice] remove no_defeated_kalahar_apprentice
+tag @a[tag=!defeated_kalahar_apprentice_weak] add no_defeated_kalahar_apprentice_weak
+tag @a[tag=defeated_kalahar_apprentice_weak] remove no_defeated_kalahar_apprentice_weak
+tag @a[tag=!defeated_kalahar_jr_apprentice] add no_defeated_kalahar_jr_apprentice
+tag @a[tag=defeated_kalahar_jr_apprentice] remove no_defeated_kalahar_jr_apprentice
+tag @a[tag=!defeated_kalahar_jr_apprentice_weak] add no_defeated_kalahar_jr_apprentice_weak
+tag @a[tag=defeated_kalahar_jr_apprentice_weak] remove no_defeated_kalahar_jr_apprentice_weak
 tag @a[tag=!defeated_kalahar_leader] add no_defeated_kalahar_leader
 tag @a[tag=defeated_kalahar_leader] remove no_defeated_kalahar_leader
+tag @a[tag=!defeated_kalahar_leader_weak] add no_defeated_kalahar_leader_weak
+tag @a[tag=defeated_kalahar_leader_weak] remove no_defeated_kalahar_leader_weak
 tag @a[tag=!defeated_kalahar_trainer_1] add no_defeated_kalahar_trainer_1
 tag @a[tag=defeated_kalahar_trainer_1] remove no_defeated_kalahar_trainer_1
 tag @a[tag=!defeated_kalahar_trainer_2] add no_defeated_kalahar_trainer_2
 tag @a[tag=defeated_kalahar_trainer_2] remove no_defeated_kalahar_trainer_2
+tag @a[tag=!defeated_kalahar_trainer_3] add no_defeated_kalahar_trainer_3
+tag @a[tag=defeated_kalahar_trainer_3] remove no_defeated_kalahar_trainer_3
+tag @a[tag=!defeated_kalahar_trainer_4] add no_defeated_kalahar_trainer_4
+tag @a[tag=defeated_kalahar_trainer_4] remove no_defeated_kalahar_trainer_4
 tag @a[tag=!defeated_mystic_apprentice] add no_defeated_mystic_apprentice
 tag @a[tag=defeated_mystic_apprentice] remove no_defeated_mystic_apprentice
+tag @a[tag=!defeated_mystic_apprentice_weak] add no_defeated_mystic_apprentice_weak
+tag @a[tag=defeated_mystic_apprentice_weak] remove no_defeated_mystic_apprentice_weak
+tag @a[tag=!defeated_mystic_jr_apprentice] add no_defeated_mystic_jr_apprentice
+tag @a[tag=defeated_mystic_jr_apprentice] remove no_defeated_mystic_jr_apprentice
+tag @a[tag=!defeated_mystic_jr_apprentice_weak] add no_defeated_mystic_jr_apprentice_weak
+tag @a[tag=defeated_mystic_jr_apprentice_weak] remove no_defeated_mystic_jr_apprentice_weak
 tag @a[tag=!defeated_mystic_leader] add no_defeated_mystic_leader
 tag @a[tag=defeated_mystic_leader] remove no_defeated_mystic_leader
+tag @a[tag=!defeated_mystic_leader_weak] add no_defeated_mystic_leader_weak
+tag @a[tag=defeated_mystic_leader_weak] remove no_defeated_mystic_leader_weak
 tag @a[tag=!defeated_mystic_trainer_1] add no_defeated_mystic_trainer_1
 tag @a[tag=defeated_mystic_trainer_1] remove no_defeated_mystic_trainer_1
 tag @a[tag=!defeated_mystic_trainer_2] add no_defeated_mystic_trainer_2
 tag @a[tag=defeated_mystic_trainer_2] remove no_defeated_mystic_trainer_2
+tag @a[tag=!defeated_mystic_trainer_3] add no_defeated_mystic_trainer_3
+tag @a[tag=defeated_mystic_trainer_3] remove no_defeated_mystic_trainer_3
+tag @a[tag=!defeated_mystic_trainer_4] add no_defeated_mystic_trainer_4
+tag @a[tag=defeated_mystic_trainer_4] remove no_defeated_mystic_trainer_4
 tag @a[tag=!defeated_nifl_apprentice] add no_defeated_nifl_apprentice
 tag @a[tag=defeated_nifl_apprentice] remove no_defeated_nifl_apprentice
+tag @a[tag=!defeated_nifl_apprentice_weak] add no_defeated_nifl_apprentice_weak
+tag @a[tag=defeated_nifl_apprentice_weak] remove no_defeated_nifl_apprentice_weak
+tag @a[tag=!defeated_nifl_jr_apprentice] add no_defeated_nifl_jr_apprentice
+tag @a[tag=defeated_nifl_jr_apprentice] remove no_defeated_nifl_jr_apprentice
+tag @a[tag=!defeated_nifl_jr_apprentice_weak] add no_defeated_nifl_jr_apprentice_weak
+tag @a[tag=defeated_nifl_jr_apprentice_weak] remove no_defeated_nifl_jr_apprentice_weak
 tag @a[tag=!defeated_nifl_leader] add no_defeated_nifl_leader
 tag @a[tag=defeated_nifl_leader] remove no_defeated_nifl_leader
+tag @a[tag=!defeated_nifl_leader_weak] add no_defeated_nifl_leader_weak
+tag @a[tag=defeated_nifl_leader_weak] remove no_defeated_nifl_leader_weak
 tag @a[tag=!defeated_nifl_trainer_1] add no_defeated_nifl_trainer_1
 tag @a[tag=defeated_nifl_trainer_1] remove no_defeated_nifl_trainer_1
 tag @a[tag=!defeated_nifl_trainer_2] add no_defeated_nifl_trainer_2
 tag @a[tag=defeated_nifl_trainer_2] remove no_defeated_nifl_trainer_2
+tag @a[tag=!defeated_nifl_trainer_3] add no_defeated_nifl_trainer_3
+tag @a[tag=defeated_nifl_trainer_3] remove no_defeated_nifl_trainer_3
+tag @a[tag=!defeated_nifl_trainer_4] add no_defeated_nifl_trainer_4
+tag @a[tag=defeated_nifl_trainer_4] remove no_defeated_nifl_trainer_4
 tag @a[tag=!defeated_royal_champion] add no_defeated_royal_champion
 tag @a[tag=defeated_royal_champion] remove no_defeated_royal_champion
 tag @a[tag=!defeated_royal_elite_1] add no_defeated_royal_elite_1
@@ -262,20 +406,44 @@ tag @a[tag=!defeated_royal_elite_4] add no_defeated_royal_elite_4
 tag @a[tag=defeated_royal_elite_4] remove no_defeated_royal_elite_4
 tag @a[tag=!defeated_ryujin_apprentice] add no_defeated_ryujin_apprentice
 tag @a[tag=defeated_ryujin_apprentice] remove no_defeated_ryujin_apprentice
+tag @a[tag=!defeated_ryujin_apprentice_weak] add no_defeated_ryujin_apprentice_weak
+tag @a[tag=defeated_ryujin_apprentice_weak] remove no_defeated_ryujin_apprentice_weak
+tag @a[tag=!defeated_ryujin_jr_apprentice] add no_defeated_ryujin_jr_apprentice
+tag @a[tag=defeated_ryujin_jr_apprentice] remove no_defeated_ryujin_jr_apprentice
+tag @a[tag=!defeated_ryujin_jr_apprentice_weak] add no_defeated_ryujin_jr_apprentice_weak
+tag @a[tag=defeated_ryujin_jr_apprentice_weak] remove no_defeated_ryujin_jr_apprentice_weak
 tag @a[tag=!defeated_ryujin_leader] add no_defeated_ryujin_leader
 tag @a[tag=defeated_ryujin_leader] remove no_defeated_ryujin_leader
+tag @a[tag=!defeated_ryujin_leader_weak] add no_defeated_ryujin_leader_weak
+tag @a[tag=defeated_ryujin_leader_weak] remove no_defeated_ryujin_leader_weak
 tag @a[tag=!defeated_ryujin_trainer_1] add no_defeated_ryujin_trainer_1
 tag @a[tag=defeated_ryujin_trainer_1] remove no_defeated_ryujin_trainer_1
 tag @a[tag=!defeated_ryujin_trainer_2] add no_defeated_ryujin_trainer_2
 tag @a[tag=defeated_ryujin_trainer_2] remove no_defeated_ryujin_trainer_2
+tag @a[tag=!defeated_ryujin_trainer_3] add no_defeated_ryujin_trainer_3
+tag @a[tag=defeated_ryujin_trainer_3] remove no_defeated_ryujin_trainer_3
+tag @a[tag=!defeated_ryujin_trainer_4] add no_defeated_ryujin_trainer_4
+tag @a[tag=defeated_ryujin_trainer_4] remove no_defeated_ryujin_trainer_4
 tag @a[tag=!defeated_scorchspire_apprentice] add no_defeated_scorchspire_apprentice
 tag @a[tag=defeated_scorchspire_apprentice] remove no_defeated_scorchspire_apprentice
+tag @a[tag=!defeated_scorchspire_apprentice_weak] add no_defeated_scorchspire_apprentice_weak
+tag @a[tag=defeated_scorchspire_apprentice_weak] remove no_defeated_scorchspire_apprentice_weak
+tag @a[tag=!defeated_scorchspire_jr_apprentice] add no_defeated_scorchspire_jr_apprentice
+tag @a[tag=defeated_scorchspire_jr_apprentice] remove no_defeated_scorchspire_jr_apprentice
+tag @a[tag=!defeated_scorchspire_jr_apprentice_weak] add no_defeated_scorchspire_jr_apprentice_weak
+tag @a[tag=defeated_scorchspire_jr_apprentice_weak] remove no_defeated_scorchspire_jr_apprentice_weak
 tag @a[tag=!defeated_scorchspire_leader] add no_defeated_scorchspire_leader
 tag @a[tag=defeated_scorchspire_leader] remove no_defeated_scorchspire_leader
+tag @a[tag=!defeated_scorchspire_leader_weak] add no_defeated_scorchspire_leader_weak
+tag @a[tag=defeated_scorchspire_leader_weak] remove no_defeated_scorchspire_leader_weak
 tag @a[tag=!defeated_scorchspire_trainer_1] add no_defeated_scorchspire_trainer_1
 tag @a[tag=defeated_scorchspire_trainer_1] remove no_defeated_scorchspire_trainer_1
 tag @a[tag=!defeated_scorchspire_trainer_2] add no_defeated_scorchspire_trainer_2
 tag @a[tag=defeated_scorchspire_trainer_2] remove no_defeated_scorchspire_trainer_2
+tag @a[tag=!defeated_scorchspire_trainer_3] add no_defeated_scorchspire_trainer_3
+tag @a[tag=defeated_scorchspire_trainer_3] remove no_defeated_scorchspire_trainer_3
+tag @a[tag=!defeated_scorchspire_trainer_4] add no_defeated_scorchspire_trainer_4
+tag @a[tag=defeated_scorchspire_trainer_4] remove no_defeated_scorchspire_trainer_4
 tag @a[tag=!defeated_sq_bracket_1] add no_defeated_sq_bracket_1
 tag @a[tag=defeated_sq_bracket_1] remove no_defeated_sq_bracket_1
 tag @a[tag=!defeated_sq_bracket_2] add no_defeated_sq_bracket_2

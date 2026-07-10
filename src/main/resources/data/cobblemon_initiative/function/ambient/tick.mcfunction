@@ -14,3 +14,8 @@ execute if entity @a[tag=claimed_starter_hisuian_growlithe] run kill @e[type=eas
 execute as @a[tag=victor_transformed] at @e[tag=victor_apprentice,type=!minecraft:player,limit=1] unless entity @e[tag=victor_victini,type=!minecraft:player] run function cobblemon_initiative:sango/victor_transform
 # Once Victini has joined the player's party, remove the tower-top Victini NPC.
 execute if entity @a[tag=victini_joined] run kill @e[type=easy_npc:cobblemon_npc,tag=victor_victini]
+# Aya's reveal — the west-stair groundskeeper (uuid a9ed3a64) was Leader Blossom all along.
+# A challenger who cleared all four garden wardens tags themselves aya_transformed via her
+# dialog; next tick, positioned at her body, spawn Leader Blossom + despawn the groundskeeper.
+# Guard: skip once the leader body already exists, so it happens exactly once.
+execute as @a[tag=aya_transformed] at @e[tag=aya_groundskeeper,type=!minecraft:player,limit=1] unless entity @e[tag=hz_leader_body,type=!minecraft:player] run function cobblemon_initiative:hua_zhan/aya_transform

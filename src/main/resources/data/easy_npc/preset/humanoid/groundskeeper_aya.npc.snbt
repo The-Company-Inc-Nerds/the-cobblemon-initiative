@@ -40,6 +40,57 @@
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
+                            Name: "defeated_hua_zhan_trainer_1"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "defeated_hua_zhan_trainer_2"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "defeated_hua_zhan_trainer_3"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "defeated_hua_zhan_trainer_4"
+                        }
+                    ],
+                    Priority: 30,
+                    Buttons: [
+                        {
+                            Name: "Face the Leader",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add aya_transformed"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "reveal_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "You woke all four wardens of the gardens. The moss, the orchard, the pond, the terrace — every stone in this town has taken your measure and found you patient."
+                        },
+                        {
+                            Text: "Then I am done sweeping steps. I watched every challenger from behind this broom, because the garden chooses who reaches its keeper. Set it down with me. I am Blossom, and this whole town is my gym."
+                        }
+                    ],
+                    Name: "Aya — the broom set down",
+                    Label: "reveal"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
                             Name: "defeated_groundskeeper_aya"
                         }
                     ],
@@ -310,6 +361,7 @@
             }
         ],
         id: "easy_npc:humanoid",
+        Tags: ["aya_groundskeeper"],
         CustomName: '{"text": "Groundskeeper Aya", "color": "#A020F0"}'
     }
 }

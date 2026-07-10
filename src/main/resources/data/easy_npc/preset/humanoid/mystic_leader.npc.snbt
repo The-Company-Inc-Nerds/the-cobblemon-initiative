@@ -20,7 +20,7 @@
                 ]
             }
         },
-        ArmorDropChances: [0.085f, 0.085f, 0.085f, 0.085f],
+        ArmorDropChances: [0.08500000089406967f, 0.08500000089406967f, 0.08500000089406967f, 0.08500000089406967f],
         ArmorItems: [
             {},
             {},
@@ -67,7 +67,14 @@
                     Label: "after"
                 },
                 {
-                    Priority: 10,
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "defeated_mystic_apprentice"
+                        }
+                    ],
+                    Priority: 15,
                     Buttons: [
                         {
                             Name: "Challenge the Gym",
@@ -110,7 +117,7 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:mystic_leader onwin {1: ['cobbledollars give @1 2400', 'tag @1 add defeated_mystic_leader', '@2 say The marsh saw something true in you. So did I. Hold onto it — you will need it.'], 2: ['@1 say Charm is not enough here. Neither is force. Find the balance and the marsh will let you pass.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:mystic_leader onwin {1: ['cobbledollars give @1 2400', 'tag @1 add defeated_mystic_leader', '@2 say The marsh saw something true in you. So did I. Carry the Charm Badge — and the machine in your bag holds Moonblast. Let it speak for you when charm will not.'], 2: ['@1 say Charm is not enough here. Neither is force. Find the balance and the marsh will let you pass.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -130,79 +137,185 @@
                     ],
                     Texts: [
                         {
-                            Text: "Welcome to Mystic Marsh. I am Titania. Fairy-types are gentle until the moment they are not. Underestimate that and the marsh swallows you whole."
+                            Text: "Welcome to Mystic Marsh. I am Leader Titania. Fairy-types are gentle until the moment they are not. Underestimate that and the marsh swallows you whole."
                         },
                         {
                             Text: "Charm me, and then beat me. Both, or neither. That is how you earn the Charm Badge."
                         }
                     ],
                     Name: "Titania — challenge",
+                    Label: "ready"
+                },
+                {
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "My apprentice Faye reads every challenger before the marsh reads me. Find her among the reeds — the ladder is trainers, then Fae, then Faye, then me."
+                        },
+                        {
+                            Text: "Patience. The marsh does not hurry, and neither will I. Come back when the garden is behind you."
+                        }
+                    ],
+                    Name: "Titania — not yet",
                     Label: "default"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "defeated_mystic_apprentice"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "mystic_tower_gte_4"
+                        }
+                    ],
+                    Priority: 17,
+                    Buttons: [
+                        {
+                            Name: "Challenge the Gym",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_mystic_leader"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "say You carry the Charm Badge. The marsh whispers your name when you walk it, you know. It has done that since before you arrived."
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_mystic_leader"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:mystic_leader_weak @s"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_mystic_leader"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:mystic_leader_weak onwin {1: ['cobbledollars give @1 2400', 'tag @1 add defeated_mystic_leader', '@2 say The marsh saw something true in you. So did I. Carry the Charm Badge — and the machine in your bag holds Moonblast. Let it speak for you when charm will not.'], 2: ['@1 say Charm is not enough here. Neither is force. Find the balance and the marsh will let you pass.']}"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "yes_button"
+                        },
+                        {
+                            Name: "I need to prepare",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Lyra. Viola. Every warden of the reeds, gone quiet in an afternoon — my familiars spent the day chasing yours instead of resting. You have already thinned the mist between us, challenger. Come take the rest."
+                        }
+                    ],
+                    Name: "Titania — challenge",
+                    Label: "ready_weakened"
                 }
             ]
         },
         DisplayAttribute: [
             {
-                Bool: 1b,
-                Type: "VISIBLE"
+                Type: "VISIBLE",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_AT_DAY"
+                Type: "VISIBLE_AT_DAY",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_AT_NIGHT"
+                Type: "VISIBLE_AT_NIGHT",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_IN_CREATIVE"
+                Type: "VISIBLE_IN_CREATIVE",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_IN_SPECTATOR"
+                Type: "VISIBLE_IN_SPECTATOR",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_IN_STANDARD"
+                Type: "VISIBLE_IN_STANDARD",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_TO_OWNER"
+                Type: "VISIBLE_TO_OWNER",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_TO_TEAM"
+                Type: "VISIBLE_TO_TEAM",
+                Bool: 1b
             },
             {
-                Int: 7,
-                Type: "LIGHT_LEVEL"
+                Type: "LIGHT_LEVEL",
+                Int: 7
             },
             {
-                Text: "ALWAYS",
-                Type: "NAME_VISIBILITY"
+                Type: "NAME_VISIBILITY",
+                Text: "ALWAYS"
             }
         ],
         EasyNPCVersion: 3,
         EntityAttribute: {
-            CanBeHitByProjectile: 0b,
-            CanBeLeashed: 0b,
-            CanBreatheUnderwater: 0b,
-            CanCloseDoor: 0b,
-            CanFloat: 0b,
-            CanOpenDoor: 0b,
-            CanPassDoor: 0b,
-            CanUseNetherPortal: 0b,
-            Freefall: 0b,
-            HealthRegeneration: 0.0d,
             IsAttackableByMonsters: 0b,
-            IsAttackableByPlayers: 0b,
+            CanCloseDoor: 0b,
+            Freefall: 0b,
+            CanUseNetherPortal: 0b,
             IsInvulnerable: 1b,
-            IsPushable: 0b,
+            HealthRegeneration: 0.0d,
             NoGravity: 0b,
-            PushEntities: 0b
+            CanPassDoor: 0b,
+            PushEntities: 0b,
+            CanFloat: 0b,
+            CanBreatheUnderwater: 0b,
+            CanBeLeashed: 0b,
+            CanBeHitByProjectile: 0b,
+            IsPushable: 0b,
+            IsAttackableByPlayers: 0b,
+            CanOpenDoor: 0b
         },
-        HandDropChances: [0.085f, 0.085f],
+        HandDropChances: [0.08500000089406967f, 0.08500000089406967f],
         HandItems: [
             {},
             {}
@@ -211,19 +324,19 @@
         LeftHanded: 0b,
         ModelData: {
             DefaultPose: "STANDING",
-            Pose: "VANILLA",
-            Position: {},
+            Pose: "DEFAULT",
+            Visible: {},
             Rotation: {},
-            Scale: {},
-            Visible: {
-                Boots: 1b
+            Position: {},
+            Scale: {
+                Root: [1.0399999618530273f, 1.0399999618530273f, 1.0399999618530273f]
             }
         },
         Navigation: {
             Home: {
-                X: 0,
-                Y: 0,
-                Z: 0
+                Y: 69,
+                Z: 2445,
+                X: 944
             }
         },
         ObjectiveData: {
@@ -263,19 +376,35 @@
             DisableLayers: 0b,
             Name: "",
             Timestamp: 0L,
-            Type: "DEFAULT",
+            Type: "CUSTOM",
             URL: "",
-            UUID: [I; 0, 0, 0, 0]
+            UUID: [I; 1546496154, -645244828, -1805349830, -390114530]
         },
         SoundData: {
             SoundDataSet: [
                 {
-                    Name: "minecraft:entity.player.death",
-                    Type: "DEATH"
+                    Type: "DEATH",
+                    Name: "minecraft:entity.player.death"
                 },
                 {
-                    Name: "minecraft:entity.player.hurt",
-                    Type: "HURT"
+                    Type: "EAT",
+                    Name: "minecraft:entity.generic.eat"
+                },
+                {
+                    Type: "HURT",
+                    Name: "minecraft:entity.player.hurt"
+                },
+                {
+                    Type: "TRADE",
+                    Name: "minecraft:entity.villager.trade"
+                },
+                {
+                    Type: "TRADE_YES",
+                    Name: "minecraft:entity.villager.yes"
+                },
+                {
+                    Type: "TRADE_NO",
+                    Name: "minecraft:entity.villager.no"
                 }
             ]
         },
@@ -296,6 +425,6 @@
             }
         ],
         id: "easy_npc:humanoid",
-        CustomName: '{"text": "Leader Titania", "color": "#FFFFFF"}'
+        CustomName: '{"text": "Leader Titania", "color": "#FF0000"}'
     }
 }

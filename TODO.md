@@ -16,6 +16,48 @@ and the slimmed README + UPM 2 disclaimer). See `GIT_COMMIT_MSG` / `docs/LORE_BI
 
 ---
 
+## Gym gimmicks + cutscene rig (design program, in progress)
+
+Per-gym signature mechanics (feasibility all verified against the real engine — see the
+design workflows). Guardrails: never gate a badge behind a death-prone bonus; soft/telegraphed
+ramps; opt-in forced movement/camera.
+
+- [ ] 💻 **Cutscene rig — reusable `cutscene/` subsystem — BUILT, needs build+runtime verify.**
+      `CutsceneManager` (mirrors the noble director) + data-driven JSON scenes
+      (`data/cobblemon_initiative/cutscenes/<id>.json`: keyframes/cues/ambient/double, `relative`
+      offset mode), `/cutscene play <id>|stop|list` + `/cutscene-skip`, entrypoint registered in
+      fabric.mod.json. Drops the player to SPECTATOR, flies an invisible armor-stand camera rig,
+      restores exact transform+gamemode on completion/skip/logout/stop. Hardcore-safe (verified).
+      🔍 Could NOT `gradle build` in the dev sandbox (no nix/network) — **compile + test
+      `/cutscene play demo` before shipping.** Watch the ServerPlayer camera APIs
+      (setGameMode/gameMode.getGameModeForPlayer/setCamera), `ServerPlayConnectionEvents.DISCONNECT`,
+      and the per-tick player-body-follow line (behavior, not compile).
+- [ ] 🧱💻 **Dragon (Ryujin) — rift + overworld Ender Dragon** (decided: open arena above/outside
+      the keep, tuned+retryable). Verified: mobGriefing=false already stops all block damage; crystals
+      heal it (kill-crystals loop); no portal/egg on overworld death; needs Java `setFightOrigin`
+      (build as a "vanilla_kill" noble encounter type + ModMenu tuning + retry/abort). Gate leader on
+      `dragon_slain`. NEEDS coords: arena center + box, crystal pillar spots, rift anchor. The rift
+      intro can be a cutscene.
+- [ ] 🧱💻 **Bug (Cicada) — floating leader.** Verified: Easy NPC humanoids support NoGravity; flip
+      `NoGravity:1b` in takehara_leader.npc.snbt + a one-shot `easy_npc navigation set pos` to raise
+      his baked Y at setup (keep float ≤~2.5 above floor for right-click reach, or add ON_DISTANCE
+      dialog-open). NEEDS coords: his floor X/Y/Z + float height.
+- [ ] 🧱💻 **Grass (Hua Zhan) — vine walls fall per warden.** Each `defeated_hua_zhan_trainer_N` fires
+      a latched `fill … air` wall-drop + leaf burst; 4th wall opens the stair to the Aya→Blossom
+      transform (reuses the existing 4-warden gate). NEEDS coords: 4 vine-wall boxes + block type.
+- [ ] 💻 **Fighting (Deepcore) gauntlet** — start command + choose-order + 2v1 finale (`GEN_9_MULTI`,
+      native; ~10-line emitter branch in content_compile). Cheapest confirmed win.
+- [ ] 💻 **Ground (Kalahar) mirages** — decoy trainers (placement latches) that poof on click
+      (tag+tick-kill), one real (RNG). Datapack-only.
+- [ ] 💻 **Stadium** (gates Cyber leader `stadium_challenged`≥5) — wave loop + tiered loot (datapack)
+      + ~45 lines Java: a `stadium_active` flag guarding NuzlockeInit's faint/whiteout (safe zones do
+      NOT stop death — see the memory) + a player-chosen level lock (setAdjustLevel/party snapshot).
+- [ ] 💻 **Ambient-state gimmicks** (approved, datapack): Fairy Titania **Mirror Match** (charms a copy
+      of your lead — foreshadows the Founder), Water **Tide Clock**, Ice **Whiteout Approach**, Fire
+      **Banked Coals**. Each mostly reuses band-tags + team variants; watch the doubled team-file cost.
+
+---
+
 ## Noble Pokémon encounters (new subsystem, 0.5.0-alpha.6 — code-complete, build-verified)
 
 Legends-Arceus-style encounters: Easy NPC `cobblemon_npc` body → task → body-swap to a real,
@@ -123,14 +165,13 @@ Left open:
   Cobblemon 1.7.3 party-remove-into-custody + return API, the XP-award method that our
   clamp catches, and whether stand-ins are programmatic easy_npc humanoids (RenderData
   EntityModel = species) or Cobblemon PokemonEntity set uncatchable/unbattleable.
-- [ ] 🧱💻 **Hua Zhan pass** (tester notes round 4 — "a lot of work needed"): recast
-  **Mei Lin as the Hua Zhan nurse**; **Groundskeeper Aya IS the gym-2 leader** (reconcile
-  `groundskeeper_aya.json` vs `hua_zhan_leader.json` team files + the missing leader body —
-  NOTE: "Aya Lian" already exists as a placed CSV body at 1382 93 2060, currently the
-  optional Sudowoodo exhibition duelist — recast that body); **gym-2 adopts the Takehara
-  weakening pattern** (showrunner 2026-07-06: wardens optional, warden-defeat count drains
-  the ladder — 1 → jr _weak, 2 → apprentice _weak, 4 → leader _weak via hz warden-count
-  band tags; Wei's blessing stays the separate pilgrimage reward; seals never hard-gate);
+- [ ] 🧱💻 **Hua Zhan pass** (tester notes round 4 — "a lot of work needed"): DONE in
+  0.6.0-alpha.1 — **Groundskeeper Aya → Leader Blossom transform** (the a9ed3a64 body reveals
+  as the gym-2 leader after all four garden wardens are beaten + a talk; Victor→Victini
+  body-swap via `hua_zhan/aya_transform` + ambient/tick guard, skin single/hua_zhan_leader,
+  RCT gym fight rctmod:hua_zhan_leader). Gym 2 uses the transform gate INSTEAD of the
+  Takehara 1/2/4 weakening ladder (no jr/apprentice bodies; the four warden statues stay;
+  Wei's pilgrimage + seals unchanged). REMAINING: recast **Mei Lin as the Hua Zhan nurse**;
   **Tau + wheat sellers deal in a custom scrip item** (renamed paper/book — sell it, accept
   ONLY it as currency); granary wheat-canon leak; Jun's master-plan line; survey wagon
   unmark; minutes approach_warn; `sq_hz_analyst` displayName rename (sync team file).
@@ -154,14 +195,14 @@ Harvest Road villains, Deng camp, garden stations).
 - [ ] 🧱 **Coordinates needed** (compile warns until authored; give Claude coords or
   place bodies — since 0.5.0 placing these ALSO lights their quest-tracker waypoints
   automatically on recompile, incl. the 8 currently-beamless stages: Ume/census, Tetsu/
-  night pay, checkpoint tent/memo, the four board members): **hua_zhan_leader (gym 2 has
-  NO leader body!)**, hz_greenhouse_docent,
+  night pay, checkpoint tent/memo, the four board members): hz_greenhouse_docent,
   apiarist_sumi, courier_mio, field_researcher_ume, forewoman_tetsu, company_surveyor,
   doc_ledger_barrel, doc_portrait_crate, notice_post_1–3, sq_kyc_agent,
   villain_grunt_2 + villain_grunt_field_agent (checkpoint tent pair).
-- [ ] 🧱💻 **Gym interior casting**: no dialog carriers exist for takehara/hua_zhan
-  trainer_1–4 + hz jr_apprentice/apprentice — decide bodies (CSV or placement) and
-  Claude wires the battle dialogs.
+- [x] 🧱💻 **Gym interior casting** (0.6.0-alpha.1): all gyms now have interior cast —
+  gyms 3–10 got trainer_1–4 + jr_apprentice + apprentice bodies (latch-placed around the
+  leader, trainer_textures skins, dialog + weakening); Hua Zhan keeps its four warden
+  statues and adds the groundskeeper→Leader Blossom transform instead of jr/apprentice.
 - [ ] 💻 **Sight arming after latch spawns**: latch-spawned villains get random uuids —
   the authored `npcsight add <uuid>` registrations (route pair, checkpoint pair,
   yield officer/analyst) need a manual pass per world, or a future auto-register hook.
@@ -170,9 +211,12 @@ Harvest Road villains, Deng camp, garden stations).
   entry-cap **+2** (aces 17/24/32/39/46/52/58/64/70/76), roster shifted in step.
   levelcaps.json + ProgressionConfig + CLAUDE.md table + docs updated. See
   ENGINE_FINDINGS §5.
-- [ ] 💻 **Gyms 3–10 roster COMPLETION** (future act): 24 missing team files
-  ({town}_{trainer_3,trainer_4,jr_apprentice} × 8) — author teams following the same
-  ace=cap+2 curve (scale off the existing leader/trainer levels for that gym).
+- [x] 💻 **Gyms 3–10 roster COMPLETION** (0.6.0-alpha.1): 24 missing team files
+  ({town}_{trainer_3,trainer_4,jr_apprentice} × 8) authored under the cap; PLUS the
+  24 _weak variants (leader/apprentice/jr, IV+EV=0) with the per-gym `<gym>_tower`
+  1/2/4 weakening; PLUS all six interior bodies per gym (skins + placement + dialog);
+  PLUS leader migration (authored name/skin repaint onto the placed CSV body) and the
+  3 TM refinements. See GIT_COMMIT_MSG.
 - [ ] 🔍 Existing-world one-time repairs (runbook §J): magikarp respawn, stale
   takehara defeat tags, `/rctmod player set series cobblemon-initiative`.
 - [ ] 💻 **PRUNING PASS — after the alpha.13 smoke test** (showrunner 2026-07-05):
