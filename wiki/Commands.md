@@ -85,7 +85,7 @@ flowchart TD
 
 | Command | Description | Permission |
 |---------|-------------|------------|
-| `/noble-abort` | Player-facing withdrawal from an active [[Guidebook Nobles|noble encounter]] — tears the arena down cleanly (boss bar, body, music loop, fake sky) with **no penalty**. The noble encounter's `/shrine-abort` twin. | 0 (anyone) |
+| `/noble-abort` | Player-facing withdrawal from an active noble encounter (see [[Guidebook Nobles]]) — tears the arena down cleanly (boss bar, body, music loop, fake sky) with **no penalty**. The noble encounter's `/shrine-abort` twin. | 0 (anyone) |
 
 ## `/nuzlocke` (test triggers)
 
@@ -218,7 +218,7 @@ Applies the packaged world configuration in `install.json`. See [[Architecture O
 
 ## `/noble`
 
-Drives [[Guidebook Nobles|noble boss encounters]]. **All subcommands require OP level 2** — the player-facing escape is the no-permission `/noble-abort` above. Until arenas are placed on the map, `start` opens the encounter at the caller's position; the intended endgame is dialog-button or item triggers running `noble start <id>` (the `noble` root must be added to the Easy NPC command allowlist for that — an open TODO).
+Drives the noble boss encounters (see [[Guidebook Nobles]]). **All subcommands require OP level 2** — the player-facing escape is the no-permission `/noble-abort` above. Until arenas are placed on the map, `start` opens the encounter at the caller's position; the intended endgame is dialog-button or item triggers running `noble start <id>` (the `noble` root must be added to the Easy NPC command allowlist for that — an open TODO).
 
 | Command | Description |
 |---------|-------------|
