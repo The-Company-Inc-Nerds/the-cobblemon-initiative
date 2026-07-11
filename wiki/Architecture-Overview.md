@@ -21,8 +21,7 @@ flowchart TD
     MAIN --> NZ["NuzlockeInit"]
     MAIN --> NS["NpcSightInit"]
     MAIN --> NM["NpcMapInit (dev)"]
-    MAIN --> ZT["ZoneTraceInit (dev)"]
-    MAIN --> FM["FieldMarkInit (dev)"]
+    MAIN --> DT["DevToolsInit (dev)"]
     CLIENT --> NZC["NuzlockeClientInit<br/>(also boots QuestTrackClient)"]
     JMEP --> JMP["CobblemonInitiativeJmPlugin"]
     MODMENU --> MM["ModMenuIntegration"]
@@ -137,11 +136,10 @@ Real-time boss fights with a two-phase body-swap. Phase 1 is an **Easy NPC `cobb
 
 | Entrypoint | Package | Purpose |
 |---|---|---|
-| `NpcMapInit` | `npcmap/` | UUID ↔ Easy NPC preset mapping for batch preset application |
-| `ZoneTraceInit` | `zonetrace/` | In-world wand tool that traces zone polygons and exports `install.json` fragments |
-| `FieldMarkInit` | `fieldmark/` | Marks wheat fields (center + radius) for the Wheat War field-liberation system |
+| `NpcMapInit` | `npcmap/` | UUID ↔ Easy NPC preset mapping for batch preset application (hosts the SHIPPING `NpcPresetRefreshManager`, whose `init()` now runs from `InitiativeInit`) |
+| `DevToolsInit` | `devtools/` | THE consolidated dev entrypoint (2026-07-11): GymMark coordinate wand, NPC Noter stick + `pos` capture + `smoke` checklist, and the `/ca dev` subtree (goto/badges/grant/kit, `team`/`stage` test harness, `place` guided placement walk) |
 
-These are authoring scaffolds — their commands live under `/cobblemon-initiative npc-map`, `zone-trace`, and `field-mark`, all OP-only, all slated for deletion before 1.0.0.
+These are authoring scaffolds — all OP-only, all slated for deletion before 1.0.0 (strip = remove the two entrypoints + delete `devtools/` and the npcmap dev classes). `zonetrace/` and `fieldmark/`'s field-mark half were deleted 2026-07-11, superseded by the browser zone-mapper (58 zones + farm polygons baked into `install.json`).
 
 ---
 
@@ -149,7 +147,7 @@ These are authoring scaffolds — their commands live under `/cobblemon-initiati
 
 Fabric loads **four** entrypoint channels from `fabric.mod.json`:
 
-- **`main` (server):** `InitiativeInit`, `NuzlockeInit`, `NpcSightInit`, `NpcMapInit` *(dev)*, `ZoneTraceInit` *(dev)*, `FieldMarkInit` *(dev)*
+- **`main` (server):** `InitiativeInit`, `NuzlockeInit`, `NpcSightInit`, `NpcMapInit` *(dev)*, `DevToolsInit` *(dev)*, `NobleEncounterInit`, `CutsceneInit`
 - **`client`:** `NuzlockeClientInit` (which also boots `QuestTrackClient` — the `]` / `[` keybinds and the waypoint poller)
 - **`journeymap`:** `compat.journeymap.CobblemonInitiativeJmPlugin` — the JourneyMap v2 client plugin that receives quest-tracker waypoints; this channel simply never loads when JourneyMap is absent
 - **`modmenu`:** `ModMenuIntegration`

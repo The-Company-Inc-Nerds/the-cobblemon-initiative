@@ -5,6 +5,6 @@ scoreboard objectives add field_freed dummy
 # Ceremony name map: field id -> the display name the LIBERATED title card prints
 # (free_field_apply resolves names.<field>; a missing entry falls back to THE PARCEL).
 # WIRING RULE: every new field wired into liberation/free_field MUST add its dispatch-board
-# name here (Firstfurrow / Fenceline Acres / Mirebloom Paddies / Westwind Fields / Dryrow
-# Steading / Crossroads Granary / … — hz_greenhouse_archivist reads the canon list).
-data merge storage cobblemon_initiative:liberation {names:{farm_1:"FIRSTFURROW"}}
+# name here (hz_greenhouse_archivist reads the canon list). All 10 farms (install.json FARM
+# zones, gated field_freed/farm_1..farm_10) are seeded. The wheat-war goal is ANY 6 of the 10.
+data merge storage cobblemon_initiative:liberation {names:{farm_1:"FIRSTFURROW",farm_2:"MIREBLOOM PADDIES",farm_3:"WESTWIND FIELDS",farm_4:"DRYROW STEADING",farm_5:"CROSSROADS GRANARY",farm_6:"FENCELINE ACRES",farm_7:"COLDFURROW FARM",farm_8:"FROSTFALLOW FARM",farm_9:"HIGHFIELD ESTATE",farm_10:"ASHLOAM FIELDS"}}

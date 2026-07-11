@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.thecompanyinc.cobblemoninitiative.npcsight.NpcSightInit;
+import com.thecompanyinc.cobblemoninitiative.npcsight.NpcSightManager;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -91,7 +93,15 @@ public final class NpcPresetRefreshManager {
 
   private NpcPresetRefreshManager() {}
 
+  /** True once the event listeners are registered — init() must be once-only. */
+  private static boolean initialized;
+
   public static void init() {
+    // Idempotent: a second call would double-register every listener (double imports).
+    // Init moved to InitiativeInit 2026-07-11; the guard protects against any stray
+    // legacy call sites reappearing.
+    if (initialized) return;
+    initialized = true;
     ServerLifecycleEvents.SERVER_STARTED.register(NpcPresetRefreshManager::load);
     ServerLifecycleEvents.SERVER_STOPPING.register(server -> save());
     ServerEntityEvents.ENTITY_LOAD.register(NpcPresetRefreshManager::onEntityLoad);
@@ -256,6 +266,12 @@ public final class NpcPresetRefreshManager {
     String location = presetOverride.getOrDefault(uuid, bundledPresets.get(uuid));
     if (location == null) return;
 
+    // A sight-manager follow must come off BEFORE the import replaces the objective set —
+    // afterwards the live goal is orphaned (unremovable by command) and the NPC keeps
+    // following until the entity reloads. An unfired approach re-acquires on a later tick.
+    NpcSightManager sight = NpcSightInit.getManager();
+    if (sight != null) sight.teardownPursuit(server, uuid);
+
     // performPrefixedCommand is void and swallows command errors (they only reach the
     // suppressed source) — the result callback is the ONE honest success signal. Only a
     // confirmed import is marked applied; failures stay pending and retry on next load.
@@ -278,6 +294,15 @@ public final class NpcPresetRefreshManager {
       appliedVersion.put(uuid, contentVersion);
       dirty = true;
       LOGGER.info("[NPC Refresh] Applied {} to {}", location, uuid);
+      // No shipped preset carries a FOLLOW objective, so a follow goal that survived the
+      // import is an orphan from the replaced objective set. The pre-import teardown covers
+      // sight-manager follows; this purge is the backstop for everything else — e.g. the
+      // tenants_of_record escort (datapack-issued follow, re-arms on a ~100-tick cadence).
+      int purged = NpcSightManager.purgeFollowGoals(entity);
+      if (purged > 0) {
+        LOGGER.warn(
+          "[NPC Refresh] Purged {} orphaned follow goal(s) on {} after import.", purged, uuid);
+      }
     } else {
       LOGGER.warn(
         "[NPC Refresh] Import failed for {} ({}) — will retry on next chunk load.",
@@ -308,6 +333,13 @@ public final class NpcPresetRefreshManager {
    * survive, so the Granary keeper refreshes to its CURRENT tier. Called by `install run`.
    */
   public static ArmResult armFullRefresh(MinecraftServer server) {
+    // Callers follow this with direct preset imports in the same tick (update_npc_presets /
+    // the legacy npc-map loop) — drop live sight-manager follows first so those imports
+    // don't orphan them. Follows those imports still orphan (datapack escorts, flag desyncs)
+    // are healed by applyNow's post-import purge when the armed refresh re-imports the NPC.
+    NpcSightManager sight = NpcSightInit.getManager();
+    if (sight != null) sight.teardownAllPursuits(server);
+
     appliedVersion.clear();
     dirty = true;
     int loadedNow = 0;

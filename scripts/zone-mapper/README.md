@@ -12,7 +12,7 @@ one corner at a time.
 
 Zones are currently authored by hand in
 `src/main/resources/data/cobblemon_initiative/install.json`, with polygon
-`vertices` traced via the in-game `zone-trace` tool and copy-pasted in. That's slow
+`vertices` drawn in this editor (the in-game `zone-trace` tool is retired — deleted 2026-07-11). That's slow
 for laying out a whole map. This tool lets you *draw* the zones on the actual
 terrain and get correct block coordinates out the other end.
 
@@ -77,7 +77,7 @@ in fresh on every launch.
 - **Box / Polygon / Route** → exported as `vertices` (`[{x,z}, …]`). The mod derives
   `centerX`/`centerZ`/`radius` from the polygon centroid + max vertex distance; the
   editor previews those derived values so they match runtime. Use this for
-  irregular town outlines and route corridors — same shape `zone-trace` produces.
+  irregular town outlines and route corridors — same shape the retired `zone-trace` tool produced.
 - **Circle** → exported as `centerX/centerY/centerZ` + `radius`, no vertices. Use
   for simple round zones (most gym towns, shrines, the HQ, the Royal League).
 - **Edit** → move/select a zone and reshape its vertices; fill in name, subtitle,

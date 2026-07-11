@@ -211,10 +211,15 @@ Left open:
   **Tau + wheat sellers deal in a custom scrip item** (renamed paper/book — sell it, accept
   ONLY it as currency); granary wheat-canon leak; Jun's master-plan line; survey wagon
   unmark; minutes approach_warn; `sq_hz_analyst` displayName rename (sync team file).
-- [ ] 🧱 **Act-2/3 trainer casting** — 19 referenced ids with no team file (board_×4,
-  villain_admin/_2/_commander, villain_boss, villain_final_boss, villain_grunt_3..11) now
-  fail loudly as `No such trainer registered 'rctmod:<id>'`; 10 empty `{}` teams (5 shrine
-  leaders, royal_champion, royal_elite_1-4) register but refuse at battle start.
+- [x] 💻 **Act-2/3 trainer casting (0.5.0-alpha.12)** — all 38 missing/empty teams
+  authored + jar-validated (18 missing: grunts 3-11, 3 admins, DJ, board ×4, Founder;
+  20 empty: royal_champion + elite_1-4, 5 shrine leaders, 10 cultists). Ladder-true
+  (DJ ace 64, E4 78-81, Cynthia 83, Board 86-87, Founder 100×6 static shadow team).
+  🔍 runtime-verify one battle per group. Follow-ups: **runtime Founder party-mirror**
+  (regenerate villain_final_boss from the live party; overrides the static file) 💻;
+  **{element}_shrine_cultist_3/4** — 10 ids referenced as shrine-leader prereqs with no
+  team file and no NPC (author them or trim the leader prereqs) 💻; dragon_hydra_1..3 +
+  24 battle_frontier ids remain uncast (frontier is its own phase).
 - [ ] 🔍 **Existing-world repair** (any world created ≤ alpha.17): kill + latch-reset the six
   placement bodies (tower ×4, Old Deng, Granny Yun — commands in the runbook), then re-tag
   Deng/Yun (`deng_old`/`deng_granny`/`deng_camp`) or the homecoming walk no-ops.
@@ -375,8 +380,9 @@ Author in batches; each batch unblocks Claude wiring the same day:
   - [ ] *(Option C, deferred)* stateful `farmzone/` subsystem (soil/growth/patrols/HQ-difficulty)
 - [ ] **P5 — Wheat traders full wiring** — _done: the trade→recognize→ambush dialogue, `minecraft:paper` currency, 2/4 thresholds, **ambush trainers** (`wheat_trader_ambush` L38-39 farm team / `granary_ambush` L43-44, in villain_team.json, species+items jar-validated), **wheat-trader hostile tier now offers the battle** ("Stand and fight" → tbcs vs wheat_trader_ambush), and the **granary post-trade poller** (`granary/tick`: hostile trade arms `granary_ambush_armed`, ~15s countdown → "Asset located. Initiating retrieval." → battle, one-shot via defeated_granary_ambush)._ Remaining: in-world placement (Easy NPC traders) 🧱 + in-game verify the tbcs battle/onwin path 🔍. (`wheat_ambush_armed` is now superseded — wheat traders battle directly from dialog; objective left declared, unused.)
 - [x] ~~Smoke-test `cobbledollars add @s`~~ — **moot (2026-07-03):** CobbleDollars 2.0.0-Beta-5.1 has **no `add` subcommand at all** (jar-verified grammar: pay/query/give/remove/set/reload/leaderboard). Every `cobbledollars add` in the repo (pay_macro, granary ambush, all 143 battle-prize onwin strings) was a dead command — all replaced with `cobbledollars give <targets> <amount>` (selector-first, accepts @s under execute-as). Verify in-game that a battle prize actually lands (runbook Round 5 canary #5).
-- [ ] **Cast the 20 empty trainer teams** 💻/🧱 (HIGH PRIORITY): `data/rctmod/trainers/{royal_champion, royal_elite_1..4, dragon/fairy/fire/ground/ice_shrine_leader, *_shrine_cultist_1..2}.json` are literally `{}` — rctapi refuses to start those battles (`insufficientPokemon`), and the shipped presets already wire battles against the Royal League + shrine leaders, so those buttons dead-end today. `content_compile` now WARNS on every battle that references an empty/missing team (28 warnings currently).
-- [ ] **Author the 18 missing trainer JSONs** 💻 (blocks the Act-2 arc): `villain_boss` (Acting CEO DJ — the badge-7 HQ-raid HUD target and every `defeated_villain_boss` gate depend on it), `board_lauren`/`board_madeline`/`board_matt`/`board_micah`, `villain_admin`/`villain_admin_2`/`villain_commander`, and `villain_grunt_3..11`.
+- [x] **Cast the 20 empty + author the 18 missing trainer teams (0.5.0-alpha.12)** — see
+  the Phase 0.4 entry; content_compile team warnings 28 → 0. Remaining casting debt:
+  shrine cultist_3/4 (10), dragon_hydra_1..3, battle_frontier (24).
 - [ ] **villain_grunt_2 checkpoint dialog ladder** 💻 (minor polish): the `default` entry is dead code, and `contraband` is overshadowed at 3+ badges.
 - [ ] **RCT trainer data cleanup** 💻 (from the log-0.4.1-alpha.2 review): 86 trainers log "Model validation failure" — invalid gender/ability/move entries throughout; 3 Royal League trainers hold **mega_showdown items that are not in the pack** (elite_four_lorelei `blue_orb`, champion_terry `red_orb`, title_defense_zeph `steel_memory` — those items will simply be missing in the fights); gym-9 leader `skadi_gymleader1` references invalid species `cobblemon:ninetales_alola` (regional forms are species aspects in Cobblemon) — **she may silently drop that team member on stream**.
 - [x] **Founder reveal (redesigned per decision)** — the Founder's nameplate stays fully `§k`-obfuscated all run (`§kfounder`); each Board defeat fires `reveal/board_fell` (4 oblique beats that circle the name); the name is only spoken at the mirror's defeat — `reveal/founder_defeated` renders **the defeating player's own name** live via selector ("The name on the chair was always ⟨you⟩"). No name baked anywhere. *(Propaganda-decay register: done — `dialog-src/registers/scrubbing.json`.)*
@@ -410,52 +416,51 @@ Author in batches; each batch unblocks Claude wiring the same day:
 
 ## 2. REMOVE BEFORE 1.0.0 — dev-only tooling
 
-- 💻 **NPC Noter + dev commands** (`devnote/` + DevNoteInit entrypoint, 2026-07-07):
-  in-world review tooling — the `npcnote` NPC review/relocation tool, the `pos`
-  quick-coordinate capture, and the `smoke` in-world smoke-test checklist
-  (`/cobblemon-initiative smoke list|next|show|pass|comment|fail|log|reset`, fed by
-  the compiled `data/cobblemon_initiative/smoketest_items.json`). Strip the whole
-  package + entrypoint like fieldmark/zonetrace; the `smoketest_items.json` compiler
-  stage in `content_compile` can stay (harmless resource) or go with it.
+**CONSOLIDATED 2026-07-11:** all surviving dev tooling now lives in ONE package
+(`devtools/`) behind ONE entrypoint (`DevToolsInit`) — GymMark wand (gym-gimmick
+coordinate pass), NPC Noter stick + `pos` capture + `smoke` checklist, and the whole
+`/ca dev` subtree (goto/badges/grant/kit + `team`/`stage` test harness + `place` guided
+placement walk). Command surface unchanged. Already deleted outright (superseded):
+`zonetrace/` (browser zone-mapper won — 58 zones baked), `fieldmark/`'s field-mark half
+(farm polygons canonical in install.json), and the `function/dev/npc_tour_*` datapack
+tour (`dev place` replaced it). `NpcPresetRefreshManager.init()` already moved to
+`InitiativeInit` (idempotent guard added), so the npcmap dev classes are freely
+deletable.
 
-Map-authoring aids. Strip each once its authoring is baked in.
-
-### Field Mark tool (`fieldmark/`) — once all wheat fields are marked + baked
-- [ ] Delete `src/main/java/.../fieldmark/{FieldMarkInit,FieldMarkCommand,FieldMarkStorage}.java`
-- [ ] Remove entrypoint `com.thecompanyinc.cobblemoninitiative.fieldmark.FieldMarkInit` from `fabric.mod.json`
-- [ ] *(No build.gradle dep to remove)*
-
-### Zone Trace tool (`zonetrace/`) — once all zones are traced + committed to `install.json`
-- [ ] Delete `src/main/java/.../zonetrace/{ZoneTraceInit,ZoneTraceCommand,ZoneTraceSession,ZoneTraceStorage}.java`
-- [ ] Remove entrypoint `...zonetrace.ZoneTraceInit` from `fabric.mod.json`
-- [ ] Remove `build.gradle.kts` dep `fabricApi.module("fabric-events-interaction-v0", ...)` (only if nothing else uses `UseBlockCallback`)
-
-### NPC Map system (`npcmap/`) — once NPC presets are finalized + `update_npc_presets.mcfunction` is baked
-> ⚠ **Scope changed 2026-07-04:** `npcmap/` now also hosts `NpcPresetRefreshManager` — the SHIPPING
-> per-chunk-load preset refresh that `NpcMapInit.onInitialize()` wires and that `InstallCommand`
-> + `ShopTierManager` depend on. Only the dev-tool classes below may be stripped at 1.0.0;
-> `NpcPresetRefreshManager` must stay (move its `init()` call into `InitiativeInit` when
-> `NpcMapInit` goes).
-- [ ] Delete `src/main/java/.../npcmap/{NpcMapCommand,NpcMapEntry,NpcMapStorage}.java` (keep `NpcPresetRefreshManager`)
-- [ ] Move `NpcPresetRefreshManager.init()` into `InitiativeInit`, then delete `NpcMapInit` + its entrypoint in `fabric.mod.json`
-- [ ] Remove the LEGACY npc-map replay block in `InstallCommand.cmdRun()` + the NPC count line in `cmdCheck()` (the armed-refresh block stays)
-
-### Dev datapack functions (`function/dev/`)
-- [ ] Review/remove `data/cobblemon_initiative/function/dev/npc_tour_*.mcfunction` + the `npc_tour_idx` objective (keep `function/update_npc_presets` — that ships)
-
-### General release pass *(pre-audited 2026-07-02 — the strip is now a checklist)*
-- [ ] Debug-only command surfaces found (keep-or-strip decision each):
-  - `CobblemonInitiativeCommands.java:116` — `shrine <id> test <name>` (fairy shrine test runner, ~L595)
-  - `CobblemonInitiativeCommands.java:832` — `/cobblemon-initiative dev kit` (shrine crystals + test items)
-- [ ] Dev datapack functions: `function/dev/npc_tour_{fetch,goto,init,next,prev}.mcfunction` + `npc_tour_idx` objective
-- [ ] Dev-tool doc references to scrub at strip time: `wiki/Commands.md`, `wiki/Architecture-Overview.md`
-  (both intentionally document the dev tools today — they carry the "removed at 1.0.0" flags)
-- [ ] Bump `build.gradle.kts:8` version `0.2.0-alpha.1` → `1.0.0`
+### The strip (do in order; each step compiles on its own)
+- [ ] **Wait-gates:** gym-mark coordinate pass exported + integrated; placement walk
+  exported + integrated; smoke rounds done (the smoke checklist is the release-verify
+  loop — strip LAST).
+- [ ] Delete `src/main/java/.../devtools/` (all 11 classes incl. DevWandTool — the
+  Producer's Tool; STRIP GATE: land + unhold the tool once first so the flight/invuln
+  grant revokes) + remove the `devtools.DevToolsInit` entrypoint from
+  `fabric.mod.json`; delete `mixin/DevWandInputMixin.java` + its line in
+  `cobblemon-initiative.mixins.json`; drop the `fabric-message-api-v1` dep line in
+  `build.gradle.kts` (only the tool's chat-note capture uses it).
+- [ ] Delete the two bundled resources `data/cobblemon_initiative/devtest/
+  {counter_teams,placement_plan}.json`; the `smoketest_items.json` compiler stage in
+  `content_compile` can stay (harmless resource) or go.
+- [ ] npcmap dev classes: delete `npcmap/{NpcMapCommand,NpcMapEntry,NpcMapStorage,
+  NpcMapInit}.java` + the `npcmap.NpcMapInit` entrypoint (KEEP `NpcPresetRefreshManager`
+  — shipping, already init'd from `InitiativeInit`). Remove the LEGACY npc-map replay
+  block in `InstallCommand.cmdRun()` + the NPC count line in `cmdCheck()` (the
+  armed-refresh block stays).
+- [ ] `cutscene/CutsceneRecorder.java` + the `/cutscene record` subtree in
+  `CutsceneCommands` (the rig + playback SHIP; only the recorder is dev) — once the
+  scene wishlist (HQ raid, Board clearout, Founder mirror, Royal League entrance) is
+  recorded.
+- [ ] Keep-or-strip decision: `shrine <id> test <name>` (fairy shrine test runner in
+  `CobblemonInitiativeCommands`) and the `shrine <id> path record` authoring subtree.
+- [ ] Doc scrub: `wiki/Commands.md` + `wiki/Architecture-Overview.md` dev-tool sections
+  (both carry "removed at 1.0.0" flags; already updated for the consolidation).
+- [ ] Bump `build.gradle.kts` version → `1.0.0`.
+- **NOTE:** the `fabric-events-interaction-v0` dep in build.gradle.kts STAYS — shipping
+  code uses `UseBlockCallback` (InitiativeInit, LootChestManager, DocPropManager).
 
 ---
 
-*Removal details mirror the dev-only cleanup notes. `install/`, `mapfrontiers/` packages and
-`install.json` (with baked vertex data) all STAY in the shipped mod.*
+*`install/`, `mapfrontiers/`, `npcmap/NpcPresetRefreshManager` and `install.json`
+(with baked vertex data) all STAY in the shipped mod.*
 
 ---
 

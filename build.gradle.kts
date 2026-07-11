@@ -15,7 +15,7 @@ plugins {
 }
 
 group = "com.thecompanyinc"
-version = "0.5.0-alpha.11"
+version = "0.5.0-alpha.12"
 
 architectury {
     platformSetupLoomIde()
@@ -60,6 +60,9 @@ dependencies {
     modImplementation(fabricApi.module("fabric-resource-loader-v0", "0.116.12+1.21.1"))
     modImplementation(fabricApi.module("fabric-events-interaction-v0", "0.116.12+1.21.1"))
     modImplementation(fabricApi.module("fabric-key-binding-api-v1", "0.116.12+1.21.1"))
+    // Producer's Tool chat-note capture (devtools/DevWandTool — dev-only user, but the
+    // module rides the full fabric-api runtime bundle either way).
+    modImplementation(fabricApi.module("fabric-message-api-v1", "0.116.12+1.21.1"))
     // JourneyMap soft dep: compile against the API only (byte-identical to the jar-in-jar
     // the pack's JM build ships); the runtime comes from the modRuntimeOnly line below.
     modCompileOnly("info.journeymap:journeymap-api-fabric:2.0.0-1.21.1")

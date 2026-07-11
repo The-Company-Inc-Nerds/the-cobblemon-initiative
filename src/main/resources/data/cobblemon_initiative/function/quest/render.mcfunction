@@ -82,6 +82,8 @@ execute if entity @s[tag=third_starter_unlocked,tag=!third_starter_claimed] run 
 scoreboard players reset q.side_wheat ci_quest
 execute if entity @s[tag=wheat_war_active,tag=heard_wheat_pitch] run scoreboard players set q.side_wheat ci_quest 80
 execute if entity @s[tag=wheat_war_active,tag=heard_wheat_pitch] store result storage cobblemon_initiative:quest fields int 1 run scoreboard players get @s fields_liberated
+# 10 farms exist but the goal is any 6 — clamp the HUD so it never overflows past 6/6.
+execute if entity @s[tag=wheat_war_active,tag=heard_wheat_pitch] if score @s fields_liberated matches 6.. run data modify storage cobblemon_initiative:quest fields set value 6
 execute if entity @s[tag=wheat_war_active,tag=heard_wheat_pitch] run function cobblemon_initiative:quest/set_wheat with storage cobblemon_initiative:quest
 
 # ── beat-2 side objectives (appended by the quest build) ──

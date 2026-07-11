@@ -58,6 +58,12 @@ public class InitiativeInit implements ModInitializer {
     // lazily (first button press), so patching here reliably precedes the first read.
     EasyNpcSecurityConfig.ensureAllowlist();
 
+    // Per-NPC preset refresh: imports shipped presets onto mapped NPCs as their chunks
+    // load. SHIPPING system — lives in npcmap/ but is init'd here so the npcmap dev
+    // tooling (NpcMapInit + commands) can be stripped at 1.0.0 without touching it
+    // (TODO §2). Idempotent guard inside init() protects against double registration.
+    com.thecompanyinc.cobblemoninitiative.npcmap.NpcPresetRefreshManager.init();
+
     ModItems.register();
 
     FabricLoader.getInstance()

@@ -175,6 +175,13 @@ public class NpcMapCommand {
       return 0;
     }
 
+    // Imports replace each NPC's objective set — drop any live sight-manager follow first
+    // so these imports don't orphan it (datapack escort follows are out of scope here;
+    // they re-arm on their own cadence and the armed-refresh path purges orphans).
+    com.thecompanyinc.cobblemoninitiative.npcsight.NpcSightManager sight =
+      com.thecompanyinc.cobblemoninitiative.npcsight.NpcSightInit.getManager();
+    if (sight != null) sight.teardownAllPursuits(server);
+
     int count = 0;
     for (NpcMapEntry entry : entries) {
       try {

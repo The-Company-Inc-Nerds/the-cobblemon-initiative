@@ -39,8 +39,7 @@ flowchart TD
   ROOT --> SHOP["shop refresh|&lt;tier&gt;  — OP 2"]
   ROOT --> RLD["reload  — OP 2"]
   ROOT --> INST["install check|verify|run  — OP 2"]
-  ROOT --> DEVT["dev goto|badges|grant|kit  — OP 2"]
-  ROOT --> DEV["DEV-ONLY: npc-map · zone-trace · field-mark  — OP 2"]
+  ROOT --> DEV["DEV-ONLY (devtools/): dev goto|badges|grant|kit|team|stage|place · npcnote · pos · smoke · gym-mark · npc-map — OP 2"]
 
   NUZ["/nuzlocke deathscreen|sacrifice (0) · reload (2)"]
   SZ["/safezone add|remove|list  — OP 2"]
@@ -200,6 +199,15 @@ Warps and progression levers for testing — all OP-2.
 | `/ca dev badges <n>` | Set progression to **exactly** N gym badges: grants/removes the badge achievements *and* their gym leaders' defeated flags, then recalculates the level cap. | `n` 0–10 |
 | `/ca dev grant <achievement>` | Grant a single achievement and refresh the level cap. | achievement ID (autocompletes the level-cap achievement ids, e.g. `badge_fire`, `royal_league_champion`, `board_cleared`) |
 | `/ca dev kit` | Gives the 5 shrine crystals + 16 Rare Candy + 16 Potions. | — |
+| `/ca dev team <stage>` | Banks your party to the PC and provisions the bundled counter team for the stage: level = era entry cap, perfect 31 IVs, EV spreads, authored against the real enemy team files (deliberately overpowered — a lost test is a permadeath). | stage ∈ `gym_1..gym_10`, `shrine_fairy/ground/dragon/ice/fire`, `hq`, `royal`, `board`, `founder` |
+| `/ca dev stage <stage>` | One-shot progression setup for the same stage names: badges (cap follows), gate scores (`fields_liberated`), champion/board defeat tags + achievements, and a teleport to the stage anchor when its coords are authored. | same stage ids |
+| `/ca dev place next\|prev\|goto <id>` | Guided placement walk: teleport through the bundled 51-proposal plan (surface-height tp) and print each NPC's name, purpose, and ideal-spot direction. | plan id (autocompletes) |
+| `/ca dev tool` | **The Producer's Tool** (one item for the whole walk = placement plan + gym-mark slots): hold = fly + invulnerable (airborne-grace on unhold); left-click = set primary (block = stand-spot, NPC = adopt); right-click = secondary (box corners; air = feet); F (swap-hands) = primary at your feet; shift+left/right = confirm; **Q = skip**; chat after a set = notes on the current stop; the item **glints** when the current stop already has anything recorded. Writes the same files as `dev place` / `gym-mark`. | — |
+| `/ca dev place here\|adopt\|skip [id]` | `here` records your feet as the NPC's latch placement; `adopt` records the builder body you are **looking at** as a uuid takeover; `skip` defers. Defaults to the current walk entry. Results accumulate in `{world}/data/npc_placements.json` (`list`/`export` show progress / the handoff). | optional plan id |
+
+The **GymMark wand** (`/ca gym-mark wand|set|start|stop|list|export`) is the gym-gimmick
+coordinate pass — see the TODO gym-gimmicks section for the 33-slot walkthrough; it exports
+`{world}/data/gym_marks.json`.
 
 ### Install
 
@@ -265,9 +273,9 @@ Configure NPC line-of-sight tracking. The NPC Sight system raycasts from each re
 > [!CAUTION]
 > The commands in this section are **authoring/editor tools** registered under the `/cobblemon-initiative` tree (OP level 2). They are scheduled for **removal at 1.0.0** once world content is finalized. Do not document them as player-facing features; they exist to build `install.json` / `fields.json` data and to wire NPC presets during development.
 
-## `/cobblemon-initiative` dev tooling (`devnote/`) &nbsp;— *removed at 1.0.0*
+## `/cobblemon-initiative` dev tooling (`devtools/`) &nbsp;— *removed at 1.0.0*
 
-Playtest aids added while smoke-testing content (the `devnote/` package — strip with the rest before release).
+Playtest aids added while smoke-testing content. All dev tooling now lives in the single `devtools/` package behind one `DevToolsInit` entrypoint (2026-07-11 consolidation); zone-trace and field-mark were deleted outright (superseded by the browser zone-mapper — all 58 zones + farm polygons are baked into `install.json`).
 
 | Command | Description | Args |
 |---------|-------------|------|
@@ -287,41 +295,6 @@ Bidirectional NPC-UUID ↔ Easy NPC preset mapping, used to batch-apply presets 
 | `/ca npc-map remove <uuid>` | Removes a mapping. | `uuid` (stored, autocomplete) |
 | `/ca npc-map list` | Lists all stored mappings (uuid, preset, label). | — |
 | `/ca npc-map apply` | Applies every stored mapping to its NPC via Easy NPC preset import. | — |
-
-## `/cobblemon-initiative zone-trace` &nbsp;— *removed at 1.0.0*
-
-Polygon zone editor. `begin` gives a Zone Tracer wand; right-click blocks to add vertices. `export` dumps an `install.json` fragment to the server log.
-
-| Command | Description |
-|---------|-------------|
-| `/ca zone-trace begin <name>` | Starts a session and gives the Zone Tracer wand. `name` = greedy string. |
-| `/ca zone-trace point` | Records the player's current foot position as a vertex. |
-| `/ca zone-trace undo` | Removes the last vertex. |
-| `/ca zone-trace type <value>` | Sets zone type: `TOWN`, `ROUTE`, `SHRINE`, `VILLAIN`, `BATTLE_FRONTIER`, `LANDMARK` (autocomplete). (`FARM` zones exist in `install.json` but are not yet in the wand's suggestion list.) |
-| `/ca zone-trace color <hex>` | Sets zone colour, e.g. `FF0000` or `#FF0000`. |
-| `/ca zone-trace subtitle <text>` | Sets the on-entry subtitle (greedy string). |
-| `/ca zone-trace announce <true\|false>` | Toggles entry announcement. |
-| `/ca zone-trace hostile <true\|false>` | Toggles hostile-only mob suppression for the zone. |
-| `/ca zone-trace finish` | Saves the zone (needs ≥ 3 vertices) and removes the wand. |
-| `/ca zone-trace status` | Shows the active session: name, type, colour, announce, hostileOnly, vertices. |
-| `/ca zone-trace list` | Lists saved zones (type, name, vertex count, colour). |
-| `/ca zone-trace delete <name>` | Deletes a saved zone (greedy string, autocomplete). |
-| `/ca zone-trace export` | Dumps all saved zones as an `install.json` JSON array to the server log. |
-
-## `/cobblemon-initiative field-mark` &nbsp;— *removed at 1.0.0*
-
-Wheat-field editor for the Wheat War / field-liberation economy work. Fields are circular (centre + radius). `export` dumps a `fields.json` fragment to the server log.
-
-| Command | Description | Args |
-|---------|-------------|------|
-| `/ca field-mark add <id> <region>` | Marks a wheat field at the player's position. | `id` word; `region` ∈ `takehara`, `hua_zhan`, `mystic_marsh`, `deepcore`, `gaviota`, `kalahar`, `cyber`, `ryujin`, `nifl`, `scorchspire` (autocomplete) |
-| `/ca field-mark radius <id> <blocks>` | Sets the field radius. | `blocks` 1–256 |
-| `/ca field-mark setpiece <id> <true\|false>` | `true` = set-piece field, `false` = scattered minor field. | `id`, value |
-| `/ca field-mark list` | Lists marked fields: type (`set-piece`/`minor`), id, region, coords, radius. | — |
-| `/ca field-mark delete <id>` | Deletes a marked field. | `id` word (autocomplete) |
-| `/ca field-mark export` | Dumps all marked fields as a `fields.json` JSON array to the server log. | — |
-
----
 
 ## See also
 

@@ -453,11 +453,91 @@ public class NpcSightManager {
       "easy_npc objective %s set follow player %s", npc.getUUID(), playerName(player)));
   }
 
-  /** Remove the FOLLOW_PLAYER objective and halt any in-progress path. */
+  /**
+   * Remove the FOLLOW_PLAYER objective and halt any in-progress path.
+   *
+   * <p>{@code objective remove} soft-fails (sendFailure + result 0, no throw) once the backing
+   * ObjectiveDataSet entry is gone — a preset import mid-follow replaces the data set WITHOUT
+   * unregistering the live goal (Mom's first-join walk-up races the auto-install repaint
+   * exactly this way) — leaving the orphaned goal pathing forever, unreachable by command.
+   * So any follow goal still left in the mob's goal selector afterwards is purged directly.
+   * (Nested inside another command's execution the remove is only queued and the purge
+   * actually precedes it; the end state is identical — the queued remove then drops the data
+   * entry whose goal is already gone.)
+   */
   private void stopFollow(MinecraftServer server, Entity npc) {
     if (!isEasyNpcPresent()) return;
-    runCommand(server, String.format("easy_npc objective %s remove follow player", npc.getUUID()));
+    boolean removed = runVerifiedCommand(
+      server, String.format("easy_npc objective %s remove follow player", npc.getUUID()));
+    int purged = purgeFollowGoals(npc);
+    if (purged > 0) {
+      NpcSightInit.LOGGER.warn(
+        "[NPC Sight] Purged {} follow goal(s) left on {} (remove reported success={}) —"
+          + " likely orphaned by a preset import mid-follow.",
+        purged, npc.getUUID(), removed);
+    }
     runCommand(server, String.format("easy_npc navigation reset %s", npc.getUUID()));
+  }
+
+  /**
+   * Drop any Easy NPC FollowLivingEntityGoal still registered on the mob — matched by class
+   * name so Easy NPC stays a runtime-only dependency. Scope caveat: FOLLOW_OWNER and
+   * FOLLOW_ENTITY_BY_UUID construct the same goal class and would be purged too, and Easy
+   * NPC's periodic refresh skips entries it still believes are registered — safe only
+   * because no shipped preset carries a FOLLOW objective and the one datapack escort
+   * (tenants_of_record) re-arms its follow on a ~100-tick cadence.
+   */
+  public static int purgeFollowGoals(Entity npc) {
+    if (!(npc instanceof net.minecraft.world.entity.Mob mob)) return 0;
+    net.minecraft.world.entity.ai.goal.GoalSelector selector =
+      ((com.thecompanyinc.cobblemoninitiative.mixin.MobGoalSelectorAccessor) mob).getGoalSelector();
+    List<net.minecraft.world.entity.ai.goal.Goal> stale = selector.getAvailableGoals().stream()
+      .map(net.minecraft.world.entity.ai.goal.WrappedGoal::getGoal)
+      .filter(g -> "FollowLivingEntityGoal".equals(g.getClass().getSimpleName()))
+      .toList();
+    stale.forEach(selector::removeGoal);
+    return stale.size();
+  }
+
+  // ---------------------------------------------------------------------------
+  // Pursuit teardown around preset imports
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Detach any follow from this sight-managed NPC before a preset import replaces its Easy
+   * NPC objective data — removing the follow while its backing entry still exists keeps the
+   * data set and the goal selector in sync. Unconditional rather than gated on
+   * {@link NpcSightData#pursuing}: a mid-chase relog re-registers the follow from entity NBT
+   * while the transient flag reboots false. No-op when the NPC is not sight-managed or not
+   * loaded (an import is a no-op for an unloaded uuid, and eagerly clearing the flag would
+   * disable the sight tick's own stop paths). A torn-down APPROACH_ONCE that has not fired
+   * yet re-acquires on a later sight tick; a PURSUE resumes while it still has sight.
+   */
+  public void teardownPursuit(MinecraftServer server, java.util.UUID uuid) {
+    NpcSightData stored = storage.get(uuid);
+    NpcSightData session = sessionData.get(uuid);
+    if (stored == null && session == null) return;
+    Entity npc = findEntity(server, uuid);
+    if (npc == null) return;
+    stopFollow(server, npc);
+    if (stored != null) stored.pursuing = false;
+    if (session != null) session.pursuing = false;
+  }
+
+  /** Tear down every active pursuit — bulk preset repaints (install run / content refresh). */
+  public void teardownAllPursuits(MinecraftServer server) {
+    for (NpcSightData data : storage.getAll()) teardownIfPursuing(server, data);
+    for (NpcSightData data : sessionData.values()) teardownIfPursuing(server, data);
+  }
+
+  private void teardownIfPursuing(MinecraftServer server, NpcSightData data) {
+    if (!data.pursuing) return;
+    Entity npc = findEntity(server, data.uuid);
+    // Unloaded: leave the flag set — the sight tick's stop paths (stand-down, arrival hold)
+    // still key on it, and there is nothing to import onto an unloaded uuid anyway.
+    if (npc == null) return;
+    stopFollow(server, npc);
+    data.pursuing = false;
   }
 
   /** The player's account name — what FOLLOW_PLAYER resolves against and a valid command target. */
@@ -476,5 +556,29 @@ public class NpcSightManager {
     } catch (Exception e) {
       NpcSightInit.LOGGER.debug("[NPC Sight] Command failed '{}': {}", cmd, e.getMessage());
     }
+  }
+
+  /**
+   * Like {@link #runCommand} but reports command success via the result callback. Brigadier
+   * flags success for ANY non-throwing command, so Easy NPC's soft failures (sendFailure +
+   * return 0) are only caught by also requiring a positive result. Caveat: invoked nested
+   * inside another command's execution the command is merely queued — the callback fires
+   * after this returns, so this reports false there; trust it only from plain tick paths.
+   */
+  private boolean runVerifiedCommand(MinecraftServer server, String cmd) {
+    final boolean[] ok = {false};
+    try {
+      CommandSourceStack src = server
+        .createCommandSourceStack()
+        .withPermission(4)
+        .withSuppressedOutput()
+        .withCallback((success, result) -> {
+          if (success && result > 0) ok[0] = true;
+        });
+      server.getCommands().performPrefixedCommand(src, cmd);
+    } catch (Exception e) {
+      NpcSightInit.LOGGER.debug("[NPC Sight] Command failed '{}': {}", cmd, e.getMessage());
+    }
+    return ok[0];
   }
 }
