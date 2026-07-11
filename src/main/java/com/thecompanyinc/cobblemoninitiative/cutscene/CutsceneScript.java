@@ -27,6 +27,18 @@ public class CutsceneScript {
    * stay absolute) — lets a scene (or a portable demo) be authored relative to the player. */
   public boolean relative = false;
 
+  /** With {@code relative}, ALSO rotate the offsets into the player's FACING frame
+   * (x=right, y=up, z=forward of where they looked at play time) and treat keyframe
+   * yaw/pitch as OFFSETS from the captured angles. This makes one scene work at every
+   * arena regardless of orientation — the gym-leader intro dolly uses it. */
+  public boolean facingFrame = false;
+
+  /** Blocks to place the player STRAIGHT BACK (opposite their captured facing,
+   * horizontal, same Y) when the scene ends, instead of the exact captured spot —
+   * the "take up the arena" stage-back before a leader fight. 0 = restore in place.
+   * Keep arenas flat where this is used; there is no ground/wall probe. */
+  public double endBack = 0.0;
+
   /**
    * Optional Easy NPC humanoid preset for a body-double stand-in dropped at the player's
    * spot so the scene has a "you" in frame. Null = no double (most scenes — rifts, boss

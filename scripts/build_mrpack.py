@@ -130,6 +130,123 @@ def bake_install_into_level_dat(level_dat: str, level_name: str = None) -> None:
               f"run '/cobblemon-initiative install run' in-game instead.")
 
 
+# Fixed timestamps/owner keep .mrpack builds reproducible and keep the showrunner's
+# personal UUID out of the distributed pack (owner identity is cosmetic in MF).
+_MF_BAKE_TS = 1750000000000  # 2025-06-15, arbitrary fixed epoch millis
+_MF_OWNER_NAME = "The Company, Inc."
+
+# Map Frontiers VisibilityData writes ALL of these bytes per frontier. ON/OFF split
+# mirrors exactly what MapFrontiersBridge/new VisibilityData() produces at runtime.
+_MF_FLAGS_ON = (
+    "visible",
+    "fullscreenVisible", "fullscreenNameVisible", "fullscreenDay", "fullscreenNight",
+    "fullscreenUnderground", "fullscreenTopo", "fullscreenBiome",
+    "minimapVisible", "minimapNameVisible", "minimapDay", "minimapNight",
+    "minimapUnderground", "minimapTopo", "minimapBiome",
+    "webmapVisible", "webmapNameVisible", "webmapDay", "webmapNight",
+    "webmapUnderground", "webmapTopo", "webmapBiome",
+)
+_MF_FLAGS_OFF = (
+    "announceInChat", "announceInTitle",
+    "fullscreenOwnerVisible", "fullscreenBannerVisible",
+    "minimapOwnerVisible", "minimapBannerVisible",
+    "webmapOwnerVisible", "webmapBannerVisible",
+)
+
+
+def bake_mapfrontiers_frontiers(world_dst: str) -> None:
+    """Pre-bake install.json's zones as Map Frontiers GLOBAL frontiers into the bundled
+    world COPY (mapfrontiers/frontiers.dat — gzip NBT, Version 10, empty root name).
+    MF loads the file at SERVER_STARTING and sends every frontier in the JOIN handshake,
+    so the town/route overlays are on the map from the very first join — no relog (live
+    creation happens post-handshake and never syncs). Field-for-field mirror of what
+    MapFrontiersBridge.createFrontiers builds reflectively; `install run` skips creation
+    when frontiers already exist, so the baked world never duplicates. Failures warn,
+    never abort (the live bridge + one relog is the fallback)."""
+    try:
+        import math as _math
+        import sys as _sys
+        import uuid as _uuid
+        _sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+        from nbt_read import TAG_BYTE, TAG_COMPOUND, TAG_END, TAG_INT, TAG_LIST, TAG_LONG, TAG_STRING
+        from nbt_write import write_nbt_file
+
+        with open(INSTALL_JSON) as fh:
+            zones = json.load(fh).get("zones") or []
+        if not zones:
+            return
+
+        ns = _uuid.uuid5(_uuid.NAMESPACE_URL, "cobblemon-initiative:mapfrontiers")
+        owner_uuid = str(_uuid.uuid5(ns, "owner"))
+
+        frontiers = []
+        for i, z in enumerate(zones):
+            name = z.get("name") or f"Zone {i}"
+            try:
+                color = int(str(z.get("color", "#808080")).lstrip("#"), 16)
+            except ValueError:
+                color = 0x808080
+            # Polygon from the zone's vertices; the vertex-less circle zone gets the
+            # bridge's 8-point fallback (i*45 deg, int() truncates like Java's (int) cast).
+            verts = z.get("vertices")
+            if verts:
+                points = [(int(v["x"]), int(v["z"])) for v in verts]
+            else:
+                cx, cz, r = z.get("centerX", 0), z.get("centerZ", 0), z.get("radius", 16)
+                points = [
+                    (cx + int(r * _math.cos(_math.radians(k * 45))),
+                     cz + int(r * _math.sin(_math.radians(k * 45))))
+                    for k in range(8)
+                ]
+            f = {
+                # id must parse as a UUID or MF aborts loading everything after it;
+                # uuid5 keyed on index+name is stable across rebuilds.
+                "id": (TAG_STRING, str(_uuid.uuid5(ns, f"{i}:{name}"))),
+                "color": (TAG_INT, color),
+                "dimension": (TAG_STRING, z.get("dimension", "minecraft:overworld")),
+                "name1": (TAG_STRING, name),
+                "name2": (TAG_STRING, ""),
+                "personal": (TAG_BYTE, 0),
+                "owner": (TAG_COMPOUND, {
+                    "username": (TAG_STRING, _MF_OWNER_NAME),
+                    "UUID": (TAG_STRING, owner_uuid),
+                }),
+                # MF normalizes every vertex to Y=70 on both write and read.
+                "vertices": (TAG_LIST, (TAG_COMPOUND, [
+                    {"X": (TAG_INT, x), "Y": (TAG_INT, 70), "Z": (TAG_INT, zz)}
+                    for x, zz in points
+                ])),
+                # Vertex mode with an EMPTY chunks list (a typed non-empty chunks list
+                # flips the mode and renders nothing).
+                "chunks": (TAG_LIST, (TAG_END, [])),
+                "mode": (TAG_STRING, "Vertex"),
+                "created": (TAG_LONG, _MF_BAKE_TS),
+                "modified": (TAG_LONG, _MF_BAKE_TS),
+            }
+            for flag in _MF_FLAGS_ON:
+                f[flag] = (TAG_BYTE, 1)
+            for flag in _MF_FLAGS_OFF:
+                f[flag] = (TAG_BYTE, 0)
+            frontiers.append(f)
+
+        mf_dir = os.path.join(world_dst, "mapfrontiers")
+        os.makedirs(mf_dir, exist_ok=True)
+        # Overwrite unconditionally: install.json is canonical, and this also guards
+        # against a builder-tested source map shipping its own (session-created) file.
+        write_nbt_file(
+            os.path.join(mf_dir, "frontiers.dat"), "",
+            (TAG_COMPOUND, {
+                "Version": (TAG_INT, 10),
+                "frontiers": (TAG_LIST, (TAG_COMPOUND, frontiers)),
+            }),
+            gzipped=True,
+        )
+        print(f"    baked Map Frontiers: {len(frontiers)} frontier(s) -> mapfrontiers/frontiers.dat")
+    except Exception as e:
+        print(f"    [warn] Map Frontiers bake failed for {world_dst}: {e} — "
+              f"the live bridge will create zones at install (one relog to sync).")
+
+
 def strip_rctmod_trainers(datapack_zip: str) -> None:
     """UPM 2's bundled world datapack (datapacks/data.zip) ships 76 stale rctmod
     trainer JSONs (data/rctmod/trainers/*) that predate this pack — every world load
@@ -555,6 +672,9 @@ def main():
             # same way so the builder's Data.Player can't resurface via a .bak restore.
             if os.path.isfile(os.path.join(wdst, "level.dat.bak")):
                 bake_install_into_level_dat(os.path.join(wdst, "level.dat.bak"), level_name=wname)
+            # Map Frontiers overlays ship IN the save so the first join handshake
+            # already carries them (live creation is post-handshake and needs a relog).
+            bake_mapfrontiers_frontiers(wdst)
             # UPM 2's own world datapack carries stale rctmod trainers — clean the COPY.
             world_dp = os.path.join(wdst, "datapacks", "data.zip")
             if os.path.isfile(world_dp):
@@ -572,8 +692,9 @@ def main():
 
         # Auto-install marker: PACK-ONLY. Its presence makes the mod run
         # `/cobblemon-initiative install run` once per fresh world shortly after the
-        # first join (zones + Map Frontiers — the pieces level.dat baking can't cover).
-        # Bare-mod installs never have this file, so nothing auto-runs standalone.
+        # first join (safe zones + shop seed + NPC refresh — Map Frontiers overlays are
+        # pre-baked into the save above, and install run skips creation when they
+        # already exist). Bare-mod installs never have this file, so nothing auto-runs.
         write_autoinstall_marker(os.path.join(overrides, "config"))
         print("  config seed: cobblemon-initiative-autoinstall.json (first-join auto-install)")
 

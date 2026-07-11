@@ -3,7 +3,7 @@
         author: "TheCompanyInc",
         category: "Trainer",
         created: 0L,
-        description: "gym_trainer at Deepcore City - Gym, the sparring pit (act 1). Compiled from dialog-src.",
+        description: "gym_trainer at Deepcore City - Gym, the deep pit (act 1). Compiled from dialog-src.",
         entityTypeId: "easy_npc:humanoid",
         modified: 0L,
         name: "Jr. Apprentice Striker",
@@ -43,7 +43,7 @@
                             Name: "defeated_deepcore_jr_apprentice"
                         }
                     ],
-                    Priority: 30,
+                    Priority: 20,
                     Buttons: [
                         {
                             Name: "Goodbye",
@@ -57,164 +57,38 @@
                     ],
                     Texts: [
                         {
-                            Text: "Ken is the apprentice proper - he waits by the deep pit with the evolved hitters. He hits harder than me and forgives less."
+                            Text: "Ken and me together, and you still cleared the pit. I have never seen the iron go that quiet."
                         },
                         {
-                            Text: "The order is the lesson: the floor, then me, then Ken, then the Leader. You are most of the way down."
+                            Text: "Nothing left down here but the Leader. Bruno hits harder than both of us stacked - go earn the walk."
                         }
                     ],
-                    Name: "Striker - onward to the pit",
+                    Name: "Striker - the pit is cleared",
                     Label: "beaten"
                 },
                 {
                     Priority: 10,
                     Buttons: [
                         {
-                            Name: "Challenge the Jr. Apprentice",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "defeated_deepcore_jr_apprentice"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "say You cleared my rung already. Ken waits at the deep pit."
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_defeated_deepcore_jr_apprentice"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tbcs attach rctmod:deepcore_jr_apprentice @s"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_defeated_deepcore_jr_apprentice"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:deepcore_jr_apprentice onwin {1: ['tag @1 add defeated_deepcore_jr_apprentice', '@2 say Cleanly done. The pit is yours to reach - Ken is waiting.'], 2: ['@1 say Not yet. We drill hard down here. Come back ready.']}"
-                                },
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "battle_button"
-                        },
-                        {
-                            Name: "Not yet",
+                            Name: "Goodbye",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "leave_button"
+                            Label: "goodbye_button"
                         }
                     ],
                     Texts: [
                         {
-                            Text: "Jr. Apprentice Striker. Bruno keeps his ladder spread across the floor this season - you fight me here, and if you manage it, Ken is waiting at the pit."
+                            Text: "Jr. Apprentice Striker. I do not take bouts on my own anymore - Bruno put me in the pit, and the pit rule is two on two. I fight at the pit beside Ken - face us together."
                         },
                         {
-                            Text: "Two of us, one bout. Ready when you are."
+                            Text: "Talk to Ken when you are ready. The gym lends you a second for the bout, so nobody stands alone down here. The masters on the floor are optional - wear us down first, or take us fresh. Your call."
                         }
                     ],
                     Name: "Striker - junior of the pit",
                     Label: "default"
-                },
-                {
-                    Conditions: [
-                        {
-                            Type: "PLAYER_TAG",
-                            Operation: "EQUALS",
-                            Name: "deepcore_tower_gte_1"
-                        }
-                    ],
-                    Priority: 25,
-                    Buttons: [
-                        {
-                            Name: "Challenge the Jr. Apprentice",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "defeated_deepcore_jr_apprentice"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "say You cleared my rung already. Ken waits at the deep pit."
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_defeated_deepcore_jr_apprentice"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tbcs attach rctmod:deepcore_jr_apprentice_weak @s"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_defeated_deepcore_jr_apprentice"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:deepcore_jr_apprentice_weak onwin {1: ['tag @1 add defeated_deepcore_jr_apprentice', '@2 say Cleanly done. The pit is yours to reach - Ken is waiting.'], 2: ['@1 say Not yet. We drill hard down here. Come back ready.']}"
-                                },
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "battle_button"
-                        },
-                        {
-                            Name: "Not yet",
-                            Actions: [
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "leave_button"
-                        }
-                    ],
-                    Texts: [
-                        {
-                            Text: "You cleared the floor first? Half my sparring partners drill out there. Fine - you get the tired half of my team, and I get an early breather."
-                        }
-                    ],
-                    Name: "Striker - junior of the pit",
-                    Label: "ready_weakened"
                 }
             ]
         },
@@ -373,6 +247,7 @@
             }
         ],
         id: "easy_npc:humanoid",
-        CustomName: '{"text": "Jr. Apprentice Striker", "color": "#FFFFFF"}'
+        CustomName: '{"text": "Jr. Apprentice Striker", "color": "#FFFFFF"}',
+        Tags: ["dc_jr_body"]
     }
 }

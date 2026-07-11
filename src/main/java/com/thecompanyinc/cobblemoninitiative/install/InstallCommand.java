@@ -439,7 +439,21 @@ public class InstallCommand {
             true
           );
 
-        if (MapFrontiersBridge.isAvailable()) {
+        if (MapFrontiersBridge.isAvailable() && MapFrontiersBridge.hasExistingFrontiers()) {
+          // Pre-baked (build_mrpack ships install.json's zones inside the bundled world's
+          // mapfrontiers/frontiers.dat) or created by an earlier run — creating again
+          // would DUPLICATE every zone (Map Frontiers has no dedup). Skipping also makes
+          // manual `install run` re-runs idempotent.
+          ctx
+            .getSource()
+            .sendSuccess(
+              () ->
+                Component.literal(
+                  "[Install] Map Frontiers: frontiers already present (pre-baked) — skipping creation."
+                ),
+              true
+            );
+        } else if (MapFrontiersBridge.isAvailable()) {
           // createNewGlobalFrontier needs a player as creator/owner; the command is
           // player-run in single-player, but fall back to any online player just in case.
           ServerPlayer owner = ctx.getSource().getPlayer();

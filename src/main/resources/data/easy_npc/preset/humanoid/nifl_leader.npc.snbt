@@ -94,19 +94,6 @@
                                 },
                                 {
                                     Type: "COMMAND",
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_defeated_nifl_leader"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tbcs attach rctmod:nifl_leader @s"
-                                },
-                                {
-                                    Type: "COMMAND",
                                     ExecAsUser: 1b,
                                     ConditionDataSet: {
                                         ConditionDataSet: [
@@ -117,7 +104,7 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:nifl_leader onwin {1: ['cobbledollars give @1 5400', 'tag @1 add defeated_nifl_leader', '@2 say Cold sharpens what it does not kill. You came through clear and unbroken. The Glacier Badge is yours, and Ice Beam beside it.'], 2: ['@1 say The frost takes the hurried and the warm. Slow down. Go still. The ice will teach you, if you let it.']}"
+                                    Cmd: "cutscene play leader_intro function cobblemon_initiative:gym/engage_nifl_leader"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -145,6 +132,78 @@
                     ],
                     Name: "Boreas — challenge",
                     Label: "ready"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "defeated_nifl_apprentice"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "nifl_whiteout_clear"
+                        }
+                    ],
+                    Priority: 16,
+                    Buttons: [
+                        {
+                            Name: "Challenge the Gym",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_nifl_leader"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "say Glacier Badge already, good. The ice keeps things, you know. Faces. Names. I have seen yours in here long before you arrived in Nifl. The cold remembers what the warm world chose to forget about you."
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_nifl_leader"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "cutscene play leader_intro function cobblemon_initiative:gym/engage_nifl_leader"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "yes_button"
+                        },
+                        {
+                            Name: "I need to prepare",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "You crossed the whiteout and not one of my sentinels turned. I watched the whole approach from here. Most challengers arrive loud, half frozen, and already read. You arrived like weather."
+                        },
+                        {
+                            Text: "Nifl Town. I am Boreas. Ice-types do not rush, and neither did you. The cold respects patience — so you have my full attention, and nothing else. Stay that quiet in the frost and the Glacier Badge is yours."
+                        }
+                    ],
+                    Name: "Boreas — challenge",
+                    Label: "ready_unseen"
                 },
                 {
                     Priority: 10,
@@ -203,19 +262,6 @@
                                 },
                                 {
                                     Type: "COMMAND",
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_defeated_nifl_leader"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tbcs attach rctmod:nifl_leader_weak @s"
-                                },
-                                {
-                                    Type: "COMMAND",
                                     ExecAsUser: 1b,
                                     ConditionDataSet: {
                                         ConditionDataSet: [
@@ -226,7 +272,7 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:nifl_leader_weak onwin {1: ['cobbledollars give @1 5400', 'tag @1 add defeated_nifl_leader', '@2 say Cold sharpens what it does not kill. You came through clear and unbroken. The Glacier Badge is yours, and Ice Beam beside it.'], 2: ['@1 say The frost takes the hurried and the warm. Slow down. Go still. The ice will teach you, if you let it.']}"
+                                    Cmd: "cutscene play leader_intro function cobblemon_initiative:gym/engage_nifl_leader_weak"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

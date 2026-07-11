@@ -7,6 +7,7 @@ execute if score #amb_cyber_trainer_3 ci_ambient matches 0 if entity @a[x=1303.5
 execute if score #amb_cyber_trainer_4 ci_ambient matches 0 if entity @a[x=1309.5,y=100,z=1192.5,distance=..40] run function cobblemon_initiative:ambient/place/cyber_trainer_4
 execute if score #amb_deepcore_apprentice ci_ambient matches 0 if entity @a[x=994.5,y=129,z=3195.5,distance=..40] run function cobblemon_initiative:ambient/place/deepcore_apprentice
 execute if score #amb_deepcore_jr_apprentice ci_ambient matches 0 if entity @a[x=990.5,y=129,z=3195.5,distance=..40] run function cobblemon_initiative:ambient/place/deepcore_jr_apprentice
+execute if score #amb_deepcore_marshal ci_ambient matches 0 if entity @a[x=996.5,y=129,z=3188.5,distance=..40] run function cobblemon_initiative:ambient/place/deepcore_marshal
 execute if score #amb_deepcore_trainer_1 ci_ambient matches 0 if entity @a[x=989.5,y=129,z=3190.5,distance=..40] run function cobblemon_initiative:ambient/place/deepcore_trainer_1
 execute if score #amb_deepcore_trainer_2 ci_ambient matches 0 if entity @a[x=995.5,y=129,z=3190.5,distance=..40] run function cobblemon_initiative:ambient/place/deepcore_trainer_2
 execute if score #amb_deepcore_trainer_3 ci_ambient matches 0 if entity @a[x=989.5,y=129,z=3194.5,distance=..40] run function cobblemon_initiative:ambient/place/deepcore_trainer_3
@@ -23,6 +24,12 @@ execute if score #amb_hua_zhan_trainer_3 ci_ambient matches 0 if entity @a[x=147
 execute if score #amb_hua_zhan_trainer_4 ci_ambient matches 0 if entity @a[x=1484.5,y=87,z=2160.5,distance=..40] run function cobblemon_initiative:ambient/place/hua_zhan_trainer_4
 execute if score #amb_kalahar_apprentice ci_ambient matches 0 if entity @a[x=1980.5,y=131,z=4089.5,distance=..40] run function cobblemon_initiative:ambient/place/kalahar_apprentice
 execute if score #amb_kalahar_jr_apprentice ci_ambient matches 0 if entity @a[x=1976.5,y=131,z=4095.5,distance=..40] run function cobblemon_initiative:ambient/place/kalahar_jr_apprentice
+execute if score #amb_kalahar_mirage_1 ci_ambient matches 0 if entity @a[x=1998.5,y=136,z=4102.5,distance=..40] run function cobblemon_initiative:ambient/place/kalahar_mirage_1
+execute if score #amb_kalahar_mirage_2 ci_ambient matches 0 if entity @a[x=1976.5,y=136,z=4134.5,distance=..40] run function cobblemon_initiative:ambient/place/kalahar_mirage_2
+execute if score #amb_kalahar_mirage_3 ci_ambient matches 0 if entity @a[x=2022.5,y=127,z=3974.5,distance=..40] run function cobblemon_initiative:ambient/place/kalahar_mirage_3
+execute if score #amb_kalahar_mirage_4 ci_ambient matches 0 if entity @a[x=2149.5,y=138,z=3986.5,distance=..40] run function cobblemon_initiative:ambient/place/kalahar_mirage_4
+execute if score #amb_kalahar_mirage_5 ci_ambient matches 0 if entity @a[x=1984.5,y=136,z=4056.5,distance=..40] run function cobblemon_initiative:ambient/place/kalahar_mirage_5
+execute if score #amb_kalahar_mirage_6 ci_ambient matches 0 if entity @a[x=2076.5,y=121,z=3948.5,distance=..40] run function cobblemon_initiative:ambient/place/kalahar_mirage_6
 execute if score #amb_kalahar_trainer_1 ci_ambient matches 0 if entity @a[x=1974.5,y=131,z=4090.5,distance=..40] run function cobblemon_initiative:ambient/place/kalahar_trainer_1
 execute if score #amb_kalahar_trainer_2 ci_ambient matches 0 if entity @a[x=1982.5,y=131,z=4090.5,distance=..40] run function cobblemon_initiative:ambient/place/kalahar_trainer_2
 execute if score #amb_kalahar_trainer_3 ci_ambient matches 0 if entity @a[x=1974.5,y=131,z=4094.5,distance=..40] run function cobblemon_initiative:ambient/place/kalahar_trainer_3
@@ -35,6 +42,9 @@ execute if score #amb_mystic_trainer_3 ci_ambient matches 0 if entity @a[x=940.5
 execute if score #amb_mystic_trainer_4 ci_ambient matches 0 if entity @a[x=948.5,y=69,z=2448.5,distance=..40] run function cobblemon_initiative:ambient/place/mystic_trainer_4
 execute if score #amb_nifl_apprentice ci_ambient matches 0 if entity @a[x=3631.5,y=119,z=1902.5,distance=..40] run function cobblemon_initiative:ambient/place/nifl_apprentice
 execute if score #amb_nifl_jr_apprentice ci_ambient matches 0 if entity @a[x=3631.5,y=119,z=1898.5,distance=..40] run function cobblemon_initiative:ambient/place/nifl_jr_apprentice
+execute if score #amb_nifl_sentry_1 ci_ambient matches 0 if entity @a[x=3628.5,y=119,z=1912.5,distance=..40] run function cobblemon_initiative:ambient/place/nifl_sentry_1
+execute if score #amb_nifl_sentry_2 ci_ambient matches 0 if entity @a[x=3624.5,y=119,z=1920.5,distance=..40] run function cobblemon_initiative:ambient/place/nifl_sentry_2
+execute if score #amb_nifl_sentry_3 ci_ambient matches 0 if entity @a[x=3632.5,y=119,z=1928.5,distance=..40] run function cobblemon_initiative:ambient/place/nifl_sentry_3
 execute if score #amb_nifl_trainer_1 ci_ambient matches 0 if entity @a[x=3625.5,y=119,z=1898.5,distance=..40] run function cobblemon_initiative:ambient/place/nifl_trainer_1
 execute if score #amb_nifl_trainer_2 ci_ambient matches 0 if entity @a[x=3625.5,y=119,z=1902.5,distance=..40] run function cobblemon_initiative:ambient/place/nifl_trainer_2
 execute if score #amb_nifl_trainer_3 ci_ambient matches 0 if entity @a[x=3628.5,y=119,z=1897.5,distance=..40] run function cobblemon_initiative:ambient/place/nifl_trainer_3

@@ -72,9 +72,136 @@
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
                             Name: "defeated_mystic_apprentice"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "no_mm_declared"
                         }
                     ],
                     Priority: 15,
+                    Buttons: [
+                        {
+                            Name: "My fire leads",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add lead_fire"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add mm_declared"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "fire_button"
+                        },
+                        {
+                            Name: "My water leads",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add lead_water"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add mm_declared"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "water_button"
+                        },
+                        {
+                            Name: "My grass leads",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add lead_grass"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add mm_declared"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "grass_button"
+                        },
+                        {
+                            Name: "My electric leads",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add lead_electric"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add mm_declared"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "electric_button"
+                        },
+                        {
+                            Name: "None of those lead",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add lead_shadow"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add mm_declared"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "other_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Welcome to Mystic Marsh. I am Leader Titania. Fairy-types are gentle until the moment they are not — and this marsh likes to study a challenger before it tests one. So tell me plainly: who walks at the front of your party?"
+                        },
+                        {
+                            Text: "The water here goes still as glass before every gym battle, and it asks the same question of everyone who leans over it. Which partner leads your line, challenger? Say it, and let the marsh listen."
+                        }
+                    ],
+                    Name: "Titania — the marsh asks",
+                    Label: "declare"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "defeated_mystic_apprentice"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "lead_fire"
+                        }
+                    ],
+                    Priority: 16,
                     Buttons: [
                         {
                             Name: "Challenge the Gym",
@@ -94,19 +221,6 @@
                                 },
                                 {
                                     Type: "COMMAND",
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_defeated_mystic_leader"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tbcs attach rctmod:mystic_leader @s"
-                                },
-                                {
-                                    Type: "COMMAND",
                                     ExecAsUser: 1b,
                                     ConditionDataSet: {
                                         ConditionDataSet: [
@@ -117,7 +231,7 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:mystic_leader onwin {1: ['cobbledollars give @1 2400', 'tag @1 add defeated_mystic_leader', '@2 say The marsh saw something true in you. So did I. Carry the Charm Badge — and the machine in your bag holds Moonblast. Let it speak for you when charm will not.'], 2: ['@1 say Charm is not enough here. Neither is force. Find the balance and the marsh will let you pass.']}"
+                                    Cmd: "cutscene play leader_intro function cobblemon_initiative:gym/engage_mystic_leader_mirror_fire"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -137,14 +251,302 @@
                     ],
                     Texts: [
                         {
-                            Text: "Welcome to Mystic Marsh. I am Leader Titania. Fairy-types are gentle until the moment they are not. Underestimate that and the marsh swallows you whole."
+                            Text: "You lead with fire, so the marsh went looking for fire in me. Look at what surfaced beside my familiars — still water always sends back something of whoever leans over it. Come and fight what it made of you."
                         },
                         {
-                            Text: "Charm me, and then beat me. Both, or neither. That is how you earn the Charm Badge."
+                            Text: "A flame at your front. The mist has been drinking its light since you declared it, and now something at my side flickers the same way. The marsh shows every challenger a piece of themselves. This piece is yours."
                         }
                     ],
-                    Name: "Titania — challenge",
-                    Label: "ready"
+                    Name: "Titania — mirror challenge",
+                    Label: "mirror_fire"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "defeated_mystic_apprentice"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "lead_water"
+                        }
+                    ],
+                    Priority: 16,
+                    Buttons: [
+                        {
+                            Name: "Challenge the Gym",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_mystic_leader"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "say You carry the Charm Badge. The marsh whispers your name when you walk it, you know. It has done that since before you arrived."
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_mystic_leader"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "cutscene play leader_intro function cobblemon_initiative:gym/engage_mystic_leader_mirror_water"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "yes_button"
+                        },
+                        {
+                            Name: "I need to prepare",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "You lead with water. Bold, to bring a current into a marsh — it has already been folded into mine. When my team meets yours, you will be fighting a little of your own reflection."
+                        },
+                        {
+                            Text: "Water answers water here. The marsh borrowed the shape of your lead and handed it back to me. Do not blink when you recognize it across the field."
+                        }
+                    ],
+                    Name: "Titania — mirror challenge",
+                    Label: "mirror_water"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "defeated_mystic_apprentice"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "lead_grass"
+                        }
+                    ],
+                    Priority: 16,
+                    Buttons: [
+                        {
+                            Name: "Challenge the Gym",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_mystic_leader"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "say You carry the Charm Badge. The marsh whispers your name when you walk it, you know. It has done that since before you arrived."
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_mystic_leader"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "cutscene play leader_intro function cobblemon_initiative:gym/engage_mystic_leader_mirror_grass"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "yes_button"
+                        },
+                        {
+                            Name: "I need to prepare",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "You lead with grass. The reeds heard you say it, and something green and glowing rose out of the shallows to stand with me. The marsh shows every challenger a piece of themselves — this one is yours."
+                        },
+                        {
+                            Text: "Roots speak to roots. Your lead has been whispering to the marsh since you crossed the first bridge, and the marsh grew an answer into my line. See if you recognize it."
+                        }
+                    ],
+                    Name: "Titania — mirror challenge",
+                    Label: "mirror_grass"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "defeated_mystic_apprentice"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "lead_electric"
+                        }
+                    ],
+                    Priority: 16,
+                    Buttons: [
+                        {
+                            Name: "Challenge the Gym",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_mystic_leader"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "say You carry the Charm Badge. The marsh whispers your name when you walk it, you know. It has done that since before you arrived."
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_mystic_leader"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "cutscene play leader_intro function cobblemon_initiative:gym/engage_mystic_leader_mirror_electric"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "yes_button"
+                        },
+                        {
+                            Name: "I need to prepare",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "You lead with lightning. Storm light does strange things on still water — it doubles. What sparks at my side now learned that flicker from watching you cross the marsh."
+                        },
+                        {
+                            Text: "An electric lead. The water caught its glow and kept a copy for me. When it stands against you, remember whose light it borrowed first."
+                        }
+                    ],
+                    Name: "Titania — mirror challenge",
+                    Label: "mirror_electric"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "defeated_mystic_apprentice"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "lead_shadow"
+                        }
+                    ],
+                    Priority: 16,
+                    Buttons: [
+                        {
+                            Name: "Challenge the Gym",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_mystic_leader"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "say You carry the Charm Badge. The marsh whispers your name when you walk it, you know. It has done that since before you arrived."
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_mystic_leader"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "cutscene play leader_intro function cobblemon_initiative:gym/engage_mystic_leader_mirror_shadow"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "yes_button"
+                        },
+                        {
+                            Name: "I need to prepare",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "You would not name your lead, so the marsh named one for you. Something small stitched itself a costume from what it saw in the water — a challenger, walking toward me. It fights at my side now."
+                        },
+                        {
+                            Text: "Keep your secrets. The marsh keeps better ones. The little shadow that joined my team this morning wears a shape it copied off the still water — and the water was looking at you."
+                        }
+                    ],
+                    Name: "Titania — mirror challenge",
+                    Label: "mirror_shadow"
                 },
                 {
                     Priority: 10,
@@ -203,19 +605,6 @@
                                 },
                                 {
                                     Type: "COMMAND",
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_defeated_mystic_leader"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tbcs attach rctmod:mystic_leader_weak @s"
-                                },
-                                {
-                                    Type: "COMMAND",
                                     ExecAsUser: 1b,
                                     ConditionDataSet: {
                                         ConditionDataSet: [
@@ -226,7 +615,7 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:mystic_leader_weak onwin {1: ['cobbledollars give @1 2400', 'tag @1 add defeated_mystic_leader', '@2 say The marsh saw something true in you. So did I. Carry the Charm Badge — and the machine in your bag holds Moonblast. Let it speak for you when charm will not.'], 2: ['@1 say Charm is not enough here. Neither is force. Find the balance and the marsh will let you pass.']}"
+                                    Cmd: "cutscene play leader_intro function cobblemon_initiative:gym/engage_mystic_leader_weak"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

@@ -94,19 +94,6 @@
                                 },
                                 {
                                     Type: "COMMAND",
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_defeated_gaviota_leader"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tbcs attach rctmod:gaviota_leader @s"
-                                },
-                                {
-                                    Type: "COMMAND",
                                     ExecAsUser: 1b,
                                     ConditionDataSet: {
                                         ConditionDataSet: [
@@ -117,7 +104,7 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:gaviota_leader onwin {1: ['cobbledollars give @1 3200', 'tag @1 add defeated_gaviota_leader', '@2 say The tide turned and you turned with it. The Current Badge is yours, and Surf with it. The sea does not give either out lightly.'], 2: ['@1 say You fought the current head on. Nobody wins that way. Learn to ride it and the water will carry you back to me.']}"
+                                    Cmd: "cutscene play leader_intro function cobblemon_initiative:gym/engage_gaviota_leader"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -203,19 +190,6 @@
                                 },
                                 {
                                     Type: "COMMAND",
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_defeated_gaviota_leader"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tbcs attach rctmod:gaviota_leader_weak @s"
-                                },
-                                {
-                                    Type: "COMMAND",
                                     ExecAsUser: 1b,
                                     ConditionDataSet: {
                                         ConditionDataSet: [
@@ -226,7 +200,7 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:gaviota_leader_weak onwin {1: ['cobbledollars give @1 3200', 'tag @1 add defeated_gaviota_leader', '@2 say The tide turned and you turned with it. The Current Badge is yours, and Surf with it. The sea does not give either out lightly.'], 2: ['@1 say You fought the current head on. Nobody wins that way. Learn to ride it and the water will carry you back to me.']}"
+                                    Cmd: "cutscene play leader_intro function cobblemon_initiative:gym/engage_gaviota_leader_weak"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

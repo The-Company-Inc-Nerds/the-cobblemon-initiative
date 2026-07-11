@@ -64,6 +64,93 @@
                     Label: "beaten"
                 },
                 {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "tide_high"
+                        }
+                    ],
+                    Priority: 12,
+                    Buttons: [
+                        {
+                            Name: "Battle Surfer Paz",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_gaviota_trainer_4"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "say You already caught your wave here. Go to Tide."
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_gaviota_trainer_4"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:gaviota_trainer_4_hightide @s"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_gaviota_trainer_4"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:gaviota_trainer_4_hightide onwin {1: ['tag @1 add defeated_gaviota_trainer_4', '@2 say Clean ride, all the way to the sand. The pier is all yours now.'], 2: ['@1 say Wiped out. Paddle back out when you are ready.']}"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_gaviota_trainer_4"
+                                }
+                            ],
+                            Label: "battle_button"
+                        },
+                        {
+                            Name: "Not yet",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Now THIS is a swell. High tide stacks the waves all the way down the pier."
+                        },
+                        {
+                            Text: "The water is with me. Drop in now and you are fighting the whole ocean, not just me."
+                        }
+                    ],
+                    Name: "Paz - the tide is in",
+                    Label: "high_tide"
+                },
+                {
                     Priority: 10,
                     Buttons: [
                         {
@@ -134,7 +221,7 @@
                     ],
                     Texts: [
                         {
-                            Text: "I read swells the way some read faces. Yours says you are hungry for a wave. Want to catch one with me?"
+                            Text: "The tide has gone out and the swell is napping. I still read faces the way I read water. Yours says you are hungry for a wave anyway. Want to catch one with me?"
                         },
                         {
                             Text: "Last of the crew. Beat me and the apprentice will see you. Ready?"

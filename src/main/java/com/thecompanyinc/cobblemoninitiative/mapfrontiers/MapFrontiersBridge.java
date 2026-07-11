@@ -36,4 +36,15 @@ public final class MapFrontiersBridge {
     if (!isAvailable() || zones == null || zones.isEmpty()) return 0;
     return MapFrontiersIntegration.createGlobalFrontiers(zones, owner);
   }
+
+  /**
+   * True when global frontiers already exist in this world — pre-baked into the bundled
+   * map by build_mrpack, or created by an earlier install run. Install run checks this
+   * BEFORE creating, so baked worlds and manual re-runs never stack duplicate zones.
+   * False when Map Frontiers is absent or the check cannot resolve (fail-open: creation
+   * would fail identically, so nothing double-creates).
+   */
+  public static boolean hasExistingFrontiers() {
+    return isAvailable() && MapFrontiersIntegration.hasAnyGlobalFrontiers();
+  }
 }

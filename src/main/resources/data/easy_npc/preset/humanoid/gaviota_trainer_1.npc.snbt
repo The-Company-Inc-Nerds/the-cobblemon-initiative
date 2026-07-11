@@ -64,6 +64,93 @@
                     Label: "beaten"
                 },
                 {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "tide_high"
+                        }
+                    ],
+                    Priority: 12,
+                    Buttons: [
+                        {
+                            Name: "Battle Sailor Marco",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_gaviota_trainer_1"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "say You cleared my stretch of dock already. The crew waits down the pier."
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_gaviota_trainer_1"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:gaviota_trainer_1_hightide @s"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_gaviota_trainer_1"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:gaviota_trainer_1_hightide onwin {1: ['tag @1 add defeated_gaviota_trainer_1', '@2 say Fair winds to you. The wharf is yours to cross.'], 2: ['@1 say The sea is patient. Come back when your legs are steadier.']}"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_gaviota_trainer_1"
+                                }
+                            ],
+                            Label: "battle_button"
+                        },
+                        {
+                            Name: "Not yet",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "You hear that bell? High water. The whole sea leans on my side of the dock right now."
+                        },
+                        {
+                            Text: "The water is with me at high tide. Step up if you think you can fight the weather too."
+                        }
+                    ],
+                    Name: "Marco - the tide is in",
+                    Label: "high_tide"
+                },
+                {
                     Priority: 10,
                     Buttons: [
                         {
@@ -134,7 +221,7 @@
                     ],
                     Texts: [
                         {
-                            Text: "A new face on my wharf. The tide brings all sorts. Care to prove you do not sink?"
+                            Text: "A new face on my wharf, and the tide has gone out. Flat water, fair fight. Care to prove you do not sink?"
                         },
                         {
                             Text: "First hand on the dock. Beat me and the pier opens up. Ready?"

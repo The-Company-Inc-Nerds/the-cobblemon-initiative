@@ -64,6 +64,93 @@
                     Label: "beaten"
                 },
                 {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "tide_high"
+                        }
+                    ],
+                    Priority: 12,
+                    Buttons: [
+                        {
+                            Name: "Battle Fisherman Ivan",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_gaviota_trainer_3"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "say You got off my hook already. Go on to Tide."
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_gaviota_trainer_3"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:gaviota_trainer_3_hightide @s"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_gaviota_trainer_3"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:gaviota_trainer_3_hightide onwin {1: ['tag @1 add defeated_gaviota_trainer_3', '@2 say You slipped my line clean. Go on to Tide.'], 2: ['@1 say Reeled you right in. Toughen up and cast off again.']}"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_gaviota_trainer_3"
+                                }
+                            ],
+                            Label: "battle_button"
+                        },
+                        {
+                            Name: "Not yet",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Bell says high water. Everything with fins wakes up hungry when the tide comes in."
+                        },
+                        {
+                            Text: "The water is with me and the catch is biting. Care to be next on my line?"
+                        }
+                    ],
+                    Name: "Ivan - the tide is in",
+                    Label: "high_tide"
+                },
+                {
                     Priority: 10,
                     Buttons: [
                         {
@@ -134,7 +221,7 @@
                     ],
                     Texts: [
                         {
-                            Text: "I have hauled bigger things than you out of this harbor. Sit a spell and see if you fight better than a marlin."
+                            Text: "The tide has gone out and left the flats bare. I have hauled bigger things than you out of this harbor. Sit a spell and see if you fight better than a marlin."
                         },
                         {
                             Text: "Third of the crew. Beat me and you are almost to the apprentice. Ready?"

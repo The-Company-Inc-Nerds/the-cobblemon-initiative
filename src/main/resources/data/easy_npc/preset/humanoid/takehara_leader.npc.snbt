@@ -94,19 +94,6 @@
                                 },
                                 {
                                     Type: "COMMAND",
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_defeated_takehara_leader"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tbcs attach rctmod:takehara_leader @s"
-                                },
-                                {
-                                    Type: "COMMAND",
                                     ExecAsUser: 1b,
                                     ConditionDataSet: {
                                         ConditionDataSet: [
@@ -117,7 +104,7 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:takehara_leader onwin {1: ['cobbledollars give @1 1200', 'tag @1 add defeated_takehara_leader', '@2 say Patience wins. The machine in your bag holds U-turn — strike once, then be gone. Carry both to the next gym.'], 2: ['@1 say The woods will still be here. So will I. Come back ready.']}"
+                                    Cmd: "cutscene play leader_intro function cobblemon_initiative:gym/engage_takehara_leader"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -203,19 +190,6 @@
                                 },
                                 {
                                     Type: "COMMAND",
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_defeated_takehara_leader"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tbcs attach rctmod:takehara_leader_weak @s"
-                                },
-                                {
-                                    Type: "COMMAND",
                                     ExecAsUser: 1b,
                                     ConditionDataSet: {
                                         ConditionDataSet: [
@@ -226,7 +200,7 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:takehara_leader_weak onwin {1: ['cobbledollars give @1 1200', 'tag @1 add defeated_takehara_leader', '@2 say Patience wins. The machine in your bag holds U-turn — strike once, then be gone. Carry both to the next gym.'], 2: ['@1 say The woods will still be here. So will I. Come back ready.']}"
+                                    Cmd: "cutscene play leader_intro function cobblemon_initiative:gym/engage_takehara_leader_weak"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -304,7 +278,7 @@
             CanUseNetherPortal: 0b,
             IsInvulnerable: 1b,
             HealthRegeneration: 0.0d,
-            NoGravity: 0b,
+            NoGravity: 1b,
             CanPassDoor: 0b,
             PushEntities: 0b,
             CanFloat: 0b,
@@ -428,6 +402,7 @@
             }
         ],
         id: "easy_npc:humanoid",
-        CustomName: '{"text": "Leader Cicada", "color": "#FFFF00"}'
+        CustomName: '{"text": "Leader Cicada", "color": "#FFFF00"}',
+        NoGravity: 1b
     }
 }

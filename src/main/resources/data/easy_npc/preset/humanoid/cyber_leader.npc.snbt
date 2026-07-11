@@ -94,19 +94,6 @@
                                 },
                                 {
                                     Type: "COMMAND",
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_defeated_cyber_leader"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tbcs attach rctmod:cyber_leader @s"
-                                },
-                                {
-                                    Type: "COMMAND",
                                     ExecAsUser: 1b,
                                     ConditionDataSet: {
                                         ConditionDataSet: [
@@ -117,7 +104,7 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:cyber_leader onwin {1: ['cobbledollars give @1 4300', 'tag @1 add defeated_cyber_leader', '@2 say Fast hands, faster head. You read the surge before it landed. Carry the Circuit Badge — and the machine in your bag holds Thunderbolt. Let it answer when charm will not.'], 2: ['@1 say Too slow on the draw. Electricity does not wait and neither do I. Sharpen up and reconnect with me.']}"
+                                    Cmd: "cutscene play leader_intro function cobblemon_initiative:gym/engage_cyber_leader"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -165,6 +152,12 @@
                         },
                         {
                             Text: "Patience. The grid does not skip a rung, and neither will I. Come back when the mains are behind you."
+                        },
+                        {
+                            Text: "One day this city hosts something bigger than a gym — a Stadium, lights hot enough to read by from orbit. The only challengers I will ever truly respect are the ones who prove themselves under those lights."
+                        },
+                        {
+                            Text: "It is not built yet, so the old ladder stands — trainers, then Voltz, then Surge, then me. Do not keep the future waiting."
                         }
                     ],
                     Name: "Volt — not yet",
@@ -203,19 +196,6 @@
                                 },
                                 {
                                     Type: "COMMAND",
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_defeated_cyber_leader"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tbcs attach rctmod:cyber_leader_weak @s"
-                                },
-                                {
-                                    Type: "COMMAND",
                                     ExecAsUser: 1b,
                                     ConditionDataSet: {
                                         ConditionDataSet: [
@@ -226,7 +206,7 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:cyber_leader_weak onwin {1: ['cobbledollars give @1 4300', 'tag @1 add defeated_cyber_leader', '@2 say Fast hands, faster head. You read the surge before it landed. Carry the Circuit Badge — and the machine in your bag holds Thunderbolt. Let it answer when charm will not.'], 2: ['@1 say Too slow on the draw. Electricity does not wait and neither do I. Sharpen up and reconnect with me.']}"
+                                    Cmd: "cutscene play leader_intro function cobblemon_initiative:gym/engage_cyber_leader_weak"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

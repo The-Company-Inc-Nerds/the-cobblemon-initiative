@@ -8,6 +8,7 @@ execute unless score #amb_cyber_trainer_3 ci_ambient matches 0.. run scoreboard 
 execute unless score #amb_cyber_trainer_4 ci_ambient matches 0.. run scoreboard players set #amb_cyber_trainer_4 ci_ambient 0
 execute unless score #amb_deepcore_apprentice ci_ambient matches 0.. run scoreboard players set #amb_deepcore_apprentice ci_ambient 0
 execute unless score #amb_deepcore_jr_apprentice ci_ambient matches 0.. run scoreboard players set #amb_deepcore_jr_apprentice ci_ambient 0
+execute unless score #amb_deepcore_marshal ci_ambient matches 0.. run scoreboard players set #amb_deepcore_marshal ci_ambient 0
 execute unless score #amb_deepcore_trainer_1 ci_ambient matches 0.. run scoreboard players set #amb_deepcore_trainer_1 ci_ambient 0
 execute unless score #amb_deepcore_trainer_2 ci_ambient matches 0.. run scoreboard players set #amb_deepcore_trainer_2 ci_ambient 0
 execute unless score #amb_deepcore_trainer_3 ci_ambient matches 0.. run scoreboard players set #amb_deepcore_trainer_3 ci_ambient 0
@@ -24,6 +25,12 @@ execute unless score #amb_hua_zhan_trainer_3 ci_ambient matches 0.. run scoreboa
 execute unless score #amb_hua_zhan_trainer_4 ci_ambient matches 0.. run scoreboard players set #amb_hua_zhan_trainer_4 ci_ambient 0
 execute unless score #amb_kalahar_apprentice ci_ambient matches 0.. run scoreboard players set #amb_kalahar_apprentice ci_ambient 0
 execute unless score #amb_kalahar_jr_apprentice ci_ambient matches 0.. run scoreboard players set #amb_kalahar_jr_apprentice ci_ambient 0
+execute unless score #amb_kalahar_mirage_1 ci_ambient matches 0.. run scoreboard players set #amb_kalahar_mirage_1 ci_ambient 0
+execute unless score #amb_kalahar_mirage_2 ci_ambient matches 0.. run scoreboard players set #amb_kalahar_mirage_2 ci_ambient 0
+execute unless score #amb_kalahar_mirage_3 ci_ambient matches 0.. run scoreboard players set #amb_kalahar_mirage_3 ci_ambient 0
+execute unless score #amb_kalahar_mirage_4 ci_ambient matches 0.. run scoreboard players set #amb_kalahar_mirage_4 ci_ambient 0
+execute unless score #amb_kalahar_mirage_5 ci_ambient matches 0.. run scoreboard players set #amb_kalahar_mirage_5 ci_ambient 0
+execute unless score #amb_kalahar_mirage_6 ci_ambient matches 0.. run scoreboard players set #amb_kalahar_mirage_6 ci_ambient 0
 execute unless score #amb_kalahar_trainer_1 ci_ambient matches 0.. run scoreboard players set #amb_kalahar_trainer_1 ci_ambient 0
 execute unless score #amb_kalahar_trainer_2 ci_ambient matches 0.. run scoreboard players set #amb_kalahar_trainer_2 ci_ambient 0
 execute unless score #amb_kalahar_trainer_3 ci_ambient matches 0.. run scoreboard players set #amb_kalahar_trainer_3 ci_ambient 0
@@ -36,6 +43,9 @@ execute unless score #amb_mystic_trainer_3 ci_ambient matches 0.. run scoreboard
 execute unless score #amb_mystic_trainer_4 ci_ambient matches 0.. run scoreboard players set #amb_mystic_trainer_4 ci_ambient 0
 execute unless score #amb_nifl_apprentice ci_ambient matches 0.. run scoreboard players set #amb_nifl_apprentice ci_ambient 0
 execute unless score #amb_nifl_jr_apprentice ci_ambient matches 0.. run scoreboard players set #amb_nifl_jr_apprentice ci_ambient 0
+execute unless score #amb_nifl_sentry_1 ci_ambient matches 0.. run scoreboard players set #amb_nifl_sentry_1 ci_ambient 0
+execute unless score #amb_nifl_sentry_2 ci_ambient matches 0.. run scoreboard players set #amb_nifl_sentry_2 ci_ambient 0
+execute unless score #amb_nifl_sentry_3 ci_ambient matches 0.. run scoreboard players set #amb_nifl_sentry_3 ci_ambient 0
 execute unless score #amb_nifl_trainer_1 ci_ambient matches 0.. run scoreboard players set #amb_nifl_trainer_1 ci_ambient 0
 execute unless score #amb_nifl_trainer_2 ci_ambient matches 0.. run scoreboard players set #amb_nifl_trainer_2 ci_ambient 0
 execute unless score #amb_nifl_trainer_3 ci_ambient matches 0.. run scoreboard players set #amb_nifl_trainer_3 ci_ambient 0

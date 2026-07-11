@@ -1135,7 +1135,7 @@ Cited: `EntityAttributes`, `CombatAttributes`, `EnvironmentalAttributes`, `Inter
 
 **Category enum** `EntityAttributeType`: `COMBAT`, `CUSTOM`, `INTERACTION`, `MOVEMENT`, `ENVIRONMENTAL`. Only COMBAT/ENVIRONMENTAL/INTERACTION/MOVEMENT are wired into `EntityAttributes` — **`CUSTOM` is declared but never serialized** into `EntityAttribute`.
 
-**Key derivation:** every tag key is `TextUtils.convertToCamelCase(ENUM_NAME)` (split on `_`/`-`/space, first letter lower, each following segment capitalised). All four categories write their keys **flat into the single `EntityAttribute` compound** (no per-category sub-compound). On `load()`, if `EntityAttribute` is absent **or empty**, the whole structure is skipped and constructor defaults are kept.
+**Key derivation:** every tag key is `TextUtils.convertToPascalCase(ENUM_NAME)` — **PascalCase, first letter UPPER** (`NoGravity`, `CanFloat`, `IsInvulnerable`; verified in the 6.25.0 bytecode `getTagName()` and in every shipped preset — the earlier camelCase claim here was wrong). All four categories write their keys **flat into the single `EntityAttribute` compound** (no per-category sub-compound). On `load()`, if `EntityAttribute` is absent **or empty**, the whole structure is skipped and constructor defaults are kept. **Caveat (verified 2026-07-10):** on the preset-import path `EntityAttribute.NoGravity` only updates Easy NPC's synced attribute record — the flag that actually floats the body is the vanilla ROOT `NoGravity`, applied by `Entity.load` at the end of `importPresetData`. Bake both (the compiler's `float: true` character field does).
 
 #### 1a. Combat (`CombatAttributeType` / `CombatAttributes`)
 

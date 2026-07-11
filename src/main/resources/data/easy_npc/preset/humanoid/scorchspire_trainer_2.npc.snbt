@@ -71,6 +71,11 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add scorchspire_forging"
+                                },
+                                {
+                                    Type: "COMMAND",
                                     ConditionDataSet: {
                                         ConditionDataSet: [
                                             {
@@ -107,7 +112,7 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:scorchspire_trainer_2 onwin {1: ['tag @1 add defeated_scorchspire_trainer_2', '@2 say You held your breath and your ground. The stair is yours.'], 2: ['@1 say The smoke took you. Steady your lungs and return.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:scorchspire_trainer_2 onwin {1: ['tag @1 add defeated_scorchspire_trainer_2', '@2 say You held your breath and your ground. The stair is yours.', 'scoreboard players remove @1 scorchspire_heat 30', 'tag @1 remove scorchspire_forging'], 2: ['@1 say The smoke took you. Steady your lungs and return.', 'tag @2 remove scorchspire_forging']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

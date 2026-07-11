@@ -22,39 +22,75 @@ Per-gym signature mechanics (feasibility all verified against the real engine �
 design workflows). Guardrails: never gate a badge behind a death-prone bonus; soft/telegraphed
 ramps; opt-in forced movement/camera.
 
-- [ ] 💻 **Cutscene rig — reusable `cutscene/` subsystem — BUILT, needs build+runtime verify.**
-      `CutsceneManager` (mirrors the noble director) + data-driven JSON scenes
-      (`data/cobblemon_initiative/cutscenes/<id>.json`: keyframes/cues/ambient/double, `relative`
-      offset mode), `/cutscene play <id>|stop|list` + `/cutscene-skip`, entrypoint registered in
-      fabric.mod.json. Drops the player to SPECTATOR, flies an invisible armor-stand camera rig,
-      restores exact transform+gamemode on completion/skip/logout/stop. Hardcore-safe (verified).
-      🔍 Could NOT `gradle build` in the dev sandbox (no nix/network) — **compile + test
-      `/cutscene play demo` before shipping.** Watch the ServerPlayer camera APIs
-      (setGameMode/gameMode.getGameModeForPlayer/setCamera), `ServerPlayConnectionEvents.DISCONNECT`,
-      and the per-tick player-body-follow line (behavior, not compile).
-- [ ] 🧱💻 **Dragon (Ryujin) — rift + overworld Ender Dragon** (decided: open arena above/outside
-      the keep, tuned+retryable). Verified: mobGriefing=false already stops all block damage; crystals
-      heal it (kill-crystals loop); no portal/egg on overworld death; needs Java `setFightOrigin`
-      (build as a "vanilla_kill" noble encounter type + ModMenu tuning + retry/abort). Gate leader on
-      `dragon_slain`. NEEDS coords: arena center + box, crystal pillar spots, rift anchor. The rift
-      intro can be a cutscene.
-- [ ] 🧱💻 **Bug (Cicada) — floating leader.** Verified: Easy NPC humanoids support NoGravity; flip
-      `NoGravity:1b` in takehara_leader.npc.snbt + a one-shot `easy_npc navigation set pos` to raise
-      his baked Y at setup (keep float ≤~2.5 above floor for right-click reach, or add ON_DISTANCE
-      dialog-open). NEEDS coords: his floor X/Y/Z + float height.
-- [ ] 🧱💻 **Grass (Hua Zhan) — vine walls fall per warden.** Each `defeated_hua_zhan_trainer_N` fires
-      a latched `fill … air` wall-drop + leaf burst; 4th wall opens the stair to the Aya→Blossom
-      transform (reuses the existing 4-warden gate). NEEDS coords: 4 vine-wall boxes + block type.
-- [ ] 💻 **Fighting (Deepcore) gauntlet** — start command + choose-order + 2v1 finale (`GEN_9_MULTI`,
-      native; ~10-line emitter branch in content_compile). Cheapest confirmed win.
-- [ ] 💻 **Ground (Kalahar) mirages** — decoy trainers (placement latches) that poof on click
-      (tag+tick-kill), one real (RNG). Datapack-only.
-- [ ] 💻 **Stadium** (gates Cyber leader `stadium_challenged`≥5) — wave loop + tiered loot (datapack)
-      + ~45 lines Java: a `stadium_active` flag guarding NuzlockeInit's faint/whiteout (safe zones do
-      NOT stop death — see the memory) + a player-chosen level lock (setAdjustLevel/party snapshot).
-- [ ] 💻 **Ambient-state gimmicks** (approved, datapack): Fairy Titania **Mirror Match** (charms a copy
-      of your lead — foreshadows the Founder), Water **Tide Clock**, Ice **Whiteout Approach**, Fire
-      **Banked Coals**. Each mostly reuses band-tags + team variants; watch the doubled team-file cost.
+- [x] 💻 **Cutscene rig — reusable `cutscene/` subsystem (alpha.9, runtime-verified: demo plays).**
+      Data-driven JSON scenes (`cutscenes/<id>.json`), `/cutscene play|stop|list` + `/cutscene-skip`.
+      Body-double now renders the PLAYER's skin (alpha.10): player_double.npc.snbt preset +
+      a deferred /data SkinData patch keyed on the player UUID (found by tag one tick after
+      import_new; ~40-tick give-up → Steve). 🔍 verify the double appears + skin pop-in is brief.
+- [x] 💻 **Cutscene authoring + story scenes (alpha.11):** scenes load from
+      `config/cobblemon-initiative/cutscenes/` first (edit + `/cutscene reload` = no rebuild);
+      `/cutscene record add|undo|clear|status|save <id>` captures a flown camera path as a
+      playable scene. FOUR scenes shipped: `opening` (first-join Sango flyover via AutoInstall),
+      `rift_intro` (Ryujin dragon reveal, summon-first so skips are safe), `blossom_reveal` +
+      `victini_reveal` (wired into the transform functions). 🔍 verify each + record round-trip.
+      REMAINING scene wishlist (record in-game with the new tool): HQ raid entry / Acting CEO DJ,
+      Board of Directors clearout, THE FOUNDER MIRROR REVEAL (use doublePreset — the player-skin
+      double IS the Founder), Royal League entrance, noble arrivals, badge-milestone stingers.
+- [x] 💻 **Leader challenge intros (alpha.11):** every gym leader's Challenge button now plays the
+      shared facing-relative `leader_intro` scene and STAGES THE CHALLENGER BACK 7 blocks before
+      the battle opens (battle.intro_scene → compiler-emitted gym/engage_<trainer> functions, 23
+      targets incl. weakened + mirror variants; skip still engages). 🔍 verify at one leader:
+      scene plays at any approach angle, stage-back lands on arena floor (flat-arena assumption —
+      no ground probe), battle opens from the staged spot, weakened/mirror variants route right.
+- [x] 💻 **Map Frontiers no-relog (alpha.10):** build_mrpack + dev_sync bake install.json's 58
+      zones into the bundled world's mapfrontiers/frontiers.dat (validated field-identical to a
+      live bridge file); install run skips creation when frontiers exist (reflective count) so
+      nothing duplicates. 🔍 fresh pack: zones visible on very first join, install chat says
+      "already present (pre-baked)".
+- [x] 💻 **Bug (Cicada) floating leader (alpha.10):** `float: true` compiler field (root
+      NoGravity + EntityAttribute, post-world-merge), gym/cicada_lift (import-then-tp to y173
+      perch) + gym/cicada_float tick (glide to y139 hover when a challenger is within 14 of the
+      floor, rise when empty). 🔍 verify: lifts on chunk load, descends to click range, battle
+      opens, rises after.
+- [x] 💻 **GEN_9_MULTI 2v1 emitter (alpha.10):** battle.trainer_2/partner/defeat_tag_2/
+      trainer_2_body_tag → `tbcs battle GEN_9_MULTI @s rctmod:<partner> vs rctmod:<a> rctmod:<b>`
+      (exactly 2 per side — the player gets an AI partner), both defeat tags in onwin, multi
+      token-shift handled, guards + schema + smoke tests. ⚠ runtime-verify winners token order
+      (@1=player on win) before shipping the finale.
+- [x] 💻 **ALL PER-GYM GIMMICKS BUILT (alpha.11)** — every gym now has its signature mechanic:
+      Bug=floating Cicada (perch y173→y139 glide); Grass=vine walls drop per warden (leaf-filtered
+      fills, hz_wall_1..4 + hz_walls_check); Fairy=Mirror Match (declare your lead → 5 illusion
+      variant teams, weakened fight stays canonical); Fighting=Gauntlet (Marshal Osei + 2v1
+      GEN_9_MULTI finale: Ken+Striker vs player+Sparring Second Rocky); Ground=6 click-to-poof
+      mirages (ci_mirage, ambient/tick sweep); Water=Tide Clock (4-min high/low, 4 rain-variant
+      teams); Electric=Stadium tease only (battle NOT gated until the Stadium ships); Ice=Whiteout
+      Approach (3 PASSIVE-sight Frost Sentinels, seen=debuff, unseen=Boreas respect line);
+      Dragon=THE RIFT (overworld Ender Dragon via noble/RiftDragonManager — /riftdragon,
+      crystal-heal loop, dragon_slain gates the leader); Fire=Banked Coals (heat bossbar, wardens
+      vent -30, heat≥60 forces full Vulcan). Compile: 229 chars → 233 presets, 0 errors.
+- [ ] 🧱 **Gimmick coordinate pass (showrunner)** — grab THE WAND: `/cobblemon-initiative
+      gym-mark wand` (alpha.11). Its item name always shows what you are marking; right-click a
+      block once to preview, the SAME block again to confirm; it renames itself to the next of
+      the 33 slots automatically (incl. the 10 stage_<gym> LEADER STAGE SPOTS — stand where the
+      challenger should open the battle, facing the leader; lands in battle.stage_pos and
+      overrides the generic 7-back stage). Boxes (vine walls / whiteout corridor / heat box) take two
+      confirmed corners; right-click AIR to mark your own feet (fly up for the rift origin +
+      crystal spots); sneak+click skips/cycles. `gym-mark list` shows progress; when done run
+      `gym-mark export` and hand back {world}/data/gym_marks.json (or the log block) — Claude
+      integrates the coords into the placeholders (gym/hz_wall_1..4, rift_dragon.json,
+      nifl_whiteout, gaviota_tide, scorchspire_heat, the marshal/mirage/sentinel placements)
+      and recompiles. Also report the vine-wall BLOCK IDS if the walls are not vine/leaves.
+      (Typed fallback: `set <slot>` / `start <slot>` + `stop <slot>` still work.)
+- [ ] 🔍 **Gimmick runtime-verify list**: MULTI finale (confirm @1=player on win before trusting
+      prize/tags), rift dragon (spawn, circles fightOrigin not 0,0, crystals heal, teardown on
+      logout, dragon_slain grant), Cicada lift+descend+battle, tide flip + rain teams, whiteout
+      sight triggers, heat gauge + banked full-Vulcan gate, mirror declare→variant, wall drops,
+      face-the-NPC camera snap (Mom walk-up, a DIALOG greeter, a pursue spotter run-down —
+      confirm the snap feels right and does not fight the camera; alpha.11).
+- [ ] 💻 **Stadium** (future building; will gate Cyber leader `stadium_challenged`≥5 once real) —
+      wave loop + tiered loot (datapack) + ~45 lines Java: a `stadium_active` flag guarding
+      NuzlockeInit's faint/whiteout (safe zones do NOT stop death — see the memory) + a
+      player-chosen level lock (setAdjustLevel/party snapshot). Volt's tease line ships now.
 
 ---
 

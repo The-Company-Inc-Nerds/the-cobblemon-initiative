@@ -20,11 +20,14 @@ import net.minecraft.server.level.ServerPlayer;
 public class NobleEncounterInit implements ModInitializer {
 
   private static NobleEncounterManager manager;
+  private static RiftDragonManager riftDragon;
 
   @Override
   public void onInitialize() {
     manager = new NobleEncounterManager();
     manager.loadNobles();
+    riftDragon = new RiftDragonManager();
+    riftDragon.loadConfig();
 
     CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
       NobleCommands.register(dispatcher);
@@ -36,11 +39,32 @@ public class NobleEncounterInit implements ModInitializer {
           return 1;
         })
       );
+      // /riftdragon start|stop — the Ryujin rift boss (perm 2; the leader's dialog
+      // button reaches it through function cobblemon_initiative:gym/rift_start).
+      dispatcher.register(
+        Commands.literal("riftdragon")
+          .requires(source -> source.hasPermission(2))
+          .then(Commands.literal("start").executes(ctx -> {
+            ServerPlayer player = ctx.getSource().getPlayer();
+            return (player != null && riftDragon.start(player)) ? 1 : 0;
+          }))
+          .then(Commands.literal("stop").executes(ctx -> {
+            ServerPlayer player = ctx.getSource().getPlayer();
+            if (player != null) riftDragon.abort(player);
+            return 1;
+          }))
+      );
     });
 
-    ServerTickEvents.END_SERVER_TICK.register(server -> manager.tick(server));
+    ServerTickEvents.END_SERVER_TICK.register(server -> {
+      manager.tick(server);
+      riftDragon.tick(server);
+    });
     ServerLifecycleEvents.SERVER_STARTED.register(manager::onServerStarted);
-    ServerLifecycleEvents.SERVER_STOPPING.register(manager::onServerStopping);
+    ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
+      manager.onServerStopping(server);
+      riftDragon.onServerStopping(server);
+    });
 
     CobblemonEvents.BATTLE_VICTORY.subscribe(Priority.NORMAL, event -> {
       manager.onBattleVictory(event);

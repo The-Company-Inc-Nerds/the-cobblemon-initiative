@@ -189,6 +189,34 @@ public final class MapFrontiersIntegration {
     }
   }
 
+  /**
+   * True when ANY global frontier already exists (any dimension) — i.e. the world shipped
+   * with pre-baked frontiers (build_mrpack bakes install.json's zones into
+   * {@code mapfrontiers/frontiers.dat}) or an earlier install run already created them.
+   * Used by install run to skip creation so re-runs / baked worlds never duplicate zones.
+   *
+   * <p>Must be an in-memory count, never a file-existence test: Map Frontiers writes an
+   * EMPTY frontiers.dat on every fresh world's first boot. And never per-name dedup —
+   * install.json legitimately repeats zone names (route segments). Fail-open (false) is
+   * correct: if this reflection breaks, createGlobalFrontiers breaks identically, so
+   * nothing double-creates.
+   */
+  static boolean hasAnyGlobalFrontiers() {
+    try {
+      Class<?> fmClass = Class.forName(FRONTIERS_MANAGER);
+      Object manager = fmClass.getField("instance").get(null);
+      if (manager == null) return false;
+      Object byDim = fmClass.getMethod("getAllGlobalFrontiers").invoke(manager);
+      if (!(byDim instanceof java.util.Map<?, ?> map)) return false;
+      for (Object frontierList : map.values()) {
+        if (frontierList instanceof List<?> list && !list.isEmpty()) return true;
+      }
+    } catch (ReflectiveOperationException | RuntimeException e) {
+      LOGGER.debug("[CobblemonInitiative] Map Frontiers existing-frontier check failed", e);
+    }
+    return false;
+  }
+
   private static void warnIfUntestedVersion() {
     if (versionWarned) return;
     versionWarned = true;

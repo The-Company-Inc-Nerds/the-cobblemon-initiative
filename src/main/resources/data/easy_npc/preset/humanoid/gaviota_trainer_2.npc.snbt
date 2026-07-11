@@ -64,6 +64,93 @@
                     Label: "beaten"
                 },
                 {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "tide_high"
+                        }
+                    ],
+                    Priority: 12,
+                    Buttons: [
+                        {
+                            Name: "Battle Swimmer Coral",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_gaviota_trainer_2"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "say The water remembers you. Swim on."
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_gaviota_trainer_2"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:gaviota_trainer_2_hightide @s"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_gaviota_trainer_2"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:gaviota_trainer_2_hightide onwin {1: ['tag @1 add defeated_gaviota_trainer_2', '@2 say The channel is yours. You held your breath and you held your ground.'], 2: ['@1 say The current took you under. Come back up for air and try again.']}"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_gaviota_trainer_2"
+                                }
+                            ],
+                            Label: "battle_button"
+                        },
+                        {
+                            Name: "Not yet",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "High tide! The channel runs deep and fast, and I am faster in deep water."
+                        },
+                        {
+                            Text: "The water is with me. Come on in — the current takes the first lap for free."
+                        }
+                    ],
+                    Name: "Coral - the tide is in",
+                    Label: "high_tide"
+                },
+                {
                     Priority: 10,
                     Buttons: [
                         {
@@ -134,7 +221,7 @@
                     ],
                     Texts: [
                         {
-                            Text: "I have swum every current in this port. You do not look like you have swum any of them yet."
+                            Text: "The tide has gone out and the channel runs quiet. I have swum every current in this port. You do not look like you have swum any of them yet."
                         },
                         {
                             Text: "Second of the crew. The channel answers to me here. Ready when you are."

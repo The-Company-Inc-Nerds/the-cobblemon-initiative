@@ -1,0 +1,21 @@
+{
+  "_comment": "Ryujin rift reveal — plays right AFTER riftdragon start (gym/rift_start runs the summon first, so skipping the scene can never lose the dragon). The camera lifts off beside Leader Ryujin (2264/210/1090), climbs toward the rift anchor (2267/343/963) as the dragon emerges, holds on the tear, then drops back. NO ambientWeather on purpose: RiftDragonManager already owns the storm sky and the scene must not restore over it. Absolute coords — TODO(showrunner): nudge keyframes if the keep skyline clips the path.",
+  "relative": false,
+  "skippable": true,
+  "startTitle": "§5§lTHE SKY TEARS",
+  "startSubtitle": "§7Look up",
+  "keyframes": [
+    { "x": 2264.5, "y": 216.0, "z": 1075.0, "yaw": 180.0, "pitch": -40.0, "ticks": 30 },
+    { "x": 2266.0, "y": 262.0, "z": 1030.0, "yaw": 180.0, "pitch": -30.0, "ticks": 50 },
+    { "x": 2267.5, "y": 330.0, "z": 992.0, "yaw": 180.0, "pitch": -8.0, "ticks": 50 },
+    { "x": 2267.5, "y": 336.0, "z": 976.0, "yaw": 180.0, "pitch": 6.0, "ticks": 45 },
+    { "x": 2264.5, "y": 216.0, "z": 1078.0, "yaw": 180.0, "pitch": -35.0, "ticks": 55 }
+  ],
+  "cues": [
+    { "tick": 5, "sound": "minecraft:entity.ender_dragon.growl", "volume": 2.0, "pitch": 0.7 },
+    { "tick": 70, "title": "§5§lIT COMES", "subtitle": "§7Older than any badge" },
+    { "tick": 110, "sound": "minecraft:entity.ender_dragon.flap", "volume": 1.5, "pitch": 0.9 },
+    { "tick": 165, "subtitle": "§7Break the crystals. Bring it down." },
+    { "tick": 200, "sound": "minecraft:entity.ender_dragon.growl", "volume": 1.2, "pitch": 0.8 }
+  ]
+}

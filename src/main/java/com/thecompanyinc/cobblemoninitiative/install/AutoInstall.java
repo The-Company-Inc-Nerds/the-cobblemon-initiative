@@ -33,18 +33,18 @@ import org.slf4j.LoggerFactory;
  *   <li>re-applies only the idempotent CONTENT refresh (NPC preset repaints + sight
  *       re-registration) — on a world that was already installed but at an OLDER mod/content
  *       version. This is how new gym-leader re-skins / new NPC bodies reach an existing save on
- *       join after a content update, WITHOUT re-running the full install (Map Frontiers has no
- *       dedup and would stack duplicate zones; gamerules/hardcore/zones are once-per-world).</li>
+ *       join after a content update, WITHOUT re-running the full install
+ *       (gamerules/hardcore/zones are once-per-world).</li>
  * </ul>
  *
  * <p>A bare-mod install (no mrpack) has no marker, so nothing ever auto-runs — the standalone
  * contract stays: {@code install run} is manual and optional. Both paths are idempotent, and on
  * a pre-baked world hardcore is already set, so no kick fires.
  *
- * <p>Note: because Map Frontiers frontiers are created post-handshake with no client-sync packet,
- * the map only reflects newly-created zones after a RELOG. That is a first-full-install concern
- * (the content refresh does not touch frontiers), and is why the pre-baked-hardcore path benefits
- * from a manual relog on the very first join.
+ * <p>Map Frontiers overlays need no relog on the pack: build_mrpack pre-bakes install.json's
+ * zones into the bundled world's {@code mapfrontiers/frontiers.dat}, which the very first join
+ * handshake delivers; {@code install run} skips frontier creation when frontiers already exist
+ * (see MapFrontiersBridge.hasExistingFrontiers), so nothing duplicates.
  */
 public final class AutoInstall {
 
@@ -139,6 +139,13 @@ public final class AutoInstall {
         p.sendSystemMessage(Component.literal(
           "§7This world has been provisioned. Welcome back to the ledger."
         ));
+      }
+      // The opening flyover — the run's first frame. Skippable; suppressed output so a
+      // missing scene (bare-mod worlds never reach this path) stays silent.
+      ServerPlayer first = server.getPlayerList().getPlayers().stream().findFirst().orElse(null);
+      if (first != null) {
+        CommandSourceStack psrc = first.createCommandSourceStack().withPermission(4).withSuppressedOutput();
+        server.getCommands().performPrefixedCommand(psrc, "cutscene play opening");
       }
     } catch (Exception e) {
       LOGGER.error("[Auto-Install] install run dispatch failed", e);

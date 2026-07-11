@@ -8,6 +8,7 @@ import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -57,11 +58,40 @@ public class CutsceneManager {
   private final Map<UUID, CutsceneState> active = new HashMap<>();
   private final Map<String, CutsceneScript> scripts = new HashMap<>();
 
+  /** Deferred double-sweeps: an instant skip can end a scene BEFORE the deferred
+   * `import_new` lands its body — the immediate sweep then finds nothing and the
+   * clone would persist into the hardcore save. Each entry re-sweeps a dimension a
+   * few ticks after its scene ended. [0]=due game time; [1]=dimension id. */
+  private final List<Object[]> pendingSweeps = new ArrayList<>();
+
   // ── Loading (lazy, by id — "add a JSON, no code") ────────────────────────────
+
+  /** Where live-authored/override scenes live: {@code config/cobblemon-initiative/cutscenes/}.
+   * Checked BEFORE the bundled jar resources, so a scene can be recorded/tweaked in-game
+   * ({@code /cutscene record …}, or edit the file + {@code /cutscene reload}) without a
+   * rebuild — and the file can later be promoted into src/main/resources verbatim. */
+  public static java.nio.file.Path overrideDir() {
+    return net.fabricmc.loader.api.FabricLoader.getInstance()
+      .getConfigDir().resolve("cobblemon-initiative").resolve("cutscenes");
+  }
 
   private CutsceneScript getScript(String id) {
     CutsceneScript cached = scripts.get(id);
     if (cached != null) return cached;
+
+    // 1. Filesystem override (live authoring / per-pack tweaks).
+    java.nio.file.Path override = overrideDir().resolve(id + ".json");
+    if (java.nio.file.Files.isRegularFile(override)) {
+      try (Reader r = java.nio.file.Files.newBufferedReader(override, StandardCharsets.UTF_8)) {
+        CutsceneScript s = GSON.fromJson(r, CutsceneScript.class);
+        if (s != null) { s.id = id; scripts.put(id, s); return s; }
+      } catch (Exception e) {
+        InitiativeInit.LOGGER.error("Failed to load override cutscene: {}", override, e);
+        // fall through to the bundled resource
+      }
+    }
+
+    // 2. Bundled jar resource.
     String path = "data/cobblemon_initiative/cutscenes/" + id + ".json";
     try (InputStream in = getClass().getClassLoader().getResourceAsStream(path)) {
       if (in == null) return null;
@@ -76,6 +106,13 @@ public class CutsceneManager {
     }
   }
 
+  /** Drop the script cache so edited override files are re-read on next play. */
+  public int reloadScripts() {
+    int n = scripts.size();
+    scripts.clear();
+    return n;
+  }
+
   public boolean hasActive(UUID playerId) { return active.containsKey(playerId); }
   public List<String> getLoadedIds() { return new ArrayList<>(scripts.keySet()); }
 
@@ -83,6 +120,14 @@ public class CutsceneManager {
 
   /** Start a scene for the player. Returns false if it could not begin. */
   public boolean play(ServerPlayer player, String scriptId) {
+    return play(player, scriptId, null);
+  }
+
+  /** Start a scene with a command to run AS the player when it ends or is skipped —
+   * the chain the gym-leader intros use ({@code cutscene play leader_intro function
+   * …:gym/engage/<trainer>} — the engage function opens the battle from wherever the
+   * scene left the player, i.e. the endBack stage position). */
+  public boolean play(ServerPlayer player, String scriptId, String endCommand) {
     MinecraftServer server = player.getServer();
     if (server == null) return false;
     if (player.isDeadOrDying()) return false; // never hijack a death/whiteout in progress
@@ -111,6 +156,16 @@ public class CutsceneManager {
     double eyeX = player.getX(), eyeY = player.getEyeY(), eyeZ = player.getZ();
     float startYaw = player.getYRot(), startPitch = player.getXRot();
 
+    // endBack: restore the player STRAIGHT BACK from where they stood (opposite the
+    // captured facing, horizontal, same Y) — the pre-boss stage-back. Yaw/pitch keep
+    // facing the leader. No ground probe: use on flat arenas.
+    double restoreX = player.getX(), restoreZ = player.getZ();
+    if (script.endBack > 0) {
+      double yawRad = Math.toRadians(startYaw);
+      restoreX += Math.sin(yawRad) * script.endBack;  // -forward.x * endBack
+      restoreZ -= Math.cos(yawRad) * script.endBack;  // -forward.z * endBack
+    }
+
     // Optional body-double (must bake the DOUBLE_TAG in its preset for cleanup).
     boolean hasDouble = spawnDouble(server, level, player, script);
 
@@ -129,10 +184,12 @@ public class CutsceneManager {
 
     CutsceneState state = new CutsceneState(
       player.getUUID(), scriptId, dimId, script.skippable, hasDouble,
-      player.getX(), player.getY(), player.getZ(), startYaw, startPitch, restoreMode,
+      restoreX, player.getY(), restoreZ, startYaw, startPitch, restoreMode,
       eyeX, eyeY, eyeZ, startYaw, startPitch);
     state.setRig(rig);
     state.setBase(eyeX, eyeY, eyeZ, script.relative);
+    if (script.relative && script.facingFrame) state.setFacingFrame(startYaw, startPitch);
+    if (endCommand != null && !endCommand.isBlank()) state.setEndCommand(endCommand);
     if (hasDouble) state.setDoubleSkinPending(true);
     active.put(player.getUUID(), state);
 
@@ -163,6 +220,19 @@ public class CutsceneManager {
   // ── Lifecycle hooks (wired in CutsceneInit) ──────────────────────────────────
 
   public void tick(MinecraftServer server) {
+    // Drain due double-sweeps FIRST — they must run even with no active scene (the
+    // whole point is catching a body that spawned after its scene already ended).
+    if (!pendingSweeps.isEmpty()) {
+      long now = server.overworld().getGameTime();
+      Iterator<Object[]> it = pendingSweeps.iterator();
+      while (it.hasNext()) {
+        Object[] sweep = it.next();
+        if (now >= (Long) sweep[0]) {
+          sweepDouble(server, (String) sweep[1]);
+          it.remove();
+        }
+      }
+    }
     if (active.isEmpty()) return;
     for (CutsceneState state : new ArrayList<>(active.values())) {
       ServerPlayer player = server.getPlayerList().getPlayer(state.getPlayerId());
@@ -221,16 +291,34 @@ public class CutsceneManager {
     state.incTicksIntoKeyframe();
     float t = Math.min(1f, state.getTicksIntoKeyframe() / (float) dur);
 
-    // Resolve the keyframe target (absolute, or offset from the captured eye when relative).
-    double kx = state.isRelative() ? state.getBaseX() + kf.x : kf.x;
-    double ky = state.isRelative() ? state.getBaseY() + kf.y : kf.y;
-    double kz = state.isRelative() ? state.getBaseZ() + kf.z : kf.z;
+    // Resolve the keyframe target (absolute, or offset from the captured eye when
+    // relative; facingFrame additionally rotates offsets into the captured look
+    // direction — x=right, z=forward — and treats yaw/pitch as offsets, so one scene
+    // plays correctly at any arena orientation).
+    double kx, ky, kz;
+    float targetYaw = kf.yaw, targetPitch = kf.pitch;
+    if (state.isRelative() && state.isFacingFrame()) {
+      double yawRad = Math.toRadians(state.getBaseYaw());
+      double fwdX = -Math.sin(yawRad), fwdZ = Math.cos(yawRad);   // facing
+      double rightX = -fwdZ, rightZ = fwdX;                       // 90° clockwise
+      kx = state.getBaseX() + rightX * kf.x + fwdX * kf.z;
+      ky = state.getBaseY() + kf.y;
+      kz = state.getBaseZ() + rightZ * kf.x + fwdZ * kf.z;
+      targetYaw = state.getBaseYaw() + kf.yaw;
+      targetPitch = Mth.clamp(state.getBasePitch() + kf.pitch, -90f, 90f);
+    } else if (state.isRelative()) {
+      kx = state.getBaseX() + kf.x;
+      ky = state.getBaseY() + kf.y;
+      kz = state.getBaseZ() + kf.z;
+    } else {
+      kx = kf.x; ky = kf.y; kz = kf.z;
+    }
 
     double cx = Mth.lerp(t, state.getPrevX(), kx);
     double cy = Mth.lerp(t, state.getPrevY(), ky);
     double cz = Mth.lerp(t, state.getPrevZ(), kz);
-    float cyaw = Mth.rotLerp(t, state.getPrevYaw(), kf.yaw);
-    float cpitch = state.getPrevPitch() + (kf.pitch - state.getPrevPitch()) * t;
+    float cyaw = Mth.rotLerp(t, state.getPrevYaw(), targetYaw);
+    float cpitch = state.getPrevPitch() + (targetPitch - state.getPrevPitch()) * t;
 
     ArmorStand rig = state.getRig();
     if (rig == null || rig.isRemoved()) { end(server, state, player); return; }
@@ -245,7 +333,7 @@ public class CutsceneManager {
     player.connection.teleport(cx, cy, cz, cyaw, cpitch);
 
     if (state.getTicksIntoKeyframe() >= dur) {
-      state.advanceKeyframe(kx, ky, kz, kf.yaw, kf.pitch);
+      state.advanceKeyframe(kx, ky, kz, targetYaw, targetPitch);
       if (state.getKeyframeIndex() >= kfs.size()) { end(server, state, player); return; }
     }
     state.incTick();
@@ -275,12 +363,30 @@ public class CutsceneManager {
       player.setGameMode(state.getRestoreMode());     // internally resets the camera too
       player.connection.teleport(state.getRestoreX(), state.getRestoreY(), state.getRestoreZ(),
         state.getRestoreYaw(), state.getRestorePitch());
-      restoreWeather(player, player.serverLevel());
+      // Only undo weather the SCENE applied — a scene with no ambientWeather must not
+      // clobber fake sky some other system owns (e.g. the rift dragon's storm).
+      CutsceneScript script = getScript(state.getScriptId());
+      if (script != null && script.ambientWeather != null && !script.ambientWeather.isBlank()) {
+        restoreWeather(player, player.serverLevel());
+      }
+      // Chain the end command (leader engage, etc.) AFTER the restore, so it fires
+      // from the endBack stage position. Runs on skip too — a skipped intro must
+      // still open the battle. Never for a dead player (TBCS would refuse anyway).
+      if (state.getEndCommand() != null && !player.isDeadOrDying()) {
+        runPlayerCommand(server, player, state.getEndCommand());
+      }
     }
     ArmorStand rig = state.getRig();
     if (rig != null && !rig.isRemoved()) rig.discard();
     state.setRig(null);
-    if (state.hasDouble()) sweepDouble(server, state);
+    if (state.hasDouble()) {
+      sweepDouble(server, state.getDimension());
+      // Re-sweep shortly after: an instant skip can outrun the deferred import_new,
+      // leaving the body to spawn AFTER this immediate sweep found nothing.
+      if (server != null) {
+        pendingSweeps.add(new Object[] { server.overworld().getGameTime() + 20L, state.getDimension() });
+      }
+    }
     active.remove(state.getPlayerId());
   }
 
@@ -324,8 +430,8 @@ public class CutsceneManager {
     return true;
   }
 
-  private void sweepDouble(MinecraftServer server, CutsceneState state) {
-    ServerLevel level = resolveLevel(server, state.getDimension());
+  private void sweepDouble(MinecraftServer server, String dimension) {
+    ServerLevel level = resolveLevel(server, dimension);
     if (level == null) return;
     for (Entity e : level.getAllEntities()) {
       if (e.isAlive() && e.getTags().contains(DOUBLE_TAG)) {

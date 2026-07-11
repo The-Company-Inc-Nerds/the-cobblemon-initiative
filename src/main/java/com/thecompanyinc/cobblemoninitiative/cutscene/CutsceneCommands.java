@@ -23,9 +23,52 @@ public final class CutsceneCommands {
         .requires(source -> source.hasPermission(2))
         .then(Commands.literal("play")
           .then(Commands.argument("id", StringArgumentType.word())
-            .executes(CutsceneCommands::play)))
+            .executes(CutsceneCommands::play)
+            // Optional chain: a command run AS the player when the scene ends or is
+            // skipped (the gym-leader intros pass their engage function here).
+            .then(Commands.argument("end", StringArgumentType.greedyString())
+              .executes(ctx -> {
+                ServerPlayer p = ctx.getSource().getPlayer();
+                if (p == null) return 0;
+                return CutsceneInit.getManager().play(p,
+                  StringArgumentType.getString(ctx, "id"),
+                  StringArgumentType.getString(ctx, "end")) ? 1 : 0;
+              }))))
         .then(Commands.literal("stop").executes(CutsceneCommands::skip))
         .then(Commands.literal("list").executes(CutsceneCommands::list))
+        // reload — drop the script cache so edited override files re-read on next play.
+        .then(Commands.literal("reload").executes(ctx -> {
+          int n = CutsceneInit.getManager().reloadScripts();
+          ctx.getSource().sendSuccess(() -> Component.literal(
+            "§a[Cutscene] §7Cache cleared (" + n + " scene(s)) — overrides re-read on next play."), false);
+          return 1;
+        }))
+        // record — fly the path yourself and capture it as a playable scene.
+        .then(Commands.literal("record")
+          .then(Commands.literal("add").executes(ctx -> {
+            ServerPlayer p = ctx.getSource().getPlayer();
+            return p != null ? CutsceneRecorder.add(p) : 0;
+          }))
+          .then(Commands.literal("undo").executes(ctx -> {
+            ServerPlayer p = ctx.getSource().getPlayer();
+            return (p != null && CutsceneRecorder.undo(p)) ? 1 : 0;
+          }))
+          .then(Commands.literal("clear").executes(ctx -> {
+            ServerPlayer p = ctx.getSource().getPlayer();
+            if (p != null) CutsceneRecorder.clear(p);
+            return 1;
+          }))
+          .then(Commands.literal("status").executes(ctx -> {
+            ServerPlayer p = ctx.getSource().getPlayer();
+            if (p != null) CutsceneRecorder.status(p);
+            return 1;
+          }))
+          .then(Commands.literal("save")
+            .then(Commands.argument("id", StringArgumentType.word())
+              .executes(ctx -> {
+                ServerPlayer p = ctx.getSource().getPlayer();
+                return (p != null && CutsceneRecorder.save(p, StringArgumentType.getString(ctx, "id"))) ? 1 : 0;
+              }))))
     );
     dispatcher.register(
       Commands.literal("cutscene-skip").executes(CutsceneCommands::skip)

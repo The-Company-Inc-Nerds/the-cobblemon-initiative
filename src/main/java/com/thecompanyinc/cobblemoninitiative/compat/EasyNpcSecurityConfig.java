@@ -42,7 +42,10 @@ public final class EasyNpcSecurityConfig {
     "advancement", "clear", "cobbledollars", "cobblemon-initiative", "easy_npc",
     "execute", "function", "give", "givepokemonother", "healpokemon", "loot",
     "openstarterscreen", "particle", "playsound", "scoreboard", "tag", "tbcs",
-    "tellraw", "title"
+    "tellraw", "title",
+    // Boss-gate + cinematic commands reachable from dialog buttons (Ryujin rift;
+    // noble launches; cutscene play from any story button).
+    "riftdragon", "noble", "cutscene"
   );
 
   private EasyNpcSecurityConfig() {}

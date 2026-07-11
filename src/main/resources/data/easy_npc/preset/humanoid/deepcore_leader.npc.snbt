@@ -94,19 +94,6 @@
                                 },
                                 {
                                     Type: "COMMAND",
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_defeated_deepcore_leader"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tbcs attach rctmod:deepcore_leader @s"
-                                },
-                                {
-                                    Type: "COMMAND",
                                     ExecAsUser: 1b,
                                     ConditionDataSet: {
                                         ConditionDataSet: [
@@ -117,7 +104,7 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:deepcore_leader onwin {1: ['cobbledollars give @1 2800', 'tag @1 add defeated_deepcore_leader', '@2 say Now that is a punch with weight behind it. The Iron Badge is earned, not given. So is Drain Punch — the machine is yours. Take what you hit and keep it.'], 2: ['@1 say Get up. Always get up. The mat is not where you live. Train harder and find me again.']}"
+                                    Cmd: "cutscene play leader_intro function cobblemon_initiative:gym/engage_deepcore_leader"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -161,10 +148,10 @@
                     ],
                     Texts: [
                         {
-                            Text: "My apprentice Ken reads every challenger before the iron ever reaches me. Find him at the pit — the ladder is trainers, then Striker, then Ken, then me."
+                            Text: "Marshal Osei runs my door and my apprentices run the pit. The four masters on the floor are yours to take in any order — or not at all. The pit does not move: Ken and Striker fight you together, two on two, one bout."
                         },
                         {
-                            Text: "No shortcuts on this floor. Clear the pit and come back. I do not fight anyone who has not earned the walk down."
+                            Text: "The gym lends you a second so nobody stands alone down there. Clear the pit and come back. I do not fight anyone who has not earned the walk down."
                         }
                     ],
                     Name: "Bruno — not yet",
@@ -203,19 +190,6 @@
                                 },
                                 {
                                     Type: "COMMAND",
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_defeated_deepcore_leader"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tbcs attach rctmod:deepcore_leader_weak @s"
-                                },
-                                {
-                                    Type: "COMMAND",
                                     ExecAsUser: 1b,
                                     ConditionDataSet: {
                                         ConditionDataSet: [
@@ -226,7 +200,7 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:deepcore_leader_weak onwin {1: ['cobbledollars give @1 2800', 'tag @1 add defeated_deepcore_leader', '@2 say Now that is a punch with weight behind it. The Iron Badge is earned, not given. So is Drain Punch — the machine is yours. Take what you hit and keep it.'], 2: ['@1 say Get up. Always get up. The mat is not where you live. Train harder and find me again.']}"
+                                    Cmd: "cutscene play leader_intro function cobblemon_initiative:gym/engage_deepcore_leader_weak"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

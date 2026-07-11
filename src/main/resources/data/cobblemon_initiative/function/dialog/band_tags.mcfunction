@@ -139,6 +139,9 @@ execute as @a unless score @s ryujin_tower matches 2.. run tag @s remove ryujin_
 execute as @a if score @s ryujin_tower matches 4.. run tag @s add ryujin_tower_gte_4
 execute as @a unless score @s ryujin_tower matches 4.. run tag @s remove ryujin_tower_gte_4
 
+execute as @a if score @s scorchspire_heat matches 60.. run tag @s add scorchspire_heat_gte_60
+execute as @a unless score @s scorchspire_heat matches 60.. run tag @s remove scorchspire_heat_gte_60
+
 execute as @a if score @s scorchspire_tower matches 1.. run tag @s add scorchspire_tower_gte_1
 execute as @a unless score @s scorchspire_tower matches 1.. run tag @s remove scorchspire_tower_gte_1
 
@@ -188,6 +191,8 @@ tag @a[tag=!clinic_stocked] add no_clinic_stocked
 tag @a[tag=clinic_stocked] remove no_clinic_stocked
 tag @a[tag=!company_overthrown] add no_company_overthrown
 tag @a[tag=company_overthrown] remove no_company_overthrown
+tag @a[tag=!dc_gauntlet_started] add no_dc_gauntlet_started
+tag @a[tag=dc_gauntlet_started] remove no_dc_gauntlet_started
 tag @a[tag=!declined_sq_canvasser] add no_declined_sq_canvasser
 tag @a[tag=declined_sq_canvasser] remove no_declined_sq_canvasser
 tag @a[tag=!declined_sq_genji_wager] add no_declined_sq_genji_wager
@@ -258,6 +263,8 @@ tag @a[tag=!defeated_deepcore_leader] add no_defeated_deepcore_leader
 tag @a[tag=defeated_deepcore_leader] remove no_defeated_deepcore_leader
 tag @a[tag=!defeated_deepcore_leader_weak] add no_defeated_deepcore_leader_weak
 tag @a[tag=defeated_deepcore_leader_weak] remove no_defeated_deepcore_leader_weak
+tag @a[tag=!defeated_deepcore_second] add no_defeated_deepcore_second
+tag @a[tag=defeated_deepcore_second] remove no_defeated_deepcore_second
 tag @a[tag=!defeated_deepcore_trainer_1] add no_defeated_deepcore_trainer_1
 tag @a[tag=defeated_deepcore_trainer_1] remove no_defeated_deepcore_trainer_1
 tag @a[tag=!defeated_deepcore_trainer_2] add no_defeated_deepcore_trainer_2
@@ -298,12 +305,20 @@ tag @a[tag=!defeated_gaviota_leader_weak] add no_defeated_gaviota_leader_weak
 tag @a[tag=defeated_gaviota_leader_weak] remove no_defeated_gaviota_leader_weak
 tag @a[tag=!defeated_gaviota_trainer_1] add no_defeated_gaviota_trainer_1
 tag @a[tag=defeated_gaviota_trainer_1] remove no_defeated_gaviota_trainer_1
+tag @a[tag=!defeated_gaviota_trainer_1_hightide] add no_defeated_gaviota_trainer_1_hightide
+tag @a[tag=defeated_gaviota_trainer_1_hightide] remove no_defeated_gaviota_trainer_1_hightide
 tag @a[tag=!defeated_gaviota_trainer_2] add no_defeated_gaviota_trainer_2
 tag @a[tag=defeated_gaviota_trainer_2] remove no_defeated_gaviota_trainer_2
+tag @a[tag=!defeated_gaviota_trainer_2_hightide] add no_defeated_gaviota_trainer_2_hightide
+tag @a[tag=defeated_gaviota_trainer_2_hightide] remove no_defeated_gaviota_trainer_2_hightide
 tag @a[tag=!defeated_gaviota_trainer_3] add no_defeated_gaviota_trainer_3
 tag @a[tag=defeated_gaviota_trainer_3] remove no_defeated_gaviota_trainer_3
+tag @a[tag=!defeated_gaviota_trainer_3_hightide] add no_defeated_gaviota_trainer_3_hightide
+tag @a[tag=defeated_gaviota_trainer_3_hightide] remove no_defeated_gaviota_trainer_3_hightide
 tag @a[tag=!defeated_gaviota_trainer_4] add no_defeated_gaviota_trainer_4
 tag @a[tag=defeated_gaviota_trainer_4] remove no_defeated_gaviota_trainer_4
+tag @a[tag=!defeated_gaviota_trainer_4_hightide] add no_defeated_gaviota_trainer_4_hightide
+tag @a[tag=defeated_gaviota_trainer_4_hightide] remove no_defeated_gaviota_trainer_4_hightide
 tag @a[tag=!defeated_granary_ambush] add no_defeated_granary_ambush
 tag @a[tag=defeated_granary_ambush] remove no_defeated_granary_ambush
 tag @a[tag=!defeated_ground_shrine_cultist_1] add no_defeated_ground_shrine_cultist_1
@@ -364,6 +379,16 @@ tag @a[tag=!defeated_mystic_jr_apprentice_weak] add no_defeated_mystic_jr_appren
 tag @a[tag=defeated_mystic_jr_apprentice_weak] remove no_defeated_mystic_jr_apprentice_weak
 tag @a[tag=!defeated_mystic_leader] add no_defeated_mystic_leader
 tag @a[tag=defeated_mystic_leader] remove no_defeated_mystic_leader
+tag @a[tag=!defeated_mystic_leader_mirror_electric] add no_defeated_mystic_leader_mirror_electric
+tag @a[tag=defeated_mystic_leader_mirror_electric] remove no_defeated_mystic_leader_mirror_electric
+tag @a[tag=!defeated_mystic_leader_mirror_fire] add no_defeated_mystic_leader_mirror_fire
+tag @a[tag=defeated_mystic_leader_mirror_fire] remove no_defeated_mystic_leader_mirror_fire
+tag @a[tag=!defeated_mystic_leader_mirror_grass] add no_defeated_mystic_leader_mirror_grass
+tag @a[tag=defeated_mystic_leader_mirror_grass] remove no_defeated_mystic_leader_mirror_grass
+tag @a[tag=!defeated_mystic_leader_mirror_shadow] add no_defeated_mystic_leader_mirror_shadow
+tag @a[tag=defeated_mystic_leader_mirror_shadow] remove no_defeated_mystic_leader_mirror_shadow
+tag @a[tag=!defeated_mystic_leader_mirror_water] add no_defeated_mystic_leader_mirror_water
+tag @a[tag=defeated_mystic_leader_mirror_water] remove no_defeated_mystic_leader_mirror_water
 tag @a[tag=!defeated_mystic_leader_weak] add no_defeated_mystic_leader_weak
 tag @a[tag=defeated_mystic_leader_weak] remove no_defeated_mystic_leader_weak
 tag @a[tag=!defeated_mystic_trainer_1] add no_defeated_mystic_trainer_1
@@ -566,6 +591,8 @@ tag @a[tag=!doc_portrait] add no_doc_portrait
 tag @a[tag=doc_portrait] remove no_doc_portrait
 tag @a[tag=!docs_filed] add no_docs_filed
 tag @a[tag=docs_filed] remove no_docs_filed
+tag @a[tag=!dragon_slain] add no_dragon_slain
+tag @a[tag=dragon_slain] remove no_dragon_slain
 tag @a[tag=!errand1_done] add no_errand1_done
 tag @a[tag=errand1_done] remove no_errand1_done
 tag @a[tag=!errand2_done] add no_errand2_done
@@ -638,6 +665,8 @@ tag @a[tag=!memo_delivered] add no_memo_delivered
 tag @a[tag=memo_delivered] remove no_memo_delivered
 tag @a[tag=!memo_heard] add no_memo_heard
 tag @a[tag=memo_heard] remove no_memo_heard
+tag @a[tag=!mm_declared] add no_mm_declared
+tag @a[tag=mm_declared] remove no_mm_declared
 tag @a[tag=!notice_1] add no_notice_1
 tag @a[tag=notice_1] remove no_notice_1
 tag @a[tag=!notice_2] add no_notice_2

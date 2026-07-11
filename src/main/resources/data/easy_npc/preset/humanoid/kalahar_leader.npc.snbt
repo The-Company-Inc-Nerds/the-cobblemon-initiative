@@ -94,19 +94,6 @@
                                 },
                                 {
                                     Type: "COMMAND",
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_defeated_kalahar_leader"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tbcs attach rctmod:kalahar_leader @s"
-                                },
-                                {
-                                    Type: "COMMAND",
                                     ExecAsUser: 1b,
                                     ConditionDataSet: {
                                         ConditionDataSet: [
@@ -117,7 +104,7 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:kalahar_leader onwin {1: ['cobbledollars give @1 3700', 'tag @1 add defeated_kalahar_leader', '@2 say Solid. Grounded. You do not get knocked off your feet, and that is half of everything. The Strata Badge is yours — and Earthquake, for ground that can take it.'], 2: ['@1 say The earth does not hurry and neither should you. Find your footing and dig back to me when you are ready.']}"
+                                    Cmd: "cutscene play leader_intro function cobblemon_initiative:gym/engage_kalahar_leader"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -203,19 +190,6 @@
                                 },
                                 {
                                     Type: "COMMAND",
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_defeated_kalahar_leader"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tbcs attach rctmod:kalahar_leader_weak @s"
-                                },
-                                {
-                                    Type: "COMMAND",
                                     ExecAsUser: 1b,
                                     ConditionDataSet: {
                                         ConditionDataSet: [
@@ -226,7 +200,7 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:kalahar_leader_weak onwin {1: ['cobbledollars give @1 3700', 'tag @1 add defeated_kalahar_leader', '@2 say Solid. Grounded. You do not get knocked off your feet, and that is half of everything. The Strata Badge is yours — and Earthquake, for ground that can take it.'], 2: ['@1 say The earth does not hurry and neither should you. Find your footing and dig back to me when you are ready.']}"
+                                    Cmd: "cutscene play leader_intro function cobblemon_initiative:gym/engage_kalahar_leader_weak"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

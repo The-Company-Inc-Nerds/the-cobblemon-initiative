@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
@@ -218,6 +219,11 @@ public class NpcSightManager {
       if (data.pursuing) {
         stopFollow(server, npc);
         data.pursuing = false;
+        // The trainer just ran you down: snap the camera to face them as the preset's
+        // ON_DISTANCE_VERY_CLOSE forced battle fires. The pursuing->arrived transition
+        // is the once-per-chase latch; a player who walked up themselves never chased,
+        // so they are never snapped.
+        facePlayerAt(npc, nearestPlayer);
       }
     } else if (dist > hold + FOLLOW_RESUME_HYSTERESIS) {
       // Player pulled away — (re)start the chase.
@@ -420,8 +426,20 @@ public class NpcSightManager {
     MinecraftServer server, Entity npc, ServerPlayer player, String dialogName
   ) {
     if (!isEasyNpcPresent()) return;
+    // Whip the player's camera around to face whoever is talking to them — the
+    // "caught" beat for both DIALOG greeters and APPROACH_ONCE walk-ups (Mom).
+    // ServerPlayer.lookAt sends ClientboundPlayerLookAtPacket — the exact path
+    // vanilla `/tp … facing entity` uses — a one-shot snap; the mouse is free the
+    // next frame. Fire-once per seen-session is inherited from the callers'
+    // dialogFiredThisSession / fired latches.
+    facePlayerAt(npc, player);
     runCommand(server, String.format(
       "easy_npc dialog open %s %s %s", npc.getUUID(), playerName(player), dialogName));
+  }
+
+  /** Snap the player's camera to the NPC's eyes (server-authoritative, client-applied). */
+  private static void facePlayerAt(Entity npc, ServerPlayer player) {
+    player.lookAt(EntityAnchorArgument.Anchor.EYES, npc, EntityAnchorArgument.Anchor.EYES);
   }
 
   // ---------------------------------------------------------------------------

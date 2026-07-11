@@ -71,6 +71,11 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add scorchspire_forging"
+                                },
+                                {
+                                    Type: "COMMAND",
                                     ConditionDataSet: {
                                         ConditionDataSet: [
                                             {
@@ -107,7 +112,7 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:scorchspire_trainer_1 onwin {1: ['tag @1 add defeated_scorchspire_trainer_1', '@2 say You caught the spark. The lower forge is yours to pass.'], 2: ['@1 say The spire runs too hot for you yet. Come back with dry kindling.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:scorchspire_trainer_1 onwin {1: ['tag @1 add defeated_scorchspire_trainer_1', '@2 say You caught the spark. The lower forge is yours to pass.', 'scoreboard players remove @1 scorchspire_heat 30', 'tag @1 remove scorchspire_forging'], 2: ['@1 say The spire runs too hot for you yet. Come back with dry kindling.', 'tag @2 remove scorchspire_forging']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

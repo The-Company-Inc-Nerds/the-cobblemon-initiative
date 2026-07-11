@@ -454,12 +454,34 @@ def build_battle_command(ch: dict, where: str, trainer: str | None = None) -> st
     base_trainer, dt = _battle_ids(ch, where)
     trainer = trainer or base_trainer
     fmt = b.get("format", "GEN_9_SINGLES")
+    # GEN_9_MULTI (the 2-trainers-at-once finale): TBCS's brigadier tree takes EXACTLY
+    # two participants per side (verified: builderParticipants recurses per
+    # actorsPerSide with no optional slots), so a lone player vs two trainers is not
+    # expressible — the player's side is filled by an AI partner trainer:
+    #   tbcs battle GEN_9_MULTI @s rctmod:<partner> vs rctmod:<a> rctmod:<b> onwin {...}
+    # Token numbering SHIFTS across the four actors (winners-first): on a WIN
+    # @1=player @2=partner @3=trainer @4=trainer_2; on a LOSS @1=trainer @2=trainer_2
+    # @3=player @4=partner. npc_tok/loser_player_tok carry that shift below.
+    t2 = b.get("trainer_2")
+    partner = b.get("partner")
+    if fmt == "GEN_9_MULTI":
+        if not t2 or not partner:
+            raise CompileError(f"{where}: GEN_9_MULTI needs battle.trainer_2 AND battle.partner "
+                               f"(TBCS grammar takes exactly 2 participants per side)")
+    elif t2 or partner:
+        raise CompileError(f"{where}: battle.trainer_2/partner require format GEN_9_MULTI")
+    is_multi = fmt == "GEN_9_MULTI"
+    npc_tok = "@3" if is_multi else "@2"          # the (lead) NPC in the WIN branch
+    loser_player_tok = "@3" if is_multi else "@2" # the player in the LOSE branch
     win = []
     if b.get("prize"):
         win.append(f"cobbledollars give @1 {int(b['prize'])}")
     win.append(f"tag @1 add {dt}")
+    if t2:
+        # Both finalists credit on the one shared win.
+        win.append(f"tag @1 add {b.get('defeat_tag_2', f'defeated_{t2}')}")
     if b.get("win_line"):
-        win.append(f"@2 say {b['win_line']}")
+        win.append(f"{npc_tok} say {b['win_line']}")
     # engage:touch (round 13d) — clear the in-battle flag so NpcSight resumes normal
     # behavior; on a WIN the defeat tag already stops the pursuit, this just tidies up.
     if ch.get("engage") == "touch":
@@ -468,28 +490,40 @@ def build_battle_command(ch: dict, where: str, trainer: str | None = None) -> st
     despawn = b.get("despawn_on_win",
                     b.get("type") in ("villain_grunt", "villain_management", "gauntlet_boss", "villain_forced"))
     if despawn:
-        win.append("easy_npc delete @2")
+        win.append(f"easy_npc delete {npc_tok}")
+        if t2:
+            win.append("easy_npc delete @4")
     # TBCS substitutes @1/@2 WINNERS FIRST (bytecode: CommandsContext concat(winners, losers)).
     # In the lose branch (key 2) the NPC won, so @1 = NPC and @2 = player — the tokens are
     # the MIRROR of the win branch. A lose-side "remove @1" targeted the NPC's UUID (fee
     # never charged) and "@2 say" made the PLAYER speak the trainer's taunt.
     lose = []
     if b.get("loss_fee"):
-        lose.append(f"cobbledollars remove @2 {int(b['loss_fee'])}")
+        lose.append(f"cobbledollars remove {loser_player_tok} {int(b['loss_fee'])}")
     if b.get("lose_line"):
         lose.append(f"@1 say {b['lose_line']}")
     # engage:touch — on a LOSS the trainer is NOT defeated, so clearing the in-battle
     # flag lets NpcSight re-engage on the next approach (the intended re-force).
     if ch.get("engage") == "touch":
-        lose.append("tag @2 remove in_trainer_battle")
+        lose.append(f"tag {loser_player_tok} remove in_trainer_battle")
     lose += list(b.get("on_lose", []))
     onwin = build_onwin(win, lose, where)
-    return f"tbcs battle {fmt} @s vs rctmod:{trainer} onwin {onwin}"
+    if is_multi:
+        head = f"@s rctmod:{partner} vs rctmod:{trainer} rctmod:{t2}"
+    else:
+        head = f"@s vs rctmod:{trainer}"
+    return f"tbcs battle {fmt} {head} onwin {onwin}"
 
 
 # Characters with battle.decline_fee: base_trainer -> info for the generated
 # function/route/decline_<id>.mcfunction (see write_decline_functions).
 DECLINE_REGISTRY: dict[str, dict] = {}
+
+# Characters with battle.intro_scene (the gym-leader challenge cinematic): effective
+# trainer id -> info for the generated function/gym/engage_<id>.mcfunction (see
+# write_engage_functions). One entry per DISTINCT battle target, so a leader's
+# weakened/mirror variants each get their own engage function.
+ENGAGE_REGISTRY: dict[str, dict] = {}
 
 
 def register_decline(ch: dict) -> None:
@@ -521,12 +555,22 @@ def battle_actions(ch: dict, where: str, override: dict | None = None,
     # trainer so every variant credits the same progression/beaten state.
     trainer = (override or {}).get("trainer") or base_trainer
     _check_trainer_team(trainer, where)
+    # GEN_9_MULTI: the second opponent and the player's AI partner both feed rctapi —
+    # an empty/missing team refuses the whole battle (insufficientPokemon).
+    t2 = b.get("trainer_2")
+    if t2:
+        _check_trainer_team(t2, where)
+    if b.get("partner"):
+        _check_trainer_team(b["partner"], where)
     # Gates: not_tag defeated always; not_tag declined_<base> too when the character
     # sells a bow-out (battle.decline_fee) — a paid decline stands the trainer down on
     # BOTH the trigger and button battle paths (spec round 13b). An authored action
     # gate (e.g. the wheat traders' hostile-state touch ambush) is ANDed in.
     gate = dict((override or {}).get("gate") or {})
     negs = list(gate.get("not_tags") or []) + [dt]
+    if t2:
+        # Both finalists tag together on the shared win; gating on both is self-healing.
+        negs.append(b.get("defeat_tag_2", f"defeated_{t2}"))
     if b.get("decline_fee"):
         negs.append(f"declined_{base_trainer}")
     gate["not_tags"] = negs
@@ -542,6 +586,21 @@ def battle_actions(ch: dict, where: str, override: dict | None = None,
         check_text(b["already_beaten_line"], where)
         acts.append(command_action_raw(
             f"say {b['already_beaten_line']}", False, {"tag": dt}, where))
+    # LEADER CHALLENGE INTRO (battle.intro_scene): the button plays the shared
+    # cinematic and chains the compiler-emitted engage function, which fires the
+    # attach + the SAME battle command from the scene's endBack stage position.
+    # The cutscene end-funnel runs the chain on skip too, so a skipped intro still
+    # opens the fight. Dialog-button path only — ON_DISTANCE triggers keep the
+    # direct battle (no dialog is open to segue from).
+    intro = b.get("intro_scene")
+    if intro and not trigger_ctx:
+        ENGAGE_REGISTRY[trainer] = {"ch": ch, "where": where}
+        acts.append(command_action(
+            f"cutscene play {intro} function {NS}:gym/engage_{trainer}",
+            True, gate, where))
+        acts.append(comp([("Type", s("CLOSE_DIALOG"))]))
+        return acts
+
     # TBCS resolves trainer ids against its OWN rctapi instance, whose registry it
     # mirrors from rctmod under NAMESPACE-PREFIXED keys (IdUtils.createTrainerId →
     # "rctmod:<id>"); lookup is an exact Map.get with no fallback, so a bare id can
@@ -549,6 +608,18 @@ def battle_actions(ch: dict, where: str, override: dict | None = None,
     # stay bare — only the tbcs command token carries the prefix.
     acts.append(command_action_raw(
         f"tbcs attach rctmod:{trainer} @s", False, gate, where))
+    # GEN_9_MULTI: the second finalist's body (a separate NPC standing in the arena)
+    # gets its own attach when the author bakes its entity tag; attach is
+    # facing/animation only (ENGINE_FINDINGS), so an unattached second trainer still
+    # battles — hence a warn, not an error.
+    if t2:
+        body2 = b.get("trainer_2_body_tag")
+        if body2:
+            acts.append(command_action_raw(
+                f"tbcs attach rctmod:{t2} @e[tag={body2},limit=1]", False, gate, where))
+        else:
+            warn(f"{where}: GEN_9_MULTI trainer_2 '{t2}' has no trainer_2_body_tag — "
+                 f"its body (if any) will not face the battle.")
     # engage:touch (round 13d) — flag the player as in a forced battle BEFORE it starts, so
     # NpcSight stands the pursuer down (it would otherwise keep chasing mid-battle). Cleared
     # in both onwin branches. Trigger path only — dialog buttons open with the player already
@@ -1142,6 +1213,23 @@ def merge_world(tree, ch: dict):
     return tree, etype
 
 
+def apply_float(tree, ch):
+    """character `"float": true` -> a no-gravity (hovering) body. BOTH keys are needed
+    (Easy NPC 6.25 bytecode): the vanilla ROOT `data.NoGravity` is the functional flag —
+    PresetDataCapable.importPresetData ends with Entity.load(tag), which applies it on
+    EVERY preset import (it is not in the volatile-strip list) — while
+    `data.EntityAttribute.NoGravity` only updates Easy NPC's synced attribute record
+    (kept consistent so the GUI/navigation logic agree). Must run AFTER merge_world:
+    WORLD_ADOPT replaces the whole EntityAttribute compound with the builder body's
+    (NoGravity:0b) and would stomp an earlier edit. set_path patches the one key, so the
+    other 15 attribute flags survive (a sparse compound would decode them all as false)."""
+    if not ch.get("float"):
+        return tree
+    tree = sm.set_path(tree, ["data", "NoGravity"], _snbt_value("1b"))
+    tree = sm.set_path(tree, ["data", "EntityAttribute", "NoGravity"], _snbt_value("1b"))
+    return tree
+
+
 # ─── Spawn variants (per-world A/B roster roll — quest-flow review B7) ──────
 # A character flagged `spawn_variants: 2` (placement-latch spawns only) compiles TWICE:
 # the base preset plus a `<id>_b` clone whose battle actions target the `<trainer>_b`
@@ -1283,6 +1371,64 @@ def write_decline_functions(registers: dict, prune: bool) -> int:
             f"execute if score #decl_ok cd_calc matches 1.. run title @s actionbar {receipt}\n"
             f"execute if score #decl_ok cd_calc matches 0 {guard} run {info['battle_cmd']}\n")
     return len(DECLINE_REGISTRY)
+
+
+GYM_FN_DIR = FUNCTION_DIR / "gym"
+
+
+def write_engage_functions(prune: bool) -> int:
+    """One function/gym/engage_<effective_trainer>.mcfunction per DISTINCT battle target
+    of a battle.intro_scene character (base leader + every weakened/mirror variant).
+    The intro cutscene's end-chain runs it AS the challenger from the endBack stage
+    position: attach the leader body (facing/animation — uuid when the body is
+    persisted, entity tag when it is spawned, skipped when neither), then the exact
+    same tbcs battle line the dialog button used to carry."""
+    if prune and GYM_FN_DIR.is_dir():
+        for old in GYM_FN_DIR.glob("engage_*.mcfunction"):
+            if old.name[len("engage_"):-len(".mcfunction")] not in ENGAGE_REGISTRY:
+                old.unlink()
+    if not ENGAGE_REGISTRY:
+        return 0
+    GYM_FN_DIR.mkdir(parents=True, exist_ok=True)
+    for eff, info in sorted(ENGAGE_REGISTRY.items()):
+        ch, where = info["ch"], info["where"]
+        b = ch["battle"]
+        lines = [
+            f"# engage_{eff} — opens the {ch['display_name']} battle after the challenge",
+            "# intro cutscene (battle.intro_scene). AUTO-GENERATED by scripts/content_compile",
+            "# — edit the character JSON, not this file. Runs AS the challenger from the",
+            "# scene's endBack stage position; the cutscene end-funnel fires it on skip too.",
+        ]
+        uuid = (ch.get("uuid") or "").strip()
+        tags = ch.get("entity_tags") or []
+        # Explicit challenger stage spot (wand slot stage_<gym> -> battle.stage_pos):
+        # overrides the scene's generic endBack — tp the challenger there, facing the
+        # leader body, before the battle opens (same tick as the scene restore, so the
+        # intermediate endBack spot is never perceived).
+        stage = b.get("stage_pos")
+        if stage and len(stage) == 3:
+            sx = stage[0] + 0.5 if float(stage[0]).is_integer() else stage[0]
+            sz = stage[2] + 0.5 if float(stage[2]).is_integer() else stage[2]
+            facing = ""
+            if uuid:
+                facing = f" facing entity {uuid}"
+            elif tags:
+                facing = f" facing entity @e[tag={tags[0]},limit=1]"
+            lines.append(f"tp @s {sx} {stage[1]} {sz}{facing}")
+        if uuid:
+            lines.append(f"execute if entity {uuid} run tbcs attach rctmod:{eff} {uuid}")
+        elif tags:
+            lines.append(
+                f"execute if entity @e[tag={tags[0]},limit=1] run "
+                f"tbcs attach rctmod:{eff} @e[tag={tags[0]},limit=1]")
+        t2, body2 = b.get("trainer_2"), b.get("trainer_2_body_tag")
+        if t2 and body2:
+            lines.append(
+                f"execute if entity @e[tag={body2},limit=1] run "
+                f"tbcs attach rctmod:{t2} @e[tag={body2},limit=1]")
+        lines.append(build_battle_command(ch, where, eff))
+        (GYM_FN_DIR / f"engage_{eff}.mcfunction").write_text("\n".join(lines) + "\n")
+    return len(ENGAGE_REGISTRY)
 
 
 # ─── npc_presets.json / sight manifest ───────────────────────────────────────
@@ -1533,6 +1679,7 @@ def main() -> None:
         try:
             tree = compile_character(ch, dialogs, registers, lore)
             tree, etype = merge_world(tree, ch)
+            tree = apply_float(tree, ch)
             text = sm.serialize(tree, indent_size=4)
             sm.parse_snbt(text)                # round-trip safety check
             compiled.append((ch["id"], text, etype))
@@ -1542,6 +1689,7 @@ def main() -> None:
                 vch = spawn_variant_character(ch)
                 vtree = compile_character(vch, dialogs, registers, lore)
                 vtree, vetype = merge_world(vtree, vch)
+                vtree = apply_float(vtree, vch)
                 vtext = sm.serialize(vtree, indent_size=4)
                 sm.parse_snbt(vtext)
                 compiled.append((vch["id"], vtext, vetype))
@@ -1609,6 +1757,7 @@ def main() -> None:
 
     # Decline-fee bow-out functions (before band_tags: registers declined_* inverses)
     n_decline = write_decline_functions(registers, prune=not args.character)
+    n_engage = write_engage_functions(prune=not args.character)
 
     # Band-tags tick fn + sight manifest
     BAND_TAGS_FN.parent.mkdir(parents=True, exist_ok=True)
@@ -1653,6 +1802,7 @@ def main() -> None:
     print(f"Merged UUID mappings into {NPC_PRESETS.name}")
     print(f"Wrote {PLACEMENTS_FN.relative_to(PROJECT_ROOT)} ({n_placed} placement latches)")
     print(f"Wrote {ROUTE_FN_DIR.relative_to(PROJECT_ROOT)}/decline_*.mcfunction ({n_decline} bow-out fees)")
+    print(f"Wrote {GYM_FN_DIR.relative_to(PROJECT_ROOT)}/engage_*.mcfunction ({n_engage} leader engage targets)")
     print(f"tick wiring: {wired or 'no tick.json found — add ' + NS + ':dialog/band_tags to your tick tag manually'}")
 
     if not args.no_generate:

@@ -1,0 +1,18 @@
+{
+  "_comment": "The generic gym-leader challenge intro — plays when a QUALIFIED challenger clicks Challenge on any leader whose character carries battle.intro_scene. facingFrame: keyframes are offsets in the challenger's LOOK frame (x=right, y=up, z=forward; yaw/pitch are offsets), so the one scene works at every arena orientation: the camera pulls up over the challenger's shoulder framing the leader, sweeps right for a side profile of the standoff, crosses high over the leader looking back down the arena, then drops home. endBack 7 restores the challenger SEVEN BLOCKS BACK from where they clicked (still facing the leader) — the stage-back — and the play command's end-chain then fires the engage function that opens the actual battle from there. Skippable: a skip still stages back + starts the fight.",
+  "relative": true,
+  "facingFrame": true,
+  "skippable": true,
+  "endBack": 7.0,
+  "keyframes": [
+    { "x": 0.0, "y": 2.5, "z": -4.0, "yaw": 0.0, "pitch": 12.0, "ticks": 30 },
+    { "x": 6.5, "y": 2.0, "z": 1.5, "yaw": -55.0, "pitch": 10.0, "ticks": 55 },
+    { "x": 0.0, "y": 5.0, "z": 7.5, "yaw": 180.0, "pitch": 28.0, "ticks": 55 },
+    { "x": 0.0, "y": 1.0, "z": -6.5, "yaw": 0.0, "pitch": 4.0, "ticks": 45 }
+  ],
+  "cues": [
+    { "tick": 10, "sound": "minecraft:block.note_block.imitate.ender_dragon", "volume": 0.6, "pitch": 0.5 },
+    { "tick": 60, "sound": "minecraft:block.beacon.power_select", "volume": 0.8, "pitch": 0.7 },
+    { "tick": 120, "sound": "minecraft:entity.player.levelup", "volume": 0.6, "pitch": 0.5 }
+  ]
+}

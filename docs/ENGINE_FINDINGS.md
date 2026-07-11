@@ -235,6 +235,56 @@ nix develop -c javap -p -c <extracted>.class
   the honest success signal is `CommandSourceStack.withCallback((success, result) -> …)`.
 - Bash `sort` is locale-dependent — generators use `LC_ALL=C` to match Python `sorted()`.
 
+### Verified 2026-07-10 (alpha.9–.11 round: gimmicks, rift dragon, cutscene, MF bake)
+
+- **TBCS GEN_9_MULTI takes EXACTLY two participants per side** (builderParticipants
+  recurses per `actorsPerSide`, no optional slots) — a lone player vs two trainers is
+  NOT expressible; the player's second slot must be an AI partner trainer id:
+  `tbcs battle GEN_9_MULTI @s rctmod:<partner> vs rctmod:<a> rctmod:<b> onwin {…}`.
+  Token numbering SHIFTS across four actors (winners-first): WIN @1=player @2=partner
+  @3=trainer @4=trainer_2; LOSS @1=trainer @2=trainer_2 @3=player @4=partner. The
+  compiler's battle emitter handles the shift; author via battle.trainer_2/partner.
+- **Easy NPC EntityAttribute tag keys are PascalCase** (`NoGravity`, `CanFloat` —
+  `getTagName()` = convertToPascalCase; EASY_NPC_REFERENCE's camelCase claim is wrong)
+  AND `EntityAttribute.NoGravity` is a display/record field only on the preset-import
+  path — the FUNCTIONAL flag is the vanilla ROOT `NoGravity`, applied by `Entity.load`
+  at the end of `importPresetData` (not in the volatile-strip list). A floating body
+  needs BOTH (`float: true` in the character JSON bakes both, post-world-merge).
+  NoGravity holds a body where it is; it never lifts it — tp it up once.
+- **Safe zones do NOT suspend Nuzlocke death.** `isInSafeZone()` is only consulted for
+  the Dark Urge whisper; faint-damage and the whiteout `player.kill()` fire inside safe
+  zones too. A no-death area (the Stadium) needs an explicit flag guarded in
+  NuzlockeInit's faint/whiteout paths.
+- **Overworld Ender Dragon**: flies fine with a null EndDragonFight; its flight anchor
+  (`fightOrigin`) defaults to world 0,0 and is NOT persisted — set it from Java every
+  tick (`RiftDragonManager`). End crystals heal it entity-locally (+1 HP/10t from the
+  nearest within 32 blocks, any dimension) but grant no invulnerability. mobGriefing
+  gates its ONLY block-destroy path (already false). Overworld death spawns no
+  portal/egg/gateway; `/kill` is a clean teardown; `checkDespawn` is a no-op (it
+  persists forever — always remove it on abort). Immune to ALL status effects.
+- **Map Frontiers**: frontiers live in `<world>/mapfrontiers/frontiers.dat` (gzip NBT,
+  root name "", `{Version:10, frontiers:[…]}`), loaded at SERVER_STARTING and shipped
+  whole in the JOIN handshake — reflective live creation is post-handshake and never
+  syncs (the old relog requirement). build_mrpack now GENERATES the file from
+  install.json zones (`bake_mapfrontiers_frontiers`, validated field-identical to a
+  bridge-created file); `install run` skips creation when any global frontier exists
+  (`MapFrontiersBridge.hasExistingFrontiers` — an in-memory count; NEVER file-exists,
+  MF writes an empty frontiers.dat on every fresh boot). One malformed frontier entry
+  (bad `id` UUID / bad `dimension`) aborts loading everything after it AND re-saves the
+  partial set — generators must emit guaranteed-valid values.
+- **Dialog gates: one `score` condition per entry.** The gate object is JSON — a second
+  `score` key collapses in parsing and unknown keys are CompileErrors. Different keys
+  (defeated/tag/not_tag/score) AND together; two numeric thresholds cannot.
+- **Live spectator swaps are hardcore-safe** (`changeGameModeForPlayer` has no hardcore
+  guard; hardcore only forces spectator in the DEATH path) — the cutscene rig rides
+  this. `/spectate` requires the player already be SPECTATOR and drives the camera to
+  a MOVING entity; restore game mode (auto-resets camera) then teleport (position is
+  NOT restored by setGameMode).
+- **AutoInstall is version-aware** (alpha.9+): the world latch stores `modVersion`; a
+  bump re-applies only the idempotent content refresh (NPC repaint + register_sight)
+  on rejoin — same version never re-fires (bump `build.gradle.kts` per content release,
+  or delete `<world>/data/cobblemon_initiative_autoinstall.json` for dev iteration).
+
 ## 3. Project invariants (don't regress these)
 
 - **Negation = inverse band tags.** `not_tag X` compiles to `PLAYER_TAG EQUALS no_X`;

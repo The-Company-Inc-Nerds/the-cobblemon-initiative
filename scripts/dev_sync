@@ -476,6 +476,9 @@ def sync_world(cfg, mc, mr, state, fresh):
         bm.bake_install_into_level_dat(os.path.join(dst, "level.dat"), level_name=name)
         if os.path.isfile(os.path.join(dst, "level.dat.bak")):
             bm.bake_install_into_level_dat(os.path.join(dst, "level.dat.bak"), level_name=name)
+        # Same Map Frontiers pre-bake as build_mrpack, so runClient worlds get the
+        # overlays on first join too (no relog) instead of silently regressing.
+        bm.bake_mapfrontiers_frontiers(dst)
         world_dp = os.path.join(dst, "datapacks", "data.zip")
         if os.path.isfile(world_dp):
             bm.strip_rctmod_trainers(world_dp)

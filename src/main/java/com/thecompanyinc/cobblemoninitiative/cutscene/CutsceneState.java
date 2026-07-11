@@ -38,6 +38,13 @@ public class CutsceneState {
   // ── Relative-scene base (the captured eye position; keyframe offsets add to this) ─────
   private double baseX, baseY, baseZ;
   private boolean relative = false;
+  /** facingFrame scenes: offsets rotate into the captured look direction. */
+  private boolean facingFrame = false;
+  private float baseYaw, basePitch;
+
+  /** Command run as the player when the scene ends or is skipped (e.g. the engage
+   * function that opens the leader battle). Null = none. */
+  private String endCommand;
 
   /** True until the runtime player-skin patch has been applied to the discovered double. */
   private boolean doubleSkinPending = false;
@@ -98,10 +105,19 @@ public class CutsceneState {
   public void setBase(double x, double y, double z, boolean relative) {
     this.baseX = x; this.baseY = y; this.baseZ = z; this.relative = relative;
   }
+  public void setFacingFrame(float yaw, float pitch) {
+    this.facingFrame = true; this.baseYaw = yaw; this.basePitch = pitch;
+  }
   public double getBaseX() { return baseX; }
   public double getBaseY() { return baseY; }
   public double getBaseZ() { return baseZ; }
   public boolean isRelative() { return relative; }
+  public boolean isFacingFrame() { return facingFrame; }
+  public float getBaseYaw() { return baseYaw; }
+  public float getBasePitch() { return basePitch; }
+
+  public String getEndCommand() { return endCommand; }
+  public void setEndCommand(String cmd) { this.endCommand = cmd; }
 
   public boolean isDoubleSkinPending() { return doubleSkinPending; }
   public void setDoubleSkinPending(boolean v) { this.doubleSkinPending = v; }

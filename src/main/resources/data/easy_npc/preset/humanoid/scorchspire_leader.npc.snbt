@@ -81,6 +81,11 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add scorchspire_forging"
+                                },
+                                {
+                                    Type: "COMMAND",
                                     ConditionDataSet: {
                                         ConditionDataSet: [
                                             {
@@ -94,19 +99,6 @@
                                 },
                                 {
                                     Type: "COMMAND",
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_defeated_scorchspire_leader"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tbcs attach rctmod:scorchspire_leader @s"
-                                },
-                                {
-                                    Type: "COMMAND",
                                     ExecAsUser: 1b,
                                     ConditionDataSet: {
                                         ConditionDataSet: [
@@ -117,7 +109,7 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:scorchspire_leader onwin {1: ['cobbledollars give @1 6000', 'tag @1 add defeated_scorchspire_leader', '@2 say You walked into the fire and came out hotter than the spire. Carry the Ember Badge — and the machine in your bag holds Flamethrower. Nothing stands between you and the Royal League now but the road.'], 2: ['@1 say Fire does not forgive the unready. You burned bright but you burned out. Bank your coals and climb the spire again.']}"
+                                    Cmd: "cutscene play leader_intro function cobblemon_initiative:gym/engage_scorchspire_leader"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -190,6 +182,11 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add scorchspire_forging"
+                                },
+                                {
+                                    Type: "COMMAND",
                                     ConditionDataSet: {
                                         ConditionDataSet: [
                                             {
@@ -203,19 +200,6 @@
                                 },
                                 {
                                     Type: "COMMAND",
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_defeated_scorchspire_leader"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tbcs attach rctmod:scorchspire_leader_weak @s"
-                                },
-                                {
-                                    Type: "COMMAND",
                                     ExecAsUser: 1b,
                                     ConditionDataSet: {
                                         ConditionDataSet: [
@@ -226,7 +210,7 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:scorchspire_leader_weak onwin {1: ['cobbledollars give @1 6000', 'tag @1 add defeated_scorchspire_leader', '@2 say You walked into the fire and came out hotter than the spire. Carry the Ember Badge — and the machine in your bag holds Flamethrower. Nothing stands between you and the Royal League now but the road.'], 2: ['@1 say Fire does not forgive the unready. You burned bright but you burned out. Bank your coals and climb the spire again.']}"
+                                    Cmd: "cutscene play leader_intro function cobblemon_initiative:gym/engage_scorchspire_leader_weak"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -251,6 +235,83 @@
                     ],
                     Name: "Vulcan — challenge",
                     Label: "ready_weakened"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "defeated_scorchspire_apprentice"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "scorchspire_heat_gte_60"
+                        }
+                    ],
+                    Priority: 18,
+                    Buttons: [
+                        {
+                            Name: "Challenge the Gym",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add scorchspire_forging"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_scorchspire_leader"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "say Ember Badge already forged onto you. This is the last gate, you understand. Past me there is only the League, and past the League there is only whatever it is you keep half remembering. Go and meet it."
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_scorchspire_leader"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "cutscene play leader_intro function cobblemon_initiative:gym/engage_scorchspire_leader"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "yes_button"
+                        },
+                        {
+                            Name: "Let me cool off",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Do you feel it, challenger? The spire keeps its own ledger — every idle minute on my stair banks another coal, and you lingered."
+                        },
+                        {
+                            Text: "Whatever my wardens vented, you let the coals reignite. The forge runs at full draft now. No mercy rate, no discounts — the whole fire, all at once."
+                        }
+                    ],
+                    Name: "Vulcan — the coals reignited",
+                    Label: "banked"
                 }
             ]
         },

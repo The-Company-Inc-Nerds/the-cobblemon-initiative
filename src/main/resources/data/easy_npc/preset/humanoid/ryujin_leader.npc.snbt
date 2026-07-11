@@ -72,6 +72,61 @@
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
                             Name: "defeated_ryujin_apprentice"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "no_dragon_slain"
+                        }
+                    ],
+                    Priority: 18,
+                    Buttons: [
+                        {
+                            Name: "Stand against the rift",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:gym/rift_start"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "rift_button"
+                        },
+                        {
+                            Name: "I need to prepare",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Look up, challenger. The sky over my Keep has been torn since you set foot on the stair, and what circles inside it is older than any badge. The Keep will not hear a challenge while that thing screams over the towers."
+                        },
+                        {
+                            Text: "Its crystals feed it — break them first, or it will drink back every wound you deal. Bring it down out of my sky, and I will meet you as an equal. That is not a request. It is the only door."
+                        }
+                    ],
+                    Name: "Ryujin — the sky is torn",
+                    Label: "rift"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "defeated_ryujin_apprentice"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "dragon_slain"
                         }
                     ],
                     Priority: 15,
@@ -94,19 +149,6 @@
                                 },
                                 {
                                     Type: "COMMAND",
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_defeated_ryujin_leader"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tbcs attach rctmod:ryujin_leader @s"
-                                },
-                                {
-                                    Type: "COMMAND",
                                     ExecAsUser: 1b,
                                     ConditionDataSet: {
                                         ConditionDataSet: [
@@ -117,7 +159,7 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:ryujin_leader onwin {1: ['cobbledollars give @1 4900', 'tag @1 add defeated_ryujin_leader', '@2 say A dragon does not bow. You made it kneel anyway. Carry the Sovereign Badge - and the machine in your bag holds Dragon Pulse. Let it roar for you when your own voice will not.'], 2: ['@1 say Power without command is just noise. A dragon hears only those who do not flinch. Steel yourself and climb the Keep again.']}"
+                                    Cmd: "cutscene play leader_intro function cobblemon_initiative:gym/engage_ryujin_leader"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -137,10 +179,10 @@
                     ],
                     Texts: [
                         {
-                            Text: "Ryujin Keep. I am its keeper, and its name. Dragon-types do not negotiate. They are the storm, and they expect you to be the one who breaks."
+                            Text: "You brought it down. My dragons watched the whole of it from the parapet, and not one of them looked away. Ryujin Keep. I am its keeper, and its name — and today the name means less than it did this morning."
                         },
                         {
-                            Text: "Stand before me without flinching and we will see if you are worthy of the Sovereign Badge. Few are."
+                            Text: "Stand before me without flinching and we will see if you are worthy of the Sovereign Badge. After what my sky just watched you do, I suspect you are."
                         }
                     ],
                     Name: "Ryujin — challenge",
@@ -180,6 +222,11 @@
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
+                            Name: "dragon_slain"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
                             Name: "ryujin_tower_gte_4"
                         }
                     ],
@@ -203,19 +250,6 @@
                                 },
                                 {
                                     Type: "COMMAND",
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_defeated_ryujin_leader"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tbcs attach rctmod:ryujin_leader_weak @s"
-                                },
-                                {
-                                    Type: "COMMAND",
                                     ExecAsUser: 1b,
                                     ConditionDataSet: {
                                         ConditionDataSet: [
@@ -226,7 +260,7 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:ryujin_leader_weak onwin {1: ['cobbledollars give @1 4900', 'tag @1 add defeated_ryujin_leader', '@2 say A dragon does not bow. You made it kneel anyway. Carry the Sovereign Badge - and the machine in your bag holds Dragon Pulse. Let it roar for you when your own voice will not.'], 2: ['@1 say Power without command is just noise. A dragon hears only those who do not flinch. Steel yourself and climb the Keep again.']}"
+                                    Cmd: "cutscene play leader_intro function cobblemon_initiative:gym/engage_ryujin_leader_weak"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -246,7 +280,7 @@
                     ],
                     Texts: [
                         {
-                            Text: "Shen. Riko. Every warden of the stair, gone silent in a single climb - my dragons spent the day answering yours instead of resting on the parapet. You have already thinned the storm between us, challenger. Come take the rest."
+                            Text: "Shen. Riko. Every warden of the stair, gone silent in a single climb - and the thing in my sky brought down besides. My dragons spent the day answering yours instead of resting on the parapet. You have already thinned the storm between us, challenger. Come take the rest."
                         }
                     ],
                     Name: "Ryujin — challenge",
