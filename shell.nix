@@ -147,10 +147,55 @@
     git push
     echo "Published wiki to $remote"
   '';
+  # ── OpenGL / X11 runtime for the LWJGL dev client on NixOS ──────────────────
+  # `gradle runClient` launches Minecraft's bundled LWJGL 3.3.3, whose GLFW
+  # dlopen()s libGLX.so.0 / libGL.so.1 at window-create time. Those glvnd dispatch
+  # libs are NOT on the nix devshell's LD_LIBRARY_PATH (which carries only
+  # alsa-lib), so boot dies at the last step with
+  #   GLFW error 65542: GLX: Failed to load GLX  →  Failed to create window
+  # even though every mod loaded fine. Headless `gradle runServer` needs none of
+  # this — it never creates a GL context.
+  #
+  # This list mirrors the game LD_LIBRARY_PATH that the nixpkgs `prismlauncher`
+  # wrapper bakes in — the launcher that already runs this exact pack on this
+  # machine, so the set is proven-good. ORDER MATTERS: /run/opengl-driver/lib is
+  # prepended FIRST (see glLibPath) so the NixOS-managed vendor GL/driver stack
+  # resolves ahead of the nix-store client libs. An earlier attempt that appended
+  # it LAST + omitted glfw3-minecraft/udev produced a mismatched GL dispatch and
+  # hard-crashed the Hyprland/Xwayland display. Keep this in sync with prismlauncher.
+  glRuntimeLibs = with pkgs; [
+    stdenv.cc.cc.lib      # libstdc++
+    glfw3-minecraft       # Minecraft-patched GLFW (what Prism ships)
+    openal
+    alsa-lib
+    libjack2
+    libpulseaudio
+    pipewire
+    libglvnd              # libGLX.so.0 / libGL.so.1 dispatch — the piece missing from the bare devshell
+    xorg.libX11
+    xorg.libXcursor
+    xorg.libXext
+    xorg.libXrandr
+    xorg.libXxf86vm
+    udev                  # libudev (systemd-minimal-libs) — silences the "Did not find udev library" warning
+    vulkan-loader
+    flite                 # narrator TTS
+    gamemode              # feral gamemode client lib
+    libusb1
+  ];
+  glLibPath = "/run/opengl-driver/lib:" + pkgs.lib.makeLibraryPath glRuntimeLibs;
   run-client = pkgs.writeShellScriptBin "run-client" ''
     set -euo pipefail
     root="$(git rev-parse --show-toplevel)"
     cd "$root"
+    # NixOS: reproduce PrismLauncher's proven game LD_LIBRARY_PATH (see glRuntimeLibs)
+    # so LWJGL's GLFW can create a GL context. This renders on the AMD iGPU / mesa —
+    # the compositor's GPU and the known-stable path here. Do NOT force the NVIDIA
+    # dGPU (__GLX_VENDOR_LIBRARY_NAME=nvidia): under Hyprland + Xwayland that path has
+    # hard-crashed the whole display. If a launch ever misbehaves, contain it in a
+    # nested micro-compositor so a GL/driver fault can't take down Hyprland:
+    #     gamescope -f -- run-client
+    export LD_LIBRARY_PATH="${glLibPath}''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
     # Link any staged world(s) into the dev run dir so you boot on the real map.
     if [ -d mrpack/maps ]; then
       mkdir -p run/saves
