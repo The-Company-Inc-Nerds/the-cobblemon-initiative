@@ -45,8 +45,8 @@ repositories {
     maven("https://artefacts.cobblemon.com/releases/")
     maven("https://maven.shedaniel.me/")
     maven("https://maven.terraformersmc.com/releases/")
-    maven("https://cursemaven.com")
-    maven("https://api.modrinth.com/maven") // Easy NPC (opted out of CurseForge distribution)
+    maven("https://cursemaven.com") { content { includeGroup("curse.maven") } } // scope: else its 500s on maven.modrinth paths abort resolution
+    maven("https://api.modrinth.com/maven") { content { includeGroup("maven.modrinth") } } // Easy NPC + Carpet (opted out of CurseForge distribution)
     maven("https://maven.blamejared.com") // JourneyMap API
 }
 
@@ -104,6 +104,10 @@ dependencies {
     runtimeOnly("com.electronwill.night-config:toml:3.8.1")
     runtimeOnly("org.graalvm.js:js:22.3.0")                     // Cobblemon's Showdown battle engine: the maven dev artifact references plain org.graalvm.polyglot (the release jar relocates+bundles it as com.cobblemon.mod.relocations.graalvm) — without this the Showdown thread dies (NoClassDefFoundError: org/graalvm/polyglot/HostAccess) and boot hangs. Version = Cobblemon 1.7.3's own graal pin (libs.versions.toml @ release commit)
     modRuntimeOnly("curse.maven:mapfrontiers-366783:7099826")   // MapFrontiers-1.21.1-2.7.0-beta.18-fabric.jar (matches the 2.7.0-beta.18 integration target)
+    // Carpet (fake players via /player spawn) — TEST-ONLY, never shipped. Lets the headless
+    // harness spawn a bot ServerPlayer to trigger latch-NPC spawns, run player-scoped commands,
+    // and read LIVE placement positions (config coords are only nominal). See docs/TESTING_TOOLKIT.md.
+    modRuntimeOnly("maven.modrinth:carpet:1.4.147")            // fabric-carpet 1.4.147 (1.21.1); Modrinth-maven versions carpet by number, not id
     // Then `run-client` (run dir = ./run); copy/symlink your UPM 2 world into ./run/saves/.
 
     // Map Frontiers integration needs no compile dependency: its plugin API does not exist

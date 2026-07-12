@@ -1,0 +1,155 @@
+#!/usr/bin/env bash
+# Headless test harness for The Cobblemon Initiative.
+#
+# Phases:
+#   1. STATIC   — content_integrity.py + validate_trainers.py (no game)
+#   2. SERVER   — boot `gradle runServer` on the configured world via a FIFO console,
+#                 wait for "Done", run a command suite, assert no unexpected errors
+#                 and no `[TEST] ... FAIL` lines
+#   3. CLIENT   — (opt-in: --client) boot the lean dev client, assert the resource
+#                 reload completes with no CompletionException / StitcherException
+#                 (the growlithe / atlas-overflow hang guards)
+#
+# Usage:
+#   scripts/test_harness              # static + server
+#   scripts/test_harness --client     # + client reload check (heavy, needs a display)
+#   scripts/test_harness --static     # static only (fast, no game)
+# Exit code is nonzero if any phase fails — usable as a pre-build / CI gate.
+#
+# Design notes (hard-won 2026-07-11): find the server JVM with
+# `ps -eo pid,args | awk '/dli.env=server/ && !/awk/'` — NEVER `pkill -f`, which
+# self-matches this script's own command line and SIGKILLs the harness.
+set -uo pipefail
+ROOT="$(git -C "$(dirname "$0")" rev-parse --show-toplevel)"
+cd "$ROOT"
+
+FIFO=/tmp/ci_mc_in
+SRVLOG=/tmp/ci_runserver.log
+CLILOG=/tmp/ci_runclient.log
+DO_CLIENT=0; DO_SERVER=1; DO_STATIC=1
+for arg in "$@"; do
+  case "$arg" in
+    --client) DO_CLIENT=1 ;;
+    --static) DO_SERVER=0; DO_CLIENT=0 ;;
+    --no-static) DO_STATIC=0 ;;
+    -h|--help) sed -n '2,20p' "$0"; exit 0 ;;
+  esac
+done
+
+b=$(printf '\033[1m'); g=$(printf '\033[32m'); r=$(printf '\033[31m'); y=$(printf '\033[33m'); z=$(printf '\033[0m')
+PASS=0; FAIL=0
+pass(){ PASS=$((PASS+1)); printf '  %s✓%s %s\n' "$g" "$z" "$1"; }
+fail(){ FAIL=$((FAIL+1)); printf '  %s✗ %s%s\n' "$r" "$1" "$z"; }
+hdr(){ printf '\n%s== %s ==%s\n' "$b" "$1" "$z"; }
+
+server_pid(){ ps -eo pid,args | awk '/fabric\.dli\.env=server/ && /openjdk/ && !/awk/ {print $1; exit}'; }
+stop_server(){
+  local p; p=$(server_pid)
+  [ -n "$p" ] && printf 'stop\n' > "$FIFO" 2>/dev/null && sleep 6
+  p=$(server_pid); [ -n "$p" ] && kill -9 "$p" 2>/dev/null
+  pkill -f "tail -n +1 -f $FIFO" 2>/dev/null
+}
+trap stop_server EXIT
+
+# ── benign log noise that is NOT a failure (expanded from the 2026-07-11 audit) ──
+ALLOW='No data fixer registered|mega_showdown:|Unable to connect to Discord|could not find sampler|could not find uniform|missingTagTranslation|Invalid path in mod resource-pack|Did not find udev|Disabling Melody|Cannot load class .* in environment type SERVER|Error loading class:|refmap.*could not be read|Reference map|was not found. Skipping|Class path entries reference missing files|animated-gif|Cannot remap|not compatible with Loader|Missing sound for event|dropping miplevel|limits mip level|Force-disabling mixin|is deprecated|does not exist, cannot add it to event|DEBUG'
+
+# ── Phase 1: STATIC ──────────────────────────────────────────────────────────
+if [ "$DO_STATIC" = 1 ]; then
+  hdr "STATIC checks"
+  if python3 dev/cobblemon_validation/content_integrity.py > /tmp/ci_content.log 2>&1; then
+    pass "content_integrity ($(grep -oE 'SUMMARY.*' /tmp/ci_content.log))"
+  else
+    fail "content_integrity — unresolved asset refs:"; grep 'asset FAIL' /tmp/ci_content.log | sed 's/^/      /'
+  fi
+  if python3 dev/cobblemon_validation/validate_trainers.py > /tmp/ci_trainers.log 2>&1; then
+    pass "validate_trainers (teams legal vs Cobblemon jar)"
+  else
+    fail "validate_trainers — illegal team entries:"; grep -iE 'ERROR' /tmp/ci_trainers.log | head | sed 's/^/      /'
+  fi
+fi
+
+# ── Phase 2: SERVER ──────────────────────────────────────────────────────────
+if [ "$DO_SERVER" = 1 ]; then
+  hdr "SERVER boot + console suite  (world: $(grep -oE '^level-name=.*' run/server.properties | cut -d= -f2))"
+  # A dedicated server reads run/<level-name>/, NOT run/saves/<level-name>/ (the client
+  # path). Without this it silently GENERATES A FRESH WORLD and every placement/terrain
+  # check runs against blank terrain. Link the built map in if it isn't already.
+  LVL=$(grep -oE '^level-name=.*' run/server.properties | cut -d= -f2-)
+  if [ -n "$LVL" ] && [ -d "run/saves/$LVL" ] && [ ! -e "run/$LVL" ]; then
+    ln -s "$PWD/run/saves/$LVL" "run/$LVL" && echo "  linked run/$LVL -> run/saves/$LVL (built map)"
+  fi
+  rm -f "$FIFO" "$SRVLOG"; mkfifo "$FIFO"
+  ( tail -n +1 -f "$FIFO" | gradle runServer --console=plain --no-daemon ) > "$SRVLOG" 2>&1 &
+  # wait up to 5 min for Done / startup failure
+  for _ in $(seq 1 150); do
+    grep -qE 'Done \(' "$SRVLOG" && break
+    grep -qiE 'Failed to start|Exception in server tick|Encountered an unexpected exception|A problem occurred configuring' "$SRVLOG" && break
+    sleep 2
+  done
+  if grep -qE 'Done \(' "$SRVLOG"; then
+    pass "server reached Done ($(grep -oE 'Done \([0-9.]+s\)' "$SRVLOG" | tail -1))"
+    # command suite (safe, no player). test-* lines parsed if present.
+    for cmd in \
+      'cobblemon-initiative install verify' \
+      'cobblemon-initiative install check' \
+      'cobblemon-initiative test reload' \
+      'cobblemon-initiative test registry' \
+      'cobblemon-initiative test data' ; do
+      printf 'say ===CMD %s===\n%s\n' "$cmd" "$cmd" > "$FIFO"; sleep 3
+    done
+    # test placement is informational + slow (loads a chunk per trainer) — run it but
+    # don't gate on it; capture output for review.
+    printf 'say ===CMD placement===\ncobblemon-initiative test placement\n' > "$FIFO"; sleep 12
+    sleep 3
+    # subsystem asserts (after suite — RCT registration lags Done by a few seconds)
+    grep -q 'Registered [1-9][0-9]* trainers' "$SRVLOG" && pass "RCT trainers registered ($(grep -oE 'Registered [0-9]+ trainers' "$SRVLOG" | tail -1))" || fail "no trainers registered"
+    grep -q 'NPC Sight loaded' "$SRVLOG" && pass "NPC Sight subsystem loaded" || fail "NPC Sight did not load"
+    # assert: no [TEST] FAIL, no reload stack trace, no non-allowlisted ERROR/Exception
+    if grep -qE '\[TEST\] .* FAIL' "$SRVLOG"; then
+      fail "in-mod test command reported failures:"; grep -E '\[TEST\] .* FAIL' "$SRVLOG" | sed 's/^.*\[TEST\]/      [TEST]/'
+    else
+      pass "no [TEST] FAIL lines"
+    fi
+    BAD=$(grep -nE 'ERROR|Exception|Caused by|Couldn.t parse|Failed to load|No such trainer|Unknown or unreadable' "$SRVLOG" | grep -vE "$ALLOW" | grep -viE 'stopping|ServerStarting' | head -8)
+    if [ -n "$BAD" ]; then
+      fail "unexpected error lines in server log:"; echo "$BAD" | sed 's/^/      /'
+    else
+      pass "no unexpected errors in server log"
+    fi
+  else
+    fail "server did not reach Done — tail:"; tail -6 "$SRVLOG" | sed 's/^/      /'
+  fi
+  stop_server; trap - EXIT
+fi
+
+# ── Phase 3: CLIENT (opt-in) ─────────────────────────────────────────────────
+if [ "$DO_CLIENT" = 1 ]; then
+  hdr "CLIENT reload check (lean config; needs a display)"
+  rm -f "$CLILOG"
+  DISPLAY=${DISPLAY:-:0} nix develop -c run-client > "$CLILOG" 2>&1 &
+  for _ in $(seq 1 180); do
+    grep -qiE 'Setting user:|Backend library: LWJGL' "$CLILOG" && break
+    grep -qiE 'GLX: Failed to load GLX|WindowInitFailed' "$CLILOG" && break
+    sleep 2
+  done
+  # give the reload time to complete or crash
+  for _ in $(seq 1 120); do
+    grep -qiE 'CompletionException|StitcherException|A fatal error has been|Narrator library' "$CLILOG" && break
+    sleep 2
+  done
+  cp=$(ps -eo pid,args | awk '/fabric\.dli\.env=client/ && /openjdk/ && !/awk/ {print $1; exit}')
+  if grep -qiE 'GLX: Failed to load GLX' "$CLILOG"; then
+    fail "client GLX failure — GL env broken (see reference-runclient-nixos-gl-fix)"
+  elif grep -qiE 'CompletionException|StitcherException' "$CLILOG"; then
+    fail "client reload threw (hang risk):"; grep -iE 'Unable to load model|StitcherException|Unable to fit' "$CLILOG" | head -3 | sed 's/^/      /'
+  else
+    pass "client reload clean (no reload exceptions)"
+  fi
+  [ -n "$cp" ] && kill -9 "$cp" 2>/dev/null
+fi
+
+# ── Summary ──────────────────────────────────────────────────────────────────
+hdr "SUMMARY"
+printf '  %d passed, %d failed\n' "$PASS" "$FAIL"
+[ "$FAIL" -eq 0 ] && { printf '%s  ALL GREEN%s\n' "$g" "$z"; exit 0; } || { printf '%s  FAILURES ABOVE%s\n' "$r" "$z"; exit 1; }

@@ -307,6 +307,7 @@ public class CobblemonInitiativeCommands {
                 .executes(CobblemonInitiativeCommands::applyShopTier)
             )
         )
+        .then(TestCommands.build())
     );
 
     dispatcher.register(
