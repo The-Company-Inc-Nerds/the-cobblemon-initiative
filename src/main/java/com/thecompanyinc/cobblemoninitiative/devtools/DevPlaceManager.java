@@ -295,9 +295,16 @@ public final class DevPlaceManager {
     int x = e.get("x").getAsInt();
     int z = e.get("z").getAsInt();
     ServerLevel level = player.serverLevel();
-    int y = e.has("y")
-      ? e.get("y").getAsInt()
-      : level.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z);
+    int y;
+    if (e.has("y")) {
+      y = e.get("y").getAsInt();
+    } else {
+      // Force the target chunk to load BEFORE reading the heightmap — otherwise a jump to a
+      // far/unloaded chunk (the very first proposal, teleporting away from spawn) reads an
+      // empty heightmap that returns the world floor and drops the player under the map.
+      level.getChunk(x >> 4, z >> 4);
+      y = level.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z);
+    }
     player.connection.teleport(x + 0.5, y, z + 0.5, player.getYRot(), player.getXRot());
 
     player.sendSystemMessage(Component.literal("§6=== " + e.get("name").getAsString()
