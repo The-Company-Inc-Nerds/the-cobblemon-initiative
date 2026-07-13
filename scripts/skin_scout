@@ -1,0 +1,536 @@
+#!/usr/bin/env python3
+"""
+skin_scout — find / review / apply Minecraft skins for the NPC dress pass.
+
+The problem: ~300 civilians default to Steve. This tool makes the dress pass
+tractable in three moves:
+
+  scripts/skin_scout search "fisherman" -n 12          # fetch candidate skins
+  scripts/skin_scout sheet dev/skins/fisherman          # contact sheet for review
+  scripts/skin_scout apply gaviota_fisher dev/skins/fisherman/mineskin_xxx.png
+
+SOURCES (probed 2026-07-12 — see docs/SKIN_SCOUT.md):
+  * MineSkin v2 API  (api.mineskin.org/v2/skins?filter=…) — works keyless, returns
+    named community skins as texture hashes on textures.minecraft.net (Mojang CDN).
+  * Mojang profile API — `player <name>` borrows a real player's current skin.
+  * minecraftskins.com (Skindex) and NameMC are Cloudflare-403 to scripts; not used.
+
+PIPELINE FIT (mirrors scripts/content_compile, do not diverge):
+  apply copies the PNG into the trainer_textures resource pack
+  (…/trainers/single/<target>.png) AND pre-provisions the instance-local Easy NPC
+  custom-skin file mrpack/overrides/config/easy_npc/skin/humanoid/<uuid5>.png using
+  the SAME deterministic uuid5 content_compile derives for
+  skin {"type":"rctmod","texture":"single/<target>"} — so the next full
+  content_compile finds everything already in place.  --uuid <dashed-uuid> instead
+  targets an existing world NPC's custom-skin slot directly
+  (skin {"type":"custom","uuid":[a,b,c,d]}).
+
+Stdlib + ImageMagick `magick` only (PIL is not available in this environment).
+"""
+
+from __future__ import annotations
+import argparse
+import json
+import re
+import shutil
+import subprocess
+import sys
+import tempfile
+import time
+import urllib.error
+import urllib.parse
+import urllib.request
+import uuid as _uuid
+from datetime import datetime, timezone
+from pathlib import Path
+
+# ─── Paths (same conventions as content_compile) ────────────────────────────
+
+SCRIPT_DIR = Path(__file__).resolve().parent
+PROJECT_ROOT = SCRIPT_DIR.parent
+
+TRAINER_TEX_DIR = (PROJECT_ROOT
+                   / "src/main/resources/resourcepacks/trainer_textures"
+                   / "assets/rctmod/textures/trainers")
+SKIN_OVERRIDE_DIR = PROJECT_ROOT / "mrpack/overrides/config/easy_npc/skin/humanoid"
+DEFAULT_OUT_ROOT = PROJECT_ROOT / "dev/skins"
+
+USER_AGENT = "cobblemon-initiative-skin-scout/1.0 (private modpack tooling)"
+MINESKIN_API = "https://api.mineskin.org/v2/skins"
+TEXTURE_CDN = "https://textures.minecraft.net/texture/"
+MOJANG_PROFILE = "https://api.mojang.com/users/profiles/minecraft/"
+MOJANG_SESSION = "https://sessionserver.mojang.com/session/minecraft/profile/"
+
+LICENSE_NOTE = ("Community-made skin fetched for a private modpack / stream build. "
+                "Not redistributed as an asset pack; credit retained in this manifest.")
+
+
+def log(msg: str) -> None:
+    print(msg, flush=True)
+
+
+def warn(msg: str) -> None:
+    print(f"  ! {msg}", file=sys.stderr, flush=True)
+
+
+# ─── HTTP ────────────────────────────────────────────────────────────────────
+
+def http_get(url: str, timeout: int = 20, retries: int = 2) -> bytes:
+    last: Exception | None = None
+    for attempt in range(retries + 1):
+        try:
+            req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
+            with urllib.request.urlopen(req, timeout=timeout) as resp:
+                return resp.read()
+        except (urllib.error.URLError, urllib.error.HTTPError, TimeoutError, OSError) as e:
+            last = e
+            if attempt < retries:
+                time.sleep(0.8 * (attempt + 1))
+    raise RuntimeError(f"GET {url} failed: {last}")
+
+
+def http_get_json(url: str, **kw) -> dict:
+    return json.loads(http_get(url, **kw).decode("utf-8"))
+
+
+# ─── PNG validation (no PIL: parse the IHDR chunk by hand) ──────────────────
+
+PNG_MAGIC = b"\x89PNG\r\n\x1a\n"
+
+
+def png_dims(data: bytes):
+    """(width, height) if data is a PNG, else None."""
+    if len(data) < 24 or data[:8] != PNG_MAGIC or data[12:16] != b"IHDR":
+        return None
+    return (int.from_bytes(data[16:20], "big"), int.from_bytes(data[20:24], "big"))
+
+
+def classify_skin(data: bytes) -> str:
+    """'modern' (64x64), 'legacy' (64x32), or '' if not a usable skin PNG."""
+    dims = png_dims(data)
+    if dims == (64, 64):
+        return "modern"
+    if dims == (64, 32):
+        return "legacy"
+    return ""
+
+
+def slugify(text: str) -> str:
+    s = re.sub(r"[^a-z0-9]+", "_", text.lower()).strip("_")
+    return s or "skin"
+
+
+# ─── manifest ────────────────────────────────────────────────────────────────
+
+def load_manifest(out_dir: Path) -> dict:
+    mf = out_dir / "manifest.json"
+    if mf.is_file():
+        try:
+            return json.loads(mf.read_text())
+        except json.JSONDecodeError:
+            warn(f"manifest.json unreadable, starting fresh: {mf}")
+    return {"license_note": LICENSE_NOTE, "entries": []}
+
+
+def save_manifest(out_dir: Path, manifest: dict) -> None:
+    (out_dir / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
+
+
+# ─── search (MineSkin) ───────────────────────────────────────────────────────
+
+def mineskin_search(query: str, want: int):
+    """Yield unique-texture skin records: {uuid, shortId, name, texture}."""
+    seen_hashes: set[str] = set()
+    after = None
+    for _page in range(6):                       # politeness cap
+        params = {"filter": query, "size": str(min(32, max(want * 2, 8)))}
+        if after:
+            params["after"] = after
+        url = MINESKIN_API + "?" + urllib.parse.urlencode(params)
+        data = http_get_json(url)
+        skins = data.get("skins") or []
+        if not skins:
+            return
+        for s in skins:
+            tex = s.get("texture")
+            if not tex or tex in seen_hashes:
+                continue
+            seen_hashes.add(tex)
+            yield s
+            if len(seen_hashes) >= want:
+                return
+        after = ((data.get("pagination") or {}).get("next") or {}).get("after")
+        if not after:
+            return
+        time.sleep(0.4)
+
+
+def mineskin_variant(uuid_str: str) -> str:
+    """Best-effort slim/classic lookup; '' on failure (non-fatal)."""
+    try:
+        d = http_get_json(f"{MINESKIN_API}/{uuid_str}", retries=0)
+        return (d.get("skin") or {}).get("variant") or ""
+    except Exception:
+        return ""
+
+
+def cmd_search(args) -> int:
+    query = args.query
+    out_dir = Path(args.out) if args.out else DEFAULT_OUT_ROOT / slugify(query)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    manifest = load_manifest(out_dir)
+    known_files = {e["file"] for e in manifest["entries"]}
+    manifest.setdefault("query", query)
+
+    log(f"search {query!r} -> {out_dir}  (want {args.n})")
+    saved = skipped = 0
+    try:
+        candidates = list(mineskin_search(query, args.n))
+    except RuntimeError as e:
+        warn(f"MineSkin unavailable: {e}")
+        warn("No other searchable source is scriptable right now "
+             "(Skindex/NameMC are Cloudflare-403 — see docs/SKIN_SCOUT.md). "
+             "Fallback: scripts/skin_scout player <minecraft-name> to borrow a "
+             "specific player's skin via the Mojang API.")
+        return 1
+
+    if not candidates:
+        log("  no results — try a shorter/simpler query "
+            "(MineSkin filter is a plain-text name match, e.g. 'nomad' not 'desert nomad')")
+        return 0
+
+    for s in candidates:
+        short = s.get("shortId") or s["uuid"][:8]
+        name = s.get("name") or ""
+        fname = f"mineskin_{short}_{slugify(name) if name else 'unnamed'}.png"
+        if fname in known_files:
+            log(f"  = {fname} (already downloaded)")
+            continue
+        tex_url = TEXTURE_CDN + s["texture"]
+        try:
+            data = http_get(tex_url)
+        except RuntimeError as e:
+            warn(f"texture fetch failed for {short}: {e}")
+            skipped += 1
+            continue
+        kind = classify_skin(data)
+        if not kind:
+            dims = png_dims(data)
+            warn(f"skipping {short}: not a 64x64/64x32 skin PNG (got {dims})")
+            skipped += 1
+            continue
+        (out_dir / fname).write_bytes(data)
+        variant = mineskin_variant(s["uuid"])
+        manifest["entries"].append({
+            "file": fname,
+            "source": "mineskin",
+            "name": name or None,
+            "mineskin_uuid": s["uuid"],
+            "mineskin_short_id": short,
+            "source_url": f"{MINESKIN_API}/{s['uuid']}",
+            "texture_url": tex_url,
+            "format": kind,                       # legacy skins can't be applied
+            "variant": variant or None,           # slim arms render oddly on wide model
+            "fetched": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        })
+        flags = "".join(f" [{f}]" for f in (kind if kind == "legacy" else "",
+                                            variant if variant == "slim" else "") if f)
+        log(f"  + {fname}{flags}")
+        saved += 1
+        time.sleep(0.25)                          # keyless API: be polite
+
+    save_manifest(out_dir, manifest)
+    log(f"saved:{saved} skipped:{skipped} -> {out_dir}/manifest.json")
+    if saved:
+        log(f"next: scripts/skin_scout sheet {out_dir}")
+    return 0
+
+
+# ─── player (Mojang API) ─────────────────────────────────────────────────────
+
+def cmd_player(args) -> int:
+    name = args.name
+    out_dir = Path(args.out) if args.out else DEFAULT_OUT_ROOT / "players"
+    out_dir.mkdir(parents=True, exist_ok=True)
+    try:
+        prof = http_get_json(MOJANG_PROFILE + urllib.parse.quote(name))
+        uuid_str = prof["id"]
+        session = http_get_json(MOJANG_SESSION + uuid_str)
+        import base64
+        textures = json.loads(base64.b64decode(session["properties"][0]["value"]))
+        skin_info = textures["textures"].get("SKIN")
+        if not skin_info:
+            warn(f"{name} has no custom skin set (default Steve/Alex)")
+            return 1
+        data = http_get(skin_info["url"])
+    except RuntimeError as e:
+        warn(f"Mojang API chain failed: {e}")
+        return 1
+    except (KeyError, IndexError, json.JSONDecodeError) as e:
+        warn(f"unexpected Mojang API response shape: {e}")
+        return 1
+
+    kind = classify_skin(data)
+    if not kind:
+        warn(f"downloaded texture is not a valid skin PNG ({png_dims(data)})")
+        return 1
+    fname = f"mojang_{slugify(prof.get('name', name))}.png"
+    (out_dir / fname).write_bytes(data)
+    manifest = load_manifest(out_dir)
+    manifest["entries"] = [e for e in manifest["entries"] if e["file"] != fname]
+    manifest["entries"].append({
+        "file": fname,
+        "source": "mojang",
+        "player_name": prof.get("name", name),
+        "player_uuid": uuid_str,
+        "texture_url": skin_info["url"],
+        "format": kind,
+        "variant": (skin_info.get("metadata") or {}).get("model") or "classic",
+        "fetched": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+    })
+    save_manifest(out_dir, manifest)
+    log(f"+ {out_dir / fname}  ({kind}, {manifest['entries'][-1]['variant']})")
+    return 0
+
+
+# ─── sheet (ImageMagick contact sheet) ───────────────────────────────────────
+
+def magick(*cmd_args: str) -> None:
+    subprocess.run(["magick", *cmd_args], check=True, capture_output=True, text=True)
+
+
+_FONT_CACHE: list[str] = []
+
+
+def pick_font() -> str:
+    """This environment's ImageMagick has no default font (labels fail with
+    `unable to read font (null)`) — pick an installed one."""
+    if _FONT_CACHE:
+        return _FONT_CACHE[0]
+    r = subprocess.run(["magick", "-list", "font"], capture_output=True, text=True)
+    fonts = [ln.split("Font:", 1)[1].strip()
+             for ln in r.stdout.splitlines() if ln.strip().startswith("Font:")]
+    for pref in ("DejaVu-Sans", "Liberation-Sans", "DejaVu-Sans-Mono"):
+        if pref in fonts:
+            _FONT_CACHE.append(pref)
+            return pref
+    if not fonts:
+        raise RuntimeError("ImageMagick reports no usable fonts (magick -list font)")
+    _FONT_CACHE.append(fonts[0])
+    return fonts[0]
+
+
+def hat_is_opaque(hat_png: Path) -> bool:
+    """Fully-opaque hat layers (common on legacy junk skins) would blot out the face."""
+    r = subprocess.run(["magick", str(hat_png), "-format", "%[opaque]", "info:"],
+                       check=True, capture_output=True, text=True)
+    return r.stdout.strip().lower() == "true"
+
+
+def build_figure(skin: Path, dest: Path, tmp: Path) -> None:
+    """Front-view figure: face(8,8 8x8)+hat(40,8 8x8) / torso(20,20 8x12) /
+    legs(4,20 4x12 + mirrored copy), upscaled 12x nearest-neighbor."""
+    face = tmp / "face.png"
+    hat = tmp / "hat.png"
+    torso = tmp / "torso.png"
+    rleg = tmp / "rleg.png"
+    legs = tmp / "legs.png"
+    s = str(skin)
+    magick(s, "-crop", "8x8+8+8", "+repage", str(face))
+    magick(s, "-alpha", "on", "-crop", "8x8+40+8", "+repage", str(hat))
+    if not hat_is_opaque(hat):
+        magick(str(face), str(hat), "-compose", "Over", "-composite", str(face))
+    magick(s, "-crop", "8x12+20+20", "+repage", str(torso))
+    magick(s, "-crop", "4x12+4+20", "+repage", str(rleg))
+    magick(str(rleg), "(", "+clone", "-flop", ")", "+append", str(legs))
+    magick(str(face), str(torso), str(legs),
+           "-background", "none", "-gravity", "center", "-append",
+           "-filter", "point", "-resize", "1200%", str(dest))
+
+
+def cell_label(stem: str) -> str:
+    """Two-line label that fits a 96px-wide cell (drop source prefix, wrap)."""
+    for pre in ("mineskin_", "mojang_"):
+        if stem.startswith(pre):
+            stem = stem[len(pre):]
+            break
+    if len(stem) <= 13:
+        return stem
+    second = stem[13:26] + ("…" if len(stem) > 26 else "")
+    return stem[:13] + "\n" + second
+
+
+def cmd_sheet(args) -> int:
+    src_dir = Path(args.dir)
+    if not src_dir.is_dir():
+        warn(f"not a directory: {src_dir}")
+        return 1
+    skins = sorted(p for p in src_dir.glob("*.png") if p.name != "sheet.png")
+    usable = []
+    for p in skins:
+        kind = classify_skin(p.read_bytes())
+        if kind:
+            usable.append(p)
+        else:
+            warn(f"skipping (not a 64x64/64x32 skin): {p.name}")
+    if not usable:
+        warn(f"no valid skins in {src_dir}")
+        return 1
+
+    sheet = src_dir / "sheet.png"
+    with tempfile.TemporaryDirectory(prefix="skin_scout_") as td:
+        tmp = Path(td)
+        montage_args: list[str] = []
+        for p in usable:
+            fig = tmp / (p.stem + ".fig.png")
+            try:
+                build_figure(p, fig, tmp)
+            except subprocess.CalledProcessError as e:
+                warn(f"figure build failed for {p.name}: {e.stderr.strip()[:200]}")
+                continue
+            montage_args += ["-label", cell_label(p.stem), str(fig)]
+        if not montage_args:
+            warn("no figures built")
+            return 1
+        n = len(montage_args) // 3          # each figure adds: -label <text> <file>
+        subprocess.run(
+            ["magick", "montage", "-font", pick_font(), *montage_args,
+             "-tile", f"{min(6, n)}x", "-geometry", "+12+12",
+             "-background", "#1e1e22", "-fill", "#e8e8e8", "-pointsize", "13",
+             str(sheet)],
+            check=True, capture_output=True, text=True)
+    log(f"sheet: {sheet}  ({n} candidates)")
+    return 0
+
+
+# ─── apply (into the real content_compile pipeline) ─────────────────────────
+
+def _uuid_int_array(u: _uuid.UUID) -> tuple:
+    """UUID -> Minecraft [I;a,b,c,d] signed 32-bit ints (same as content_compile)."""
+    b = u.int
+    parts = [(b >> 96) & 0xFFFFFFFF, (b >> 64) & 0xFFFFFFFF,
+             (b >> 32) & 0xFFFFFFFF, b & 0xFFFFFFFF]
+    return tuple(p - 0x100000000 if p >= 0x80000000 else p for p in parts)
+
+
+def _install(src_bytes: bytes, dest: Path, force: bool, dry: bool) -> bool:
+    if dest.is_file() and dest.read_bytes() == src_bytes:
+        log(f"  = {dest} (already identical)")
+        return True
+    if dest.is_file() and not force:
+        warn(f"refusing to overwrite existing, different file: {dest} (use --force)")
+        return False
+    log(f"  {'DRY-RUN would write' if dry else '+'} {dest}")
+    if not dry:
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        dest.write_bytes(src_bytes)
+    return True
+
+
+def cmd_apply(args) -> int:
+    skin = Path(args.skin)
+    if not skin.is_file():
+        warn(f"no such file: {skin}")
+        return 1
+    data = skin.read_bytes()
+    kind = classify_skin(data)
+    if kind == "legacy":
+        warn("this is a legacy 64x32 skin — Easy NPC humanoid custom skins need the "
+             "modern 64x64 layout (left limbs live in the bottom half). Pick a 64x64 "
+             "candidate instead; a naive canvas-extend would render broken left limbs.")
+        return 1
+    if kind != "modern":
+        warn(f"not a 64x64 skin PNG ({png_dims(data)})")
+        return 1
+
+    dry = args.dry_run
+    if args.uuid:
+        # Direct custom-skin slot for an existing world NPC (skin type "custom").
+        try:
+            u = _uuid.UUID(args.uuid)
+        except ValueError:
+            warn(f"not a dashed uuid: {args.uuid}")
+            return 1
+        if not _install(data, SKIN_OVERRIDE_DIR / f"{u}.png", args.force, dry):
+            return 1
+        a, b, c, d = _uuid_int_array(u)
+        log("")
+        log("Wired as an instance-local Easy NPC CUSTOM skin. Next steps:")
+        log("  1. In the character's dialog-src JSON (dialog-src/ is gitignored;")
+        log("     it lives outside this checkout) set:")
+        log(f'       "skin": {{"type": "custom", "uuid": [{a}, {b}, {c}, {d}]}}')
+        log("  2. Run scripts/content_compile (full compile — any error aborts ALL")
+        log("     writes, so make sure it ends errors:0).")
+        log("  3. New skins only appear after `/cobblemon-initiative install run`")
+        log("     repaints presets in-world (not a hot reload).")
+        return 0
+
+    target = args.target.lower()
+    if not re.fullmatch(r"[a-z0-9_]+", target):
+        warn(f"target must be [a-z0-9_]+ (got {args.target!r}) — it becomes "
+             f"trainers/single/<target>.png in the trainer_textures pack")
+        return 1
+
+    # Route 1: the trainer_textures resource pack ("rctmod" skin type).
+    tex_rel = f"single/{target}"
+    pack_dest = TRAINER_TEX_DIR / f"{tex_rel}.png"
+    # Route 2: pre-provision the instance-local Easy NPC custom-skin copy with the
+    # SAME deterministic uuid5 content_compile's skin_node("rctmod") derives — the
+    # compile's own copy step then finds identical bytes and is a no-op.
+    u = _uuid.uuid5(_uuid.NAMESPACE_URL, "cobblemon-initiative:rctmod-skin:" + tex_rel)
+    ok = _install(data, pack_dest, args.force, dry)
+    ok = _install(data, SKIN_OVERRIDE_DIR / f"{u}.png", args.force, dry) and ok
+    if not ok:
+        return 1
+    log("")
+    log(f"Installed as trainer_textures texture {tex_rel!r} "
+        f"(Easy NPC custom-skin uuid {u}). Next steps:")
+    log("  1. In the character's dialog-src JSON (dialog-src/ is gitignored; it")
+    log("     lives outside this checkout) set:")
+    log(f'       "skin": {{"type": "rctmod", "texture": "{tex_rel}"}}')
+    log("  2. Run scripts/content_compile (full compile — any error aborts ALL")
+    log("     writes, so make sure it ends errors:0).")
+    log("  3. New skins only appear after `/cobblemon-initiative install run`")
+    log("     repaints presets in-world (not a hot reload).")
+    return 0
+
+
+# ─── CLI ─────────────────────────────────────────────────────────────────────
+
+def main() -> int:
+    ap = argparse.ArgumentParser(
+        prog="skin_scout",
+        description="Find, review and apply Minecraft skins for the NPC dress pass "
+                    "(see docs/SKIN_SCOUT.md).")
+    sub = ap.add_subparsers(dest="cmd", required=True)
+
+    p = sub.add_parser("search", help="search MineSkin for candidate skins")
+    p.add_argument("query", help="role/theme, e.g. 'fisherman' (plain-text name match)")
+    p.add_argument("-n", type=int, default=12, help="unique candidates to fetch (default 12)")
+    p.add_argument("--out", help="output dir (default dev/skins/<slug>/)")
+    p.set_defaults(fn=cmd_search)
+
+    p = sub.add_parser("player", help="borrow a real player's skin by Minecraft name (Mojang API)")
+    p.add_argument("name")
+    p.add_argument("--out", help="output dir (default dev/skins/players/)")
+    p.set_defaults(fn=cmd_player)
+
+    p = sub.add_parser("sheet", help="build <dir>/sheet.png review contact sheet")
+    p.add_argument("dir")
+    p.set_defaults(fn=cmd_sheet)
+
+    p = sub.add_parser("apply", help="install a picked skin into the content_compile pipeline")
+    p.add_argument("target", help="texture name -> trainers/single/<target>.png ([a-z0-9_]+)")
+    p.add_argument("skin", help="chosen 64x64 skin PNG")
+    p.add_argument("--uuid", help="instead: install for an existing world NPC's dashed uuid "
+                                  "(skin type 'custom')")
+    p.add_argument("--force", action="store_true", help="overwrite an existing different file")
+    p.add_argument("--dry-run", action="store_true", help="print destinations, write nothing")
+    p.set_defaults(fn=cmd_apply)
+
+    args = ap.parse_args()
+    return args.fn(args)
+
+
+if __name__ == "__main__":
+    sys.exit(main())

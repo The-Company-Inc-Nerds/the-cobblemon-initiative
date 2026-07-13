@@ -1,0 +1,710 @@
+#!/usr/bin/env python3
+"""smoke_auto — one command that runs every headless verification proven to work
+against the live dev map, and writes a review report.
+
+ATTACHES to the running dev server over RCON (127.0.0.1:25575/devtest) — it never
+boots one. Server-dependent phases SKIP with a clear message when nothing is up.
+RCON responses concatenate a command's output lines WITHOUT newlines; every parser
+here splits on stable prefixes ([TEST] , § markers stripped) instead of newlines.
+
+Phases (each PASS/FAIL/SKIP; the runner continues on failure; exit is nonzero if
+any phase FAILs):
+  static    scripts/test_harness --static (content_integrity + validate_trainers)
+  console   install verify/check + test reload/registry/data — gate on [TEST] FAIL
+  caps      Carpet bot ladder: dev badges/grant → parse the SOURCE-visible
+            "level cap now N" confirmations (22/80/85/100) — levelcap itself is
+            player-directed and invisible over RCON
+  canary    givemon + armor-stand anchor + tbcs attach + tbcs battle vs
+            rctmod:stadium_wave_1 — PASS if no refusal ("is not attached",
+            "Failed to validate") comes back
+  sweep     scripts/npc_live_sweep.py subprocess (hard embeds gate)
+  safari    badges 3 → cobbledollars set fee+900 → safari enter (fee via the
+            console-visible `cobbledollars query`; query abbreviates ≥1000, so
+            the post-fee remainder is kept in the exact range) → scatter/lure
+            probe → exit → ball confiscation via
+            `clear <bot> cobblemon:safari_ball 0` ("Found N")
+  stadium   stadium start 25 → battle-appeared probe (pokemon entity near bot)
+            → stopbattle voids the run
+  logsweep  forbidden-pattern diff over the server log (self-inflicted
+            "Unknown or incomplete command" probes are discounted)
+
+Usage:
+  scripts/smoke_auto [--bot smokebot] [--skip-sweep] [--only caps,safari]
+                     [--mark] [--log /tmp/runserver.log]
+                     [--log-baseline base.json] [--write-log-baseline base.json]
+
+  --mark   record results into the in-mod checklist as COMMENTS only
+           (smoke comment <id> [auto] ... — never pass/fail marks):
+           console→0.6, caps→2.5+2.8, canary→4.1
+
+Output: dev/evidence/<ts>/smoke_report.md + smoke_report.json (path printed).
+"""
+import argparse
+import json
+import os
+import re
+import subprocess
+import sys
+import time
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from mc_rcon import Rcon
+
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+SWEEP_SCRIPT = os.path.join(ROOT, 'scripts/npc_live_sweep.py')
+SWEEP_REPORT = os.path.join(ROOT, 'dev/live_sweep_report.json')
+HARNESS = os.path.join(ROOT, 'scripts/test_harness')
+DEFAULT_LOGS = ['/tmp/runserver.log', '/tmp/ci_runserver.log']
+
+FORBIDDEN = [
+    'Failed to load function',
+    'Unknown or incomplete command',
+    'Blocked execute-as-user',
+    'Import failed',
+    'Unknown Cobblemon species',
+]
+
+# checklist mapping for --mark (COMMENT only — a human flips pass/fail)
+MARK_MAP = {'console': ['0.6'], 'caps': ['2.5', '2.8'], 'canary': ['4.1']}
+
+PHASE_ORDER = ['static', 'console', 'caps', 'canary', 'sweep', 'safari', 'stadium', 'logsweep']
+
+
+def strip_colors(s):
+    return re.sub('§.', '', s)
+
+
+def strip_ansi(s):
+    return re.sub(r'\x1b\[[0-9;]*m', '', s)
+
+
+def test_lines(resp):
+    """Re-split an RCON-concatenated response on the stable [TEST] prefix."""
+    return [l.strip() for l in re.split(r'(?=\[TEST\] )', resp) if l.strip()]
+
+
+def is_unknown_command(resp):
+    return ('Unknown or incomplete command' in resp
+            or 'Incorrect argument for command' in resp)
+
+
+class Console:
+    """RCON attach + transcript + self-inflicted unknown-command bookkeeping.
+
+    Resilience: one silent reconnect on a dropped socket (transient drops were
+    observed live); if the reconnect also fails the console marks itself down,
+    the phase records the ConnectionError, and later phases SKIP cleanly.
+    """
+
+    def __init__(self, bot):
+        self.bot = bot
+        self.transcript = []
+        self.self_inflicted_unknown = 0
+        self.err = None
+        try:
+            self.r = Rcon(retries=1, retry_delay=0, timeout=120)
+        except (ConnectionError, PermissionError, OSError) as e:
+            self.r, self.err = None, str(e)
+
+    @property
+    def up(self):
+        return self.r is not None
+
+    def cmd(self, c, probe=False):
+        """Run one command; returns color-stripped output. probe=True marks a
+        feature-detect whose Unknown-command noise must not fail the log sweep."""
+        if not self.r:
+            raise ConnectionError(f'rcon down: {self.err}')
+        try:
+            out = self.r.cmd(c)
+        except (ConnectionError, OSError):
+            try:  # one reconnect — transient drops happen on a busy dev server
+                self.r.close()
+                self.r = Rcon(retries=2, retry_delay=2, timeout=120)
+                out = self.r.cmd(c)
+            except (ConnectionError, PermissionError, OSError) as e:
+                self.r, self.err = None, f'socket dropped and reconnect failed: {e}'
+                raise ConnectionError(self.err) from e
+        out = strip_colors(out)
+        self.transcript.append((c, out))
+        if probe and is_unknown_command(out):
+            self.self_inflicted_unknown += 1
+        return out
+
+    def as_bot(self, c, at=False, probe=False):
+        mid = f'as {self.bot} at {self.bot}' if at else f'as {self.bot}'
+        return self.cmd(f'execute {mid} run {c}', probe=probe)
+
+    def players(self):
+        out = self.cmd('list')
+        if ':' not in out:
+            return []
+        return [p.strip() for p in out.split(':', 1)[1].split(',') if p.strip()]
+
+    def bot_online(self):
+        # Carpet canonicalizes fake-player names (smokebot -> SmokeBot): compare
+        # case-insensitively and adopt the server's spelling for later commands.
+        for p in self.players():
+            if p.lower() == self.bot.lower():
+                self.bot = p
+                return True
+        return False
+
+    def ensure_bot(self):
+        if self.bot_online():
+            return True
+        self.cmd(f'player {self.bot} spawn')
+        time.sleep(2.5)
+        return self.bot_online()
+
+    def close(self):
+        if self.r:
+            self.r.close()
+
+
+class Phase:
+    def __init__(self, name):
+        self.name = name
+        self.status = 'SKIP'
+        self.evidence = []
+        self.seconds = 0.0
+
+    def ev(self, line):
+        self.evidence.append(str(line)[:300])
+
+    def skip(self, why):
+        self.status = 'SKIP'
+        self.ev(f'SKIP: {why}')
+
+    def fail(self, why):
+        self.status = 'FAIL'
+        self.ev(f'FAIL: {why}')
+
+    def ok(self):
+        if self.status != 'FAIL':
+            self.status = 'PASS'
+
+    def headline(self):
+        """The one line that summarizes the phase (first FAIL line when failed)."""
+        if self.status == 'FAIL':
+            for e in self.evidence:
+                if e.startswith('FAIL:'):
+                    return e
+        return self.evidence[0] if self.evidence else ''
+
+
+# ── Phase 1: STATIC ──────────────────────────────────────────────────────────
+
+def phase_static(ph, con, args):
+    if not os.path.exists(HARNESS):
+        return ph.skip(f'{HARNESS} not found')
+    if not os.path.isdir(os.path.join(ROOT, 'dev/cobblemon_validation')):
+        ph.ev('note: dev/cobblemon_validation/ missing (gitignored dev assets) — '
+              'the static gate can only run from a fully provisioned checkout')
+    try:
+        p = subprocess.run(['bash', HARNESS, '--static'],
+                           capture_output=True, text=True, timeout=1800, cwd=ROOT)
+    except subprocess.TimeoutExpired:
+        return ph.fail('test_harness --static timed out (1800s)')
+    for line in strip_ansi(p.stdout + p.stderr).splitlines():
+        if re.search(r'[✓✗]|SUMMARY|passed', line):
+            ph.ev(line.strip())
+    ph.fail(f'test_harness --static exit={p.returncode}') if p.returncode else ph.ok()
+
+
+# ── Phase 2: CONSOLE SUITE ───────────────────────────────────────────────────
+
+CONSOLE_SUITE = [
+    'cobblemon-initiative install verify',
+    'cobblemon-initiative install check',
+    'cobblemon-initiative test reload',
+    'cobblemon-initiative test registry',
+    'cobblemon-initiative test data',
+]
+
+
+def phase_console(ph, con, args):
+    if not con.up:
+        return ph.skip(f'server down: {con.err}')
+    for c in CONSOLE_SUITE:
+        resp = con.cmd(c)
+        if is_unknown_command(resp):
+            ph.fail(f'{c!r} did not parse — command surface missing')
+            ph.ev(resp[:200])
+            continue
+        fails = [l for l in test_lines(resp) if re.match(r'\[TEST\] .* FAIL', l)]
+        for l in fails:
+            ph.ev(l)
+        for l in test_lines(resp):
+            if 'SUMMARY' in l:
+                ph.ev(l)
+        if fails:
+            ph.fail(f'{c}: {len(fails)} [TEST] FAIL line(s)')
+        else:
+            ph.ev(f'{c}: clean ({len(resp)} chars)')
+    ph.ok()
+
+
+# ── Phase 3: CAPS LADDER ─────────────────────────────────────────────────────
+
+def _expect_cap(ph, con, cmd, want):
+    resp = con.as_bot(cmd)
+    m = re.search(r'level cap now (\d+)', resp)
+    got = int(m.group(1)) if m else None
+    line = f'{cmd} -> cap {got} (want {want})'
+    ph.ev(line)
+    if got != want:
+        ph.fail(f'cap mismatch: {line} | resp: {resp[:160]}')
+    return got == want
+
+
+def phase_caps(ph, con, args):
+    if not con.up:
+        return ph.skip(f'server down: {con.err}')
+    if not con.ensure_bot():
+        return ph.skip(f'could not spawn Carpet bot {con.bot!r} (Carpet missing?)')
+    # levelcap output is PLAYER-directed (invisible over RCON) — the ladder is
+    # verified through `dev badges`' SOURCE-visible "level cap now N" confirmation.
+    _expect_cap(ph, con, 'cobblemon-initiative dev badges 1', 22)
+    _expect_cap(ph, con, 'cobblemon-initiative dev badges 10', 80)
+    resp = con.as_bot('cobblemon-initiative dev grant royal_league_champion')
+    ph.ev(f'grant royal_league_champion -> {resp[:120]}')
+    if 'Granted achievement' not in resp:
+        ph.fail('grant royal_league_champion: no confirmation')
+    _expect_cap(ph, con, 'cobblemon-initiative dev badges 10', 85)   # champion held -> 85
+    resp = con.as_bot('cobblemon-initiative dev grant board_cleared')
+    ph.ev(f'grant board_cleared -> {resp[:120]}')
+    if 'Granted achievement' not in resp:
+        ph.fail('grant board_cleared: no confirmation')
+    _expect_cap(ph, con, 'cobblemon-initiative dev badges 10', 100)  # board cleared -> 100
+    resp = con.as_bot('cobblemon-initiative reset')
+    ph.ev(f'reset -> {resp[:120]}')
+    if 'reset' not in resp.lower():
+        ph.fail('progress reset: no confirmation')
+    ph.ok()
+
+
+# ── Phase 4: BATTLE CANARY ───────────────────────────────────────────────────
+
+REFUSALS = ('is not attached to an entity', 'Failed to validate', 'insufficient')
+
+
+def phase_canary(ph, con, args):
+    if not con.up:
+        return ph.skip(f'server down: {con.err}')
+    if not con.ensure_bot():
+        return ph.skip(f'could not spawn Carpet bot {con.bot!r}')
+    # givemon's confirmation is player-directed (sendSystemMessage) — invisible over
+    # RCON. Dispatch it and let the battle itself prove the team exists.
+    resp = con.as_bot('cobblemon-initiative givemon eevee level=20')
+    ph.ev(f'givemon dispatched ({resp[:80] or "player-directed output only"})')
+    con.cmd(f'kill @e[tag=smoke_anchor]')  # stale anchors from crashed runs
+    resp = con.cmd(
+        f'execute at {con.bot} run summon minecraft:armor_stand ~ ~ ~1 '
+        '{Invisible:1b,NoGravity:1b,Tags:["smoke_anchor"]}')
+    ph.ev(f'anchor -> {resp[:120]}')
+    resp = con.cmd('tbcs attach rctmod:stadium_wave_1 @e[tag=smoke_anchor,limit=1]',
+                   probe=True)
+    if is_unknown_command(resp):
+        con.cmd(f'kill @e[tag=smoke_anchor]')
+        return ph.skip('tbcs command not present on this server build')
+    ph.ev(f'attach -> {resp[:160] or "(no output)"}')
+
+    # Optional hook: a sibling feature may add `dev bot autobattle` — feature-detect.
+    auto = con.as_bot('cobblemon-initiative dev bot autobattle on', probe=True)
+    has_auto = not is_unknown_command(auto)
+    ph.ev(f'autobattle hook: {"present" if has_auto else "absent (basic canary)"}')
+
+    battle = con.as_bot('tbcs battle GEN_9_SINGLES @s vs rctmod:stadium_wave_1', at=True)
+    ph.ev(f'battle -> {battle[:200] or "(no output)"}')
+    bad = [s for s in REFUSALS if s in battle] + [s for s in REFUSALS if s in resp]
+    if bad:
+        ph.fail(f'battle refused: {bad}')
+    else:
+        # Positive signal (non-gating, timing-dependent): a sent-out mon appears
+        # near the bot once the battle engine spins up.
+        probe = '(none)'
+        for _ in range(5):  # up to 15s
+            time.sleep(3)
+            probe = con.cmd(
+                f'execute at {con.bot} run data get entity '
+                '@e[type=cobblemon:pokemon,distance=..24,limit=1,sort=nearest] Pokemon.Species')
+            if 'has the following entity data' in probe:
+                break
+        ph.ev(f'sent-out probe (bonus, non-gating) -> {probe[:140] or "(none)"}')
+        if has_auto:
+            # PASS on completion: sent-out mons recall when the battle resolves.
+            done = False
+            for _ in range(30):  # up to 90s
+                time.sleep(3)
+                p2 = con.cmd(
+                    f'execute at {con.bot} run data get entity '
+                    '@e[type=cobblemon:pokemon,distance=..24,limit=1,sort=nearest] Pokemon.Species')
+                if 'has the following entity data' not in p2:
+                    done = True
+                    break
+            ph.ev(f'autobattle completion: {"battle resolved" if done else "timeout 90s (non-gating)"}')
+    con.cmd(f'stopbattle {con.bot}')
+    con.cmd('kill @e[tag=smoke_anchor]')
+    if has_auto:
+        con.as_bot('cobblemon-initiative dev bot autobattle off', probe=True)
+    ph.ok()
+
+
+# ── Phase 5: PLACEMENT SWEEP ─────────────────────────────────────────────────
+
+def phase_sweep(ph, con, args):
+    if args.skip_sweep:
+        return ph.skip('--skip-sweep')
+    if not con.up:
+        return ph.skip(f'server down: {con.err}')
+    if not os.path.exists(SWEEP_SCRIPT):
+        return ph.skip(f'{SWEEP_SCRIPT} not found')
+    try:
+        p = subprocess.run(
+            [sys.executable, SWEEP_SCRIPT, '--bot', con.bot],
+            capture_output=True, text=True, timeout=5400, cwd=ROOT)
+    except subprocess.TimeoutExpired:
+        return ph.fail('npc_live_sweep timed out (5400s)')
+    tail = [l for l in p.stdout.splitlines() if l.strip()][-8:]
+    for l in tail:
+        ph.ev(l)
+    if os.path.exists(SWEEP_REPORT):
+        try:
+            rep = json.load(open(SWEEP_REPORT))
+            ph.ev(f'report: stops={rep.get("stops")} latches={rep.get("latches")} '
+                  f'hard={len(rep.get("hard", {}))} soft={len(rep.get("soft", {}))} '
+                  f'unfired={len(rep.get("unfired_latches", []))}')
+        except (json.JSONDecodeError, OSError) as e:
+            ph.ev(f'report unreadable: {e}')
+    if p.returncode:
+        ph.fail(f'live sweep exit={p.returncode} (hard placement problems)')
+    ph.ok()
+
+
+# ── Phase 6: SAFARI LOOP ─────────────────────────────────────────────────────
+
+def parse_cd(resp):
+    """cobbledollars query prints ABBREVIATED balances ('parsebot has $ 1.5K',
+    '$ 12.3K', '$ 999' — exact only under 1000, 3 sig figs above). Parse both."""
+    m = re.search(r'\$\s*([\d.,]+)\s*([KMBT]?)', resp)
+    if not m:
+        m2 = re.search(r'(-?\d[\d,]*)', resp)
+        return int(m2.group(1).replace(',', '')) if m2 else None
+    mult = {'': 1, 'K': 1e3, 'M': 1e6, 'B': 1e9, 'T': 1e12}[m.group(2)]
+    return int(round(float(m.group(1).replace(',', '')) * mult))
+
+
+def _balance(con):
+    resp = con.cmd(f'cobbledollars query {con.bot}', probe=True)
+    if is_unknown_command(resp):
+        return None, resp
+    return parse_cd(resp), resp
+
+
+def _permit_fee():
+    """The authoritative fee from the repo's safari config (fallback 1500)."""
+    try:
+        cfg = json.load(open(os.path.join(
+            ROOT, 'src/main/resources/data/cobblemon_initiative/safari/safari.json')))
+        return int(cfg.get('permitFee', 1500))
+    except (OSError, json.JSONDecodeError, ValueError):
+        return 1500
+
+
+def _ball_count(con, ph, tag):
+    resp = con.cmd(f'clear {con.bot} cobblemon:safari_ball 0')
+    m = re.search(r'Found (\d+)', resp)
+    n = int(m.group(1)) if m else 0
+    ph.ev(f'{tag}: safari balls held = {n} ({resp[:100]})')
+    return n
+
+
+def phase_safari(ph, con, args):
+    if not con.up:
+        return ph.skip(f'server down: {con.err}')
+    if not con.ensure_bot():
+        return ph.skip(f'could not spawn Carpet bot {con.bot!r}')
+    resp = con.as_bot('cobblemon-initiative dev badges 3')  # gateBadges=3
+    ph.ev(f'badges 3 -> {resp[:120]}')
+    con.as_bot('cobblemon-initiative safari exit', probe=True)  # clear stale session
+    time.sleep(2)
+
+    # Deterministic fee math: query is lossy above $1000 (K/M abbreviation), so SET
+    # the balance to fee+900 — the post-fee remainder (900) sits in the exact range.
+    fee_expect = _permit_fee()
+    funded = fee_expect + 900
+    bal0, raw = _balance(con)
+    if bal0 is None:
+        return ph.skip(f'cobbledollars query unavailable/unparseable: {raw[:120]}')
+    con.cmd(f'cobbledollars set {con.bot} {funded}')
+    bal1, raw1 = _balance(con)
+    ph.ev(f'funded via cobbledollars set: {funded} (query reads {bal1}: {raw1[:60]})')
+
+    resp = con.as_bot('cobblemon-initiative safari enter')
+    ph.ev(f'safari enter dispatched ({resp[:80] or "player-directed output only"})')
+    time.sleep(3)  # pay-probe resolves NEXT tick (SafariManager pendingPermits)
+    bal2, _ = _balance(con)
+    fee = (funded - bal2) if bal2 is not None else None
+    ph.ev(f'balance after enter: {bal2} (fee charged: {fee}, expected {fee_expect})')
+    if fee != fee_expect:
+        ph.fail(f'permit fee mismatch: charged {fee}, expected {fee_expect} — '
+                'session did not start or the fee regressed')
+    issued = _ball_count(con, ph, 'post-enter')
+    if fee and fee > 0 and issued == 0:
+        ph.fail('fee charged but no Preserve-issue safari balls found')
+
+    # Scatter: prefer the dev hook; fall back to bait-give + Carpet right-click.
+    scatter = con.as_bot('cobblemon-initiative safari scatter honey_smear', probe=True)
+    hook = not is_unknown_command(scatter)
+    if hook:
+        ph.ev(f'scatter hook -> {scatter[:120] or "(dispatched)"}')
+    else:
+        ph.ev('scatter dev hook absent — falling back to bait + Carpet use (best-effort)')
+        con.as_bot('cobblemon-initiative safari bait honey_smear')
+        con.cmd(f'player {con.bot} look down', probe=True)
+        con.cmd(f'player {con.bot} use once', probe=True)
+    time.sleep(18)  # suspense window is 5-15s
+    lure = con.cmd('execute as @e[tag=ci_safari_lure,limit=1] run '
+                   'data get entity @s Pokemon.Species')
+    seen = 'has the following entity data' in lure
+    ph.ev(f'lure probe -> {"LURE PRESENT: " + lure[:100] if seen else "no ci_safari_lure entity"}')
+    if hook and not seen:
+        ph.ev('WARN: scatter hook ran but no lure spawned in 18s (roll is 1-3 mons in a '
+              '5-15s window; terrain/indoors can suppress) — not gating')
+
+    con.as_bot('cobblemon-initiative safari exit')
+    time.sleep(2)
+    left = _ball_count(con, ph, 'post-exit')
+    if issued > 0 and left > 0:
+        ph.fail(f'confiscation failed: {left} safari ball(s) survived egress')
+    elif issued > 0:
+        ph.ev('confiscation verified: all Preserve-issue balls removed at egress')
+    ph.ok()
+
+
+# ── Phase 7: STADIUM ─────────────────────────────────────────────────────────
+
+def phase_stadium(ph, con, args):
+    if not con.up:
+        return ph.skip(f'server down: {con.err}')
+    if not con.ensure_bot():
+        return ph.skip(f'could not spawn Carpet bot {con.bot!r}')
+    con.as_bot('cobblemon-initiative givemon eevee level=20')  # needs a healthy mon
+    con.cmd(f'stopbattle {con.bot}')  # never stack onto a live battle
+    time.sleep(1)
+    resp = con.as_bot('cobblemon-initiative stadium start 25', at=True, probe=True)
+    if is_unknown_command(resp):
+        return ph.skip('stadium command not present on this server build')
+    ph.ev(f'stadium start 25 dispatched ({resp[:80] or "player-directed output only"})')
+    appeared = False
+    for i in range(8):  # first wave rides FIRST_WAVE_DELAY + attach; poll ~24s
+        time.sleep(3)
+        probe = con.cmd(
+            f'execute at {con.bot} run data get entity '
+            '@e[type=cobblemon:pokemon,distance=..32,limit=1,sort=nearest] Pokemon.Level')
+        if 'has the following entity data' in probe:
+            appeared = True
+            ph.ev(f'battle appeared after ~{(i + 1) * 3}s: {probe[:120]}')
+            break
+    if not appeared:
+        ph.fail('no battle appeared within 24s of stadium start '
+                '(no pokemon entity near the bot)')
+    con.cmd(f'stopbattle {con.bot}')  # server voids the run on force-end
+    ph.ev('stopbattle issued — run void is server-side (StadiumManager liveness tick)')
+    con.as_bot('cobblemon-initiative stadium status')  # player-directed; no assert
+    con.as_bot('cobblemon-initiative stadium abort', probe=True)  # belt & braces cleanup
+    ph.ok()
+
+
+# ── Phase 8: LOG SWEEP ───────────────────────────────────────────────────────
+
+def count_forbidden(log_path):
+    counts = {p: 0 for p in FORBIDDEN}
+    samples = {p: [] for p in FORBIDDEN}
+    try:
+        with open(log_path, errors='replace') as f:
+            for line in f:
+                for p in FORBIDDEN:
+                    if p in line:
+                        counts[p] += 1
+                        if len(samples[p]) < 3:
+                            samples[p].append(line.strip()[:200])
+    except OSError:
+        return None, None
+    return counts, samples
+
+
+def phase_logsweep(ph, con, args, baseline):
+    log = args.log or next((p for p in DEFAULT_LOGS if os.path.exists(p)), None)
+    if not log or not os.path.exists(log):
+        return ph.skip(f'no server log found (tried {args.log or DEFAULT_LOGS})')
+    counts, samples = count_forbidden(log)
+    if counts is None:
+        return ph.skip(f'log unreadable: {log}')
+    ph.ev(f'log: {log}')
+    bad = False
+    for p in FORBIDDEN:
+        base = (baseline or {}).get(p, 0)
+        new = counts[p] - base
+        if p == 'Unknown or incomplete command':
+            new -= con.self_inflicted_unknown
+            if con.self_inflicted_unknown:
+                ph.ev(f'  (discounted {con.self_inflicted_unknown} self-inflicted '
+                      'feature-detect probes)')
+        marker = 'NEW' if new > 0 else 'ok'
+        ph.ev(f'{p!r}: total={counts[p]} baseline={base} new={max(new, 0)} [{marker}]')
+        if new > 0:
+            bad = True
+            for s in samples[p][-3:]:
+                ph.ev(f'    e.g. {s}')
+    if args.write_log_baseline:
+        with open(args.write_log_baseline, 'w') as f:
+            json.dump(counts, f, indent=1)
+        ph.ev(f'baseline written: {args.write_log_baseline}')
+    if bad:
+        ph.fail('new forbidden log pattern occurrences (above the baseline)')
+    ph.ok()
+
+
+# ── Reporting / marking ──────────────────────────────────────────────────────
+
+def do_mark(con, phases):
+    """--mark: comment (never pass/fail) each mapped result into the in-mod checklist."""
+    if not (con.up and con.ensure_bot()):
+        print('  --mark skipped: server/bot unavailable', flush=True)
+        return
+    for name, ids in MARK_MAP.items():
+        ph = phases.get(name)
+        if not ph or ph.status == 'SKIP':
+            continue
+        summary = ph.headline()
+        for cid in ids:
+            note = f'[auto] smoke_auto {ph.status}: {summary}'[:200]
+            con.as_bot(f'cobblemon-initiative smoke comment {cid} {note}')
+            print(f'  marked {cid}: {ph.status}', flush=True)
+
+
+def write_reports(outdir, phases, started, args):
+    order = [p for p in PHASE_ORDER if p in phases]
+    overall = 'FAIL' if any(phases[p].status == 'FAIL' for p in order) else 'PASS'
+    md = [f'# smoke_auto report — {time.strftime("%Y-%m-%d %H:%M:%S")}', '',
+          f'overall: **{overall}**  (runtime {time.time() - started:.0f}s, '
+          f'bot `{args.bot}`)', '',
+          '| Phase | Status | Time | Key evidence |', '|---|---|---|---|']
+    for p in order:
+        ph = phases[p]
+        md.append(f'| {p} | {ph.status} | {ph.seconds:.0f}s | {ph.headline()[:90]} |')
+    md.append('')
+    for p in order:
+        ph = phases[p]
+        md += [f'## {p} — {ph.status} ({ph.seconds:.0f}s)', '']
+        md += [f'- {e}' for e in ph.evidence[:60]]
+        md.append('')
+    with open(os.path.join(outdir, 'smoke_report.md'), 'w') as f:
+        f.write('\n'.join(md))
+    machine = {
+        'timestamp': time.strftime('%Y%m%d-%H%M%S'), 'overall': overall,
+        'runtime_s': round(time.time() - started, 1),
+        'phases': {p: {'status': phases[p].status, 'seconds': round(phases[p].seconds, 1),
+                       'evidence': phases[p].evidence} for p in order},
+    }
+    with open(os.path.join(outdir, 'smoke_report.json'), 'w') as f:
+        json.dump(machine, f, indent=1)
+    return overall
+
+
+def main():
+    ap = argparse.ArgumentParser(
+        prog='smoke_auto', description=__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument('--bot', default='smokebot')
+    ap.add_argument('--skip-sweep', action='store_true',
+                    help='skip the (long) full-map live placement sweep')
+    ap.add_argument('--only', default=None,
+                    help=f'comma list of phases to run ({",".join(PHASE_ORDER)})')
+    ap.add_argument('--mark', action='store_true',
+                    help='comment results into the in-mod smoke checklist (never pass/fail)')
+    ap.add_argument('--log', default=None, help='server log path for the log sweep')
+    ap.add_argument('--log-baseline', default=None,
+                    help='JSON {pattern: count} to diff against (default: counts snapshotted '
+                         'at smoke start)')
+    ap.add_argument('--write-log-baseline', default=None,
+                    help='write end-of-run counts to this JSON for the next run')
+    args = ap.parse_args()
+
+    only = set(args.only.split(',')) if args.only else set(PHASE_ORDER)
+    bad = only - set(PHASE_ORDER)
+    if bad:
+        print(f'smoke_auto: unknown phase(s): {sorted(bad)}', file=sys.stderr)
+        return 2
+
+    started = time.time()
+    con = Console(args.bot)
+    if not con.up:
+        print(f'!! no dev server over RCON (127.0.0.1:25575): {con.err}')
+        print('!! server phases will SKIP — this tool attaches, it never boots a server.')
+
+    # Log baseline: explicit file, else a pre-run snapshot (so only THIS run's noise counts).
+    baseline = None
+    if 'logsweep' in only:
+        if args.log_baseline:
+            try:
+                baseline = json.load(open(args.log_baseline))
+            except (OSError, json.JSONDecodeError) as e:
+                print(f'!! --log-baseline unreadable ({e}); falling back to pre-run snapshot')
+        if baseline is None:
+            log = args.log or next((p for p in DEFAULT_LOGS if os.path.exists(p)), None)
+            if log:
+                baseline, _ = count_forbidden(log)
+
+    runners = {
+        'static': phase_static, 'console': phase_console, 'caps': phase_caps,
+        'canary': phase_canary, 'sweep': phase_sweep, 'safari': phase_safari,
+        'stadium': phase_stadium,
+        'logsweep': lambda ph, con, args: phase_logsweep(ph, con, args, baseline),
+    }
+    phases = {}
+    for name in PHASE_ORDER:
+        if name not in only:
+            continue
+        ph = Phase(name)
+        phases[name] = ph
+        print(f'\n== {name} ==', flush=True)
+        t0 = time.time()
+        try:
+            runners[name](ph, con, args)
+        except (ConnectionError, OSError) as e:
+            ph.fail(f'rcon/system error: {e}')
+        except Exception as e:  # continue on failure — every phase must report
+            ph.fail(f'unexpected: {type(e).__name__}: {e}')
+        ph.seconds = time.time() - t0
+        for e in ph.evidence:
+            print(f'  {e}', flush=True)
+        print(f'  -> {ph.status} ({ph.seconds:.0f}s)', flush=True)
+
+    if args.mark:
+        print('\n== mark (checklist comments) ==', flush=True)
+        do_mark(con, phases)
+
+    # Bot cleanup: reset progress + remove the fake player (end of the whole run —
+    # phases share one bot, so the per-phase kill would just respawn-churn).
+    try:
+        if con.up and con.bot_online():
+            con.as_bot('cobblemon-initiative reset', probe=True)
+            con.cmd(f'player {con.bot} kill')
+            print(f'\nbot {con.bot} reset + killed', flush=True)
+    except ConnectionError as e:
+        print(f'\nbot cleanup skipped: {e}', flush=True)
+    con.close()
+
+    outdir = os.path.join(ROOT, 'dev/evidence', time.strftime('%Y%m%d-%H%M%S'))
+    os.makedirs(outdir, exist_ok=True)
+    overall = write_reports(outdir, phases, started, args)
+    print(f'\n== SMOKE {overall} ==')
+    print(os.path.join(outdir, 'smoke_report.md'))
+    return 0 if overall == 'PASS' else 1
+
+
+if __name__ == '__main__':
+    sys.exit(main())

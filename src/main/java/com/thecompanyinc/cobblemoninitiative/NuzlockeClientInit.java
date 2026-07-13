@@ -1,6 +1,8 @@
 package com.thecompanyinc.cobblemoninitiative;
 
+import com.thecompanyinc.cobblemoninitiative.daycare.DaycareManager;
 import com.thecompanyinc.cobblemoninitiative.questtrack.QuestTrackClient;
+import com.thecompanyinc.cobblemoninitiative.screen.DaycareSelectionScreen;
 import com.thecompanyinc.cobblemoninitiative.screen.SacrificeSelectionScreen;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -23,6 +25,10 @@ public class NuzlockeClientInit implements ClientModInitializer {
       if (client.player != null && client.screen == null) {
         if (NuzlockeInit.consumePendingSacrifice()) {
           client.setScreen(new SacrificeSelectionScreen());
+        } else if (DaycareManager.consumePendingPicker()) {
+          // Fires the tick AFTER Easy NPC's deferred CLOSE_DIALOG clears the screen,
+          // so a dialog-button deposit flows straight into the picker.
+          client.setScreen(new DaycareSelectionScreen());
         }
       }
     });

@@ -1,9 +1,5 @@
 ### [[Home]]
 
-**Architecture**
-- [[Architecture Overview]]
-- [[Architecture Data Flows]]
-
 **Reference**
 - [[Commands]]
 

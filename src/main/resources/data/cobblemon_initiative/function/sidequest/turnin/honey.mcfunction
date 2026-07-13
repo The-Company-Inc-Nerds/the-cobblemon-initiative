@@ -3,6 +3,6 @@
 execute store result score #turnin ci_item run clear @s minecraft:honeycomb 0
 execute if score #turnin ci_item matches ..7 run title @s actionbar [{"text":"You need 8 wild honeycomb.","color":"red"}]
 execute if score #turnin ci_item matches 8.. run clear @s minecraft:honeycomb 8
-execute if score #turnin ci_item matches 8.. run loot give @s loot cobblemon_initiative:npc_gift/training_standard
+execute if score #turnin ci_item matches 8.. run function cobblemon_initiative:economy/reward/standard
 execute if score #turnin ci_item matches 8.. run function cobblemon_initiative:economy/payout {amount:300}
 execute if score #turnin ci_item matches 8.. run tag @s add sq_honey_done

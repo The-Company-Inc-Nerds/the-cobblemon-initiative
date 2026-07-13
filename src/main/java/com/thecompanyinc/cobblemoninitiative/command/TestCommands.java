@@ -10,9 +10,11 @@ import com.thecompanyinc.cobblemoninitiative.config.TrainerConfig;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.ArrayList;
@@ -40,6 +42,7 @@ public final class TestCommands {
             .then(Commands.literal("registry").executes(TestCommands::registry))
             .then(Commands.literal("placement")
                 .executes(ctx -> placement(ctx, null))
+                .then(Commands.literal("live").executes(TestCommands::placementLive))
                 .then(Commands.argument("id", StringArgumentType.string())
                     .executes(ctx -> placement(ctx, StringArgumentType.getString(ctx, "id")))))
             .then(Commands.literal("all").executes(TestCommands::all));
@@ -172,6 +175,50 @@ public final class TestCommands {
                 + " floating=" + floating + " sunk=" + sunk + " head_blocked=" + headBlocked
                 + " unplaced=" + unplaced + " (config coords nominal; live check needs a player)");
         return 1;
+    }
+
+    // ── test placement live: check EVERY loaded Easy NPC at its REAL position ────
+    // The authoritative wall/floor check — reads live spawned entities (post latch-snap),
+    // so no nominal-coord noise. Load an area first (a fake player nearby, or forceload).
+    // Uses actual collision shapes (level.noCollision), NOT blocksMotion() per block:
+    // standing on a bottom slab / stairs / trapdoor puts the feet block-pos INSIDE a
+    // partial block, which a per-block solidity check misreads as SUNK (31 false
+    // positives on the 2026-07-12 full-map sweep). EMBEDDED = the entity's own AABB
+    // (slightly deflated) intersects block collision; FLOATING = no support within
+    // half a block below; SUNK_DEEP = additionally embedded at eye level.
+    private static int placementLive(CommandContext<CommandSourceStack> ctx) {
+        CommandSourceStack s = ctx.getSource();
+        ServerLevel level = s.getServer().overworld();
+        int checked = 0, ok = 0, embedded = 0, floating = 0;
+        for (Entity e : level.getAllEntities()) {
+            var tid = BuiltInRegistries.ENTITY_TYPE.getKey(e.getType());
+            if (tid == null || !tid.getNamespace().equals("easy_npc")) continue;
+            checked++;
+            BlockPos p = e.blockPosition();
+            String nm = e.getName().getString();
+            var box = e.getBoundingBox().deflate(0.05);
+            String status;
+            if (!level.noCollision(e, box)) {
+                BlockState feet = level.getBlockState(p);
+                BlockState head = level.getBlockState(p.above());
+                boolean deep = !head.getCollisionShape(level, p.above()).isEmpty();
+                status = (deep ? "SUNK_DEEP" : "EMBEDDED")
+                        + " feet=" + name(feet) + " head=" + name(head);
+                embedded++;
+            } else if (level.noCollision(e, box.move(0, -0.5, 0))) {
+                status = "FLOATING";
+                floating++;
+            } else {
+                status = "OK";
+                ok++;
+            }
+            if (!status.equals("OK")) {
+                out(s, "[TEST] liveplace " + nm + "@" + p.getX() + "," + p.getY() + "," + p.getZ() + " " + status);
+            }
+        }
+        out(s, "[TEST] liveplace " + (embedded == 0 ? "PASS" : "FAIL") + " checked=" + checked
+                + " ok=" + ok + " embedded=" + embedded + " floating=" + floating);
+        return embedded == 0 ? 1 : 0;
     }
 
     private static int all(CommandContext<CommandSourceStack> ctx) {

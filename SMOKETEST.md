@@ -316,7 +316,7 @@ line under it for anything you notice.
   - comment: 
 - **2.5** — **Beat gym-1 leader → cap raises to 22** ("Level cap increased to 22") — the linchpin fix; if it stays 15 this regressed
   - ✅ [ ]   💬 [ ]   ❌ [ ]
-  - comment: 
+  - comment: [auto 2026-07-12, alpha.13 dev] manager layer verified headless: badge 1 → cap 22 (dev badges); the BattleVictory→badge event edge still needs a real win 
 - **2.6** — Cicada's ace is **Lv17** (cap+2 — fought underleveled)
   - ✅ [ ]   💬 [ ]   ❌ [ ]
   - comment: 
@@ -325,9 +325,10 @@ line under it for anything you notice.
   - comment: 
 - **2.8** — ENDGAME (forced tags): grant champion achievement → cap 85; defeat all 4 `board_member` → "Board has fallen. Cap raised to 100"
   - ✅ [ ]   💬 [ ]   ❌ [ ]
-  - comment: 
+  - comment: [auto 2026-07-12, alpha.13 dev] verified headless via dev grant: 10 badges→80, royal_league_champion→85, board_cleared→100 
 
 ## 3. Economy — payouts, training packs, heal gate, battle money
+> NOTE (alpha.14): training packs now SCALE with badge count (economy/reward/<tier>) — 3.2-3.4 amounts below are the EARLY-game (badge 0-2) contents; candy tier/count grow by era.
 
 - **3.1** — `economy/payout {amount:N}` → ~N CD + gold "Company Verified Rate" actionbar
   - ✅ [x]   💬 [ ]   ❌ [ ]
@@ -362,6 +363,7 @@ line under it for anything you notice.
 - **4.1** — Battle **starts** vs an undefeated gym trainer (not silently refused)
   - ✅ [ ]   💬 [ ]   ❌ [x]
   - comment: All trainers on Blosom Path act like I already battled them when I challenge them to the battle, but there dialog and they chase me down so seems like an rctmod side isnt working?
+    [auto 2026-07-12, alpha.13 dev] battle STARTS on the current tree: engage_takehara_leader (attach + tbcs battle) opened a real battle UI vs Cicada with a quick-play client — screenshot-verified. Gotcha found: tbcs battle fails "not attached to an entity" if the trainer NPC's chunk isn't loaded when attach runs.
 - **4.2** — Correct trainer credited on win (esp. **Kalahar** trainer_1/2 — name-swap fixed)
   - ✅ [ ]   💬 [ ]   ❌ [ ]
   - comment: 
@@ -474,7 +476,7 @@ line under it for anything you notice.
 - Manager Jun needs his Y level up by 1
 - Old Deng and Granny Yun need Y levels adjust, both by 2. They also have default skins so we need to make them as to be added.
 - Mei Lin in the Hua Zhan City is the nurse
-- Tau and the people being the wheat sellers should sell a custom paper or book (might need to be a custom item with the paper texture?) and thats what they only accept as currency
+- [DONE 2026-07-12] Wheat sellers now trade in COMPANY WHEAT SCRIP (renamed paper + custom_data{ci_scrip}); plain paper rejected as currency (jar-verified). Human: eyeball the trade GUI.
 - Groundskeeper Aya is the Hua Zhan Gym Leader
 - Alot of work needed in Hua Zhan City
 - Unplaced chests should roll whether or not its empty (with a setting in mod menu to set the odds)

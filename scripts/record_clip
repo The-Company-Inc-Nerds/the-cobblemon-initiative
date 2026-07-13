@@ -1,0 +1,133 @@
+#!/usr/bin/env bash
+# record_clip — short video clips of cutscenes/gimmicks for showrunner review.
+#
+# Records the WHOLE Wayland output with wf-recorder (the game must be the visible
+# window), optionally firing one RCON command right after recording starts (e.g.
+# a cutscene trigger), then stops cleanly and verifies the mp4.
+#
+# Usage:
+#   scripts/record_clip --seconds 30 --out rift_intro \
+#       [--trigger 'cutscene play rift_intro {player}'] [--player Cole] [--dir DIR]
+#
+#   --seconds N    clip length after the trigger fires (default 30)
+#   --out NAME     output name -> <dir>/<YYYYMMDD-HHMMSS>_<NAME>.mp4
+#   --trigger CMD  RCON command fired 1s into the recording (server must be up;
+#                  '{player}' inside CMD is replaced with --player)
+#   --player NAME  substituted into the trigger; also a reminder of whose client
+#                  view is being recorded
+#   --dir DIR      output directory (default dev/evidence/clips)
+#
+# Requirements & gotchas:
+#   - wf-recorder (+ ffmpeg for the duration probe) are being added to the dev
+#     shell — if missing: add wf-recorder to shell.nix / re-enter `nix develop`.
+#   - Whole-screen capture: focus the game window BEFORE starting.
+#   - hypridle's idle-lock eats captures — run `caffeine` first for long shoots.
+#   - This ATTACHES to the running dev server for --trigger (RCON 25575/devtest);
+#     it never boots one. Without --trigger no server is needed at all.
+set -uo pipefail
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+ROOT="$(git -C "$SCRIPT_DIR" rev-parse --show-toplevel 2>/dev/null || dirname "$SCRIPT_DIR")"
+
+SECONDS_LEN=30; OUT=""; TRIGGER=""; PLAYER=""; DIR="$ROOT/dev/evidence/clips"
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --seconds) SECONDS_LEN="$2"; shift 2 ;;
+    --out)     OUT="$2"; shift 2 ;;
+    --trigger) TRIGGER="$2"; shift 2 ;;
+    --player)  PLAYER="$2"; shift 2 ;;
+    --dir)     DIR="$2"; shift 2 ;;
+    -h|--help) sed -n '2,26p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+    *) echo "record_clip: unknown arg: $1 (see --help)" >&2; exit 2 ;;
+  esac
+done
+[ -n "$OUT" ] || { echo "record_clip: --out <name> is required (see --help)" >&2; exit 2; }
+case "$SECONDS_LEN" in ''|*[!0-9]*) echo "record_clip: --seconds must be an integer" >&2; exit 2 ;; esac
+
+if ! command -v wf-recorder >/dev/null 2>&1; then
+  echo "record_clip: wf-recorder not found — add wf-recorder to the dev shell" >&2
+  echo "  (shell.nix / nix develop; it is being added alongside ffmpeg)." >&2
+  exit 3
+fi
+
+# Substitute {player} into the trigger; sanity-check the pairing.
+if [ -n "$TRIGGER" ] && [ -n "$PLAYER" ]; then
+  TRIGGER="${TRIGGER//\{player\}/$PLAYER}"
+fi
+
+# Pre-flight the RCON attach BEFORE recording so we never record a dead trigger.
+if [ -n "$TRIGGER" ]; then
+  if ! python3 - "$SCRIPT_DIR" <<'EOF'
+import sys
+sys.path.insert(0, sys.argv[1])
+from mc_rcon import Rcon
+try:
+    Rcon(retries=1, retry_delay=0, timeout=20).close()
+except Exception as e:
+    print(f'record_clip: no dev server reachable over RCON (127.0.0.1:25575): {e}',
+          file=sys.stderr)
+    print('  This tool ATTACHES to a running server — start one elsewhere and retry.',
+          file=sys.stderr)
+    sys.exit(1)
+EOF
+  then exit 4; fi
+fi
+
+TS="$(date +%Y%m%d-%H%M%S)"
+NAME="${OUT%.mp4}"
+FILE="$DIR/${TS}_${NAME}.mp4"
+ERRLOG="$(mktemp /tmp/record_clip.XXXXXX.log)"
+mkdir -p "$DIR"
+
+echo "recording -> $FILE (${SECONDS_LEN}s$( [ -n "$TRIGGER" ] && echo ", trigger: $TRIGGER"))"
+[ -n "$PLAYER" ] && echo "  (recording the visible window — make sure $PLAYER's client is frontmost)"
+wf-recorder -f "$FILE" >"$ERRLOG" 2>&1 &
+REC_PID=$!
+cleanup() { kill -INT "$REC_PID" 2>/dev/null; }
+trap cleanup EXIT INT TERM
+
+sleep 1
+if ! kill -0 "$REC_PID" 2>/dev/null; then
+  echo "record_clip: wf-recorder exited immediately — is this a Wayland session?" >&2
+  sed 's/^/  wf-recorder: /' "$ERRLOG" | head -5 >&2
+  trap - EXIT; exit 5
+fi
+
+if [ -n "$TRIGGER" ]; then
+  python3 - "$SCRIPT_DIR" "$TRIGGER" <<'EOF'
+import sys
+sys.path.insert(0, sys.argv[1])
+from mc_rcon import Rcon
+with Rcon(retries=1, retry_delay=0, timeout=60) as r:
+    out = r.cmd(sys.argv[2])
+    if out.strip():
+        print(f'  trigger response: {out.strip()[:200]}')
+EOF
+fi
+
+sleep "$SECONDS_LEN"
+
+# SIGINT is wf-recorder's clean-finish signal (writes the moov atom).
+kill -INT "$REC_PID" 2>/dev/null
+for _ in $(seq 1 20); do kill -0 "$REC_PID" 2>/dev/null || break; sleep 0.5; done
+kill -0 "$REC_PID" 2>/dev/null && kill -9 "$REC_PID" 2>/dev/null
+trap - EXIT INT TERM
+wait "$REC_PID" 2>/dev/null
+
+if [ ! -s "$FILE" ]; then
+  echo "record_clip: capture failed — $FILE missing or empty" >&2
+  sed 's/^/  wf-recorder: /' "$ERRLOG" | head -5 >&2
+  rm -f "$ERRLOG"; exit 6
+fi
+rm -f "$ERRLOG"
+
+SIZE=$(stat -c %s "$FILE" 2>/dev/null || echo '?')
+if command -v ffprobe >/dev/null 2>&1; then
+  DUR=$(ffprobe -v error -show_entries format=duration -of csv=p=0 "$FILE" 2>/dev/null)
+  echo "clip OK: ${SIZE} bytes, ${DUR:-?}s"
+elif command -v ffmpeg >/dev/null 2>&1; then
+  DUR=$(ffmpeg -i "$FILE" 2>&1 | grep -oE 'Duration: [0-9:.]+' | head -1)
+  echo "clip OK: ${SIZE} bytes, ${DUR:-duration unknown}"
+else
+  echo "clip OK: ${SIZE} bytes (ffmpeg not present for a duration probe — fine)"
+fi
+echo "$FILE"

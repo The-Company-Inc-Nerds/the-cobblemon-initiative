@@ -1,0 +1,352 @@
+#!/usr/bin/env python3
+"""Evidence tour — camera-circuit screenshot galleries for showrunner review.
+
+Attaches to the RUNNING dev server over RCON (127.0.0.1:25575/devtest — it does
+NOT boot one) and drives an already-connected GUI client player through a list
+of camera stops: op + spectator, tp-with-facing per stop, wait for chunks to
+render, then capture the screen with `grim` (Wayland, whole output — the game
+must be the visible window).
+
+Subcommands:
+  run          shoot a tour spec against a live player
+  derive-npcs  generate a tour spec from ambient/placements.mcfunction latches
+               (one gallery covering every town's placed NPCs)
+
+Usage:
+  scripts/evidence_tour run --player Cole [--spec dev/evidence/tours/example_tour.json]
+  scripts/evidence_tour derive-npcs --towns 3 [--out dev/evidence/tours/npcs_tour.json]
+
+Tour spec JSON:
+  {"name": "...", "stops": [
+     {"label": "sango_spawn",              # filename-safe id
+      "camera": [x, y, z],                 # where the spectator camera goes
+      "look_at": [x, y, z]  or "NpcName",  # coords, an entity name, or a raw @e selector
+      "wait_s": 6,                         # chunk-render dwell (default 6)
+      "caption": "what the reviewer is looking at"} ]}
+
+Output: dev/evidence/<YYYYMMDD-HHMMSS>/ with the .png shots, index.md
+(caption + coordinates + timestamp + relative image links) and report.json.
+The folder path is printed at the end.
+
+GOTCHAS (hard-won):
+  - grim shoots the WHOLE screen: bring the game window to front first.
+  - hypridle's 3600s idle-lock eats captures (grim shoots the lock surface) —
+    run `caffeine` (in shell.nix, auto-on) before long tours.
+  - The player is op'd + switched to spectator and NOT restored afterwards.
+"""
+import argparse
+import json
+import os
+import re
+import shutil
+import subprocess
+import sys
+import time
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from mc_rcon import Rcon
+
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+PLACEMENTS = os.path.join(
+    ROOT, 'src/main/resources/data/cobblemon_initiative/function/ambient/placements.mcfunction')
+TOURS_DIR = os.path.join(ROOT, 'dev/evidence/tours')
+EXAMPLE_SPEC = os.path.join(TOURS_DIR, 'example_tour.json')
+CLUSTER_RADIUS = 25.0  # same as npc_live_sweep — latch trigger is 40 blocks
+
+EXAMPLE_TOUR = {
+    "name": "example_tour",
+    "description": "Three-landmark demo circuit: Sango spawn, Company HQ, Royal League.",
+    "stops": [
+        {"label": "sango_spawn", "camera": [2607, 112, 2836], "look_at": [2612, 109, 2841],
+         "wait_s": 6, "caption": "Sango Town — spawn house approach"},
+        {"label": "company_hq", "camera": [1585, 54, 1023], "look_at": [1590, 51, 1028],
+         "wait_s": 6, "caption": "The Company, Inc. HQ — act-2 raid entrance"},
+        {"label": "royal_league", "camera": [3523, 169, 2768], "look_at": [3528, 166, 2773],
+         "wait_s": 8, "caption": "Royal League gates — Elite Four approach"},
+    ],
+}
+
+
+def die(msg, code=2):
+    print(f'evidence_tour: {msg}', file=sys.stderr)
+    sys.exit(code)
+
+
+def connect():
+    """Attach to the running dev server; clear error if none is up."""
+    try:
+        return Rcon(retries=1, retry_delay=0, timeout=120)
+    except (ConnectionError, PermissionError, OSError) as e:
+        die(f'no dev server reachable over RCON (127.0.0.1:25575): {e}\n'
+            '  This tool ATTACHES to a running server — start one elsewhere '
+            '(gradle runServer, rcon enabled in run/server.properties) and retry.')
+
+
+class Session:
+    """One-reconnect RCON wrapper — a transient drop must not abort a long tour."""
+
+    def __init__(self):
+        self.r = connect()
+
+    def cmd(self, c):
+        try:
+            return self.r.cmd(c)
+        except (ConnectionError, OSError):
+            try:
+                self.r.close()
+                self.r = Rcon(retries=2, retry_delay=2, timeout=120)
+                return self.r.cmd(c)
+            except (ConnectionError, PermissionError, OSError) as e:
+                die(f'rcon connection lost mid-tour and reconnect failed: {e}')
+
+    def close(self):
+        self.r.close()
+
+
+def ensure_example_spec():
+    """dev/ is gitignored — self-bootstrap the bundled example spec if absent."""
+    if not os.path.exists(EXAMPLE_SPEC):
+        os.makedirs(TOURS_DIR, exist_ok=True)
+        with open(EXAMPLE_SPEC, 'w') as f:
+            json.dump(EXAMPLE_TOUR, f, indent=2)
+    return EXAMPLE_SPEC
+
+
+def safe_label(s, fallback):
+    s = re.sub(r'[^A-Za-z0-9_-]+', '_', str(s)).strip('_').lower()
+    return s or fallback
+
+
+def online_players(r):
+    # `list` → "There are N of a max of M players online: a, b, c"
+    out = r.cmd('list')
+    if ':' not in out:
+        return []
+    return [p.strip() for p in out.split(':', 1)[1].split(',') if p.strip()]
+
+
+# ── run ──────────────────────────────────────────────────────────────────────
+
+def cmd_run(args):
+    spec_path = args.spec or ensure_example_spec()
+    if not os.path.exists(spec_path):
+        die(f'spec not found: {spec_path}')
+    with open(spec_path) as f:
+        spec = json.load(f)
+    stops = spec.get('stops') or []
+    if not stops:
+        die(f'spec has no stops: {spec_path}')
+
+    if not shutil.which('grim'):
+        die('`grim` not found — Wayland screenshots unavailable. '
+            'Add grim to the dev shell (nix develop) or run outside the sandbox.')
+
+    r = Session()
+    players = online_players(r)
+    # Names are case-insensitive server-side (Carpet even canonicalizes bot names) —
+    # match loosely, then adopt the server's spelling.
+    match = next((p for p in players if p.lower() == args.player.lower()), None)
+    if match is None:
+        die(f'player {args.player!r} is not online (online: {players or "nobody"}).\n'
+            '  Connect the GUI quick-play client first '
+            "(run-client '--args=--quickPlayMultiplayer 127.0.0.1').")
+    args.player = match
+
+    # Camera rig: op + spectator (not restored afterwards — dev server, dev player).
+    r.cmd(f'op {args.player}')
+    r.cmd(f'gamemode spectator {args.player}')
+
+    ts = time.strftime('%Y%m%d-%H%M%S')
+    outdir = os.path.join(ROOT, 'dev/evidence', ts)
+    os.makedirs(outdir, exist_ok=True)
+
+    shots = []
+    for i, stop in enumerate(stops, 1):
+        label = safe_label(stop.get('label', f'stop{i}'), f'stop{i}')
+        cam = stop.get('camera')
+        if not (isinstance(cam, (list, tuple)) and len(cam) == 3):
+            shots.append({'label': label, 'status': 'BAD_SPEC', 'error': 'camera must be [x,y,z]'})
+            print(f'  [{i:02d}] {label}: BAD_SPEC (camera)', flush=True)
+            continue
+        look = stop.get('look_at')
+        if isinstance(look, (list, tuple)) and len(look) == 3:
+            facing = f'facing {look[0]} {look[1]} {look[2]}'
+        elif isinstance(look, str) and look.strip():
+            sel = look if look.startswith('@') else f'@e[name="{look}",limit=1]'
+            facing = f'facing entity {sel}'
+        else:
+            facing = ''
+        tp = f'tp {args.player} {cam[0]} {cam[1]} {cam[2]} {facing}'.strip()
+        resp = r.cmd(tp)
+        if 'Teleported' not in resp:
+            shots.append({'label': label, 'status': 'TP_FAILED', 'command': tp,
+                          'error': resp.strip()[:200]})
+            print(f'  [{i:02d}] {label}: TP_FAILED — {resp.strip()[:80]}', flush=True)
+            continue
+        wait = float(stop.get('wait_s', args.wait))
+        time.sleep(wait)  # chunk render + entity fade-in
+
+        fname = f'{i:02d}_{label}.png'
+        fpath = os.path.join(outdir, fname)
+        grim = subprocess.run(['grim', fpath], capture_output=True, text=True)
+        size = os.path.getsize(fpath) if os.path.exists(fpath) else 0
+        ok = grim.returncode == 0 and size > 0
+        shots.append({
+            'label': label, 'status': 'OK' if ok else 'CAPTURE_FAILED',
+            'file': fname, 'bytes': size, 'camera': list(cam),
+            'look_at': look, 'wait_s': wait, 'caption': stop.get('caption', ''),
+            'time': time.strftime('%Y-%m-%d %H:%M:%S'),
+            **({} if ok else {'error': (grim.stderr or grim.stdout).strip()[:200]}),
+        })
+        print(f'  [{i:02d}] {label}: {"OK" if ok else "CAPTURE_FAILED"} ({size} bytes)', flush=True)
+    r.close()
+
+    # index.md — the human gallery
+    name = spec.get('name', os.path.basename(spec_path))
+    lines = [f'# Evidence tour — {name}', '',
+             f'- shot: {time.strftime("%Y-%m-%d %H:%M:%S")}',
+             f'- spec: `{os.path.relpath(spec_path, ROOT)}`',
+             f'- player: `{args.player}`', '']
+    for i, s in enumerate(shots, 1):
+        lines.append(f'## {i:02d} — {s["label"]} [{s["status"]}]')
+        if s.get('caption'):
+            lines.append(f'\n{s["caption"]}')
+        cam = s.get('camera')
+        if cam:
+            look = s.get('look_at')
+            lines.append(f'\ncamera `{cam[0]} {cam[1]} {cam[2]}` → looking at `{look}` '
+                         f'— {s.get("time", "")}')
+        if s.get('file') and s['status'] == 'OK':
+            lines.append(f'\n![{s["label"]}]({s["file"]})')
+        elif s.get('error'):
+            lines.append(f'\nerror: `{s["error"]}`')
+        lines.append('')
+    with open(os.path.join(outdir, 'index.md'), 'w') as f:
+        f.write('\n'.join(lines))
+
+    report = {'tour': name, 'spec': spec_path, 'player': args.player,
+              'timestamp': ts, 'shots': shots,
+              'ok': sum(1 for s in shots if s['status'] == 'OK'),
+              'failed': sum(1 for s in shots if s['status'] != 'OK')}
+    with open(os.path.join(outdir, 'report.json'), 'w') as f:
+        json.dump(report, f, indent=1)
+
+    print(f'\n{report["ok"]}/{len(shots)} shots OK')
+    print(outdir)
+    return 0 if report['failed'] == 0 else 1
+
+
+# ── derive-npcs ──────────────────────────────────────────────────────────────
+
+def load_latches():
+    """Same parse as npc_live_sweep.load_latches — latch trigger points."""
+    pts = []
+    rx = re.compile(r'#amb_(\S+) ci_ambient matches 0 if entity '
+                    r'@a\[x=([\d.-]+),y=([\d.-]+),z=([\d.-]+)')
+    with open(PLACEMENTS) as f:
+        for line in f:
+            m = rx.search(line)
+            if m:
+                pts.append((m.group(1), float(m.group(2)), float(m.group(3)), float(m.group(4))))
+    return pts
+
+
+def cluster_latches(pts, radius):
+    """Greedy centroid clustering (npc_live_sweep pattern) keeping the members."""
+    import math
+    clusters = []  # [cx, cy, cz, [(name,x,y,z), ...]]
+    for name, x, y, z in pts:
+        best, bd = None, 1e9
+        for c in clusters:
+            d = math.dist((x, y, z), (c[0], c[1], c[2]))
+            if d < bd:
+                bd, best = d, c
+        if best is not None and bd < radius:
+            n = len(best[3])
+            best[0] = (best[0] * n + x) / (n + 1)
+            best[1] = (best[1] * n + y) / (n + 1)
+            best[2] = (best[2] * n + z) / (n + 1)
+            best[3].append((name, x, y, z))
+        else:
+            clusters.append([x, y, z, [(name, x, y, z)]])
+    # nearest-neighbour route ordering (fewer chunk stalls between stops)
+    route = [clusters.pop(0)]
+    while clusters:
+        last = route[-1]
+        clusters.sort(key=lambda c: math.dist((c[0], c[2]), (last[0], last[2])))
+        route.append(clusters.pop(0))
+    return route
+
+
+def cmd_derive_npcs(args):
+    if not os.path.exists(PLACEMENTS):
+        die(f'placements.mcfunction not found: {PLACEMENTS}')
+    pts = load_latches()
+    if not pts:
+        die('no latch trigger points parsed — placements.mcfunction format changed?')
+    route = cluster_latches(pts, args.radius)
+
+    stops = []
+    for ci, (cx, cy, cz, members) in enumerate(route, 1):
+        n = max(1, min(args.towns, len(members)))
+        # evenly spaced members so N spots cover the cluster, not one corner
+        idx = [round(k * (len(members) - 1) / max(1, n - 1)) for k in range(n)] if n > 1 else [0]
+        for k in sorted(set(idx)):
+            name, x, y, z = members[k]
+            nearby = [m[0] for m in members if m[0] != name][:6]
+            caption = f'cluster {ci}/{len(route)} — {name}'
+            if nearby:
+                caption += f' (+{len(members) - 1} latch(es) nearby: {", ".join(nearby)})'
+            stops.append({
+                'label': safe_label(name, f'c{ci}'),
+                'camera': [round(x - 5, 1), round(y + 3, 1), round(z - 5, 1)],
+                'look_at': [round(x, 1), round(y, 1), round(z, 1)],
+                'wait_s': args.wait,
+                'caption': caption,
+            })
+
+    spec = {'name': 'npcs_tour',
+            'description': f'Auto-derived from placements.mcfunction: {len(pts)} latches '
+                           f'→ {len(route)} clusters, {args.towns}/cluster.',
+            'stops': stops}
+    out = args.out
+    os.makedirs(os.path.dirname(out), exist_ok=True)
+    with open(out, 'w') as f:
+        json.dump(spec, f, indent=2)
+    print(f'{len(pts)} latches → {len(route)} clusters → {len(stops)} camera stops')
+    print(out)
+    return 0
+
+
+# ── main ─────────────────────────────────────────────────────────────────────
+
+def main():
+    ap = argparse.ArgumentParser(
+        prog='evidence_tour',
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    sub = ap.add_subparsers(dest='cmd', required=True)
+
+    p_run = sub.add_parser('run', help='shoot a tour spec against a live GUI player')
+    p_run.add_argument('--player', required=True, help='online GUI client player name')
+    p_run.add_argument('--spec', default=None,
+                       help=f'tour spec JSON (default: {os.path.relpath(EXAMPLE_SPEC, ROOT)})')
+    p_run.add_argument('--wait', type=float, default=6.0,
+                       help='default per-stop chunk-render wait, seconds (spec wait_s overrides)')
+
+    p_dn = sub.add_parser('derive-npcs',
+                          help='generate a tour spec from placements.mcfunction latches')
+    p_dn.add_argument('--towns', type=int, default=3, metavar='N',
+                      help='camera spots per coordinate cluster (default 3)')
+    p_dn.add_argument('--out', default=os.path.join(TOURS_DIR, 'npcs_tour.json'))
+    p_dn.add_argument('--radius', type=float, default=CLUSTER_RADIUS,
+                      help='cluster radius, blocks (default 25 — inside the 40-block latch)')
+    p_dn.add_argument('--wait', type=float, default=6.0, help='per-stop wait_s in the spec')
+
+    args = ap.parse_args()
+    if args.cmd == 'run':
+        return cmd_run(args)
+    return cmd_derive_npcs(args)
+
+
+if __name__ == '__main__':
+    sys.exit(main())

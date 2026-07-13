@@ -1,6 +1,6 @@
 _Seven legends walk the map in a frenzy. Dodge them, wear them down with your own two hands, and the calm that follows is your one chance to catch a perfect Pokémon._
 
-> **Part of the campaign guide.** See [[Guidebook Overview]] for the full route, [[Guidebook Shrines]] for the other optional trial system, and [[Architecture Overview]] for how the noble engine fits the rest of the mod.
+> **Part of the campaign guide.** See [[Guidebook Overview]] for the full route, [[Guidebook Shrines]] for the other optional trial system, and [Architecture Overview](https://github.com/The-Company-Inc-Nerds/the-cobblemon-initiative/blob/main/docs/ARCHITECTURE_OVERVIEW.md) for how the noble engine fits the rest of the mod.
 
 ---
 
@@ -81,4 +81,4 @@ Mew never attacks and can't be hurt. It flees, blink-teleports around the arena,
 - [[Guidebook Overview]] — the campaign route these encounters will slot into
 - [[Guidebook Shrines]] — the other optional trial system (and the shared "flex, not checkbox" philosophy)
 - [[Commands]] — `/noble start|stop|list` (OP) and the no-permission `/noble-abort`
-- [[Architecture Overview]] · [[Architecture Data Flows]] — the noble engine: the two-phase body-swap, the attack primitives, and the config schema
+- [Architecture Overview](https://github.com/The-Company-Inc-Nerds/the-cobblemon-initiative/blob/main/docs/ARCHITECTURE_OVERVIEW.md) · [Architecture Data Flows](https://github.com/The-Company-Inc-Nerds/the-cobblemon-initiative/blob/main/docs/ARCHITECTURE_DATA_FLOWS.md) — the noble engine: the two-phase body-swap, the attack primitives, and the config schema

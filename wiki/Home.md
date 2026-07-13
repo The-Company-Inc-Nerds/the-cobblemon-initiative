@@ -2,10 +2,6 @@
 
 A single-player **Fabric** mod (Minecraft 1.21.1 + Cobblemon 1.7.3, currently **0.5.0-alpha.6**) built for UPM 2 and played as a live **hardcore + Nuzlocke** production. It layers gym-badge progression, level caps, Nuzlocke death mechanics, an amnesiac-founder mystery, a destabilizing in-world economy, elemental shrine challenges, Legends-Arceus-style noble boss encounters, a full side-quest board with an on-map quest tracker, and progress-scaled loot caches onto a curated journey through ten gyms.
 
-## 📐 Architecture
-- **[[Architecture Overview]]** — the ten subsystems, the Fabric init/lifecycle flow, runtime-mod integrations, and the recurring design patterns.
-- **[[Architecture Data Flows]]** — mermaid workflows for every key system: battle → badge → level cap, faint → Nuzlocke → Dark Urge, NPC Sight, Memory Fragments, the Wheat War economy, the Quest HUD, the quest tracker (`]` / `[` keybinds → `/cobblemon-initiative track` → aqua ▶ sidebar highlight → JourneyMap waypoint, with a light-beam fallback), the loot-chest system (unplaced chests stocked once from badge-tier loot tables, with a 75% empty roll), and the noble encounter lifecycle (intro → real-time fight → stagger cinematic → catch battle).
-
 ## ⌨️ Reference
 - **[[Commands]]** — the complete command surface: gameplay, the new player-facing quest tracker, admin/world-setup, and the dev-only authoring tools (flagged for removal at 1.0.0).
 
@@ -29,6 +25,11 @@ A single-player **Fabric** mod (Minecraft 1.21.1 + Cobblemon 1.7.3, currently **
 
 ---
 
-> ⚠️ The **Guidebook and Quests sections contain story spoilers.** The Architecture and Commands pages track the
-> live codebase. See also `docs/LORE_BIBLE.md`, `docs/HARDCORE_RUNBOOK.md`, and `TODO.md` in
-> the repository.
+> ⚠️ The **Guidebook and Quests sections contain story spoilers.** The Commands page tracks the
+> live codebase.
+>
+> **Contributors:** architecture and design docs live in the repo under
+> [`docs/`](https://github.com/The-Company-Inc-Nerds/the-cobblemon-initiative/tree/main/docs) —
+> the [Architecture Overview](https://github.com/The-Company-Inc-Nerds/the-cobblemon-initiative/blob/main/docs/ARCHITECTURE_OVERVIEW.md)
+> (subsystem map) and [Architecture Data Flows](https://github.com/The-Company-Inc-Nerds/the-cobblemon-initiative/blob/main/docs/ARCHITECTURE_DATA_FLOWS.md)
+> (mermaid runtime workflows), alongside `LORE_BIBLE.md`, `HARDCORE_RUNBOOK.md`, and `TODO.md`.

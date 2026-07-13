@@ -22,8 +22,9 @@ Full documentation lives in the
 **[Wiki](https://github.com/The-Company-Inc-Nerds/the-cobblemon-initiative/wiki)**:
 
 - **[Guidebook](https://github.com/The-Company-Inc-Nerds/the-cobblemon-initiative/wiki/Guidebook-Overview)** — the campaign by town/route/shrine, plus a sequential **[Route Map](https://github.com/The-Company-Inc-Nerds/the-cobblemon-initiative/wiki/Guidebook-Route-Map)**.
-- **[Architecture](https://github.com/The-Company-Inc-Nerds/the-cobblemon-initiative/wiki/Architecture-Overview)** — subsystems and mermaid data-flow diagrams.
 - **[Commands](https://github.com/The-Company-Inc-Nerds/the-cobblemon-initiative/wiki/Commands)** — the complete command reference.
+
+Contributor/architecture docs live in the repo under [`docs/`](docs/): **[Architecture Overview](docs/ARCHITECTURE_OVERVIEW.md)** — subsystems and the ten-subsystem map — and **[Architecture Data Flows](docs/ARCHITECTURE_DATA_FLOWS.md)** — mermaid diagrams for every key runtime workflow.
 
 ## Requirements
 

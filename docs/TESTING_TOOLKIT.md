@@ -9,6 +9,7 @@ All three layers are implemented and run green against the real map.
 | Static ref validator | `dev/cobblemon_validation/content_integrity.py` | `python3 dev/cobblemon_validation/content_integrity.py` (add `--no-packs` to prove the catch) | yes (exit≠0 on unresolved model/texture) |
 | Headless harness | `scripts/test_harness` | `scripts/test_harness [--static\|--client]` | yes (static + server phases) |
 | Offline placement | `scripts/npc_placement_audit.py` | `python3 scripts/npc_placement_audit.py [--source trainers\|dialog\|both]` | no (informational) |
+| Dialog lint | `scripts/dialog_lint.py` | `python3 scripts/dialog_lint.py [--quiet]` (see section below) | yes (exit≠0 on DEAD/ORPHAN/NEGATION) |
 | In-mod test cmds | `command/TestCommands.java` | `/cobblemon-initiative test reload\|registry\|data\|placement` | reload/registry/data yes; placement info |
 | Fake player | `build.gradle.kts` (Carpet, dev-only) | `player Tester spawn` then `execute as Tester run …` | enabler |
 
@@ -114,6 +115,56 @@ Plus a pure-static pass (no game) reusing `validate_trainers.py` + a new
 `content_integrity.py` (validate every `assets/**/resolvers` model/texture/poser id against
 the jar + AllTheMons resourcepack zip).
 
+## Dialog lint — offline dead/shadowed/unreachable dialog analyzer
+
+`scripts/dialog_lint.py` (pure static, no server, sub-second) — finds the bug class the
+band-tag gating system breeds: dialog entries that can never be shown, entries whose
+winning window is clipped by a higher-priority entry on an axis they don't gate on
+(e.g. villain_grunt_2's `contraband` only winning below 3 badges), buttons whose
+conditions can never pass, tags referenced but granted nowhere, and `NOT_EQUALS`
+authoring errors (the engine ignores the Operation field — contains() only).
+
+```bash
+python3 scripts/dialog_lint.py             # full report (INFO capped at 60 on stdout)
+python3 scripts/dialog_lint.py --quiet     # errors + warnings only
+python3 scripts/dialog_lint.py --json PATH # report path (default dev/dialog_lint_report.json)
+```
+
+What it models (exact engine semantics, from ENGINE_FINDINGS §2/§3 + EASY_NPC_REFERENCE):
+
+- **Selection ladder**: entries with `Priority >= 0` whose Conditions all pass, sorted
+  Priority DESC then Label ASC, first wins. `Priority: -1` = manual-only (must be opened
+  by an `OPEN_NAMED_DIALOG` action, `easy_npc dialog open`, or an npcsight profile —
+  the linter resolves those references, scoped per NPC via preset_map.json uuids /
+  entity tags).
+- **PLAYER_TAG = contains() only**; negations ride `no_<X>`, numeric gates ride the
+  band tags — both derivation families are parsed live from
+  `function/dialog/band_tags.mcfunction`, so the simulation couples `X`/`no_X` and
+  drives every `<obj>_gte/lt/eq_N` band from its source objective (badges =
+  `memory_fragment` 0..10).
+- **Action gates** count only via the doubled `ConditionDataSet:{ConditionDataSet:[…]}`
+  key; a bare `Conditions` list on an action is flagged (silently ignored by the engine).
+- **Grant discovery**: `tag … add` across functions/presets/configs, onwin strings,
+  `npcsight meettag`, quest-helper trailing tags (`cobblemon-initiative turnin/trade …
+  <tag>`), and Java string literals.
+
+Severities: ERROR (`DEAD_ENTRY` / `ORPHAN_TAG` / `NEGATION_BUG`) gate the exit code —
+usable as a pre-commit/pre-build check like the trainer validator. WARNING
+(`UNREACHABLE_BUTTON`, `MISPLACED_ACTION_GATE`, `PRIORITY_ASSUMED`) and INFO
+(`SHADOWED_RANGE`, `UNREACHABLE_ACTION`, `AUTO_DEAD_NAMED_ONLY`) don't gate; SHADOWED
+findings print the winning-state slice per entry so a human judges intent. Known
+approximations (documented in the JSON `semantics` block): per-entry exact enumeration
+falls back to pairwise entailment above 300k states (findings then marked
+`approximate`); orphan tags simulate as free variables; the bottom-of-ladder
+unconditional fallback entry is exempt from SHADOWED (losing to specifics is its job);
+the compiler's mirrored beaten-say/battle action pair is exempt from
+UNREACHABLE_ACTION.
+
+Run it after any dialog-src compile or hand edit to presets/band_tags. Acceptance
+canary: it must flag villain_grunt_2's dead `default` entry (ERROR) and the
+`contraband` overshadowing at 3+ badges (SHADOWED, `wins only at 0..2`) — TODO §minor
+polish tracks the content fix.
+
 ## Placement audit — two implementations (recommend both)
 
 - **In-mod** `test placement` (Layer 1) — authoritative (real world, real terrain, force-load
@@ -178,3 +229,85 @@ Even fully built: I can position, observe, assert, and screenshot — I cannot *
 Right-click dialog trees, dialog-button UX, walking a shrine, and playing battle turns stay
 yours. What shrinks is the list: instead of "test everything," it becomes "these N specific
 interactions need a human," with the data/placement/loading around them already green.
+
+---
+
+## Evidence recorder + auto-smoke (added 2026-07-12)
+
+Three attach-only tools on top of the RCON layer (`scripts/mc_rcon.py`). None of them
+boot a server — they attach to the running dev server (127.0.0.1:25575/devtest) and
+fail/SKIP with a clear message when nothing is up. All output lands under
+`dev/evidence/<YYYYMMDD-HHMMSS>/` (gitignored).
+
+### `scripts/evidence_tour` — camera-circuit screenshot galleries
+
+Drives an already-connected GUI client player (op + spectator + `tp … facing …`) through
+a JSON list of camera stops and captures each with `grim` (Wayland, whole screen — the
+game must be the frontmost window; run `caffeine` first so hypridle's lock doesn't eat
+captures).
+
+```bash
+# shoot the bundled 3-landmark demo (self-bootstraps dev/evidence/tours/example_tour.json)
+scripts/evidence_tour run --player <GuiPlayerName>
+
+# shoot a custom circuit
+scripts/evidence_tour run --player Cole --spec dev/evidence/tours/my_tour.json
+
+# auto-generate a spec covering every town's placed NPCs (parses
+# ambient/placements.mcfunction latches, clusters them, N camera spots per cluster,
+# camera = spot + (-5,+3,-5) looking at the spot)
+scripts/evidence_tour derive-npcs --towns 3        # -> dev/evidence/tours/npcs_tour.json
+scripts/evidence_tour run --player Cole --spec dev/evidence/tours/npcs_tour.json
+```
+
+Spec stops: `{label, camera:[x,y,z], look_at:[x,y,z]|"EntityName"|"@e[...]", wait_s, caption}`.
+Output: numbered `.png` shots + `index.md` (caption/coords/timestamp/relative links) +
+`report.json`; the folder path prints last. Exit nonzero if any stop failed to capture.
+
+### `scripts/record_clip` — short review clips of cutscenes/gimmicks
+
+Wraps `wf-recorder` (whole output — focus the game window first), optionally fires one
+RCON trigger 1s in, records N seconds, SIGINTs the recorder cleanly, verifies the mp4.
+Graceful error if wf-recorder is missing (add it to the dev shell).
+
+```bash
+scripts/record_clip --seconds 30 --out rift_intro \
+    --trigger 'cutscene play rift_intro {player}' --player Cole
+# no trigger = plain screen clip, no server needed
+scripts/record_clip --seconds 15 --out gym7_gimmick
+```
+
+Output: `dev/evidence/clips/<ts>_<name>.mp4` (path printed; duration probed via
+ffprobe/ffmpeg when present).
+
+### `scripts/smoke_auto` — every proven headless verification, one command
+
+Eight phases, each PASS/FAIL/SKIP with evidence; continues on failure; exit nonzero if
+any FAIL. Report: `dev/evidence/<ts>/smoke_report.md` + `smoke_report.json`.
+
+| Phase | What it asserts | How |
+|---|---|---|
+| static | content_integrity + validate_trainers | `scripts/test_harness --static` |
+| console | install verify/check, test reload/registry/data | RCON; gate on `[TEST] … FAIL` |
+| caps | 22→80→85 (champion)→100 (board) ladder | `dev badges/grant` SOURCE-visible "level cap now N" (levelcap itself is player-directed, invisible over RCON) |
+| canary | tbcs battle path end-to-end | givemon + invisible armor-stand anchor + `tbcs attach rctmod:stadium_wave_1` + `tbcs battle`; FAIL on "is not attached"/"Failed to validate"; sent-out-mon probe as bonus evidence |
+| sweep | live NPC placement (full map) | `scripts/npc_live_sweep.py` subprocess; gate on hard embeds |
+| safari | badge gate, 1500 fee, lure spawn, ball confiscation | `cobbledollars set fee+900` → enter → `cobbledollars query` (console-visible; abbreviates ≥1000, so the post-fee remainder is kept exact) → scatter → `data get entity @e[tag=ci_safari_lure…]` → exit → `clear <bot> cobblemon:safari_ball 0` |
+| stadium | a wave battle actually starts | `stadium start 25` → poll for a pokemon entity near the bot (≤24s) → `stopbattle` voids the run server-side |
+| logsweep | no NEW forbidden log lines | pattern diff vs `--log-baseline` (default: pre-run snapshot); self-inflicted feature-detect "Unknown or incomplete command" probes are discounted |
+
+```bash
+scripts/smoke_auto                        # everything (sweep takes a while)
+scripts/smoke_auto --skip-sweep           # fast pass
+scripts/smoke_auto --only caps,safari     # iterate on specific phases
+scripts/smoke_auto --mark                 # + comment results into the in-mod smoke
+                                          #   checklist (console→0.6, caps→2.5/2.8,
+                                          #   canary→4.1; COMMENT only, never pass/fail)
+scripts/smoke_auto --log /tmp/runserver.log --write-log-baseline dev/evidence/log_base.json
+```
+
+Gotchas baked in: RCON concatenates output lines WITHOUT newlines (parsers split on
+stable prefixes, never line breaks); Carpet canonicalizes bot names (`smokebot` →
+`SmokeBot` — matching is case-insensitive); the RCON socket occasionally drops on a busy
+dev server (one silent reconnect, then the phase FAILs and later phases SKIP); the bot
+is spawned once, reused across phases, and reset + killed at the end of the run.

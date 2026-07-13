@@ -208,6 +208,7 @@ The other half of the reveal — and the villain economy you can actually shop a
 ### The pitch and the store
 
 - **Ping's pitch:** *"Back your savings in something you can hold... wheat does not lie."* Hearing it counts the same as the catwalk reveal.
+- **The scrip loop:** the wheat traders run their own currency. Sell them a batch of **wheat** and they pay in **Company Wheat Scrip** (a gold-named note); spend that scrip on their goods. It's a closed company economy — the scrip is a marked item, so ordinary paper won't pass as payment, and the notes are worth nothing anywhere else. Backing your savings in something you can hold, indeed.
 - **The Granary** is a company store in the oldest sense: *"We do not take CobbleDollars here — grain in, goods out."* Stock improves with your badges, and prices are quoted **in wheat** — they swing with the index (a Rare Candy has ranged from 20 sheaves down to 12 at peak instability). For scale: the bank rate values wheat around 25 CD.
 
 ### How they turn on you

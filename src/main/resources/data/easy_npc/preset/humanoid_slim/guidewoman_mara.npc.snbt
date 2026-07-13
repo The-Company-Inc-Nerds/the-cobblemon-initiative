@@ -1,0 +1,322 @@
+{
+    PresetMetadata: {
+        author: "TheCompanyInc",
+        category: "Civilian",
+        created: 0L,
+        description: "civilian at Sango Town (act 1). Compiled from dialog-src.",
+        entityTypeId: "easy_npc:humanoid_slim",
+        modified: 0L,
+        name: "Guidewoman Mara",
+        variantType: "ALEX",
+        version: "1.0.0"
+    },
+    data: {
+        ActionData: {
+            ActionEventSet: {
+                ON_INTERACTION: [
+                    {
+                        Type: "OPEN_DEFAULT_DIALOG"
+                    }
+                ]
+            }
+        },
+        ArmorDropChances: [0.08500000089406967f, 0.08500000089406967f, 0.08500000089406967f, 0.08500000089406967f],
+        ArmorItems: [
+            {},
+            {},
+            {},
+            {}
+        ],
+        Brain: {
+            memories: {}
+        },
+        CanPickUpLoot: 0b,
+        CustomNameVisible: 1b,
+        DialogData: {
+            Type: "STANDARD",
+            DialogDataSet: [
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "badges_gte_7"
+                        }
+                    ],
+                    Priority: 30,
+                    Buttons: [
+                        {
+                            Name: "Take the road out",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Seven towns take your measure and hand you back a badge. And still you come home to Sango to hear an old woman give directions you memorised years ago. I do not mind. I only wish I could say why watching you leave still feels like watching someone leave twice."
+                        },
+                        {
+                            Text: "The route out has not moved since you were knee-high, and neither have I. But the sea has been wrong all season — the tide comes in a little short, like the water itself is being audited. You would know more about ledgers than I would. Odd thing to think about you. I do not know where it came from."
+                        }
+                    ],
+                    Name: "Guidewoman Mara — the guide who cannot place the feeling",
+                    Label: "late"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "badges_gte_3"
+                        }
+                    ],
+                    Priority: 20,
+                    Buttons: [
+                        {
+                            Name: "Where should I head next",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "directions"
+                                }
+                            ],
+                            Label: "ask_button"
+                        },
+                        {
+                            Name: "Thank you, Mara",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Back again with more badges than answers. Good. That is the right order to collect them in. The lab is up the rise, the lake road runs east past the reeds, and the town gate — you know the town gate. You always did."
+                        },
+                        {
+                            Text: "A grey-suit stood where you are standing last week, asking after our water rights, all smiles and a folder. I sent him on. We do not verify our tide here, thank you. Between us — the way he looked at your name on the badge register, I did not care for it. Watch the roads."
+                        }
+                    ],
+                    Name: "Guidewoman Mara — the guide who is starting to notice",
+                    Label: "mid"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Got it",
+                            Actions: [
+                                {
+                                    Type: "OPEN_DEFAULT_DIALOG"
+                                }
+                            ],
+                            Label: "back_button"
+                        },
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "West along the Blossom Path, and the road climbs to Takehara Falls — the bug leader Cicada holds the first badge. Rest your team at the Center before you go. Sango does not ask coin to patch you up; the Company has not gotten its meter into our doorframes yet."
+                        }
+                    ],
+                    Name: "Guidewoman Mara — the way out",
+                    Label: "directions"
+                },
+                {
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "Where should I head first",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "directions"
+                                }
+                            ],
+                            Label: "ask_button"
+                        },
+                        {
+                            Name: "On my way",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Welcome to Sango, the last quiet town before the road makes you earn it. No gym here, no clipboard, no meter on the tide — just the lake, the lab up the rise, and folk who have known each other since the water was higher. If you are only starting out, Professor Acacia is who you want. Up the hill, mind the loose plank."
+                        },
+                        {
+                            Text: "You have the look of a trainer about to leave, dear. Everyone does, standing where you are — one boot already on the Blossom Path. Get your starter, get your bearings, and come back and tell an old greeter you made it. They usually do not. I keep the porch light on regardless."
+                        }
+                    ],
+                    Name: "Guidewoman Mara — the Sango greeter",
+                    Label: "default"
+                }
+            ]
+        },
+        DisplayAttribute: [
+            {
+                Type: "VISIBLE",
+                Bool: 1b
+            },
+            {
+                Type: "VISIBLE_AT_DAY",
+                Bool: 1b
+            },
+            {
+                Type: "VISIBLE_AT_NIGHT",
+                Bool: 1b
+            },
+            {
+                Type: "VISIBLE_IN_CREATIVE",
+                Bool: 1b
+            },
+            {
+                Type: "VISIBLE_IN_SPECTATOR",
+                Bool: 1b
+            },
+            {
+                Type: "VISIBLE_IN_STANDARD",
+                Bool: 1b
+            },
+            {
+                Type: "VISIBLE_TO_OWNER",
+                Bool: 1b
+            },
+            {
+                Type: "VISIBLE_TO_TEAM",
+                Bool: 1b
+            },
+            {
+                Type: "LIGHT_LEVEL",
+                Int: 7
+            },
+            {
+                Type: "NAME_VISIBILITY",
+                Text: "ALWAYS"
+            }
+        ],
+        EasyNPCVersion: 3,
+        EntityAttribute: {
+            IsAttackableByMonsters: 0b,
+            CanCloseDoor: 0b,
+            Freefall: 0b,
+            CanUseNetherPortal: 0b,
+            IsInvulnerable: 1b,
+            HealthRegeneration: 0.0d,
+            NoGravity: 0b,
+            CanPassDoor: 0b,
+            PushEntities: 0b,
+            CanFloat: 0b,
+            CanBreatheUnderwater: 0b,
+            CanBeLeashed: 0b,
+            CanBeHitByProjectile: 0b,
+            IsPushable: 0b,
+            IsAttackableByPlayers: 0b,
+            CanOpenDoor: 0b
+        },
+        HandDropChances: [0.08500000089406967f, 0.08500000089406967f],
+        HandItems: [
+            {},
+            {}
+        ],
+        Invulnerable: 0b,
+        LeftHanded: 0b,
+        ModelData: {
+            DefaultPose: "STANDING",
+            Pose: "VANILLA",
+            Visible: {},
+            Rotation: {},
+            Position: {},
+            Scale: {}
+        },
+        Navigation: {
+            Home: {
+                Y: 106,
+                Z: 2911,
+                X: 2544
+            }
+        },
+        ObjectiveData: {
+            HasObjectives: 1b,
+            HasTravelTarget: 0b,
+            ObjectiveDataSet: [
+                {
+                    Type: "LOOK_AT_PLAYER",
+                    Prio: 9,
+                    Id: "ambient_look_player",
+                    LookDistance: 8.0f
+                },
+                {
+                    Type: "LOOK_RANDOM_AROUND",
+                    Prio: 10,
+                    Id: "ambient_look_random"
+                },
+                {
+                    Type: "LOOK_AT_RESET",
+                    Prio: 9,
+                    Id: "ambient_look_reset"
+                }
+            ]
+        },
+        OnGround: 1b,
+        PersistenceRequired: 0b,
+        PresetUUID: [I; 0, 0, 0, 0],
+        Profession: "NONE",
+        Progression: {
+            AttributeScalingEnabled: 0b,
+            EntityExperience: 1,
+            EntityExperienceLevel: 1
+        },
+        RenderData: {},
+        SkinData: {
+            Type: "SECURE_REMOTE_URL",
+            URL: "https://www.minecraftskins.com/uploads/skins/2021/04/11/savannah-farmer-17436970.png?v921",
+            UUID: [I; 407262373, 1891513340, -1848396951, -2082067470],
+            Name: "",
+            Content: "",
+            Timestamp: 1757624156445L,
+            DisableLayers: 0b
+        },
+        SoundData: {
+            SoundDataSet: []
+        },
+        Status: {
+            finalized: 0b,
+            npc_data_last_saved: 0L,
+            npc_data_last_update: 0L
+        },
+        VariantType: "ALEX",
+        attributes: [
+            {
+                base: 20.0d,
+                id: "minecraft:generic.max_health"
+            },
+            {
+                base: 0.5d,
+                id: "minecraft:generic.movement_speed"
+            }
+        ],
+        id: "easy_npc:humanoid_slim",
+        CustomName: '{"text": "Guidewoman Mara", "color": "#FF00FF"}'
+    }
+}

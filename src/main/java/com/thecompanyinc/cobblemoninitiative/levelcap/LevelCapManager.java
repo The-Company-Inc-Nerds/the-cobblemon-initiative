@@ -6,6 +6,7 @@ import com.thecompanyinc.cobblemoninitiative.config.LevelCapConfig;
 import com.thecompanyinc.cobblemoninitiative.config.ProgressionConfig;
 import com.thecompanyinc.cobblemoninitiative.data.PlayerProgress;
 import java.util.List;
+import java.util.UUID;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 
@@ -33,6 +34,12 @@ public class LevelCapManager {
 
   public int getLevelCap(ServerPlayer player) {
     return computeLevelCap(InitiativeInit.getProgressManager().getProgress(player));
+  }
+
+  /** UUID overload for owner-less contexts (daycare custody mons clamp against the
+   *  boarding player's cap even when that player is offline). */
+  public int getLevelCap(UUID playerId) {
+    return computeLevelCap(InitiativeInit.getProgressManager().getProgress(playerId));
   }
 
   public void updateLevelCap(ServerPlayer player) {

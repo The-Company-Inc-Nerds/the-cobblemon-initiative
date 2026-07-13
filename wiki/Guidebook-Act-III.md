@@ -160,4 +160,4 @@ The endgame chain lives on **[[Quests Main Story]]**: gyms 8–10, **The Royal L
 
 ---
 
-**See also:** [[Guidebook Overview]] · [[Guidebook Act I]] · [[Guidebook Act II]] · [[Guidebook Shrines]] · [[Commands]] · [[Architecture Data Flows]]
+**See also:** [[Guidebook Overview]] · [[Guidebook Act I]] · [[Guidebook Act II]] · [[Guidebook Shrines]] · [[Commands]] · [Architecture Data Flows](https://github.com/The-Company-Inc-Nerds/the-cobblemon-initiative/blob/main/docs/ARCHITECTURE_DATA_FLOWS.md)

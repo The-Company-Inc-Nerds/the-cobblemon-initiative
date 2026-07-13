@@ -1,0 +1,399 @@
+{
+    PresetMetadata: {
+        author: "TheCompanyInc",
+        category: "Merchant",
+        created: 0L,
+        description: "merchant at Old Caravan - the crossroads (act 1). Compiled from dialog-src.",
+        entityTypeId: "easy_npc:humanoid",
+        modified: 0L,
+        name: "Peddler Ndulu",
+        variantType: "STEVE",
+        version: "1.0.0"
+    },
+    data: {
+        ActionData: {
+            ActionEventSet: {
+                ON_INTERACTION: [
+                    {
+                        Type: "OPEN_DEFAULT_DIALOG"
+                    }
+                ]
+            }
+        },
+        ArmorDropChances: [0.085f, 0.085f, 0.085f, 0.085f],
+        ArmorItems: [
+            {},
+            {},
+            {},
+            {}
+        ],
+        Brain: {
+            memories: {}
+        },
+        CanPickUpLoot: 0b,
+        CustomNameVisible: 1b,
+        DialogData: {
+            Type: "STANDARD",
+            DialogDataSet: [
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "wheat_war_active"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "no_field_5_liberated"
+                        }
+                    ],
+                    Priority: 20,
+                    Buttons: [
+                        {
+                            Name: "Browse the wagon",
+                            Actions: [
+                                {
+                                    Type: "OPEN_TRADING_SCREEN"
+                                }
+                            ],
+                            Label: "shop_button"
+                        },
+                        {
+                            Name: "Roll on",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "You are the one kicking fences in, are you not. Then here is a tip worth the browse: the Crossroads Granary down the artery is not a store. It is a silo the Company planted on top of a working field."
+                        },
+                        {
+                            Text: "Free the Crossroads parcel and the whole caravan road stops paying their toll. That is the tip; the browse is extra."
+                        },
+                        {
+                            Text: "I remember when the first courier fork on Blossom Path still went two honest ways. Feels like a long time and it was not. That is how fast they move."
+                        }
+                    ],
+                    Name: "Ndulu - the silo squats on a field",
+                    Label: "granary_pointer"
+                },
+                {
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "Browse the wagon",
+                            Actions: [
+                                {
+                                    Type: "OPEN_TRADING_SCREEN"
+                                }
+                            ],
+                            Label: "shop_button"
+                        },
+                        {
+                            Name: "Roll on",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Old Caravan road. Everyone crosses it eventually - Sango to Kalahar, the whole map hangs off this dust. I set up where the crossing is thickest and sell to whoever passes."
+                        },
+                        {
+                            Text: "Prices? Do not ask. I quote what I paid and pray it still means something by sundown."
+                        },
+                        {
+                            Text: "This artery runs Sango to Kalahar and the Crossroads Granary squats halfway along it. Browse the wagon or roll on, traveler."
+                        }
+                    ],
+                    Name: "Peddler Ndulu",
+                    Label: "default"
+                }
+            ]
+        },
+        DisplayAttribute: [
+            {
+                Bool: 1b,
+                Type: "VISIBLE"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_AT_DAY"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_AT_NIGHT"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_IN_CREATIVE"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_IN_SPECTATOR"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_IN_STANDARD"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_TO_OWNER"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_TO_TEAM"
+            },
+            {
+                Int: 7,
+                Type: "LIGHT_LEVEL"
+            },
+            {
+                Text: "ALWAYS",
+                Type: "NAME_VISIBILITY"
+            }
+        ],
+        EasyNPCVersion: 3,
+        EntityAttribute: {
+            CanBeHitByProjectile: 0b,
+            CanBeLeashed: 0b,
+            CanBreatheUnderwater: 0b,
+            CanCloseDoor: 0b,
+            CanFloat: 0b,
+            CanOpenDoor: 0b,
+            CanPassDoor: 0b,
+            CanUseNetherPortal: 0b,
+            Freefall: 0b,
+            HealthRegeneration: 0.0d,
+            IsAttackableByMonsters: 0b,
+            IsAttackableByPlayers: 0b,
+            IsInvulnerable: 1b,
+            IsPushable: 0b,
+            NoGravity: 0b,
+            PushEntities: 0b
+        },
+        HandDropChances: [0.085f, 0.085f],
+        HandItems: [
+            {},
+            {}
+        ],
+        Invulnerable: 0b,
+        LeftHanded: 0b,
+        ModelData: {
+            DefaultPose: "STANDING",
+            Pose: "VANILLA",
+            Position: {},
+            Rotation: {},
+            Scale: {},
+            Visible: {
+                Boots: 1b
+            }
+        },
+        Navigation: {
+            Home: {
+                X: 0,
+                Y: 0,
+                Z: 0
+            }
+        },
+        ObjectiveData: {
+            HasObjectives: 1b,
+            HasTravelTarget: 0b,
+            ObjectiveDataSet: [
+                {
+                    Type: "LOOK_AT_PLAYER",
+                    Prio: 9,
+                    Id: "ambient_look_player",
+                    LookDistance: 8.0f
+                },
+                {
+                    Type: "LOOK_RANDOM_AROUND",
+                    Prio: 10,
+                    Id: "ambient_look_random"
+                },
+                {
+                    Type: "LOOK_AT_RESET",
+                    Prio: 9,
+                    Id: "ambient_look_reset"
+                }
+            ]
+        },
+        OnGround: 1b,
+        PersistenceRequired: 0b,
+        PresetUUID: [I; 0, 0, 0, 0],
+        Profession: "NONE",
+        Progression: {
+            AttributeScalingEnabled: 0b,
+            EntityExperience: 1,
+            EntityExperienceLevel: 1
+        },
+        RenderData: {},
+        SkinData: {
+            Content: "",
+            DisableLayers: 0b,
+            Name: "",
+            Timestamp: 0L,
+            Type: "CUSTOM",
+            URL: "",
+            UUID: [I; -2016004819, 1737644102, -1836742879, -2018398151]
+        },
+        SoundData: {
+            SoundDataSet: [
+                {
+                    Name: "minecraft:entity.player.death",
+                    Type: "DEATH"
+                },
+                {
+                    Name: "minecraft:entity.player.hurt",
+                    Type: "HURT"
+                }
+            ]
+        },
+        Status: {
+            finalized: 0b,
+            npc_data_last_saved: 0L,
+            npc_data_last_update: 0L
+        },
+        VariantType: "STEVE",
+        attributes: [
+            {
+                base: 20.0d,
+                id: "minecraft:generic.max_health"
+            },
+            {
+                base: 0.5d,
+                id: "minecraft:generic.movement_speed"
+            }
+        ],
+        id: "easy_npc:humanoid",
+        Offers: {
+            Inventory: {},
+            Recipes: {
+                Recipes: [
+                    {
+                        buy: {
+                            id: "minecraft:emerald",
+                            count: 2
+                        },
+                        sell: {
+                            id: "cobblemon:poke_ball",
+                            count: 8
+                        },
+                        uses: 0,
+                        maxUses: 64,
+                        rewardExp: 0b,
+                        specialPrice: 0,
+                        demand: 0,
+                        priceMultiplier: 0.0f,
+                        xp: 0
+                    },
+                    {
+                        buy: {
+                            id: "minecraft:emerald",
+                            count: 4
+                        },
+                        sell: {
+                            id: "cobblemon:great_ball",
+                            count: 6
+                        },
+                        uses: 0,
+                        maxUses: 64,
+                        rewardExp: 0b,
+                        specialPrice: 0,
+                        demand: 0,
+                        priceMultiplier: 0.0f,
+                        xp: 0
+                    },
+                    {
+                        buy: {
+                            id: "minecraft:emerald",
+                            count: 8
+                        },
+                        sell: {
+                            id: "cobblemon:ultra_ball",
+                            count: 4
+                        },
+                        uses: 0,
+                        maxUses: 64,
+                        rewardExp: 0b,
+                        specialPrice: 0,
+                        demand: 0,
+                        priceMultiplier: 0.0f,
+                        xp: 0
+                    },
+                    {
+                        buy: {
+                            id: "minecraft:emerald",
+                            count: 3
+                        },
+                        sell: {
+                            id: "cobblemon:potion",
+                            count: 5
+                        },
+                        uses: 0,
+                        maxUses: 64,
+                        rewardExp: 0b,
+                        specialPrice: 0,
+                        demand: 0,
+                        priceMultiplier: 0.0f,
+                        xp: 0
+                    },
+                    {
+                        buy: {
+                            id: "minecraft:emerald",
+                            count: 6
+                        },
+                        sell: {
+                            id: "cobblemon:super_potion",
+                            count: 4
+                        },
+                        uses: 0,
+                        maxUses: 64,
+                        rewardExp: 0b,
+                        specialPrice: 0,
+                        demand: 0,
+                        priceMultiplier: 0.0f,
+                        xp: 0
+                    },
+                    {
+                        buy: {
+                            id: "minecraft:emerald",
+                            count: 12
+                        },
+                        sell: {
+                            id: "cobblemon:revive",
+                            count: 2
+                        },
+                        uses: 0,
+                        maxUses: 64,
+                        rewardExp: 0b,
+                        specialPrice: 0,
+                        demand: 0,
+                        priceMultiplier: 0.0f,
+                        xp: 0
+                    }
+                ]
+            }
+        },
+        TradingData: {
+            TradingDataSet: {
+                Type: "BASIC",
+                MaxUses: 64,
+                RewardedXP: 0,
+                ResetsEveryMin: 20,
+                LastReset: 0L
+            }
+        },
+        CustomName: '{"text": "Peddler Ndulu", "color": "#FFFFFF"}'
+    }
+}

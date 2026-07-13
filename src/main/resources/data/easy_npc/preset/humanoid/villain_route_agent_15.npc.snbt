@@ -1,0 +1,491 @@
+{
+    PresetMetadata: {
+        author: "TheCompanyInc",
+        category: "Villain",
+        created: 0L,
+        description: "villain_grunt at Cinderfall - ash road (act 2). Compiled from dialog-src.",
+        entityTypeId: "easy_npc:humanoid",
+        modified: 0L,
+        name: "Vane",
+        variantType: "STEVE",
+        version: "1.0.0"
+    },
+    data: {
+        ActionData: {
+            ActionEventSet: {
+                ON_INTERACTION: [
+                    {
+                        Type: "OPEN_DEFAULT_DIALOG"
+                    }
+                ]
+            }
+        },
+        ArmorDropChances: [0.085f, 0.085f, 0.085f, 0.085f],
+        ArmorItems: [
+            {},
+            {},
+            {},
+            {}
+        ],
+        Brain: {
+            memories: {}
+        },
+        CanPickUpLoot: 0b,
+        CustomNameVisible: 1b,
+        DialogData: {
+            Type: "STANDARD",
+            DialogDataSet: [
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "badges_gte_7"
+                        }
+                    ],
+                    Priority: 30,
+                    Buttons: [
+                        {
+                            Name: "Face them",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_villain_route_agent_15"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "say The survey is void and the ash road is open. I am not standing on that cinder twice. Move along."
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_route_agent_15"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:villain_grunt_8 @s"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_route_agent_15"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:villain_grunt_8 onwin {1: ['cobbledollars give @1 900', 'tag @1 add defeated_villain_route_agent_15', '@2 say Survey suspended. The ash road is downgraded to a footpath and you are off no memo of mine.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 220', '@1 say Reading discarded. The Company thanks you for not existing quietly.']}"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "yes_button"
+                        },
+                        {
+                            Name: "Step back off the ash road",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "No. There was never a founder. The file says so and the file is the truth. So you are no one. A no one who keeps interfering, which makes you a problem, which makes this my job."
+                        },
+                        {
+                            Text: "I say it again so it is true. There was never a founder. Now hold still while I make the memo accurate."
+                        },
+                        {
+                            Text: "You are no one. The file is clear on that, and the file does not lie. Stand still and let me close it properly."
+                        }
+                    ],
+                    Name: "Elite Agent - late double-down",
+                    Label: "late"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "badges_gte_3"
+                        }
+                    ],
+                    Priority: 20,
+                    Buttons: [
+                        {
+                            Name: "Fight",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_villain_route_agent_15"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "say The survey is void and the ash road is open. I am not standing on that cinder twice. Move along."
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_route_agent_15"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:villain_grunt_8 @s"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_route_agent_15"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:villain_grunt_8 onwin {1: ['cobbledollars give @1 900', 'tag @1 add defeated_villain_route_agent_15', '@2 say Survey suspended. The ash road is downgraded to a footpath and you are off no memo of mine.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 220', '@1 say Reading discarded. The Company thanks you for not existing quietly.']}"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "yes_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Your face is on a memo. The kind with a black bar over the name and the words do not engage, report immediately."
+                        },
+                        {
+                            Text: "You are supposed to be a closed file. Closed files do not get to walk away."
+                        }
+                    ],
+                    Name: "Elite Agent - mid recognition",
+                    Label: "mid"
+                },
+                {
+                    Priority: 15,
+                    Buttons: [
+                        {
+                            Name: "Refuse the notice - face the Agent",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_villain_route_agent_15"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "say The survey is void and the ash road is open. I am not standing on that cinder twice. Move along."
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_route_agent_15"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:villain_grunt_8 @s"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_route_agent_15"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:villain_grunt_8 onwin {1: ['cobbledollars give @1 900', 'tag @1 add defeated_villain_route_agent_15', '@2 say Survey suspended. The ash road is downgraded to a footpath and you are off no memo of mine.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 220', '@1 say Reading discarded. The Company thanks you for not existing quietly.']}"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "fight_button"
+                        },
+                        {
+                            Name: "Step back off the ash road",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Hold. This ash road is a Company thermal survey corridor. Foot traffic contaminates the readings. You may turn back, or you may become a reading we discard."
+                        },
+                        {
+                            Text: "The mountain belongs to us on paper. So does everyone who climbs it. Refuse the notice and we settle it on the cinder, or step back and we forget the survey ever logged you."
+                        },
+                        {
+                            Text: "Unscheduled presence on a Company survey road. Off the ash road, or we clear you the hard way."
+                        }
+                    ],
+                    Name: "Elite Agent - the ash road toll",
+                    Label: "ember_hail"
+                },
+                {
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "Fight",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_villain_route_agent_15"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "say The survey is void and the ash road is open. I am not standing on that cinder twice. Move along."
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_route_agent_15"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:villain_grunt_8 @s"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_route_agent_15"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:villain_grunt_8 onwin {1: ['cobbledollars give @1 900', 'tag @1 add defeated_villain_route_agent_15', '@2 say Survey suspended. The ash road is downgraded to a footpath and you are off no memo of mine.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 220', '@1 say Reading discarded. The Company thanks you for not existing quietly.']}"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "yes_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Company business. This road is under thermal survey, and surveys do not appreciate audiences."
+                        },
+                        {
+                            Text: "We settle this the old way. Wait. Do I know you from somewhere?"
+                        }
+                    ],
+                    Name: "Elite Agent - early (no recognition)",
+                    Label: "default"
+                }
+            ]
+        },
+        DisplayAttribute: [
+            {
+                Bool: 1b,
+                Type: "VISIBLE"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_AT_DAY"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_AT_NIGHT"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_IN_CREATIVE"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_IN_SPECTATOR"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_IN_STANDARD"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_TO_OWNER"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_TO_TEAM"
+            },
+            {
+                Int: 7,
+                Type: "LIGHT_LEVEL"
+            },
+            {
+                Text: "ALWAYS",
+                Type: "NAME_VISIBILITY"
+            }
+        ],
+        EasyNPCVersion: 3,
+        EntityAttribute: {
+            CanBeHitByProjectile: 0b,
+            CanBeLeashed: 0b,
+            CanBreatheUnderwater: 0b,
+            CanCloseDoor: 0b,
+            CanFloat: 0b,
+            CanOpenDoor: 0b,
+            CanPassDoor: 0b,
+            CanUseNetherPortal: 0b,
+            Freefall: 0b,
+            HealthRegeneration: 0.0d,
+            IsAttackableByMonsters: 0b,
+            IsAttackableByPlayers: 0b,
+            IsInvulnerable: 1b,
+            IsPushable: 0b,
+            NoGravity: 0b,
+            PushEntities: 0b
+        },
+        HandDropChances: [0.085f, 0.085f],
+        HandItems: [
+            {},
+            {}
+        ],
+        Invulnerable: 0b,
+        LeftHanded: 0b,
+        ModelData: {
+            DefaultPose: "STANDING",
+            Pose: "VANILLA",
+            Position: {},
+            Rotation: {},
+            Scale: {},
+            Visible: {
+                Boots: 1b
+            }
+        },
+        Navigation: {
+            Home: {
+                X: 0,
+                Y: 0,
+                Z: 0
+            }
+        },
+        ObjectiveData: {
+            HasObjectives: 1b,
+            HasTravelTarget: 0b,
+            ObjectiveDataSet: [
+                {
+                    Type: "LOOK_AT_PLAYER",
+                    Prio: 9,
+                    Id: "ambient_look_player",
+                    LookDistance: 8.0f
+                },
+                {
+                    Type: "LOOK_RANDOM_AROUND",
+                    Prio: 10,
+                    Id: "ambient_look_random"
+                },
+                {
+                    Type: "LOOK_AT_RESET",
+                    Prio: 9,
+                    Id: "ambient_look_reset"
+                }
+            ]
+        },
+        OnGround: 1b,
+        PersistenceRequired: 0b,
+        PresetUUID: [I; 0, 0, 0, 0],
+        Profession: "NONE",
+        Progression: {
+            AttributeScalingEnabled: 0b,
+            EntityExperience: 1,
+            EntityExperienceLevel: 1
+        },
+        RenderData: {},
+        SkinData: {
+            Content: "",
+            DisableLayers: 0b,
+            Name: "",
+            Timestamp: 0L,
+            Type: "CUSTOM",
+            URL: "",
+            UUID: [I; -1693360270, -151235896, -1896362904, -1100034783]
+        },
+        SoundData: {
+            SoundDataSet: [
+                {
+                    Name: "minecraft:entity.player.death",
+                    Type: "DEATH"
+                },
+                {
+                    Name: "minecraft:entity.player.hurt",
+                    Type: "HURT"
+                }
+            ]
+        },
+        Status: {
+            finalized: 0b,
+            npc_data_last_saved: 0L,
+            npc_data_last_update: 0L
+        },
+        VariantType: "STEVE",
+        attributes: [
+            {
+                base: 20.0d,
+                id: "minecraft:generic.max_health"
+            },
+            {
+                base: 0.5d,
+                id: "minecraft:generic.movement_speed"
+            }
+        ],
+        id: "easy_npc:humanoid",
+        CustomName: '{"text": "Vane", "color": "#FFFFFF"}'
+    }
+}

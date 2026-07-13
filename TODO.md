@@ -87,10 +87,29 @@ ramps; opt-in forced movement/camera.
       sight triggers, heat gauge + banked full-Vulcan gate, mirror declare→variant, wall drops,
       face-the-NPC camera snap (Mom walk-up, a DIALOG greeter, a pursue spotter run-down —
       confirm the snap feels right and does not fight the camera; alpha.11).
-- [ ] 💻 **Stadium** (future building; will gate Cyber leader `stadium_challenged`≥5 once real) —
-      wave loop + tiered loot (datapack) + ~45 lines Java: a `stadium_active` flag guarding
-      NuzlockeInit's faint/whiteout (safe zones do NOT stop death — see the memory) + a
-      player-chosen level lock (setAdjustLevel/party snapshot). Volt's tease line ships now.
+- [x] 💻 **Stadium BUILT (0.5.0-alpha.14)** — `stadium/` package: `/cobblemon-initiative
+      stadium start <25|50|75|100>|abort|status` (perm 0); bracket level-lock via Cobblemon
+      `BattleFormat.adjustLevel` (set around each dispatch, ALWAYS reset — the static leaks
+      into gym/noble battles otherwise); cloned parties = attrition-free; NuzlockeInit
+      faint/flee/victory guarded by `StadiumManager.isStadiumActive` (whiteouts no-op in a
+      run); 5 Company exhibition waves (data/rctmod/trainers/stadium_wave_1..5, NOT in the
+      TrainerConfig db), flat purses 200-1000 + 1500 completion; `stadium_challenged`
+      objective increments per completed run. RUNTIME-VERIFIED same day (RCON + quick-play
+      client): start→wave announce→battle OPENS (armor-stand anchor added — TBCS refuses
+      unattached trainers), flee/faint guard keeps the player at full health with a 1-mon
+      party, `stopbattle` no longer strands the run (IN_BATTLE registry liveness check),
+      anchors swept on every endRun. **Bracket level lock FIXED + VERIFIED** (headless
+      bot run: Eevee 20→25, Mailroom 50→25 both ways): TBCS's `rules` arg round-trips
+      SNBT→Gson so bare booleans die (`true`→`1b`→false) — flags must be QUOTED strings
+      (ENGINE_FINDINGS TBCS block); player participant dispatches as `@s` (bare names
+      go through the trainer registry and miss bots). Remaining 🔍 (needs real turns):
+      win a wave → purse pays once → next wave dispatches → completion bonus +
+      stadium_challenged increments. **Clerk NPC AUTHORED (alpha.14):** `stadium_clerk`
+      (Exhibition Registrar, Cyber City, Company admin skin) — dialog buttons run
+      `stadium start 25|50|75|100` + status/abort; compiled, awaiting **placement coords
+      in Cyber City** 🧱 (no `placement`/`uuid` yet = not in-world). 🧱 stadium BUILDING
+      (optional — waves fight where the player stands) + Cyber gate flip
+      (`stadium_challenged_gte_5`) stay TODO — Volt's tease unchanged.
 
 ---
 
@@ -183,24 +202,25 @@ Left open:
   **placement in-world** (1904/113/2606 Takehara mart — latch spawns once, finalize
   before shipping a world) + badge-tiered ENTRIES not locked buttons; **skin dress
   pass** (defaults to Steve).
-- [ ] 💻🧱 **DAYCARE CENTER** (showrunner 2026-07-07 — specced but NOT built; sub-agent
-  limit hit mid-build, build tree stays clean/green). Design: talk to a Sango daycare
-  keeper → deposit up to 2 party Pokémon via a party-picker screen (reuse the
-  `screen/` sacrifice-selection server/client split); each boarded mon appears in the
-  pen as a Pokémon-rendered stand-in (starter stand-in / `cobblemon_model` COBBLEMON_ENTITY
-  route) and gains slow tick-driven XP **always clamped by the live level cap** (reuse
-  `LevelCapManager`'s clamp directly — never trust the event path for self-awarded XP);
-  withdraw returns them to party (PC fallback if full) with the gained levels.
-  New `daycare/` package (DaycareManager 2 slots/player, custody persistence in the
-  world dir per PlayerProgressManager pattern, DaycareConfig w/ ModMenu category:
-  enabled/xpPerInterval/intervalTicks/pen coords/fee base+perLevel). `/cobblemon-initiative
-  daycare deposit|withdraw <slot>|status` at perm 0. **Pickup fee** 100 CD + 100/level
-  gained via the pay-probe (broke → they board longer). HARDCORE INVARIANT: daycare mons
-  can NEVER faint/die/be lost — inert custody + XP drip; custody survives relog/crash,
-  stand-ins re-spawn on SERVER_STARTED if custody non-empty. INVESTIGATE-FIRST when built:
-  Cobblemon 1.7.3 party-remove-into-custody + return API, the XP-award method that our
-  clamp catches, and whether stand-ins are programmatic easy_npc humanoids (RenderData
-  EntityModel = species) or Cobblemon PokemonEntity set uncatchable/unbattleable.
+- [x] 💻 **DAYCARE CENTER BUILT (0.5.0-alpha.14)** — `daycare/` package per the spec
+  (API jar-verified first): 2 slots/player custody (JSON in world dir, write-through so
+  a crash loses ≤1 drip interval); deposit via party-picker screen (sacrifice-split
+  reuse, multi-select ≤2, never the last mon); pen stand-ins = `clone(true)` real
+  PokemonEntity hardened UNBATTLEABLE+uncatchable+invulnerable+persistent, tagged
+  `ci_daycare_standin`, custody-JSON-is-truth reconcile respawns/sweeps them lazily;
+  XP drip (40xp/1200t default) **self-clamped** via `getExperienceToLevel(cap)` — the
+  global clamps key off getOwnerPlayer() which is NULL for custody mons (trap recorded);
+  withdraw fee 100+100/level via the pay-probe (`daycare/pickup_fee.mcfunction`, gated
+  on store RESULT), `party.add` has built-in PC fallback; fee-paid-but-both-full →
+  refund + stays boarded. `/cobblemon-initiative daycare deposit|withdraw <slot>|status`
+  perm 0. 🔍 runtime-verify: deposit picker opens + boards, stand-in renders + is
+  unbattleable/uncatchable, XP stops at the cap, withdraw fee + PC fallback, custody
+  survives relog. **Keeper NPC AUTHORED (alpha.14):** `daycare_keeper` (Gaviota Port —
+  MOVED from Sango per showrunner) — dialog buttons run `daycare deposit` (closes →
+  party-picker), `withdraw 1|2`, `status`; compiled, awaiting **who the keeper is
+  (display_name + placement coords or a reused-body uuid) + real PEN coords** in
+  `config/cobblemon-initiative-daycare.json` (0,0,0=unset → stand-ins spawn at the
+  depositor) 🧱. **ModMenu category DONE (alpha.14)** — Daycare/Safari/Stadium all tunable in-game (+ area-overlay content mode). Keeper skin still Steve until the dress pass.
 - [ ] 🧱💻 **Hua Zhan pass** (tester notes round 4 — "a lot of work needed"): DONE in
   0.6.0-alpha.1 — **Groundskeeper Aya → Leader Blossom transform** (the a9ed3a64 body reveals
   as the gym-2 leader after all four garden wardens are beaten + a talk; Victor→Victini
@@ -208,9 +228,11 @@ Left open:
   RCT gym fight rctmod:hua_zhan_leader). Gym 2 uses the transform gate INSTEAD of the
   Takehara 1/2/4 weakening ladder (no jr/apprentice bodies; the four warden statues stay;
   Wei's pilgrimage + seals unchanged). REMAINING: recast **Mei Lin as the Hua Zhan nurse**;
-  **Tau + wheat sellers deal in a custom scrip item** (renamed paper/book — sell it, accept
-  ONLY it as currency); granary wheat-canon leak; Jun's master-plan line; survey wagon
-  unmark; minutes approach_warn; `sq_hz_analyst` displayName rename (sync team file).
+  ~~Tau + wheat sellers deal in a custom scrip item~~ **DONE (alpha.14):** Company Wheat
+  Scrip = renamed paper + `custom_data{ci_scrip:1b}` in the `trade_wheat_trader` snippet;
+  jar-verified Easy NPC rejects plain paper (component-exact ItemCost predicate). granary
+  wheat-canon leak; Jun's master-plan line; survey wagon unmark; minutes approach_warn;
+  `sq_hz_analyst` displayName rename (sync team file).
 - [x] 💻 **Act-2/3 trainer casting (0.5.0-alpha.12)** — all 38 missing/empty teams
   authored + jar-validated (18 missing: grunts 3-11, 3 admins, DJ, board ×4, Founder;
   20 empty: royal_champion + elite_1-4, 5 shrine leaders, 10 cultists). Ladder-true
@@ -344,7 +366,7 @@ Author in batches; each batch unblocks Claude wiring the same day:
   - [ ] 3 management (Regional Manager Shade, Senior Director Vex, COO Noir)
   - [ ] Acting CEO DJ at HQ `[1590 51 1028]`
   - [ ] 4 Board members + The Founder (post-Royal-League, The Boardroom)
-- [ ] **Wheat fields** — zones are DONE (10 farms in install.json, gated on `field_freed`/`farm_1`..`farm_10` — those ids are now canonical). **As shipped (2026-07-04) only `farm_1` is wired to `liberation/free_field` — `fields_liberated` maxes at 1**, so the HQ-raid gate (4), the wheat-trader escalation (2/4), the relief shop tiers (2/4), and the granary ambush (4) are all unreachable. **This is the single biggest Act-1→Act-2 blocker.** *Remaining:* place the field-guard trainers at the farms 🧱 → Claude wires each guard's reward `execute as {player} run function cobblemon_initiative:liberation/free_field {field:"farm_N"}` 💻. (Field Mark tool likely obsolete now — zones came from the zone-mapper.)
+- [ ] **Wheat fields** — zones are DONE (10 farms in install.json, gated on `field_freed`/`farm_1`..`farm_10` — those ids are now canonical). **As shipped (2026-07-04) only `farm_1` is wired to `liberation/free_field` — `fields_liberated` maxes at 1**, so the HQ-raid gate (4), the wheat-trader escalation (2/4), the relief shop tiers (2/4), and the granary ambush (4) are all unreachable. **This is the single biggest Act-1→Act-2 blocker.** **PLACED (0.5.0-alpha.14):** the field-guard cast is the 23 `villain_{site_manager,yield_officer}_N` (farm staff, one pair per farm at its zone center) + `villain_route_agent_N` (route patrols) — authored alpha.13 with dialog+battles but at placeholder Y=64 (buried in stone); repositioned to real surface Y per-farm/route, Highfield pair de-stacked, in-world verified grounded+separated. *Remaining 💻:* wire each guard's battle onwin to `execute as {player} run function cobblemon_initiative:liberation/free_field {field:"farm_N"}` (maps site_manager/yield_officer N → farm N: 9=Highfield 10=Ashloam 2=Mirebloom 6=Fenceline 5=Crossroads 4=Dryrow; 3/7/8 = the western/northern/Frostveil farms — confirm N→farm_id).
 - [ ] 🧱 **Place the compiled-but-unplaced NPCs** — the dead-letter checkpoint agent (`checkpoint_agent` tag), the Per My Last Memo courier, and the Head Count census wagon: compiled presets exist for all three, but there is no UUID mapping / import line yet.
 - [ ] **Wheat-trader NPCs** — place (trade→recognize→ambush) from `wheat_trader_gate` + `trade_wheat_trader` + `dialog_wheat_pitch`
 - [ ] **Granary trader NPC** — Company Inc. member selling items **for wheat**. **Infrastructure landed:**
@@ -378,7 +400,7 @@ Author in batches; each batch unblocks Claude wiring the same day:
   - [x] Wire `wheat_trader/load` + `wheat_trader/tick` into the function tags (+ new `liberation/load`)
   - [x] **Balance decisions (resolved 2026-07-02):** pushback stays **−6/field**; liberation **swaps tiers** — every 2 fields upgrades the active shop+granary tier to a pre-baked relief catalog (`<tier>_relief1/2`, −12 idx each; `ShopTierManager.resolveRelief` reads `fields_liberated` live; `shop refresh` fired by `free_field_apply`; gym rewards unchanged); HQ raid is **hard-gated on 4 liberated fields** (DJ's battle entry gated, "monopoly holds" refusal below it, quest HUD shows "Starve the monopoly" until 4). Thresholds (2/level, −12, gate=4) tunable 🔍.
   - [ ] *(Option C, deferred)* stateful `farmzone/` subsystem (soil/growth/patrols/HQ-difficulty)
-- [ ] **P5 — Wheat traders full wiring** — _done: the trade→recognize→ambush dialogue, `minecraft:paper` currency, 2/4 thresholds, **ambush trainers** (`wheat_trader_ambush` L38-39 farm team / `granary_ambush` L43-44, in villain_team.json, species+items jar-validated), **wheat-trader hostile tier now offers the battle** ("Stand and fight" → tbcs vs wheat_trader_ambush), and the **granary post-trade poller** (`granary/tick`: hostile trade arms `granary_ambush_armed`, ~15s countdown → "Asset located. Initiating retrieval." → battle, one-shot via defeated_granary_ambush)._ Remaining: in-world placement (Easy NPC traders) 🧱 + in-game verify the tbcs battle/onwin path 🔍. (`wheat_ambush_armed` is now superseded — wheat traders battle directly from dialog; objective left declared, unused.)
+- [ ] **P5 — Wheat traders full wiring** — _done: the trade→recognize→ambush dialogue, **Company Wheat Scrip currency** (alpha.14 — renamed paper + `custom_data{ci_scrip:1b}`, jar-verified Easy NPC rejects plain paper via the component-exact ItemCost predicate; was plain `minecraft:paper`), 2/4 thresholds, **ambush trainers** (`wheat_trader_ambush` L38-39 farm team / `granary_ambush` L43-44, in villain_team.json, species+items jar-validated), **wheat-trader hostile tier now offers the battle** ("Stand and fight" → tbcs vs wheat_trader_ambush), and the **granary post-trade poller** (`granary/tick`: hostile trade arms `granary_ambush_armed`, ~15s countdown → "Asset located. Initiating retrieval." → battle, one-shot via defeated_granary_ambush)._ Remaining: in-world placement (Easy NPC traders) 🧱 + in-game verify the tbcs battle/onwin path 🔍. (`wheat_ambush_armed` is now superseded — wheat traders battle directly from dialog; objective left declared, unused.)
 - [x] ~~Smoke-test `cobbledollars add @s`~~ — **moot (2026-07-03):** CobbleDollars 2.0.0-Beta-5.1 has **no `add` subcommand at all** (jar-verified grammar: pay/query/give/remove/set/reload/leaderboard). Every `cobbledollars add` in the repo (pay_macro, granary ambush, all 143 battle-prize onwin strings) was a dead command — all replaced with `cobbledollars give <targets> <amount>` (selector-first, accepts @s under execute-as). Verify in-game that a battle prize actually lands (runbook Round 5 canary #5).
 - [x] **Cast the 20 empty + author the 18 missing trainer teams (0.5.0-alpha.12)** — see
   the Phase 0.4 entry; content_compile team warnings 28 → 0. Remaining casting debt:
@@ -431,9 +453,10 @@ deletable.
 - [ ] **Wait-gates:** gym-mark coordinate pass exported + integrated; placement walk
   exported + integrated; smoke rounds done (the smoke checklist is the release-verify
   loop — strip LAST).
-- [ ] Delete `src/main/java/.../devtools/` (all 11 classes incl. DevWandTool — the
+- [ ] Delete `src/main/java/.../devtools/` (all 13 classes incl. DevWandTool — the
   Producer's Tool; STRIP GATE: land + unhold the tool once first so the flight/invuln
-  grant revokes) + remove the `devtools.DevToolsInit` entrypoint from
+  grant revokes — plus the 2026-07-12 bot harness `DevBotCommand`/`AutoBattler`, which
+  have no resources/mixins/deps of their own) + remove the `devtools.DevToolsInit` entrypoint from
   `fabric.mod.json`; delete `mixin/DevWandInputMixin.java` + its line in
   `cobblemon-initiative.mixins.json`; drop the `fabric-message-api-v1` dep line in
   `build.gradle.kts` (only the tool's chat-note capture uses it).
@@ -451,8 +474,9 @@ deletable.
   recorded.
 - [ ] Keep-or-strip decision: `shrine <id> test <name>` (fairy shrine test runner in
   `CobblemonInitiativeCommands`) and the `shrine <id> path record` authoring subtree.
-- [ ] Doc scrub: `wiki/Commands.md` + `wiki/Architecture-Overview.md` dev-tool sections
+- [ ] Doc scrub: `wiki/Commands.md` + `docs/ARCHITECTURE_OVERVIEW.md` dev-tool sections
   (both carry "removed at 1.0.0" flags; already updated for the consolidation).
+  (Architecture pages moved wiki → docs/ 2026-07-13 — wiki is now strictly player-facing.)
 - [ ] Bump `build.gradle.kts` version → `1.0.0`.
 - **NOTE:** the `fabric-events-interaction-v0` dep in build.gradle.kts STAYS — shipping
   code uses `UseBlockCallback` (InitiativeInit, LootChestManager, DocPropManager).
@@ -466,13 +490,24 @@ deletable.
 
 ## 3. FUTURE / SHOWRUNNER DESIGN IDEAS (not on the 1.0 critical path)
 
-- 🧱💻 **Safari Zone** (showrunner 2026-07-07, "eventually"): a gated zone with its own
-  catch rules — likely candidates: entry fee + limited safari balls (CobbleDollars sink),
-  special/boosted spawns inside a zone polygon (zone system + letmedespawn interplay),
-  no battle damage (catch-only, safari mechanics), timer or ball-count exit. Needs a map
-  location + design session; the zone/SafeZone machinery and the pay-probe give most of
-  the mechanical primitives. Note Nuzlocke interaction: safari catches vs the
-  first-encounter-per-area rule needs a ruling.
+- [x] 💻 **Safari Zone BUILT (0.5.0-alpha.14) — "The Baiting Yards"** (concept menu in
+  docs/SAFARI_ZONE_CONCEPTS.md; showrunner selected the lure-game direction, badge-3
+  opening, Acquisition = end-of-visit chat vote, NO death-lifeline ever). `safari/`
+  package: 1,500 CD Day Permit (pay-probe) → 20 marked Preserve-issue balls + 15:00
+  clock; scatter typed bait (5 kiosk items → 57-species typed tables, lv 25-35) →
+  suspense → 1-3 spawns → ~75s window; warm spots; battle creation CANCELLED in-session
+  (hardcore-safe by construction); exit = clawback + catch ledger for the chat vote;
+  lifetime 10/25 milestones. HEADLESS-VERIFIED: gate, fee, balls, honey scatter →
+  Cherubi/Butterfree at band, cancel guard, clawback + sweep. 🔍 remaining (human):
+  throw a ball at a lure (capture ledger + warm-spot bump + Nuzlocke PC routing),
+  bossbar/timer feel, eject teleport, milestone packs. **Concierge NPC AUTHORED
+  (alpha.14):** `safari_concierge` (Preserve Intake Concierge, Company admin skin) —
+  one NPC does intake + bait kiosk: buttons run `safari enter` (closes), `status`,
+  `exit`, and `safari bait <type>` for all 5 baits; compiled, awaiting **placement
+  coords AT THE ZONE ENTRANCE** 🧱 (enter starts the clock where the player stands — no
+  teleport-in). OPEN 💻: bait is currently FREE (`safari bait` just issues it) — add a
+  CD-charge wrapper if bait should cost (concept: 60-250 CD/tier). 🧱 REMAINING: paddock
+  dressing on the shipped zone polygon, post-DJ liberation flip (designed, not built).
 
 - [ ] 🧱💻 **Legends-style legendary boss battles** (showrunner idea 2026-07-05 — I'll
   scope this later). Pokémon Legends: Arceus "noble/frenzied" flavour: an aggressive

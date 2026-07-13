@@ -172,11 +172,11 @@
     libpulseaudio
     pipewire
     libglvnd              # libGLX.so.0 / libGL.so.1 dispatch — the piece missing from the bare devshell
-    xorg.libX11
-    xorg.libXcursor
-    xorg.libXext
-    xorg.libXrandr
-    xorg.libXxf86vm
+    libX11
+    libXcursor
+    libXext
+    libXrandr
+    libXxf86vm
     udev                  # libudev (systemd-minimal-libs) — silences the "Did not find udev library" warning
     vulkan-loader
     flite                 # narrator TTS
@@ -210,6 +210,46 @@
     echo "Launching Fabric dev client (gradle runClient) — run dir: ./run"
     echo "Tip: after editing resources, run 'gradle processResources' + '/cobblemon-initiative reload' in-game (no relaunch)."
     exec gradle runClient "$@"
+  '';
+  # ── caffeine: hold off the idle screen-lock during long dev/test sessions ────
+  # Headless screenshots + live dev clients need the Wayland session to stay
+  # unlocked — an idle lock mid-capture drops the game behind the lock surface (and
+  # `grim` then captures the locker, not the game). This grabs a logind idle
+  # inhibitor (systemd-inhibit --what=idle) parked on `sleep infinity`. `setsid`
+  # puts the inhibitor + its sleep in their OWN process group so `caffeine stop`
+  # tears down BOTH via `kill -- -<pgid>` (no orphaned sleep). The pidfile makes
+  # start/stop/status idempotent across shells, so it can just stay running.
+  # NOTE: only defeats lockers that honour logind idle inhibitors — if the session
+  # still locks, point its idle daemon (hypridle/swayidle) at this lock.
+  caffeine = pkgs.writeShellScriptBin "caffeine" ''
+    set -uo pipefail
+    pidfile="''${XDG_RUNTIME_DIR:-/tmp}/cobblemon-caffeine.pid"
+    running () { [ -f "$pidfile" ] && kill -0 "$(cat "$pidfile")" 2>/dev/null; }
+    case "''${1:-start}" in
+      start|on)
+        if running; then echo "caffeine: already awake (pid $(cat "$pidfile"))"; exit 0; fi
+        ${pkgs.util-linux}/bin/setsid ${pkgs.systemd}/bin/systemd-inhibit \
+          --what=idle --who="Caffeine" --why="Cobblemon dev/test session" \
+          sleep infinity &
+        echo $! > "$pidfile"
+        echo "caffeine: idle screen-lock inhibited (pid $!) — release with 'caffeine stop'."
+        ;;
+      stop|off)
+        if running; then
+          pid="$(cat "$pidfile")"
+          kill -- -"$pid" 2>/dev/null || kill "$pid" 2>/dev/null || true
+          echo "caffeine: idle inhibitor released — normal screen locking restored."
+        else
+          echo "caffeine: not running."
+        fi
+        rm -f "$pidfile"
+        ;;
+      status)
+        if running; then echo "caffeine: AWAKE (pid $(cat "$pidfile"))";
+        else echo "caffeine: off (normal idle locking)"; fi
+        ;;
+      *) echo "usage: caffeine [start|stop|status]" >&2; exit 1 ;;
+    esac
   '';
   build-mrpack = pkgs.writeShellScriptBin "build-mrpack" ''
     set -euo pipefail
@@ -367,9 +407,14 @@ in
       gcommit
       publish-wiki
       run-client
+      caffeine
       build-mrpack
       unmined-cli
       zone-mapper
+      # evidence capture: grim comes from the system; these two power
+      # scripts/record_clip (video clips of cutscenes/gimmicks for review)
+      pkgs.wf-recorder
+      pkgs.ffmpeg
     ];
 
     JAVA_HOME = "${pkgs.jdk21}";
@@ -378,6 +423,10 @@ in
 
     shellHook = ''
       export PATH="$PWD/scripts:$PATH"
+
+      # Keep the session awake so long test/capture runs never hit an idle lock.
+      # Idempotent (pidfile-guarded); release any time with `caffeine stop`.
+      # caffeine start >/dev/null 2>&1 || true
 
       b=$(printf '\033[1m');   d=$(printf '\033[2m');   r=$(printf '\033[0m')
       cy=$(printf '\033[36m'); ye=$(printf '\033[33m'); gn=$(printf '\033[32m')
@@ -394,6 +443,7 @@ in
       hdr "build & run"
       cmd "gradle build"          "build the mod → build/libs/"
       cmd "run-client"            "launch the Fabric dev client (live testing)"
+      cmd "caffeine [stop]"       "screen-lock inhibitor (auto-on this shell)"
       cmd "build-mrpack"          "assemble a .mrpack (--with-map bundles UPM 2)"
       hdr "content"
       cmd "content_compile"       "compile dialog-src/ → Easy NPC SNBT presets"

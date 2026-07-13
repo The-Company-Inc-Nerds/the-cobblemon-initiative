@@ -18,6 +18,7 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.thecompanyinc.cobblemoninitiative.config.NuzlockeConfig;
 import com.thecompanyinc.cobblemoninitiative.config.ProgressionConfig;
+import com.thecompanyinc.cobblemoninitiative.stadium.StadiumManager;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -299,6 +300,10 @@ public class NuzlockeInit implements ModInitializer {
     ServerPlayer player = playerActor.getEntity();
     if (player == null) return Unit.INSTANCE;
 
+    // Stadium exhibition runs are attrition-free: battles use CLONED parties and the
+    // StadiumManager (subscribed at Priority.LOWEST, i.e. after this) owns the outcome.
+    if (StadiumManager.isStadiumActive(player.getUUID())) return Unit.INSTANCE;
+
     PlayerPartyStore party = Cobblemon.INSTANCE.getStorage().getParty(player);
     int partyCount = countPartySize(party);
 
@@ -330,6 +335,11 @@ public class NuzlockeInit implements ModInitializer {
 
       ServerPlayer player = playerActor.getEntity();
       if (player == null) continue;
+
+      // Stadium runs: losing an exhibition wave is not a forfeit — the battle party is
+      // a clone (real party often healthy), so this branch would whiteout-kill a player
+      // who lost nothing. StadiumManager ends the run after this handler returns.
+      if (StadiumManager.isStadiumActive(player.getUUID())) continue;
 
       boolean wasTrainerBattle = false;
       for (BattleActor actor : event.getBattle().getActors()) {
@@ -401,6 +411,9 @@ public class NuzlockeInit implements ModInitializer {
 
     ServerPlayer player = playerActor.getEntity();
     if (player == null) return Unit.INSTANCE;
+
+    // Stadium exhibition faints are clone faints — no damage, no removal, no whiteout.
+    if (StadiumManager.isStadiumActive(player.getUUID())) return Unit.INSTANCE;
 
     PlayerPartyStore party = Cobblemon.INSTANCE.getStorage().getParty(player);
     int totalPartySize = countPartySize(party);
@@ -635,14 +648,25 @@ public class NuzlockeInit implements ModInitializer {
         ? "Liberated."
         : zone.subtitle;
 
-    // Routes are already labelled with their name on the map (Map Frontiers renders e.g.
-    // "Blossom Path"), so a route's entry toast does NOT repeat the name — it shows only the
-    // flavor line, promoted to the title slot. Everything else keeps name-title + subtitle.
-    boolean routeFlavorOnly =
-      "ROUTE".equalsIgnoreCase(zone.type) && subtitle != null && !subtitle.isEmpty();
-    Component title = routeFlavorOnly
-      ? buildTitleComponent(subtitle, zone.color)
-      : buildTitleComponent(zone.name, zone.color);
+    // Content mode decides which parts show. `titleText` is the big slot, `subText` the
+    // small one (null = none). AUTO keeps the smart per-type default: a ROUTE's name is
+    // already on the Map Frontiers label, so its toast promotes the flavor line to the
+    // title and drops the subtitle; everything else shows name + subtitle.
+    boolean hasSub = subtitle != null && !subtitle.isEmpty();
+    NuzlockeConfig.AnnouncementContent content = config.getAnnouncementContent();
+    String titleText;
+    String subText;
+    switch (content) {
+      case TITLE_ONLY -> { titleText = zone.name; subText = null; }
+      case SUBTITLE_ONLY -> { titleText = hasSub ? subtitle : zone.name; subText = null; }
+      case TITLE_AND_SUBTITLE -> { titleText = zone.name; subText = hasSub ? subtitle : null; }
+      default -> { // AUTO
+        boolean routeFlavorOnly = "ROUTE".equalsIgnoreCase(zone.type) && hasSub;
+        titleText = routeFlavorOnly ? subtitle : zone.name;
+        subText = routeFlavorOnly ? null : (hasSub ? subtitle : null);
+      }
+    }
+    Component title = buildTitleComponent(titleText, zone.color);
 
     if (style == NuzlockeConfig.AnnouncementStyle.TITLE) {
       player.connection.send(new ClientboundSetTitlesAnimationPacket(
@@ -651,16 +675,15 @@ public class NuzlockeInit implements ModInitializer {
         config.getAnnouncementFadeOut()
       ));
       player.connection.send(new ClientboundSetTitleTextPacket(title));
-      if (!routeFlavorOnly && subtitle != null && !subtitle.isEmpty()) {
+      if (subText != null) {
         player.connection.send(new ClientboundSetSubtitleTextPacket(
-          Component.literal("§7" + subtitle)
+          Component.literal("§7" + subText)
         ));
       }
     } else if (style == NuzlockeConfig.AnnouncementStyle.ACTIONBAR) {
-      // For routes `title` is already the flavor line, so don't append it a second time.
       player.connection.send(new ClientboundSetActionBarTextPacket(
         Component.literal("§e▶ ").append(title).append(Component.literal(
-          !routeFlavorOnly && subtitle != null && !subtitle.isEmpty() ? " §8— §7" + subtitle : ""
+          subText != null ? " §8— §7" + subText : ""
         ))
       ));
     } else {

@@ -1,6 +1,6 @@
 _Optional side-content for the brave. Five elemental shrines, five trials, five crystals — and not one of them is required to beat the campaign._
 
-> **Part of the campaign guide.** See [[Guidebook Overview]] for the full route, and [[Architecture Overview]] for how the shrine engine fits the rest of the mod.
+> **Part of the campaign guide.** See [[Guidebook Overview]] for the full route, and [Architecture Overview](https://github.com/The-Company-Inc-Nerds/the-cobblemon-initiative/blob/main/docs/ARCHITECTURE_OVERVIEW.md) for how the shrine engine fits the rest of the mod.
 
 ---
 
@@ -39,7 +39,7 @@ The parkour clocks and the blind gauntlet's hazards run live the whole time you'
 
 > **Bail out any time:** `/shrine-abort` (no OP needed) clears the active challenge and all its effects with **zero penalty**. You can walk back in and restart whenever you like. Starting a shrine while one is already active simply resets the old one. See [[Commands]] for the full shrine command tree.
 
-*(For how one config model and one manager drive all five shrines under the hood, see the shrine challenge flow on [[Architecture Data Flows]].)*
+*(For how one config model and one manager drive all five shrines under the hood, see the shrine challenge flow on [Architecture Data Flows](https://github.com/The-Company-Inc-Nerds/the-cobblemon-initiative/blob/main/docs/ARCHITECTURE_DATA_FLOWS.md).)*
 
 ---
 
@@ -191,6 +191,6 @@ flowchart LR
 ## Related pages
 
 - [[Guidebook Overview]] — the full campaign route and how shrines slot in
-- [[Architecture Overview]] · [[Architecture Data Flows]] — the shrine engine, the subsystem map, and the challenge flow
+- [Architecture Overview](https://github.com/The-Company-Inc-Nerds/the-cobblemon-initiative/blob/main/docs/ARCHITECTURE_OVERVIEW.md) · [Architecture Data Flows](https://github.com/The-Company-Inc-Nerds/the-cobblemon-initiative/blob/main/docs/ARCHITECTURE_DATA_FLOWS.md) — the shrine engine, the subsystem map, and the challenge flow
 - [[Commands]] — `/cobblemon-initiative shrine`, `/shrine-abort`, and the Fairy `test` subcommands
 - [[Guidebook Act II]] · [[Guidebook Act III]] — the main-story beats the shrines sit beside

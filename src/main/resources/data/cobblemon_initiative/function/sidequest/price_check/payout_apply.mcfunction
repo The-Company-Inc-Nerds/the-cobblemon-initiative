@@ -5,7 +5,7 @@
 # this quest is the attribution moment, one of the four deliberately-branded receipts.
 # The dialog reaction (paid_out entry) points at that yellow line — no rate digits in text.
 function cobblemon_initiative:economy/payout_company {amount:260}
-loot give @s loot cobblemon_initiative:npc_gift/training_minor
+function cobblemon_initiative:economy/reward/minor
 loot give @s loot cobblemon_initiative:npc_gift/price_check
 tag @s add hz_prices_done
 title @s title [{"text":"ADJUSTED FOR RETAIL","color":"gold","bold":true}]

@@ -10,7 +10,7 @@ title @s title [{"text":"FIRST LIGHT","color":"gold","bold":true}]
 title @s subtitle [{"text":"The field held — the family brings it in","color":"yellow"}]
 playsound minecraft:block.bell.use master @s ~ ~ ~ 1 1
 function cobblemon_initiative:economy/payout {amount:500}
-loot give @s loot cobblemon_initiative:npc_gift/training_major
+function cobblemon_initiative:economy/reward/major
 # Breakfast hamper: 6 bread, 4 oran berries, 1 potion.
 give @s minecraft:bread 6
 give @s cobblemon:oran_berry 4

@@ -1,0 +1,601 @@
+{
+    PresetMetadata: {
+        author: "TheCompanyInc",
+        category: "Villain",
+        created: 0L,
+        description: "villain_grunt at Highfield Estate - The Terraces (R15/16) (act 2). Compiled from dialog-src.",
+        entityTypeId: "easy_npc:humanoid",
+        modified: 0L,
+        name: "Doran",
+        variantType: "STEVE",
+        version: "1.0.0"
+    },
+    data: {
+        ActionData: {
+            ActionEventSet: {
+                ON_INTERACTION: [
+                    {
+                        Type: "OPEN_DEFAULT_DIALOG"
+                    }
+                ]
+            }
+        },
+        ArmorDropChances: [0.085f, 0.085f, 0.085f, 0.085f],
+        ArmorItems: [
+            {},
+            {},
+            {},
+            {}
+        ],
+        Brain: {
+            memories: {}
+        },
+        CanPickUpLoot: 0b,
+        CustomNameVisible: 1b,
+        DialogData: {
+            Type: "STANDARD",
+            DialogDataSet: [
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "badges_gte_7"
+                        }
+                    ],
+                    Priority: 30,
+                    Buttons: [
+                        {
+                            Name: "Face them",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_villain_site_manager_9"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "say Highfield is out of my portfolio. Enjoy the terraces. The thin air never suited the ledger anyway."
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_site_manager_9"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:villain_site_manager_9 @s"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_site_manager_9"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:villain_site_manager_9 onwin {1: ['cobbledollars give @1 2100', 'tag @1 add defeated_villain_site_manager_9', '@2 say Noted. Highfield is - Highfield was. I will file this under act of mountain.', 'execute as @1 run function cobblemon_initiative:liberation/free_field {field:farm_9}', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 260', '@1 say Yield secured. Your visit to the estate has been logged as alpine tourism.']}"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "defeated_villain_yield_officer_9"
+                                }
+                            ],
+                            Label: "yes_button"
+                        },
+                        {
+                            Name: "Turn back down the road",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        },
+                        {
+                            Name: "About the officer at the fence",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "tellraw @initiator [{\"text\":\"The Manager does not look up. Clear my perimeter first, resident. I do not take unscheduled meetings.\",\"color\":\"gray\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_villain_yield_officer_9"
+                                }
+                            ],
+                            Label: "blocked_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "It is you. The one the sealed files kept a black bar over, standing on my terraces like you own the mountain. There was a time you did. Half the estate crew still whispers it."
+                        },
+                        {
+                            Text: "I have orders and a family paid in Company scrip. But you signed the ledger the rest of us are buried under. Clear my perimeter and we do this properly, or turn back and I will log Highfield as untouched."
+                        }
+                    ],
+                    Name: "Manager - late recognition",
+                    Label: "late"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "badges_gte_3"
+                        }
+                    ],
+                    Priority: 20,
+                    Buttons: [
+                        {
+                            Name: "Fight",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_villain_site_manager_9"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "say Highfield is out of my portfolio. Enjoy the terraces. The thin air never suited the ledger anyway."
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_site_manager_9"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:villain_site_manager_9 @s"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_site_manager_9"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:villain_site_manager_9 onwin {1: ['cobbledollars give @1 2100', 'tag @1 add defeated_villain_site_manager_9', '@2 say Noted. Highfield is - Highfield was. I will file this under act of mountain.', 'execute as @1 run function cobblemon_initiative:liberation/free_field {field:farm_9}', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 260', '@1 say Yield secured. Your visit to the estate has been logged as alpine tourism.']}"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "defeated_villain_yield_officer_9"
+                                }
+                            ],
+                            Label: "yes_button"
+                        },
+                        {
+                            Name: "About the officer at the fence",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "tellraw @initiator [{\"text\":\"The Manager does not look up. Clear my perimeter first, resident. I do not take unscheduled meetings.\",\"color\":\"gray\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_villain_yield_officer_9"
+                                }
+                            ],
+                            Label: "blocked_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Your face is on a memo. The kind with a black bar over the name and the words do not engage, report immediately."
+                        },
+                        {
+                            Text: "You are supposed to be a closed file. Closed files do not get to walk the estate terraces."
+                        }
+                    ],
+                    Name: "Manager - mid recognition",
+                    Label: "mid"
+                },
+                {
+                    Priority: 15,
+                    Buttons: [
+                        {
+                            Name: "Take the estate back - face the Manager",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_villain_site_manager_9"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "say Highfield is out of my portfolio. Enjoy the terraces. The thin air never suited the ledger anyway."
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_site_manager_9"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:villain_site_manager_9 @s"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_site_manager_9"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:villain_site_manager_9 onwin {1: ['cobbledollars give @1 2100', 'tag @1 add defeated_villain_site_manager_9', '@2 say Noted. Highfield is - Highfield was. I will file this under act of mountain.', 'execute as @1 run function cobblemon_initiative:liberation/free_field {field:farm_9}', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 260', '@1 say Yield secured. Your visit to the estate has been logged as alpine tourism.']}"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "title @initiator title [{\"text\":\"HIGHFIELD ESTATE LIBERATED\",\"color\":\"gold\"}]"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "title @initiator subtitle [{\"text\":\"ADJUSTMENT reversed - the parcel is off the ledger and back on the map\",\"color\":\"gray\"}]"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "defeated_villain_yield_officer_9"
+                                }
+                            ],
+                            Label: "fight_button"
+                        },
+                        {
+                            Name: "About the officer at the fence",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "tellraw @initiator [{\"text\":\"The Manager does not look up. Clear my perimeter first, resident. I do not take unscheduled meetings.\",\"color\":\"gray\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_villain_yield_officer_9"
+                                }
+                            ],
+                            Label: "blocked_button"
+                        },
+                        {
+                            Name: "Leave the estate",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "You are standing in an active yield zone. Highfield Estate is the highest parcel we hold, terraced up the mountain shelf on the Scorchspire road. The family that cut these steps into the ridge has been transitioned to alternative outcomes, and the estate now performs. Rows. Numbers. Thin air and performance."
+                        },
+                        {
+                            Text: "I run a string of fields off one clipboard. Highfield is the crown of it - the parcel closest to the mountain, closest to the Frontier road, the one the Board asks about by name."
+                        }
+                    ],
+                    Name: "Manager - the quota",
+                    Label: "quota"
+                },
+                {
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "Fight",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_villain_site_manager_9"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "say Highfield is out of my portfolio. Enjoy the terraces. The thin air never suited the ledger anyway."
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_site_manager_9"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:villain_site_manager_9 @s"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_site_manager_9"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:villain_site_manager_9 onwin {1: ['cobbledollars give @1 2100', 'tag @1 add defeated_villain_site_manager_9', '@2 say Noted. Highfield is - Highfield was. I will file this under act of mountain.', 'execute as @1 run function cobblemon_initiative:liberation/free_field {field:farm_9}', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 260', '@1 say Yield secured. Your visit to the estate has been logged as alpine tourism.']}"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "defeated_villain_yield_officer_9"
+                                }
+                            ],
+                            Label: "yes_button"
+                        },
+                        {
+                            Name: "About the officer at the fence",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "tellraw @initiator [{\"text\":\"The Manager does not look up. Clear my perimeter first, resident. I do not take unscheduled meetings.\",\"color\":\"gray\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_villain_yield_officer_9"
+                                }
+                            ],
+                            Label: "blocked_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Company business. Highfield is closed for restructuring, and there is no walking away from it."
+                        },
+                        {
+                            Text: "We settle this the old way. Wait. Do I know you from somewhere?"
+                        }
+                    ],
+                    Name: "Manager - early (no recognition)",
+                    Label: "default"
+                }
+            ]
+        },
+        DisplayAttribute: [
+            {
+                Bool: 1b,
+                Type: "VISIBLE"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_AT_DAY"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_AT_NIGHT"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_IN_CREATIVE"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_IN_SPECTATOR"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_IN_STANDARD"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_TO_OWNER"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_TO_TEAM"
+            },
+            {
+                Int: 7,
+                Type: "LIGHT_LEVEL"
+            },
+            {
+                Text: "ALWAYS",
+                Type: "NAME_VISIBILITY"
+            }
+        ],
+        EasyNPCVersion: 3,
+        EntityAttribute: {
+            CanBeHitByProjectile: 0b,
+            CanBeLeashed: 0b,
+            CanBreatheUnderwater: 0b,
+            CanCloseDoor: 0b,
+            CanFloat: 0b,
+            CanOpenDoor: 0b,
+            CanPassDoor: 0b,
+            CanUseNetherPortal: 0b,
+            Freefall: 0b,
+            HealthRegeneration: 0.0d,
+            IsAttackableByMonsters: 0b,
+            IsAttackableByPlayers: 0b,
+            IsInvulnerable: 1b,
+            IsPushable: 0b,
+            NoGravity: 0b,
+            PushEntities: 0b
+        },
+        HandDropChances: [0.085f, 0.085f],
+        HandItems: [
+            {},
+            {}
+        ],
+        Invulnerable: 0b,
+        LeftHanded: 0b,
+        ModelData: {
+            DefaultPose: "STANDING",
+            Pose: "VANILLA",
+            Position: {},
+            Rotation: {},
+            Scale: {},
+            Visible: {
+                Boots: 1b
+            }
+        },
+        Navigation: {
+            Home: {
+                X: 0,
+                Y: 0,
+                Z: 0
+            }
+        },
+        ObjectiveData: {
+            HasObjectives: 1b,
+            HasTravelTarget: 0b,
+            ObjectiveDataSet: [
+                {
+                    Type: "LOOK_AT_PLAYER",
+                    Prio: 9,
+                    Id: "ambient_look_player",
+                    LookDistance: 8.0f
+                },
+                {
+                    Type: "LOOK_RANDOM_AROUND",
+                    Prio: 10,
+                    Id: "ambient_look_random"
+                },
+                {
+                    Type: "LOOK_AT_RESET",
+                    Prio: 9,
+                    Id: "ambient_look_reset"
+                }
+            ]
+        },
+        OnGround: 1b,
+        PersistenceRequired: 0b,
+        PresetUUID: [I; 0, 0, 0, 0],
+        Profession: "NONE",
+        Progression: {
+            AttributeScalingEnabled: 0b,
+            EntityExperience: 1,
+            EntityExperienceLevel: 1
+        },
+        RenderData: {},
+        SkinData: {
+            Content: "",
+            DisableLayers: 0b,
+            Name: "",
+            Timestamp: 0L,
+            Type: "CUSTOM",
+            URL: "",
+            UUID: [I; -1693360270, -151235896, -1896362904, -1100034783]
+        },
+        SoundData: {
+            SoundDataSet: [
+                {
+                    Name: "minecraft:entity.player.death",
+                    Type: "DEATH"
+                },
+                {
+                    Name: "minecraft:entity.player.hurt",
+                    Type: "HURT"
+                }
+            ]
+        },
+        Status: {
+            finalized: 0b,
+            npc_data_last_saved: 0L,
+            npc_data_last_update: 0L
+        },
+        VariantType: "STEVE",
+        attributes: [
+            {
+                base: 20.0d,
+                id: "minecraft:generic.max_health"
+            },
+            {
+                base: 0.5d,
+                id: "minecraft:generic.movement_speed"
+            }
+        ],
+        id: "easy_npc:humanoid",
+        CustomName: '{"text": "Doran", "color": "#FFFFFF"}'
+    }
+}

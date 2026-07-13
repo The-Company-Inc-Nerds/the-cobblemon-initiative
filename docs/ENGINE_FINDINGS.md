@@ -153,6 +153,32 @@ nix develop -c javap -p -c <extracted>.class
   since round 12c. Loading is tick-gated in `ModCommon.onServerTick` (reload-aware,
   clearNPCs + re-mirror every datapack reload — never register into the "tbcs"
   instance ourselves, it gets wiped; never ship a world-dir `trainers/` folder).
+- **TBCS BATTLE PRECONDITIONS + RULES ARG (runtime + bytecode, 2026-07-12):**
+  (a) `tbcs battle … vs rctmod:<id>` REFUSES unless the trainer is **attached to a live
+  loaded entity** ("X is not attached to an entity") — the compiled gym engage
+  functions run `tbcs attach` on the leader's body first; entity-less battles (Stadium
+  waves) attach to a summoned invisible armor stand and sweep it afterwards. (b) The
+  `rules <snbt>` argument parses via TagParser → `getAsString()` → Gson, so **bare
+  booleans DIE in transit**: `true` → ByteTag `1b` → `Boolean.parseBoolean("1b")` =
+  false, silently. **Quote them**: `rules {adjustPlayerLevels:"true",…}` survives the
+  round-trip (this is how the Stadium bracket level-lock works — `BattleFormat`'s
+  GEN_9_SINGLES singleton `setAdjustLevel(n)` + string-quoted rules flags; reset the
+  singleton after the battle registers, it backs every gym battle). (c) A PLAYER
+  participant given as a bare name goes through TBCS's trainer NAME registry (misses
+  Carpet fake players) — dispatch as the player and use `@s` (entity resolution).
+  (d) rctmod's `stopbattle <player>` force-ends a battle WITHOUT firing
+  BATTLE_VICTORY/BATTLE_FLED — anything tracking battles by event needs a
+  BattleRegistry liveness check (StadiumManager's IN_BATTLE tick does this).
+- **EASY NPC BASIC TRADE MATCHES ITEM COMPONENTS (jar-verified 2026-07-12, TradingUtils.getItemCost):**
+  the trade recipe `buy`/`sell` items are read as full 1.21 ItemStacks (`components:{…}`
+  preserved; legacy `tag` auto-migrated). `getItemCost(stack)` → if the stack's component
+  patch is EMPTY it builds `new ItemCost(item, count)` (matches ANY stack of that item),
+  but if the stack has components it builds `ItemCost(item, count, DataComponentExactPredicate.allOf(stack.getComponents()))`
+  — so the buy cost then requires those EXACT components and a bare item is REJECTED.
+  ⇒ a physical "scrip" currency = plain item + `minecraft:custom_data`/`custom_name`
+  components in the recipe; vanilla paper won't satisfy it. Recipe NBT is the new codec
+  (`{id, count, components:{"minecraft:custom_data":{…}, …}}`), not `{Count, tag}`. This is
+  how the wheat-trader scrip works (snippet `presets/snippets/trade/trade_wheat_trader.snbt`).
 - **onwin `@1/@2` substitute WINNERS FIRST** (`concat(getWinners(), getLosers())`).
   Win list (key 1): `@1`=player, `@2`=NPC. Lose list (key 2): `@1`=NPC, `@2`=player —
   lose-side commands are the MIRROR (`cobbledollars remove @2`, `@1 say <taunt>`).

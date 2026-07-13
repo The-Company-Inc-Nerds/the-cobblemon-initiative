@@ -2,7 +2,7 @@
 # 300 CD always; the heal_ball clean-sweep bonus only if no auditor ever logged you across
 # the two carries (off_record_blown never latched). Advancement downgraded to a praise line.
 function cobblemon_initiative:economy/payout {amount:300}
-loot give @s loot cobblemon_initiative:npc_gift/training_standard
+function cobblemon_initiative:economy/reward/standard
 tag @s add off_record_complete
 execute unless entity @s[tag=off_record_blown] run give @s cobblemon:heal_ball 1
 execute unless entity @s[tag=off_record_blown] run title @s actionbar [{"text":"OFF THE RECORD","color":"gold","bold":true},{"text":" - never once seen. Nothing on file, nothing on you.","color":"gray"}]

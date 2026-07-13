@@ -1,8 +1,13 @@
 package com.thecompanyinc.cobblemoninitiative.config;
 
+import com.thecompanyinc.cobblemoninitiative.InitiativeInit;
 import com.thecompanyinc.cobblemoninitiative.NuzlockeInit;
+import com.thecompanyinc.cobblemoninitiative.daycare.DaycareConfig;
 import com.thecompanyinc.cobblemoninitiative.npcsight.NpcSightConfig;
 import com.thecompanyinc.cobblemoninitiative.npcsight.NpcSightInit;
+import com.thecompanyinc.cobblemoninitiative.safari.SafariConfig;
+import com.thecompanyinc.cobblemoninitiative.stadium.StadiumConfig;
+import com.thecompanyinc.cobblemoninitiative.stadium.StadiumManager;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
@@ -288,6 +293,27 @@ public class InitiativeConfigScreen {
           )
         )
         .setSaveConsumer(config::setAnnouncementStyle)
+        .build()
+    );
+
+    announce.addEntry(
+      entryBuilder
+        .startEnumSelector(
+          Component.literal("Overlay Content"),
+          NuzlockeConfig.AnnouncementContent.class,
+          config.getAnnouncementContent()
+        )
+        .setDefaultValue(defaults.getAnnouncementContent())
+        .setTooltip(
+          Component.literal(
+            "Which text an area overlay shows:\n"
+            + "AUTO: name + subtitle (routes show flavor only)\n"
+            + "TITLE_AND_SUBTITLE: always both\n"
+            + "TITLE_ONLY: area name only\n"
+            + "SUBTITLE_ONLY: flavor line only"
+          )
+        )
+        .setSaveConsumer(config::setAnnouncementContent)
         .build()
     );
 
@@ -990,6 +1016,147 @@ public class InitiativeConfigScreen {
         .build()
     );
 
+    // -------------------------------------------------------------------------
+    // Daycare (Gaviota Port)
+    // -------------------------------------------------------------------------
+    DaycareConfig daycareConfig = DaycareConfig.load();
+    DaycareConfig daycareDefaults = new DaycareConfig();
+
+    ConfigCategory daycare = builder.getOrCreateCategory(Component.literal("Daycare"));
+
+    daycare.addEntry(
+      entryBuilder.startBooleanToggle(Component.literal("Enabled"), daycareConfig.isEnabled())
+        .setDefaultValue(daycareDefaults.isEnabled())
+        .setTooltip(Component.literal("Turn the daycare XP drip on or off."))
+        .setSaveConsumer(daycareConfig::setEnabled).build());
+    daycare.addEntry(
+      entryBuilder.startIntField(Component.literal("XP per interval"), daycareConfig.getXpPerInterval())
+        .setMin(0)
+        .setDefaultValue(daycareDefaults.getXpPerInterval())
+        .setTooltip(Component.literal("XP each boarded Pokémon gains per drip (always clamped to the live level cap)."))
+        .setSaveConsumer(daycareConfig::setXpPerInterval).build());
+    daycare.addEntry(
+      entryBuilder.startIntField(Component.literal("Interval ticks"), daycareConfig.getIntervalTicks())
+        .setMin(1)
+        .setDefaultValue(daycareDefaults.getIntervalTicks())
+        .setTooltip(Component.literal("Ticks between XP drips (1200 = once a minute)."))
+        .setSaveConsumer(daycareConfig::setIntervalTicks).build());
+    daycare.addEntry(
+      entryBuilder.startIntField(Component.literal("Pen X"), daycareConfig.getPenX())
+        .setDefaultValue(daycareDefaults.getPenX())
+        .setTooltip(Component.literal("Where boarded stand-ins appear. 0,0,0 = unset (they spawn on the depositor)."))
+        .setSaveConsumer(daycareConfig::setPenX).build());
+    daycare.addEntry(
+      entryBuilder.startIntField(Component.literal("Pen Y"), daycareConfig.getPenY())
+        .setDefaultValue(daycareDefaults.getPenY())
+        .setSaveConsumer(daycareConfig::setPenY).build());
+    daycare.addEntry(
+      entryBuilder.startIntField(Component.literal("Pen Z"), daycareConfig.getPenZ())
+        .setDefaultValue(daycareDefaults.getPenZ())
+        .setSaveConsumer(daycareConfig::setPenZ).build());
+    daycare.addEntry(
+      entryBuilder.startIntField(Component.literal("Pickup fee — base (CD)"), daycareConfig.getFeeBase())
+        .setMin(0)
+        .setDefaultValue(daycareDefaults.getFeeBase())
+        .setTooltip(Component.literal("Withdraw fee = base + per-level × levels gained while boarded."))
+        .setSaveConsumer(daycareConfig::setFeeBase).build());
+    daycare.addEntry(
+      entryBuilder.startIntField(Component.literal("Pickup fee — per level (CD)"), daycareConfig.getFeePerLevel())
+        .setMin(0)
+        .setDefaultValue(daycareDefaults.getFeePerLevel())
+        .setSaveConsumer(daycareConfig::setFeePerLevel).build());
+
+    // -------------------------------------------------------------------------
+    // Safari Zone (The Baiting Yards)
+    // -------------------------------------------------------------------------
+    SafariConfig safariConfig = SafariConfig.load();
+    SafariConfig safariDefaults = new SafariConfig();
+
+    ConfigCategory safari = builder.getOrCreateCategory(Component.literal("Safari Zone"));
+
+    safari.addEntry(
+      entryBuilder.startIntField(Component.literal("Day Permit fee (CD)"), safariConfig.permitFee)
+        .setMin(0)
+        .setDefaultValue(safariDefaults.permitFee)
+        .setTooltip(Component.literal("Cost of a Day Permit (the pay-probe amount)."))
+        .setSaveConsumer(v -> safariConfig.permitFee = v).build());
+    safari.addEntry(
+      entryBuilder.startIntField(Component.literal("Safari Balls per permit"), safariConfig.balls)
+        .setMin(1)
+        .setDefaultValue(safariDefaults.balls)
+        .setTooltip(Component.literal("Marked Safari Balls issued per permit (clawed back at exit)."))
+        .setSaveConsumer(v -> safariConfig.balls = v).build());
+    safari.addEntry(
+      entryBuilder.startIntField(Component.literal("Site clock (seconds)"), safariConfig.clockSeconds)
+        .setMin(1)
+        .setDefaultValue(safariDefaults.clockSeconds)
+        .setTooltip(Component.literal("How long a permit lasts. 900 = 15 minutes."))
+        .setSaveConsumer(v -> safariConfig.clockSeconds = v).build());
+    safari.addEntry(
+      entryBuilder.startIntField(Component.literal("Lure catch window (seconds)"), safariConfig.windowSeconds)
+        .setMin(1)
+        .setDefaultValue(safariDefaults.windowSeconds)
+        .setTooltip(Component.literal("How long lured Pokémon linger before wandering off."))
+        .setSaveConsumer(v -> safariConfig.windowSeconds = v).build());
+    safari.addEntry(
+      entryBuilder.startIntSlider(Component.literal("Badges required"), safariConfig.gateBadges, 0, 10)
+        .setDefaultValue(safariDefaults.gateBadges)
+        .setTooltip(Component.literal("Gym badges needed before Intake will sell a permit."))
+        .setSaveConsumer(v -> safariConfig.gateBadges = v).build());
+    safari.addEntry(
+      entryBuilder.startIntField(Component.literal("Suspense min (seconds)"), safariConfig.suspenseMinSeconds)
+        .setMin(0)
+        .setDefaultValue(safariDefaults.suspenseMinSeconds)
+        .setTooltip(Component.literal("Shortest delay between a scatter and the spawn roll."))
+        .setSaveConsumer(v -> safariConfig.suspenseMinSeconds = v).build());
+    safari.addEntry(
+      entryBuilder.startIntField(Component.literal("Suspense max (seconds)"), safariConfig.suspenseMaxSeconds)
+        .setMin(0)
+        .setDefaultValue(safariDefaults.suspenseMaxSeconds)
+        .setSaveConsumer(v -> safariConfig.suspenseMaxSeconds = v).build());
+    safari.addEntry(
+      entryBuilder.startIntSlider(Component.literal("Spawns per scatter — min"), safariConfig.spawnsMin, 1, 6)
+        .setDefaultValue(safariDefaults.spawnsMin)
+        .setSaveConsumer(v -> safariConfig.spawnsMin = v).build());
+    safari.addEntry(
+      entryBuilder.startIntSlider(Component.literal("Spawns per scatter — max"), safariConfig.spawnsMax, 1, 6)
+        .setDefaultValue(safariDefaults.spawnsMax)
+        .setSaveConsumer(v -> safariConfig.spawnsMax = v).build());
+    safari.addEntry(
+      entryBuilder.startIntField(Component.literal("Eject pad X"), safariConfig.ejectX)
+        .setDefaultValue(safariDefaults.ejectX)
+        .setTooltip(Component.literal("Timer eject destination. 0,0,0 = unset (returns to the entry position)."))
+        .setSaveConsumer(v -> safariConfig.ejectX = v).build());
+    safari.addEntry(
+      entryBuilder.startIntField(Component.literal("Eject pad Y"), safariConfig.ejectY)
+        .setDefaultValue(safariDefaults.ejectY)
+        .setSaveConsumer(v -> safariConfig.ejectY = v).build());
+    safari.addEntry(
+      entryBuilder.startIntField(Component.literal("Eject pad Z"), safariConfig.ejectZ)
+        .setDefaultValue(safariDefaults.ejectZ)
+        .setSaveConsumer(v -> safariConfig.ejectZ = v).build());
+
+    // -------------------------------------------------------------------------
+    // Stadium (Cyber City Exhibition Circuit) — scalar knobs only; wave teams are content.
+    // -------------------------------------------------------------------------
+    StadiumConfig stadiumConfig = StadiumConfig.load();
+    StadiumConfig stadiumDefaults = new StadiumConfig();
+
+    ConfigCategory stadium = builder.getOrCreateCategory(Component.literal("Stadium"));
+
+    stadium.addEntry(
+      entryBuilder.startIntField(Component.literal("Ticks between waves"), stadiumConfig.getTicksBetweenWaves())
+        .setMin(1)
+        .setDefaultValue(100)
+        .setTooltip(Component.literal("Countdown between clearing a wave and the next dispatch (20 = 1s)."))
+        .setSaveConsumer(stadiumConfig::setTicksBetweenWaves).build());
+    stadium.addEntry(
+      entryBuilder.startIntField(Component.literal("Completion bonus (CD)"), stadiumConfig.getCompletionPurse())
+        .setMin(0)
+        .setDefaultValue(1500)
+        .setTooltip(Component.literal("Extra CobbleDollars for clearing all five waves. (Per-wave purses live in the wave data.)"))
+        .setSaveConsumer(stadiumConfig::setCompletionPurse).build());
+
     builder.setSavingRunnable(() -> {
       config.save();
       sightConfig.save();
@@ -997,12 +1164,18 @@ public class InitiativeConfigScreen {
       lootChestConfig.save();
       nobleConfig.save();
       progressionConfig.save();
+      daycareConfig.save();
+      safariConfig.save();
+      stadiumConfig.save();
       NuzlockeInit.reloadConfig();
       NpcSightInit.reloadConfig();
       ShrineConfig.reload();
       LootChestConfig.reload();
       NobleConfig.reload();
       ProgressionConfig.reload();
+      if (InitiativeInit.getDaycareManager() != null) InitiativeInit.getDaycareManager().reloadConfig();
+      if (InitiativeInit.getSafariManager() != null) InitiativeInit.getSafariManager().load();
+      StadiumManager.reloadConfig();
     });
 
     return builder.build();

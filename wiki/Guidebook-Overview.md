@@ -82,7 +82,7 @@ Each gym is a small climb of its own — rank-and-file trainers, then a Jr. Appr
 
 ## Systems You Will Meet
 
-The campaign is carried by a handful of interlocking systems. Each is documented in depth on the [[Architecture Overview]] and [[Architecture Data Flows]] pages; here is what they *feel* like in play.
+The campaign is carried by a handful of interlocking systems. Each is documented in depth on the [Architecture Overview](https://github.com/The-Company-Inc-Nerds/the-cobblemon-initiative/blob/main/docs/ARCHITECTURE_OVERVIEW.md) and [Architecture Data Flows](https://github.com/The-Company-Inc-Nerds/the-cobblemon-initiative/blob/main/docs/ARCHITECTURE_DATA_FLOWS.md) pages; here is what they *feel* like in play.
 
 ### Badges & Memory Fragments
 Beating a gym leader unlocks the next level cap and fires a **memory fragment** — a short first-person flash of who you were. They start as formless unease and sharpen over the journey; the seventh ("you signed this charter") is the hard turn. A **town Archivist** NPC will re-read past fragments for you. Behind the scenes, the fragment count is simply your badge count — and it gates the lore as it deepens.
@@ -164,6 +164,6 @@ flowchart TD
 - **Track a quest:** `]` / `[` cycle the tracked sidebar quest · `/cobblemon-initiative track status`
 - **Bail out of a shrine (no penalty):** `/shrine-abort`
 - Full command list, including admin tooling: [[Commands]]
-- How it all fits together under the hood: [[Architecture Overview]] · [[Architecture Data Flows]]
+- How it all fits together under the hood: [Architecture Overview](https://github.com/The-Company-Inc-Nerds/the-cobblemon-initiative/blob/main/docs/ARCHITECTURE_OVERVIEW.md) · [Architecture Data Flows](https://github.com/The-Company-Inc-Nerds/the-cobblemon-initiative/blob/main/docs/ARCHITECTURE_DATA_FLOWS.md)
 
 > **Where to next?** Start with [[Guidebook Act I]] and walk out of Sango. Watch your level cap, mind the safe-zone line, and pay attention to how people look at you.

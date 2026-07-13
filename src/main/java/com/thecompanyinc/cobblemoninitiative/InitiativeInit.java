@@ -13,12 +13,15 @@ import com.thecompanyinc.cobblemoninitiative.install.InstallCommand;
 import com.thecompanyinc.cobblemoninitiative.config.ConfigLoader;
 import com.thecompanyinc.cobblemoninitiative.config.TrainerConfig;
 import com.thecompanyinc.cobblemoninitiative.data.PlayerProgressManager;
+import com.thecompanyinc.cobblemoninitiative.daycare.DaycareManager;
 import com.thecompanyinc.cobblemoninitiative.items.ModItems;
 import com.thecompanyinc.cobblemoninitiative.levelcap.LevelCapManager;
 import com.thecompanyinc.cobblemoninitiative.docprop.DocPropManager;
 import com.thecompanyinc.cobblemoninitiative.lootchest.LootChestManager;
 import com.thecompanyinc.cobblemoninitiative.questtrack.QuestTrackManager;
+import com.thecompanyinc.cobblemoninitiative.safari.SafariManager;
 import com.thecompanyinc.cobblemoninitiative.shrine.ShrineChallengeManager;
+import com.thecompanyinc.cobblemoninitiative.stadium.StadiumManager;
 import kotlin.Unit;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -47,7 +50,9 @@ public class InitiativeInit implements ModInitializer {
   private static ShrineChallengeManager shrineChallengeManager;
   private static LootChestManager lootChestManager;
   private static DocPropManager docPropManager;
+  private static SafariManager safariManager;
   private static QuestTrackManager questTrackManager;
+  private static DaycareManager daycareManager;
 
   @Override
   public void onInitialize() {
@@ -92,20 +97,47 @@ public class InitiativeInit implements ModInitializer {
     questTrackManager = new QuestTrackManager();
     questTrackManager.loadQuests();
 
+    daycareManager = new DaycareManager();
+
+    // Safari Zone — the Baiting Yards (badge-3 paid catch-only preserve). Owns its own
+    // Cobblemon subscriptions (battle-cancel guard + session-gated capture ledger).
+    safariManager = new SafariManager();
+    safariManager.load();
+    safariManager.registerEvents();
+
     // Map Frontiers integration is applied lazily at /cobblemon-initiative install run
     // (see MapFrontiersBridge); no init-time registration is needed.
 
     registerBattleEvents();
+
+    // Stadium exhibition circuit: level-locked, attrition-free wave battles.
+    // NuzlockeInit's faint/flee/forfeit handlers guard on StadiumManager.isStadiumActive
+    // — init BEFORE NuzlockeInit's entrypoint runs so its event handlers exist first
+    // (StadiumManager's own outcome handlers subscribe at Priority.LOWEST regardless).
+    StadiumManager.init();
 
     // Server tick — drives parkour timers and ground-gauntlet effects
     ServerTickEvents.END_SERVER_TICK.register(server ->
       shrineChallengeManager.tick(server)
     );
 
+    // Stadium wave loop — countdowns, battle-id capture, stale-run sweep (like shrine).
+    ServerTickEvents.END_SERVER_TICK.register(StadiumManager::tick);
+
     // Quest tracking — 5-tick waypoint resolution + sidebar ▶ highlight, and the
     // 10-tick particle beam fallback when JourneyMap is absent.
     ServerTickEvents.END_SERVER_TICK.register(server ->
       questTrackManager.tick(server)
+    );
+
+    // Daycare — slow cap-clamped XP drip + lazy pen stand-in reconcile.
+    ServerTickEvents.END_SERVER_TICK.register(server ->
+      daycareManager.tick(server)
+    );
+
+    // Safari sessions — site clock, suspense windows, lure lifecycles, ejects.
+    ServerTickEvents.END_SERVER_TICK.register(server ->
+      safariManager.tick(server)
     );
 
     // THE INCOMPLETE FILE props: click the ledger barrel / portrait chest to "find" the
@@ -115,6 +147,10 @@ public class InitiativeInit implements ModInitializer {
 
     // Unplaced-chest loot: intercept chest opens; track hand-placed chests.
     UseBlockCallback.EVENT.register(lootChestManager::onChestUse);
+
+    // Safari bait scatter: right-click ground with a ci_bait-marked item. Fast PASS
+    // for anything else, so ordering after docprop/lootchest is safe.
+    UseBlockCallback.EVENT.register(safariManager::onUseBlock);
     PlayerBlockBreakEvents.AFTER.register((level, player, pos, state, blockEntity) ->
       lootChestManager.onBlockBroken(state, pos)
     );
@@ -149,6 +185,8 @@ public class InitiativeInit implements ModInitializer {
       shrineChallengeManager.loadPaths(server);
       lootChestManager.load(server);
       questTrackManager.load(server);
+      safariManager.onServerStarted(server); // lifetime stats + stray-lure sweep
+      daycareManager.load(server);
       // Standalone guarantee: force rctmod's allowOverLeveling + our series into its live
       // config cache on ANY world (bundled map bakes it; fresh/bare worlds get defaults
       // that would re-enable rctmod's clamp and fight our badge ladder). SERVER_STARTED is
@@ -169,7 +207,9 @@ public class InitiativeInit implements ModInitializer {
       progressManager.saveProgress(server);
       shrineChallengeManager.savePaths();
       lootChestManager.save();
+      safariManager.onServerStopping(server); // forfeit live sessions + save stats
       questTrackManager.save(server); // also hands the ▶-highlighted lines back
+      daycareManager.save(); // belt-and-braces — custody already write-through saves
       LOGGER.info("Saved player progress data.");
     });
 
@@ -364,5 +404,13 @@ public class InitiativeInit implements ModInitializer {
 
   public static QuestTrackManager getQuestTrackManager() {
     return questTrackManager;
+  }
+
+  public static DaycareManager getDaycareManager() {
+    return daycareManager;
+  }
+
+  public static SafariManager getSafariManager() {
+    return safariManager;
   }
 }

@@ -1120,6 +1120,32 @@ def apply_visuals(tree, ch: dict):
     return tree  # CustomName for no-uuid NPCs is set in compile_character (all of them)
 
 
+def visual_entity_type(ch: dict) -> str | None:
+    """The easy_npc entity-type SUFFIX a dialog-src visuals file declares via
+    PresetMetadata.entityTypeId (e.g. 'fairy' for easy_npc:fairy), or None.
+
+    merge_world only derives the entity type from a uuid'd world body; a LATCH NPC
+    (no uuid) that swaps its body to a non-humanoid entity through visuals needs this so
+    the preset lands under preset/<suffix>/ and the placement `import_new` resolves the
+    matching entity registry (mirrors how preset/cobblemon/ spawns cobblemon_npc bodies)."""
+    vf = VISUALS_DIR / f"{ch['id']}.npc.snbt"
+    if not vf.is_file():
+        return None
+    try:
+        visual, _ = sm.load_source(str(vf))
+    except Exception:
+        return None
+    raw = (visual.get("PresetMetadata") or {}).get("entityTypeId")
+    if not isinstance(raw, str):
+        return None
+    etid = raw.strip().strip('"')          # sm stores strings WITH their outer quotes
+    if etid.startswith("easy_npc:"):
+        suffix = etid.split(":", 1)[1]
+        if suffix and suffix not in ("humanoid", "humanoid_slim"):
+            return suffix
+    return None
+
+
 # ─── World merge (builder NPC data -> compiled preset) ───────────────────────
 
 import nbt_read  # noqa: E402  (binary NBT -> SNBT, for the world merge)
@@ -1679,6 +1705,12 @@ def main() -> None:
         try:
             tree = compile_character(ch, dialogs, registers, lore)
             tree, etype = merge_world(tree, ch)
+            # A visuals override can change the entity TYPE for a latch (no-uuid) NPC —
+            # e.g. an easy_npc:fairy body. merge_world only reads uuid'd world bodies, so
+            # take the type from the dialog-src visuals here; it drives the preset dir +
+            # placement import path (a uuid'd body keeps its builder-declared type).
+            if not (ch.get("uuid") or "").strip():
+                etype = visual_entity_type(ch) or etype
             tree = apply_float(tree, ch)
             text = sm.serialize(tree, indent_size=4)
             sm.parse_snbt(text)                # round-trip safety check

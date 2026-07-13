@@ -3,6 +3,6 @@
 # (run as the player). End-game-scale back pay: 4000 CD + the training_grand pack (rare candy, XL candy, PP Up, vitamin). One-shot; gated
 # on defeated_villain_boss + notices_filed + not file_refiled.
 function cobblemon_initiative:economy/payout {amount:4000}
-loot give @s loot cobblemon_initiative:npc_gift/training_grand
+function cobblemon_initiative:economy/reward/grand
 tag @s add file_refiled
 title @s actionbar [{"text":"The file is closed. ","color":"gold"},{"text":"She files it under a name she declines to read aloud.","color":"gray"}]

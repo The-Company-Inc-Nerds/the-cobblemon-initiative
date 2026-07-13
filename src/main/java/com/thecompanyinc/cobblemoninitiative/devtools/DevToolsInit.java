@@ -19,6 +19,10 @@ import org.slf4j.LoggerFactory;
  *       checklist (formerly the DevNoteInit entrypoint)</li>
  *   <li><b>dev subtree</b> — {@code dev goto|badges|grant|kit} (from the shipping commands
  *       file) + {@code dev team|stage} test harness + {@code dev place} guided walk</li>
+ *   <li><b>bot harness</b> (2026-07-12) — {@code dev bot use|useitem|aim|interact}
+ *       synthetic interactions + {@code dev bot autobattle} auto-battler, so Carpet
+ *       fake players can right-click, throw Pokéballs, and WIN/LOSE battles headlessly
+ *       (see {@link DevBotCommand} / {@link AutoBattler})</li>
  * </ul>
  * zonetrace/ and the dev/npc_tour datapack functions were deleted outright (superseded by
  * the browser zone-mapper and {@code dev place} respectively).
@@ -38,7 +42,12 @@ public class DevToolsInit implements ModInitializer {
       GymMarkCommand.register(dispatcher, gymMarks);
       // /cobblemon-initiative dev … — goto/badges/grant/kit + team/stage + place walk.
       DevCommands.register(dispatcher);
+      // /cobblemon-initiative dev bot … — synthetic interactions + autobattle toggle
+      // for Carpet fake players (acts on the SOURCE player; drive via execute as).
+      DevBotCommand.register(dispatcher);
     });
+    // Auto-battler tick hook: submits first-legal battle choices for enrolled players.
+    AutoBattler.register();
     // The double-click marking wand (gym-mark wand): right-click block/air handlers.
     GymMarkWand.registerEvents(gymMarks);
     // THE PRODUCER'S TOOL — the one-item walk over placement plan + gym slots

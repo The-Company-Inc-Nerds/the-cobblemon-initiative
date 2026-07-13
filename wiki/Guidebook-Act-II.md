@@ -8,7 +8,7 @@
 > This is the middle of the run, and it is where the campaign turns. The economy you've been living in starts to **feel wrong on purpose**, the people of The Company start to **recognize your face**, and the memory fragments stop being vague — by Gym 7 one of them puts your own signature in front of you. Act II ends not at a gym but in an office tower, with the **HQ Raid** and the first thing in this whole story you get to actually *fix*.
 
 **Continues from:** [[Guidebook Act I]] · **Leads into:** [[Guidebook Act III]]
-**See also:** [[Guidebook Overview]] · [[Guidebook Shrines]] · [[Commands]] · [[Architecture Data Flows]]
+**See also:** [[Guidebook Overview]] · [[Guidebook Shrines]] · [[Commands]] · [Architecture Data Flows](https://github.com/The-Company-Inc-Nerds/the-cobblemon-initiative/blob/main/docs/ARCHITECTURE_DATA_FLOWS.md)
 
 ---
 
@@ -160,7 +160,7 @@ This is the beat the whole first half builds to. The audience now knows what the
 After Volt: **the instability index → ~56 (peak).** This is the worst the currency gets in normal play. Quest payouts pay 75–100% of face value depending on the instability index, and the peak lands you at an **86% rate — a 14% haircut** (the hard 75% floor only binds at a maxed-out index, which the story never reaches). The propaganda is at its most strained. This is by design — and it's about to be the setup for the only beat in Act II where you *fix* something.
 
 ### Tier 3 is still two badges away
-The **Dark Urge whisper** system escalates with your **level cap**, not with the raid: tier 2 has been live since badge 6 (cap 56), and **tier 3** — the shadow-self voice dropping the vagueness for the founder's own cold logic — waits for **badge 9** (cap 74), deep in Act III. Act II is its last half-quiet stretch. (Mechanics: 12% chance on a faint **outside** a safe zone, 5-minute cooldown — see [[Architecture Data Flows]].)
+The **Dark Urge whisper** system escalates with your **level cap**, not with the raid: tier 2 has been live since badge 6 (cap 56), and **tier 3** — the shadow-self voice dropping the vagueness for the founder's own cold logic — waits for **badge 9** (cap 74), deep in Act III. Act II is its last half-quiet stretch. (Mechanics: 12% chance on a faint **outside** a safe zone, 5-minute cooldown — see [Architecture Data Flows](https://github.com/The-Company-Inc-Nerds/the-cobblemon-initiative/blob/main/docs/ARCHITECTURE_DATA_FLOWS.md).)
 
 ---
 
@@ -260,7 +260,7 @@ Act II's spine lives on **[[Quests Main Story]]** — **The Wheat War** (liberat
 - **Check your standing:** `/cobblemon-initiative progress` (badges, defeated trainers, cap) and `/cobblemon-initiative levelcap`.
 - **Quest HUD:** `/ca quest show|hide|refresh` — the sidebar's main line tracks your current objective; through Act II it walks you toward the HQ. Cycle the tracked side quest with **`]`** / **`[`** (aqua **▶** + JourneyMap waypoint).
 - **Start the Ground Shrine:** `/cobblemon-initiative shrine ground start` · **bail out:** `/shrine-abort`.
-- Full command list: [[Commands]]. How these systems wire together: [[Architecture Data Flows]].
+- Full command list: [[Commands]]. How these systems wire together: [Architecture Data Flows](https://github.com/The-Company-Inc-Nerds/the-cobblemon-initiative/blob/main/docs/ARCHITECTURE_DATA_FLOWS.md).
 
 ---
 

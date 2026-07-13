@@ -17,6 +17,7 @@ import com.thecompanyinc.cobblemoninitiative.config.TrainerConfig;
 import com.thecompanyinc.cobblemoninitiative.data.PlayerProgress;
 import com.thecompanyinc.cobblemoninitiative.economy.ShopTierManager;
 import com.thecompanyinc.cobblemoninitiative.npcsight.NpcSightInit;
+import com.thecompanyinc.cobblemoninitiative.stadium.StadiumManager;
 import java.util.Arrays;
 import java.util.List;
 import net.minecraft.commands.CommandSourceStack;
@@ -145,7 +146,10 @@ public class CobblemonInitiativeCommands {
         )
         .then(
           Commands.literal("track")
-            .requires(source -> source.getEntity() instanceof ServerPlayer)
+            // No parse-time player requirement: Brigadier evaluates .requires() against
+            // the ORIGINAL source, so console `execute as <player> run … track next`
+            // (the headless harness / Carpet fake-player path) never saw the subtree.
+            // The handlers resolve the player at runtime and no-op without one.
             .then(
               Commands.literal("next").executes(ctx -> trackCycle(ctx, 1))
             )
@@ -161,6 +165,132 @@ public class CobblemonInitiativeCommands {
               Commands.literal("status").executes(
                 CobblemonInitiativeCommands::trackStatus
               )
+            )
+        )
+        // Daycare — player-facing (perm 0) AND dialog-button-ready: like `track`, targets
+        // resolve at runtime (getPlayer() null-check), with NO parse-time entity requires —
+        // an Easy NPC ExecAsUser source carries the player, but requires() is evaluated
+        // when the command tree is built/suggested, and a failed check there silently
+        // hides the node from non-player dispatch contexts (functions, dialog rails).
+        .then(
+          Commands.literal("daycare")
+            .then(
+              Commands.literal("deposit").executes(
+                CobblemonInitiativeCommands::daycareDeposit
+              )
+            )
+            .then(
+              Commands.literal("withdraw").then(
+                Commands.argument(
+                  "slot",
+                  IntegerArgumentType.integer(
+                    1,
+                    com.thecompanyinc.cobblemoninitiative.daycare.DaycareManager.MAX_SLOTS
+                  )
+                ).executes(ctx -> daycareWithdraw(
+                  ctx,
+                  IntegerArgumentType.getInteger(ctx, "slot")
+                ))
+              )
+            )
+            .then(
+              Commands.literal("status").executes(
+                CobblemonInitiativeCommands::daycareStatus
+              )
+            )
+        )
+        // Stadium exhibition circuit — player-facing, permission 0 (mirrors `track`).
+        // Deliberately NO parse-time .requires(entity instanceof ServerPlayer): the
+        // player resolves at RUNTIME so a console `execute as <player> run …` works
+        // (headless test harness); a non-player source just gets a failure message.
+        .then(
+          Commands.literal("stadium")
+            .then(
+              Commands.literal("start")
+                .then(Commands.literal("25").executes(ctx -> stadiumStart(ctx, 25)))
+                .then(Commands.literal("50").executes(ctx -> stadiumStart(ctx, 50)))
+                .then(Commands.literal("75").executes(ctx -> stadiumStart(ctx, 75)))
+                .then(Commands.literal("100").executes(ctx -> stadiumStart(ctx, 100)))
+            )
+            .then(
+              Commands.literal("abort").executes(
+                CobblemonInitiativeCommands::stadiumAbort
+              )
+            )
+            .then(
+              Commands.literal("status").executes(
+                CobblemonInitiativeCommands::stadiumStatus
+              )
+            )
+        )
+        // Safari Zone — the Baiting Yards. enter/exit/status are PLAYER-FACING (perm 0,
+        // runtime player resolution like `track` — no parse-time requires so kiosk
+        // dialog buttons and functions can dispatch them as the player). bait is the
+        // perm-2 kiosk give (ExecAsUser dialog buttons run elevated, source = player).
+        .then(
+          Commands.literal("safari")
+            .then(
+              Commands.literal("enter").executes(CobblemonInitiativeCommands::safariEnter)
+            )
+            .then(
+              Commands.literal("exit").executes(CobblemonInitiativeCommands::safariExit)
+            )
+            .then(
+              Commands.literal("status").executes(CobblemonInitiativeCommands::safariStatus)
+            )
+            .then(
+              Commands.literal("bait")
+                .requires(source -> source.hasPermission(2))
+                .then(
+                  Commands.argument("type", StringArgumentType.word())
+                    .suggests((context, builder) ->
+                      SharedSuggestionProvider.suggest(
+                        InitiativeInit.getSafariManager().getBaitTypes(),
+                        builder
+                      )
+                    )
+                    .executes(ctx -> safariBait(
+                      ctx,
+                      StringArgumentType.getString(ctx, "type"),
+                      1
+                    ))
+                    .then(
+                      Commands.argument("count", IntegerArgumentType.integer(1, 64))
+                        .executes(ctx -> safariBait(
+                          ctx,
+                          StringArgumentType.getString(ctx, "type"),
+                          IntegerArgumentType.getInteger(ctx, "count")
+                        ))
+                    )
+                )
+            )
+            .then(
+              // Dev/test hook: drives the same scatter path as the bait right-click
+              // (Carpet bots can't fire UseBlockCallback — headless verification).
+              Commands.literal("scatter")
+                .requires(source -> source.hasPermission(2))
+                .then(
+                  Commands.argument("type", StringArgumentType.word())
+                    .suggests((context, builder) ->
+                      SharedSuggestionProvider.suggest(
+                        InitiativeInit.getSafariManager().getBaitTypes(),
+                        builder
+                      )
+                    )
+                    .executes(ctx -> {
+                      ServerPlayer player = ctx.getSource().getPlayer();
+                      if (player == null) return 0;
+                      boolean ok = InitiativeInit.getSafariManager()
+                        .devScatter(player, StringArgumentType.getString(ctx, "type"));
+                      ctx.getSource().sendSuccess(
+                        () -> Component.literal(ok
+                          ? "[Safari] scatter queued at the player's feet."
+                          : "[Safari] scatter refused (no session or unknown bait)."),
+                        false
+                      );
+                      return ok ? 1 : 0;
+                    })
+                )
             )
         )
         .then(
@@ -340,6 +470,52 @@ public class CobblemonInitiativeCommands {
     return questDispatch(context, "refresh");
   }
 
+  // ── Safari Zone (the Baiting Yards) ───────────────────────────────────────────
+
+  /** /cobblemon-initiative safari enter — badge gate → pay-probe → session start. */
+  private static int safariEnter(CommandContext<CommandSourceStack> context) {
+    ServerPlayer player = context.getSource().getPlayer();
+    if (player == null) {
+      context.getSource().sendFailure(Component.literal("Must be run by a player."));
+      return 0;
+    }
+    return InitiativeInit.getSafariManager().enter(player) ? 1 : 0;
+  }
+
+  /** /cobblemon-initiative safari exit — voluntary end: clawback + visit ledger. */
+  private static int safariExit(CommandContext<CommandSourceStack> context) {
+    ServerPlayer player = context.getSource().getPlayer();
+    if (player == null) {
+      context.getSource().sendFailure(Component.literal("Must be run by a player."));
+      return 0;
+    }
+    return InitiativeInit.getSafariManager().exitVoluntary(player) ? 1 : 0;
+  }
+
+  /** /cobblemon-initiative safari status — clock, issued balls, ledger, warm spots. */
+  private static int safariStatus(CommandContext<CommandSourceStack> context) {
+    ServerPlayer player = context.getSource().getPlayer();
+    if (player == null) {
+      context.getSource().sendFailure(Component.literal("Must be run by a player."));
+      return 0;
+    }
+    return InitiativeInit.getSafariManager().status(player);
+  }
+
+  /** /cobblemon-initiative safari bait <type> [count] — perm-2 kiosk give. */
+  private static int safariBait(
+    CommandContext<CommandSourceStack> context,
+    String type,
+    int count
+  ) {
+    ServerPlayer player = context.getSource().getPlayer();
+    if (player == null) {
+      context.getSource().sendFailure(Component.literal("Must be run by a player."));
+      return 0;
+    }
+    return InitiativeInit.getSafariManager().giveBait(player, type, count) ? 1 : 0;
+  }
+
   // ── Quest tracking (player-facing, permission 0 — driven by the ] / [ keybinds) ──
 
   /** /cobblemon-initiative track next|prev — cycle the tracked sidebar quest. */
@@ -365,6 +541,107 @@ public class CobblemonInitiativeCommands {
     ServerPlayer player = context.getSource().getPlayer();
     if (player == null) return 0;
     InitiativeInit.getQuestTrackManager().sendStatus(player);
+    return 1;
+  }
+
+  // ── Daycare (player-facing, permission 0 — dialog-button-ready) ────────────────
+
+  /**
+   * /cobblemon-initiative daycare deposit — the Sango keeper's "Board a Pokémon" button.
+   * Validates pen capacity + the last-mon rule server-side, then raises the pending-picker
+   * flag; the client tick poll opens DaycareSelectionScreen once no other screen is up
+   * (same split as the sacrifice flow). The screen's confirm re-enters the server through
+   * DaycareManager.deposit, which re-validates everything.
+   */
+  private static int daycareDeposit(CommandContext<CommandSourceStack> context) {
+    ServerPlayer player = context.getSource().getPlayer();
+    if (player == null) {
+      context.getSource().sendFailure(Component.literal("Must be run by a player."));
+      return 0;
+    }
+    var daycare = InitiativeInit.getDaycareManager();
+    if (!daycare.getConfig().isEnabled()) {
+      player.sendSystemMessage(Component.literal("§cThe daycare is closed."));
+      return 0;
+    }
+    if (
+      daycare.boardedCount(player.getUUID()) >=
+      com.thecompanyinc.cobblemoninitiative.daycare.DaycareManager.MAX_SLOTS
+    ) {
+      player.sendSystemMessage(Component.literal("§cYour daycare pens are already full."));
+      return 0;
+    }
+    PlayerPartyStore party = Cobblemon.INSTANCE.getStorage().getParty(player);
+    int partySize = 0;
+    for (Pokemon p : party) {
+      if (p != null) partySize++;
+    }
+    if (partySize <= 1) {
+      player.sendSystemMessage(Component.literal("§cYou cannot board your last Pokémon."));
+      return 0;
+    }
+    com.thecompanyinc.cobblemoninitiative.daycare.DaycareManager.triggerPicker();
+    return 1;
+  }
+
+  /** /cobblemon-initiative daycare withdraw <slot> — pay the pickup fee, get the mon back. */
+  private static int daycareWithdraw(
+    CommandContext<CommandSourceStack> context, int slot
+  ) {
+    ServerPlayer player = context.getSource().getPlayer();
+    if (player == null) {
+      context.getSource().sendFailure(Component.literal("Must be run by a player."));
+      return 0;
+    }
+    InitiativeInit.getDaycareManager().withdraw(player, slot - 1);
+    return 1;
+  }
+
+  /** /cobblemon-initiative daycare status — boarded mons, growth, live pickup fees. */
+  private static int daycareStatus(CommandContext<CommandSourceStack> context) {
+    ServerPlayer player = context.getSource().getPlayer();
+    if (player == null) {
+      context.getSource().sendFailure(Component.literal("Must be run by a player."));
+      return 0;
+    }
+    InitiativeInit.getDaycareManager().sendStatus(player);
+    return 1;
+  }
+
+  // ── Stadium exhibition circuit (player-facing, permission 0) ─────────────────
+
+  /** Runtime player resolution shared by the stadium handlers (no parse-time gate). */
+  private static ServerPlayer stadiumPlayer(CommandContext<CommandSourceStack> context) {
+    ServerPlayer player = context.getSource().getPlayer();
+    if (player == null) {
+      context.getSource().sendFailure(
+        Component.literal("§cThe stadium needs a player source (use execute as <player>).")
+      );
+    }
+    return player;
+  }
+
+  /** /cobblemon-initiative stadium start <25|50|75|100> */
+  private static int stadiumStart(CommandContext<CommandSourceStack> context, int bracket) {
+    ServerPlayer player = stadiumPlayer(context);
+    if (player == null) return 0;
+    StadiumManager.startRun(player, bracket);
+    return 1;
+  }
+
+  /** /cobblemon-initiative stadium abort — end the run (refused while a bout is live). */
+  private static int stadiumAbort(CommandContext<CommandSourceStack> context) {
+    ServerPlayer player = stadiumPlayer(context);
+    if (player == null) return 0;
+    StadiumManager.abortRun(player);
+    return 1;
+  }
+
+  /** /cobblemon-initiative stadium status — bracket, wave, and phase of the run. */
+  private static int stadiumStatus(CommandContext<CommandSourceStack> context) {
+    ServerPlayer player = stadiumPlayer(context);
+    if (player == null) return 0;
+    StadiumManager.sendStatus(player);
     return 1;
   }
 
@@ -1011,6 +1288,7 @@ public class CobblemonInitiativeCommands {
     ProgressionConfig.reload();
     com.thecompanyinc.cobblemoninitiative.noble.NobleEncounterInit.getManager().loadNobles();
     com.thecompanyinc.cobblemoninitiative.config.NobleConfig.reload();
+    InitiativeInit.getDaycareManager().reloadConfig();
     context.getSource().sendSuccess(
       () ->
         Component.literal(

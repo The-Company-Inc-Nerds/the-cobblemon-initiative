@@ -40,6 +40,13 @@ public class NuzlockeConfig {
   // ACTIONBAR by default: a small line above the hotbar ("▶ Zone Name — subtitle"),
   // not the fullscreen title card. Map Frontiers already shows where you are.
   private AnnouncementStyle announcementStyle = AnnouncementStyle.ACTIONBAR;
+  /**
+   * Which text parts a zone-entry overlay shows. Default SUBTITLE_ONLY: the atmospheric
+   * flavor line is the whole overlay (the area name already sits on the Map Frontiers
+   * label). AUTO keeps the smart per-type behavior (routes flavor-only, else name +
+   * subtitle); TITLE_ONLY / TITLE_AND_SUBTITLE force one shape for every zone.
+   */
+  private AnnouncementContent announcementContent = AnnouncementContent.SUBTITLE_ONLY;
   private int announcementFadeIn = 20;
   private int announcementStay = 70;
   private int announcementFadeOut = 20;
@@ -87,6 +94,14 @@ public class NuzlockeConfig {
     TITLE,
     ACTIONBAR,
     CHAT
+  }
+
+  /** What a zone-entry overlay shows: both parts, name only, or the flavor line only. */
+  public enum AnnouncementContent {
+    AUTO,
+    TITLE_AND_SUBTITLE,
+    TITLE_ONLY,
+    SUBTITLE_ONLY
   }
 
   public static class SafeZone {
@@ -211,6 +226,10 @@ public class NuzlockeConfig {
   public List<SafeZone> getSafeZones() { return safeZones; }
   public boolean isEnableAreaAnnouncements() { return enableAreaAnnouncements; }
   public AnnouncementStyle getAnnouncementStyle() { return announcementStyle; }
+  public AnnouncementContent getAnnouncementContent() {
+    return announcementContent != null ? announcementContent : AnnouncementContent.AUTO;
+  }
+  public void setAnnouncementContent(AnnouncementContent v) { this.announcementContent = v; }
   public int getAnnouncementFadeIn() { return announcementFadeIn; }
   public int getAnnouncementStay() { return announcementStay; }
   public int getAnnouncementFadeOut() { return announcementFadeOut; }

@@ -49,7 +49,9 @@ stop_server(){
   p=$(server_pid); [ -n "$p" ] && kill -9 "$p" 2>/dev/null
   pkill -f "tail -n +1 -f $FIFO" 2>/dev/null
 }
-trap stop_server EXIT
+# Trap registered ONLY when this script booted its own server (Phase 2): a --static
+# run must never kill an externally managed dev server. (2026-07-12: the uncondi-
+# tional trap here SIGKILLed the live RCON server every time --static exited.)
 
 # ── benign log noise that is NOT a failure (expanded from the 2026-07-11 audit) ──
 ALLOW='No data fixer registered|mega_showdown:|Unable to connect to Discord|could not find sampler|could not find uniform|missingTagTranslation|Invalid path in mod resource-pack|Did not find udev|Disabling Melody|Cannot load class .* in environment type SERVER|Error loading class:|refmap.*could not be read|Reference map|was not found. Skipping|Class path entries reference missing files|animated-gif|Cannot remap|not compatible with Loader|Missing sound for event|dropping miplevel|limits mip level|Force-disabling mixin|is deprecated|does not exist, cannot add it to event|DEBUG'
@@ -81,6 +83,7 @@ if [ "$DO_SERVER" = 1 ]; then
   fi
   rm -f "$FIFO" "$SRVLOG"; mkfifo "$FIFO"
   ( tail -n +1 -f "$FIFO" | gradle runServer --console=plain --no-daemon ) > "$SRVLOG" 2>&1 &
+  trap stop_server EXIT  # we own this server; clean it up on exit (see note above)
   # wait up to 5 min for Done / startup failure
   for _ in $(seq 1 150); do
     grep -qE 'Done \(' "$SRVLOG" && break

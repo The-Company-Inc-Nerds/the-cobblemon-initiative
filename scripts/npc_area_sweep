@@ -1,0 +1,69 @@
+#!/usr/bin/env bash
+# NPC wall/floor sweep — boots the headless server on the real map, spawns a Carpet
+# fake player, walks it through named areas (force-loading persisted NPCs + triggering
+# latch spawns), then runs `/cobblemon-initiative test placement live` to flag any Easy
+# NPC that is SUNK / HEAD_BLOCKED / FLOATING / IN_WALL at its REAL spawned position.
+#
+# Areas are hardcoded below (Sango / Blossom Path / Takehara). Each row is:
+#   NAME | forceload x1 z1 x2 z2 | "x y z;x y z;..."  (bot waypoints; y approx, bot is
+#   given resistance so a wrong y never kills it — teleporting just loads chunks nearby)
+#
+# Usage: scripts/npc_area_sweep   (needs a display-free headless boot; ~5-8 min)
+set -uo pipefail
+ROOT="$(git -C "$(dirname "$0")" rev-parse --show-toplevel)"; cd "$ROOT"
+FIFO=/tmp/sweep_in; LOG=/tmp/sweep.log
+
+AREAS=(
+  "Sango|2521 2777 2626 2957|2573 110 2867;2611 110 2792;2578 108 2942;2522 131 2815;2626 119 2777;2568 111 2855"
+  "Blossom Path|2150 2500 2500 2780|2480 120 2750;2400 118 2680;2320 112 2600;2240 110 2560;2180 115 2540;2440 120 2620"
+  "Takehara|1835 2441 2083 2609|1960 110 2520;2014 169 2466;1900 113 2609;2073 169 2464;1835 105 2483;2050 150 2490"
+)
+
+send(){ printf '%s\n' "$@" > "$FIFO"; }
+server_pid(){ ps -eo pid,args | awk '/fabric\.dli\.env=server/ && /openjdk/ && !/awk/ {print $1; exit}'; }
+cleanup(){ send 'stop' 2>/dev/null; sleep 5; local p; p=$(server_pid); [ -n "$p" ] && kill -9 "$p" 2>/dev/null; pkill -f "tail -n +1 -f $FIFO" 2>/dev/null; }
+trap cleanup EXIT
+
+# world symlink guard (dedicated server reads run/<level-name>, not run/saves/)
+LVL=$(grep -oE '^level-name=.*' run/server.properties | cut -d= -f2-)
+[ -n "$LVL" ] && [ -d "run/saves/$LVL" ] && [ ! -e "run/$LVL" ] && ln -s "$PWD/run/saves/$LVL" "run/$LVL"
+
+echo "Booting server on '$LVL' ..."
+rm -f "$FIFO" "$LOG"; mkfifo "$FIFO"
+( tail -n +1 -f "$FIFO" | gradle runServer --console=plain --no-daemon ) > "$LOG" 2>&1 &
+for _ in $(seq 1 150); do grep -qE 'Done \(' "$LOG" && break; grep -qiE 'BUILD FAILED|Could not resolve' "$LOG" && { echo "BOOT FAILED"; tail -5 "$LOG"; exit 1; }; sleep 2; done
+grep -qE 'Done \(' "$LOG" || { echo "server never reached Done"; tail -6 "$LOG"; exit 1; }
+echo "Server up. Spawning bot ..."
+send 'player Tester spawn' 'effect give Tester minecraft:resistance 999999 255 true' 'effect give Tester minecraft:slow_falling 999999 1 true'
+sleep 3
+
+for row in "${AREAS[@]}"; do
+  IFS='|' read -r name fl wps <<<"$row"
+  echo "Sweeping $name ..."
+  send "say ===AREA $name==="
+  send "forceload add $fl"
+  sleep 3
+  IFS=';' read -ra pts <<<"$wps"
+  for p in "${pts[@]}"; do send "tp Tester $p"; sleep 2; done
+  sleep 3
+  send 'cobblemon-initiative test placement live'
+  sleep 4
+  send 'forceload remove all'
+  sleep 2
+done
+send "say ===SWEEP DONE==="
+sleep 2
+
+echo; echo "================ WALL/FLOOR REPORT ================"
+ALLOW="$ROOT/dev/placement_allowlist.txt"
+awk '
+  NR==FNR { if ($0 !~ /^[ \t]*#/ && NF) { sub(/[ \t]*#.*/,""); gsub(/^[ \t]+|[ \t]+$/,""); if (length) allow[tolower($0)]=1 } next }
+  /===AREA /{ sub(/.*===AREA /,""); sub(/===.*/,""); printf "\n## %s\n", $0 }
+  /\[TEST\] liveplace .*@.*(SUNK|HEAD_BLOCKED|FLOATING|IN_WALL)/ {
+    line=$0; sub(/.*\[TEST\] liveplace /,"",line);
+    xp=0; for (a in allow) if (index(tolower(line), a)) xp=1;
+    print (xp ? "  ≈ " line "   (expected — allowlisted)" : "  ✗ " line);
+  }
+  /\[TEST\] liveplace (PASS|FAIL) /{ l=$0; sub(/.*\[TEST\] liveplace /,"",l); print "  → " l }
+' "$ALLOW" "$LOG"
+echo "==================================================="

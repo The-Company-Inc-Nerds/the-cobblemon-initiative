@@ -1,6 +1,6 @@
 # Commands
 
-Complete command reference for **The Cobblemon Initiative**. Every command below is verified against the mod source. For how these commands fit into the wider mod, see [[Architecture Overview]]. To return to the landing page, see [[Home]].
+Complete command reference for **The Cobblemon Initiative**. Every command below is verified against the mod source. For how these commands fit into the wider mod, see [Architecture Overview](https://github.com/The-Company-Inc-Nerds/the-cobblemon-initiative/blob/main/docs/ARCHITECTURE_OVERVIEW.md). To return to the landing page, see [[Home]].
 
 > [!NOTE]
 > This is a **single-player** mod built for UPM 2. "Admin" simply means the command requires operator privileges (permission level 2+), which the host player has in their own world. "Player-facing" commands need no permission.
@@ -92,7 +92,7 @@ The first two are **player-facing test triggers (no permission)**; `reload` is a
 
 | Command | Description | Permission |
 |---------|-------------|------------|
-| `/nuzlocke deathscreen` | Triggers the Pokéball faint death screen for testing. Applies **20 damage** to the player — note this 20-damage figure belongs *only* to this test command; a real whiteout is an unblockable kill (see [[Architecture Data Flows]]). | 0 (anyone) |
+| `/nuzlocke deathscreen` | Triggers the Pokéball faint death screen for testing. Applies **20 damage** to the player — note this 20-damage figure belongs *only* to this test command; a real whiteout is an unblockable kill (see [Architecture Data Flows](https://github.com/The-Company-Inc-Nerds/the-cobblemon-initiative/blob/main/docs/ARCHITECTURE_DATA_FLOWS.md)). | 0 (anyone) |
 | `/nuzlocke sacrifice` | Triggers the sacrifice-selection screen for testing. If the player has only one Pokémon, triggers death instead. | 0 (anyone) |
 | `/nuzlocke reload` | Reloads the Nuzlocke config from disk. | 2 (OP) |
 
@@ -211,7 +211,7 @@ coordinate pass — see the TODO gym-gimmicks section for the 33-slot walkthroug
 
 ### Install
 
-Applies the packaged world configuration in `install.json`. See [[Architecture Overview]] for the install flow.
+Applies the packaged world configuration in `install.json`. See [Architecture Overview](https://github.com/The-Company-Inc-Nerds/the-cobblemon-initiative/blob/main/docs/ARCHITECTURE_OVERVIEW.md) for the install flow.
 
 | Command | Description |
 |---------|-------------|
@@ -298,6 +298,6 @@ Bidirectional NPC-UUID ↔ Easy NPC preset mapping, used to batch-apply presets 
 
 ## See also
 
-- [[Architecture Overview]] — how these commands hook into subsystems and data flows.
-- [[Architecture Data Flows]] — the quest-tracker and economy workflows these commands drive.
+- [Architecture Overview](https://github.com/The-Company-Inc-Nerds/the-cobblemon-initiative/blob/main/docs/ARCHITECTURE_OVERVIEW.md) — how these commands hook into subsystems and data flows.
+- [Architecture Data Flows](https://github.com/The-Company-Inc-Nerds/the-cobblemon-initiative/blob/main/docs/ARCHITECTURE_DATA_FLOWS.md) — the quest-tracker and economy workflows these commands drive.
 - [[Home]] — wiki landing page.
