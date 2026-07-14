@@ -5,7 +5,7 @@
 This is the complete walkthrough of the **main quest line** — the pinned `▶` line at the top of the quest sidebar — from waking up in Sango Town to the last chair in the boardroom, and what comes after.
 
 > [!CAUTION]
-> **Full-campaign spoilers — Acts I, II, and III.** This page names the villain organization's leadership, walks the endgame gates, and spells out the identity of the final boss and the ending. If you are playing (or watching) blind, stop here and use the spoiler-safe **[[Guidebook Act I]]**, **[[Guidebook Act II]]**, and **[[Guidebook Act III]]** instead.
+> **Full-campaign spoilers — Acts I, II, and III.** This page names the villain organization's leadership, walks the endgame gates, and spells out the identity of the final boss and the ending. If you are playing (or watching) blind, stop here and use the spoiler-safe **[[Guidebook Overview]]** and **[[Guidebook Route Map]]** instead (the act guidebooks are act-gated companions — read each only after you clear that act).
 
 For how the sidebar and tracker work, see **[[Quests Overview]]**. Side quests live on the area pages: [[Quests-Sango Town]] · [[Quests Blossom Path]] · [[Quests Harvest Road]] · [[Quests-Takehara Falls]] · [[Quests-Hua Zhan City]].
 

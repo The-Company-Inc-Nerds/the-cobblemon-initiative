@@ -198,14 +198,14 @@ Act I is the gentlest combat of the run, which makes it the easiest place to get
 - **Faint mechanics.** A faint applies damage to *you* and, depending on the run's settings, can force a **sacrifice selection** on flee or trigger the **Pokéball death screen** on a player KO. Fleeing (or forfeiting) with only one Pokémon left is an immediate death — *there is no escape*.
 
 ### The Dark Urge — first whispers
-On a Pokémon faint **outside a safe zone**, there is a low (≈**12%**) chance the **shadow self** whispers to you — a dark-red subtitle, on a 5-minute cooldown. It is the cold voice of the founder you used to be, commenting on your loss as if your team were line items on a ledger.
+On a Pokémon faint **outside a safe zone**, there is a low (≈**12%**) chance the **shadow self** whispers to you — a dark-red subtitle, on a 5-minute cooldown. It is the cold voice of someone you used to be, commenting on your loss as if your team were line items on a ledger.
 
-- **Act I starts at the lowest tier** — vague, unsettled, deniable — but it doesn't stay there: the whispers step up to **tier 1 at your second badge** (cap 30), while still inside this act. Tier 2 waits for badge 6 (cap 56), and the plainspoken **tier 3** for badge 9 (cap 74) — far past this act.
+- **Act I starts at the lowest tier** — vague, unsettled, deniable — but it doesn't stay there: the whispers step up to **tier 1 at your first badge** (cap 22), while still inside this act. Tier 2 waits for badge 4 (cap 44), and the plainspoken **tier 3** for badge 8 (cap 68) — past this act.
 - **Treat them as flavour, not feedback.** They don't change the mechanics; they're the story commenting on your grief. But the *first* time one fires after a fresh faint, it will land.
 - **They never appear in a safe zone.** If you see a whisper inside a town, something is misconfigured.
 
 > [!CAUTION]
-> The Dark Urge is *thematically* asking you to stop caring about the Pokémon you lose. The Fairy Shrine is the run telling you to do the opposite. Act I is where that argument starts — and where the audience first realises whose voice the whisper is.
+> The Dark Urge is *thematically* asking you to stop caring about the Pokémon you lose. The Fairy Shrine is the run telling you to do the opposite. Act I is where that argument starts.
 
 ---
 

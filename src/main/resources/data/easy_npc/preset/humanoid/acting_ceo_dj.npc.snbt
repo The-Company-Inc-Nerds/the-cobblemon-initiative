@@ -41,9 +41,76 @@
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
                             Name: "fields_liberated_gte_4"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "badges_gte_7"
                         }
                     ],
                     Priority: 20,
+                    Buttons: [
+                        {
+                            Name: "…",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "mono_2"
+                                }
+                            ],
+                            Label: "continue"
+                        },
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "So the rumour walks. The founder, back from wherever the board filed you. You look smaller than the legend. They always do."
+                        }
+                    ],
+                    Name: "Acting CEO DJ",
+                    Label: "default"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "…",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "mono_3"
+                                }
+                            ],
+                            Label: "continue"
+                        },
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Acting CEO. Acting. I keep the chair warm and the lights on while the real owners decide what the region is worth. You were never coming back to take it."
+                        }
+                    ],
+                    Name: "Acting CEO DJ",
+                    Label: "mono_2"
+                },
+                {
+                    Priority: -1,
                     Buttons: [
                         {
                             Name: "Take back the chair",
@@ -93,17 +160,11 @@
                     ],
                     Texts: [
                         {
-                            Text: "So the rumour walks. The founder, back from wherever the board filed you. You look smaller than the legend. They always do."
-                        },
-                        {
-                            Text: "Acting CEO. Acting. I keep the chair warm and the lights on while the real owners decide what the region is worth. You were never coming back to take it."
-                        },
-                        {
                             Text: "But here you are, on my floor, with a team and a grudge you cannot even remember earning. Fine. Let us settle what the seat is worth."
                         }
                     ],
                     Name: "Acting CEO DJ",
-                    Label: "default"
+                    Label: "mono_3"
                 },
                 {
                     Priority: 10,

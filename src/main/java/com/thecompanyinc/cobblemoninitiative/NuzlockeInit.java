@@ -85,32 +85,39 @@ public class NuzlockeInit implements ModInitializer {
         dispatcher.register(
           Commands.literal("nuzlocke")
             .then(
-              Commands.literal("deathscreen").executes(context -> {
-                var player = context.getSource().getPlayerOrException();
-                player.sendSystemMessage(Component.literal("§4Triggering death screen..."));
-                pendingWhiteoutDeath = true;
-                player.kill();
-                return 1;
-              })
-            )
-            .then(
-              Commands.literal("sacrifice").executes(context -> {
-                var player = context.getSource().getPlayerOrException();
-                PlayerPartyStore party = Cobblemon.INSTANCE.getStorage().getParty(player);
-                int partyCount = countPartySize(party);
-
-                if (partyCount <= 1) {
-                  player.sendSystemMessage(
-                    Component.literal("§4You only have one Pokémon! Triggering death instead...")
-                  );
+              // OP-only test hook: both of these end a hardcore run outright, so they
+              // must never be reachable at permission 0 (a one-keystroke run-ender in
+              // single-player). Kept for the dev harness; strip with the dev tooling.
+              Commands.literal("deathscreen")
+                .requires(source -> source.hasPermission(2))
+                .executes(context -> {
+                  var player = context.getSource().getPlayerOrException();
+                  player.sendSystemMessage(Component.literal("§7[dev] Forcing whiteout."));
                   pendingWhiteoutDeath = true;
                   player.kill();
-                } else {
-                  player.sendSystemMessage(Component.literal("§cTriggering sacrifice selection..."));
-                  pendingSacrifice = true;
-                }
-                return 1;
-              })
+                  return 1;
+                })
+            )
+            .then(
+              Commands.literal("sacrifice")
+                .requires(source -> source.hasPermission(2))
+                .executes(context -> {
+                  var player = context.getSource().getPlayerOrException();
+                  PlayerPartyStore party = Cobblemon.INSTANCE.getStorage().getParty(player);
+                  int partyCount = countPartySize(party);
+
+                  if (partyCount <= 1) {
+                    player.sendSystemMessage(
+                      Component.literal("§7[dev] One Pokémon left — forcing whiteout instead.")
+                    );
+                    pendingWhiteoutDeath = true;
+                    player.kill();
+                  } else {
+                    player.sendSystemMessage(Component.literal("§7[dev] Opening sacrifice selection."));
+                    pendingSacrifice = true;
+                  }
+                  return 1;
+                })
             )
             .then(
               Commands.literal("reload")
@@ -557,6 +564,16 @@ public class NuzlockeInit implements ModInitializer {
       String releaseText = config.isRemoveFaintedPokemon() ? " and was released" : "";
       message = "§4" + pokemonName + " fainted" + releaseText + "! You have no Pokémon left!";
       pendingWhiteoutDeath = true;
+      // Layer the shadow's ledger voice over the mechanical line — the whiteout is the
+      // run's most-replayed moment and should sound like the Company, not vanilla.
+      String[] whiteoutVoice = {
+        "§8The ledger closes.",
+        "§8The books close in red.",
+        "§8Every name you spent brought you one step closer to your own.",
+        "§8The Company thanks you for your service."
+      };
+      int wt = Math.max(0, Math.min(darkUrgeTier(player), whiteoutVoice.length - 1));
+      player.sendSystemMessage(Component.literal(whiteoutVoice[wt]));
     } else {
       if (config.isRemoveFaintedPokemon()) {
         message = "§c" + pokemonName + " fainted and was released! You take damage!";

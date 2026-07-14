@@ -962,7 +962,7 @@ public class CobblemonInitiativeCommands {
       InitiativeInit.getProgressManager().getProgress(player);
     progress.getDefeatedTrainers().clear();
     progress.getEarnedAchievements().clear();
-    progress.setCurrentLevelCap(20);
+    progress.setCurrentLevelCap(ProgressionConfig.get().getBaseLevelCap());
 
     if (player.getServer() != null) {
       InitiativeInit.getProgressManager().saveProgress(player.getServer());

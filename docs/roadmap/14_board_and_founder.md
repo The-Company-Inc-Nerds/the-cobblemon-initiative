@@ -74,7 +74,7 @@ The marquee stream moments, in order:
 | Act | **3** (post-Royal-League) | character files `"act":"3"`; LORE_BIBLE §4 |
 | `cd_instability` | **25 (held)** — DJ's Act-2 defeat already stabilised it (idx→25); Act 3 does not move the index. The economy plot is *resolved*; Act 3 is the *identity* plot. | LORE_BIBLE §4/§8 |
 | Memory fragment | **None new.** All 10 fragments land by Scorchspire (frag_10 "face your own signature"). Act 3 *is* the fragment resolution — the reveal replaces the drip. The Act-2 penthouse fragment (owned by `company_hq`) is the *plant*; the penthouse mirror is the *payoff*. | LORE_BIBLE §8; `quest/render`; `09_company_hq` §5c |
-| Recognition tier | **late** (all five characters `"recognition_tier":"late"`). Some board members **stand down emotionally** (Lauren, Micah) rather than raging; Matt doubles down; Madeline is proud of the coup. | §4 gradient |
+| Recognition tier | **late** (all five characters `"recognition_tier":"late"`). Some board members **stand down emotionally** (the Fourth Seat, the Second Seat) rather than raging; the Third Seat doubles down; the First Seat is proud of the coup. | §4 gradient |
 | Canon flags set | Board: `defeated_board_{madeline,matt,micah,lauren}` → derived `board_cleared` achievement → **cap 100**. Founder: `company_overthrown` (canon) + alias `defeated_villain_final_boss` (HUD/Mom). | §3 story-flag canon; `levelcaps.json` order 12 |
 | Canon rules honoured | Never name the protagonist as the Founder before this beat; the §k static never resolves to letters early; the name is spoken **once**, at the mirror's death, and it is the *player's* own; Mom never learns the truth (she is not in this scene). | LORE_BIBLE §5, §9 |
 
@@ -157,10 +157,10 @@ rule**, the last legal cruelty before the mirror.
 
 | Seat | §k name (canon) | Identity / archetype | Team sketch (ace = 86-87) |
 |---|---|---|---|
-| Madeline | `M§kaaaaaaaaa` | *"I proposed the motion"* — Fairy/Psychic control, reads the figures aloud | Sylveon 84 · Togekiss 84 · Slowking 85 · Hatterene 85 · Gardevoir 86 · **Alakazam 86 (Magic Guard, Focus Sash)** |
-| Matt | `M§kaaa` | *"You taught me people are positions"* — the protégé, Dark offensive mirror-of-you | Mightyena 84 (grunt callback) · Krookodile 85 · Weavile 85 · Houndoom 85 · Hydreigon 86 · **Kingambit 86 (Supreme Overlord)** |
-| Micah | `M§kaaaa` | *"a low-probability liability"* — Steel/defensive, calculated, confidence-interval | Bronzong 84 · Ferrothorn 85 · Magnezone 85 · Excadrill 85 · Aegislash 86 · **Metagross 86 (Tough Claws)** |
-| Lauren | `L§kaaaaa` | *"my department wrote you out"* — Communications, Ghost/illusion/narrative control (fought last if the player reads the room; slightly hardest) | Cofagrigus 85 · Gengar 85 · Chandelure 86 · Mimikyu 86 (Disguise = the mask) · Hatterene 86 · **Dragapult 87 (Choice Specs)** |
+| the First Seat | `M§kaaaaaaaaa` | *"I proposed the motion"* — Fairy/Psychic control, reads the figures aloud | Sylveon 84 · Togekiss 84 · Slowking 85 · Hatterene 85 · Gardevoir 86 · **Alakazam 86 (Magic Guard, Focus Sash)** |
+| the Third Seat | `M§kaaa` | *"You taught me people are positions"* — the protégé, Dark offensive mirror-of-you | Mightyena 84 (grunt callback) · Krookodile 85 · Weavile 85 · Houndoom 85 · Hydreigon 86 · **Kingambit 86 (Supreme Overlord)** |
+| the Second Seat | `M§kaaaa` | *"a low-probability liability"* — Steel/defensive, calculated, confidence-interval | Bronzong 84 · Ferrothorn 85 · Magnezone 85 · Excadrill 85 · Aegislash 86 · **Metagross 86 (Tough Claws)** |
+| the Fourth Seat | `L§kaaaaa` | *"my department wrote you out"* — Communications, Ghost/illusion/narrative control (fought last if the player reads the room; slightly hardest) | Cofagrigus 85 · Gengar 85 · Chandelure 86 · Mimikyu 86 (Disguise = the mask) · Hatterene 86 · **Dragapult 87 (Choice Specs)** |
 
 **The mirror — `villain_final_boss` (`§kfounder`), in the penthouse.** Gated
 `all_tags:[defeated_board_madeline, defeated_board_matt, defeated_board_micah,

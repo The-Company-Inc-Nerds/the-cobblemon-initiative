@@ -404,12 +404,15 @@ public class PlayerProgressManager {
       case "ryujin_leader" -> "cobblemon_initiative:gyms/badge_dragon";
       case "nifl_leader" -> "cobblemon_initiative:gyms/badge_ice";
       case "scorchspire_leader" -> "cobblemon_initiative:gyms/badge_fire";
-      case "fire_shrine_leader" -> "cobblemon_initiative:shrines/fire_shrine";
-      case "ground_shrine_leader" -> "cobblemon_initiative:shrines/ground_shrine";
-      case "ice_shrine_leader" -> "cobblemon_initiative:shrines/ice_shrine";
-      case "dragon_shrine_leader" -> "cobblemon_initiative:shrines/dragon_shrine";
-      case "fairy_shrine_leader" -> "cobblemon_initiative:shrines/fairy_shrine";
+      case "fire_shrine_leader" -> "cobblemon_initiative:shrines/shrine_fire";
+      case "ground_shrine_leader" -> "cobblemon_initiative:shrines/shrine_ground";
+      case "ice_shrine_leader" -> "cobblemon_initiative:shrines/shrine_ice";
+      case "dragon_shrine_leader" -> "cobblemon_initiative:shrines/shrine_dragon";
+      case "fairy_shrine_leader" -> "cobblemon_initiative:shrines/shrine_fairy";
       case "royal_champion" -> "cobblemon_initiative:royal_league/champion";
+      // Act 2/3 villain arc — hidden branch so titles never leak pre-earn.
+      case "villain_boss" -> "cobblemon_initiative:villain/acting_ceo";
+      case "villain_final_boss" -> "cobblemon_initiative:villain/company_overthrown";
       default -> null;
     };
 
@@ -434,7 +437,7 @@ public class PlayerProgressManager {
         grantAdvancement(player, "cobblemon_initiative:gyms/all_badges");
         player.sendSystemMessage(
           Component.literal(
-            "§6§l[Achievement Unlocked] §r§ePokemon League Qualified!"
+            "§6§l[Achievement Unlocked] §r§eRoyal League Qualified!"
           )
         );
         player.sendSystemMessage(
@@ -480,11 +483,18 @@ public class PlayerProgressManager {
         InitiativeInit.getConfigLoader().getAllTrainers().stream()
           .filter(t -> "board_member".equals(t.getTrainerType()))
           .toList();
+      // Accept EITHER a recorded defeat OR the TBCS onwin tag defeated_<id> (set
+      // directly by the battle, independent of name-matching) so the cap-100 unlock
+      // can never be stranded by a battle-name mismatch — the bug that left the
+      // player capped at 85 against the level-100 Founder.
+      java.util.Set<String> tags = player.getTags();
       boolean allBoard = !board.isEmpty() &&
-        board.stream().allMatch(t -> progress.hasDefeatedTrainer(t.getId()));
+        board.stream().allMatch(t ->
+          progress.hasDefeatedTrainer(t.getId()) || tags.contains("defeated_" + t.getId()));
 
       if (allBoard) {
         progress.addAchievement("board_cleared");
+        grantAdvancement(player, "cobblemon_initiative:villain/board_cleared");
         player.sendSystemMessage(
           Component.literal("§6§l[Level Cap] §r§eThe Board has fallen. Cap raised to 100 — one chair remains.")
         );

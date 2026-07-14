@@ -6,6 +6,56 @@ done, Claude removes it **and** any release-removal it unblocks.
 
 **Legend:** 🧱 = you (in-world / map authoring) · 💻 = Claude (code/data) · 🔍 = verify in-game
 
+---
+
+## 2026-07-13 — review + fix pass (see `docs/CONTENT_REVIEW_2026-07-13.md`)
+
+**Landed this pass (💻, compiled clean — `content_compile` errors:0, 673 presets; needs `gradle
+build` for the Java/rctmod half):**
+- **Cap-100 chain fixed** — Board defeats now register (rctmod board `name` → the §k nameplates,
+  which also kills the full-name battle leak; `InitiativeInit` now exact-matches before `contains()`,
+  so the §k-prefix / "Senior Agent" shadow bugs are gone; `board_cleared` also accepts the
+  `defeated_board_*` tags as a fallback). Founder cfg displayName `C§kaaa`→`§kfounder`.
+- **Trainer name drift** — `villain_team.json` displayNames synced to the authored rctmod names
+  (grunts 3–11 Bello/Naoko/…/Osamu/Hui/Ivo; grunt_2 = Field Agent Dembe); kalahar_trainer_1/2 config
+  displayNames un-swapped.
+- **Battle-order gates** (dialog-src, compiled): every Battle Frontier brain + challenger gated on
+  `royal_league_champion` (brains also on both facility challengers); Royal League E4→Champion ladder
+  (`royal_elite_N` chain, Aria on badges≥10 + `defeated_villain_boss`); Board gated on
+  `defeated_villain_boss`; DJ gated on `badges_gte_7` (+ the existing fields≥4).
+- **Advancements** — shrine grant ids fixed (`shrines/shrine_<type>`); authored `gyms/all_badges`,
+  `shrines/all_shrines`, and a hidden `villain/` branch (acting_ceo / board_cleared /
+  company_overthrown, wired into `grantAdvancementForTrainer` + the board block); gym 1/2 advancement
+  parents un-swapped; "Pokemon League" → "Royal League"; champion title + root desc re-voiced.
+- **Java/config** — Dark Urge tiers 30/52/73 → **22/44/68** (live ladder); `/nuzlocke deathscreen` +
+  `sacrifice` now perm-2; `/ca reset` cap 20 → base 15; level-cap clamp prints the real next
+  requirement; sacrifice screen header neutral; whiteout now layers a tiered shadow line.
+- **Datapack** — `field_N_liberated` mirror added to the compiler's `band_tags` (fixes the 7 dead
+  route liberation-echoes); `fields_liberated` zero-init in `render.mcfunction` (fixes the wrong
+  tracked waypoint at the Act-2 pivot); `big_root`→`black_sludge` on Blossom's Roserade.
+- **Dialog mechanics** — 4 sensor `entity_tags` added (`hz_wheat_trader`/`hz_granary`/
+  `hz_branch_manager`/`ci_canvasser` — unblocks Grain-In-Goods-Out + Minutes + Non-Compliance on a
+  fresh install); tent-pole monologues (Founder mirror + farewell, DJ, all 4 Board) converted from
+  rotating `say[]` to `open_dialog` page chains.
+- **Docs/wiki** — Board first names scrubbed everywhere (docs + wiki) → "First/Second/Third/Fourth
+  Seat"; wiki founder-identity spoilers scrubbed off the "safe" pages (Home/Overview/Act-I) + the
+  spoiler pointer repointed at Overview/Route-Map; `LORE_BIBLE §8` cap ladder corrected; Act-III
+  board team data destaled; Home version unstamped; CLAUDE quest count 26/57 → 28/69.
+
+**Still open from the review (💻, deliberately deferred — not started):**
+- **Purchase pay-probes** — 3 buttons (`sq_deka` 500 CD Magikarp, `sq_invitational_tayo` 150 CD entry,
+  `hz_greenhouse_overseer` 150 CD) still use bare `cobbledollars remove` (broke → free goods). Fix:
+  a per-button probe fn mirroring `route/decline_*` (`store result … cobbledollars pay @s N`).
+- **Remaining monologue chains** — Cynthia (recognise/default) + the wheat-trader ambush still rotate.
+- **Frontier "exhibition" no-death guard** — the "nothing you love dies" promise is still false under
+  Nuzlocke; either generalize the Stadium clone-party guard to frontier ids or rewrite the promise.
+- **Design forks needing a showrunner ruling** (NOT guessed here): the Act-2 raid geometry
+  (QUESTS/10 climb vs roadmap/09 basement descent) and the 6-vs-10 wheat-field count / HUD `/6`.
+- **Boss roster width, gym-crew voice de-duplication, name collisions, League summit double-cast,**
+  and the fuller TODO/backlog status truth-pass — all catalogued in the review doc.
+
+---
+
 **Already landed** (not tracked here): level caps, Memory Fragments + re-reader, Dark Urge
 whispers, Wheat War economy core (P3), villain recognition dialogue, quest-tracker HUD,
 field-mark dev tool, the **per-badge CobbleDollars shop** (`scripts/generate_shop_tiers` →

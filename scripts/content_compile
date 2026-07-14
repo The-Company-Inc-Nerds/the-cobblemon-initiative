@@ -273,6 +273,16 @@ def gen_band_tags() -> str:
             out.append(f"execute as @a if score @s {obj} matches {rng} run tag @s add {tag}")
             out.append(f"execute as @a unless score @s {obj} matches {rng} run tag @s remove {tag}")
         out.append("")
+    # Liberation mirror: field_freed is a SCOREBOARD (fake-player holder farm_N), but the
+    # route "talks-back" echoes gate on the field_N_liberated PLAYER TAG. Mirror the
+    # scoreboard latch to the tag every tick (one-way — field_freed is never unset), BEFORE
+    # the inverse block below so no_field_N_liberated derives from the fresh value same-tick.
+    out.append("# liberation mirror (field_freed scoreboard -> field_N_liberated player tag)")
+    for n in range(1, 11):
+        out.append(
+            f"execute if score farm_{n} field_freed matches 1 run tag @a add field_{n}_liberated"
+        )
+    out.append("")
     if NEGATED_TAGS:
         out.append("# inverse tags (no_<X> == player does NOT have X)")
         for tag in sorted(NEGATED_TAGS):

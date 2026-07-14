@@ -72,9 +72,76 @@
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
                             Name: "royal_league_champion"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "defeated_villain_boss"
                         }
                     ],
                     Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "…",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "mono_2"
+                                }
+                            ],
+                            Label: "continue"
+                        },
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "You do not even flinch when you see me. You should flinch. You hired me. You sat across this very table and told me the only loyalty worth having is the kind that survives the person you give it to."
+                        }
+                    ],
+                    Name: "Board — the protege",
+                    Label: "default"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "…",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "mono_3"
+                                }
+                            ],
+                            Label: "continue"
+                        },
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "I took the lesson to heart. That is why I signed your removal before the ink on my promotion was dry. You taught me people are positions, and positions get filled."
+                        }
+                    ],
+                    Name: "Board — the protege",
+                    Label: "mono_2"
+                },
+                {
+                    Priority: -1,
                     Buttons: [
                         {
                             Name: "Show me what I taught you",
@@ -124,17 +191,11 @@
                     ],
                     Texts: [
                         {
-                            Text: "You do not even flinch when you see me. You should flinch. You hired me. You sat across this very table and told me the only loyalty worth having is the kind that survives the person you give it to."
-                        },
-                        {
-                            Text: "I took the lesson to heart. That is why I signed your removal before the ink on my promotion was dry. You taught me people are positions, and positions get filled."
-                        },
-                        {
                             Text: "And now you have come to the boardroom to be a person again. After everything. The nerve of it. I almost missed you. I am going to enjoy not missing you a great deal more."
                         }
                     ],
                     Name: "Board — the protege",
-                    Label: "default"
+                    Label: "mono_3"
                 }
             ]
         },

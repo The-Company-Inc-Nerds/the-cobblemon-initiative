@@ -72,9 +72,76 @@
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
                             Name: "royal_league_champion"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "defeated_villain_boss"
                         }
                     ],
                     Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "…",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "mono_2"
+                                }
+                            ],
+                            Label: "continue"
+                        },
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "I ran the projections on your return the day we erased you. Most of the board called it impossible. I called it a low-probability liability and reserved against it anyway. I am the only one here who is not surprised to see you."
+                        }
+                    ],
+                    Name: "Board — the accountant",
+                    Label: "default"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "…",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "mono_3"
+                                }
+                            ],
+                            Label: "continue"
+                        },
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Do you know what you cost us, coming back? Not in CobbleDollars. In certainty. We had the region modelled to the decimal, every column behaving, and then your face walked into the lobby and the whole spreadsheet developed a soul."
+                        }
+                    ],
+                    Name: "Board — the accountant",
+                    Label: "mono_2"
+                },
+                {
+                    Priority: -1,
                     Buttons: [
                         {
                             Name: "Run the numbers again",
@@ -124,17 +191,11 @@
                     ],
                     Texts: [
                         {
-                            Text: "I ran the projections on your return the day we erased you. Most of the board called it impossible. I called it a low-probability liability and reserved against it anyway. I am the only one here who is not surprised to see you."
-                        },
-                        {
-                            Text: "Do you know what you cost us, coming back? Not in CobbleDollars. In certainty. We had the region modelled to the decimal, every column behaving, and then your face walked into the lobby and the whole spreadsheet developed a soul."
-                        },
-                        {
                             Text: "I do not feel about you the way the others do. I do not hate you. I have simply concluded, with great confidence, that you should not exist. Let me show you the confidence interval."
                         }
                     ],
                     Name: "Board — the accountant",
-                    Label: "default"
+                    Label: "mono_3"
                 }
             ]
         },

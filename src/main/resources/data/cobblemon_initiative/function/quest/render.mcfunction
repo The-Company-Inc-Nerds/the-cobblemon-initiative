@@ -11,6 +11,11 @@ execute unless score @s memory_fragment matches 0.. run scoreboard players set @
 # ci_papers_held is recomputed every tick by sidequest/personnel_file/papers_tick; zero-init
 # here too so the filing-day suppression tests below never fail on a fresh player.
 execute unless score @s ci_papers_held matches 0.. run scoreboard players set @s ci_papers_held 0
+# fields_liberated is only ever SET by liberation/free_field_apply; an unset score makes
+# the Java quest-tracker's score check FAIL, mis-resolving the tracked main waypoint at the
+# Act-2 pivot (it fell through to the Ryujin gym while the sidebar said "Liberate wheat
+# fields"). Zero-init so the HQ-raid stages evaluate correctly for a player with 0 fields.
+execute unless score @s fields_liberated matches 0.. run scoreboard players set @s fields_liberated 0
 
 # Keep the main sidebar line present (top of list). (The old top "Objective" boss bar
 # was removed — showrunner call, 2026-07-04; the sidebar main line carries the story.)

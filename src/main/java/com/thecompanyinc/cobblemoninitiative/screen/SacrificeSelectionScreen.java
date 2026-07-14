@@ -87,7 +87,7 @@ public class SacrificeSelectionScreen extends Screen {
     int mouseY,
     float delta
   ) {
-    String title = "You fled from battle!";
+    String title = "The escape has a price.";
     int titleWidth = this.font.width(title);
     graphics.drawString(
       this.font,

@@ -47,7 +47,7 @@ Permadeath for your team, enforced by the mod:
 - **Safe zones** — towns, shrine grounds, and a few story sites — suppress **hostile mob spawns** and quiet the Dark Urge. They do **not** pause the faint penalties above. Routes announce themselves as zones too, but their spawns stay live; occupied farmland only becomes safe ground once you liberate it. Know where the line is before a battle, not after.
 
 ### The Dark Urge
-When a Pokémon faints **outside** a safe zone, there is a small chance (around 12%, with a 5-minute cooldown) that a cold, first-person whisper surfaces — the voice of who you used to be, commenting on the loss as if your team were inventory. The whispers **escalate** as your level cap climbs: tier 1 arrives with your second badge (cap 30), tier 2 with your sixth (cap 56), and the darkest tier 3 with your ninth (cap 74). Every fainted partner is the argument between the griever you have become and the founder you were.
+When a Pokémon faints **outside** a safe zone, there is a small chance (around 12%, with a 5-minute cooldown) that a cold, first-person whisper surfaces — the voice of who you used to be, commenting on the loss as if your team were inventory. The whispers **escalate** as your level cap climbs: tier 1 arrives with your first badge (cap 22), tier 2 with your fourth (cap 44), and the darkest tier 3 with your eighth (cap 68). Every fainted partner is the argument between the griever you have become and the voice of who you used to be.
 
 ---
 

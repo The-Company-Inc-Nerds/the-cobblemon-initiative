@@ -30,9 +30,9 @@ parallel post-game content).
 | Band field | Value |
 |---|---|
 | Act | **3** |
-| Level cap | **85** entering (Champion just unlocked it). The Board are fought in the 85→100 window; the **shipped rctmod teams span level 82–87** (verified in `data/rctmod/trainers/board_*.json` — Madeline is 82/83/84/85/86/87). So the Board sit right at and just above the entry cap — the last legal cruelty. `board_cleared` → **100** *before* the Founder, who is a flat level-100 mirror. |
+| Level cap | **85** entering (Champion just unlocked it). The Board are fought in the 85→100 window; the **shipped rctmod teams span level 82–87** (verified in `data/rctmod/trainers/board_*.json` — the First Seat is 82/83/84/85/86/87). So the Board sit right at and just above the entry cap — the last legal cruelty. `board_cleared` → **100** *before* the Founder, who is a flat level-100 mirror. |
 | `cd_instability` | **25 (held)**. DJ's Act-2 defeat already stabilised it. Act 3 does **not** move the index — no `economy/gym_destabilize` or `hq_stabilize` calls fire here. The economy plot is resolved; this is the identity plot. |
-| Recognition tier | **late** (all five bosses `"recognition_tier":"late"`). The gradient's terminal state: some Board members **stand down** (Micah intellectually, Lauren emotionally) rather than raging; Matt doubles down; Madeline is proud she proposed the coup. |
+| Recognition tier | **late** (all five bosses `"recognition_tier":"late"`). The gradient's terminal state: some Board members **stand down** (the Second Seat intellectually, the Fourth Seat emotionally) rather than raging; the Third Seat doubles down; the First Seat is proud she proposed the coup. |
 | Memory fragment | **None new.** All 10 land by Scorchspire (frag_10 "face your own signature"). Act 3 *is* the fragment resolution — the reveal replaces the drip. |
 | Canon flags set | Board → `defeated_board_{madeline,matt,micah,lauren}` → derived `board_cleared` (Java, `PlayerProgressManager`, cap 100). Founder → `company_overthrown` + alias `defeated_villain_final_boss`. |
 
@@ -80,10 +80,10 @@ existing bosses and the Founder.
 | `board_matt` *(EXISTS — add `placement`)* | `M§kaaa` | villain_board | The protégé you trained; doubles down. At the Factory. | `[4060 66 2774]` |
 | `board_lauren` *(EXISTS — add `placement`)* | `L§kaaaaa` | villain_board | Communications; wrote you out. At the shrine outskirts. | `[947 66 2651]` |
 | `villain_final_boss` *(EXISTS — add champion-gated `placement`)* | `§kfounder` | villain_final_boss | The mirror. Spawns at HQ only after Champion; wears the player's skin. | `[1590 51 1028]` |
-| `hunt_clerk_fenceline` **(NEW)** | Shuttered Clerk | civilian | A laid-off branch clerk sweeping the dark office; recognizes nothing of the CEO, only that the portrait wall is a brighter rectangle now. Points at Madeline. | `[1560 65 1740]` |
+| `hunt_clerk_fenceline` **(NEW)** | Shuttered Clerk | civilian | A laid-off branch clerk sweeping the dark office; recognizes nothing of the CEO, only that the portrait wall is a brighter rectangle now. Points at the First Seat. | `[1560 65 1740]` |
 | `hunt_keeper_odei` **(NEW)** | Granary Keeper Odei | civilian | A liberated-field granary keeper (back-echo: the wheat war). Recognizes a face on a memo mid-count and turns wary — points you to the auditor pacing the silos. | `[2305 65 3545]` |
-| `hunt_bystander_factory` **(NEW)** | Frontier Bystander | civilian | A Frontier hanger-on outside the Factory; saw a suited man filing someone. Points at Matt. | `[4055 66 2780]` |
-| `hunt_pilgrim_wren` **(NEW)** | Shrine Pilgrim Wren | civilian | A pilgrim at the Fairy Shrine edge; speaks the story Lauren wrote (the founder retired). Points at Lauren without knowing what she is pointing at. | `[950 66 2658]` |
+| `hunt_bystander_factory` **(NEW)** | Frontier Bystander | civilian | A Frontier hanger-on outside the Factory; saw a suited man filing someone. Points at the Third Seat. | `[4055 66 2780]` |
+| `hunt_pilgrim_wren` **(NEW)** | Shrine Pilgrim Wren | civilian | A pilgrim at the Fairy Shrine edge; speaks the story the Fourth Seat wrote (the founder retired). Points at the Fourth Seat without knowing what she is pointing at. | `[950 66 2658]` |
 
 > **No-duplication check.** `dialog-src/characters/villain/granary_keeper.json` already exists
 > (display_name **Feng**, role `granary`, at Hua Zhan City, `uuid`-placed). The new keeper is a
@@ -109,7 +109,7 @@ and a light collectible tying them together.
 
 ---
 
-### 3.1 The Vote (Board Hunt — Madeline, Fenceline Acres)
+### 3.1 The Vote (Board Hunt — the First Seat, Fenceline Acres)
 
 **Concept:** the shuttered branch office on the Cyber-City approach. A laid-off clerk sweeps
 a floor where a brighter rectangle marks a vanished portrait. Behind the frosted-glass
@@ -118,7 +118,7 @@ to watch the branch go dark. **Forward hook:** the clerk names the other three s
 granary out east, the eastern arenas, the old shrine road west. **Back-echo:** the
 scrubbing-artifact portrait wall (the run-long cover-up made physical); the clerk gestures at
 the tower on the seam the player raided as Acting CEO DJ (Act 2). **Rumor hub:** the clerk IS
-the house-style rumor hub for this town-less site, gated to point only while Madeline stands.
+the house-style rumor hub for this town-less site, gated to point only while the First Seat stands.
 
 The Board battle itself is **already fully authored** in `board_madeline.json`
 (`gate:{champion:true}`, `type:gauntlet_boss`, `on_win → reveal/board_fell`). This unit only
@@ -246,7 +246,7 @@ starter-only player is possible here. The pointer NPC is never a battle.
 
 ---
 
-### 3.2 The Ledger (Board Hunt — Micah, Crossroads Granary)
+### 3.2 The Ledger (Board Hunt — the Second Seat, Crossroads Granary)
 
 **Concept:** the granary where the region's numbers are kept. `M§kaaaa` — the accountant who
 modelled your return as a low-probability liability and reserved against it — paces the silos,
@@ -256,7 +256,7 @@ wheat war (fields freed, prices eased), and the recognition gradient's "wheat-ad
 recognize you mid-trade" beat lands here on a granary keeper. She recognizes a *face on a memo*,
 not the CEO (canon: only wheat-adjacent keepers get the wary beat; she never learns who you are).
 **Economy voice:** the post-HQ stabilised-then-exposed register — she says the granary flew
-Company colors until they tore them down. **Rumor hub:** Odei points while Micah stands.
+Company colors until they tore them down. **Rumor hub:** Odei points while the Second Seat stands.
 
 **READY-TO-PASTE — extend `board_micah.json`:**
 
@@ -365,15 +365,15 @@ decline (forced `gauntlet_boss`); fairness floor holds. Pointer NPC has no battl
 
 ---
 
-### 3.3 The Position (Board Hunt — Matt, Battle Factory outskirts)
+### 3.3 The Position (Board Hunt — the Third Seat, Battle Factory outskirts)
 
 **Concept:** the Battle Factory (rental-assets ethos) — the frontier facility whose whole
-worldview is Matt's: people are positions, assets in, assets out. `M§kaaa`, the protégé you
+worldview is the Third Seat's: people are positions, assets in, assets out. `M§kaaa`, the protégé you
 trained, doubles down here, running rented teams like the inventory he thinks people are.
 **Forward hook:** the bystander names the far-western shrine road as the last site.
 **Back-echo:** the Frontier itself (post-League proving ground the player is grinding in
 parallel) and the mirror theme one act early (see `battle_frontier` §5.2). **Rumor hub:** the
-bystander points while Matt stands.
+bystander points while the Third Seat stands.
 
 **READY-TO-PASTE — extend `board_matt.json`:**
 
@@ -477,15 +477,15 @@ decline (forced `gauntlet_boss`); fairness floor holds.
 
 ---
 
-### 3.4 The Story (Board Hunt — Lauren, Fairy Shrine outskirts)
+### 3.4 The Story (Board Hunt — the Fourth Seat, Fairy Shrine outskirts)
 
 **Concept:** the far-western Fairy Shrine outskirts — a story goes to the shrine to become
 myth, the right place to end one. `L§kaaaaa`, Communications, wrote you out (the founder
-retired). A pilgrim, Wren, speaks Lauren's exact cover-story back at you without knowing it is
-a lie or that she is describing you. **Forward hook (final):** with Lauren down, Wren points at
+retired). A pilgrim, Wren, speaks the Fourth Seat's exact cover-story back at you without knowing it is
+a lie or that she is describing you. **Forward hook (final):** with the Fourth Seat down, Wren points at
 the tower — the room is cleared. **Back-echo:** the corrupted propaganda register (the founder
 retired); the shrine pilgrimage side content (`q.side_pilgrim`). **Rumor hub:** Wren points
-while Lauren stands. Recommend fighting Lauren last (her rctmod team is the hardest of the
+while the Fourth Seat stands. Recommend fighting the Fourth Seat last (her rctmod team is the hardest of the
 four) — the pointer chain naturally routes the player here fourth.
 
 **READY-TO-PASTE — extend `board_lauren.json`:**
@@ -585,7 +585,7 @@ four) — the pointer chain naturally routes the player here fourth.
 }
 ```
 
-**REWARD/BALANCE:** unchanged — `prize: 9000` CD + config loot. Cap as §3.1 (Lauren's rctmod
+**REWARD/BALANCE:** unchanged — `prize: 9000` CD + config loot. Cap as §3.1 (the Fourth Seat's rctmod
 team is the hardest of the four; recommend fighting last). No decline (forced `gauntlet_boss`);
 fairness floor holds.
 
@@ -744,13 +744,13 @@ audience assembling the cover-up. Fully skippable.
 ## 4. Recognition & economy beats
 
 **Recognition (tier: `late`).** This is the gradient's terminal state. The four Board members
-(shipped dialog) each embody a different late reaction: **Madeline** is *proud* (she proposed
-the motion), **Matt doubles down** (the protégé who signed your removal), **Micah stands down
-intellectually** (concludes you should not exist, without hate), **Lauren stands down
+(shipped dialog) each embody a different late reaction: **the First Seat** is *proud* (she proposed
+the motion), **the Third Seat doubles down** (the protégé who signed your removal), **the Second Seat stands down
+intellectually** (concludes you should not exist, without hate), **the Fourth Seat stands down
 emotionally** (kinder than expected, warns you about the last chair). The **four NEW pointer
 civilians NEVER recognize the Founder** (canon — public scrubbing worked); they react to
 **scrubbing artifacts** (the brighter-rectangle portrait wall, the whited-out ledgers) and to
-Lauren's cover-story (the founder retired) — propaganda decay, not the CEO. The ONE allowed
+the Fourth Seat's cover-story (the founder retired) — propaganda decay, not the CEO. The ONE allowed
 wary beat is **Odei the granary keeper** (a liberated-field keeper), who recognizes *a face on
 a memo* mid-count and turns wary — the wheat-adjacent-keepers gradient rule — but she never
 learns who you are.
@@ -761,7 +761,7 @@ Sample late-recognition lines (macro-safe, no `"`/`'`):
 - Odei (site 2): *I know that face. Not from here - from a memo they pinned in the drying shed.
   A face we were told to forget.* (the memo-made-flesh, wary keeper)
 - Wren (site 4): *The founder retired. Tired, content, signed it all away with a smile.*
-  (speaking Lauren's exact cover-story, obliviously)
+  (speaking the Fourth Seat's exact cover-story, obliviously)
 
 **Economy (`cd_instability` held at 25).** Act 3 does **not** move the index — no
 `economy/gym_destabilize` / `hq_stabilize` calls fire. The economy plot is resolved. The
@@ -861,8 +861,8 @@ the four `defeated_board_*` tags — venue-independent, works unchanged for the 
    the scattered version per the brief and made the reveal beats venue-neutral so the rewrite is
    not wasted whichever way the fork rules. The one honest cost of scattered is the seated Board
    flavor lines needing a pass.)*
-2. **Fight order enforcement.** The pointer chain routes the player Madeline → Micah → Matt →
-   Lauren (Lauren's team hardest). Order is currently player's choice (all four gated only on
+2. **Fight order enforcement.** The pointer chain routes the player the First Seat → the Second Seat → the Third Seat →
+   the Fourth Seat (the Fourth Seat's team hardest). Order is currently player's choice (all four gated only on
    `champion:true`). Enforce a soft order (each site's pointer teases the next) or leave fully
    open? *(Recommend open — the sidebar shows all four; the flavor suggests a route without
    locking it.)*

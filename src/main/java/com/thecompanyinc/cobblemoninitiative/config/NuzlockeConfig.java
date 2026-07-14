@@ -77,9 +77,14 @@ public class NuzlockeConfig {
   private List<List<String>> darkUrgeMessages = defaultDarkUrgeMessages();
 
   // Level-cap breakpoints that raise the Dark Urge whisper escalation tier.
-  private int darkUrgeTier1LevelCap = 30;
-  private int darkUrgeTier2LevelCap = 52;
-  private int darkUrgeTier3LevelCap = 73;
+  // Tuned to the LIVE re-spaced ladder (22/30/37/44/50/56/62/68/74/80): tier 1 lands
+  // post-gym-1 (cap 22, gyms 1-3), tier 2 post-gym-4 (cap 44, gyms 4-7), tier 3
+  // post-gym-8 (cap 68, the first cap after the HQ raid) — matching LORE_BIBLE's beat
+  // map. (Was 30/52/73, the RETIRED ladder's gym-1/4/8 caps, which pushed the whole
+  // escalation ~2 gyms late.)
+  private int darkUrgeTier1LevelCap = 22;
+  private int darkUrgeTier2LevelCap = 44;
+  private int darkUrgeTier3LevelCap = 68;
 
   /** How often (ticks) zone-transition announcements are polled. 20 = 1s. */
   private int zoneCheckCadenceTicks = 20;

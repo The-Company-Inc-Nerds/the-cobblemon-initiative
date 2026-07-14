@@ -72,9 +72,76 @@
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
                             Name: "royal_league_champion"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "defeated_villain_boss"
                         }
                     ],
                     Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "…",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "mono_2"
+                                }
+                            ],
+                            Label: "continue"
+                        },
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Sit. No — you do not sit anymore, do you. You stand at the door of your own boardroom like a vendor waiting to be seen. There is a poetry to it I voted for."
+                        }
+                    ],
+                    Name: "Board — the vote",
+                    Label: "default"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "…",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "mono_3"
+                                }
+                            ],
+                            Label: "continue"
+                        },
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "I proposed the motion. I want you to know that. When the others were squeamish, I read the figures aloud. An asset that builds the machine and then will not be steered is not an asset. It is a liability with a name on the masthead."
+                        }
+                    ],
+                    Name: "Board — the vote",
+                    Label: "mono_2"
+                },
+                {
+                    Priority: -1,
                     Buttons: [
                         {
                             Name: "Call the vote",
@@ -124,17 +191,11 @@
                     ],
                     Texts: [
                         {
-                            Text: "Sit. No — you do not sit anymore, do you. You stand at the door of your own boardroom like a vendor waiting to be seen. There is a poetry to it I voted for."
-                        },
-                        {
-                            Text: "I proposed the motion. I want you to know that. When the others were squeamish, I read the figures aloud. An asset that builds the machine and then will not be steered is not an asset. It is a liability with a name on the masthead."
-                        },
-                        {
                             Text: "So we removed the name. We kept the masthead. And here you are, walking in to be removed twice. The table is unanimous. It always was about you."
                         }
                     ],
                     Name: "Board — the vote",
-                    Label: "default"
+                    Label: "mono_3"
                 }
             ]
         },

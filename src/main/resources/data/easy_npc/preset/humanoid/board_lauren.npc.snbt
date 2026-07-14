@@ -72,9 +72,76 @@
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
                             Name: "royal_league_champion"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "defeated_villain_boss"
                         }
                     ],
                     Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "…",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "mono_2"
+                                }
+                            ],
+                            Label: "continue"
+                        },
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Oh, look at you. The walking footnote. Do you know it was my department that wrote you out? Communications. We did not lie about you, exactly. We simply told a cleaner story, and the region preferred ours."
+                        }
+                    ],
+                    Name: "Board — the storyteller",
+                    Label: "default"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "…",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "mono_3"
+                                }
+                            ],
+                            Label: "continue"
+                        },
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "We told them the founder retired. Tired, content, signed it all away with a smile. People love that story. It lets them keep spending. The truth was shorter and had no smiling in it at all, and nobody wanted it."
+                        }
+                    ],
+                    Name: "Board — the storyteller",
+                    Label: "mono_2"
+                },
+                {
+                    Priority: -1,
                     Buttons: [
                         {
                             Name: "End your story",
@@ -124,17 +191,11 @@
                     ],
                     Texts: [
                         {
-                            Text: "Oh, look at you. The walking footnote. Do you know it was my department that wrote you out? Communications. We did not lie about you, exactly. We simply told a cleaner story, and the region preferred ours."
-                        },
-                        {
-                            Text: "We told them the founder retired. Tired, content, signed it all away with a smile. People love that story. It lets them keep spending. The truth was shorter and had no smiling in it at all, and nobody wanted it."
-                        },
-                        {
                             Text: "And now the truth has walked back in wearing your old face, and I have to decide whether to revise the story or end it. I do so prefer a clean ending. Sit still. This will read beautifully in the minutes."
                         }
                     ],
                     Name: "Board — the storyteller",
-                    Label: "default"
+                    Label: "mono_3"
                 }
             ]
         },

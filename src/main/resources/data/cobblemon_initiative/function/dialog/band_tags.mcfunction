@@ -169,6 +169,18 @@ execute as @a unless score @s takehara_tower matches 2.. run tag @s remove takeh
 execute as @a if score @s takehara_tower matches 4.. run tag @s add takehara_tower_gte_4
 execute as @a unless score @s takehara_tower matches 4.. run tag @s remove takehara_tower_gte_4
 
+# liberation mirror (field_freed scoreboard -> field_N_liberated player tag)
+execute if score farm_1 field_freed matches 1 run tag @a add field_1_liberated
+execute if score farm_2 field_freed matches 1 run tag @a add field_2_liberated
+execute if score farm_3 field_freed matches 1 run tag @a add field_3_liberated
+execute if score farm_4 field_freed matches 1 run tag @a add field_4_liberated
+execute if score farm_5 field_freed matches 1 run tag @a add field_5_liberated
+execute if score farm_6 field_freed matches 1 run tag @a add field_6_liberated
+execute if score farm_7 field_freed matches 1 run tag @a add field_7_liberated
+execute if score farm_8 field_freed matches 1 run tag @a add field_8_liberated
+execute if score farm_9 field_freed matches 1 run tag @a add field_9_liberated
+execute if score farm_10 field_freed matches 1 run tag @a add field_10_liberated
+
 # inverse tags (no_<X> == player does NOT have X)
 tag @a[tag=!assist_coal_in] add no_assist_coal_in
 tag @a[tag=assist_coal_in] remove no_assist_coal_in

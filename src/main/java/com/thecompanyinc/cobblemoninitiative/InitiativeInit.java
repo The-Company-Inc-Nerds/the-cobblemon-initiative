@@ -300,8 +300,14 @@ public class InitiativeInit implements ModInitializer {
         int maxGain = Math.max(0, ev.getPokemon().getExperienceToLevel(cap));
         if (ev.getExperience() > maxGain) {
           ev.setExperience(maxGain);
+          // State the ACTUAL next requirement (badge, Champion, or Board) instead of
+          // always "the next badge" — the latter is wrong in the Champion (cap 80→85)
+          // and Board (cap 85→100) windows where no badge is left to earn.
+          String next = levelCapManager.getNextLevelCapRequirement(sp);
+          String suffix = "Max level reached!".equals(next)
+            ? "§6 — max level." : "§6 — next: §e" + next + "§6.";
           sp.displayClientMessage(
-            Component.literal("§6Level cap §e" + cap + "§6 — the next badge raises it."), true);
+            Component.literal("§6Level cap §e" + cap + suffix), true);
         }
       }
       return Unit.INSTANCE;
@@ -336,40 +342,62 @@ public class InitiativeInit implements ModInitializer {
               trainerName
             );
 
+            // Resolve the config trainer for this loser. EXACT match (displayName or
+            // name) wins over any substring match, and among substring candidates the
+            // LONGEST displayName wins — so a title-prefix name ("Senior Agent",
+            // "Field Agent") can never shadow the full name that contains it
+            // ("Senior Agent Osamu"), and a short §k board nameplate ("M§kaaa") never
+            // prefix-shadows a longer sibling ("M§kaaaaaaaaa"). Without this, board
+            // defeats mis-credited (cap 100 never unlocked) and grunt/kalahar rewards
+            // landed on the wrong id.
+            TrainerConfig matched = null;
             for (TrainerConfig trainer : configLoader.getAllTrainers()) {
               if (
                 trainer.getDisplayName().equalsIgnoreCase(trainerName) ||
-                trainer.getName().equalsIgnoreCase(trainerName) ||
-                trainerName.contains(trainer.getDisplayName())
+                trainer.getName().equalsIgnoreCase(trainerName)
               ) {
-                LOGGER.info(
-                  "Player {} defeated trainer {} ({})",
-                  player.getName().getString(),
-                  trainer.getDisplayName(),
-                  trainer.getId()
-                );
-                progressManager.onTrainerDefeated(player, trainer.getId());
-
-                // Keep rctmod's native series graph in step (round 10): players enter
-                // the cobblemon-initiative series via initialSeries, but tbcs battles
-                // bypass rctmod entirely — its defeat memory never advances on its own.
-                // Only gym apprentices + leaders are graph nodes (mobs/trainers/single).
-                // Enforcement stays OURS (EXPERIENCE clamp above; allowOverLeveling on):
-                // rctmod's next-key-trainer cap model can't express the badge ladder.
-                String type = trainer.getTrainerType();
-                if ("apprentice".equals(type) || "leader".equals(type)) {
-                  var server = player.getServer();
-                  if (server != null) {
-                    // Grammar (bytecode, round 10b): targets go BEFORE the after
-                    // literal — `player add progress <targets> after <trainerId>`.
-                    // `after` marks the id + all its graph prerequisites.
-                    server.getCommands().performPrefixedCommand(
-                      server.createCommandSourceStack().withSuppressedOutput(),
-                      "rctmod player add progress " + player.getGameProfile().getName()
-                        + " after " + trainer.getId());
-                  }
-                }
+                matched = trainer;
                 break;
+              }
+            }
+            if (matched == null) {
+              for (TrainerConfig trainer : configLoader.getAllTrainers()) {
+                String dn = trainer.getDisplayName();
+                if (
+                  dn != null && !dn.isEmpty() && trainerName.contains(dn) &&
+                  (matched == null || dn.length() > matched.getDisplayName().length())
+                ) {
+                  matched = trainer;
+                }
+              }
+            }
+            if (matched != null) {
+              LOGGER.info(
+                "Player {} defeated trainer {} ({})",
+                player.getName().getString(),
+                matched.getDisplayName(),
+                matched.getId()
+              );
+              progressManager.onTrainerDefeated(player, matched.getId());
+
+              // Keep rctmod's native series graph in step (round 10): players enter
+              // the cobblemon-initiative series via initialSeries, but tbcs battles
+              // bypass rctmod entirely — its defeat memory never advances on its own.
+              // Only gym apprentices + leaders are graph nodes (mobs/trainers/single).
+              // Enforcement stays OURS (EXPERIENCE clamp above; allowOverLeveling on):
+              // rctmod's next-key-trainer cap model can't express the badge ladder.
+              String type = matched.getTrainerType();
+              if ("apprentice".equals(type) || "leader".equals(type)) {
+                var server = player.getServer();
+                if (server != null) {
+                  // Grammar (bytecode, round 10b): targets go BEFORE the after
+                  // literal — `player add progress <targets> after <trainerId>`.
+                  // `after` marks the id + all its graph prerequisites.
+                  server.getCommands().performPrefixedCommand(
+                    server.createCommandSourceStack().withSuppressedOutput(),
+                    "rctmod player add progress " + player.getGameProfile().getName()
+                      + " after " + matched.getId());
+                }
               }
             }
           }

@@ -107,8 +107,8 @@ creation. Reclaiming the org is reclaiming the economy.
 - **Act-2 boss:** **Acting CEO DJ** (`villain_boss`). *("DJ" is canon — earlier drafts/docs
   said "Midas"; that name is retired.)* He is **acting** CEO — a usurper keeping the seat
   warm, not the true power.
-- **Board of Directors:** four members with `§k`-obfuscated names (Madeline, Matt, Micah,
-  Lauren under the static). Post-Royal-League gauntlet.
+- **Board of Directors:** four members with `§k`-obfuscated names (the First Seat, the Third Seat, the Second Seat,
+  the Fourth Seat under the static). Post-Royal-League gauntlet.
 - **The Founder** (`villain_final_boss`): name shown as `§k` static until earned. The
   player's shadow self. Beating them grants `company_overthrown`.
 
@@ -195,17 +195,19 @@ hardcore + Nuzlocke. The reclaimed founder, finally themselves, walks into the u
 
 | Gym | Town (type) | Lvl cap | Memory fragment | `cd_instability` | Notes |
 |-----|-------------|:------:|-----------------|:----------------:|-------|
-| 1 | Takehara Falls (Bug) | 30 | frag_1 — formless unease | → 8 | First grunts; propaganda is glossy. |
-| 2 | Hua Zhan City (Grass) | 38 | frag_2 | → 16 | Wheat country; traders begin. |
-| 3 | Mystic Marsh (Fairy) | 45 | frag_3 | → 24 | End of "stable" feel. |
-| 4 | Deepcore City (Fighting) | 52 | frag_4 | → 32 | Prices "adjusting"; traders recognise you (≥2 fields). |
-| 5 | Gaviota Port (Water) | 58 | frag_5 | → 40 | |
-| 6 | Kalahar Reach (Ground) | 63 | frag_6 | → 48 | Traders may ambush (≥4 fields). |
-| 7 | Cyber City (Electric) | 68 | **frag_7 — "You signed this charter."** | → 56 (peak) | The hard turn. HQ raid unlocks. |
+| 1 | Takehara Falls (Bug) | 22 | frag_1 — formless unease | → 8 | First grunts; propaganda is glossy. |
+| 2 | Hua Zhan City (Grass) | 30 | frag_2 | → 16 | Wheat country; traders begin. |
+| 3 | Mystic Marsh (Fairy) | 37 | frag_3 | → 24 | End of "stable" feel. |
+| 4 | Deepcore City (Fighting) | 44 | frag_4 | → 32 | Prices "adjusting"; traders recognise you (≥2 fields). |
+| 5 | Gaviota Port (Water) | 50 | frag_5 | → 40 | |
+| 6 | Kalahar Reach (Ground) | 56 | frag_6 | → 48 | Traders may ambush (≥4 fields). |
+| 7 | Cyber City (Electric) | 62 | **frag_7 — "You signed this charter."** | → 56 (peak) | The hard turn. HQ raid unlocks. |
 | — | **HQ Raid → Acting CEO DJ** | — | — | **→ 25** | "CURRENCY STABILIZED." Dark Urge reaches tier 3. |
-| 8 | Ryujin Keep (Dragon) | 73 | frag_8 — "You built it." | 25 | |
-| 9 | Nifl Town (Ice) | 78 | frag_9 — "They emptied you." | 25 | |
-| 10 | Scorchspire (Fire) | 85 | frag_10 — "face your own signature" | 25 | League stands between you and the answer. |
+| 8 | Ryujin Keep (Dragon) | 68 | frag_8 — "You built it." | 25 | |
+| 9 | Nifl Town (Ice) | 74 | frag_9 — "They emptied you." | 25 | |
+| 10 | Scorchspire (Fire) | 80 | frag_10 — "face your own signature" | 25 | Champion → 85; Board cleared → 100. League stands between you and the answer. |
+
+> Cap ladder is canon in `CLAUDE.md` / `ENGINE_FINDINGS.md`; this table mirrors it — update both or neither. Leader ace = entry-cap + 2. (Was the retired 30/38/…/85 ladder; the Dark Urge tier config 30/52/73 traced to its gym-1/4/8 caps.)
 | — | **Royal League → Board → The Founder** | 100 | — | — | The mirror. `company_overthrown`. Real name spoken. |
 
 *(Instability values assume the player hasn't yet liberated fields, which push the index
