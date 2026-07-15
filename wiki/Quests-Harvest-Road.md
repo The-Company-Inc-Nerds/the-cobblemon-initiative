@@ -43,7 +43,7 @@ flowchart TD
     FREE --> FX["Index steadies · shop relief prices<br/>zone banner flips"]
     FREE --> NW["First Night Watch"]
     FREE --> HOME["Tenants of Record<br/>— the family walks home"]
-    FREE -.->|"four fields freed"| HQ["Act II — the HQ meeting opens"]
+    FREE -.->|"six of ten fields freed"| HQ["Act II — the HQ meeting opens"]
 ```
 
 **What liberating a field changes**, every time:

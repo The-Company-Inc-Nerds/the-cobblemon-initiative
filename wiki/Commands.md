@@ -1,6 +1,6 @@
 # Commands
 
-Complete command reference for **The Cobblemon Initiative**. Every command below is verified against the mod source. For how these commands fit into the wider mod, see [Architecture Overview](https://github.com/The-Company-Inc-Nerds/the-cobblemon-initiative/blob/main/docs/ARCHITECTURE_OVERVIEW.md). To return to the landing page, see [[Home]].
+Complete command reference for **The Cobblemon Initiative**. Every command below is verified against the mod source (incl. the alpha.14 player-facing `daycare` / `stadium` / `safari` trees and `/cutscene-skip`). For how these commands fit into the wider mod, see [Architecture Overview](https://github.com/The-Company-Inc-Nerds/the-cobblemon-initiative/blob/main/docs/ARCHITECTURE_OVERVIEW.md). To return to the landing page, see [[Home]].
 
 > [!NOTE]
 > This is a **single-player** mod built for UPM 2. "Admin" simply means the command requires operator privileges (permission level 2+), which the host player has in their own world. "Player-facing" commands need no permission.
@@ -13,8 +13,8 @@ Minecraft permission levels run 0–4. This mod uses three of them:
 
 | Level | Meaning | Used by |
 |-------|---------|---------|
-| **0** | Anyone (no OP) | `/shrine-abort`, `/noble-abort`, `/nuzlocke deathscreen`, `/nuzlocke sacrifice`, `/cobblemon-initiative track …` |
-| **2** | Operator | Every admin subtree under `/cobblemon-initiative`, plus `/noble`, `/nuzlocke reload`, `/safezone`, most of `/npcsight` |
+| **0** | Anyone (no OP) | `/shrine-abort`, `/noble-abort`, `/cutscene-skip`, and the `/cobblemon-initiative` player subtrees: `track …`, `daycare …`, `stadium …`, `safari enter\|exit\|status` |
+| **2** | Operator | Every admin subtree under `/cobblemon-initiative` (incl. `safari bait\|scatter\|info`), plus `/noble`, `/nuzlocke` (all of it — `deathscreen`/`sacrifice`/`reload`), `/cutscene`, `/safezone`, most of `/npcsight` |
 | **3** | Operator+ | `/npcsight reload` only |
 
 > [!IMPORTANT]
@@ -28,6 +28,9 @@ Minecraft permission levels run 0–4. This mod uses three of them:
 flowchart TD
   ROOT["/cobblemon-initiative  — root ungated<br/>(alias /ca — the alias itself is OP 2)"]
   ROOT --> TRK["track next|prev|clear|status  — perm 0, player-only"]
+  ROOT --> DAY["daycare deposit|withdraw &lt;1-2&gt;|status  — perm 0"]
+  ROOT --> STAD["stadium start 25|50|75|100 · abort · status  — perm 0"]
+  ROOT --> SAF["safari enter|exit|status (0) · bait|scatter|info (2)"]
   ROOT --> PROG["progress  — OP 2"]
   ROOT --> LCAP["levelcap  — OP 2"]
   ROOT --> RST["reset  — OP 2"]
@@ -41,7 +44,8 @@ flowchart TD
   ROOT --> INST["install check|verify|run  — OP 2"]
   ROOT --> DEV["DEV-ONLY (devtools/): dev goto|badges|grant|kit|team|stage|place · npcnote · pos · smoke · gym-mark · npc-map — OP 2"]
 
-  NUZ["/nuzlocke deathscreen|sacrifice (0) · reload (2)"]
+  NUZ["/nuzlocke deathscreen|sacrifice|reload  — all OP 2"]
+  CUT["/cutscene play|stop|list|reload|record  — OP 2<br/>/cutscene-skip  — perm 0"]
   SZ["/safezone add|remove|list  — OP 2"]
   NS["/npcsight …  — OP 2 (reload: 3)"]
   NB["/noble start|stop|list  — OP 2"]
@@ -51,7 +55,7 @@ flowchart TD
   classDef dev fill:#3a2a2a,stroke:#a55,color:#fcc;
   class DEV dev;
   classDef player fill:#1e3a2a,stroke:#5a5,color:#cfc;
-  class TRK,ABORT,NABORT player;
+  class TRK,DAY,STAD,SAF,ABORT,NABORT,CUT player;
 ```
 
 ---
@@ -74,6 +78,48 @@ flowchart TD
 > [!NOTE]
 > Tracking persists per world across relogs. When a tracked quest completes and leaves the sidebar, tracking auto-clears with a *"Quest tracking cleared — objective complete."* notice. Some quest stages are informational and have no map position — the tracker will say *"(no waypoint for this objective)"* and just keep the sidebar highlight. The main objective line already carries its own `▶`, so tracking it changes the map, not the sidebar.
 
+## `/cobblemon-initiative daycare` — the Daycare (Gaviota Port)
+
+**Permission 0, player-facing** (dialog-button-ready — the Daycare Keeper runs these for you). Two
+custody slots; a boarded Pokémon trains itself with a cap-clamped XP drip. See [[Guidebook Facilities]].
+
+| Command | Description |
+|---------|-------------|
+| `/cobblemon-initiative daycare deposit` | Opens the party-picker screen (multi-select up to 2; never takes your last Pokémon). |
+| `/cobblemon-initiative daycare withdraw <slot>` | Withdraws slot **1** or **2**. Fee = 100 CD + 100/level gained; routes to party or PC. |
+| `/cobblemon-initiative daycare status` | Shows what's boarded and the standing withdraw fee. |
+
+## `/cobblemon-initiative stadium` — Exhibition Circuits (Cyber City)
+
+**Permission 0, player-facing.** Level-locked wager brackets fought against Company exhibition waves.
+**Nuzlocke stakes are suspended** in the Stadium (cloned parties). See [[Guidebook Facilities]].
+
+| Command | Description |
+|---------|-------------|
+| `/cobblemon-initiative stadium start 25\|50\|75\|100` | Registers and starts the bracket (every Pokémon locked to that level). |
+| `/cobblemon-initiative stadium status` | Current wave / bracket state. |
+| `/cobblemon-initiative stadium abort` | Ends the run cleanly (no purse). |
+
+## `/cobblemon-initiative safari` — the Baiting Yards (a Company Preserve)
+
+**`enter` / `exit` / `status` are permission 0**; `bait` / `scatter` / `info` are OP-2 (the kiosk NPC
+and the bait right-click drive `bait` for you in normal play). Opens after Badge 3. See
+[[Guidebook Facilities]].
+
+| Command | Description | Permission |
+|---------|-------------|------------|
+| `/cobblemon-initiative safari enter` | Starts a visit where you stand (buys the Day Permit, issues balls + the clock). | 0 |
+| `/cobblemon-initiative safari status` | Time left, balls left, current catches. | 0 |
+| `/cobblemon-initiative safari exit` | Ends the visit early — clawback + catch ledger. | 0 |
+| `/cobblemon-initiative safari bait <type>` | Scatters a typed bait to draw species (kiosk-driven in play). | 2 |
+| `/cobblemon-initiative safari scatter` / `info` | Dev/test hooks for the scatter path and session inspection. | 2 |
+
+## `/cutscene-skip`
+
+| Command | Description | Permission |
+|---------|-------------|------------|
+| `/cutscene-skip` | Player-facing skip for the currently-playing story cutscene (opening flyover, reveals). Bindable to a key. The authoring/playback tree `/cutscene play\|stop\|list\|reload\|record` is **OP-2** (admin + dialog trigger surface). | 0 (anyone) |
+
 ## `/shrine-abort`
 
 | Command | Description | Permission |
@@ -86,14 +132,16 @@ flowchart TD
 |---------|-------------|------------|
 | `/noble-abort` | Player-facing withdrawal from an active noble encounter (see [[Guidebook Nobles]]) — tears the arena down cleanly (boss bar, body, music loop, fake sky) with **no penalty**. The noble encounter's `/shrine-abort` twin. | 0 (anyone) |
 
-## `/nuzlocke` (test triggers)
+## `/nuzlocke` (OP-only test triggers)
 
-The first two are **player-facing test triggers (no permission)**; `reload` is admin-only.
+**All three are OP-2.** `deathscreen` and `sacrifice` end (or nearly end) a hardcore run outright, so
+they are **gated to operators** — they are dev/test hooks, not player commands. (Moved to OP-2 in the
+2026-07-13 pass; previously ungated.)
 
 | Command | Description | Permission |
 |---------|-------------|------------|
-| `/nuzlocke deathscreen` | Triggers the Pokéball faint death screen for testing. Applies **20 damage** to the player — note this 20-damage figure belongs *only* to this test command; a real whiteout is an unblockable kill (see [Architecture Data Flows](https://github.com/The-Company-Inc-Nerds/the-cobblemon-initiative/blob/main/docs/ARCHITECTURE_DATA_FLOWS.md)). | 0 (anyone) |
-| `/nuzlocke sacrifice` | Triggers the sacrifice-selection screen for testing. If the player has only one Pokémon, triggers death instead. | 0 (anyone) |
+| `/nuzlocke deathscreen` | Forces the Pokéball whiteout screen (a real whiteout is an unblockable kill; see [Architecture Data Flows](https://github.com/The-Company-Inc-Nerds/the-cobblemon-initiative/blob/main/docs/ARCHITECTURE_DATA_FLOWS.md)). | 2 (OP) |
+| `/nuzlocke sacrifice` | Opens the sacrifice-selection screen (or forces a whiteout if the player has one Pokémon). | 2 (OP) |
 | `/nuzlocke reload` | Reloads the Nuzlocke config from disk. | 2 (OP) |
 
 ---

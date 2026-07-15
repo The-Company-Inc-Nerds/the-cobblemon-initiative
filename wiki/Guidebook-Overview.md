@@ -93,7 +93,7 @@ The Company is the region's trusted currency verifier, and it is **abusing that 
 The shops ride the same wave. The **Pokémart** runs a badge-tiered catalog — the opening tier sells basic balls and medicine, each badge widens it, and a post-raid tier opens once the HQ falls — with prices that swing with the index, so buying early is literally cheaper. The **Granary** company store refuses CobbleDollars entirely and sells goods *for wheat*, on a curve that peaks around gym 7. Liberating occupied fields claws the index back down and unlocks cheaper **relief** catalogs at both counters.
 
 ### Wheat Traders & Field Liberation
-As money wobbles, **Company wheat traders** appear offering an "alternative" currency. Trade with them and the interaction escalates: trade → recognition → eventually a post-trade ambush as you start **liberating the wheat fields** they monopolize. Reclaiming fields restores prices and earns safe-farm ground. *(The liberation machinery is live, but only the first field — Firstfurrow on Harvest Road — currently has a Company detail to beat; the rest are still being garrisoned. See [[Guidebook Act II]] for current status.)*
+As money wobbles, **Company wheat traders** appear offering an "alternative" currency. Trade with them and the interaction escalates: trade → recognition → eventually a post-trade ambush as you start **liberating the wheat fields** they monopolize. Reclaiming fields restores prices and earns safe-farm ground. **Ten occupied fields** are garrisoned along the routes; **liberating any 6 opens the HQ raid.** The full rules — relief pricing, trader escalation, the gate — live on **[[Guidebook Wheat War]]**.
 
 ### Villain Recognition
 The Company's people increasingly **recognize your face**. Early grunts manage a confused "have we met?"; mid-journey it sharpens to "you're supposed to be dead"; late, some refuse to raise a hand against you while others panic. The escalation is gated on your badge progress, so it tracks the same arc your memories do.
@@ -108,6 +108,15 @@ New in 0.5.0: a **quest tracker**. Press **`]`** / **`[`** to cycle which sideba
 
 ### NPC Sight
 Certain NPCs actually *see* you — a per-tick line-of-sight check determines whether an NPC can spot the player, which in turn can trigger dialogue, pursuit, or a one-time approach. Practically: line of sight matters. You can be noticed.
+
+### Gym Set-Pieces
+Every gym is a fight *and* a set-piece: a floating leader, vine walls, a tide clock, a mirror match, an overworld Ender Dragon, a stealth corridor, a heat gauge, and more. Each gym's rank-and-file trainers are spread through the room, and **beating them softens the leader**. All ten gimmicks (and the ladder-soften rule) are on **[[Guidebook Gym Mechanics]]**.
+
+### Facilities
+Three optional Company-run facilities: the **Stadium** (level-locked exhibition wagers — the one place Nuzlocke stakes are suspended), the **Daycare** (two custody slots, cap-clamped XP drip), and the **Safari** "Baiting Yards" (a lure-and-catch minigame where your party stays holstered). See **[[Guidebook Facilities]]**.
+
+### Battle Frontier
+The post-Champion endgame: **eight halls, eight Frontier Brains**, all level 100 — the Tower's greed climb, the Castle's real-money ledger, the Factory's borrowed teams, the Arcade's random Wheel, the Cave's sculk descent to Giratina, the Pyramid's shifting maze, the Market's con, and the Port's storm doubles. Each tests a different skill, and the design keeps the danger but drops the permadeath (you wager the stake, not your party). See **[[Guidebook Battle Frontier]]**.
 
 ### Shrines
 Five optional elemental trials — parkour against the clock, a blind gauntlet, a staged boss rush — each a self-contained challenge. They are worth the detour. See [[Guidebook Shrines]].

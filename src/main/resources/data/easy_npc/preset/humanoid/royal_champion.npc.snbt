@@ -46,6 +46,37 @@
                     Priority: 30,
                     Buttons: [
                         {
+                            Name: "…",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "cyn_aft_2"
+                                }
+                            ],
+                            Label: "continue"
+                        },
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Champion. The word sits on you like an old coat you forgot you owned. I do not think your road ends at this throne — I think it only now turns toward whatever they took from you."
+                        }
+                    ],
+                    Name: "Cynthia — after defeat",
+                    Label: "after"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
                             Name: "I will finish it",
                             Actions: [
                                 {
@@ -57,14 +88,11 @@
                     ],
                     Texts: [
                         {
-                            Text: "Champion. The word sits on you like an old coat you forgot you owned. I do not think your road ends at this throne — I think it only now turns toward whatever they took from you."
-                        },
-                        {
                             Text: "I have kept this seat warm for a long time, waiting to see who would come and remember themselves on the way up. It was always going to be you. Go and finish it. Walk in as the person who beat me, not the one the Company buried."
                         }
                     ],
                     Name: "Cynthia — after defeat",
-                    Label: "after"
+                    Label: "cyn_aft_2"
                 },
                 {
                     Conditions: [
@@ -75,6 +103,68 @@
                         }
                     ],
                     Priority: 20,
+                    Buttons: [
+                        {
+                            Name: "…",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "cyn_rec_2"
+                                }
+                            ],
+                            Label: "continue"
+                        },
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "I knew you the moment you stepped into the light, though I doubt you know yourself yet. Your name is on documents older than this League, signed in a hand you have been trying to remember."
+                        }
+                    ],
+                    Name: "Cynthia — recognition challenge",
+                    Label: "recognise"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "…",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "cyn_rec_3"
+                                }
+                            ],
+                            Label: "continue"
+                        },
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "They told the region you retired. They told it you never existed. And here you are, climbing to the top of the very system you built, with no idea you are coming home."
+                        }
+                    ],
+                    Name: "Cynthia — recognition challenge",
+                    Label: "cyn_rec_2"
+                },
+                {
+                    Priority: -1,
                     Buttons: [
                         {
                             Name: "Take the throne",
@@ -144,20 +234,45 @@
                     ],
                     Texts: [
                         {
-                            Text: "I knew you the moment you stepped into the light, though I doubt you know yourself yet. Your name is on documents older than this League, signed in a hand you have been trying to remember."
-                        },
-                        {
-                            Text: "They told the region you retired. They told it you never existed. And here you are, climbing to the top of the very system you built, with no idea you are coming home."
-                        },
-                        {
                             Text: "I will not say the name out loud. You have not earned the right to hear it from someone else. Beat me, and the rest of the road will say it for you."
                         }
                     ],
                     Name: "Cynthia — recognition challenge",
-                    Label: "recognise"
+                    Label: "cyn_rec_3"
                 },
                 {
                     Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "…",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "cyn_def_2"
+                                }
+                            ],
+                            Label: "continue"
+                        },
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "I am Cynthia, Champion of the Royal League. The four behind you were the proof. I am the verdict."
+                        }
+                    ],
+                    Name: "Cynthia — challenge",
+                    Label: "default"
+                },
+                {
+                    Priority: -1,
                     Buttons: [
                         {
                             Name: "Challenge the Champion",
@@ -227,14 +342,11 @@
                     ],
                     Texts: [
                         {
-                            Text: "I am Cynthia, Champion of the Royal League. The four behind you were the proof. I am the verdict."
-                        },
-                        {
                             Text: "Most who reach this hall want a title. You walk like someone who lost something larger than a title and does not yet know its name. Show me which of you came up those stairs."
                         }
                     ],
                     Name: "Cynthia — challenge",
-                    Label: "default"
+                    Label: "cyn_def_2"
                 }
             ]
         },

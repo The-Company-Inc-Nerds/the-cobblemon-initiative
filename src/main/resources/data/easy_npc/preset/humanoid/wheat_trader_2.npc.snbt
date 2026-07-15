@@ -95,6 +95,59 @@
                     Priority: 30,
                     Buttons: [
                         {
+                            Name: "…",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "wt_host_2"
+                                }
+                            ],
+                            Label: "continue"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Wait. I know that face. Verified tru§kvalue — you are the one the memos warned us about. The founder. You are supposed to be filed."
+                        }
+                    ],
+                    Name: "Wheat Trader — recognises you",
+                    Label: "hostile"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "…",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "wt_host_3"
+                                }
+                            ],
+                            Label: "continue"
+                        },
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "There was never a founder. That is what they told us to say. So how are you standing in my field, counting my grain with his eyes."
+                        }
+                    ],
+                    Name: "Wheat Trader — recognises you",
+                    Label: "wt_host_2"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
                             Name: "Stand and fight",
                             Actions: [
                                 {
@@ -142,21 +195,24 @@
                                 }
                             ],
                             Label: "fight_button"
+                        },
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
                         }
                     ],
                     Texts: [
-                        {
-                            Text: "Wait. I know that face. Verified tru§kvalue — you are the one the memos warned us about. The founder. You are supposed to be filed."
-                        },
-                        {
-                            Text: "There was never a founder. That is what they told us to say. So how are you standing in my field, counting my grain with his eyes."
-                        },
                         {
                             Text: "I am not selling to a closed file. The fields are ours now. You do not get to walk away from this one."
                         }
                     ],
                     Name: "Wheat Trader — recognises you",
-                    Label: "hostile"
+                    Label: "wt_host_3"
                 },
                 {
                     Conditions: [

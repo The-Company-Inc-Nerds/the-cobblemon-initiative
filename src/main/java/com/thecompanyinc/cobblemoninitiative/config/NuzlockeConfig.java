@@ -65,8 +65,10 @@ public class NuzlockeConfig {
   // -------------------------------------------------------------------------
   /** Master toggle for the Dark Urge whisper-on-faint flavour. */
   private boolean enableDarkUrgeWhispers = true;
-  /** Chance (0..1) that an eligible faint fires a whisper. */
-  private float darkUrgeChance = 0.12f;
+  /** Chance (0..1) that an eligible faint fires a whisper. Raised from 0.12 (2026-07-13): at
+   *  12% the marquee "shadow self" mechanic could go whole streamed sessions unseen. The
+   *  5-minute cooldown below is the real spam-guard, so a higher per-faint chance is safe. */
+  private float darkUrgeChance = 0.35f;
   /** Per-player cooldown between whispers, in game ticks (6000 = 5 min). */
   private int darkUrgeCooldownTicks = 6000;
   /**

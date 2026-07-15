@@ -461,7 +461,10 @@ public class NuzlockeInit implements ModInitializer {
     Long last = lastUrgeTick.get(player.getUUID());
     if (last != null && now - last < config.getDarkUrgeCooldownTicks()) return;
 
-    if (URGE_RANDOM.nextFloat() >= config.getDarkUrgeChance()) return;
+    // Guarantee the FIRST whisper of the session (no prior fire) so the shadow-self mechanic
+    // always introduces itself on stream; every subsequent faint rolls the chance normally.
+    boolean firstEver = (last == null);
+    if (!firstEver && URGE_RANDOM.nextFloat() >= config.getDarkUrgeChance()) return;
 
     List<List<String>> pool = config.getDarkUrgeMessages();
     if (pool == null || pool.isEmpty()) return;

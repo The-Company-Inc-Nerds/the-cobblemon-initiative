@@ -82,6 +82,38 @@ public class GymMarkCommand {
     SLOTS.put("stage_ryujin", new String[] {"point", "Ryujin challenger stage spot (ryujin_leader battle.stage_pos)"});
     SLOTS.put("stage_nifl", new String[] {"point", "Boreas challenger stage spot (nifl_leader battle.stage_pos)"});
     SLOTS.put("stage_scorchspire", new String[] {"point", "Vulcan challenger stage spot (scorchspire_leader battle.stage_pos)"});
+
+    // Company HQ vertical geometry (showrunner ruling 2026-07-13): the raid DESCENDS to the
+    // BASEMENT (Acting CEO DJ at the bottom); the player's old PENTHOUSE is the TOP floor —
+    // lore + a Master Ball pickup, and the arena where the POST-GAME Founder mirror is fought.
+    SLOTS.put("hq_basement_dj", new String[] {"point", "Acting CEO DJ — bottom of the basement raid (acting_ceo_dj placement; canon [1590 51 1028])"});
+    SLOTS.put("hq_penthouse_lore", new String[] {"point", "Penthouse lore prop — the founder's old top-floor office (DocProp/loot)"});
+    SLOTS.put("hq_penthouse_masterball", new String[] {"point", "ITEM: Penthouse MASTER BALL pickup — mark the top-floor loot chest / DocProp block spot"});
+    SLOTS.put("hq_penthouse_mirror", new String[] {"point", "Penthouse mirror arena — POST-GAME Founder fight spot (villain_final_boss placement, top floor)"});
+
+    // Gym interior cast RELOCATION (2026-07-13): the trainers/apprentices latch in a default
+    // cluster AROUND the leader — mark real spots to spread them through the gym floor. Each
+    // note carries that gym's signature GIMMICK so the placer knows the room's mechanic.
+    // POINT marks: stand where the NPC should stand, facing the way they should face.
+    String[][] gymCast = {
+      {"takehara",    "Bug — floating Cicada leader (perch y173 -> glide)",           "trainer_1,trainer_2,trainer_3,trainer_4"},
+      {"hua_zhan",    "Grass — living-statue wardens drop vine walls",                 "trainer_1,trainer_2,trainer_3,trainer_4"},
+      {"mystic",      "Fairy — Mirror Match (declare your lead -> illusion team)",     "trainer_1,trainer_2,trainer_3,trainer_4,jr_apprentice,apprentice"},
+      {"deepcore",    "Fighting — Gauntlet + 2v1 GEN_9_MULTI finale (Marshal Osei)",   "trainer_1,trainer_2,trainer_3,trainer_4,jr_apprentice,apprentice"},
+      {"gaviota",     "Water — Tide Clock (4-min high/low, rain-variant teams)",       "trainer_1,trainer_2,trainer_3,trainer_4,jr_apprentice,apprentice"},
+      {"kalahar",     "Ground — 6 click-to-poof mirages (mark those separately)",      "trainer_1,trainer_2,trainer_3,trainer_4,jr_apprentice,apprentice"},
+      {"cyber",       "Electric — Stadium tease (Volt; gate flips post-Stadium)",      "trainer_1,trainer_2,trainer_3,trainer_4,jr_apprentice,apprentice"},
+      {"ryujin",      "Dragon — THE RIFT (overworld Ender Dragon gates the leader)",   "trainer_1,trainer_2,trainer_3,trainer_4,jr_apprentice,apprentice"},
+      {"nifl",        "Ice — Whiteout Approach (3 Frost Sentinels: seen = debuff)",    "trainer_1,trainer_2,trainer_3,trainer_4,jr_apprentice,apprentice"},
+      {"scorchspire", "Fire — Banked Coals (heat bossbar; wardens vent to cool it)",   "trainer_1,trainer_2,trainer_3,trainer_4,jr_apprentice,apprentice"},
+    };
+    for (String[] g : gymCast) {
+      for (String member : g[2].split(",")) {
+        SLOTS.put(
+          "gym_" + g[0] + "_" + member,
+          new String[] {"point", g[0] + " " + member + " — GIMMICK: " + g[1] + " (" + g[0] + "_" + member + " placement)"});
+      }
+    }
   }
 
   private static GymMarkStorage storage;

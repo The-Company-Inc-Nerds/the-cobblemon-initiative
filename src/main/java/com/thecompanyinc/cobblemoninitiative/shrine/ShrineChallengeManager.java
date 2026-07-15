@@ -761,6 +761,14 @@ public class ShrineChallengeManager {
     clearChallengeEffects(player);
     activeStates.remove(player.getUUID());
 
+    // Persist a completion tag so the ladder + leader can gate on the trial. Previously this
+    // method only showed a title and latched NOTHING — the whole trial→keeper chain was dead
+    // (nothing downstream could read that the trial was cleared). Easy NPC dialog gates read
+    // player tags, so this is the enforcement hook: the shrine unit gates the leader's battle
+    // button on `<type>_shrine_trial_clear` (e.g. ice_shrine_trial_clear). Entity tags persist
+    // in player NBT, so the clear is relog-safe.
+    player.addTag(shrineId + "_shrine_trial_clear");
+
     sendTitle(player, "§6§lChallenge Complete!", "§7" + displayName, 10, 80, 30);
     player.sendSystemMessage(
       Component.literal(

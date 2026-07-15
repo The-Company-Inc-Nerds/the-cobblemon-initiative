@@ -159,9 +159,13 @@ walkable. **Forward hook:** each rung's flavor points up the line (the Veil wait
 → and past her, the High Priest(ess)). **Back-echo:** rung-1 references the adjacent gym
 just cleared (you carry Titania of the Marsh and think that is enough — the light here is older).
 
-Ladder gating is **enforced by the trainer-JSON `prerequisites`** (real battle gate). The
-dialog gates only *select the line* (schema Open-Q8) — a beaten rung shows its after-line; an
-un-beaten rung shows its challenge + battle button. No `has_item` gate anywhere.
+Ladder gating is **enforced by the DIALOG battle-button gates**, not the trainer-JSON
+`prerequisites`. (CORRECTED 2026-07-13: TBCS dialog-button battles bypass rctmod entirely —
+`prerequisites` never gate a `tbcs battle`, and `canBattleTrainer` has no callers. So each rung's
+battle button must gate on the previous rung's `defeated_<id>` tag, and the leader's button on
+`<type>_shrine_trial_clear`.) A beaten rung shows its after-line; an un-beaten rung shows its
+challenge + battle button. No `has_item` gate anywhere. The `<type>_shrine_trial_clear` tag is
+now set by `ShrineChallengeManager.completeChallenge` (2026-07-13 — it previously latched nothing).
 
 **READY-TO-PASTE character (Fairy cultist 1 — the other 19 are this file with id / display_name
 / trainer / placement swapped; `battle.trainer` = the id, which is the RCT trainer id):**

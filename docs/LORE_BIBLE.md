@@ -97,8 +97,14 @@ creation. Reclaiming the org is reclaiming the economy.
 | Act | When | Content |
 |-----|------|---------|
 | 1 — Infiltration | Throughout gyms 1–7 | Grunts & management scattered on routes/towns; wheat traders appear; the CobbleDollar visibly destabilises (`cd_instability` rises ~+8/gym). |
-| 2 — The HQ Raid | After gym 7 **and 4 liberated fields** (HQ at `[1590 51 1028]`) | **Hard gate:** DJ refuses the meeting while the fields still feed the Company — starve the monopoly before storming it. Then fight up through the org to **Acting CEO DJ**. His defeat **stabilises the currency** (idx → 25): a visible, earned "CURRENCY STABILIZED" beat. |
-| 3 — The Board & The Founder | Post-Royal-League | Clear the **Board of Directors**, then the true final boss: **The Founder** — the player's shadow self. |
+| 2 — The HQ Raid | After gym 7 **and 6 of the 10 liberated fields** (HQ at `[1590 51 1028]`) | **Hard gate:** DJ refuses the meeting while the fields still feed the Company — starve the monopoly before storming it. The raid **descends** into the Company building's **basement**; DJ sits at the bottom. His defeat **stabilises the currency** (idx → 25): a visible, earned "CURRENCY STABILIZED" beat. |
+| 3 — The Board & The Founder | Post-Royal-League | Clear the **Board of Directors**, then the true final boss: **The Founder** — the player's shadow self, fought **post-game in the penthouse** (top floor of the Company building). |
+
+> **HQ building geometry (showrunner ruling 2026-07-13).** The Company building is vertical.
+> **Down = the basement raid** (Act 2, Acting CEO DJ at the bottom, `[1590 51 1028]`). **Up =
+> the penthouse** — the founder's old top-floor office: reachable for **lore + a Master Ball
+> pickup**, and the **arena where the post-game Founder mirror is fought**. **Fields:** ten
+> occupied fields exist region-wide; liberating **any 6** opens the raid.
 
 ### Roster (from `villain_team.json` — names are canon)
 - **Grunts:** Field Agent → Contractor → Operative → Compliance Officer / Market Analyst →
@@ -150,7 +156,8 @@ because he was hidden; it is because **the coup is actively erasing him**:
 The climax is a **Pokémon-Red-style mirror battle** against the player's shadow self. It
 should feel like fighting *yourself*, not slaying a monster. The "it was you all along"
 reveal is the payoff of the whole amnesia arc — held back until **after the Royal League /
-Board clearout**. **Implemented:** the Founder's nameplate is **fully `§k`-obfuscated for
+Board clearout**, and fought **in the penthouse** — the founder's own old top-floor office,
+so the mirror lands as a homecoming, not a boss arena. **Implemented:** the Founder's nameplate is **fully `§k`-obfuscated for
 the entire run** (`§kfounder` — no letters ever surface early, and no name is baked into
 any shipped file). Each Board member's defeat fires `reveal/board_fell` — four oblique
 title beats that circle the name without closing it. The name is only spoken at the

@@ -57,7 +57,7 @@ The fragments **circle** the truth and never close it. The actual *"it was you a
 - **Leader:** Boreas · **Badge:** Ice · **Level cap unlocked:** 74
 - **Battle position:** ~`[3596 112 2028]` (leader at `[3608 112 2031]`).
 
-**What to expect.** A frozen, far-flung town. The fielded ladder: **Skier Frost** (Sneasel/Swinub, Lv 62–63) → **Boarder Chill** (Snorunt/Spheal, Lv 63) → **Apprentice Glacier** (Weavile/Piloswine/Froslass, Lv 65–66) → **Leader Boreas** (**Mamoswine, Walrein, Glaceon**, Lv 68–70 — ace 70). Recognition dialogue from any remaining Company stragglers is at its most raw here: their people don't ask *"have we met?"* anymore — they know exactly who you are, and some won't raise a hand against the founder.
+**What to expect.** A frozen, far-flung town. The fielded ladder: **Skier Powder** (Sneasel/Swinub, Lv 62–63) → **Boarder Chill** (Snorunt/Spheal, Lv 63) → **Apprentice Glacier** (Weavile/Piloswine/Froslass, Lv 65–66) → **Leader Boreas** (**Mamoswine, Walrein, Glaceon**, Lv 68–70 — ace 70). Recognition dialogue from any remaining Company stragglers is at its most raw here: their people don't ask *"have we met?"* anymore — they know exactly who you are, and some won't raise a hand against the founder.
 
 **Story beat.** **Memory fragment 9 — "They needed you gone, not dead. So they emptied you."** The amnesia is now framed as something *done to you*, not merely lost. The cold is thematic: you are nearly at the answer and the world has gone quiet around it. And this badge lifts the cap to **74** — over the Dark Urge's final threshold: the whispers reach **tier 3** here, the shadow-self's coldest register ("assets fail, you replace them"), on the same 12% roll / 5-minute cooldown as ever, on any faint outside a safe zone.
 
@@ -68,7 +68,7 @@ The fragments **circle** the truth and never close it. The actual *"it was you a
 - **Leader:** Vulcan · **Badge:** Fire · **Level cap unlocked:** 80
 - **Battle position:** ~`[3688 100 4508]` (leader at `[3700 100 4511]`).
 
-**What to expect.** The final gym, and the highest pre-League cap (80). The fielded ladder: **Kindler Blaze** (Growlithe/Vulpix, Lv 68–69) → **Fire Breather Ember** (Magmar/Houndour, Lv 69) → **Apprentice Inferno** (Arcanine/Ninetales/Houndoom, Lv 71–72) → **Leader Vulcan** (**Magmortar, Typhlosion, Charizard**, Lv 74–76 — ace 76). Vulcan is the last leader between you and the League. Treat this as the difficulty checkpoint before the Elite Four — your team should be League-ready coming out of the Scorchspire.
+**What to expect.** The final gym, and the highest pre-League cap (80). The fielded ladder: **Kindler Blaze** (Growlithe/Vulpix, Lv 68–69) → **Fire Breather Pyra** (Magmar/Houndour, Lv 69) → **Apprentice Inferno** (Arcanine/Ninetales/Houndoom, Lv 71–72) → **Leader Vulcan** (**Magmortar, Typhlosion, Charizard**, Lv 74–76 — ace 76). Vulcan is the last leader between you and the League. Treat this as the difficulty checkpoint before the Elite Four — your team should be League-ready coming out of the Scorchspire.
 
 **Story beat.** **Memory fragment 10 — "Everything points one direction now. Inward."** — *Beat the League. Then face the only signature you have not yet read: your own.* The last fragment names the shape of the ending without naming the name. The League now stands between the player and the reveal — by design. *Earn the answer.*
 

@@ -39,11 +39,12 @@ execute if score @s memory_fragment matches 0 if entity @s[tag=mom_sent_to_lab] 
 execute if score @s memory_fragment matches 0 if entity @s[tag=chose_starter] unless entity @s[tag=got_pokedex] run scoreboard players display name q.main ci_quest [{"text":"▶ Take the Pokedex from Acacia","color":"yellow"}]
 execute if score @s memory_fragment matches 0 if entity @s[tag=got_pokedex] unless entity @s[tag=got_running_shoes] run scoreboard players display name q.main ci_quest [{"text":"▶ Show Mom your Pokedex","color":"yellow"}]
 
-# (1) HQ RAID — after gym 7 AND 4 liberated fields (the hard gate: starve the monopoly
-#     before storming it; DJ refuses the meeting while the fields still feed the Company),
-#     until Acting CEO DJ falls (climax outranks gyms 8-10).
-execute if score @s memory_fragment matches 7.. unless entity @s[tag=defeated_villain_boss] unless score @s fields_liberated matches 4.. run scoreboard players display name q.main ci_quest [{"text":"▶ Liberate wheat fields, then raid HQ","color":"gold"}]
-execute if score @s memory_fragment matches 7.. unless entity @s[tag=defeated_villain_boss] if score @s fields_liberated matches 4.. run scoreboard players display name q.main ci_quest [{"text":"▶ Raid Company HQ  [1590 51 1028]","color":"red"}]
+# (1) HQ RAID — after gym 7 AND 6 of the 10 liberated fields (the hard gate, showrunner
+#     ruling 2026-07-13: starve the monopoly before storming it; DJ refuses the meeting
+#     while the fields still feed the Company), until Acting CEO DJ falls (climax outranks
+#     gyms 8-10). The raid DESCENDS to DJ at the basement bottom [1590 51 1028].
+execute if score @s memory_fragment matches 7.. unless entity @s[tag=defeated_villain_boss] unless score @s fields_liberated matches 6.. run scoreboard players display name q.main ci_quest [{"text":"▶ Liberate wheat fields, then raid HQ","color":"gold"}]
+execute if score @s memory_fragment matches 7.. unless entity @s[tag=defeated_villain_boss] if score @s fields_liberated matches 6.. run scoreboard players display name q.main ci_quest [{"text":"▶ Raid Company HQ  [1590 51 1028]","color":"red"}]
 
 # (2) ROYAL LEAGUE — all 10 badges, DJ down, champion still standing.
 #     NOTE: the champion's defeat_tag override is royal_league_champion (NOT the

@@ -30,7 +30,7 @@ flowchart TD
 Two structural rules to know up front:
 
 - **After badge 7, the raid outranks the road.** The top line switches to the wheat fields and HQ, and stays there until Acting CEO DJ falls — gyms 8–10 wait their turn on the sidebar (you can still fight them).
-- **The HQ raid has a hard gate:** at least **4 liberated wheat fields**. DJ does not take meetings while the fields still answer his memos.
+- **The HQ raid has a hard gate:** at least **6 of the 10 liberated wheat fields**. DJ does not take meetings while the fields still answer his memos.
 
 ### The rules you're playing under — level caps
 
@@ -193,7 +193,7 @@ The first liberation is a taught, complete loop on Harvest Road (walked in full 
 - **The money steadies:** the instability index drops 6 — every quest receipt in the region immediately pays a better rate.
 - **Shops relax:** liberation unlocks cheaper relief pricing at the marts.
 - **The traders notice:** at **2–3 fields** the wheat traders turn suspicious — *"you keep matching the descriptions a little more each week."* At **4+** they turn hostile: the Grain Buyer stops selling and starts an ambush (~Lv 38–39), and trading at the Granary at all becomes a trap worth springing exactly once.
-- **The door opens:** **4 liberated fields** is the hard gate on the HQ raid.
+- **The door opens:** **6 liberated fields** is the hard gate on the HQ raid.
 
 > [!WARNING]
 > **Build status:** of the six fields on the counter, **only Firstfurrow can currently be liberated** — the remaining field garrisons are not yet placed. Until they are, the 4-field HQ gate cannot be satisfied in normal play. This is the single biggest known gap between Act I and Act II in the current build.
@@ -202,9 +202,9 @@ The first liberation is a taught, complete loop on Harvest Road (walked in full 
 
 ## The HQ Raid — Acting CEO DJ
 
-> **Company HQ [1590 51 1028]** · Gates: **7 badges** and **4 liberated fields** · prize **8000 CD**
+> **Company HQ [1590 51 1028]** · Gates: **7 badges** and **6 liberated fields** · prize **8000 CD**
 
-The sidebar walks you there: *"Liberate wheat fields, then raid HQ"* becomes *"Raid Company HQ [1590 51 1028]"* once the fourth field is free. Below four fields, DJ's only line is a refusal: *"Come back when the fields stop answering our memos."*
+The sidebar walks you there: *"Liberate wheat fields, then raid HQ"* becomes *"Raid Company HQ [1590 51 1028]"* once the sixth field is free. Below six fields, DJ's only line is a refusal: *"Come back when the fields stop answering our memos."*
 
 **The chain up the tower:**
 
@@ -236,8 +236,8 @@ DJ recognizes you. Not as a threat — as the rightful owner. His parting line o
 | # | Gym | Leader | Gates | Leader team | Prize | Cap |
 |:-:|-----|--------|-------|-------------|:-----:|:---:|
 | 8 | Ryujin Keep (Dragon 🐉) [2156 201 884] | **Ryujin** | Dragon Tamer Ryu (~56–57), Ace Trainer Drake (~57), Apprentice Tatsu (59–60) | Dragonite/Haxorus/Salamence 62–64, **ace 64** | 4900 CD | **68** |
-| 9 | Nifl Town (Ice ❄️) [3608 112 2031] | **Boreas** | Skier Frost (~62–63), Boarder Chill (~63), Apprentice Glacier (65–66) | Mamoswine/Walrein/Glaceon 68–70, **ace 70** | 5400 CD | **74** |
-| 10 | Scorchspire (Fire 🔥) [3700 100 4511] | **Vulcan** | Kindler Blaze (~68–69), Fire Breather Ember (~69), Apprentice Inferno (71–72) | Magmortar/Typhlosion/Charizard 74–76, **ace 76** | 6000 CD | **80** |
+| 9 | Nifl Town (Ice ❄️) [3608 112 2031] | **Boreas** | Skier Powder (~62–63), Boarder Chill (~63), Apprentice Glacier (65–66) | Mamoswine/Walrein/Glaceon 68–70, **ace 70** | 5400 CD | **74** |
+| 10 | Scorchspire (Fire 🔥) [3700 100 4511] | **Vulcan** | Kindler Blaze (~68–69), Fire Breather Pyra (~69), Apprentice Inferno (71–72) | Magmortar/Typhlosion/Charizard 74–76, **ace 76** | 6000 CD | **80** |
 
 Memory fragments 8–10 land here — the last one points *inward*. With **ten badges and DJ down**, the top line flips: **"Challenge the Royal League."**
 

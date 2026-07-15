@@ -94,6 +94,9 @@ execute as @a unless score @s fields_liberated matches 2.. run tag @s remove fie
 execute as @a if score @s fields_liberated matches 4.. run tag @s add fields_liberated_gte_4
 execute as @a unless score @s fields_liberated matches 4.. run tag @s remove fields_liberated_gte_4
 
+execute as @a if score @s fields_liberated matches 6.. run tag @s add fields_liberated_gte_6
+execute as @a unless score @s fields_liberated matches 6.. run tag @s remove fields_liberated_gte_6
+
 execute as @a if score @s gaviota_tower matches 1.. run tag @s add gaviota_tower_gte_1
 execute as @a unless score @s gaviota_tower matches 1.. run tag @s remove gaviota_tower_gte_1
 

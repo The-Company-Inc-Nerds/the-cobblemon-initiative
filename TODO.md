@@ -49,10 +49,29 @@ build` for the Java/rctmod half):**
 - **Remaining monologue chains** — Cynthia (recognise/default) + the wheat-trader ambush still rotate.
 - **Frontier "exhibition" no-death guard** — the "nothing you love dies" promise is still false under
   Nuzlocke; either generalize the Stadium clone-party guard to frontier ids or rewrite the promise.
-- **Design forks needing a showrunner ruling** (NOT guessed here): the Act-2 raid geometry
-  (QUESTS/10 climb vs roadmap/09 basement descent) and the 6-vs-10 wheat-field count / HUD `/6`.
 - **Boss roster width, gym-crew voice de-duplication, name collisions, League summit double-cast,**
   and the fuller TODO/backlog status truth-pass — all catalogued in the review doc.
+
+**Design forks RULED (showrunner, 2026-07-13) — now wired/tracked:**
+- **Wheat fields:** ten exist; **liberating any 6 opens the HQ raid.** ✅ gate wired to **6**
+  (`render.mcfunction` + DJ dialog `fields_liberated ≥ 6`; HUD `/6` now matches). *Follow-up 💻:*
+  extend the relief-tier / trader-escalation thresholds (still max at 4) up toward 6 if desired.
+- **HQ geometry:** the raid **descends** to DJ in the **basement**; the player's old **penthouse**
+  is the **top floor** → lore + a **Master Ball** pickup, and the **post-game Founder mirror** arena.
+  ✅ recorded in `LORE_BIBLE §4/§5`; dev-tool slots added (`hq_basement_dj`, `hq_penthouse_lore`,
+  `hq_penthouse_masterball`, `hq_penthouse_mirror`). *Remaining 🧱:* build the basement + penthouse
+  floors, mark the slots (`/ca gym-mark`), then Claude wires the Master Ball chest + Founder spawn
+  in the penthouse (champion-gated spawn latch).
+
+**New 🧱→💻 (this round):**
+- **Gym-trainer relocation** — the interior cast latches in a default cluster around each leader.
+  New `gym-mark` POINT slots `gym_<town>_<trainer_1..4|jr_apprentice|apprentice>` (each note names
+  that gym's GIMMICK) let the showrunner spread them through the room; `gym-mark export` → Claude
+  folds the coords into each character's `placement` + recompiles.
+- **Wiki (💻, this round):** added a **Facilities** page (Stadium/Daycare/Safari) and a **Gym
+  Mechanics** page (all 10 gimmicks + the trainer-layout note); gate references corrected to 6.
+  *Still missing (need built quest content first):* town quest pages for gyms 3–10, HQ, League,
+  Frontier — ship slim stubs as each town's dialog compiles.
 
 ---
 

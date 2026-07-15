@@ -238,29 +238,19 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "cobbledollars remove @s 500"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "cobblemon-initiative givemon magikarp level=5"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "give @s cobblemon:oran_berry 1"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "tag @s add bought_magikarp"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    Cmd: "title @initiator actionbar [{\"text\":\"Asset transferred. One long-term growth vehicle, one complimentary onboarding berry.\",\"color\":\"gold\"}]"
+                                    Cmd: "function cobblemon_initiative:sidequest/deka/buy_karp"
                                 },
                                 {
                                     Type: "OPEN_NAMED_DIALOG",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "bought_magikarp"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "karp_handoff"
                                 }
                             ],

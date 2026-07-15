@@ -166,9 +166,9 @@ The **Dark Urge whisper** system escalates with your **level cap**, not with the
 
 ## THE HQ RAID — climax of Act II
 
-> **Location:** `[1590 51 1028]` · **Unlocks:** after Gym 7 + **4 liberated wheat fields** · **Boss:** Acting CEO DJ
+> **Location:** `[1590 51 1028]` · **Unlocks:** after Gym 7 + **6 of the 10 liberated wheat fields** · **Boss:** Acting CEO DJ
 
-This is not a gym. After the Electric Badge — and once you've **liberated 4 wheat fields** (DJ won't take the meeting while the fields still feed the Company; the quest HUD reads *"Liberate wheat fields, then raid HQ"* until then) — the HQ becomes assailable, and Act II resolves by **storming the office tower** and fighting up the org chart.
+This is not a gym. After the Electric Badge — and once you've **liberated 6 of the 10 wheat fields** (DJ won't take the meeting while the fields still feed the Company; the quest HUD reads *"Liberate wheat fields, then raid HQ"* until then) — the HQ becomes assailable, and Act II resolves by **descending into the Company building's basement** and fighting down to **Acting CEO DJ** at the bottom.
 
 ### The climb
 The raid is a gauntlet up the Company's corporate ladder. The exact roster you face depends on your progress, but the structure is the ascent itself:
