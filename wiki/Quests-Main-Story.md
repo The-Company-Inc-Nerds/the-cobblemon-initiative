@@ -24,7 +24,7 @@ flowchart TD
     E --> F["Challenge the Royal League<br/>[3528 166 2773]<br/>Champion → cap 85"]
     F --> G["Hunt the Board of Directors<br/>four chairs in the boardroom<br/>cleared → cap 100"]
     G --> H["Face The Founder<br/>the mirror"]
-    H --> I["Post-story:<br/>Hunt the Ender Dragon"]
+    H --> I["Post-story: the world is yours<br/>open Minecraft, still hardcore + Nuzlocke"]
 ```
 
 Two structural rules to know up front:
@@ -293,9 +293,11 @@ Approach the end chair. The figure's nameplate is pure static, and the monologue
 
 ## After the Credits
 
-The top line has one more objective in it: **"Hunt the Ender Dragon."**
+The Founder is the last fight. The dragon already fell mid-journey — the Ender Dragon was the Ryujin Keep rift boss at gym 8, torn into the overworld above the keep and slain there to earn the Dragon badge — so there is no post-game boss left to hunt. What remains is not a goal. It's a life.
 
-The custom map ends; generated Minecraft doesn't. The post-story goal is to walk off the edge of the region into vanilla terrain and beat the game underneath the game — **still hardcore, still Nuzlocke**. The level cap is 100, the Company is a building, and the only signature left to collect is the dragon's.
+The top line has one more line in it, and it isn't an objective: **"Beyond the map — the world is yours."**
+
+The custom map ends; generated Minecraft doesn't. With the Company overthrown and the self you lost finally whole, you walk off the edge of the curated **UPM 2** region into open, generated terrain — and just *live*. Build, mine, settle, explore, survive. **Still hardcore, still Nuzlocke** — but no script, no gates, no safe zones, nothing left to reclaim. The cap is 100, the Company is a building you already own, and the last image of the run is the founder walking free into an open world that is finally theirs, not the Company's.
 
 ---
 

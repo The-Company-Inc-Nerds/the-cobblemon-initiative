@@ -175,6 +175,21 @@
                     Priority: 40,
                     Buttons: [
                         {
+                            Name: "Claim this ground as a homestead",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative homestead claim"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "title @initiator actionbar [{\"text\":\"This ground is yours now. Build on it — raise a beacon and it will pay you the harvest.\",\"color\":\"green\"}]"
+                                }
+                            ],
+                            Label: "claim_ground_button"
+                        },
+                        {
                             Name: "Leave him to the rows",
                             Actions: [
                                 {
@@ -187,6 +202,9 @@
                     Texts: [
                         {
                             Text: "First morning back I walked every row twice. Once for me, once for the names above mine on the deed."
+                        },
+                        {
+                            Text: "The ground past the fence is standing free now, and the deed has room on it for a friend. If you want it, take it — build there, settle it, raise a beacon and let the field pay you the way it pays us. Better a neighbor works it than the Company ever pencil it back in."
                         },
                         {
                             Text: "When I am big enough to field a full team, this fence will not need watching. It will need warning."

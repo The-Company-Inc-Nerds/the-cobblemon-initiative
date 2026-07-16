@@ -40,7 +40,7 @@
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
-                            Name: "defeated_frontier_brain_market"
+                            Name: "frontier_market_cleared"
                         }
                     ],
                     Priority: 20,
@@ -82,7 +82,7 @@
                                             {
                                                 Type: "PLAYER_TAG",
                                                 Operation: "EQUALS",
-                                                Name: "defeated_frontier_brain_market"
+                                                Name: "frontier_market_cleared"
                                             }
                                         ]
                                     },
@@ -95,7 +95,7 @@
                                             {
                                                 Type: "PLAYER_TAG",
                                                 Operation: "EQUALS",
-                                                Name: "no_defeated_frontier_brain_market"
+                                                Name: "no_frontier_market_cleared"
                                             }
                                         ]
                                     },
@@ -109,11 +109,11 @@
                                             {
                                                 Type: "PLAYER_TAG",
                                                 Operation: "EQUALS",
-                                                Name: "no_defeated_frontier_brain_market"
+                                                Name: "no_frontier_market_cleared"
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:frontier_brain_market onwin {1: ['tag @1 add defeated_frontier_brain_market', '@2 say Every asset on my books, spent. That Zoroark wore three faces and you saw through all of them. The Port has a new mogul, and it is not me. Go on to whatever waits past the map.', 'easy_npc delete @2'], 2: ['@1 say The market closes in my favor today. An illusion took you, or a wall of paperwork did - either way you did not read the whole ledger. Reboard and settle the account.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:frontier_brain_market onwin {1: ['cobbledollars give @1 3000', 'tag @1 add frontier_market_cleared', '@2 say Every asset on my books, spent. That Zoroark wore three faces and you saw through all of them. The Port has a new mogul, and it is not me. Go on to whatever waits past the map.', 'execute as @1 run function cobblemon_initiative:frontier/hall_cleared'], 2: ['@1 say The market closes in my favor today. An illusion took you, or a wall of paperwork did - either way you did not read the whole ledger. Reboard and settle the account.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -138,7 +138,7 @@
                                 {
                                     Type: "PLAYER_TAG",
                                     Operation: "EQUALS",
-                                    Name: "no_defeated_frontier_brain_market"
+                                    Name: "no_frontier_market_cleared"
                                 }
                             ],
                             Label: "battle_button"

@@ -1,6 +1,7 @@
 package com.thecompanyinc.cobblemoninitiative;
 
 import com.thecompanyinc.cobblemoninitiative.daycare.DaycareManager;
+import com.thecompanyinc.cobblemoninitiative.momcare.MomCareManager;
 import com.thecompanyinc.cobblemoninitiative.questtrack.QuestTrackClient;
 import com.thecompanyinc.cobblemoninitiative.screen.DaycareSelectionScreen;
 import com.thecompanyinc.cobblemoninitiative.screen.SacrificeSelectionScreen;
@@ -29,6 +30,12 @@ public class NuzlockeClientInit implements ClientModInitializer {
           // Fires the tick AFTER Easy NPC's deferred CLOSE_DIALOG clears the screen,
           // so a dialog-button deposit flows straight into the picker.
           client.setScreen(new DaycareSelectionScreen());
+        } else if (MomCareManager.consumePendingPicker()) {
+          // Mom's friendship care reuses the same picker, 1-slot, routed to MomCareManager.
+          client.setScreen(new DaycareSelectionScreen(
+            "Mom's Care", 0xFF77DD, MomCareManager.MAX_SLOTS, "Leave with Mom",
+            uuid -> InitiativeInit.getMomCareManager().boardedCount(uuid),
+            (uuid, mons) -> InitiativeInit.getMomCareManager().deposit(uuid, mons)));
         }
       }
     });

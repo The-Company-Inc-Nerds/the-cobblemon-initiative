@@ -1,0 +1,553 @@
+{
+    PresetMetadata: {
+        author: "TheCompanyInc",
+        category: "Villain",
+        created: 0L,
+        description: "wheat_trader at Kalahar Reach - Old Caravan Road (act 2). Compiled from dialog-src.",
+        entityTypeId: "easy_npc:humanoid",
+        modified: 0L,
+        name: "Grain Factor",
+        variantType: "STEVE",
+        version: "1.0.0"
+    },
+    data: {
+        ActionData: {
+            ActionEventSet: {
+                ON_INTERACTION: [
+                    {
+                        Type: "OPEN_DEFAULT_DIALOG"
+                    }
+                ],
+                ON_DISTANCE_VERY_CLOSE: [
+                    {
+                        Type: "COMMAND",
+                        ConditionDataSet: {
+                            ConditionDataSet: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "wheat_trader_hostile"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "dex_gte_2"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_wheat_ambush_kalahar"
+                                }
+                            ]
+                        },
+                        Cmd: "tbcs attach rctmod:wheat_trader_ambush_kalahar @s"
+                    },
+                    {
+                        Type: "COMMAND",
+                        ExecAsUser: 1b,
+                        ConditionDataSet: {
+                            ConditionDataSet: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "wheat_trader_hostile"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "dex_gte_2"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_wheat_ambush_kalahar"
+                                }
+                            ]
+                        },
+                        Cmd: "tbcs battle GEN_9_DOUBLES @s vs rctmod:wheat_trader_ambush_kalahar onwin {1: ['cobbledollars give @1 500', 'tag @1 add defeated_wheat_ambush_kalahar', '@2 say Enough. Take the road. Take the fields. The grain was never worth what they said it was.', 'tag @1 add kalahar_ambush_cleared'], 2: ['@1 say Filed. The caravan thanks you for your final contribution.']}"
+                    }
+                ]
+            }
+        },
+        ArmorDropChances: [0.085f, 0.085f, 0.085f, 0.085f],
+        ArmorItems: [
+            {},
+            {},
+            {},
+            {}
+        ],
+        Brain: {
+            memories: {}
+        },
+        CanPickUpLoot: 0b,
+        CustomNameVisible: 1b,
+        DialogData: {
+            Type: "STANDARD",
+            DialogDataSet: [
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "wheat_trader_hostile"
+                        }
+                    ],
+                    Priority: 30,
+                    Buttons: [
+                        {
+                            Name: "…",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "wt_host_2"
+                                }
+                            ],
+                            Label: "continue"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Wait. I know that face. Verified tru§kvalue — you are the one the memos warned us about. The founder. You are supposed to be filed."
+                        }
+                    ],
+                    Name: "Wheat Trader — recognises you",
+                    Label: "hostile"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "…",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "wt_host_3"
+                                }
+                            ],
+                            Label: "continue"
+                        },
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "There was never a founder. That is what they told us to say. So how are you standing in my field, counting my grain with his eyes."
+                        }
+                    ],
+                    Name: "Wheat Trader — recognises you",
+                    Label: "wt_host_2"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Stand and fight",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_wheat_ambush_kalahar"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "say No. Not twice. Word went out about you down every caravan road."
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_wheat_ambush_kalahar"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:wheat_trader_ambush_kalahar @s"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_wheat_ambush_kalahar"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_DOUBLES @s vs rctmod:wheat_trader_ambush_kalahar onwin {1: ['cobbledollars give @1 500', 'tag @1 add defeated_wheat_ambush_kalahar', '@2 say Enough. Take the road. Take the fields. The grain was never worth what they said it was.', 'tag @1 add kalahar_ambush_cleared'], 2: ['@1 say Filed. The caravan thanks you for your final contribution.']}"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "fight_button"
+                        },
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "I am not selling to a closed file. The fields are ours now. You do not get to walk away from this one."
+                        }
+                    ],
+                    Name: "Wheat Trader — recognises you",
+                    Label: "wt_host_3"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "wheat_trader_suspicious"
+                        }
+                    ],
+                    Priority: 20,
+                    Buttons: [
+                        {
+                            Name: "Browse wares",
+                            Actions: [
+                                {
+                                    Type: "OPEN_TRADING_SCREEN"
+                                }
+                            ],
+                            Label: "trade_button"
+                        },
+                        {
+                            Name: "Just passing",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "You again. Hands where I can see the ledger. I will still take your trade — coin is coin, for now."
+                        },
+                        {
+                            Text: "Something about you sits wrong, like a number that will not add. Buy what you came for and keep walking."
+                        },
+                        {
+                            Text: "I have heard the talk. A face from the old company, walking the routes. Probably nothing. Probably. Wares are open."
+                        }
+                    ],
+                    Name: "Wheat Trader — wary",
+                    Label: "suspicious"
+                },
+                {
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "See the wares",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add heard_wheat_pitch"
+                                },
+                                {
+                                    Type: "OPEN_TRADING_SCREEN"
+                                }
+                            ],
+                            Label: "trade_button"
+                        },
+                        {
+                            Name: "I will keep my coin",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add heard_wheat_pitch"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Friend. Back your savings in something you can hold. Something you can eat. Wheat does not lie, and wheat does not vanish from a vault overnight."
+                        },
+                        {
+                            Text: "Stars are pretty. Stars are far away. Grain is here, in your hand, today. Trade with me before the paper money learns it is worthless."
+                        },
+                        {
+                            Text: "When the CobbleDollar fails — and it will, the smart money knows it will — the people with the fields will be the only people who matter. Come in early."
+                        }
+                    ],
+                    Name: "Wheat Trader — the pitch",
+                    Label: "default"
+                }
+            ]
+        },
+        DisplayAttribute: [
+            {
+                Bool: 1b,
+                Type: "VISIBLE"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_AT_DAY"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_AT_NIGHT"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_IN_CREATIVE"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_IN_SPECTATOR"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_IN_STANDARD"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_TO_OWNER"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_TO_TEAM"
+            },
+            {
+                Int: 7,
+                Type: "LIGHT_LEVEL"
+            },
+            {
+                Text: "ALWAYS",
+                Type: "NAME_VISIBILITY"
+            }
+        ],
+        EasyNPCVersion: 3,
+        EntityAttribute: {
+            CanBeHitByProjectile: 0b,
+            CanBeLeashed: 0b,
+            CanBreatheUnderwater: 0b,
+            CanCloseDoor: 0b,
+            CanFloat: 0b,
+            CanOpenDoor: 0b,
+            CanPassDoor: 0b,
+            CanUseNetherPortal: 0b,
+            Freefall: 0b,
+            HealthRegeneration: 0.0d,
+            IsAttackableByMonsters: 0b,
+            IsAttackableByPlayers: 0b,
+            IsInvulnerable: 1b,
+            IsPushable: 0b,
+            NoGravity: 0b,
+            PushEntities: 0b
+        },
+        HandDropChances: [0.085f, 0.085f],
+        HandItems: [
+            {},
+            {}
+        ],
+        Invulnerable: 0b,
+        LeftHanded: 0b,
+        ModelData: {
+            DefaultPose: "STANDING",
+            Pose: "VANILLA",
+            Position: {},
+            Rotation: {},
+            Scale: {},
+            Visible: {
+                Boots: 1b
+            }
+        },
+        Navigation: {
+            Home: {
+                X: 0,
+                Y: 0,
+                Z: 0
+            }
+        },
+        ObjectiveData: {
+            HasObjectives: 1b,
+            HasTravelTarget: 0b,
+            ObjectiveDataSet: [
+                {
+                    Type: "LOOK_AT_PLAYER",
+                    Prio: 9,
+                    Id: "ambient_look_player",
+                    LookDistance: 8.0f
+                },
+                {
+                    Type: "LOOK_RANDOM_AROUND",
+                    Prio: 10,
+                    Id: "ambient_look_random"
+                },
+                {
+                    Type: "LOOK_AT_RESET",
+                    Prio: 9,
+                    Id: "ambient_look_reset"
+                }
+            ]
+        },
+        OnGround: 1b,
+        PersistenceRequired: 0b,
+        PresetUUID: [I; 0, 0, 0, 0],
+        Profession: "NONE",
+        Progression: {
+            AttributeScalingEnabled: 0b,
+            EntityExperience: 1,
+            EntityExperienceLevel: 1
+        },
+        RenderData: {},
+        SkinData: {
+            Content: "",
+            DisableLayers: 0b,
+            Name: "",
+            Timestamp: 0L,
+            Type: "DEFAULT",
+            URL: "",
+            UUID: [I; 0, 0, 0, 0]
+        },
+        SoundData: {
+            SoundDataSet: [
+                {
+                    Name: "minecraft:entity.player.death",
+                    Type: "DEATH"
+                },
+                {
+                    Name: "minecraft:entity.player.hurt",
+                    Type: "HURT"
+                }
+            ]
+        },
+        Status: {
+            finalized: 0b,
+            npc_data_last_saved: 0L,
+            npc_data_last_update: 0L
+        },
+        VariantType: "STEVE",
+        attributes: [
+            {
+                base: 20.0d,
+                id: "minecraft:generic.max_health"
+            },
+            {
+                base: 0.5d,
+                id: "minecraft:generic.movement_speed"
+            }
+        ],
+        id: "easy_npc:humanoid",
+        Offers: {
+            Inventory: {},
+            Recipes: {
+                Recipes: [
+                    {
+                        buy: {
+                            id: "minecraft:paper",
+                            count: 1,
+                            components: {
+                                "minecraft:custom_data": {
+                                    ci_scrip: 1b
+                                },
+                                "minecraft:custom_name": '{"color":"gold","italic":false,"text":"Company Wheat Scrip"}',
+                                "minecraft:lore": ['{"color":"gray","italic":true,"text":"Redeemable only at Company grain stalls."}']
+                            }
+                        },
+                        sell: {
+                            id: "cobblemon:potion",
+                            count: 1
+                        },
+                        uses: 0,
+                        maxUses: 16,
+                        rewardExp: 0b,
+                        specialPrice: 0,
+                        demand: 0,
+                        priceMultiplier: 0.0f,
+                        xp: 0
+                    },
+                    {
+                        buy: {
+                            id: "minecraft:paper",
+                            count: 2,
+                            components: {
+                                "minecraft:custom_data": {
+                                    ci_scrip: 1b
+                                },
+                                "minecraft:custom_name": '{"color":"gold","italic":false,"text":"Company Wheat Scrip"}',
+                                "minecraft:lore": ['{"color":"gray","italic":true,"text":"Redeemable only at Company grain stalls."}']
+                            }
+                        },
+                        sell: {
+                            id: "cobblemon:great_ball",
+                            count: 1
+                        },
+                        uses: 0,
+                        maxUses: 16,
+                        rewardExp: 0b,
+                        specialPrice: 0,
+                        demand: 0,
+                        priceMultiplier: 0.0f,
+                        xp: 0
+                    },
+                    {
+                        buy: {
+                            id: "minecraft:wheat",
+                            count: 32
+                        },
+                        sell: {
+                            id: "minecraft:paper",
+                            count: 1,
+                            components: {
+                                "minecraft:custom_data": {
+                                    ci_scrip: 1b
+                                },
+                                "minecraft:custom_name": '{"color":"gold","italic":false,"text":"Company Wheat Scrip"}',
+                                "minecraft:lore": ['{"color":"gray","italic":true,"text":"Redeemable only at Company grain stalls."}']
+                            }
+                        },
+                        uses: 0,
+                        maxUses: 16,
+                        rewardExp: 0b,
+                        specialPrice: 0,
+                        demand: 0,
+                        priceMultiplier: 0.0f,
+                        xp: 0
+                    }
+                ]
+            }
+        },
+        TradingData: {
+            TradingDataSet: {
+                Type: "BASIC",
+                MaxUses: 16,
+                RewardedXP: 0,
+                ResetsEveryMin: 10,
+                LastReset: 0L
+            }
+        },
+        CustomName: '{"text": "Grain Factor", "color": "#FFFFFF"}'
+    }
+}

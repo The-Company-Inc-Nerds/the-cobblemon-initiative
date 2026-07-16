@@ -1,0 +1,20 @@
+{
+  "_comment": "THE WATCHER — the shadow-self, glimpsed (Rule 7: never named). relative+facingFrame so it plays at any orientation. The player double wears the PLAYER'S OWN skin (CutsceneManager patches it), so the figure the camera reveals is a motionless copy of you, left standing where you stood — the mirror-boss foreshadow. It is gone when the scene restores (the double despawns). Fires once, wired via flavor/watcher after the first badge. Tune framing with /cutscene record if the double's face needs centering.",
+  "relative": true,
+  "facingFrame": true,
+  "skippable": true,
+  "doublePreset": "easy_npc:preset/humanoid/player_double.npc.snbt",
+  "keyframes": [
+    { "x": 0.0, "y": 1.6, "z": 3.2, "yaw": 180.0, "pitch": 2.0, "ticks": 30 },
+    { "x": 3.0, "y": 2.4, "z": 6.5, "yaw": 158.0, "pitch": 10.0, "ticks": 55 },
+    { "x": 0.0, "y": 1.5, "z": 2.2, "yaw": 180.0, "pitch": 0.0, "ticks": 45 }
+  ],
+  "cues": [
+    { "tick": 4, "sound": "minecraft:ambient.cave", "volume": 1.0, "pitch": 0.5 },
+    { "tick": 12, "subtitle": "§8Someone is standing where you stood." },
+    { "tick": 74, "sound": "minecraft:entity.warden.heartbeat", "volume": 0.7, "pitch": 0.8 },
+    { "tick": 82, "subtitle": "§8It is wearing your face." },
+    { "tick": 126, "sound": "minecraft:entity.enderman.teleport", "volume": 1.0, "pitch": 0.7 },
+    { "tick": 128, "subtitle": "§7...and when you look again, it is gone." }
+  ]
+}

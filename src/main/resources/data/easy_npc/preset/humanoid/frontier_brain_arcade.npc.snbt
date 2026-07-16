@@ -40,7 +40,7 @@
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
-                            Name: "defeated_frontier_brain_arcade"
+                            Name: "frontier_arcade_cleared"
                         }
                     ],
                     Priority: 20,
@@ -79,7 +79,7 @@
                                             {
                                                 Type: "PLAYER_TAG",
                                                 Operation: "EQUALS",
-                                                Name: "defeated_frontier_brain_arcade"
+                                                Name: "frontier_arcade_cleared"
                                             }
                                         ]
                                     },
@@ -92,7 +92,7 @@
                                             {
                                                 Type: "PLAYER_TAG",
                                                 Operation: "EQUALS",
-                                                Name: "no_defeated_frontier_brain_arcade"
+                                                Name: "no_frontier_arcade_cleared"
                                             }
                                         ]
                                     },
@@ -106,11 +106,11 @@
                                             {
                                                 Type: "PLAYER_TAG",
                                                 Operation: "EQUALS",
-                                                Name: "no_defeated_frontier_brain_arcade"
+                                                Name: "no_frontier_arcade_cleared"
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_DOUBLES @s vs rctmod:frontier_brain_arcade onwin {1: ['tag @1 add defeated_frontier_brain_arcade', '@2 say The wheel stops on you. The house is out of spins - this hall is yours, Champion. There is no bigger jackpot on this floor.', 'easy_npc delete @2'], 2: ['@1 say The house takes the pot, as the house does. The wheel is still here. Buy back in when you are ready to spin again.']}"
+                                    Cmd: "tbcs battle GEN_9_DOUBLES @s vs rctmod:frontier_brain_arcade onwin {1: ['cobbledollars give @1 3000', 'tag @1 add frontier_arcade_cleared', '@2 say The wheel stops on you. The house is out of spins - this hall is yours, Champion. There is no bigger jackpot on this floor.', 'execute as @1 run function cobblemon_initiative:frontier/hall_cleared'], 2: ['@1 say The house takes the pot, as the house does. The wheel is still here. Buy back in when you are ready to spin again.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -135,7 +135,7 @@
                                 {
                                     Type: "PLAYER_TAG",
                                     Operation: "EQUALS",
-                                    Name: "no_defeated_frontier_brain_arcade"
+                                    Name: "no_frontier_arcade_cleared"
                                 }
                             ],
                             Label: "battle_button"

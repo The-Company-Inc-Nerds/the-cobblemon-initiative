@@ -7,7 +7,7 @@ A single-player **Fabric** mod (Minecraft 1.21.1 + Cobblemon 1.7.3, **0.5.x alph
 
 ## 🗺️ Quests — every objective, region by region
 - **[[Quests Overview]]** — how quests light up on the sidebar, tracking, and the full quest index.
-- **[[Quests Main Story]]** — the main objective line from Mom's kitchen to the Ender Dragon.
+- **[[Quests Main Story]]** — the main objective line from Mom's kitchen to the Founder, and the open world beyond.
 - **[[Quests Sango Town]]** — the starting town's job board.
 - **[[Quests Blossom Path]]** — the meadow road between Sango and Takehara.
 - **[[Quests Takehara Falls]]** — the first gym town's side work.

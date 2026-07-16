@@ -199,6 +199,22 @@ public class CobblemonInitiativeCommands {
               )
             )
         )
+        // Homestead beacons — player-facing (runtime player resolution, like `track`), so
+        // a dialog button (`homestead claim/buy`) works via an Easy NPC ExecAsUser source.
+        .then(
+          Commands.literal("homestead")
+            .then(Commands.literal("claim").executes(CobblemonInitiativeCommands::homesteadClaim))
+            .then(Commands.literal("unclaim").executes(CobblemonInitiativeCommands::homesteadUnclaim))
+            .then(Commands.literal("buy").executes(CobblemonInitiativeCommands::homesteadBuy))
+            .then(Commands.literal("status").executes(CobblemonInitiativeCommands::homesteadStatus))
+        )
+        // Mom's friendship care — 1-slot boarding, player-facing (dialog buttons).
+        .then(
+          Commands.literal("momcare")
+            .then(Commands.literal("deposit").executes(CobblemonInitiativeCommands::momCareDeposit))
+            .then(Commands.literal("withdraw").executes(CobblemonInitiativeCommands::momCareWithdraw))
+            .then(Commands.literal("status").executes(CobblemonInitiativeCommands::momCareStatus))
+        )
         // Stadium exhibition circuit — player-facing, permission 0 (mirrors `track`).
         // Deliberately NO parse-time .requires(entity instanceof ServerPlayer): the
         // player resolves at RUNTIME so a console `execute as <player> run …` works
@@ -605,6 +621,96 @@ public class CobblemonInitiativeCommands {
       return 0;
     }
     InitiativeInit.getDaycareManager().sendStatus(player);
+    return 1;
+  }
+
+  // ── Homestead beacons (player-facing) ────────────────────────────────────────
+
+  /** /cobblemon-initiative homestead claim — register the nearest beacon as a homestead. */
+  private static int homesteadClaim(CommandContext<CommandSourceStack> context) {
+    ServerPlayer player = context.getSource().getPlayer();
+    if (player == null) {
+      context.getSource().sendFailure(Component.literal("Must be run by a player."));
+      return 0;
+    }
+    InitiativeInit.getHomesteadManager().claimNearestBeacon(player);
+    return 1;
+  }
+
+  /** /cobblemon-initiative homestead unclaim — release the nearest registered homestead. */
+  private static int homesteadUnclaim(CommandContext<CommandSourceStack> context) {
+    ServerPlayer player = context.getSource().getPlayer();
+    if (player == null) {
+      context.getSource().sendFailure(Component.literal("Must be run by a player."));
+      return 0;
+    }
+    InitiativeInit.getHomesteadManager().unclaimNearestBeacon(player);
+    return 1;
+  }
+
+  /** /cobblemon-initiative homestead buy — buy the next beacon from Suzune (escalating price). */
+  private static int homesteadBuy(CommandContext<CommandSourceStack> context) {
+    ServerPlayer player = context.getSource().getPlayer();
+    if (player == null) {
+      context.getSource().sendFailure(Component.literal("Must be run by a player."));
+      return 0;
+    }
+    InitiativeInit.getHomesteadManager().buyBeacon(player);
+    return 1;
+  }
+
+  /** /cobblemon-initiative homestead status — claimed fields, tiers, daily harvest. */
+  private static int homesteadStatus(CommandContext<CommandSourceStack> context) {
+    ServerPlayer player = context.getSource().getPlayer();
+    if (player == null) {
+      context.getSource().sendFailure(Component.literal("Must be run by a player."));
+      return 0;
+    }
+    InitiativeInit.getHomesteadManager().sendStatus(player);
+    return 1;
+  }
+
+  // ── Mom's friendship care (player-facing) ────────────────────────────────────
+
+  /** /cobblemon-initiative momcare deposit — open the 1-slot picker to leave a mon with Mom. */
+  private static int momCareDeposit(CommandContext<CommandSourceStack> context) {
+    ServerPlayer player = context.getSource().getPlayer();
+    if (player == null) {
+      context.getSource().sendFailure(Component.literal("Must be run by a player."));
+      return 0;
+    }
+    var mom = InitiativeInit.getMomCareManager();
+    if (!mom.getConfig().isEnabled()) {
+      player.sendSystemMessage(Component.literal("§cMom isn't taking Pokémon right now."));
+      return 0;
+    }
+    if (mom.boardedCount(player.getUUID()) >= com.thecompanyinc.cobblemoninitiative.momcare.MomCareManager.MAX_SLOTS) {
+      player.sendSystemMessage(Component.literal("§cMom already has one of your Pokémon."));
+      return 0;
+    }
+    com.thecompanyinc.cobblemoninitiative.momcare.MomCareManager.triggerPicker();
+    return 1;
+  }
+
+  /** /cobblemon-initiative momcare withdraw — bring your mon home from Mom. */
+  private static int momCareWithdraw(CommandContext<CommandSourceStack> context) {
+    ServerPlayer player = context.getSource().getPlayer();
+    if (player == null) {
+      context.getSource().sendFailure(Component.literal("Must be run by a player."));
+      return 0;
+    }
+    InitiativeInit.getMomCareManager().withdraw(player);
+    return 1;
+  }
+
+  /** /cobblemon-initiative momcare status — who Mom is watching + current friendship. */
+  private static int momCareStatus(CommandContext<CommandSourceStack> context) {
+    ServerPlayer player = context.getSource().getPlayer();
+    if (player == null) {
+      context.getSource().sendFailure(Component.literal("Must be run by a player."));
+      return 0;
+    }
+    InitiativeInit.getMomCareManager().sendStatus(player);
     return 1;
   }
 
@@ -1289,6 +1395,9 @@ public class CobblemonInitiativeCommands {
     com.thecompanyinc.cobblemoninitiative.noble.NobleEncounterInit.getManager().loadNobles();
     com.thecompanyinc.cobblemoninitiative.config.NobleConfig.reload();
     InitiativeInit.getDaycareManager().reloadConfig();
+    InitiativeInit.getHomesteadManager().reloadConfig();
+    InitiativeInit.getMomCareManager().reloadConfig();
+    InitiativeInit.reloadFlavorConfig(context.getSource().getServer());
     context.getSource().sendSuccess(
       () ->
         Component.literal(

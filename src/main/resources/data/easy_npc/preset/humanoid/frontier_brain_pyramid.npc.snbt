@@ -40,7 +40,7 @@
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
-                            Name: "defeated_frontier_brain_pyramid"
+                            Name: "frontier_pyramid_cleared"
                         }
                     ],
                     Priority: 20,
@@ -82,7 +82,7 @@
                                             {
                                                 Type: "PLAYER_TAG",
                                                 Operation: "EQUALS",
-                                                Name: "defeated_frontier_brain_pyramid"
+                                                Name: "frontier_pyramid_cleared"
                                             }
                                         ]
                                     },
@@ -95,7 +95,7 @@
                                             {
                                                 Type: "PLAYER_TAG",
                                                 Operation: "EQUALS",
-                                                Name: "no_defeated_frontier_brain_pyramid"
+                                                Name: "no_frontier_pyramid_cleared"
                                             }
                                         ]
                                     },
@@ -109,11 +109,11 @@
                                             {
                                                 Type: "PLAYER_TAG",
                                                 Operation: "EQUALS",
-                                                Name: "no_defeated_frontier_brain_pyramid"
+                                                Name: "no_frontier_pyramid_cleared"
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:frontier_brain_pyramid onwin {1: ['tag @1 add defeated_frontier_brain_pyramid', '@2 say The three ancients kneel and the giant with them. You held your light to the very bottom. The Pyramid is yours, Champion - and so is whatever the dark down here was keeping for you.', 'easy_npc delete @2'], 2: ['@1 say The stones stand and the dark keeps its bottom. No shame - the old Regis have buried better torches than yours. Relight, and come find the summit again.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:frontier_brain_pyramid onwin {1: ['cobbledollars give @1 3000', 'tag @1 add frontier_pyramid_cleared', '@2 say The three ancients kneel and the giant with them. You held your light to the very bottom. The Pyramid is yours, Champion - and so is whatever the dark down here was keeping for you.', 'execute as @1 run function cobblemon_initiative:frontier/hall_cleared'], 2: ['@1 say The stones stand and the dark keeps its bottom. No shame - the old Regis have buried better torches than yours. Relight, and come find the summit again.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -138,7 +138,7 @@
                                 {
                                     Type: "PLAYER_TAG",
                                     Operation: "EQUALS",
-                                    Name: "no_defeated_frontier_brain_pyramid"
+                                    Name: "no_frontier_pyramid_cleared"
                                 }
                             ],
                             Label: "battle_button"

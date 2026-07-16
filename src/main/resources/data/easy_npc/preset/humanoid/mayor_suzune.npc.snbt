@@ -40,6 +40,138 @@
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
+                            Name: "farm_1_free"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "defeated_sq_mayor_suits"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "no_first_beacon_given"
+                        }
+                    ],
+                    Priority: 35,
+                    Buttons: [
+                        {
+                            Name: "Take the beacon",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "give @s minecraft:beacon 1"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add first_beacon_given"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "title @initiator actionbar [{\"text\":\"A homestead beacon. Raise it on the field you freed and mine the pyramid to grow it.\",\"color\":\"gold\"}]"
+                                },
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "beacon_shop"
+                                }
+                            ],
+                            Label: "take_beacon_button"
+                        },
+                        {
+                            Name: "Not yet",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "later_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "You cleared a field back from them. Ground the Company had penciled in as theirs is standing empty and free, and that is a thing worth building on. Here — take this. No charge on the first one; call it a founding grant from a grateful town."
+                        },
+                        {
+                            Text: "Set it down on the field you freed. Then raise a pyramid under it the honest way — by mining. Iron first, then gold, diamond, emerald, netherite as you go up. The bigger and rarer the block, the more the homestead pays you back. A nether star at the peak opens the top tier."
+                        },
+                        {
+                            Text: "When it is standing, run the claim on it — talk to the farmer who came home, or use the homestead claim, and the ground starts paying the harvest. That is how you starve a Company out. Not with a fight. With a field it cannot buy."
+                        }
+                    ],
+                    Name: "Mayor Liang - the first beacon",
+                    Label: "beacon_gift"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "first_beacon_given"
+                        }
+                    ],
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Buy another beacon",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative homestead buy"
+                                }
+                            ],
+                            Label: "buy_beacon_button"
+                        },
+                        {
+                            Name: "How are my homesteads doing?",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative homestead status"
+                                }
+                            ],
+                            Label: "homestead_status_button"
+                        },
+                        {
+                            Name: "Claim the beacon I placed",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative homestead claim"
+                                }
+                            ],
+                            Label: "claim_beacon_button"
+                        },
+                        {
+                            Name: "That is all for now",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Every field you take back and raise a beacon on is one the Company cannot. That is the whole game now — quiet ground, paying you a harvest instead of paying them a rent."
+                        },
+                        {
+                            Text: "I keep beacons for anyone doing the work. Each one costs more than the last — the good ones always do — but the fields pay it back and then some. What do you need?"
+                        }
+                    ],
+                    Name: "Mayor Liang - the reinvestment",
+                    Label: "beacon_shop"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
                             Name: "defeated_sq_mayor_suits"
                         },
                         {

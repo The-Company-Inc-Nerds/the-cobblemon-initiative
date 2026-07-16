@@ -47,6 +47,16 @@ public class NuzlockeInit implements ModInitializer {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(InitiativeInit.MOD_ID);
 
+  /**
+   * Player scoreboard tag marking a safe-exhibition zone where Nuzlocke attrition is
+   * suspended (no faint damage, no party removal, no whiteout). Maintained per-tick by the
+   * {@code cobblemon_initiative:frontier/region_tick} datapack function, which adds the tag
+   * inside the Battle Frontier AABB and removes it everywhere else — so it self-corrects and
+   * can never leak to disable Nuzlocke off the plateau. Mirrors {@link StadiumManager}'s
+   * clone-party guard for the Frontier's opt-in above-cap grind.
+   */
+  private static final String FRONTIER_ACTIVE_TAG = "frontier_active";
+
   private static NuzlockeConfig config;
   private static boolean pendingWhiteoutDeath = false;
   private static boolean pendingSacrifice = false;
@@ -309,7 +319,11 @@ public class NuzlockeInit implements ModInitializer {
 
     // Stadium exhibition runs are attrition-free: battles use CLONED parties and the
     // StadiumManager (subscribed at Priority.LOWEST, i.e. after this) owns the outcome.
-    if (StadiumManager.isStadiumActive(player.getUUID())) return Unit.INSTANCE;
+    // The Battle Frontier is a safe exhibition too: the frontier_active tag (maintained by
+    // the frontier/region_tick datapack function while the player stands on the plateau)
+    // marks the "nothing you love dies on our floor" zone.
+    if (StadiumManager.isStadiumActive(player.getUUID())
+        || player.getTags().contains(FRONTIER_ACTIVE_TAG)) return Unit.INSTANCE;
 
     PlayerPartyStore party = Cobblemon.INSTANCE.getStorage().getParty(player);
     int partyCount = countPartySize(party);
@@ -346,7 +360,9 @@ public class NuzlockeInit implements ModInitializer {
       // Stadium runs: losing an exhibition wave is not a forfeit — the battle party is
       // a clone (real party often healthy), so this branch would whiteout-kill a player
       // who lost nothing. StadiumManager ends the run after this handler returns.
-      if (StadiumManager.isStadiumActive(player.getUUID())) continue;
+      // The Battle Frontier (frontier_active tag) is likewise a no-forfeit safe exhibition.
+      if (StadiumManager.isStadiumActive(player.getUUID())
+          || player.getTags().contains(FRONTIER_ACTIVE_TAG)) continue;
 
       boolean wasTrainerBattle = false;
       for (BattleActor actor : event.getBattle().getActors()) {
@@ -420,7 +436,11 @@ public class NuzlockeInit implements ModInitializer {
     if (player == null) return Unit.INSTANCE;
 
     // Stadium exhibition faints are clone faints — no damage, no removal, no whiteout.
-    if (StadiumManager.isStadiumActive(player.getUUID())) return Unit.INSTANCE;
+    // Battle Frontier faints (frontier_active tag) are exhibition faints too: the safe
+    // exhibition suppresses damage/removal/whiteout so an optional above-cap grind can
+    // never gut a hardcore-Nuzlocke box.
+    if (StadiumManager.isStadiumActive(player.getUUID())
+        || player.getTags().contains(FRONTIER_ACTIVE_TAG)) return Unit.INSTANCE;
 
     PlayerPartyStore party = Cobblemon.INSTANCE.getStorage().getParty(player);
     int totalPartySize = countPartySize(party);

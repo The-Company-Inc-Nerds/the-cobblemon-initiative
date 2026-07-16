@@ -40,7 +40,7 @@
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
-                            Name: "defeated_frontier_brain_port"
+                            Name: "frontier_port_cleared"
                         }
                     ],
                     Priority: 20,
@@ -79,7 +79,7 @@
                                             {
                                                 Type: "PLAYER_TAG",
                                                 Operation: "EQUALS",
-                                                Name: "defeated_frontier_brain_port"
+                                                Name: "frontier_port_cleared"
                                             }
                                         ]
                                     },
@@ -92,7 +92,7 @@
                                             {
                                                 Type: "PLAYER_TAG",
                                                 Operation: "EQUALS",
-                                                Name: "no_defeated_frontier_brain_port"
+                                                Name: "no_frontier_port_cleared"
                                             }
                                         ]
                                     },
@@ -106,11 +106,11 @@
                                             {
                                                 Type: "PLAYER_TAG",
                                                 Operation: "EQUALS",
-                                                Name: "no_defeated_frontier_brain_port"
+                                                Name: "no_frontier_port_cleared"
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_DOUBLES @s vs rctmod:frontier_brain_port onwin {1: ['tag @1 add defeated_frontier_brain_port', '@2 say The deep water is yours, Champion. No promotion sails above this berth - only the next hall. The Port stands cleared.', 'easy_npc delete @2'], 2: ['@1 say The storm holds the harbor. Take the launch back to shore and set your crew again - the deep water keeps.']}"
+                                    Cmd: "tbcs battle GEN_9_DOUBLES @s vs rctmod:frontier_brain_port onwin {1: ['cobbledollars give @1 3500', 'tag @1 add frontier_port_cleared', '@2 say The deep water is yours, Champion. No promotion sails above this berth - only the next hall. The Port stands cleared.', 'execute as @1 run function cobblemon_initiative:frontier/hall_cleared'], 2: ['@1 say The storm holds the harbor. Take the launch back to shore and set your crew again - the deep water keeps.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -135,7 +135,7 @@
                                 {
                                     Type: "PLAYER_TAG",
                                     Operation: "EQUALS",
-                                    Name: "no_defeated_frontier_brain_port"
+                                    Name: "no_frontier_port_cleared"
                                 }
                             ],
                             Label: "battle_button"

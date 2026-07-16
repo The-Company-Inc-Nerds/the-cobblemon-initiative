@@ -1,0 +1,624 @@
+{
+    PresetMetadata: {
+        author: "TheCompanyInc",
+        category: "Civilian",
+        created: 0L,
+        description: "elder at Nifl Town - Frozen Lake Shore (act 3). Compiled from dialog-src.",
+        entityTypeId: "easy_npc:humanoid",
+        modified: 0L,
+        name: "Keeper Vetra",
+        variantType: "STEVE",
+        version: "1.0.0"
+    },
+    data: {
+        ActionData: {
+            ActionEventSet: {
+                ON_INTERACTION: [
+                    {
+                        Type: "OPEN_DEFAULT_DIALOG"
+                    }
+                ]
+            }
+        },
+        ArmorDropChances: [0.085f, 0.085f, 0.085f, 0.085f],
+        ArmorItems: [
+            {},
+            {},
+            {},
+            {}
+        ],
+        Brain: {
+            memories: {}
+        },
+        CanPickUpLoot: 0b,
+        CustomNameVisible: 1b,
+        DialogData: {
+            Type: "STANDARD",
+            DialogDataSet: [
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "defeated_ryujin_leader"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "no_nifl_archive_read"
+                        }
+                    ],
+                    Priority: 50,
+                    Buttons: [
+                        {
+                            Name: "Ask about the lake lanterns",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "lantern_intro"
+                                }
+                            ],
+                            Label: "lantern_button"
+                        },
+                        {
+                            Name: "Later",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "You came down the Frostveil, so you have not been to the cold-storage vault yet. Auditor Corvin still keeps it, poor man - files a room head office swears is empty. Ask him what the ice remembers. It remembers more than the living care to."
+                        }
+                    ],
+                    Name: "Vetra - the vault still hums",
+                    Label: "hub_archive"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "defeated_ryujin_leader"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "nifl_archive_read"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "no_nifl_frostgate_clear"
+                        }
+                    ],
+                    Priority: 48,
+                    Buttons: [
+                        {
+                            Name: "Ask about the lake lanterns",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "lantern_intro"
+                                }
+                            ],
+                            Label: "lantern_button"
+                        },
+                        {
+                            Name: "Later",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "There is a Company man frozen half to the Frostgate, would not come in for soup nor sense. Warrant Officer, old one. He has been holding that post like it will thaw if he waits. Somebody should tell him the money went quiet when the acting man lost his chair, and nobody is coming to relieve him."
+                        }
+                    ],
+                    Name: "Vetra - the man at the gate",
+                    Label: "hub_frostgate"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "nifl_archive_read"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "nifl_frostgate_clear"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "nifl_lanterns_done"
+                        }
+                    ],
+                    Priority: 46,
+                    Buttons: [
+                        {
+                            Name: "Thank you, keeper",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "You have thawed the vault, moved the man at the gate, and walked my lanterns. Nifl has given you what it keeps. Scorchspire is next, down the Cinderfall, and it keeps nothing - fire is honest that way. Past it the capital wears crowns. Go warm, stranger. The ice will hold your one memory until you come back for it."
+                        }
+                    ],
+                    Name: "Vetra - the patient ice",
+                    Label: "hub_done"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "no_nifl_lanterns_done"
+                        }
+                    ],
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "Walk the lantern ring",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "lantern_intro"
+                                }
+                            ],
+                            Label: "walk_button"
+                        },
+                        {
+                            Name: "Later",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "later_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Vetra. I keep the lake, or the lake keeps me - hard to say which, this far into the cold. Four memory-lanterns ring the ice and all four have gone dark. Walk them with me and relight them. The ice gives back the small things it holds when the light returns. Some of them are ours. One of them, I think, is yours."
+                        }
+                    ],
+                    Name: "Keeper Vetra",
+                    Label: "default"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Relight the shore lantern",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "lantern_one"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_nifl_lantern_1"
+                                }
+                            ],
+                            Label: "l1_button"
+                        },
+                        {
+                            Name: "Relight the north lantern",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "lantern_two"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "nifl_lantern_1"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_nifl_lantern_2"
+                                }
+                            ],
+                            Label: "l2_button"
+                        },
+                        {
+                            Name: "Relight the deep-ice lantern",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "lantern_three"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "nifl_lantern_2"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_nifl_lantern_3"
+                                }
+                            ],
+                            Label: "l3_button"
+                        },
+                        {
+                            Name: "Relight the far lantern",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "lantern_four"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "nifl_lantern_3"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_nifl_lantern_4"
+                                }
+                            ],
+                            Label: "l4_button"
+                        },
+                        {
+                            Name: "Step back",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Four lanterns, four small memories the ice kept. Relight them in any order your feet find. Come, the first is nearest the shore."
+                        }
+                    ],
+                    Name: "The lantern ring",
+                    Label: "lantern_intro"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Let the wedding warm and go",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add nifl_lantern_1"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "title @initiator actionbar [{\"text\":\"Shore lantern lit. A wedding, kept in ice, warm again for a moment.\"}]"
+                                },
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "lantern_intro"
+                                }
+                            ],
+                            Label: "light_one_button"
+                        },
+                        {
+                            Name: "Step back",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "step_back_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The shore lantern catches. Inside the flame the ice shows a wedding - furs and steam and two people laughing at the cold. It was the winter of your first badges, Vetra says, though how she counts by your badges she does not explain."
+                        }
+                    ],
+                    Name: "Shore lantern - a wedding",
+                    Label: "lantern_one"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Let the calling fade kindly",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add nifl_lantern_2"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "title @initiator actionbar [{\"text\":\"North lantern lit. A name called across old ice, and let go.\"}]"
+                                },
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "lantern_intro"
+                                }
+                            ],
+                            Label: "light_two_button"
+                        },
+                        {
+                            Name: "Step back",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "step_back_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The north lantern flares. A dog runs across the old ice and does not come back, and a child stands calling a name the wind took. The ice kept the calling, not the dog. Vetra says the child is grown now and still listens at the shore on quiet nights."
+                        }
+                    ],
+                    Name: "North lantern - a lost dog",
+                    Label: "lantern_two"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Let the first snow fall again",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add nifl_lantern_3"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "title @initiator actionbar [{\"text\":\"Deep-ice lantern lit. Someone very small, deciding the world is good.\"}]"
+                                },
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "lantern_intro"
+                                }
+                            ],
+                            Label: "light_three_button"
+                        },
+                        {
+                            Name: "Step back",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "step_back_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The deep-ice lantern glows blue. A very small person meets snow for the first time and decides, on the spot and forever, that the world is a good place. The ice kept the deciding. It is the warmest thing in Nifl and it lives at the bottom of the coldest lantern."
+                        }
+                    ],
+                    Name: "Deep-ice lantern - a first snow",
+                    Label: "lantern_three"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Relight it and let the name go by",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:sidequest/nifl/lanterns_reward"
+                                },
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "hub_done"
+                                }
+                            ],
+                            Label: "light_four_button"
+                        },
+                        {
+                            Name: "Not yet",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "step_back_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The far lantern is slow to take. When it does, the ice shows nothing you can hold - a coat with a Verified plate, a chair too large, a name half-said in a voice you almost know, and then the wind. This one is not a townsperson at all, Vetra says quietly. The lake has been keeping it for someone who has not come to claim it. Until, perhaps, now."
+                        }
+                    ],
+                    Name: "Far lantern - not a townsperson at all",
+                    Label: "lantern_four"
+                }
+            ]
+        },
+        DisplayAttribute: [
+            {
+                Bool: 1b,
+                Type: "VISIBLE"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_AT_DAY"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_AT_NIGHT"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_IN_CREATIVE"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_IN_SPECTATOR"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_IN_STANDARD"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_TO_OWNER"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_TO_TEAM"
+            },
+            {
+                Int: 7,
+                Type: "LIGHT_LEVEL"
+            },
+            {
+                Text: "ALWAYS",
+                Type: "NAME_VISIBILITY"
+            }
+        ],
+        EasyNPCVersion: 3,
+        EntityAttribute: {
+            CanBeHitByProjectile: 0b,
+            CanBeLeashed: 0b,
+            CanBreatheUnderwater: 0b,
+            CanCloseDoor: 0b,
+            CanFloat: 0b,
+            CanOpenDoor: 0b,
+            CanPassDoor: 0b,
+            CanUseNetherPortal: 0b,
+            Freefall: 0b,
+            HealthRegeneration: 0.0d,
+            IsAttackableByMonsters: 0b,
+            IsAttackableByPlayers: 0b,
+            IsInvulnerable: 1b,
+            IsPushable: 0b,
+            NoGravity: 0b,
+            PushEntities: 0b
+        },
+        HandDropChances: [0.085f, 0.085f],
+        HandItems: [
+            {},
+            {}
+        ],
+        Invulnerable: 0b,
+        LeftHanded: 0b,
+        ModelData: {
+            DefaultPose: "STANDING",
+            Pose: "VANILLA",
+            Position: {},
+            Rotation: {},
+            Scale: {},
+            Visible: {
+                Boots: 1b
+            }
+        },
+        Navigation: {
+            Home: {
+                X: 0,
+                Y: 0,
+                Z: 0
+            }
+        },
+        ObjectiveData: {
+            HasObjectives: 1b,
+            HasTravelTarget: 0b,
+            ObjectiveDataSet: [
+                {
+                    Type: "LOOK_AT_PLAYER",
+                    Prio: 9,
+                    Id: "ambient_look_player",
+                    LookDistance: 8.0f
+                },
+                {
+                    Type: "LOOK_RANDOM_AROUND",
+                    Prio: 10,
+                    Id: "ambient_look_random"
+                },
+                {
+                    Type: "LOOK_AT_RESET",
+                    Prio: 9,
+                    Id: "ambient_look_reset"
+                }
+            ]
+        },
+        OnGround: 1b,
+        PersistenceRequired: 0b,
+        PresetUUID: [I; 0, 0, 0, 0],
+        Profession: "NONE",
+        Progression: {
+            AttributeScalingEnabled: 0b,
+            EntityExperience: 1,
+            EntityExperienceLevel: 1
+        },
+        RenderData: {},
+        SkinData: {
+            Content: "",
+            DisableLayers: 0b,
+            Name: "",
+            Timestamp: 0L,
+            Type: "DEFAULT",
+            URL: "",
+            UUID: [I; 0, 0, 0, 0]
+        },
+        SoundData: {
+            SoundDataSet: [
+                {
+                    Name: "minecraft:entity.player.death",
+                    Type: "DEATH"
+                },
+                {
+                    Name: "minecraft:entity.player.hurt",
+                    Type: "HURT"
+                }
+            ]
+        },
+        Status: {
+            finalized: 0b,
+            npc_data_last_saved: 0L,
+            npc_data_last_update: 0L
+        },
+        VariantType: "STEVE",
+        attributes: [
+            {
+                base: 20.0d,
+                id: "minecraft:generic.max_health"
+            },
+            {
+                base: 0.5d,
+                id: "minecraft:generic.movement_speed"
+            }
+        ],
+        id: "easy_npc:humanoid",
+        CustomName: '{"text": "Keeper Vetra", "color": "#FFFFFF"}'
+    }
+}

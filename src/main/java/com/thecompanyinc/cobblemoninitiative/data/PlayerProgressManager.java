@@ -418,6 +418,27 @@ public class PlayerProgressManager {
 
     if (advancementPath != null) {
       grantAdvancement(player, advancementPath);
+      grantMilestoneLoot(player, trainerId, advancementPath);
+    }
+  }
+
+  /**
+   * Iconic Minecraft treasure at story beats (docs/MINECRAFT_FLAVOR.md §3): a diamond per gym
+   * badge, a beacon on the Royal League Champion (seeds the homestead loop). Board netherite is
+   * granted in {@link #checkMultiTrainerAchievements}; the Founder elytra ships in the datapack
+   * reveal. One-shot by construction — grantAdvancementForTrainer runs once per first defeat.
+   */
+  private void grantMilestoneLoot(ServerPlayer player, String trainerId, String advancementPath) {
+    var flavor = InitiativeInit.getFlavorConfig();
+    if (flavor == null || !flavor.isMilestoneLootEnabled()) return;
+    if (advancementPath.startsWith("cobblemon_initiative:gyms/badge_")) {
+      executeCommand(player, "give " + player.getName().getString() + " minecraft:diamond 1");
+      player.sendSystemMessage(Component.literal(
+        "§b§l[Milestone] §r§7A diamond for the badge — the honest backing, before the Company chose wheat."));
+    } else if ("royal_champion".equals(trainerId)) {
+      executeCommand(player, "give " + player.getName().getString() + " minecraft:beacon 1");
+      player.sendSystemMessage(Component.literal(
+        "§b§l[Milestone] §r§7A beacon for the Champion. Raise it on ground you have freed."));
     }
   }
 
@@ -498,6 +519,12 @@ public class PlayerProgressManager {
         player.sendSystemMessage(
           Component.literal("§6§l[Level Cap] §r§eThe Board has fallen. Cap raised to 100 — one chair remains.")
         );
+        var flavor = InitiativeInit.getFlavorConfig();
+        if (flavor != null && flavor.isMilestoneLootEnabled()) {
+          executeCommand(player, "give " + player.getName().getString() + " minecraft:netherite_ingot 2");
+          player.sendSystemMessage(Component.literal(
+            "§b§l[Milestone] §r§7Netherite, off the cleared floor — the hardest thing they hoarded."));
+        }
         InitiativeInit.LOGGER.info(
           "Player {} cleared the Board — cap 100 unlocked",
           player.getName().getString()

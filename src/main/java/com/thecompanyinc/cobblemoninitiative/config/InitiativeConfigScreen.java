@@ -3,6 +3,8 @@ package com.thecompanyinc.cobblemoninitiative.config;
 import com.thecompanyinc.cobblemoninitiative.InitiativeInit;
 import com.thecompanyinc.cobblemoninitiative.NuzlockeInit;
 import com.thecompanyinc.cobblemoninitiative.daycare.DaycareConfig;
+import com.thecompanyinc.cobblemoninitiative.homestead.HomesteadConfig;
+import com.thecompanyinc.cobblemoninitiative.momcare.MomCareConfig;
 import com.thecompanyinc.cobblemoninitiative.npcsight.NpcSightConfig;
 import com.thecompanyinc.cobblemoninitiative.npcsight.NpcSightInit;
 import com.thecompanyinc.cobblemoninitiative.safari.SafariConfig;
@@ -1157,6 +1159,150 @@ public class InitiativeConfigScreen {
         .setTooltip(Component.literal("Extra CobbleDollars for clearing all five waves. (Per-wave purses live in the wave data.)"))
         .setSaveConsumer(stadiumConfig::setCompletionPurse).build());
 
+    // -------------------------------------------------------------------------
+    // Homestead (beacon income — docs/MINECRAFT_FLAVOR.md §1/§8)
+    // -------------------------------------------------------------------------
+    HomesteadConfig homesteadConfig = HomesteadConfig.load();
+    HomesteadConfig homesteadDefaults = new HomesteadConfig();
+    int[] hsTier = homesteadConfig.getBeaconYieldTier();
+
+    ConfigCategory homestead = builder.getOrCreateCategory(Component.literal("Homestead"));
+    homestead.addEntry(
+      entryBuilder.startBooleanToggle(Component.literal("Enabled"), homesteadConfig.isEnabled())
+        .setDefaultValue(homesteadDefaults.isEnabled())
+        .setTooltip(Component.literal("Master switch for the homestead-beacon income loop."))
+        .setSaveConsumer(homesteadConfig::setEnabled).build());
+    homestead.addEntry(
+      entryBuilder.startDoubleField(Component.literal("Income multiplier"), homesteadConfig.getIncomeMultiplier())
+        .setMin(0.0).setDefaultValue(homesteadDefaults.getIncomeMultiplier())
+        .setTooltip(Component.literal("Global scale on all homestead income."))
+        .setSaveConsumer(homesteadConfig::setIncomeMultiplier).build());
+    homestead.addEntry(
+      entryBuilder.startIntField(Component.literal("Beacon yield — Tier 1 (CD/day)"), hsTier[0])
+        .setMin(0).setDefaultValue(25)
+        .setSaveConsumer(v -> homesteadConfig.setBeaconYieldTier(0, v)).build());
+    homestead.addEntry(
+      entryBuilder.startIntField(Component.literal("Beacon yield — Tier 2 (CD/day)"), hsTier[1])
+        .setMin(0).setDefaultValue(50)
+        .setSaveConsumer(v -> homesteadConfig.setBeaconYieldTier(1, v)).build());
+    homestead.addEntry(
+      entryBuilder.startIntField(Component.literal("Beacon yield — Tier 3 (CD/day)"), hsTier[2])
+        .setMin(0).setDefaultValue(100)
+        .setSaveConsumer(v -> homesteadConfig.setBeaconYieldTier(2, v)).build());
+    homestead.addEntry(
+      entryBuilder.startIntField(Component.literal("Beacon yield — Tier 4 (CD/day)"), hsTier[3])
+        .setMin(0).setDefaultValue(175)
+        .setTooltip(Component.literal("Top tier — unlocked by a nether star when 'Star for top tier' is on."))
+        .setSaveConsumer(v -> homesteadConfig.setBeaconYieldTier(3, v)).build());
+    homestead.addEntry(
+      entryBuilder.startDoubleField(Component.literal("Material mult — iron"), homesteadConfig.getMaterialMultIron())
+        .setMin(0.0).setDefaultValue(1.0).setSaveConsumer(homesteadConfig::setMaterialMultIron).build());
+    homestead.addEntry(
+      entryBuilder.startDoubleField(Component.literal("Material mult — gold"), homesteadConfig.getMaterialMultGold())
+        .setMin(0.0).setDefaultValue(1.25).setSaveConsumer(homesteadConfig::setMaterialMultGold).build());
+    homestead.addEntry(
+      entryBuilder.startDoubleField(Component.literal("Material mult — diamond"), homesteadConfig.getMaterialMultDiamond())
+        .setMin(0.0).setDefaultValue(1.6).setSaveConsumer(homesteadConfig::setMaterialMultDiamond).build());
+    homestead.addEntry(
+      entryBuilder.startDoubleField(Component.literal("Material mult — emerald"), homesteadConfig.getMaterialMultEmerald())
+        .setMin(0.0).setDefaultValue(1.8).setSaveConsumer(homesteadConfig::setMaterialMultEmerald).build());
+    homestead.addEntry(
+      entryBuilder.startDoubleField(Component.literal("Material mult — netherite"), homesteadConfig.getMaterialMultNetherite())
+        .setMin(0.0).setDefaultValue(2.5).setSaveConsumer(homesteadConfig::setMaterialMultNetherite).build());
+    homestead.addEntry(
+      entryBuilder.startIntField(Component.literal("Per-field cap (CD/day)"), homesteadConfig.getFieldCap())
+        .setMin(0).setDefaultValue(450).setSaveConsumer(homesteadConfig::setFieldCap).build());
+    homestead.addEntry(
+      entryBuilder.startIntField(Component.literal("Total cap (CD/day)"), homesteadConfig.getTotalCap())
+        .setMin(0).setDefaultValue(1500).setSaveConsumer(homesteadConfig::setTotalCap).build());
+    homestead.addEntry(
+      entryBuilder.startIntField(Component.literal("Beacon price — base (CD)"), homesteadConfig.getPriceBase())
+        .setMin(0).setDefaultValue(2000)
+        .setTooltip(Component.literal("Suzune's price for the second beacon onward (first is a gift)."))
+        .setSaveConsumer(homesteadConfig::setPriceBase).build());
+    homestead.addEntry(
+      entryBuilder.startDoubleField(Component.literal("Beacon price — growth ×"), homesteadConfig.getPriceGrowth())
+        .setMin(1.0).setDefaultValue(1.5)
+        .setTooltip(Component.literal("Each beacon costs this multiple of the last."))
+        .setSaveConsumer(homesteadConfig::setPriceGrowth).build());
+    homestead.addEntry(
+      entryBuilder.startBooleanToggle(Component.literal("Star for top tier"), homesteadConfig.isStarForTopTier())
+        .setDefaultValue(homesteadDefaults.isStarForTopTier())
+        .setTooltip(Component.literal("A nether star unlocks the top tier (right-click the beacon holding one)."))
+        .setSaveConsumer(homesteadConfig::setStarForTopTier).build());
+    homestead.addEntry(
+      entryBuilder.startBooleanToggle(Component.literal("Liberated fields are safe zones"), homesteadConfig.isHomesteadSafeZone())
+        .setDefaultValue(homesteadDefaults.isHomesteadSafeZone())
+        .setTooltip(Component.literal("Freed fields become no-death build zones."))
+        .setSaveConsumer(homesteadConfig::setHomesteadSafeZone).build());
+    homestead.addEntry(
+      entryBuilder.startIntField(Component.literal("Claim radius (blocks)"), homesteadConfig.getClaimRadius())
+        .setMin(1).setMax(48).setDefaultValue(16)
+        .setTooltip(Component.literal("Search range when running 'homestead claim'."))
+        .setSaveConsumer(homesteadConfig::setClaimRadius).build());
+
+    // -------------------------------------------------------------------------
+    // Mom's Care (friendship boarding — docs/PHONE_AND_CARE.md §3/§4)
+    // -------------------------------------------------------------------------
+    MomCareConfig momConfig = MomCareConfig.load();
+    MomCareConfig momDefaults = new MomCareConfig();
+
+    ConfigCategory momCare = builder.getOrCreateCategory(Component.literal("Mom's Care"));
+    momCare.addEntry(
+      entryBuilder.startBooleanToggle(Component.literal("Enabled"), momConfig.isEnabled())
+        .setDefaultValue(momDefaults.isEnabled())
+        .setTooltip(Component.literal("Mom's 1-slot friendship-caretaker service."))
+        .setSaveConsumer(momConfig::setEnabled).build());
+    momCare.addEntry(
+      entryBuilder.startIntField(Component.literal("Friendship per day"), momConfig.getFriendshipPerDay())
+        .setMin(0).setDefaultValue(5)
+        .setTooltip(Component.literal("Friendship gained per in-game day (0→cap; a friendship evo needs ~160+)."))
+        .setSaveConsumer(momConfig::setFriendshipPerDay).build());
+    momCare.addEntry(
+      entryBuilder.startDoubleField(Component.literal("Rate multiplier"), momConfig.getRateMultiplier())
+        .setMin(0.0).setDefaultValue(1.0).setSaveConsumer(momConfig::setRateMultiplier).build());
+    momCare.addEntry(
+      entryBuilder.startIntField(Component.literal("Friendship cap"), momConfig.getCap())
+        .setMin(0).setMax(255).setDefaultValue(255).setSaveConsumer(momConfig::setCap).build());
+    momCare.addEntry(
+      entryBuilder.startIntField(Component.literal("Pickup fee (CD)"), momConfig.getFee())
+        .setMin(0).setDefaultValue(0)
+        .setTooltip(Component.literal("0 = free (recommended — she's your mom)."))
+        .setSaveConsumer(momConfig::setFee).build());
+
+    // -------------------------------------------------------------------------
+    // Minecraft Flavor (phone + gym-MC + milestone toggles — §8 / PHONE §4)
+    // -------------------------------------------------------------------------
+    MinecraftFlavorConfig flavorScreenConfig = MinecraftFlavorConfig.load();
+    MinecraftFlavorConfig flavorDefaults = new MinecraftFlavorConfig();
+
+    ConfigCategory flavor = builder.getOrCreateCategory(Component.literal("Minecraft Flavor"));
+    flavor.addEntry(
+      entryBuilder.startBooleanToggle(Component.literal("PokéPhone enabled"), flavorScreenConfig.isPhoneEnabled())
+        .setDefaultValue(flavorDefaults.isPhoneEnabled())
+        .setTooltip(Component.literal("Remote story-beat calls (Mom, Mayor Suzune, …)."))
+        .setSaveConsumer(flavorScreenConfig::setPhoneEnabled).build());
+    flavor.addEntry(
+      entryBuilder.startBooleanToggle(Component.literal("PokéPhone auto-open"), flavorScreenConfig.isPhoneAutoOpen())
+        .setDefaultValue(flavorDefaults.isPhoneAutoOpen())
+        .setTooltip(Component.literal("Ring auto-opens the call (off = ring persists, answer later)."))
+        .setSaveConsumer(flavorScreenConfig::setPhoneAutoOpen).build());
+    flavor.addEntry(
+      entryBuilder.startBooleanToggle(Component.literal("Minecraft achievements required for gyms"), flavorScreenConfig.isGymMcAchievementsRequired())
+        .setDefaultValue(flavorDefaults.isGymMcAchievementsRequired())
+        .setTooltip(Component.literal("On: each gym requires its Minecraft task (mine a diamond, harvest honey, …) before you may challenge the leader — and the tasks fire flavor. Off: gyms open, tasks silent. (Gym 8 is always the Ender Dragon.)"))
+        .setSaveConsumer(flavorScreenConfig::setGymMcAchievementsRequired).build());
+    flavor.addEntry(
+      entryBuilder.startBooleanToggle(Component.literal("Milestone loot"), flavorScreenConfig.isMilestoneLootEnabled())
+        .setDefaultValue(flavorDefaults.isMilestoneLootEnabled())
+        .setTooltip(Component.literal("Diamond/badge, beacon/Champion, netherite/Board."))
+        .setSaveConsumer(flavorScreenConfig::setMilestoneLootEnabled).build());
+    flavor.addEntry(
+      entryBuilder.startBooleanToggle(Component.literal("Daycare independence cues"), flavorScreenConfig.isDaycareIndependentFlavor())
+        .setDefaultValue(flavorDefaults.isDaycareIndependentFlavor())
+        .setTooltip(Component.literal("The daycare's 'not Company' framing (the shipped say-line stays either way)."))
+        .setSaveConsumer(flavorScreenConfig::setDaycareIndependentFlavor).build());
+
     builder.setSavingRunnable(() -> {
       config.save();
       sightConfig.save();
@@ -1167,6 +1313,9 @@ public class InitiativeConfigScreen {
       daycareConfig.save();
       safariConfig.save();
       stadiumConfig.save();
+      homesteadConfig.save();
+      momConfig.save();
+      flavorScreenConfig.save();
       NuzlockeInit.reloadConfig();
       NpcSightInit.reloadConfig();
       ShrineConfig.reload();
@@ -1176,6 +1325,12 @@ public class InitiativeConfigScreen {
       if (InitiativeInit.getDaycareManager() != null) InitiativeInit.getDaycareManager().reloadConfig();
       if (InitiativeInit.getSafariManager() != null) InitiativeInit.getSafariManager().load();
       StadiumManager.reloadConfig();
+      if (InitiativeInit.getHomesteadManager() != null) InitiativeInit.getHomesteadManager().reloadConfig();
+      if (InitiativeInit.getMomCareManager() != null) InitiativeInit.getMomCareManager().reloadConfig();
+      // Re-read the flavor toggles into the live static + re-publish to the ci_flavor scoreboard
+      // (needs a running server — the config screen can also be opened from the title menu).
+      InitiativeInit.reloadFlavorConfig(
+        net.minecraft.client.Minecraft.getInstance().getSingleplayerServer());
     });
 
     return builder.build();

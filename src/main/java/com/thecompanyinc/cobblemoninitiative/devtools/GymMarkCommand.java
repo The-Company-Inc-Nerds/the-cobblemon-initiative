@@ -114,6 +114,20 @@ public class GymMarkCommand {
           new String[] {"point", g[0] + " " + member + " — GIMMICK: " + g[1] + " (" + g[0] + "_" + member + " placement)"});
       }
     }
+
+    // "Make it Minecraft" flavor (alpha.20) coord marks. The cutscenes ship as portable
+    // relative scenes; mark these to author absolute per-location variants with /cutscene record.
+    SLOTS.put("cutscene_starter_lab", new String[] {"point", "Starter reveal — camera anchor / where the 3 starter stand-ins face the player (cutscenes/starter_reveal.json)"});
+    SLOTS.put("cutscene_starter_1", new String[] {"point", "Starter stand-in 1 — Skiddo spot (starter_reveal keyframe target)"});
+    SLOTS.put("cutscene_starter_2", new String[] {"point", "Starter stand-in 2 — Totodile spot (starter_reveal keyframe target)"});
+    SLOTS.put("cutscene_starter_3", new String[] {"point", "Starter stand-in 3 — Hisuian Growlithe spot (starter_reveal keyframe target)"});
+    SLOTS.put("shrine_fire_statue", new String[] {"point", "Fire Shrine — the big statue the fly-through lands on (shrine_reveal per-shrine variant)"});
+    SLOTS.put("shrine_ice_statue", new String[] {"point", "Ice Shrine statue — cutscene fly-through target"});
+    SLOTS.put("shrine_ground_statue", new String[] {"point", "Ground Shrine statue — cutscene fly-through target"});
+    SLOTS.put("shrine_dragon_statue", new String[] {"point", "Dragon Shrine statue — cutscene fly-through target"});
+    SLOTS.put("shrine_fairy_statue", new String[] {"point", "Fairy Shrine statue — cutscene fly-through target"});
+    SLOTS.put("daycare_keeper", new String[] {"point", "Gaviota daycare keeper body spot (daycare_keeper placement — add uuid/placement to the character)"});
+    SLOTS.put("daycare_pen", new String[] {"point", "Daycare pen — where boarded stand-ins appear (config penX/Y/Z)"});
   }
 
   private static GymMarkStorage storage;

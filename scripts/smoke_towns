@@ -1,0 +1,58 @@
+#!/usr/bin/env python3
+"""smoke_towns — headless RCON check of the cross-cutting town-quest mechanics (gyms 3-7).
+Run against a live `gradle runServer` (RCON 25575/devtest, Carpet present). Spawns a Carpet
+bot (the only player → @a) and drives the reused idioms most likely to hide a subtle bug:
+the field-liberation chain for non-farm_1 fields (the field_N_liberated band-tag mirror), a
+Genji-idiom fetch count-check, and the sidebar render. Usage: nix develop -c python3 scripts/smoke_towns
+"""
+import os, re, sys, time
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from mc_rcon import Rcon
+
+PASS, FAIL = [], []
+def check(n, c, d=''):
+    (PASS if c else FAIL).append(n)
+    mark = "\033[32mPASS\033[0m" if c else "\033[31mFAIL\033[0m"
+    print(f"  {mark} {n}" + (f"  ::  {d}" if d else ""))
+
+def main():
+    with Rcon() as r:
+        c = r.cmd
+        def asb(cmd): return c(f"execute as @a run {cmd}")
+        def tags(): return c("tag @p list")
+        def has(t): return re.search(r'\b' + re.escape(t) + r'\b', tags()) is not None
+        def score(h, o):
+            m = re.search(r'has (-?\d+)', c(f"scoreboard players get {h} {o}")); return int(m.group(1)) if m else None
+        c("player fbot spawn"); time.sleep(2)
+        for t in ("field_2_liberated","field_3_liberated","mm_charms_done","met_mm_nurse","met_deepcore_nurse","deepcore_restructure_done"):
+            c(f"tag @a remove {t}")
+        c("scoreboard players set farm_2 field_freed 0"); c("scoreboard players set farm_3 field_freed 0")
+        c("scoreboard players set @a fields_liberated 0"); c("clear @a")
+
+        # 1) Field liberation, farm_2 (Mystic Marsh field guard's on_win lever)
+        f0 = score("@p", "fields_liberated") or 0
+        asb("function cobblemon_initiative:liberation/free_field {field:farm_2}"); time.sleep(1.5)
+        check("free_field farm_2: field_2_liberated tag mirrored (band_tags)", has("field_2_liberated"))
+        check("free_field farm_2: fields_liberated +1", score("@p","fields_liberated")==f0+1, f"{f0}->{score('@p','fields_liberated')}")
+
+        # 2) Field liberation, farm_3 (Gaviota Tidewatch Sable)
+        asb("function cobblemon_initiative:liberation/free_field {field:farm_3}"); time.sleep(1.5)
+        check("free_field farm_3: field_3_liberated tag mirrored", has("field_3_liberated"))
+
+        # 3) Genji-idiom fetch (Mystic charm): 8 string -> turn_in_charm -> mm_charms_done
+        c("give @a minecraft:string 8"); time.sleep(0.5)
+        asb("function cobblemon_initiative:sidequest/marigold/turn_in_charm"); time.sleep(0.5)
+        check("charm fetch: 8 string count-check -> mm_charms_done", has("mm_charms_done"))
+
+        # 4) Sidebar render: Deepcore hub line lights on met_deepcore_nurse (clean gate)
+        c("tag @a add met_deepcore_nurse"); time.sleep(0.3)
+        asb("function cobblemon_initiative:quest/render"); time.sleep(0.3)
+        check("render: q.side_reserve==53 (Deepcore hub line)", score("q.side_reserve","ci_quest")==53, f"={score('q.side_reserve','ci_quest')}")
+
+        c("player fbot kill")
+    print(f"\n{len(PASS)} passed, {len(FAIL)} failed")
+    if FAIL: print("FAILURES: " + ", ".join(FAIL))
+    return 1 if FAIL else 0
+
+if __name__ == '__main__':
+    sys.exit(main())

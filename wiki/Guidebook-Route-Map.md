@@ -27,7 +27,7 @@ flowchart TD
   G10 --> RL["Royal League<br/>3528, 166, 2773 · cap 85"]
   RL --> BD["The Board of Directors<br/>cleared → cap 100"]
   BD --> FD["The Founder — mirror battle"]
-  FD --> ED["Leave the map → Ender Dragon"]
+  FD --> ED["Beyond the map — the world is yours<br/>open Minecraft, still hardcore + Nuzlocke"]
 
   G3 -. "optional" .-> SF["Fairy Shrine"]
   G6 -. "optional" .-> SG["Ground Shrine (Buried Maze)"]
@@ -58,7 +58,7 @@ flowchart TD
 | 10 | Scorchspire | 3700, 100, 4511 | Fire 🔥 | 80 | — | III |
 | ☆ | **Royal League** | 3528, 166, 2773 | Elite Four → Champion | 85 | **Fire Shrine** *(post-Champion)* | III |
 | ☆ | **The Board → The Founder** | — | Board of Directors, then the mirror | **100** *(Board cleared)* | — | III |
-| ∞ | **Post-game** | beyond the map | Ender Dragon (still hardcore + Nuzlocke) | — | — | III |
+| ∞ | **Post-story** | beyond the map | open Minecraft — build, settle, explore (still hardcore + Nuzlocke) | — | — | III |
 
 ---
 
@@ -79,7 +79,7 @@ Each gym is its own small climb — rank-and-file trainers → Jr. Apprentice �
 10. **→ Scorchspire.** Beat **Leader Vulcan** (Fire), the final gym. → cap **80**. *(The Fire Shrine is **not** the Scorchspire detour — its cult only answers to a Champion; see step 11.)*
 11. **→ Royal League `[3528 166 2773]`.** The Elite Four (Aria · Marcus · Luna · Drake) then **Champion Cynthia**. Victory unlocks the level-**85** cap — and the **Fire Shrine — Trial by Flame** cult (tight 120s parkour, the **best-paying shrine**: Master Ball + Netherite) will now speak to you.
 12. **→ The Board of Directors → The Founder.** The post-League gauntlet: empty all four Boardroom seats to unlock the final level-**100** cap, then face the **mirror battle** that pays off the whole amnesia arc. *(Spoiler-light by design — let it land in play.)*
-13. **→ Beyond the map.** With the Company overthrown, leave the curated world for generated terrain and go after the **Ender Dragon** — still hardcore, still Nuzlocke.
+13. **→ Beyond the map.** The Founder is the last fight — the Ender Dragon already fell at the Ryujin rift, so there's no post-game boss to chase. With the Company overthrown, walk off the edge of the curated world into open, generated terrain and just *live* — build, mine, settle, explore, survive — still hardcore, still Nuzlocke. The world is finally yours.
 
 ---
 

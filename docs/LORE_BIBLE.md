@@ -165,9 +165,12 @@ mirror's defeat: `reveal/founder_defeated` renders **the defeating player's own 
 live** via a selector component — *"The name on the chair was always ⟨you⟩."* Whoever
 wins the run, the reveal is theirs.
 
-Aftermath / post-story: with the Company overthrown, the player leaves the curated map for
-generated terrain and attempts to **beat vanilla Minecraft (the Ender Dragon)** — still
-hardcore + Nuzlocke. The reclaimed founder, finally themselves, walks into the unknown.
+Aftermath / post-story: the Founder was the last fight, and the Ender Dragon already fell
+mid-journey (the Ryujin Keep rift, gym 8) — so there is **no post-game boss hunt**. With the
+Company overthrown, the player leaves the curated map for generated terrain and simply **lives
+in open Minecraft** — build, mine, settle, explore, survive — still hardcore + Nuzlocke, no
+script, no safe zones. The reclaimed founder, finally themselves, walks into a world that is
+theirs now, not the Company's.
 
 ---
 

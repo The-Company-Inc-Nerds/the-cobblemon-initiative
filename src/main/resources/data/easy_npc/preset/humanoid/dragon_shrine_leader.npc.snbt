@@ -70,6 +70,32 @@
                     Priority: 10,
                     Buttons: [
                         {
+                            Name: "Wake the hydra and face Draconis",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:sidequest/shrine/dragon_trial_help"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative shrine dragon start"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_dragon_shrine_trial_clear"
+                                }
+                            ],
+                            Label: "begin_trial_button"
+                        },
+                        {
                             Name: "Face the wyrm",
                             Actions: [
                                 {
@@ -110,10 +136,17 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:dragon_shrine_leader onwin {1: ['cobbledollars give @1 2500', 'tag @1 add defeated_dragon_shrine_leader', '@2 say The wyrm has weighed you and found you whole. Go, bearer of the old fire.'], 2: ['@1 say The shrine has not finished with you. Return when your scales have hardened.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:dragon_shrine_leader onwin {1: ['cobbledollars give @1 2500', 'tag @1 add defeated_dragon_shrine_leader', '@2 say The wyrm has weighed you and found you whole. Go, bearer of the old fire.', 'execute as @1 unless entity @1[tag=shrine_frag_seen] run function cobblemon_initiative:memory/shrine/first_keeper'], 2: ['@1 say The shrine has not finished with you. Return when your scales have hardened.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "dragon_shrine_trial_clear"
                                 }
                             ],
                             Label: "yes_button"
@@ -130,13 +163,13 @@
                     ],
                     Texts: [
                         {
-                            Text: "Halt. You stand in the breath of the Dragon Shrine, where the oldest fire still coils and waits. I am Draconis, and I keep its hunger."
+                            Text: "Halt. You stand in the breath of the Dragon Shrine, where the oldest fire still coils and waits. I am Draconis, and I keep its hunger. You passed my tenders; the wyrm itself is not so easily flattered."
                         },
                         {
-                            Text: "Strange. The wyrm stirs for you the way it stirs for things it has tasted before. Tell me, do you feel old, somewhere under the skin."
+                            Text: "Rouse the hydra first - three heads, one hunger, and it heals between each fall so a single answer will not do. Field a party built for two-on-two; the wyrm does not fight one at a time, and neither do I. The old fire stirs for you the way it stirs for things it has tasted before."
                         },
                         {
-                            Text: "Power is not given at this gate. It is taken, scale by scale, from one who would deny it. Face me, and we will see what the fire already suspects."
+                            Text: "Power is not given at this gate. It is taken, scale by scale, from one who would deny it. Wake the wyrm and face me, and we will see what the fire already suspects."
                         }
                     ],
                     Name: "Draconis — challenge",

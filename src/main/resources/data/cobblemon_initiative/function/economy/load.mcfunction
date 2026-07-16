@@ -13,3 +13,7 @@ execute unless score #idx cd_instability matches -2147483648..2147483647 run sco
 # so the compiler band tags hz_market_eq_1/2 can gate trader ware buttons).
 scoreboard objectives add ci_dawn dummy
 scoreboard objectives add hz_market dummy
+# Battle Frontier hall passes — a soft/flavor CobbleDollars sink (granted on registration and
+# by frontier/buy_pass; never consumed, never gates a battle). World-data dummy, persists.
+scoreboard objectives add frontier_passes dummy
+

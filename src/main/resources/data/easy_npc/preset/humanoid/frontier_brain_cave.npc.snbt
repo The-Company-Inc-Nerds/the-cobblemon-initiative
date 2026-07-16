@@ -40,10 +40,10 @@
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
-                            Name: "defeated_frontier_brain_cave"
+                            Name: "frontier_all_cleared"
                         }
                     ],
-                    Priority: 20,
+                    Priority: 40,
                     Buttons: [
                         {
                             Name: "Leave the dark",
@@ -67,10 +67,62 @@
                     Label: "beaten"
                 },
                 {
-                    Priority: 10,
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "frontier_tower_cleared"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "frontier_factory_cleared"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "frontier_castle_cleared"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "frontier_arcade_cleared"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "frontier_port_cleared"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "frontier_pyramid_cleared"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "frontier_market_cleared"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "defeated_cave_challenger_1"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "defeated_cave_challenger_2"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "no_frontier_all_cleared"
+                        }
+                    ],
+                    Priority: 30,
                     Buttons: [
                         {
-                            Name: "Face the Warden",
+                            Name: "Face the Warden - opt in",
                             Actions: [
                                 {
                                     Type: "COMMAND",
@@ -79,7 +131,7 @@
                                             {
                                                 Type: "PLAYER_TAG",
                                                 Operation: "EQUALS",
-                                                Name: "defeated_frontier_brain_cave"
+                                                Name: "frontier_all_cleared"
                                             }
                                         ]
                                     },
@@ -92,7 +144,7 @@
                                             {
                                                 Type: "PLAYER_TAG",
                                                 Operation: "EQUALS",
-                                                Name: "no_defeated_frontier_brain_cave"
+                                                Name: "no_frontier_all_cleared"
                                             }
                                         ]
                                     },
@@ -106,36 +158,14 @@
                                             {
                                                 Type: "PLAYER_TAG",
                                                 Operation: "EQUALS",
-                                                Name: "no_defeated_frontier_brain_cave"
+                                                Name: "no_frontier_all_cleared"
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_DOUBLES @s vs rctmod:frontier_brain_cave onwin {1: ['tag @1 add defeated_frontier_brain_cave', '@2 say The dark stands down. No challenger has ever taken this cave from me - the whole Frontier is yours now. Go find your doorstep.', 'easy_npc delete @2'], 2: ['@1 say The lids close. My dark is load-bearing, and it held. Wake up, find your light, and come back down when you can see.']}"
+                                    Cmd: "tbcs battle GEN_9_DOUBLES @s vs rctmod:frontier_brain_cave onwin {1: ['cobbledollars give @1 5000', 'tag @1 add frontier_all_cleared', '@2 say The dark stands down. No challenger has ever taken this cave from me - the whole Frontier is yours now. Go find your doorstep.', 'execute as @1 run function cobblemon_initiative:frontier/frontier_complete'], 2: ['@1 say The lids close. My dark is load-bearing, and it held. Wake up, find your light, and come back down when you can see.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Conditions: [
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "royal_league_champion"
-                                },
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "defeated_cave_challenger_1"
-                                },
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "defeated_cave_challenger_2"
-                                },
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "no_defeated_frontier_brain_cave"
                                 }
                             ],
                             Label: "battle_button"
@@ -161,7 +191,34 @@
                             Text: "The Company built one wing for wonder instead of the ledger, and this cave was the deepest part of it. The dark down here is load-bearing - it is the whole fight. Darkrai closes the lids of the unready. Do not be unready."
                         }
                     ],
-                    Name: "Cave Warden Selene - the load-bearing dark",
+                    Name: "The Warden knows the face",
+                    Label: "recognition"
+                },
+                {
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "Come back later",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "My door stays shut. Seven Brains stand between you and this dark - bow to all of them, then come back with a lamp and a spine."
+                        },
+                        {
+                            Text: "The Deep Dark keeps its own. Clear the other halls; the Warden does not open early."
+                        },
+                        {
+                            Text: "Not yet. Seven bows first. The dark down here is load-bearing - do not enter it half-earned."
+                        }
+                    ],
+                    Name: "Cave Warden Selene - the sealed door",
                     Label: "default"
                 }
             ]

@@ -46,6 +46,27 @@
                     Priority: 20,
                     Buttons: [
                         {
+                            Name: "The caldera roars - call the fire-bird",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "noble start moltres"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "defeated_noble_moltres_lte_0"
+                                }
+                            ],
+                            Label: "noble_moltres_button"
+                        },
+                        {
                             Name: "I accept the ember",
                             Actions: [
                                 {
@@ -69,6 +90,32 @@
                 {
                     Priority: 10,
                     Buttons: [
+                        {
+                            Name: "Run the burning path",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:sidequest/shrine/fire_trial_help"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative shrine fire start"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_fire_shrine_trial_clear"
+                                }
+                            ],
+                            Label: "begin_trial_button"
+                        },
                         {
                             Name: "Walk into the flame",
                             Actions: [
@@ -110,10 +157,17 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:fire_shrine_leader onwin {1: ['cobbledollars give @1 2500', 'tag @1 add defeated_fire_shrine_leader', '@2 say The flame takes its measure of you and is satisfied. Burn brightly, and burn long.'], 2: ['@1 say The fire spits you back out. Temper yourself and return when you will not break.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:fire_shrine_leader onwin {1: ['cobbledollars give @1 2500', 'tag @1 add defeated_fire_shrine_leader', '@2 say The flame takes its measure of you and is satisfied. Burn brightly, and burn long.', 'execute as @1 unless entity @1[tag=shrine_frag_seen] run function cobblemon_initiative:memory/shrine/first_keeper'], 2: ['@1 say The fire spits you back out. Temper yourself and return when you will not break.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "fire_shrine_trial_clear"
                                 }
                             ],
                             Label: "yes_button"
@@ -130,13 +184,13 @@
                     ],
                     Texts: [
                         {
-                            Text: "Stand and be seen. This is the Fire Shrine, and the flame within has burned since before the first ledger was ever signed. I am Ignis, its keeper."
+                            Text: "Stand and be seen, champion. This is the Fire Shrine, and the flame within has burned since before the first ledger was ever signed. I am Ignis, its keeper. You passed my ash-priests; the flame itself is not so easily flattered."
                         },
                         {
-                            Text: "The fire crackles louder when your shadow crosses it. It hungers for things that once held power and let it slip away. Did you let something slip, traveller."
+                            Text: "There is a path up the caldera, and the heat at your heels. Run it to the summit before the fire runs you back down. Clear the burning path and the ember will take its measure of you - and what it measures, you may carry."
                         },
                         {
-                            Text: "I do not bestow the flame. I guard it from the unworthy. Prove you will not be consumed by it, and we shall see what the embers already whisper of you."
+                            Text: "I do not bestow the flame. I guard it from the unworthy. Run the path, then prove you will not be consumed by it, and we shall see what the embers already whisper of you."
                         }
                     ],
                     Name: "Ignis — challenge",

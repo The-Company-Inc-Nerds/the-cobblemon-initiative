@@ -70,6 +70,25 @@
                     Priority: 10,
                     Buttons: [
                         {
+                            Name: "Begin the tests of the bonded light",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:sidequest/shrine/fairy_trial_help"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative shrine fairy start"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "begin_trial_button"
+                        },
+                        {
                             Name: "Step into the light",
                             Actions: [
                                 {
@@ -110,7 +129,7 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:fairy_shrine_leader onwin {1: ['cobbledollars give @1 2500', 'tag @1 add defeated_fairy_shrine_leader', '@2 say The light has chosen to follow you. Be gentle with what it shows you.'], 2: ['@1 say The radiance turns away for now. Come back when your heart is steadier.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:fairy_shrine_leader onwin {1: ['cobbledollars give @1 2500', 'tag @1 add defeated_fairy_shrine_leader', '@2 say The light has chosen to follow you. Be gentle with what it shows you.', 'execute as @1 unless entity @1[tag=shrine_frag_seen] run function cobblemon_initiative:memory/shrine/first_keeper'], 2: ['@1 say The radiance turns away for now. Come back when your heart is steadier.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -130,13 +149,13 @@
                     ],
                     Texts: [
                         {
-                            Text: "Soft now. You have come to the Fairy Shrine, where the light does not warm so much as it reveals. I am Aurora, its keeper and its servant."
+                            Text: "Soft now. You have come to the Fairy Shrine, where the light does not warm so much as it reveals. I am Aurora, its keeper and its servant. You passed my acolytes; the light itself is not so easily flattered."
                         },
                         {
-                            Text: "The radiance flickers when it touches you, the way a flame flickers when a familiar hand reaches for it. Who were you, that it should know your shape."
+                            Text: "The radiance does not test a team. It tests a bond. Bring one companion to the altar at my feet - a shiny thing, named by you, well fed, close of heart, and alone on your belt - and the light will know if the two of you are true. Begin the tests, then run resolve at the altar when your companion is ready."
                         },
                         {
-                            Text: "I cannot give you the light. I can only stand between you and it until you prove the strength to take what it offers. Show me, then."
+                            Text: "I cannot give you the light. I can only stand between you and it until you and your one bonded soul prove worthy of what it offers. Show me the bond, then step into the light."
                         }
                     ],
                     Name: "Aurora — challenge",

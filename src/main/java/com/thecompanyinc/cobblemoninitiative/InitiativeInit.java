@@ -14,6 +14,9 @@ import com.thecompanyinc.cobblemoninitiative.config.ConfigLoader;
 import com.thecompanyinc.cobblemoninitiative.config.TrainerConfig;
 import com.thecompanyinc.cobblemoninitiative.data.PlayerProgressManager;
 import com.thecompanyinc.cobblemoninitiative.daycare.DaycareManager;
+import com.thecompanyinc.cobblemoninitiative.config.MinecraftFlavorConfig;
+import com.thecompanyinc.cobblemoninitiative.homestead.HomesteadManager;
+import com.thecompanyinc.cobblemoninitiative.momcare.MomCareManager;
 import com.thecompanyinc.cobblemoninitiative.items.ModItems;
 import com.thecompanyinc.cobblemoninitiative.levelcap.LevelCapManager;
 import com.thecompanyinc.cobblemoninitiative.docprop.DocPropManager;
@@ -53,6 +56,9 @@ public class InitiativeInit implements ModInitializer {
   private static SafariManager safariManager;
   private static QuestTrackManager questTrackManager;
   private static DaycareManager daycareManager;
+  private static MinecraftFlavorConfig flavorConfig;
+  private static HomesteadManager homesteadManager;
+  private static MomCareManager momCareManager;
 
   @Override
   public void onInitialize() {
@@ -99,6 +105,13 @@ public class InitiativeInit implements ModInitializer {
 
     daycareManager = new DaycareManager();
 
+    // "Make it Minecraft" flavor systems (docs/MINECRAFT_FLAVOR.md + PHONE_AND_CARE.md):
+    // datapack toggles (mirrored to the ci_flavor scoreboard on start), the homestead-beacon
+    // income loop, and Mom's friendship care. Configs load now; managers load world data on start.
+    flavorConfig = MinecraftFlavorConfig.load();
+    homesteadManager = new HomesteadManager();
+    momCareManager = new MomCareManager();
+
     // Safari Zone — the Baiting Yards (badge-3 paid catch-only preserve). Owns its own
     // Cobblemon subscriptions (battle-cancel guard + session-gated capture ledger).
     safariManager = new SafariManager();
@@ -135,6 +148,16 @@ public class InitiativeInit implements ModInitializer {
       daycareManager.tick(server)
     );
 
+    // Homestead beacons — day-latch harvest payout + deferred beacon purchase.
+    ServerTickEvents.END_SERVER_TICK.register(server ->
+      homesteadManager.tick(server)
+    );
+
+    // Mom's friendship care — day-latch friendship drip + deferred (optional) fee.
+    ServerTickEvents.END_SERVER_TICK.register(server ->
+      momCareManager.tick(server)
+    );
+
     // Safari sessions — site clock, suspense windows, lure lifecycles, ejects.
     ServerTickEvents.END_SERVER_TICK.register(server ->
       safariManager.tick(server)
@@ -151,6 +174,12 @@ public class InitiativeInit implements ModInitializer {
     // Safari bait scatter: right-click ground with a ci_bait-marked item. Fast PASS
     // for anything else, so ordering after docprop/lootchest is safe.
     UseBlockCallback.EVENT.register(safariManager::onUseBlock);
+
+    // Homestead: feed a nether star to a claimed beacon to unlock its top tier. Fast PASS
+    // unless the held item is a nether star AND the block is a registered homestead beacon.
+    UseBlockCallback.EVENT.register((player, level, hand, hit) ->
+      homesteadManager.onUseBlock(player, level, hand, hit)
+    );
     PlayerBlockBreakEvents.AFTER.register((level, player, pos, state, blockEntity) ->
       lootChestManager.onBlockBroken(state, pos)
     );
@@ -187,6 +216,10 @@ public class InitiativeInit implements ModInitializer {
       questTrackManager.load(server);
       safariManager.onServerStarted(server); // lifetime stats + stray-lure sweep
       daycareManager.load(server);
+      homesteadManager.load(server);
+      momCareManager.load(server);
+      flavorConfig.pushToScoreboard(server); // publish datapack toggles to ci_flavor
+      flavorConfig.applyGymGateTags(server); // open/close the gym MC gate per the toggle
       // Standalone guarantee: force rctmod's allowOverLeveling + our series into its live
       // config cache on ANY world (bundled map bakes it; fresh/bare worlds get defaults
       // that would re-enable rctmod's clamp and fight our badge ladder). SERVER_STARTED is
@@ -201,6 +234,7 @@ public class InitiativeInit implements ModInitializer {
       (handler, sender, server) -> {
         com.thecompanyinc.cobblemoninitiative.compat.RctmodServerConfig.ensurePlayerSeries(handler.player);
         snapFirstJoinToSpawn(handler.player, server);
+        flavorConfig.applyGymGateTag(handler.player); // gym MC gate on/off for the joiner
       });
 
     ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
@@ -210,6 +244,8 @@ public class InitiativeInit implements ModInitializer {
       safariManager.onServerStopping(server); // forfeit live sessions + save stats
       questTrackManager.save(server); // also hands the ▶-highlighted lines back
       daycareManager.save(); // belt-and-braces — custody already write-through saves
+      homesteadManager.save();
+      momCareManager.save();
       LOGGER.info("Saved player progress data.");
     });
 
@@ -440,5 +476,26 @@ public class InitiativeInit implements ModInitializer {
 
   public static SafariManager getSafariManager() {
     return safariManager;
+  }
+
+  public static MinecraftFlavorConfig getFlavorConfig() {
+    return flavorConfig;
+  }
+
+  /** Re-read the flavor config from disk (the /reload command) and re-publish its toggles. */
+  public static void reloadFlavorConfig(net.minecraft.server.MinecraftServer server) {
+    flavorConfig = MinecraftFlavorConfig.load();
+    if (server != null) {
+      flavorConfig.pushToScoreboard(server);
+      flavorConfig.applyGymGateTags(server);
+    }
+  }
+
+  public static HomesteadManager getHomesteadManager() {
+    return homesteadManager;
+  }
+
+  public static MomCareManager getMomCareManager() {
+    return momCareManager;
   }
 }

@@ -1,0 +1,172 @@
+#!/usr/bin/env python3
+"""smoke_frontier — headless RCON verification of the Battle Frontier datapack layer.
+
+Boots nothing itself: run against a live `gradle runServer` (RCON on 25575/devtest,
+Carpet present for /player). Spawns a Carpet fake player (the ONLY player headless, so
+@a == the bot) and drives the frontier functions directly, asserting on tags + scores +
+CobbleDollars balance. Covers: region_tick (frontier_active in/out — the no-death guard's
+trigger), register, buy_pass (affordable + broke), hall_cleared (#halls -> 7 + warden stir),
+read_plaque, frontier_complete (purse + idempotent), and the quest/render sidebar wiring.
+
+The Java no-death SUPPRESSION itself (NuzlockeInit reading frontier_active) is not exercised
+here — it needs a real in-battle faint — but its trigger is, and the Java is the same guard
+idiom as the runtime-verified Stadium path.
+
+Usage:  nix develop -c python3 scripts/smoke_frontier
+Exit code nonzero on any failure.
+"""
+import os
+import re
+import sys
+import time
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from mc_rcon import Rcon
+
+HALL_TAGS = [f"frontier_{f}_cleared" for f in
+             ("tower", "factory", "castle", "arcade", "port", "pyramid", "market")]
+ALL_FRONTIER_TAGS = HALL_TAGS + [
+    "frontier_registered", "frontier_all_cleared", "frontier_plaque_read",
+    "frontier_warden_stirred", "frontier_purse_paid", "frontier_sendoff_seen",
+    "frontier_active",
+]
+
+PASS, FAIL = [], []
+
+
+def check(name, cond, detail=""):
+    (PASS if cond else FAIL).append(name)
+    mark = "\033[32mPASS\033[0m" if cond else "\033[31mFAIL\033[0m"
+    print(f"  {mark} {name}" + (f"  ::  {detail}" if detail else ""))
+
+
+def parse_cd(resp):
+    m = re.search(r'\$\s*([\d.,]+)\s*([KMBT]?)', resp)
+    if not m:
+        m2 = re.search(r'(-?\d[\d,]*)', resp)
+        return int(m2.group(1).replace(',', '')) if m2 else None
+    mult = {'': 1, 'K': 1e3, 'M': 1e6, 'B': 1e9, 'T': 1e12}[m.group(2)]
+    return int(round(float(m.group(1).replace(',', '')) * mult))
+
+
+def main():
+    with Rcon() as r:
+        c = r.cmd
+
+        def asb(cmd):
+            return c(f"execute as @a run {cmd}")
+
+        def tags():
+            # `tag @p list` is sorted + compact; `data get entity @p Tags` returns the raw
+            # ~400-entry NBT blob (band_tags maintains a no_* inverse for every gate) which
+            # reorders/overflows the RCON response. @p (nearest = only bot) — multi @a is rejected.
+            return c("tag @p list")
+
+        def has(tag):
+            # \b guards against no_<tag> matching <tag> ("_" is a word char, so no boundary).
+            return re.search(r'\b' + re.escape(tag) + r'\b', tags()) is not None
+
+        def score(holder, obj):
+            m = re.search(r'has (-?\d+)', c(f"scoreboard players get {holder} {obj}"))
+            return int(m.group(1)) if m else None
+
+        # spawn the Carpet bot; headless -> it is the only player, so @a == bot
+        c("player fbot spawn")
+        time.sleep(2)
+        lst = c("list")
+        m = re.search(r'online:\s*(.+)', lst.strip())
+        name = m.group(1).split(',')[0].strip() if m else "fbot"
+        print(f"bot: {name!r}  |  {lst.strip()}")
+        if "0 of a max" in lst or not name:
+            print("  \033[31mFAIL\033[0m could not spawn Carpet bot (Carpet missing?) — aborting")
+            return 1
+
+        # clean slate
+        for t in ALL_FRONTIER_TAGS:
+            c(f"tag @a remove {t}")
+        c("scoreboard players set @a frontier_passes 0")
+
+        # 1) region_tick — the safe-exhibition trigger
+        c("tp @a 3800 159 2997")   # concourse, inside the plateau AABB
+        time.sleep(1.5)
+        inside = has("frontier_active")
+        c("tp @a 0 120 0")         # far outside
+        time.sleep(1.5)
+        outside = has("frontier_active")
+        check("region_tick: frontier_active ON inside the plateau", inside)
+        check("region_tick: frontier_active OFF outside (self-cleaning)", not outside)
+        c("tp @a 3800 159 2997")
+        time.sleep(0.5)
+
+        # 2) register
+        asb("function cobblemon_initiative:frontier/register")
+        time.sleep(0.5)
+        check("register: frontier_registered set", has("frontier_registered"))
+        check("register: first pass free (frontier_passes==1)",
+              score("@p", "frontier_passes") == 1, f"passes={score('@p','frontier_passes')}")
+
+        # 3) buy_pass — affordable, then broke
+        c(f"cobbledollars set {name} 500")
+        time.sleep(1.0)
+        b0 = parse_cd(c(f"cobbledollars query {name}"))
+        asb("function cobblemon_initiative:frontier/buy_pass")
+        time.sleep(1.5)   # defer the CD read one tick+
+        b1 = parse_cd(c(f"cobbledollars query {name}"))
+        p1 = score("@p", "frontier_passes")
+        check("buy_pass affordable: pass +1 (==2)", p1 == 2, f"passes={p1}")
+        check("buy_pass affordable: 200 CD deducted",
+              b0 is not None and b1 is not None and b0 - b1 == 200, f"{b0}->{b1}")
+        c(f"cobbledollars set {name} 0")
+        time.sleep(1.0)
+        asb("function cobblemon_initiative:frontier/buy_pass")
+        time.sleep(1.5)
+        p2 = score("@p", "frontier_passes")
+        b2 = parse_cd(c(f"cobbledollars query {name}"))
+        check("buy_pass broke: no pass granted (stays 2)", p2 == 2, f"passes={p2}")
+        check("buy_pass broke: balance stays 0 (never negative)", b2 == 0, f"bal={b2}")
+
+        # 4) hall_cleared — seven cleared -> #halls==7 + warden stirs
+        for t in HALL_TAGS:
+            c(f"tag @a add {t}")
+        asb("function cobblemon_initiative:frontier/hall_cleared")
+        time.sleep(0.5)
+        h = score("#halls", "quest_hud")
+        check("hall_cleared: #halls counts all seven", h == 7, f"#halls={h}")
+        check("hall_cleared: frontier_warden_stirred latched at 7", has("frontier_warden_stirred"))
+
+        # 5) read_plaque
+        asb("function cobblemon_initiative:frontier/read_plaque")
+        time.sleep(0.3)
+        check("read_plaque: frontier_plaque_read set", has("frontier_plaque_read"))
+
+        # 6) frontier_complete — grand purse + idempotency
+        c(f"cobbledollars set {name} 0")
+        time.sleep(1.0)
+        asb("function cobblemon_initiative:frontier/frontier_complete")
+        time.sleep(1.5)
+        bp = parse_cd(c(f"cobbledollars query {name}"))
+        check("frontier_complete: frontier_purse_paid set", has("frontier_purse_paid"))
+        check("frontier_complete: grand purse credited (>0)", bp is not None and bp > 0, f"bal={bp}")
+        asb("function cobblemon_initiative:frontier/frontier_complete")
+        time.sleep(1.5)
+        bp2 = parse_cd(c(f"cobbledollars query {name}"))
+        check("frontier_complete: idempotent (no double-pay)", bp2 == bp, f"{bp}->{bp2}")
+
+        # 7) quest/render — at registered + 7 halls + plaque read, the door line shows
+        asb("function cobblemon_initiative:quest/render")
+        time.sleep(0.3)
+        done = score("q.side_frontier_done", "ci_quest")
+        hall = score("q.side_frontier_hall", "ci_quest")
+        check("render: door-open line q.side_frontier_done==84 at 7/7", done == 84, f"done={done}")
+        check("render: hall counter hidden at 7/7", hall is None, f"hall={hall}")
+
+        c("player fbot kill")
+
+    print(f"\n{len(PASS)} passed, {len(FAIL)} failed")
+    if FAIL:
+        print("FAILURES: " + ", ".join(FAIL))
+    return 1 if FAIL else 0
+
+
+if __name__ == '__main__':
+    sys.exit(main())

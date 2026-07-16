@@ -60,7 +60,7 @@ execute if entity @s[tag=royal_league_champion] if score #board quest_hud matche
 execute if entity @s[tag=royal_league_champion] if score #board quest_hud matches 4.. unless entity @s[tag=defeated_villain_final_boss] run scoreboard players display name q.main ci_quest [{"text":"▶ Face The Founder","color":"dark_red"}]
 
 # (4) DONE — The Founder has fallen.
-execute if entity @s[tag=defeated_villain_final_boss] run scoreboard players display name q.main ci_quest [{"text":"▶ Hunt the Ender Dragon","color":"dark_green"}]
+execute if entity @s[tag=defeated_villain_final_boss] run scoreboard players display name q.main ci_quest [{"text":"▶ Beyond the map — the world is yours","color":"dark_green"}]
 
 # ---- Side objectives (light up as their systems come online) ----
 # Opening chain as a tracked mission (slot 81, top of the side list): lights the moment
@@ -276,3 +276,328 @@ scoreboard players reset q.side_papers ci_quest
 execute if score @s ci_papers_held matches 2.. run scoreboard players set q.side_papers ci_quest 75
 execute if score @s ci_papers_held matches 2.. store result storage cobblemon_initiative:quest papers int 1 run scoreboard players get @s ci_papers_held
 execute if score @s ci_papers_held matches 2.. run function cobblemon_initiative:quest/set_papers with storage cobblemon_initiative:quest
+
+# ── Battle Frontier (post-Royal-League set-piece, endgame band 82-85; sits just under the
+# main line at 100). Four holders that never overlap by more than two at once: the sign
+# line hides after registration; the hall counter hides once all seven fall and the door
+# line takes over; the plaque line is a one-shot lore pointer. Same reset-then-set contract
+# as the blocks above — all read-only derivations from tags the frontier subsystem latches.
+#
+# Sign the ledger (82): a champion who has not yet signed. Retargets to the Registrar.
+scoreboard players reset q.side_frontier ci_quest
+execute if entity @s[tag=royal_league_champion] unless entity @s[tag=frontier_registered] run scoreboard players set q.side_frontier ci_quest 82
+execute if entity @s[tag=royal_league_champion] unless entity @s[tag=frontier_registered] run scoreboard players display name q.side_frontier ci_quest [{"text":"• Sign the Frontier ledger","color":"aqua"}]
+
+# Count the seven facility brains cleared (scratch #halls — feeds both the N/7 macro and the
+# door line below). frontier_all_cleared is the CAVE (Selene) tag and is counted separately.
+scoreboard players set #halls quest_hud 0
+execute if entity @s[tag=frontier_tower_cleared] run scoreboard players add #halls quest_hud 1
+execute if entity @s[tag=frontier_factory_cleared] run scoreboard players add #halls quest_hud 1
+execute if entity @s[tag=frontier_castle_cleared] run scoreboard players add #halls quest_hud 1
+execute if entity @s[tag=frontier_arcade_cleared] run scoreboard players add #halls quest_hud 1
+execute if entity @s[tag=frontier_port_cleared] run scoreboard players add #halls quest_hud 1
+execute if entity @s[tag=frontier_pyramid_cleared] run scoreboard players add #halls quest_hud 1
+execute if entity @s[tag=frontier_market_cleared] run scoreboard players add #halls quest_hud 1
+
+# The Seven Halls (83): registered, fewer than seven cleared. Dynamic $(halls)/7 macro; the
+# per-hall waypoint retarget lives in quest_targets q.side_frontier_hall.
+scoreboard players reset q.side_frontier_hall ci_quest
+execute if entity @s[tag=frontier_registered] unless entity @s[tag=frontier_all_cleared] if score #halls quest_hud matches ..6 run scoreboard players set q.side_frontier_hall ci_quest 83
+execute if entity @s[tag=frontier_registered] unless entity @s[tag=frontier_all_cleared] if score #halls quest_hud matches ..6 store result storage cobblemon_initiative:quest halls int 1 run scoreboard players get #halls quest_hud
+execute if entity @s[tag=frontier_registered] unless entity @s[tag=frontier_all_cleared] if score #halls quest_hud matches ..6 run function cobblemon_initiative:quest/set_frontier with storage cobblemon_initiative:quest
+
+# The Warden (84): all seven cleared, the Deep Dark door open, Selene not yet beaten.
+scoreboard players reset q.side_frontier_done ci_quest
+execute if entity @s[tag=frontier_registered] unless entity @s[tag=frontier_all_cleared] if score #halls quest_hud matches 7.. run scoreboard players set q.side_frontier_done ci_quest 84
+execute if entity @s[tag=frontier_registered] unless entity @s[tag=frontier_all_cleared] if score #halls quest_hud matches 7.. run scoreboard players display name q.side_frontier_done ci_quest [{"text":"• The Deep Dark door is open - face the Warden","color":"dark_aqua"}]
+
+# The Last Honest Signature (85): registered, plaque not yet read. One-shot lore pointer.
+scoreboard players reset q.side_frontier_plaque ci_quest
+execute if entity @s[tag=frontier_registered] unless entity @s[tag=frontier_plaque_read] run scoreboard players set q.side_frontier_plaque ci_quest 85
+execute if entity @s[tag=frontier_registered] unless entity @s[tag=frontier_plaque_read] run scoreboard players display name q.side_frontier_plaque ci_quest [{"text":"• Read the founding plaque","color":"gray"}]
+
+# ── Mystic Marsh (gym 3) side quests (slots 54-56) ──
+# Wisps in the Reeds (Marigold's charm fetch): lights after the rumor hub (met_mm_nurse), off on turn-in.
+scoreboard players reset q.side_wisps ci_quest
+execute if entity @s[tag=met_mm_nurse,tag=!mm_charms_done] run scoreboard players set q.side_wisps ci_quest 56
+execute if entity @s[tag=met_mm_nurse,tag=!mm_charms_done] run scoreboard players display name q.side_wisps ci_quest [{"text":"• Bring 8 string to the charm-weaver","color":"gray"}]
+
+# Verified Weather (Osric's exchange board): only once the money feels wrong (cd_instability >= 16), off on witness.
+scoreboard players reset q.side_verified ci_quest
+execute unless entity @s[tag=mm_board_done] if score #idx cd_instability matches 16.. run scoreboard players set q.side_verified ci_quest 55
+execute unless entity @s[tag=mm_board_done] if score #idx cd_instability matches 16.. run scoreboard players display name q.side_verified ci_quest [{"text":"• Witness the exchange board at the marsh kiosk","color":"gray"}]
+
+# The Mirebloom Paddy (frees farm_2): lights after the rumor hub points south, off on liberation (field_2_liberated).
+scoreboard players reset q.side_mirebloom ci_quest
+execute if entity @s[tag=met_mm_nurse,tag=!field_2_liberated] run scoreboard players set q.side_mirebloom ci_quest 54
+execute if entity @s[tag=met_mm_nurse,tag=!field_2_liberated] run scoreboard players display name q.side_mirebloom ci_quest [{"text":"• Free the Mirebloom Paddies from the Company","color":"gray"}]
+
+
+# ═══════════ Town quest packs (gyms 4-7) ═══════════
+# ===== Deepcore City (gym 4, Fighting) =====
+# ── Deepcore City (gym 4) side quests (slots 50-53) ──
+# Deep Restructuring (Kang's reserve-fraud fetch, slot 53): lights after the rumor hub
+# (met_deepcore_nurse), off on turn-in (deepcore_restructure_done). Waypoint retargets across
+# stages via quest_targets q.side_reserve (giver -> ledger board -> back to Kang -> optional wager).
+scoreboard players reset q.side_reserve ci_quest
+execute if entity @s[tag=met_deepcore_nurse,tag=!deepcore_restructure_done] run scoreboard players set q.side_reserve ci_quest 53
+execute if entity @s[tag=met_deepcore_nurse,tag=!deepcore_restructure_done] run scoreboard players display name q.side_reserve ci_quest [{"text":"• Look into the re-verified ore ledger for Foreman Kang","color":"gold"}]
+
+# The Iron Ladder (Old Dun's no-heal gauntlet, slot 52): lights once a Bruno student is beaten
+# (defeated_deepcore_trainer_2), off on iron_ladder_cleared.
+scoreboard players reset q.side_ladder ci_quest
+execute if entity @s[tag=defeated_deepcore_trainer_2,tag=!iron_ladder_cleared] run scoreboard players set q.side_ladder ci_quest 52
+execute if entity @s[tag=defeated_deepcore_trainer_2,tag=!iron_ladder_cleared] run scoreboard players display name q.side_ladder ci_quest [{"text":"• Climb Old Dun's Iron Ladder - three fights, no heals","color":"gold"}]
+
+# The Deep Office (scrubbing-artifact set-piece, slot 51): appears once the restructure quest is
+# underway (a reason to be down the shaft), off once the portrait is seen (seen_deep_office).
+scoreboard players reset q.side_office ci_quest
+execute if entity @s[tag=deepcore_restructure_started,tag=!seen_deep_office] run scoreboard players set q.side_office ci_quest 51
+execute if entity @s[tag=deepcore_restructure_started,tag=!seen_deep_office] run scoreboard players display name q.side_office ci_quest [{"text":"• Something is sealed deep in the played-out shaft","color":"dark_gray"}]
+
+# The Better Rate (mandated wheat-trader recognition beat, slot 50): only once the pitch is heard
+# (heard_wheat_pitch, shipped), off if the trader turns hostile or is beaten.
+scoreboard players reset q.side_rate ci_quest
+execute if entity @s[tag=heard_wheat_pitch,tag=!wheat_trader_hostile,tag=!defeated_deepcore_wheat_trader] run scoreboard players set q.side_rate ci_quest 50
+execute if entity @s[tag=heard_wheat_pitch,tag=!wheat_trader_hostile,tag=!defeated_deepcore_wheat_trader] run scoreboard players display name q.side_rate ci_quest [{"text":"• Weigh the grain buyer at the Deepcore commissary","color":"gray"}]
+
+# ===== Gaviota Port (gym 5, Water) =====
+
+# -- Gaviota Port (gym 5) side quests (slots 44-46) --
+# Mending the Deep Nets (Rui fetch->wager): lights after the rumor hub (met_gaviota_nurse), stages by bosun_net_done, off on the wager win.
+scoreboard players reset q.side_rui ci_quest
+execute if entity @s[tag=met_gaviota_nurse,tag=!bosun_net_done] run scoreboard players set q.side_rui ci_quest 44
+execute if entity @s[tag=met_gaviota_nurse,tag=!bosun_net_done] run scoreboard players display name q.side_rui ci_quest [{"text":"• Bring 8 string to Netmender Rui","color":"gray"}]
+execute if entity @s[tag=bosun_net_done,tag=!defeated_sq_rui_wager] run scoreboard players set q.side_rui ci_quest 44
+execute if entity @s[tag=bosun_net_done,tag=!defeated_sq_rui_wager] run scoreboard players display name q.side_rui ci_quest [{"text":"• Take Bosun Rui up on his wager","color":"gray"}]
+
+# The Tide Market (Odessa black-market fetch): lights after the rumor hub, stages by odessa_crate_started, off on recovery.
+scoreboard players reset q.side_odessa ci_quest
+execute if entity @s[tag=met_gaviota_nurse,tag=!odessa_crate_started,tag=!odessa_crate_recovered] run scoreboard players set q.side_odessa ci_quest 45
+execute if entity @s[tag=met_gaviota_nurse,tag=!odessa_crate_started,tag=!odessa_crate_recovered] run scoreboard players display name q.side_odessa ci_quest [{"text":"• Find the fence under the boardwalk","color":"gray"}]
+execute if entity @s[tag=odessa_crate_started,tag=!odessa_crate_recovered] run scoreboard players set q.side_odessa ci_quest 45
+execute if entity @s[tag=odessa_crate_started,tag=!odessa_crate_recovered] run scoreboard players display name q.side_odessa ci_quest [{"text":"• Recover the seized crate off the customs float","color":"gray"}]
+
+# Adjusted Freight (Kaito manifest audit): lights on gaviota_manifest_check_active, off on gaviota_manifests_filed. Dynamic $(manifests)/3; flips to the report leg at 3/3. Mirrors the q.side_prices block.
+scoreboard players reset q.side_freight ci_quest
+execute if entity @s[tag=gaviota_manifest_check_active] unless entity @s[tag=gaviota_manifests_filed] run scoreboard players set #manifests quest_hud 0
+execute if entity @s[tag=gaviota_manifest_check_active] unless entity @s[tag=gaviota_manifests_filed] if entity @s[tag=gaviota_manifest_1] run scoreboard players add #manifests quest_hud 1
+execute if entity @s[tag=gaviota_manifest_check_active] unless entity @s[tag=gaviota_manifests_filed] if entity @s[tag=gaviota_manifest_2] run scoreboard players add #manifests quest_hud 1
+execute if entity @s[tag=gaviota_manifest_check_active] unless entity @s[tag=gaviota_manifests_filed] if entity @s[tag=gaviota_manifest_3] run scoreboard players add #manifests quest_hud 1
+execute if entity @s[tag=gaviota_manifest_check_active] unless entity @s[tag=gaviota_manifests_filed] run scoreboard players set q.side_freight ci_quest 46
+execute if entity @s[tag=gaviota_manifest_check_active] unless entity @s[tag=gaviota_manifests_filed] store result storage cobblemon_initiative:quest manifests int 1 run scoreboard players get #manifests quest_hud
+execute if entity @s[tag=gaviota_manifest_check_active] unless entity @s[tag=gaviota_manifests_filed] if score #manifests quest_hud matches ..2 run function cobblemon_initiative:sidequest/manifest/set_manifests with storage cobblemon_initiative:quest
+execute if entity @s[tag=gaviota_manifest_check_active] unless entity @s[tag=gaviota_manifests_filed] if score #manifests quest_hud matches 3.. run scoreboard players display name q.side_freight ci_quest [{"text":"• Report the manifest shortfalls to Kaito","color":"gray"}]
+
+# ===== Kalahar Reach =====
+# ── Kalahar Reach (gym 6) side quests (slots 42-43) ──
+# The Reach Remembers (Ossa's boundary stones): opens on her accept (boundary_stones_active),
+# retargets stone-1 dune line -> the guarded stone-3 road -> back to Ossa to file; off when filed.
+scoreboard players reset q.side_kalahar_stones ci_quest
+execute if entity @s[tag=boundary_stones_active,tag=!boundary_stones_done] run scoreboard players set q.side_kalahar_stones ci_quest 43
+execute if entity @s[tag=boundary_stones_active,tag=!boundary_stones_done] run scoreboard players display name q.side_kalahar_stones ci_quest [{"text":"• Unearth the survey stones along the dune line","color":"gray"}]
+execute if entity @s[tag=seal_stone_1,tag=seal_stone_2,tag=!seal_stone_3,tag=!boundary_stones_done] run scoreboard players display name q.side_kalahar_stones ci_quest [{"text":"• Read the guarded stone on the Old Caravan Road","color":"gray"}]
+execute if entity @s[tag=seal_stone_1,tag=seal_stone_2,tag=seal_stone_3,tag=!boundary_stones_done] run scoreboard players display name q.side_kalahar_stones ci_quest [{"text":"• File the counter-claim with Warden Ossa","color":"gray"}]
+
+# Dry Season (Marisol's wells): opens on her accept (dry_season_active), retargets the Oasis
+# pump crew -> the manifold once both are down -> back to Marisol to report; off when restored.
+scoreboard players reset q.side_kalahar_water ci_quest
+execute if entity @s[tag=dry_season_active,tag=!dry_season_done] run scoreboard players set q.side_kalahar_water ci_quest 42
+execute if entity @s[tag=dry_season_active,tag=!dry_season_done] run scoreboard players display name q.side_kalahar_water ci_quest [{"text":"• Drive off the Company pump crew at the Oasis","color":"gray"}]
+execute if entity @s[tag=dry_season_active,tag=defeated_sq_pump_officer,tag=defeated_sq_pump_foreman,tag=!oasis_pump_off,tag=!dry_season_done] run scoreboard players display name q.side_kalahar_water ci_quest [{"text":"• Shut the pump manifold at the Oasis","color":"gray"}]
+execute if entity @s[tag=oasis_pump_off,tag=!dry_season_done] run scoreboard players display name q.side_kalahar_water ci_quest [{"text":"• Report the shut pump to Well-Keeper Marisol","color":"gray"}]
+
+# ===== Cyber City (gym 7, Electric) =====
+# ── Cyber City (gym 7) side quests (slots 34-37) ──
+# The Door Downtown (Ohmond, HQ on-ramp): two mutually-exclusive stages, post-Volt only. Stage 2
+# (hear the math) until hq_pointer_done; stage 1 (starve the fields) after, until the keycard lands.
+scoreboard players reset q.side_door ci_quest
+execute if entity @s[tag=defeated_cyber_leader,tag=!hq_pointer_done] run scoreboard players set q.side_door ci_quest 37
+execute if entity @s[tag=defeated_cyber_leader,tag=!hq_pointer_done] run scoreboard players display name q.side_door ci_quest [{"text":"• Hear the door math from Ohmond","color":"gray"}]
+execute if entity @s[tag=hq_pointer_done,tag=!hq_keycard] run scoreboard players set q.side_door ci_quest 37
+execute if entity @s[tag=hq_pointer_done,tag=!hq_keycard] run scoreboard players display name q.side_door ci_quest [{"text":"• Liberate the last fields, then find the tower door","color":"gold"}]
+
+# Off the Records (Maren whistleblower): post-Volt; from the accept latch (ci_file_active) to the file recovery (ci_file_done).
+scoreboard players reset q.side_offrecords ci_quest
+execute if entity @s[tag=ci_file_active,tag=!ci_file_done] run scoreboard players set q.side_offrecords ci_quest 36
+execute if entity @s[tag=ci_file_active,tag=!ci_file_done] run scoreboard players display name q.side_offrecords ci_quest [{"text":"• Recover 3 file pages from the archive drops","color":"gray"}]
+
+# Signal Integrity (Rell surveillance): from the accept latch (ci_signal_active) to the last board (ci_signal_done).
+scoreboard players reset q.side_signal ci_quest
+execute if entity @s[tag=ci_signal_active,tag=!ci_signal_done] run scoreboard players set q.side_signal ci_quest 35
+execute if entity @s[tag=ci_signal_active,tag=!ci_signal_done] run scoreboard players display name q.side_signal ci_quest [{"text":"• Scrub 3 glitching billboards downtown","color":"gray"}]
+
+# Exchange Rate (teller data quest): from the accept latch (ci_reserves_active) to the count turn-in (ci_reserves_done).
+scoreboard players reset q.side_exchange ci_quest
+execute if entity @s[tag=ci_reserves_active,tag=!ci_reserves_done] run scoreboard players set q.side_exchange ci_quest 34
+execute if entity @s[tag=ci_reserves_active,tag=!ci_reserves_done] run scoreboard players display name q.side_exchange ci_quest [{"text":"• Re-verify 3 reserve tags downtown","color":"gray"}]
+
+# ═══════════ Town quest packs (gyms 8-10) ═══════════
+# ===== Ryujin Keep (gym 8, Dragon) (generated from quest_targets) =====
+scoreboard players reset q.side_oath ci_quest
+execute if entity @s[tag=defeated_villain_boss,tag=!ryujin_oath_told] run scoreboard players set q.side_oath ci_quest 28
+execute if entity @s[tag=defeated_villain_boss,tag=!ryujin_oath_told] run scoreboard players display name q.side_oath ci_quest [{"text":"• Hear the First Oath from Skywatcher Rei","color":"gray"}]
+scoreboard players reset q.side_mail ci_quest
+execute if entity @s[tag=defeated_villain_boss,tag=!ryujin_mail_done] run scoreboard players set q.side_mail ci_quest 29
+execute if entity @s[tag=defeated_villain_boss,tag=!ryujin_mail_done] run scoreboard players display name q.side_mail ci_quest [{"text":"• Bring Tetsu 8 dragon scales","color":"gray"}]
+execute if entity @s[tag=ryujin_mail_done,tag=!defeated_sq_ryujin_tetsu_wager,tag=!declined_sq_ryujin_tetsu_wager] run scoreboard players set q.side_mail ci_quest 29
+execute if entity @s[tag=ryujin_mail_done,tag=!defeated_sq_ryujin_tetsu_wager,tag=!declined_sq_ryujin_tetsu_wager] run scoreboard players display name q.side_mail ci_quest [{"text":"• Take Tetsu wager, or part friends","color":"gray"}]
+scoreboard players reset q.side_heritage ci_quest
+execute if entity @s[tag=defeated_villain_boss,tag=!ryujin_charter_read,tag=!ryujin_heritage_settled,tag=!declined_ryujin_heritage_envoy] run scoreboard players set q.side_heritage ci_quest 30
+execute if entity @s[tag=defeated_villain_boss,tag=!ryujin_charter_read,tag=!ryujin_heritage_settled,tag=!declined_ryujin_heritage_envoy] run scoreboard players display name q.side_heritage ci_quest [{"text":"• Read the Sovereign Charter at the lectern","color":"gray"}]
+execute if entity @s[tag=ryujin_charter_read,tag=!ryujin_heritage_settled,tag=!declined_ryujin_heritage_envoy] run scoreboard players set q.side_heritage ci_quest 30
+execute if entity @s[tag=ryujin_charter_read,tag=!ryujin_heritage_settled,tag=!declined_ryujin_heritage_envoy] run scoreboard players display name q.side_heritage ci_quest [{"text":"• Send the Heritage envoy packing","color":"gray"}]
+scoreboard players reset q.side_clerk8 ci_quest
+execute if entity @s[tag=ryujin_defector_met,tag=!ryujin_ledger_taken] run scoreboard players set q.side_clerk8 ci_quest 31
+execute if entity @s[tag=ryujin_defector_met,tag=!ryujin_ledger_taken] run scoreboard players display name q.side_clerk8 ci_quest [{"text":"• Take the ledger page from the clerk","color":"gray"}]
+
+# ===== Nifl Town (gym 9, Ice) (generated from quest_targets) =====
+scoreboard players reset q.side_archive ci_quest
+execute if entity @s[tag=defeated_ryujin_leader,tag=!nifl_core_1,tag=!nifl_archive_read] run scoreboard players set q.side_archive ci_quest 24
+execute if entity @s[tag=defeated_ryujin_leader,tag=!nifl_core_1,tag=!nifl_archive_read] run scoreboard players display name q.side_archive ci_quest [{"text":"• Ask Auditor Corvin about the vault","color":"gray"}]
+execute if entity @s[tag=nifl_core_1,tag=!nifl_core_2] run scoreboard players set q.side_archive ci_quest 24
+execute if entity @s[tag=nifl_core_1,tag=!nifl_core_2] run scoreboard players display name q.side_archive ci_quest [{"text":"• Thaw the ledger cores with Corvin","color":"gray"}]
+execute if entity @s[tag=nifl_core_2,tag=!nifl_archive_read] run scoreboard players set q.side_archive ci_quest 24
+execute if entity @s[tag=nifl_core_2,tag=!nifl_archive_read] run scoreboard players display name q.side_archive ci_quest [{"text":"• Get past Halden to the last core","color":"gray"}]
+scoreboard players reset q.side_frostgate ci_quest
+execute if entity @s[tag=defeated_ryujin_leader,tag=!nifl_frostgate_clear] run scoreboard players set q.side_frostgate ci_quest 23
+execute if entity @s[tag=defeated_ryujin_leader,tag=!nifl_frostgate_clear] run scoreboard players display name q.side_frostgate ci_quest [{"text":"• Settle the Frostgate with Warrant Officer Dain","color":"gray"}]
+scoreboard players reset q.side_lanterns ci_quest
+execute if entity @s[tag=defeated_ryujin_leader,tag=!nifl_lantern_1,tag=!nifl_lanterns_done] run scoreboard players set q.side_lanterns ci_quest 22
+execute if entity @s[tag=defeated_ryujin_leader,tag=!nifl_lantern_1,tag=!nifl_lanterns_done] run scoreboard players display name q.side_lanterns ci_quest [{"text":"• Ask Keeper Vetra about the dark lanterns","color":"gray"}]
+execute if entity @s[tag=nifl_lantern_1,tag=!nifl_lanterns_done] run scoreboard players set q.side_lanterns ci_quest 22
+execute if entity @s[tag=nifl_lantern_1,tag=!nifl_lanterns_done] run scoreboard players display name q.side_lanterns ci_quest [{"text":"• Relight the lake lanterns with Vetra","color":"gray"}]
+
+# ===== Scorchspire (generated from quest_targets) =====
+scoreboard players reset q.side_forgeorder ci_quest
+execute if entity @s[tag=met_scorchspire_healer,tag=!forge_order_1] run scoreboard players set q.side_forgeorder ci_quest 16
+execute if entity @s[tag=met_scorchspire_healer,tag=!forge_order_1] run scoreboard players display name q.side_forgeorder ci_quest [{"text":"• The forge runs a dead Company order - see Forgemaster Sena","color":"gray"}]
+execute if entity @s[tag=forge_order_1,tag=!forge_order_2] run scoreboard players set q.side_forgeorder ci_quest 16
+execute if entity @s[tag=forge_order_1,tag=!forge_order_2] run scoreboard players display name q.side_forgeorder ci_quest [{"text":"• Burn the requisition ledgers with Sena","color":"gray"}]
+execute if entity @s[tag=forge_order_2,tag=!forge_order_agent_clear,tag=!declined_sq_recovery_agent] run scoreboard players set q.side_forgeorder ci_quest 16
+execute if entity @s[tag=forge_order_2,tag=!forge_order_agent_clear,tag=!declined_sq_recovery_agent] run scoreboard players display name q.side_forgeorder ci_quest [{"text":"• Settle the Asset Recovery collector by the quench","color":"gray"}]
+execute if entity @s[tag=declined_sq_recovery_agent,tag=forge_order_2,tag=!forge_order_done,tag=!forge_order_agent_clear] run scoreboard players set q.side_forgeorder ci_quest 16
+execute if entity @s[tag=declined_sq_recovery_agent,tag=forge_order_2,tag=!forge_order_done,tag=!forge_order_agent_clear] run scoreboard players display name q.side_forgeorder ci_quest [{"text":"• Return to Sena and burn the blank charter","color":"gray"}]
+execute if entity @s[tag=forge_order_agent_clear,tag=!forge_order_done] run scoreboard players set q.side_forgeorder ci_quest 16
+execute if entity @s[tag=forge_order_agent_clear,tag=!forge_order_done] run scoreboard players display name q.side_forgeorder ci_quest [{"text":"• Return to Sena and burn the blank charter","color":"gray"}]
+scoreboard players reset q.side_tempering ci_quest
+execute if entity @s[tag=met_scorchspire_healer,tag=!temper_blade_done] run scoreboard players set q.side_tempering ci_quest 17
+execute if entity @s[tag=met_scorchspire_healer,tag=!temper_blade_done] run scoreboard players display name q.side_tempering ci_quest [{"text":"• Bring Bladesmith Hollis 8 iron ingots to temper a keepsake","color":"gray"}]
+execute if entity @s[tag=temper_blade_done,tag=!defeated_sq_temper_hollis] run scoreboard players set q.side_tempering ci_quest 17
+execute if entity @s[tag=temper_blade_done,tag=!defeated_sq_temper_hollis] run scoreboard players display name q.side_tempering ci_quest [{"text":"• Test the tempered edge against Hollis (optional wager)","color":"gray"}]
+scoreboard players reset q.side_thehand ci_quest
+execute if entity @s[tag=met_scorchspire_healer,tag=!the_hand_started] run scoreboard players set q.side_thehand ci_quest 18
+execute if entity @s[tag=met_scorchspire_healer,tag=!the_hand_started] run scoreboard players display name q.side_thehand ci_quest [{"text":"• Old Marren remembers the hand that signed the plates - hear him out","color":"gray"}]
+execute if entity @s[tag=the_hand_started,tag=!the_hand_plate] run scoreboard players set q.side_thehand ci_quest 18
+execute if entity @s[tag=the_hand_started,tag=!the_hand_plate] run scoreboard players display name q.side_thehand ci_quest [{"text":"• Dig the half-slagged door plate from the forge slag heap","color":"gray"}]
+execute if entity @s[tag=the_hand_plate,tag=!the_hand_done] run scoreboard players set q.side_thehand ci_quest 18
+execute if entity @s[tag=the_hand_plate,tag=!the_hand_done] run scoreboard players display name q.side_thehand ci_quest [{"text":"• Set the door plate on the Marren anvil","color":"gray"}]
+scoreboard players reset q.side_retirement ci_quest
+execute if entity @s[tag=met_scorchspire_healer,tag=!severance_met] run scoreboard players set q.side_retirement ci_quest 19
+execute if entity @s[tag=met_scorchspire_healer,tag=!severance_met] run scoreboard players display name q.side_retirement ci_quest [{"text":"• A Company clerk is hiding on the shrine road - find her","color":"gray"}]
+execute if entity @s[tag=severance_met,tag=!asset_recovery_clear] run scoreboard players set q.side_retirement ci_quest 19
+execute if entity @s[tag=severance_met,tag=!asset_recovery_clear] run scoreboard players display name q.side_retirement ci_quest [{"text":"• Beat the Asset Recovery tag-team on the shrine road","color":"gray"}]
+execute if entity @s[tag=asset_recovery_clear,tag=!retirement_memo_taken] run scoreboard players set q.side_retirement ci_quest 19
+execute if entity @s[tag=asset_recovery_clear,tag=!retirement_memo_taken] run scoreboard players display name q.side_retirement ci_quest [{"text":"• Take the memo trail from Severance","color":"gray"}]
+
+
+# ═══════════ Nobles + Shrines endgame cluster ═══════════
+# ===== 14_shrines =====
+scoreboard players set #shrines quest_hud 0
+execute if entity @s[tag=defeated_fairy_shrine_leader] run scoreboard players add #shrines quest_hud 1
+execute if entity @s[tag=defeated_ground_shrine_leader] run scoreboard players add #shrines quest_hud 1
+execute if entity @s[tag=defeated_dragon_shrine_leader] run scoreboard players add #shrines quest_hud 1
+execute if entity @s[tag=defeated_ice_shrine_leader] run scoreboard players add #shrines quest_hud 1
+execute if entity @s[tag=defeated_fire_shrine_leader] run scoreboard players add #shrines quest_hud 1
+scoreboard players reset q.side_shrines_capstone ci_quest
+execute if score #shrines quest_hud matches 1.. unless entity @s[tag=five_keepers_paid] run scoreboard players set q.side_shrines_capstone ci_quest 93
+execute if score #shrines quest_hud matches 1.. unless entity @s[tag=five_keepers_paid] run scoreboard players display name q.side_shrines_capstone ci_quest [{"text":"• Five Keepers - clear all five elemental shrines","color":"aqua"}]
+execute if entity @s[tag=defeated_fairy_shrine_leader,tag=defeated_ground_shrine_leader,tag=defeated_dragon_shrine_leader,tag=defeated_ice_shrine_leader,tag=defeated_fire_shrine_leader,tag=!five_keepers_paid] run scoreboard players set q.side_shrines_capstone ci_quest 93
+execute if entity @s[tag=defeated_fairy_shrine_leader,tag=defeated_ground_shrine_leader,tag=defeated_dragon_shrine_leader,tag=defeated_ice_shrine_leader,tag=defeated_fire_shrine_leader,tag=!five_keepers_paid] run scoreboard players display name q.side_shrines_capstone ci_quest [{"text":"• Five Keepers - claim the crystals from the Last Pilgrim","color":"aqua"}]
+execute if entity @s[tag=five_keepers_paid] run scoreboard players set q.side_shrines_capstone ci_quest 93
+execute if entity @s[tag=five_keepers_paid] run scoreboard players display name q.side_shrines_capstone ci_quest [{"text":"• Five Keepers - the crystals answer to one hand","color":"dark_aqua"}]
+scoreboard players reset q.side_shrine_fairy ci_quest
+execute if entity @s[tag=defeated_mystic_leader,tag=!defeated_fairy_shrine_leader] run scoreboard players set q.side_shrine_fairy ci_quest 94
+execute if entity @s[tag=defeated_mystic_leader,tag=!defeated_fairy_shrine_leader] run scoreboard players display name q.side_shrine_fairy ci_quest [{"text":"• Climb the Fairy Shrine cultist ladder","color":"gray"}]
+execute if entity @s[tag=defeated_mystic_leader,tag=defeated_fairy_shrine_cultist_2,tag=!defeated_fairy_shrine_leader] run scoreboard players set q.side_shrine_fairy ci_quest 94
+execute if entity @s[tag=defeated_mystic_leader,tag=defeated_fairy_shrine_cultist_2,tag=!defeated_fairy_shrine_leader] run scoreboard players display name q.side_shrine_fairy ci_quest [{"text":"• Face High Priestess Aurora","color":"light_purple"}]
+execute if entity @s[tag=defeated_fairy_shrine_leader] run scoreboard players set q.side_shrine_fairy ci_quest 94
+execute if entity @s[tag=defeated_fairy_shrine_leader] run scoreboard players display name q.side_shrine_fairy ci_quest [{"text":"• Fairy Shrine cleared - the crystal raises Xerneas","color":"dark_aqua"}]
+scoreboard players reset q.side_shrine_ground ci_quest
+execute if entity @s[tag=defeated_kalahar_leader,tag=!defeated_ground_shrine_leader] run scoreboard players set q.side_shrine_ground ci_quest 95
+execute if entity @s[tag=defeated_kalahar_leader,tag=!defeated_ground_shrine_leader] run scoreboard players display name q.side_shrine_ground ci_quest [{"text":"• Descend the Ground Shrine cultist ladder","color":"gray"}]
+execute if entity @s[tag=defeated_kalahar_leader,tag=defeated_ground_shrine_cultist_2,tag=!defeated_ground_shrine_leader] run scoreboard players set q.side_shrine_ground ci_quest 95
+execute if entity @s[tag=defeated_kalahar_leader,tag=defeated_ground_shrine_cultist_2,tag=!defeated_ground_shrine_leader] run scoreboard players display name q.side_shrine_ground ci_quest [{"text":"• Face High Priest Terran - fights in pairs","color":"gold"}]
+execute if entity @s[tag=defeated_ground_shrine_leader] run scoreboard players set q.side_shrine_ground ci_quest 95
+execute if entity @s[tag=defeated_ground_shrine_leader] run scoreboard players display name q.side_shrine_ground ci_quest [{"text":"• Ground Shrine cleared - the crystal raises Groudon","color":"dark_aqua"}]
+scoreboard players reset q.side_shrine_dragon ci_quest
+execute if entity @s[tag=defeated_ryujin_leader,tag=!defeated_dragon_shrine_leader] run scoreboard players set q.side_shrine_dragon ci_quest 96
+execute if entity @s[tag=defeated_ryujin_leader,tag=!defeated_dragon_shrine_leader] run scoreboard players display name q.side_shrine_dragon ci_quest [{"text":"• Climb the Dragon Shrine cultist ladder","color":"gray"}]
+execute if entity @s[tag=defeated_ryujin_leader,tag=defeated_dragon_shrine_cultist_2,tag=!defeated_dragon_shrine_leader] run scoreboard players set q.side_shrine_dragon ci_quest 96
+execute if entity @s[tag=defeated_ryujin_leader,tag=defeated_dragon_shrine_cultist_2,tag=!defeated_dragon_shrine_leader] run scoreboard players display name q.side_shrine_dragon ci_quest [{"text":"• Face High Priest Draconis - fights in pairs","color":"gold"}]
+execute if entity @s[tag=defeated_dragon_shrine_leader] run scoreboard players set q.side_shrine_dragon ci_quest 96
+execute if entity @s[tag=defeated_dragon_shrine_leader] run scoreboard players display name q.side_shrine_dragon ci_quest [{"text":"• Dragon Shrine cleared - the crystal raises Rayquaza","color":"dark_aqua"}]
+scoreboard players reset q.side_shrine_ice ci_quest
+execute if entity @s[tag=defeated_nifl_leader,tag=!defeated_ice_shrine_leader] run scoreboard players set q.side_shrine_ice ci_quest 97
+execute if entity @s[tag=defeated_nifl_leader,tag=!defeated_ice_shrine_leader] run scoreboard players display name q.side_shrine_ice ci_quest [{"text":"• Cross the Ice Shrine cultist ladder","color":"gray"}]
+execute if entity @s[tag=defeated_nifl_leader,tag=defeated_ice_shrine_cultist_2,tag=!ice_shrine_trial_clear,tag=!defeated_ice_shrine_leader] run scoreboard players set q.side_shrine_ice ci_quest 97
+execute if entity @s[tag=defeated_nifl_leader,tag=defeated_ice_shrine_cultist_2,tag=!ice_shrine_trial_clear,tag=!defeated_ice_shrine_leader] run scoreboard players display name q.side_shrine_ice ci_quest [{"text":"• Cross the frozen path, then face Glacius","color":"aqua"}]
+execute if entity @s[tag=defeated_nifl_leader,tag=ice_shrine_trial_clear,tag=!defeated_ice_shrine_leader] run scoreboard players set q.side_shrine_ice ci_quest 97
+execute if entity @s[tag=defeated_nifl_leader,tag=ice_shrine_trial_clear,tag=!defeated_ice_shrine_leader] run scoreboard players display name q.side_shrine_ice ci_quest [{"text":"• Face High Priest Glacius","color":"aqua"}]
+execute if entity @s[tag=defeated_ice_shrine_leader] run scoreboard players set q.side_shrine_ice ci_quest 97
+execute if entity @s[tag=defeated_ice_shrine_leader] run scoreboard players display name q.side_shrine_ice ci_quest [{"text":"• Ice Shrine cleared - the crystal raises Articuno","color":"dark_aqua"}]
+scoreboard players reset q.side_shrine_fire ci_quest
+execute if entity @s[tag=royal_league_champion,tag=!defeated_fire_shrine_leader] run scoreboard players set q.side_shrine_fire ci_quest 98
+execute if entity @s[tag=royal_league_champion,tag=!defeated_fire_shrine_leader] run scoreboard players display name q.side_shrine_fire ci_quest [{"text":"• Climb the Fire Shrine cultist ladder","color":"gray"}]
+execute if entity @s[tag=royal_league_champion,tag=defeated_fire_shrine_cultist_2,tag=!fire_shrine_trial_clear,tag=!defeated_fire_shrine_leader] run scoreboard players set q.side_shrine_fire ci_quest 98
+execute if entity @s[tag=royal_league_champion,tag=defeated_fire_shrine_cultist_2,tag=!fire_shrine_trial_clear,tag=!defeated_fire_shrine_leader] run scoreboard players display name q.side_shrine_fire ci_quest [{"text":"• Run the burning path, then face Ignis","color":"gold"}]
+execute if entity @s[tag=royal_league_champion,tag=fire_shrine_trial_clear,tag=!defeated_fire_shrine_leader] run scoreboard players set q.side_shrine_fire ci_quest 98
+execute if entity @s[tag=royal_league_champion,tag=fire_shrine_trial_clear,tag=!defeated_fire_shrine_leader] run scoreboard players display name q.side_shrine_fire ci_quest [{"text":"• Face High Priest Ignis","color":"gold"}]
+execute if entity @s[tag=defeated_fire_shrine_leader] run scoreboard players set q.side_shrine_fire ci_quest 98
+execute if entity @s[tag=defeated_fire_shrine_leader] run scoreboard players display name q.side_shrine_fire ci_quest [{"text":"• Fire Shrine cleared - the crystal raises Moltres","color":"dark_aqua"}]
+
+# ===== 13_nobles_gating (NOBLE half) =====
+# === Noble encounters (endgame set-pieces, slots 86-92; above the town side quests, below the main line at 100). Append to function/quest/render.mcfunction. defeated_noble_<id> is the noble engine storyFlag SCOREBOARD (created lazily on first subdual) - zero-init each objective then gate the done-state on the SCORE, never a tag (a defeated_noble_<id> tag would be dead). ===
+scoreboard objectives add defeated_noble_mew dummy
+scoreboard objectives add defeated_noble_kyogre dummy
+scoreboard objectives add defeated_noble_zapdos dummy
+scoreboard objectives add defeated_noble_rayquaza dummy
+scoreboard objectives add defeated_noble_articuno dummy
+scoreboard objectives add defeated_noble_groudon dummy
+scoreboard objectives add defeated_noble_moltres dummy
+execute unless score @s defeated_noble_mew matches 0.. run scoreboard players set @s defeated_noble_mew 0
+execute unless score @s defeated_noble_kyogre matches 0.. run scoreboard players set @s defeated_noble_kyogre 0
+execute unless score @s defeated_noble_zapdos matches 0.. run scoreboard players set @s defeated_noble_zapdos 0
+execute unless score @s defeated_noble_rayquaza matches 0.. run scoreboard players set @s defeated_noble_rayquaza 0
+execute unless score @s defeated_noble_articuno matches 0.. run scoreboard players set @s defeated_noble_articuno 0
+execute unless score @s defeated_noble_groudon matches 0.. run scoreboard players set @s defeated_noble_groudon 0
+execute unless score @s defeated_noble_moltres matches 0.. run scoreboard players set @s defeated_noble_moltres 0
+# A Giggle in the Grass (Mew chase, 86): mid band (badges 3-6), off once subdued.
+scoreboard players reset q.side_wisp ci_quest
+execute if score @s memory_fragment matches 3.. unless score @s defeated_noble_mew matches 1.. run scoreboard players set q.side_wisp ci_quest 86
+execute if score @s memory_fragment matches 3.. unless score @s defeated_noble_mew matches 1.. run scoreboard players display name q.side_wisp ci_quest [{"text":"• Chase the wisp in the Safari Zone","color":"light_purple"}]
+# Under the Storm (Kyogre buoy, 87): post-gym-5, off once subdued.
+scoreboard players reset q.side_deep ci_quest
+execute if score @s memory_fragment matches 5.. unless score @s defeated_noble_kyogre matches 1.. run scoreboard players set q.side_deep ci_quest 87
+execute if score @s memory_fragment matches 5.. unless score @s defeated_noble_kyogre matches 1.. run scoreboard players display name q.side_deep ci_quest [{"text":"• Ring the warning buoy off Gaviota","color":"aqua"}]
+# The Defense of Cyber City (Zapdos prompt, 88): post-gym-7 (badges_gte_7), off once subdued.
+scoreboard players reset q.side_grid ci_quest
+execute if entity @s[tag=badges_gte_7] unless score @s defeated_noble_zapdos matches 1.. run scoreboard players set q.side_grid ci_quest 88
+execute if entity @s[tag=badges_gte_7] unless score @s defeated_noble_zapdos matches 1.. run scoreboard players display name q.side_grid ci_quest [{"text":"• Help Grid Warden Cass hold the grid","color":"yellow"}]
+# What Falls From the Sky (Rayquaza double-gate, 89): gym 8 AND Dragon Shrine cleared -> the altar; gym 8 without the shrine -> points at the shrine prereq first. Off once subdued.
+scoreboard players reset q.side_sky ci_quest
+execute if score @s memory_fragment matches 8.. unless score @s defeated_noble_rayquaza matches 1.. run scoreboard players set q.side_sky ci_quest 89
+execute if score @s memory_fragment matches 8.. if entity @s[tag=!defeated_dragon_shrine_leader] unless score @s defeated_noble_rayquaza matches 1.. run scoreboard players display name q.side_sky ci_quest [{"text":"• Clear the Dragon Shrine to unseal the sky-altar","color":"gray"}]
+execute if score @s memory_fragment matches 8.. if entity @s[tag=defeated_dragon_shrine_leader] unless score @s defeated_noble_rayquaza matches 1.. run scoreboard players display name q.side_sky ci_quest [{"text":"• Raise your hand at the Ryujin sky-altar","color":"green"}]
+# Winter Takes Wing (Articuno dovetail, 90): Ice Shrine cleared, off once subdued.
+scoreboard players reset q.side_gale ci_quest
+execute if entity @s[tag=defeated_ice_shrine_leader] unless score @s defeated_noble_articuno matches 1.. run scoreboard players set q.side_gale ci_quest 90
+execute if entity @s[tag=defeated_ice_shrine_leader] unless score @s defeated_noble_articuno matches 1.. run scoreboard players display name q.side_gale ci_quest [{"text":"• Call the frozen gale at the Ice Shrine","color":"aqua"}]
+# The Mountain Holds Its Breath (Groudon monument, 91): strict post-gym-10 (badges_gte_10), off once subdued.
+scoreboard players reset q.side_mountain ci_quest
+execute if entity @s[tag=badges_gte_10] unless score @s defeated_noble_groudon matches 1.. run scoreboard players set q.side_mountain ci_quest 91
+execute if entity @s[tag=badges_gte_10] unless score @s defeated_noble_groudon matches 1.. run scoreboard players display name q.side_mountain ci_quest [{"text":"• Strike the warding stone on the crater rim","color":"red"}]
+# Rebirth in Ember (Moltres dovetail, 92): Fire Shrine cleared (post-league), off once subdued.
+scoreboard players reset q.side_ember ci_quest
+execute if entity @s[tag=defeated_fire_shrine_leader] unless score @s defeated_noble_moltres matches 1.. run scoreboard players set q.side_ember ci_quest 92
+execute if entity @s[tag=defeated_fire_shrine_leader] unless score @s defeated_noble_moltres matches 1.. run scoreboard players display name q.side_ember ci_quest [{"text":"• Call the reborn flame at the Fire Shrine","color":"gold"}]

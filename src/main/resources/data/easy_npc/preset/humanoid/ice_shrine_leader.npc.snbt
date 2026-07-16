@@ -46,6 +46,27 @@
                     Priority: 20,
                     Buttons: [
                         {
+                            Name: "The frost stirs the high peaks - call the ice-bird",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "noble start articuno"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "defeated_noble_articuno_lte_0"
+                                }
+                            ],
+                            Label: "noble_articuno_button"
+                        },
+                        {
                             Name: "I will keep the frost",
                             Actions: [
                                 {
@@ -69,6 +90,32 @@
                 {
                     Priority: 10,
                     Buttons: [
+                        {
+                            Name: "Begin the frozen path",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:sidequest/shrine/ice_trial_help"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative shrine ice start"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_ice_shrine_trial_clear"
+                                }
+                            ],
+                            Label: "begin_trial_button"
+                        },
                         {
                             Name: "Meet the frost",
                             Actions: [
@@ -110,10 +157,17 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:ice_shrine_leader onwin {1: ['cobbledollars give @1 2500', 'tag @1 add defeated_ice_shrine_leader', '@2 say The frost has set its seal on you and it will not thaw. Go, and keep your stillness.'], 2: ['@1 say The cold turns you away. Return when your resolve will not crack.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:ice_shrine_leader onwin {1: ['cobbledollars give @1 2500', 'tag @1 add defeated_ice_shrine_leader', '@2 say The frost has set its seal on you and it will not thaw. Go, and keep your stillness.', 'execute as @1 unless entity @1[tag=shrine_frag_seen] run function cobblemon_initiative:memory/shrine/first_keeper'], 2: ['@1 say The cold turns you away. Return when your resolve will not crack.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "ice_shrine_trial_clear"
                                 }
                             ],
                             Label: "yes_button"
@@ -130,13 +184,13 @@
                     ],
                     Texts: [
                         {
-                            Text: "Do not move so quickly. This is the Ice Shrine, where everything is kept exactly as it was, untouched by time or mercy. I am Glacius, its still keeper."
+                            Text: "Do not move so quickly. This is the Ice Shrine, where everything is kept exactly as it was, untouched by time or mercy. I am Glacius, its still keeper. You passed my acolytes; the shrine itself is not so easily flattered."
                         },
                         {
-                            Text: "The ice does not lie and it does not forget. It clouded when you entered, the way it clouds before a thing it has held before. What did this shrine once keep of you."
+                            Text: "There is a path of ice below. Cross it before the frost takes you back to the start. What is frozen does not hurry, and neither may you afford to. Clear the frozen path and the frost will seal you - and what it seals, you may carry."
                         },
                         {
-                            Text: "The frost is not given to the warm of heart. It is earned by those who can be still in the face of their own reflection. Face me, and let the ice decide."
+                            Text: "The frost is not given to the warm of heart. It is earned by those who can be still in the face of their own reflection. Cross the path, then face me, and let the ice decide."
                         }
                     ],
                     Name: "Glacius — challenge",

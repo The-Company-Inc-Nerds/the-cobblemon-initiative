@@ -40,7 +40,7 @@
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
-                            Name: "defeated_frontier_brain_factory"
+                            Name: "frontier_factory_cleared"
                         }
                     ],
                     Priority: 20,
@@ -79,7 +79,7 @@
                                             {
                                                 Type: "PLAYER_TAG",
                                                 Operation: "EQUALS",
-                                                Name: "defeated_frontier_brain_factory"
+                                                Name: "frontier_factory_cleared"
                                             }
                                         ]
                                     },
@@ -92,7 +92,7 @@
                                             {
                                                 Type: "PLAYER_TAG",
                                                 Operation: "EQUALS",
-                                                Name: "no_defeated_frontier_brain_factory"
+                                                Name: "no_frontier_factory_cleared"
                                             }
                                         ]
                                     },
@@ -106,11 +106,11 @@
                                             {
                                                 Type: "PLAYER_TAG",
                                                 Operation: "EQUALS",
-                                                Name: "no_defeated_frontier_brain_factory"
+                                                Name: "no_frontier_factory_cleared"
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:frontier_brain_factory onwin {1: ['tag @1 add defeated_frontier_brain_factory', '@2 say Top bench, cleared on borrowed steel. I designed this lending hall and you broke it clean. The Factory is yours.', 'easy_npc delete @2'], 2: ['@1 say My rentals cut sharper than yours held. Draw a new loadout downstairs and climb back to my bench.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:frontier_brain_factory onwin {1: ['cobbledollars give @1 3000', 'tag @1 add frontier_factory_cleared', '@2 say Top bench, cleared on borrowed steel. I designed this lending hall and you broke it clean. The Factory is yours.', 'execute as @1 run function cobblemon_initiative:frontier/hall_cleared'], 2: ['@1 say My rentals cut sharper than yours held. Draw a new loadout downstairs and climb back to my bench.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -135,7 +135,7 @@
                                 {
                                     Type: "PLAYER_TAG",
                                     Operation: "EQUALS",
-                                    Name: "no_defeated_frontier_brain_factory"
+                                    Name: "no_frontier_factory_cleared"
                                 }
                             ],
                             Label: "battle_button"

@@ -25,6 +25,9 @@ execute as @a unless score @s memory_fragment matches 4.. run tag @s remove badg
 execute as @a if score @s memory_fragment matches 7.. run tag @s add badges_gte_7
 execute as @a unless score @s memory_fragment matches 7.. run tag @s remove badges_gte_7
 
+execute as @a if score @s memory_fragment matches 8.. run tag @s add badges_gte_8
+execute as @a unless score @s memory_fragment matches 8.. run tag @s remove badges_gte_8
+
 execute as @a if score @s memory_fragment matches ..2 run tag @s add badges_lt_3
 execute as @a unless score @s memory_fragment matches ..2 run tag @s remove badges_lt_3
 
@@ -33,6 +36,9 @@ execute as @a unless score @s cd_instability matches 16.. run tag @s remove cd_i
 
 execute as @a if score @s cd_instability matches 20.. run tag @s add cd_instability_gte_20
 execute as @a unless score @s cd_instability matches 20.. run tag @s remove cd_instability_gte_20
+
+execute as @a if score @s cd_instability matches 24.. run tag @s add cd_instability_gte_24
+execute as @a unless score @s cd_instability matches 24.. run tag @s remove cd_instability_gte_24
 
 execute as @a if score @s cd_instability matches 25.. run tag @s add cd_instability_gte_25
 execute as @a unless score @s cd_instability matches 25.. run tag @s remove cd_instability_gte_25
@@ -75,6 +81,42 @@ execute as @a unless score @s deepcore_tower matches 2.. run tag @s remove deepc
 
 execute as @a if score @s deepcore_tower matches 4.. run tag @s add deepcore_tower_gte_4
 execute as @a unless score @s deepcore_tower matches 4.. run tag @s remove deepcore_tower_gte_4
+
+execute as @a if score @s defeated_noble_articuno matches ..0 run tag @s add defeated_noble_articuno_lte_0
+execute as @a unless score @s defeated_noble_articuno matches ..0 run tag @s remove defeated_noble_articuno_lte_0
+
+execute as @a if score @s defeated_noble_groudon matches 1.. run tag @s add defeated_noble_groudon_gte_1
+execute as @a unless score @s defeated_noble_groudon matches 1.. run tag @s remove defeated_noble_groudon_gte_1
+
+execute as @a if score @s defeated_noble_groudon matches ..0 run tag @s add defeated_noble_groudon_lte_0
+execute as @a unless score @s defeated_noble_groudon matches ..0 run tag @s remove defeated_noble_groudon_lte_0
+
+execute as @a if score @s defeated_noble_kyogre matches 1.. run tag @s add defeated_noble_kyogre_gte_1
+execute as @a unless score @s defeated_noble_kyogre matches 1.. run tag @s remove defeated_noble_kyogre_gte_1
+
+execute as @a if score @s defeated_noble_kyogre matches ..0 run tag @s add defeated_noble_kyogre_lte_0
+execute as @a unless score @s defeated_noble_kyogre matches ..0 run tag @s remove defeated_noble_kyogre_lte_0
+
+execute as @a if score @s defeated_noble_mew matches 1.. run tag @s add defeated_noble_mew_gte_1
+execute as @a unless score @s defeated_noble_mew matches 1.. run tag @s remove defeated_noble_mew_gte_1
+
+execute as @a if score @s defeated_noble_mew matches ..0 run tag @s add defeated_noble_mew_lte_0
+execute as @a unless score @s defeated_noble_mew matches ..0 run tag @s remove defeated_noble_mew_lte_0
+
+execute as @a if score @s defeated_noble_moltres matches ..0 run tag @s add defeated_noble_moltres_lte_0
+execute as @a unless score @s defeated_noble_moltres matches ..0 run tag @s remove defeated_noble_moltres_lte_0
+
+execute as @a if score @s defeated_noble_rayquaza matches 1.. run tag @s add defeated_noble_rayquaza_gte_1
+execute as @a unless score @s defeated_noble_rayquaza matches 1.. run tag @s remove defeated_noble_rayquaza_gte_1
+
+execute as @a if score @s defeated_noble_rayquaza matches ..0 run tag @s add defeated_noble_rayquaza_lte_0
+execute as @a unless score @s defeated_noble_rayquaza matches ..0 run tag @s remove defeated_noble_rayquaza_lte_0
+
+execute as @a if score @s defeated_noble_zapdos matches 1.. run tag @s add defeated_noble_zapdos_gte_1
+execute as @a unless score @s defeated_noble_zapdos matches 1.. run tag @s remove defeated_noble_zapdos_gte_1
+
+execute as @a if score @s defeated_noble_zapdos matches ..0 run tag @s add defeated_noble_zapdos_lte_0
+execute as @a unless score @s defeated_noble_zapdos matches ..0 run tag @s remove defeated_noble_zapdos_lte_0
 
 execute as @a if score @s dex_caught matches 15.. run tag @s add dex_gte_15
 execute as @a unless score @s dex_caught matches 15.. run tag @s remove dex_gte_15
@@ -185,12 +227,18 @@ execute if score farm_9 field_freed matches 1 run tag @a add field_9_liberated
 execute if score farm_10 field_freed matches 1 run tag @a add field_10_liberated
 
 # inverse tags (no_<X> == player does NOT have X)
+tag @a[tag=!asset_recovery_clear] add no_asset_recovery_clear
+tag @a[tag=asset_recovery_clear] remove no_asset_recovery_clear
 tag @a[tag=!assist_coal_in] add no_assist_coal_in
 tag @a[tag=assist_coal_in] remove no_assist_coal_in
 tag @a[tag=!assist_iron_in] add no_assist_iron_in
 tag @a[tag=assist_iron_in] remove no_assist_iron_in
+tag @a[tag=!bosun_net_done] add no_bosun_net_done
+tag @a[tag=bosun_net_done] remove no_bosun_net_done
 tag @a[tag=!bought_magikarp] add no_bought_magikarp
 tag @a[tag=bought_magikarp] remove no_bought_magikarp
+tag @a[tag=!boundary_stones_done] add no_boundary_stones_done
+tag @a[tag=boundary_stones_done] remove no_boundary_stones_done
 tag @a[tag=!census_accepted] add no_census_accepted
 tag @a[tag=census_accepted] remove no_census_accepted
 tag @a[tag=!census_done] add no_census_done
@@ -199,6 +247,16 @@ tag @a[tag=!census_paid] add no_census_paid
 tag @a[tag=census_paid] remove no_census_paid
 tag @a[tag=!census_processed] add no_census_processed
 tag @a[tag=census_processed] remove no_census_processed
+tag @a[tag=!cfg_gym_gate_off] add no_cfg_gym_gate_off
+tag @a[tag=cfg_gym_gate_off] remove no_cfg_gym_gate_off
+tag @a[tag=!ci_file_active] add no_ci_file_active
+tag @a[tag=ci_file_active] remove no_ci_file_active
+tag @a[tag=!ci_file_done] add no_ci_file_done
+tag @a[tag=ci_file_done] remove no_ci_file_done
+tag @a[tag=!ci_reserves_done] add no_ci_reserves_done
+tag @a[tag=ci_reserves_done] remove no_ci_reserves_done
+tag @a[tag=!ci_signal_done] add no_ci_signal_done
+tag @a[tag=ci_signal_done] remove no_ci_signal_done
 tag @a[tag=!ci_starters_spawned] add no_ci_starters_spawned
 tag @a[tag=ci_starters_spawned] remove no_ci_starters_spawned
 tag @a[tag=!classic_active] add no_classic_active
@@ -217,6 +275,10 @@ tag @a[tag=!company_overthrown] add no_company_overthrown
 tag @a[tag=company_overthrown] remove no_company_overthrown
 tag @a[tag=!dc_gauntlet_started] add no_dc_gauntlet_started
 tag @a[tag=dc_gauntlet_started] remove no_dc_gauntlet_started
+tag @a[tag=!declined_nifl_records_officer] add no_declined_nifl_records_officer
+tag @a[tag=declined_nifl_records_officer] remove no_declined_nifl_records_officer
+tag @a[tag=!declined_nifl_warrant_officer] add no_declined_nifl_warrant_officer
+tag @a[tag=declined_nifl_warrant_officer] remove no_declined_nifl_warrant_officer
 tag @a[tag=!declined_r10_spotter_caravan] add no_declined_r10_spotter_caravan
 tag @a[tag=declined_r10_spotter_caravan] remove no_declined_r10_spotter_caravan
 tag @a[tag=!declined_r12_spotter_pylon] add no_declined_r12_spotter_pylon
@@ -239,8 +301,12 @@ tag @a[tag=!declined_r8_trainer_dune] add no_declined_r8_trainer_dune
 tag @a[tag=declined_r8_trainer_dune] remove no_declined_r8_trainer_dune
 tag @a[tag=!declined_r8_typetip_dune] add no_declined_r8_typetip_dune
 tag @a[tag=declined_r8_typetip_dune] remove no_declined_r8_typetip_dune
+tag @a[tag=!declined_ryujin_heritage_envoy] add no_declined_ryujin_heritage_envoy
+tag @a[tag=declined_ryujin_heritage_envoy] remove no_declined_ryujin_heritage_envoy
 tag @a[tag=!declined_sq_canvasser] add no_declined_sq_canvasser
 tag @a[tag=declined_sq_canvasser] remove no_declined_sq_canvasser
+tag @a[tag=!declined_sq_deepcore_assessor] add no_declined_sq_deepcore_assessor
+tag @a[tag=declined_sq_deepcore_assessor] remove no_declined_sq_deepcore_assessor
 tag @a[tag=!declined_sq_genji_wager] add no_declined_sq_genji_wager
 tag @a[tag=declined_sq_genji_wager] remove no_declined_sq_genji_wager
 tag @a[tag=!declined_sq_headcount_wager] add no_declined_sq_headcount_wager
@@ -249,6 +315,10 @@ tag @a[tag=!declined_sq_hz_analyst] add no_declined_sq_hz_analyst
 tag @a[tag=declined_sq_hz_analyst] remove no_declined_sq_hz_analyst
 tag @a[tag=!declined_sq_kyc_agent] add no_declined_sq_kyc_agent
 tag @a[tag=declined_sq_kyc_agent] remove no_declined_sq_kyc_agent
+tag @a[tag=!declined_sq_marigold_charm] add no_declined_sq_marigold_charm
+tag @a[tag=declined_sq_marigold_charm] remove no_declined_sq_marigold_charm
+tag @a[tag=!declined_sq_recovery_agent] add no_declined_sq_recovery_agent
+tag @a[tag=declined_sq_recovery_agent] remove no_declined_sq_recovery_agent
 tag @a[tag=!declined_sq_regular_4] add no_declined_sq_regular_4
 tag @a[tag=declined_sq_regular_4] remove no_declined_sq_regular_4
 tag @a[tag=!declined_sq_regular_meadow] add no_declined_sq_regular_meadow
@@ -265,10 +335,20 @@ tag @a[tag=!declined_sq_rt2_scarecrow] add no_declined_sq_rt2_scarecrow
 tag @a[tag=declined_sq_rt2_scarecrow] remove no_declined_sq_rt2_scarecrow
 tag @a[tag=!declined_sq_rt2_wager] add no_declined_sq_rt2_wager
 tag @a[tag=declined_sq_rt2_wager] remove no_declined_sq_rt2_wager
+tag @a[tag=!declined_sq_rui_wager] add no_declined_sq_rui_wager
+tag @a[tag=declined_sq_rui_wager] remove no_declined_sq_rui_wager
+tag @a[tag=!declined_sq_ryujin_tetsu_wager] add no_declined_sq_ryujin_tetsu_wager
+tag @a[tag=declined_sq_ryujin_tetsu_wager] remove no_declined_sq_ryujin_tetsu_wager
 tag @a[tag=!declined_villain_yield_analyst] add no_declined_villain_yield_analyst
 tag @a[tag=declined_villain_yield_analyst] remove no_declined_villain_yield_analyst
 tag @a[tag=!deed_read_lucian] add no_deed_read_lucian
 tag @a[tag=deed_read_lucian] remove no_deed_read_lucian
+tag @a[tag=!deepcore_ledger_seen] add no_deepcore_ledger_seen
+tag @a[tag=deepcore_ledger_seen] remove no_deepcore_ledger_seen
+tag @a[tag=!deepcore_restructure_done] add no_deepcore_restructure_done
+tag @a[tag=deepcore_restructure_done] remove no_deepcore_restructure_done
+tag @a[tag=!deepcore_restructure_started] add no_deepcore_restructure_started
+tag @a[tag=deepcore_restructure_started] remove no_deepcore_restructure_started
 tag @a[tag=!defeated_arcade_challenger_1] add no_defeated_arcade_challenger_1
 tag @a[tag=defeated_arcade_challenger_1] remove no_defeated_arcade_challenger_1
 tag @a[tag=!defeated_arcade_challenger_2] add no_defeated_arcade_challenger_2
@@ -331,6 +411,8 @@ tag @a[tag=!defeated_deepcore_trainer_3] add no_defeated_deepcore_trainer_3
 tag @a[tag=defeated_deepcore_trainer_3] remove no_defeated_deepcore_trainer_3
 tag @a[tag=!defeated_deepcore_trainer_4] add no_defeated_deepcore_trainer_4
 tag @a[tag=defeated_deepcore_trainer_4] remove no_defeated_deepcore_trainer_4
+tag @a[tag=!defeated_deepcore_wheat_trader] add no_defeated_deepcore_wheat_trader
+tag @a[tag=defeated_deepcore_wheat_trader] remove no_defeated_deepcore_wheat_trader
 tag @a[tag=!defeated_dragon_shrine_cultist_1] add no_defeated_dragon_shrine_cultist_1
 tag @a[tag=defeated_dragon_shrine_cultist_1] remove no_defeated_dragon_shrine_cultist_1
 tag @a[tag=!defeated_dragon_shrine_cultist_2] add no_defeated_dragon_shrine_cultist_2
@@ -397,6 +479,8 @@ tag @a[tag=!defeated_gaviota_trainer_4] add no_defeated_gaviota_trainer_4
 tag @a[tag=defeated_gaviota_trainer_4] remove no_defeated_gaviota_trainer_4
 tag @a[tag=!defeated_gaviota_trainer_4_hightide] add no_defeated_gaviota_trainer_4_hightide
 tag @a[tag=defeated_gaviota_trainer_4_hightide] remove no_defeated_gaviota_trainer_4_hightide
+tag @a[tag=!defeated_gaviota_wheat_sea] add no_defeated_gaviota_wheat_sea
+tag @a[tag=defeated_gaviota_wheat_sea] remove no_defeated_gaviota_wheat_sea
 tag @a[tag=!defeated_granary_ambush] add no_defeated_granary_ambush
 tag @a[tag=defeated_granary_ambush] remove no_defeated_granary_ambush
 tag @a[tag=!defeated_ground_shrine_cultist_1] add no_defeated_ground_shrine_cultist_1
@@ -451,6 +535,10 @@ tag @a[tag=!defeated_market_challenger_1] add no_defeated_market_challenger_1
 tag @a[tag=defeated_market_challenger_1] remove no_defeated_market_challenger_1
 tag @a[tag=!defeated_market_challenger_2] add no_defeated_market_challenger_2
 tag @a[tag=defeated_market_challenger_2] remove no_defeated_market_challenger_2
+tag @a[tag=!defeated_mm_field_guard] add no_defeated_mm_field_guard
+tag @a[tag=defeated_mm_field_guard] remove no_defeated_mm_field_guard
+tag @a[tag=!defeated_mm_wheat_trader] add no_defeated_mm_wheat_trader
+tag @a[tag=defeated_mm_wheat_trader] remove no_defeated_mm_wheat_trader
 tag @a[tag=!defeated_mystic_apprentice] add no_defeated_mystic_apprentice
 tag @a[tag=defeated_mystic_apprentice] remove no_defeated_mystic_apprentice
 tag @a[tag=!defeated_mystic_apprentice_weak] add no_defeated_mystic_apprentice_weak
@@ -493,6 +581,8 @@ tag @a[tag=!defeated_nifl_leader] add no_defeated_nifl_leader
 tag @a[tag=defeated_nifl_leader] remove no_defeated_nifl_leader
 tag @a[tag=!defeated_nifl_leader_weak] add no_defeated_nifl_leader_weak
 tag @a[tag=defeated_nifl_leader_weak] remove no_defeated_nifl_leader_weak
+tag @a[tag=!defeated_nifl_records_officer] add no_defeated_nifl_records_officer
+tag @a[tag=defeated_nifl_records_officer] remove no_defeated_nifl_records_officer
 tag @a[tag=!defeated_nifl_trainer_1] add no_defeated_nifl_trainer_1
 tag @a[tag=defeated_nifl_trainer_1] remove no_defeated_nifl_trainer_1
 tag @a[tag=!defeated_nifl_trainer_2] add no_defeated_nifl_trainer_2
@@ -501,6 +591,8 @@ tag @a[tag=!defeated_nifl_trainer_3] add no_defeated_nifl_trainer_3
 tag @a[tag=defeated_nifl_trainer_3] remove no_defeated_nifl_trainer_3
 tag @a[tag=!defeated_nifl_trainer_4] add no_defeated_nifl_trainer_4
 tag @a[tag=defeated_nifl_trainer_4] remove no_defeated_nifl_trainer_4
+tag @a[tag=!defeated_nifl_warrant_officer] add no_defeated_nifl_warrant_officer
+tag @a[tag=defeated_nifl_warrant_officer] remove no_defeated_nifl_warrant_officer
 tag @a[tag=!defeated_port_challenger_1] add no_defeated_port_challenger_1
 tag @a[tag=defeated_port_challenger_1] remove no_defeated_port_challenger_1
 tag @a[tag=!defeated_port_challenger_2] add no_defeated_port_challenger_2
@@ -545,6 +637,8 @@ tag @a[tag=!defeated_ryujin_apprentice] add no_defeated_ryujin_apprentice
 tag @a[tag=defeated_ryujin_apprentice] remove no_defeated_ryujin_apprentice
 tag @a[tag=!defeated_ryujin_apprentice_weak] add no_defeated_ryujin_apprentice_weak
 tag @a[tag=defeated_ryujin_apprentice_weak] remove no_defeated_ryujin_apprentice_weak
+tag @a[tag=!defeated_ryujin_heritage_envoy] add no_defeated_ryujin_heritage_envoy
+tag @a[tag=defeated_ryujin_heritage_envoy] remove no_defeated_ryujin_heritage_envoy
 tag @a[tag=!defeated_ryujin_jr_apprentice] add no_defeated_ryujin_jr_apprentice
 tag @a[tag=defeated_ryujin_jr_apprentice] remove no_defeated_ryujin_jr_apprentice
 tag @a[tag=!defeated_ryujin_jr_apprentice_weak] add no_defeated_ryujin_jr_apprentice_weak
@@ -581,6 +675,12 @@ tag @a[tag=!defeated_scorchspire_trainer_3] add no_defeated_scorchspire_trainer_
 tag @a[tag=defeated_scorchspire_trainer_3] remove no_defeated_scorchspire_trainer_3
 tag @a[tag=!defeated_scorchspire_trainer_4] add no_defeated_scorchspire_trainer_4
 tag @a[tag=defeated_scorchspire_trainer_4] remove no_defeated_scorchspire_trainer_4
+tag @a[tag=!defeated_scorchspire_wheat_trader] add no_defeated_scorchspire_wheat_trader
+tag @a[tag=defeated_scorchspire_wheat_trader] remove no_defeated_scorchspire_wheat_trader
+tag @a[tag=!defeated_sq_asset_recovery] add no_defeated_sq_asset_recovery
+tag @a[tag=defeated_sq_asset_recovery] remove no_defeated_sq_asset_recovery
+tag @a[tag=!defeated_sq_boundary_surveyor] add no_defeated_sq_boundary_surveyor
+tag @a[tag=defeated_sq_boundary_surveyor] remove no_defeated_sq_boundary_surveyor
 tag @a[tag=!defeated_sq_bracket_1] add no_defeated_sq_bracket_1
 tag @a[tag=defeated_sq_bracket_1] remove no_defeated_sq_bracket_1
 tag @a[tag=!defeated_sq_bracket_2] add no_defeated_sq_bracket_2
@@ -589,8 +689,12 @@ tag @a[tag=!defeated_sq_bracket_3] add no_defeated_sq_bracket_3
 tag @a[tag=defeated_sq_bracket_3] remove no_defeated_sq_bracket_3
 tag @a[tag=!defeated_sq_canvasser] add no_defeated_sq_canvasser
 tag @a[tag=defeated_sq_canvasser] remove no_defeated_sq_canvasser
+tag @a[tag=!defeated_sq_cyber_broker_wager] add no_defeated_sq_cyber_broker_wager
+tag @a[tag=defeated_sq_cyber_broker_wager] remove no_defeated_sq_cyber_broker_wager
 tag @a[tag=!defeated_sq_deadletter_agent] add no_defeated_sq_deadletter_agent
 tag @a[tag=defeated_sq_deadletter_agent] remove no_defeated_sq_deadletter_agent
+tag @a[tag=!defeated_sq_deepcore_assessor] add no_defeated_sq_deepcore_assessor
+tag @a[tag=defeated_sq_deepcore_assessor] remove no_defeated_sq_deepcore_assessor
 tag @a[tag=!defeated_sq_genji_wager] add no_defeated_sq_genji_wager
 tag @a[tag=defeated_sq_genji_wager] remove no_defeated_sq_genji_wager
 tag @a[tag=!defeated_sq_headcount_wager] add no_defeated_sq_headcount_wager
@@ -599,8 +703,22 @@ tag @a[tag=!defeated_sq_hz_analyst] add no_defeated_sq_hz_analyst
 tag @a[tag=defeated_sq_hz_analyst] remove no_defeated_sq_hz_analyst
 tag @a[tag=!defeated_sq_kyc_agent] add no_defeated_sq_kyc_agent
 tag @a[tag=defeated_sq_kyc_agent] remove no_defeated_sq_kyc_agent
+tag @a[tag=!defeated_sq_ladder_1] add no_defeated_sq_ladder_1
+tag @a[tag=defeated_sq_ladder_1] remove no_defeated_sq_ladder_1
+tag @a[tag=!defeated_sq_ladder_2] add no_defeated_sq_ladder_2
+tag @a[tag=defeated_sq_ladder_2] remove no_defeated_sq_ladder_2
+tag @a[tag=!defeated_sq_ladder_3] add no_defeated_sq_ladder_3
+tag @a[tag=defeated_sq_ladder_3] remove no_defeated_sq_ladder_3
+tag @a[tag=!defeated_sq_marigold_charm] add no_defeated_sq_marigold_charm
+tag @a[tag=defeated_sq_marigold_charm] remove no_defeated_sq_marigold_charm
 tag @a[tag=!defeated_sq_mayor_suits] add no_defeated_sq_mayor_suits
 tag @a[tag=defeated_sq_mayor_suits] remove no_defeated_sq_mayor_suits
+tag @a[tag=!defeated_sq_pump_foreman] add no_defeated_sq_pump_foreman
+tag @a[tag=defeated_sq_pump_foreman] remove no_defeated_sq_pump_foreman
+tag @a[tag=!defeated_sq_pump_officer] add no_defeated_sq_pump_officer
+tag @a[tag=defeated_sq_pump_officer] remove no_defeated_sq_pump_officer
+tag @a[tag=!defeated_sq_recovery_agent] add no_defeated_sq_recovery_agent
+tag @a[tag=defeated_sq_recovery_agent] remove no_defeated_sq_recovery_agent
 tag @a[tag=!defeated_sq_regular_4] add no_defeated_sq_regular_4
 tag @a[tag=defeated_sq_regular_4] remove no_defeated_sq_regular_4
 tag @a[tag=!defeated_sq_regular_meadow] add no_defeated_sq_regular_meadow
@@ -617,8 +735,14 @@ tag @a[tag=!defeated_sq_rt2_scarecrow] add no_defeated_sq_rt2_scarecrow
 tag @a[tag=defeated_sq_rt2_scarecrow] remove no_defeated_sq_rt2_scarecrow
 tag @a[tag=!defeated_sq_rt2_wager] add no_defeated_sq_rt2_wager
 tag @a[tag=defeated_sq_rt2_wager] remove no_defeated_sq_rt2_wager
+tag @a[tag=!defeated_sq_rui_wager] add no_defeated_sq_rui_wager
+tag @a[tag=defeated_sq_rui_wager] remove no_defeated_sq_rui_wager
+tag @a[tag=!defeated_sq_ryujin_tetsu_wager] add no_defeated_sq_ryujin_tetsu_wager
+tag @a[tag=defeated_sq_ryujin_tetsu_wager] remove no_defeated_sq_ryujin_tetsu_wager
 tag @a[tag=!defeated_sq_sting_agent] add no_defeated_sq_sting_agent
 tag @a[tag=defeated_sq_sting_agent] remove no_defeated_sq_sting_agent
+tag @a[tag=!defeated_sq_temper_hollis] add no_defeated_sq_temper_hollis
+tag @a[tag=defeated_sq_temper_hollis] remove no_defeated_sq_temper_hollis
 tag @a[tag=!defeated_stadium_wave_1] add no_defeated_stadium_wave_1
 tag @a[tag=defeated_stadium_wave_1] remove no_defeated_stadium_wave_1
 tag @a[tag=!defeated_stadium_wave_2] add no_defeated_stadium_wave_2
@@ -753,8 +877,12 @@ tag @a[tag=!defeated_villain_yield_officer_8] add no_defeated_villain_yield_offi
 tag @a[tag=defeated_villain_yield_officer_8] remove no_defeated_villain_yield_officer_8
 tag @a[tag=!defeated_villain_yield_officer_9] add no_defeated_villain_yield_officer_9
 tag @a[tag=defeated_villain_yield_officer_9] remove no_defeated_villain_yield_officer_9
+tag @a[tag=!defeated_wheat_ambush_kalahar] add no_defeated_wheat_ambush_kalahar
+tag @a[tag=defeated_wheat_ambush_kalahar] remove no_defeated_wheat_ambush_kalahar
 tag @a[tag=!defeated_wheat_trader_ambush] add no_defeated_wheat_trader_ambush
 tag @a[tag=defeated_wheat_trader_ambush] remove no_defeated_wheat_trader_ambush
+tag @a[tag=!defeated_wheat_trader_ambush_kalahar] add no_defeated_wheat_trader_ambush_kalahar
+tag @a[tag=defeated_wheat_trader_ambush_kalahar] remove no_defeated_wheat_trader_ambush_kalahar
 tag @a[tag=!delivered_1] add no_delivered_1
 tag @a[tag=delivered_1] remove no_delivered_1
 tag @a[tag=!delivered_2] add no_delivered_2
@@ -769,6 +897,8 @@ tag @a[tag=!doc_portrait] add no_doc_portrait
 tag @a[tag=doc_portrait] remove no_doc_portrait
 tag @a[tag=!docs_filed] add no_docs_filed
 tag @a[tag=docs_filed] remove no_docs_filed
+tag @a[tag=!dragon_shrine_trial_clear] add no_dragon_shrine_trial_clear
+tag @a[tag=dragon_shrine_trial_clear] remove no_dragon_shrine_trial_clear
 tag @a[tag=!dragon_slain] add no_dragon_slain
 tag @a[tag=dragon_slain] remove no_dragon_slain
 tag @a[tag=!errand1_done] add no_errand1_done
@@ -779,6 +909,8 @@ tag @a[tag=!errand3_done] add no_errand3_done
 tag @a[tag=errand3_done] remove no_errand3_done
 tag @a[tag=!farm_1_free] add no_farm_1_free
 tag @a[tag=farm_1_free] remove no_farm_1_free
+tag @a[tag=!field_2_liberated] add no_field_2_liberated
+tag @a[tag=field_2_liberated] remove no_field_2_liberated
 tag @a[tag=!field_5_liberated] add no_field_5_liberated
 tag @a[tag=field_5_liberated] remove no_field_5_liberated
 tag @a[tag=!field_memo_filed] add no_field_memo_filed
@@ -787,8 +919,52 @@ tag @a[tag=!file_opened] add no_file_opened
 tag @a[tag=file_opened] remove no_file_opened
 tag @a[tag=!file_refiled] add no_file_refiled
 tag @a[tag=file_refiled] remove no_file_refiled
+tag @a[tag=!fire_shrine_trial_clear] add no_fire_shrine_trial_clear
+tag @a[tag=fire_shrine_trial_clear] remove no_fire_shrine_trial_clear
+tag @a[tag=!first_beacon_given] add no_first_beacon_given
+tag @a[tag=first_beacon_given] remove no_first_beacon_given
 tag @a[tag=!first_watch_done] add no_first_watch_done
 tag @a[tag=first_watch_done] remove no_first_watch_done
+tag @a[tag=!five_keepers_paid] add no_five_keepers_paid
+tag @a[tag=five_keepers_paid] remove no_five_keepers_paid
+tag @a[tag=!forge_order_1] add no_forge_order_1
+tag @a[tag=forge_order_1] remove no_forge_order_1
+tag @a[tag=!forge_order_2] add no_forge_order_2
+tag @a[tag=forge_order_2] remove no_forge_order_2
+tag @a[tag=!forge_order_agent_clear] add no_forge_order_agent_clear
+tag @a[tag=forge_order_agent_clear] remove no_forge_order_agent_clear
+tag @a[tag=!forge_order_done] add no_forge_order_done
+tag @a[tag=forge_order_done] remove no_forge_order_done
+tag @a[tag=!frontier_all_cleared] add no_frontier_all_cleared
+tag @a[tag=frontier_all_cleared] remove no_frontier_all_cleared
+tag @a[tag=!frontier_arcade_cleared] add no_frontier_arcade_cleared
+tag @a[tag=frontier_arcade_cleared] remove no_frontier_arcade_cleared
+tag @a[tag=!frontier_castle_cleared] add no_frontier_castle_cleared
+tag @a[tag=frontier_castle_cleared] remove no_frontier_castle_cleared
+tag @a[tag=!frontier_factory_cleared] add no_frontier_factory_cleared
+tag @a[tag=frontier_factory_cleared] remove no_frontier_factory_cleared
+tag @a[tag=!frontier_market_cleared] add no_frontier_market_cleared
+tag @a[tag=frontier_market_cleared] remove no_frontier_market_cleared
+tag @a[tag=!frontier_plaque_read] add no_frontier_plaque_read
+tag @a[tag=frontier_plaque_read] remove no_frontier_plaque_read
+tag @a[tag=!frontier_port_cleared] add no_frontier_port_cleared
+tag @a[tag=frontier_port_cleared] remove no_frontier_port_cleared
+tag @a[tag=!frontier_pyramid_cleared] add no_frontier_pyramid_cleared
+tag @a[tag=frontier_pyramid_cleared] remove no_frontier_pyramid_cleared
+tag @a[tag=!frontier_registered] add no_frontier_registered
+tag @a[tag=frontier_registered] remove no_frontier_registered
+tag @a[tag=!frontier_tower_cleared] add no_frontier_tower_cleared
+tag @a[tag=frontier_tower_cleared] remove no_frontier_tower_cleared
+tag @a[tag=!gaviota_manifest_1] add no_gaviota_manifest_1
+tag @a[tag=gaviota_manifest_1] remove no_gaviota_manifest_1
+tag @a[tag=!gaviota_manifest_2] add no_gaviota_manifest_2
+tag @a[tag=gaviota_manifest_2] remove no_gaviota_manifest_2
+tag @a[tag=!gaviota_manifest_3] add no_gaviota_manifest_3
+tag @a[tag=gaviota_manifest_3] remove no_gaviota_manifest_3
+tag @a[tag=!gaviota_manifest_check_active] add no_gaviota_manifest_check_active
+tag @a[tag=gaviota_manifest_check_active] remove no_gaviota_manifest_check_active
+tag @a[tag=!gaviota_manifests_filed] add no_gaviota_manifests_filed
+tag @a[tag=gaviota_manifests_filed] remove no_gaviota_manifests_filed
 tag @a[tag=!genji_rod_done] add no_genji_rod_done
 tag @a[tag=genji_rod_done] remove no_genji_rod_done
 tag @a[tag=!goodwill_paid] add no_goodwill_paid
@@ -797,10 +973,14 @@ tag @a[tag=!got_pokedex] add no_got_pokedex
 tag @a[tag=got_pokedex] remove no_got_pokedex
 tag @a[tag=!got_running_shoes] add no_got_running_shoes
 tag @a[tag=got_running_shoes] remove no_got_running_shoes
+tag @a[tag=!ground_shrine_trial_clear] add no_ground_shrine_trial_clear
+tag @a[tag=ground_shrine_trial_clear] remove no_ground_shrine_trial_clear
 tag @a[tag=!has_firstfurrow_deed] add no_has_firstfurrow_deed
 tag @a[tag=has_firstfurrow_deed] remove no_has_firstfurrow_deed
 tag @a[tag=!homecoming_paid] add no_homecoming_paid
 tag @a[tag=homecoming_paid] remove no_homecoming_paid
+tag @a[tag=!hq_pointer_done] add no_hq_pointer_done
+tag @a[tag=hq_pointer_done] remove no_hq_pointer_done
 tag @a[tag=!hz_minutes_filed] add no_hz_minutes_filed
 tag @a[tag=hz_minutes_filed] remove no_hz_minutes_filed
 tag @a[tag=!hz_minutes_heard] add no_hz_minutes_heard
@@ -823,12 +1003,18 @@ tag @a[tag=!hz_survey_paid] add no_hz_survey_paid
 tag @a[tag=hz_survey_paid] remove no_hz_survey_paid
 tag @a[tag=!hz_tour_stamped] add no_hz_tour_stamped
 tag @a[tag=hz_tour_stamped] remove no_hz_tour_stamped
+tag @a[tag=!ice_shrine_trial_clear] add no_ice_shrine_trial_clear
+tag @a[tag=ice_shrine_trial_clear] remove no_ice_shrine_trial_clear
 tag @a[tag=!id_read_lucian] add no_id_read_lucian
 tag @a[tag=id_read_lucian] remove no_id_read_lucian
 tag @a[tag=!invit_entered] add no_invit_entered
 tag @a[tag=invit_entered] remove no_invit_entered
 tag @a[tag=!invit_podium_done] add no_invit_podium_done
 tag @a[tag=invit_podium_done] remove no_invit_podium_done
+tag @a[tag=!iron_ladder_active] add no_iron_ladder_active
+tag @a[tag=iron_ladder_active] remove no_iron_ladder_active
+tag @a[tag=!iron_ladder_cleared] add no_iron_ladder_cleared
+tag @a[tag=iron_ladder_cleared] remove no_iron_ladder_cleared
 tag @a[tag=!kele_gift] add no_kele_gift
 tag @a[tag=kele_gift] remove no_kele_gift
 tag @a[tag=!lane_done] add no_lane_done
@@ -841,12 +1027,54 @@ tag @a[tag=!manifest_paid] add no_manifest_paid
 tag @a[tag=manifest_paid] remove no_manifest_paid
 tag @a[tag=!marlow_thanks_done] add no_marlow_thanks_done
 tag @a[tag=marlow_thanks_done] remove no_marlow_thanks_done
+tag @a[tag=!mc_gym10_done] add no_mc_gym10_done
+tag @a[tag=mc_gym10_done] remove no_mc_gym10_done
+tag @a[tag=!mc_gym1_done] add no_mc_gym1_done
+tag @a[tag=mc_gym1_done] remove no_mc_gym1_done
+tag @a[tag=!mc_gym2_done] add no_mc_gym2_done
+tag @a[tag=mc_gym2_done] remove no_mc_gym2_done
+tag @a[tag=!mc_gym3_done] add no_mc_gym3_done
+tag @a[tag=mc_gym3_done] remove no_mc_gym3_done
+tag @a[tag=!mc_gym4_done] add no_mc_gym4_done
+tag @a[tag=mc_gym4_done] remove no_mc_gym4_done
+tag @a[tag=!mc_gym5_done] add no_mc_gym5_done
+tag @a[tag=mc_gym5_done] remove no_mc_gym5_done
+tag @a[tag=!mc_gym6_done] add no_mc_gym6_done
+tag @a[tag=mc_gym6_done] remove no_mc_gym6_done
+tag @a[tag=!mc_gym7_done] add no_mc_gym7_done
+tag @a[tag=mc_gym7_done] remove no_mc_gym7_done
+tag @a[tag=!mc_gym9_done] add no_mc_gym9_done
+tag @a[tag=mc_gym9_done] remove no_mc_gym9_done
 tag @a[tag=!memo_delivered] add no_memo_delivered
 tag @a[tag=memo_delivered] remove no_memo_delivered
 tag @a[tag=!memo_heard] add no_memo_heard
 tag @a[tag=memo_heard] remove no_memo_heard
+tag @a[tag=!mm_board_done] add no_mm_board_done
+tag @a[tag=mm_board_done] remove no_mm_board_done
+tag @a[tag=!mm_charms_done] add no_mm_charms_done
+tag @a[tag=mm_charms_done] remove no_mm_charms_done
 tag @a[tag=!mm_declared] add no_mm_declared
 tag @a[tag=mm_declared] remove no_mm_declared
+tag @a[tag=!nifl_archive_open] add no_nifl_archive_open
+tag @a[tag=nifl_archive_open] remove no_nifl_archive_open
+tag @a[tag=!nifl_archive_read] add no_nifl_archive_read
+tag @a[tag=nifl_archive_read] remove no_nifl_archive_read
+tag @a[tag=!nifl_core_1] add no_nifl_core_1
+tag @a[tag=nifl_core_1] remove no_nifl_core_1
+tag @a[tag=!nifl_core_2] add no_nifl_core_2
+tag @a[tag=nifl_core_2] remove no_nifl_core_2
+tag @a[tag=!nifl_frostgate_clear] add no_nifl_frostgate_clear
+tag @a[tag=nifl_frostgate_clear] remove no_nifl_frostgate_clear
+tag @a[tag=!nifl_lantern_1] add no_nifl_lantern_1
+tag @a[tag=nifl_lantern_1] remove no_nifl_lantern_1
+tag @a[tag=!nifl_lantern_2] add no_nifl_lantern_2
+tag @a[tag=nifl_lantern_2] remove no_nifl_lantern_2
+tag @a[tag=!nifl_lantern_3] add no_nifl_lantern_3
+tag @a[tag=nifl_lantern_3] remove no_nifl_lantern_3
+tag @a[tag=!nifl_lantern_4] add no_nifl_lantern_4
+tag @a[tag=nifl_lantern_4] remove no_nifl_lantern_4
+tag @a[tag=!nifl_lanterns_done] add no_nifl_lanterns_done
+tag @a[tag=nifl_lanterns_done] remove no_nifl_lanterns_done
 tag @a[tag=!notice_1] add no_notice_1
 tag @a[tag=notice_1] remove no_notice_1
 tag @a[tag=!notice_2] add no_notice_2
@@ -857,6 +1085,12 @@ tag @a[tag=!notices_filed] add no_notices_filed
 tag @a[tag=notices_filed] remove no_notices_filed
 tag @a[tag=!nuru_thanks] add no_nuru_thanks
 tag @a[tag=nuru_thanks] remove no_nuru_thanks
+tag @a[tag=!oasis_pump_off] add no_oasis_pump_off
+tag @a[tag=oasis_pump_off] remove no_oasis_pump_off
+tag @a[tag=!oasis_restored] add no_oasis_restored
+tag @a[tag=oasis_restored] remove no_oasis_restored
+tag @a[tag=!odessa_crate_recovered] add no_odessa_crate_recovered
+tag @a[tag=odessa_crate_recovered] remove no_odessa_crate_recovered
 tag @a[tag=!off_record_complete] add no_off_record_complete
 tag @a[tag=off_record_complete] remove no_off_record_complete
 tag @a[tag=!off_record_started] add no_off_record_started
@@ -875,8 +1109,20 @@ tag @a[tag=!race_daily_claimed] add no_race_daily_claimed
 tag @a[tag=race_daily_claimed] remove no_race_daily_claimed
 tag @a[tag=!race_won] add no_race_won
 tag @a[tag=race_won] remove no_race_won
+tag @a[tag=!retirement_memo_taken] add no_retirement_memo_taken
+tag @a[tag=retirement_memo_taken] remove no_retirement_memo_taken
 tag @a[tag=!royal_league_champion] add no_royal_league_champion
 tag @a[tag=royal_league_champion] remove no_royal_league_champion
+tag @a[tag=!ryujin_charter_read] add no_ryujin_charter_read
+tag @a[tag=ryujin_charter_read] remove no_ryujin_charter_read
+tag @a[tag=!ryujin_heritage_settled] add no_ryujin_heritage_settled
+tag @a[tag=ryujin_heritage_settled] remove no_ryujin_heritage_settled
+tag @a[tag=!ryujin_ledger_taken] add no_ryujin_ledger_taken
+tag @a[tag=ryujin_ledger_taken] remove no_ryujin_ledger_taken
+tag @a[tag=!ryujin_mail_done] add no_ryujin_mail_done
+tag @a[tag=ryujin_mail_done] remove no_ryujin_mail_done
+tag @a[tag=!ryujin_oath_told] add no_ryujin_oath_told
+tag @a[tag=ryujin_oath_told] remove no_ryujin_oath_told
 tag @a[tag=!scrub_report_filed] add no_scrub_report_filed
 tag @a[tag=scrub_report_filed] remove no_scrub_report_filed
 tag @a[tag=!seal_moss] add no_seal_moss
@@ -885,6 +1131,12 @@ tag @a[tag=!seal_orchard] add no_seal_orchard
 tag @a[tag=seal_orchard] remove no_seal_orchard
 tag @a[tag=!seal_pond] add no_seal_pond
 tag @a[tag=seal_pond] remove no_seal_pond
+tag @a[tag=!seal_stone_1] add no_seal_stone_1
+tag @a[tag=seal_stone_1] remove no_seal_stone_1
+tag @a[tag=!seal_stone_2] add no_seal_stone_2
+tag @a[tag=seal_stone_2] remove no_seal_stone_2
+tag @a[tag=!seal_stone_3] add no_seal_stone_3
+tag @a[tag=seal_stone_3] remove no_seal_stone_3
 tag @a[tag=!seal_terrace] add no_seal_terrace
 tag @a[tag=seal_terrace] remove no_seal_terrace
 tag @a[tag=!second_starter_claimed] add no_second_starter_claimed
@@ -893,10 +1145,14 @@ tag @a[tag=!second_starter_unlocked] add no_second_starter_unlocked
 tag @a[tag=second_starter_unlocked] remove no_second_starter_unlocked
 tag @a[tag=!seen_clean_square] add no_seen_clean_square
 tag @a[tag=seen_clean_square] remove no_seen_clean_square
+tag @a[tag=!seen_deep_office] add no_seen_deep_office
+tag @a[tag=seen_deep_office] remove no_seen_deep_office
 tag @a[tag=!seen_rezoning_notice] add no_seen_rezoning_notice
 tag @a[tag=seen_rezoning_notice] remove no_seen_rezoning_notice
 tag @a[tag=!sentinel_kit] add no_sentinel_kit
 tag @a[tag=sentinel_kit] remove no_sentinel_kit
+tag @a[tag=!severance_met] add no_severance_met
+tag @a[tag=severance_met] remove no_severance_met
 tag @a[tag=!sq_combee_granted] add no_sq_combee_granted
 tag @a[tag=sq_combee_granted] remove no_sq_combee_granted
 tag @a[tag=!sq_honey_done] add no_sq_honey_done
@@ -933,16 +1189,28 @@ tag @a[tag=!sting_seal_4] add no_sting_seal_4
 tag @a[tag=sting_seal_4] remove no_sting_seal_4
 tag @a[tag=!sting_seal_4_clear] add no_sting_seal_4_clear
 tag @a[tag=sting_seal_4_clear] remove no_sting_seal_4_clear
+tag @a[tag=!stone3_guard_clear] add no_stone3_guard_clear
+tag @a[tag=stone3_guard_clear] remove no_stone3_guard_clear
 tag @a[tag=!supper_delivered] add no_supper_delivered
 tag @a[tag=supper_delivered] remove no_supper_delivered
 tag @a[tag=!supper_taken] add no_supper_taken
 tag @a[tag=supper_taken] remove no_supper_taken
 tag @a[tag=!survey_done] add no_survey_done
 tag @a[tag=survey_done] remove no_survey_done
+tag @a[tag=!temper_blade_done] add no_temper_blade_done
+tag @a[tag=temper_blade_done] remove no_temper_blade_done
+tag @a[tag=!the_hand_done] add no_the_hand_done
+tag @a[tag=the_hand_done] remove no_the_hand_done
+tag @a[tag=!the_hand_plate] add no_the_hand_plate
+tag @a[tag=the_hand_plate] remove no_the_hand_plate
+tag @a[tag=!the_hand_started] add no_the_hand_started
+tag @a[tag=the_hand_started] remove no_the_hand_started
 tag @a[tag=!third_starter_claimed] add no_third_starter_claimed
 tag @a[tag=third_starter_claimed] remove no_third_starter_claimed
 tag @a[tag=!third_starter_unlocked] add no_third_starter_unlocked
 tag @a[tag=third_starter_unlocked] remove no_third_starter_unlocked
+tag @a[tag=!took_deep_manifest] add no_took_deep_manifest
+tag @a[tag=took_deep_manifest] remove no_took_deep_manifest
 tag @a[tag=!took_route_manifest] add no_took_route_manifest
 tag @a[tag=took_route_manifest] remove no_took_route_manifest
 tag @a[tag=!traded_sefu] add no_traded_sefu

@@ -47,8 +47,10 @@ build` for the Java/rctmod half):**
   `hz_greenhouse_overseer` 150 CD) still use bare `cobbledollars remove` (broke → free goods). Fix:
   a per-button probe fn mirroring `route/decline_*` (`store result … cobbledollars pay @s N`).
 - **Remaining monologue chains** — Cynthia (recognise/default) + the wheat-trader ambush still rotate.
-- **Frontier "exhibition" no-death guard** — the "nothing you love dies" promise is still false under
-  Nuzlocke; either generalize the Stadium clone-party guard to frontier ids or rewrite the promise.
+- [x] **Frontier "exhibition" no-death guard** — DONE (alpha.15). Datapack-maintained `frontier_active`
+  tag (`frontier/region_tick` AABB over the plateau, self-cleaning) read by NuzlockeInit's three
+  faint/flee/forfeit guards → suspends damage/removal/whiteout on the Frontier floor. Region box uses
+  the shipped RCT cluster; re-survey if the atlas [4096 2965] layout is confirmed.
 - **Boss roster width, gym-crew voice de-duplication, name collisions, League summit double-cast,**
   and the fuller TODO/backlog status truth-pass — all catalogued in the review doc.
 
@@ -309,8 +311,11 @@ Left open:
   🔍 runtime-verify one battle per group. Follow-ups: **runtime Founder party-mirror**
   (regenerate villain_final_boss from the live party; overrides the static file) 💻;
   **{element}_shrine_cultist_3/4** — 10 ids referenced as shrine-leader prereqs with no
-  team file and no NPC (author them or trim the leader prereqs) 💻; dragon_hydra_1..3 +
-  24 battle_frontier ids remain uncast (frontier is its own phase).
+  team file and no NPC (author them or trim the leader prereqs) 💻; dragon_hydra_1..3
+  remain uncast. **Battle Frontier (24 ids) — CAST + authored (alpha.15):** all 24 characters
+  upgraded to the opt-in model (gym_leader, `frontier_<facility>_cleared` tags, prizes, brain
+  on_win → hall_cleared), + Registrar/Caretaker economy+lore NPCs, `frontier/` functions,
+  safe-exhibition guard, and the four-holder quest line (slots 82-85). RCT teams already shipped.
 - [ ] 🔍 **Existing-world repair** (any world created ≤ alpha.17): kill + latch-reset the six
   placement bodies (tower ×4, Old Deng, Granny Yun — commands in the runbook), then re-tag
   Deng/Yun (`deng_old`/`deng_granny`/`deng_camp`) or the homecoming walk no-ops.

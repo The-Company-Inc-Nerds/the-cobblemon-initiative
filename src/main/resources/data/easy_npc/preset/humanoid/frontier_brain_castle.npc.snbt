@@ -40,7 +40,7 @@
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
-                            Name: "defeated_frontier_brain_castle"
+                            Name: "frontier_castle_cleared"
                         }
                     ],
                     Priority: 20,
@@ -82,7 +82,7 @@
                                             {
                                                 Type: "PLAYER_TAG",
                                                 Operation: "EQUALS",
-                                                Name: "defeated_frontier_brain_castle"
+                                                Name: "frontier_castle_cleared"
                                             }
                                         ]
                                     },
@@ -95,7 +95,7 @@
                                             {
                                                 Type: "PLAYER_TAG",
                                                 Operation: "EQUALS",
-                                                Name: "no_defeated_frontier_brain_castle"
+                                                Name: "no_frontier_castle_cleared"
                                             }
                                         ]
                                     },
@@ -109,11 +109,11 @@
                                             {
                                                 Type: "PLAYER_TAG",
                                                 Operation: "EQUALS",
-                                                Name: "no_defeated_frontier_brain_castle"
+                                                Name: "no_frontier_castle_cleared"
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_DOUBLES @s vs rctmod:frontier_brain_castle onwin {1: ['tag @1 add defeated_frontier_brain_castle', '@2 say The wall of the keep breaks at last, and it breaks to a worthy hand. The forms are yours to keep now, Champion.', 'easy_npc delete @2'], 2: ['@1 say Patience outlasted patience, and mine held. Recover the old composure and return to the board.']}"
+                                    Cmd: "tbcs battle GEN_9_DOUBLES @s vs rctmod:frontier_brain_castle onwin {1: ['cobbledollars give @1 3000', 'tag @1 add frontier_castle_cleared', '@2 say The wall of the keep breaks at last, and it breaks to a worthy hand. The forms are yours to keep now, Champion.', 'execute as @1 run function cobblemon_initiative:frontier/hall_cleared'], 2: ['@1 say Patience outlasted patience, and mine held. Recover the old composure and return to the board.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -138,7 +138,7 @@
                                 {
                                     Type: "PLAYER_TAG",
                                     Operation: "EQUALS",
-                                    Name: "no_defeated_frontier_brain_castle"
+                                    Name: "no_frontier_castle_cleared"
                                 }
                             ],
                             Label: "battle_button"

@@ -129,7 +129,7 @@ The campaign is structured in three acts that map onto the gym route and what co
 
 - **Act I — Infiltration (gyms 1–7).** Walk the route, earn badges and caps, and watch the economy come apart. Grunts and management are scattered across routes and towns; wheat traders surface; the recognition arc warms up. The seventh badge is the inflection point. → [[Guidebook Act I]]
 - **Act II — The HQ Raid.** With the journey at a boil, the path leads to **Company HQ** at `[1590 51 1028]`. Fight up through the org to **Acting CEO DJ** — a usurper keeping the seat warm. His defeat **stabilizes the currency** (the index snaps to 25) in a visible, earned "CURRENCY STABILIZED" beat, and the late-game stakes harden. → [[Guidebook Act II]]
-- **Act III — The Board & The Mirror.** Clear gyms 8–10, then the **Royal League** (Elite Four → Champion) for the level-85 cap. Beyond that wait the **Board of Directors** — clearing all four seats unlocks the final **level-100** cap — and the true final battle, a mirror fight that pays off the whole amnesia arc. Win, and the map is no longer the limit: you leave the curated world for generated terrain and go after the **Ender Dragon**, still hardcore + Nuzlocke. → [[Guidebook Act III]]
+- **Act III — The Board & The Mirror.** Clear gyms 8–10, then the **Royal League** (Elite Four → Champion) for the level-85 cap. Beyond that wait the **Board of Directors** — clearing all four seats unlocks the final **level-100** cap — and the true final battle, a mirror fight that pays off the whole amnesia arc. The Founder is the last fight; there's no post-game boss (the Ender Dragon already fell at the Ryujin rift). Win, and the map is no longer the limit: with the Company overthrown you walk off the edge of the curated world into open, generated terrain and just *live* — build, settle, explore, survive — still hardcore + Nuzlocke. → [[Guidebook Act III]]
 
 ---
 
@@ -145,7 +145,7 @@ flowchart TD
   G810 --> League["Royal League\nElite Four then Champion (cap 85)"]
   League --> Board["The Board of Directors\ncleared -> cap 100"]
   Board --> Founder["The Founder\nmirror battle"]
-  Founder --> Ender["Leave the map\nEnder Dragon (still hardcore + Nuzlocke)"]
+  Founder --> Ender["Post-story: the world is yours\nopen Minecraft (still hardcore + Nuzlocke)"]
 
   subgraph ActI["Act I - Infiltration"]
     G17

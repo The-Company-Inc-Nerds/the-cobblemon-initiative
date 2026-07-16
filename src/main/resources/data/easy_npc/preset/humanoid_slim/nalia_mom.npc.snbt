@@ -288,6 +288,73 @@
                     Label: "after_meeting"
                 },
                 {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "defeated_mystic_leader"
+                        }
+                    ],
+                    Priority: 28,
+                    Buttons: [
+                        {
+                            Name: "Leave one with me",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative momcare deposit"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        },
+                        {
+                            Name: "Bring my Pokemon home",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative momcare withdraw"
+                                }
+                            ],
+                            Label: "withdraw_button"
+                        },
+                        {
+                            Name: "How is it doing?",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative momcare status"
+                                }
+                            ],
+                            Label: "status_button"
+                        },
+                        {
+                            Name: "Later, Mom",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_menu_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Three badges. Look at you. While you are out there chasing whatever it is you cannot quite remember, let me do the thing a mother is for — leave one of them with me a while. Warmth is not a thing you win in a gym. It is a thing you come home to."
+                        },
+                        {
+                            Text: "It will grow to trust you, being here. The kind of bond that changes what a Pokemon can become, and puts real heart behind that move where it fights harder for someone it loves. No cost — you are my child, not a customer. And no, before you ask, I am not Company. This kitchen keeps no ledger but the recipe drawer."
+                        }
+                    ],
+                    Name: "Nalia - leave one with me",
+                    Label: "mom_care"
+                },
+                {
                     Priority: 10,
                     Buttons: [
                         {

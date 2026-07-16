@@ -4,8 +4,25 @@
 > **Band:** cap **85→100**, `memory_fragment` 10, `cd_instability` **25 (stabilised)**,
 > recognition **late**, `company_overthrown` **may or may not be set** (see §Overview).
 >
-> **This is a PLAN, not an implementation.** Nothing here is written to `dialog-src/`,
-> `src/`, or `scripts/` — build it later from the copy-paste blocks below.
+> **BUILT (0.5.0-alpha.15).** Implemented from this plan with three deliberate deviations
+> (all better fits for the "safe exhibition + soft passes" showrunner rulings):
+> 1. **Kept the 24 existing inline dialogs** (rich per-facility flavor) and upgraded them in
+>    place — did NOT flatten to the shared `frontier_challenger_generic`/`frontier_brain_generic`
+>    trees this doc proposed. Brains: `gauntlet_boss`→`gym_leader` (no despawn), defeat_tag →
+>    `frontier_<facility>_cleared`, + prize + `on_win`→`frontier/hall_cleared`. Selene gets the
+>    full 9-tag prereq gate. Challengers: + prize 800.
+> 2. **Dropped the paid-decline economy** (§3.2 `decline_challenger/brain`). A friendly opt-in
+>    facility with a free `leave_button` makes a pay-to-decline button strictly dominated and
+>    contradicts "no shame either way"; it also sidesteps the auto-gen `decline_fee`
+>    must-fight-on-broke footgun. The CD sink is the **passes** (soft, never consumed — Open Q7
+>    ruled soft). Fairness floor holds trivially: `leave_button` = free close, never a forced fight.
+> 3. **Safe exhibition (Open Q3) via a datapack region tag**, not a rental-party swap: the
+>    `frontier/region_tick` AABB maintains `frontier_active`, which NuzlockeInit's three
+>    faint/flee/forfeit guards honor (mirrors the Stadium clone-party guard) — nothing you love
+>    dies on the Frontier floor. Grand purse (Open Q6) kept at 20000 CD via `economy/payout`.
+>
+> Remaining open: coords vs atlas (Open Q1/Q2 — using shipped RCT cluster), Arcade modifiers
+> (Open Q4 — flavor-only), runtime smoke test (needs a GPU session). Original plan preserved below.
 
 ---
 

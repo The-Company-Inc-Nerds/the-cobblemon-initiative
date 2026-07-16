@@ -18,7 +18,7 @@ flowchart TD
   D --> E["Royal League [3528 166 2773]<br/>Elite Four -> Champion -> cap 85"]
   E --> F["Board of Directors (4) — post-League gauntlet<br/>cleared -> cap 100"]
   F --> G["THE FOUNDER — the mirror battle<br/>the Company Overthrown ending"]
-  G --> H["Post-game: leave the map -> Ender Dragon<br/>still hardcore + Nuzlocke"]
+  G --> H["Post-story: the world is yours<br/>open Minecraft, still hardcore + Nuzlocke"]
 ```
 
 **Pacing note:** The HQ raid and DJ happen *during* the Act II window (after ~gym 7). Act III opens with the economy already stabilized — the instability index parked at 25 — which is why payouts feel honest again and the propaganda has stopped pretending. From here, the gyms are the disciplined ascent through the endgame caps — 80 at the last badge, 85 at the crown, 100 when the Board is cleared; the story has already turned.
@@ -132,13 +132,15 @@ flowchart TD
 
 ---
 
-# Post-game — leave the map, beat the Ender Dragon
+# Post-story — the world is yours
 
-The story does not end at the credits. With the Company overthrown, the reclaimed founder walks out of the curated **UPM 2** world into **generated Minecraft terrain** and attempts to beat **vanilla Minecraft — the Ender Dragon — still hardcore + Nuzlocke.** No safe zones out there; no script. The final image is the founder, finally whole, walking into the unknown.
+The Founder is the last fight. There is **no post-game boss hunt** — the Ender Dragon already fell mid-journey, at the **Ryujin Keep** rift (gym 8), where it was torn into the overworld above the keep and slain to earn the Dragon badge. Nothing draconic waits past the credits.
+
+What waits is a life. With the Company overthrown and the self you lost finally whole, the reclaimed founder walks off the edge of the curated **UPM 2** world into **open, generated Minecraft terrain** — and just *lives*. Build, mine, settle, explore, survive. **Still hardcore + Nuzlocke**, but no script, no gates, no safe zones, nothing left to reclaim. The final image is the founder, finally whole, walking free into an open world that is at last theirs and not the Company's.
 
 ### Battle Frontier
 
-The **Battle Frontier** is post-Champion, optional, repeatable content — designed for the **85–100 window**: the stretch between your Champion's cap and the Board-cleared cap, before and after the Boardroom falls. (Its full roster is reserved for a later build; for now treat it as the endgame's stretch goal alongside the Dragon.)
+The **Battle Frontier** is post-Champion, optional, repeatable content — designed for the **85–100 window**: the stretch between your Champion's cap and the Board-cleared cap, before and after the Boardroom falls. (Its full roster is reserved for a later build; for now treat it as the endgame's stretch goal.)
 
 ---
 
@@ -150,7 +152,7 @@ The **Battle Frontier** is post-Champion, optional, repeatable content — desig
 - [ ] Hold the "you are The Founder" reveal until **after** the League and the Board — don't let chat front-run it. The Board's names stay static all the way; only the mirror's defeat speaks a name, and it's yours.
 - [ ] Confirm the **cap-100 unlock lands when the fourth Board seat empties** — that's the training window before the mirror.
 - [ ] Treat the Champion as the difficulty wall and The Founder (lv 88–90, Mewtwo + Darkrai) as the true wall.
-- [ ] After the Company is overthrown: the run continues — pack for the overworld and the Ender Dragon.
+- [ ] After the Company is overthrown: there's no post-game boss (the Ender Dragon fell at the Ryujin rift). The send-off is open Minecraft — walk off the map into generated terrain and just live, still hardcore + Nuzlocke.
 
 ---
 

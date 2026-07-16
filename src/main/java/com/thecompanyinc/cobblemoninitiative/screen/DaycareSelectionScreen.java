@@ -9,6 +9,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.BiConsumer;
+import java.util.function.ToIntFunction;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
@@ -16,11 +18,15 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 
 /**
- * Daycare party picker — the voluntary sibling of {@link SacrificeSelectionScreen}
- * (same layout, same singleplayer-server bridge), with multi-select capped at the free
- * pen count, ESC allowed, and a hard guard that at least one Pokémon stays in the party.
- * Confirm hands the selection to {@link DaycareManager#deposit} on the server thread,
- * which re-validates everything server-side.
+ * Party picker — the voluntary sibling of {@link SacrificeSelectionScreen} (same layout, same
+ * singleplayer-server bridge), with multi-select capped at the facility's free slots, ESC
+ * allowed, and a hard guard that at least one Pokémon stays in the party. Confirm hands the
+ * selection to the facility's boarding method on the server thread, which re-validates
+ * everything server-side.
+ *
+ * Parameterised so it serves BOTH the Sango daycare (XP boarding, 2 slots) and Mom's friendship
+ * care (1 slot) — the no-arg constructor is the daycare; the full constructor takes the title,
+ * slot count, live boarded-count lookup, and the deposit callback.
  */
 public class DaycareSelectionScreen extends Screen {
 
@@ -29,8 +35,40 @@ public class DaycareSelectionScreen extends Screen {
   private int capacity = 0;
   private int partySize = 0;
 
+  private final String facilityTitle;
+  private final int titleColor;
+  private final int maxSlots;
+  private final String confirmLabel;
+  private final transient ToIntFunction<UUID> boardedCountFn;
+  private final transient BiConsumer<UUID, List<UUID>> onConfirm;
+
+  /** Sango daycare (default): 2 slots, XP boarding. */
   public DaycareSelectionScreen() {
-    super(Component.literal("Daycare — Board your Pokémon"));
+    this(
+      "Sango Daycare",
+      0x55FF55,
+      DaycareManager.MAX_SLOTS,
+      "Board Selected",
+      uuid -> com.thecompanyinc.cobblemoninitiative.InitiativeInit.getDaycareManager().boardedCount(uuid),
+      (uuid, mons) -> com.thecompanyinc.cobblemoninitiative.InitiativeInit.getDaycareManager().deposit(uuid, mons));
+  }
+
+  /** Facility-neutral picker (used for Mom's friendship care). */
+  public DaycareSelectionScreen(
+    String facilityTitle,
+    int titleColor,
+    int maxSlots,
+    String confirmLabel,
+    ToIntFunction<UUID> boardedCountFn,
+    BiConsumer<UUID, List<UUID>> onConfirm
+  ) {
+    super(Component.literal(facilityTitle));
+    this.facilityTitle = facilityTitle;
+    this.titleColor = titleColor;
+    this.maxSlots = maxSlots;
+    this.confirmLabel = confirmLabel;
+    this.boardedCountFn = boardedCountFn;
+    this.onConfirm = onConfirm;
   }
 
   @Override
@@ -41,13 +79,12 @@ public class DaycareSelectionScreen extends Screen {
     if (this.minecraft == null || this.minecraft.player == null) return;
 
     // Singleplayer bridge (same as SacrificeSelectionScreen / NuzlockeInit.sacrificePokemon):
-    // free pen count comes straight from the server-side manager.
+    // free slot count comes straight from the server-side manager.
     MinecraftServer server = this.minecraft.getSingleplayerServer();
     int alreadyBoarded = server != null
-      ? com.thecompanyinc.cobblemoninitiative.InitiativeInit.getDaycareManager()
-          .boardedCount(this.minecraft.player.getUUID())
+      ? boardedCountFn.applyAsInt(this.minecraft.player.getUUID())
       : 0;
-    capacity = Math.max(0, DaycareManager.MAX_SLOTS - alreadyBoarded);
+    capacity = Math.max(0, maxSlots - alreadyBoarded);
 
     ClientParty party = CobblemonClient.INSTANCE.getStorage().getParty();
     List<Pokemon> partyPokemon = new ArrayList<>();
@@ -75,7 +112,7 @@ public class DaycareSelectionScreen extends Screen {
     }
 
     this.addRenderableWidget(
-      Button.builder(Component.literal("Board Selected"), button ->
+      Button.builder(Component.literal(confirmLabel), button ->
         confirmDeposit()
       )
         .bounds(this.width / 2 - 155, this.height - 50, 150, 20)
@@ -105,20 +142,20 @@ public class DaycareSelectionScreen extends Screen {
     int mouseY,
     float delta
   ) {
-    String title = "Sango Daycare";
+    String title = facilityTitle;
     int titleWidth = this.font.width(title);
     graphics.drawString(
       this.font,
       title,
       (this.width - titleWidth) / 2,
       30,
-      0x55FF55,
+      titleColor,
       true
     );
 
     String subtitle = capacity > 0
       ? "Select up to " + capacity + " Pokémon to board (" + selectedSlots.size() + " selected):"
-      : "The pens are full — collect a boarder first.";
+      : "No room right now — collect a boarder first.";
     int subtitleWidth = this.font.width(subtitle);
     graphics.drawString(
       this.font,
@@ -198,10 +235,7 @@ public class DaycareSelectionScreen extends Screen {
     }
 
     // Hop to the server thread — deposit mutates party + custody state.
-    server.execute(() ->
-      com.thecompanyinc.cobblemoninitiative.InitiativeInit.getDaycareManager()
-        .deposit(playerUuid, monUuids)
-    );
+    server.execute(() -> onConfirm.accept(playerUuid, monUuids));
 
     this.minecraft.setScreen(null);
   }
