@@ -1,0 +1,242 @@
+{
+  "name": "noncompliance_posters",
+  "description": "Notice of Non-Compliance (q.side_posters, Takehara Falls) end-to-end on Printmaker Mei: take the three moth prints, run the three gated paste buttons (attempt_one/two/three - the canvasser Kazuo stands ~127b away at 1940,105,2470 with sight range 10, so every attempt deterministically takes the unseen branch), then the clean turn-in (400 CD + 3x potion + 1x heal_ball + sq_posters_done). No prerequisite tags are assumed or faked; the preamble resets every chain tag and clears the reward items (including reward/standard exp candies).",
+  "steps": [
+    {
+      "comment": "-- reset (idempotent re-runs): chain tags + reward items + canvasser sight score --"
+    },
+    {
+      "rcon": "tag {player} remove sq_posters_started"
+    },
+    {
+      "rcon": "tag {player} remove sq_poster_one"
+    },
+    {
+      "rcon": "tag {player} remove sq_poster_two"
+    },
+    {
+      "rcon": "tag {player} remove sq_poster_three"
+    },
+    {
+      "rcon": "tag {player} remove sq_poster_scolded"
+    },
+    {
+      "rcon": "tag {player} remove sq_posters_done"
+    },
+    {
+      "rcon": "clear {player} cobblemon:potion"
+    },
+    {
+      "rcon": "clear {player} cobblemon:heal_ball"
+    },
+    {
+      "rcon": "clear {player} cobblemon:exp_candy_s"
+    },
+    {
+      "rcon": "clear {player} cobblemon:exp_candy_m"
+    },
+    {
+      "rcon": "clear {player} cobblemon:exp_candy_l"
+    },
+    {
+      "comment": "defensive: zero any stale sight score so a frozen 1 can never fake a scold (errors if unloaded/unset - tolerated like the tag removes)"
+    },
+    {
+      "rcon": "scoreboard players set @e[tag=ci_canvasser] can_see_player 0"
+    },
+    {
+      "comment": "-- anchor: Printmaker Mei's stall (persisted body 59463ac9 @ 1818 109 2506) --"
+    },
+    {
+      "rcon": "tp {player} 1818 109 2506"
+    },
+    {
+      "sleep": 1.5
+    },
+    {
+      "comment": "-- beat 1: the glue objection - take the three moth prints (sets sq_posters_started) --"
+    },
+    {
+      "find_npc": "Printmaker Mei",
+      "save": "g"
+    },
+    {
+      "interact_npc": "{g.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "Before the glue complaint — a civic observation. Two grey suits took the gym stairs this morning, briefcases matching, smiles matching. The mayor went up to meet them. He has not come down. Somebody with steadier nerves than a printmaker should go see about that.",
+        "Meanwhile, down here: Verified Trust, Verified Value, glued straight over my moth-wing prints. Bad glue. Three notices — gym entrance, falls overlook, bridge mural. I want my prints back on top, and I want the canvasser to never see it happen."
+      ]
+    },
+    {
+      "screenshot": "mei_glue_objection"
+    },
+    {
+      "click": "Take the three moth prints"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=sq_posters_started]",
+      "expect": "passed"
+    },
+    {
+      "wait_chat": "Re-post the moth prints over three notices",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "comment": "-- beat 2: paste print one - gym entrance (attempt_one, unseen branch -> sq_poster_one) --"
+    },
+    {
+      "interact_npc": "{g.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "Watch his loop from my counter"
+    },
+    {
+      "screenshot": "mei_posting_run"
+    },
+    {
+      "click": "Slip out and paste print one"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "sleep": 0.5
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=sq_poster_one]",
+      "expect": "passed"
+    },
+    {
+      "wait_chat": "Print one is up",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "comment": "-- beat 3: paste print two - falls overlook (attempt_two -> sq_poster_two) --"
+    },
+    {
+      "interact_npc": "{g.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "click": "Paste print two"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "sleep": 0.5
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=sq_poster_two]",
+      "expect": "passed"
+    },
+    {
+      "wait_chat": "Print two is up",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "comment": "-- beat 4: paste print three - the bridge mural (attempt_three -> sq_poster_three) --"
+    },
+    {
+      "interact_npc": "{g.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "click": "Paste print three"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "sleep": 0.5
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=sq_poster_three]",
+      "expect": "passed"
+    },
+    {
+      "wait_chat": "Print three is up",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "comment": "-- beat 5: clean turn-in (never scolded -> turn_in_clean entry, priority 32) --"
+    },
+    {
+      "rcon": "execute unless entity @a[name={player},tag=sq_poster_scolded]",
+      "expect": "passed"
+    },
+    {
+      "interact_npc": "{g.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "Three prints up and he never saw a thing. Not once. You move like ink in water. The pulped slogans read verified trust, verified value — in a voice as flat as the paper deserved.",
+        "And under board three — you saw it. The old mural. The center figure painted out years ago. Nobody in town remembers commissioning either version. I checked the guild ledger. That page is missing."
+      ]
+    },
+    {
+      "screenshot": "mei_clean_run"
+    },
+    {
+      "click": "Collect your pay"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "sleep": 0.5
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=sq_posters_done]",
+      "expect": "passed"
+    },
+    {
+      "wait_chat": "Never seen once",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "rcon": "clear {player} cobblemon:potion 0",
+      "expect": "Found"
+    },
+    {
+      "rcon": "clear {player} cobblemon:heal_ball 0",
+      "expect": "Found"
+    },
+    {
+      "screenshot": "noncompliance_posters_done"
+    }
+  ]
+}

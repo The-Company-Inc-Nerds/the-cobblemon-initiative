@@ -1,0 +1,300 @@
+{
+  "name": "oma_lane",
+  "description": "THE LANE LOOKS AFTER ITS OWN (q.side_lane), end-to-end in Sango Town: take Oma's basket at the west-gate fence, deliver to Kele at the water (accepting the Eevee gift), Fara at her tally book, and Dakarai at the end house, then return to Oma for the care package and the lane_done epilogue. Doors are visited in geometric order (Kele first, 10b from Oma) — each door only gates on lane_started, so the canonical Fara-first order is not required. Assumes no earlier-quest tags; the preamble resets all chain tags (plus Off the Record's carrying_ledger/carrying_basket which would preempt the lane entries) and clears granted items, but a re-run's party keeps the gifted Eevee and the 600 CD of neighbor money is not clawed back.",
+  "steps": [
+    {
+      "comment": "-- reset (idempotent re-runs): lane chain tags, care-package items; Off the Record cross-gates removed so the priority-45 satchel/basket entries cannot hijack Oma/Fara --"
+    },
+    {
+      "rcon": "tag {player} remove lane_started"
+    },
+    {
+      "rcon": "tag {player} remove delivered_1"
+    },
+    {
+      "rcon": "tag {player} remove delivered_2"
+    },
+    {
+      "rcon": "tag {player} remove delivered_3"
+    },
+    {
+      "rcon": "tag {player} remove lane_done"
+    },
+    {
+      "rcon": "tag {player} remove kele_gift"
+    },
+    {
+      "rcon": "tag {player} remove carrying_ledger"
+    },
+    {
+      "rcon": "tag {player} remove carrying_basket"
+    },
+    {
+      "rcon": "clear {player} cobblemon:potion"
+    },
+    {
+      "rcon": "clear {player} cobblemon:oran_berry"
+    },
+    {
+      "rcon": "clear {player} cobblemon:poke_ball"
+    },
+    {
+      "rcon": "clear {player} minecraft:bread"
+    },
+    {
+      "comment": "-- beat 1: Oma at the fence (west gate) starts the delivery loop --"
+    },
+    {
+      "rcon": "tp {player} 2586 107 2958"
+    },
+    {
+      "sleep": 1.5
+    },
+    {
+      "find_npc": "Oma",
+      "save": "oma"
+    },
+    {
+      "interact_npc": "{oma.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "There you are, up and about. Good. The lane looks after its own, and my knees are done looking after anything past this fence. Do an old woman a turn — run this basket to three doors down the street. Fara, Kele, and Dakarai. Bread, mostly. A little gossip, unavoidably.",
+        "Come back to me at the west gate when you have. There will be something waiting. There always is, on this lane."
+      ]
+    },
+    {
+      "screenshot": "oma_take_basket"
+    },
+    {
+      "click": "Take the basket"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=lane_started]",
+      "expect": "passed"
+    },
+    {
+      "wait_chat": "Three doors on Nalia lane",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "comment": "-- beat 2: Kele at the water (door 2, 10b south) — take the Eevee; kele_gift function latches kele_gift + delivered_2 --"
+    },
+    {
+      "path_to": [
+        2596,
+        107,
+        2954
+      ]
+    },
+    {
+      "find_npc": "Kele",
+      "save": "kele"
+    },
+    {
+      "interact_npc": "{kele.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "Bread from Oma, and a face I do not know, which is rarer down here than the bread. Set it on the rock. A man in a very clean suit came by last week and offered to buy my water rights — irrigation futures, he called it, very warm about it, would not say for what. I told him the water was not mine to sell. It belongs to whoever is thirsty.",
+        "You are starting out, then. Here — the lane found this one curled up in the reeds and cannot keep it. A hundred shapes sleeping in one small fox, and the choosing is yours. That kind of open future is the one thing the Company can never revise for you. Take it."
+      ]
+    },
+    {
+      "screenshot": "kele_gift_offer"
+    },
+    {
+      "click": "Accept Kele's gift"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "Eevee into your care",
+      "timeout": 10
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=delivered_2]",
+      "expect": "passed"
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=kele_gift]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 3: Fara (door 1) up the lane by the market exchange --"
+    },
+    {
+      "path_to": [
+        2632,
+        112,
+        2806
+      ],
+      "timeout_ticks": 3600
+    },
+    {
+      "find_npc": "Fara",
+      "save": "fara"
+    },
+    {
+      "interact_npc": "{fara.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "Oma sent bread? On a day like this she should keep it. But I will not turn away a neighbor at the door — the lane does not work that way. Set it there, love.",
+        "While you are here. I keep a little book of what the exchange pays me, week on week. It has been re-verified twice this month, both times one coin short. I mentioned it to the polite man in grey who does the verifying. He verified that I was mistaken."
+      ]
+    },
+    {
+      "screenshot": "fara_tally_book"
+    },
+    {
+      "click": "Hand over the bread"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=delivered_1]",
+      "expect": "passed"
+    },
+    {
+      "wait_chat": "Fara adds a line to her tally book",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "comment": "-- beat 4: Dakarai at the end house (door 3) — 400 CD pressed into your hand --"
+    },
+    {
+      "path_to": [
+        2584,
+        110,
+        2776
+      ],
+      "timeout_ticks": 3600
+    },
+    {
+      "find_npc": "Dakarai",
+      "save": "dakarai"
+    },
+    {
+      "interact_npc": "{dakarai.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "Bread all the way to the end of the lane. Oma has you well trained already. Come in off the step. A Company Notary was here last week doing preliminary land valuations — nothing to worry about, he said, twice, in exactly that order, and left a card.",
+        "Here. Take this for the trouble of the walk. No, take it. A man who pays for kindness at least remembers it is worth something. That is more than the ones with the clipboards can say."
+      ]
+    },
+    {
+      "screenshot": "dakarai_end_house"
+    },
+    {
+      "click": "Accept the delivery money"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=delivered_3]",
+      "expect": "passed"
+    },
+    {
+      "wait_chat": "Dakarai presses 400 CobbleDollars",
+      "timeout": 10
+    },
+    {
+      "comment": "-- beat 5: back to Oma — the care package (3 potion, 8 oran, 2 balls, 16 bread, 200 CD) latches lane_done --"
+    },
+    {
+      "path_to": [
+        2586,
+        107,
+        2958
+      ],
+      "timeout_ticks": 3600
+    },
+    {
+      "interact_npc": "{oma.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "All three doors, and back before the kettle. Bless you. Now — the neighbors put a little something together while you were about it. Potions from the clinic tin, berries from every windowbox on the lane, a couple of spare balls, and bread. The bread is from Nalia, love. She would not hear of you leaving without it, so I am handing it over on her account. Her hands are full of the professor errands, but her heart came with the loaf.",
+        "There is a little money folded in besides. Do not argue. Arguing with a widow about money is a fight nobody wins."
+      ]
+    },
+    {
+      "screenshot": "oma_care_package"
+    },
+    {
+      "click": "Accept the care package"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=lane_done]",
+      "expect": "passed"
+    },
+    {
+      "wait_chat": "full pockets and Nalia bread",
+      "timeout": 10
+    },
+    {
+      "rcon": "clear {player} minecraft:bread 0",
+      "expect": "Found"
+    },
+    {
+      "rcon": "clear {player} cobblemon:potion 0",
+      "expect": "Found"
+    },
+    {
+      "comment": "-- epilogue: the done entry — the lane remembers --"
+    },
+    {
+      "interact_npc": "{oma.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "Off you go, then. The lane looks after its own, and today that meant you. Come back through any time — a door on this street will always have your name on it, even if the Company files say you have not got one.",
+        "Mind the notary office on your way. Take the long way past it if your knees are better than mine, which they are."
+      ]
+    },
+    {
+      "click": "Thank her and go"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "screenshot": "lane_done"
+    }
+  ]
+}

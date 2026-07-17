@@ -206,6 +206,20 @@
                                             }
                                         ]
                                     },
+                                    Cmd: "cutscene play starter_reveal"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_ci_starters_spawned"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "tag @s add ci_starters_spawned"
                                 },
                                 {

@@ -4,6 +4,15 @@ import java.util.List;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.DoorBlock;
+import net.minecraft.world.level.block.FenceGateBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * {@code move.to} / {@code move.path} tick steering — REAL movement, not tp, so latch-spawn
@@ -43,6 +52,8 @@ final class Walker {
 
   // Path mode (null when running a plain move.to leg).
   private static List<double[]> path = null; // [x, y, z] block centers
+  private static int doorCooldown = 0;
+  private static int flatCollideTicks = 0;
   private static int pathIdx = 0;
   private static double bestDist = Double.MAX_VALUE;
   private static int noProgressTicks = 0;
@@ -119,6 +130,20 @@ final class Walker {
       return;
     }
     if (mc.screen != null) {
+      // Already within tolerance? Arrival must not become a timeout just because a
+      // leftover dialog is up (verified live: tp landed ON the target, dialog open).
+      synchronized (LOCK) {
+        if (path == null) {
+          double ddx = tx - player.getX();
+          double ddz = tz - player.getZ();
+          if (Math.sqrt(ddx * ddx + ddz * ddz) <= tolerance) {
+            active = false;
+            lastResult = "arrived";
+            releaseKeys(mc);
+            return;
+          }
+        }
+      }
       releaseKeys(mc); // paused under a dialog; timeout keeps ticking
       countDown(mc);
       return;
@@ -210,13 +235,49 @@ final class Walker {
     player.setXRot(0f);
     mc.options.keyUp.setDown(true);
     mc.options.keySprint.setDown(sprint && dist > 4);
+
+    // Door reflex: the A* probe paths THROUGH closed wooden doors (setCanOpenDoors), so
+    // the walker must actually open them — right-click the closed door/fence gate ahead,
+    // once per cooldown (a second click would just close it again). Iron doors are
+    // skipped: the probe's node evaluator keeps them blocked too, so no route uses them.
+    if (doorCooldown > 0) doorCooldown--;
+    if (player.horizontalCollision && doorCooldown <= 0 && mc.gameMode != null) {
+      double len = Math.max(dist, 0.001);
+      BlockPos ahead = BlockPos.containing(player.getX() + dx / len * 0.8,
+                                           player.getY() + 0.4,
+                                           player.getZ() + dz / len * 0.8);
+      for (BlockPos p : new BlockPos[] {ahead, ahead.above()}) {
+        BlockState st = player.level().getBlockState(p);
+        boolean closedDoor = st.getBlock() instanceof DoorBlock
+            && !st.getValue(DoorBlock.OPEN) && !st.is(Blocks.IRON_DOOR);
+        boolean closedGate = st.getBlock() instanceof FenceGateBlock
+            && !st.getValue(FenceGateBlock.OPEN);
+        if (closedDoor || closedGate) {
+          mc.gameMode.useItemOn(player, InteractionHand.MAIN_HAND,
+              new BlockHitResult(Vec3.atCenterOf(p), Direction.UP, p, false));
+          player.swing(InteractionHand.MAIN_HAND);
+          doorCooldown = 10;
+          break;
+        }
+      }
+    }
     // Step-up hop: colliding into a block face while grounded → jump — but in path mode
-    // ONLY when the current node is actually above the player. A collision on a flat
-    // segment means the walker is off the route line; hopping there mounts furniture the
-    // route never climbs (verified live: the lab landing's roof rim), and the stuck →
-    // re-probe loop upstream heals off-line drift far better than improvised parkour.
+    // only when the current node is actually above the player. A collision on a flat
+    // segment usually means the walker is off the route line; hopping there mounts
+    // furniture the route never climbs (verified live: the lab landing's roof rim).
+    // EXCEPT: after sustained flat collision (slabs/carpets/stall counters the probe
+    // deems walkable but the 0.6-step player snags on — verified live at the Hua Zhan
+    // market), allow a fallback hop rather than riding the collision into stuck.
     boolean wantUp = Double.isNaN(gy) || gy > player.getY() + 0.5;
-    mc.options.keyJump.setDown(player.horizontalCollision && player.onGround() && wantUp);
+    if (player.horizontalCollision && player.onGround()) {
+      flatCollideTicks = wantUp ? 0 : flatCollideTicks + 1;
+    } else {
+      flatCollideTicks = 0;
+    }
+    boolean fallbackHop = flatCollideTicks >= 8;
+    if (fallbackHop) flatCollideTicks = 0;
+    mc.options.keyJump.setDown(player.horizontalCollision && player.onGround()
+                               && (wantUp || fallbackHop));
 
     countDown(mc);
   }

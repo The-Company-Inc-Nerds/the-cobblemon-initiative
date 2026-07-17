@@ -56,6 +56,7 @@ nix develop -c javap -p -c <extracted>.class
 | Client DEFAULT-preset index is classpath `/data/easy_npc/default_preset/default_preset.index` | Our `preset.index` is repo bookkeeping only; Easy NPC never reads it for DATA presets |
 | `COBBLEMON_ENTITY` renderer (`easy_npc:cobblemon_npc` entity type, `RenderData.EntityModel` = species id): species-only, PERMANENTLY — RenderDataEntry serializes exactly Type/EntityType/EntityModel; `ResourceLocation.tryParse` rejects `growlithe hisuian=true`; the client ghost PokemonEntity's aspect entity-data is never written (server delegate only), so even set aspects would not display. 6.25.0 is the newest upstream build ANYWHERE (Modrinth-checked 2026-07-04); no version has aspect support. Resolution = `PokemonSpecies.getByIdentifier` — ANY namespace, datapack species included, no `implemented` filter; unknown ids poison a static invalid cache until client restart | Forms need a RENDER-ONLY CLONE SPECIES (shipped 2026-07-04 for the Hisuian Growlithe stand-in): `data/cobblemon_initiative/species/custom/growlithe_hisui.json` (Hisui stats hoisted, `implemented:false` = out of random/giveall/dex-GUI; no dex_entries; bare-name lookups are hardcoded to the `cobblemon` namespace so nothing else can ever hit it) + `assets/cobblemon_initiative/bedrock/pokemon/resolvers/growlithe_hisui/` binding its empty-aspects variation to the hisuian model/texture. CAVEAT: those assets ship in AllTheMons, NOT base Cobblemon — without the pack the stand-in falls back to the gray substitute model (cosmetic only). Authoring: in-world exports (`dialog-src/visuals/<id>.npc.snbt`) or the species-only `cobblemon_model` character key |
 | **Multi-text dialogs show ONE page, uniformly at random, per dialog open** (`DialogData.getText` picks a random entry from `Texts[]`; there is no sequencing, no "seen" memory, no weighting) | A `say[]` list is a ROTATION, not a monologue: every line must stand alone. NEVER author sequential/ordered prose across one entry's `say[]` — a viewer gets exactly one of them per open. Sequences ride `open_dialog` page chains. ~398 of ~500 shipped entries already rotate; this is the documented contract for all of them |
+| **`preset import data` onto an EXISTING uuid'd body silently ignores vanilla entity `Tags`** (verified live 2026-07-17: Feng's preset shipped `Tags:["hz_granary"]`, the applied body carried none — the Miller Walk survey sensor could never fire). Only `import_new` spawns from the full NBT, so latch-placed NPCs DO get their tags | entity_tags on uuid'd characters must be applied OUTSIDE Easy NPC: generate_npc_function surfaces preset Tags per-uuid into `preset_map.json` and NpcPresetRefreshManager `addTag`s them after each confirmed import (version hash covers tags, so tag edits roll out like preset edits) |
 | Movement objectives (all verified in `ObjectiveType`/`ObjectiveUtils` + custom goals; work identically for `cobblemon_npc` — it extends PathfinderMob): `RANDOM_STROLL_AROUND_HOME` (radius 10/7, ~12s interval, 50% of picks biased toward Home — SOFT tether, no hard leash) silently no-ops without `Navigation:{Home:}`; `MOVE_BACK_TO_HOME` (StopDistance, exact-BlockPos path-back) sets NO goal flags so it coexists/jitters with the stroll goal; `RANDOM_STROLL` + `WATER_AVOIDING_RANDOM_STROLL` ignore Home entirely (unbounded drift); village types + FLEE_* are unusable here (vanilla POIs absent / flees players). SNBT: `Type` = exact UPPERCASE enum (typos silently become NONE), `Prio` MUST be written (missing = 0 = outranks everything), `SpeedModifier` double default 0.7 | Wander = the `ambient_wander` snippet (stroll@2 + back-home@3 + looks@9/10) and the preset MUST carry the NPC's real `Navigation.Home` — preset import REPLACES Navigation, so a template Home would slowly migrate NPCs. A strolling NPC opens dialog fine but KEEPS WALKING while the screen is open — never put wander on quest anchors (door/desk/scene NPCs) or NpcSight-registered NPCs |
 
 ### CobbleDollars 2.0.0-Beta-5.1 (`curse.maven:cobbledollars-859232:6604561`)
@@ -307,6 +308,21 @@ nix develop -c javap -p -c <extracted>.class
   this. `/spectate` requires the player already be SPECTATOR and drives the camera to
   a MOVING entity; restore game mode (auto-resets camera) then teleport (position is
   NOT restored by setGameMode).
+- **Cutscene keyframe y is FEET-level: the rendered camera sits ~1.78 above it**
+  (verified 2026-07-16). The client renders a spectated entity from `pos + eyeHeight`
+  (`Camera.setup`), and the rig is a full-size armor stand (`EntityType.ARMOR_STAND`
+  eye height 1.7775 since the 1.20.5 dimensions consolidation). `CutsceneManager.play`
+  spawns the rig AT the player's eye and `CutsceneRecorder.add` also captures
+  `getEyeY()`, so record→play rides ~1.78 HIGH — fine for aerial pans (how it slipped
+  through), badly high for close-ups of small subjects (E2E framebuffer capture of the
+  starter row confirmed: subjects at the very bottom of frame; the showrunner's
+  empirically-tuned y=127.6 close-ups → rendered eye 129.4 corroborate the constant).
+  AUTHORING RULE: set keyframe y = desired camera eye − 1.78 (≈ where your FEET would
+  be), and compute pitch/yaw from the +1.78 eye point. Air-verify the EYE path, not
+  the keyframe path. Pre-alpha.22 scenes authored/recorded eye-level (opening,
+  leader_intro, shadow_watcher, shrine/blossom/rift) render ~1.78 high — retune on
+  next visual pass rather than changing the engine (an engine fix re-frames every
+  tuned scene at once).
 - **AutoInstall is version-aware** (alpha.9+): the world latch stores `modVersion`; a
   bump re-applies only the idempotent content refresh (NPC repaint + register_sight)
   on rejoin — same version never re-fires (bump `build.gradle.kts` per content release,

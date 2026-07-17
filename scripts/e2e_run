@@ -31,7 +31,9 @@ Step vocabulary (one key per step, plus options):
   {"wait_no_screen": true, "timeout": 15?}
   {"wait_chat": "regex", "kinds": ["system","chat","overlay","title","subtitle"]?,
    "timeout": 30?}                            HUD text since the previous step
-  {"expect_screen_text": "needle"}            dialog prose OR widget label contains
+  {"expect_screen_text": "needle" | [any-of]} dialog prose OR widget label contains;
+        use a LIST covering every say line of a rotating entry (Easy NPC shows ONE
+        say line at random per open) — or assert a button label (always present)
   {"click": "label substr"}                   screen.click by text
   {"screenshot": "name"}                      framebuffer PNG into the evidence dir
   {"sleep": seconds}
@@ -87,7 +89,7 @@ class StepFail(Exception):
     pass
 
 
-def run_step(step, rcon, drv, vars_, evidence_dir):
+def run_step(step, rcon, drv, vars_, evidence_dir, prev=None):
     step = resolve(vars_, step)
 
     if 'comment' in step:
@@ -175,14 +177,57 @@ def run_step(step, rcon, drv, vars_, evidence_dir):
                        f'(last at {end[0]},{end[1]},{end[2]})')
 
     if 'interact_npc' in step:
-        ref = step['interact_npc']
-        key = 'uuid' if re.fullmatch(r'[0-9a-fA-F-]{36}', str(ref)) else 'name'
+        ref = str(step['interact_npc'])
+        key = 'uuid' if re.fullmatch(r'[0-9a-fA-F-]{36}', ref) else 'name'
+        # Chase a strolling NPC: many have RANDOM_STROLL_AROUND_HOME (~10b wander),
+        # so any position a scenario captured earlier can be stale by interact time —
+        # and the server silently drops interacts beyond ~3b (VERIFIED live: Sayuri
+        # at 7.1b after a cross-museum walk). Re-locate the entity and close the gap
+        # with A* (indoor furniture defeats straight-line walking) until in range.
+        # interact_npc is therefore SELF-APPROACHING: find_npc -> interact_npc is the
+        # canonical talk pattern; no intermediate walk_to needed.
+        chased = ''
+        for _ in range(3):
+            ents = drv.op('entity.list', radius=32).get('entities', [])
+            ent = next((e for e in ents
+                        if (key == 'uuid' and e.get('uuid') == ref)
+                        or (key == 'name' and ref.lower() in e.get('name', '').lower())),
+                       None)
+            if ent is None or ent['dist'] <= 2.5:
+                break
+            chased = f' (chased from {ent["dist"]:.1f}b)'
+            out = rcon.cmd(f'cobblemon-initiative dev path {vars_["player"]} '
+                           f'{int(ent["x"])} {int(ent["y"])} {int(ent["z"])}')
+            m = re.search(r'route=([0-9,;-]*)', out)
+            try:
+                if m and m.group(1):
+                    nodes = [[int(v) for v in n.split(',')]
+                             for n in m.group(1).split(';') if n]
+                    drv.follow_path(nodes, tol=2.0, timeout_ticks=900)
+                else:
+                    drv.walk_to(ent['x'], ent['z'], tol=2.0, timeout_ticks=400)
+            except DriverError:
+                pass  # partial/stuck/moved — re-locate and go again
         data = drv.op('interact.entity', **{key: ref})
-        return f'interacted {data["target"]} result={data["result"]}'
+        return f'interacted {data["target"]} result={data["result"]}{chased}'
 
     if 'wait_screen' in step:
-        drv.wait_screen(step['wait_screen'], timeout=step.get('timeout', 15))
-        return f'screen ~ {step["wait_screen"]!r} open'
+        try:
+            drv.wait_screen(step['wait_screen'], timeout=step.get('timeout', 15))
+            return f'screen ~ {step["wait_screen"]!r} open'
+        except DriverError:
+            # One transparent retry when the preceding step is the interact that
+            # should have opened this screen: a wandering entity (wild pokemon) can
+            # occlude the click ray for a moment (VERIFIED live: a Pikipek at the
+            # Takehara museum ate Sayuri's right-click; the same interact succeeded
+            # seconds later). Re-interact once, wait again.
+            if not (prev and 'interact_npc' in prev):
+                raise
+            ref = resolve(vars_, prev)['interact_npc']
+            key = 'uuid' if re.fullmatch(r'[0-9a-fA-F-]{36}', str(ref)) else 'name'
+            drv.op('interact.entity', **{key: ref})
+            drv.wait_screen(step['wait_screen'], timeout=step.get('timeout', 15))
+            return f'screen ~ {step["wait_screen"]!r} open (after interact retry)'
 
     if 'wait_no_screen' in step:
         drv.wait_no_screen(timeout=step.get('timeout', 15))
@@ -198,15 +243,21 @@ def run_step(step, rcon, drv, vars_, evidence_dir):
         dump = drv.op('screen.dump')
         if not dump.get('open'):
             raise StepFail('expect_screen_text: no screen open')
-        needle = step['expect_screen_text'].lower()
+        # A list means ANY-OF: Easy NPC multi-text dialogs show ONE say line at
+        # random per open (ENGINE_FINDINGS "rotation" contract) — asserting a single
+        # line of a rotating entry is a coin flip. List every line of the entry.
+        wanted = step['expect_screen_text']
+        needles = [wanted] if isinstance(wanted, str) else list(wanted)
         haystacks = [t.lower() for t in dump.get('texts', [])]
         haystacks += [w['text'].lower() for w in dump.get('widgets', [])]
         haystacks.append(dump.get('title', '').lower())
-        if not any(needle in h for h in haystacks):
-            raise StepFail(f'expect_screen_text {step["expect_screen_text"]!r}: not on '
+        hit = next((n for n in needles
+                    if any(n.lower() in h for h in haystacks)), None)
+        if hit is None:
+            raise StepFail(f'expect_screen_text {wanted!r}: not on '
                            f'screen. texts={dump.get("texts")!r:.400} '
                            f'widgets={[w["text"] for w in dump.get("widgets", [])]!r:.200}')
-        return f'screen shows {step["expect_screen_text"]!r}'
+        return f'screen shows {hit!r}'
 
     if 'click' in step:
         data = drv.op('screen.click', text=step['click'])
@@ -235,6 +286,14 @@ def run_scenario(path, rcon, drv):
 
     state = drv.op('state')
     vars_ = {'player': (state.get('player') or {}).get('name', '')}
+    # Scenario isolation: a previous (failed) scenario can abort with a dialog still
+    # open — the Walker pauses under any screen, so a leftover dialog turns the next
+    # scenario's first walk into a timeout (verified live). Start from a clean screen.
+    if state.get('screen'):
+        try:
+            drv.op('screen.close')
+        except Exception:
+            pass
     print(f'== {name}: {scenario.get("description", "")}')
     print(f'   player={vars_["player"] or "(not in world!)"} evidence={evidence_dir}')
 
@@ -258,7 +317,8 @@ def run_scenario(path, rcon, drv):
             return -1
 
     window_cursor, window_armed = hud_cursor(), True
-    for i, step in enumerate(scenario.get('steps', []), 1):
+    steps_all = scenario.get('steps', [])
+    for i, step in enumerate(steps_all, 1):
         is_passive = (any(k in step for k in PASSIVE)
                       or ('rcon' in step and 'expect' in step))  # rcon+expect = read-only assert
         if not is_passive and not window_armed:
@@ -267,7 +327,8 @@ def run_scenario(path, rcon, drv):
         if 'wait_chat' in step:
             window_armed = False
         try:
-            detail = run_step(step, rcon, drv, vars_, evidence_dir)
+            detail = run_step(step, rcon, drv, vars_, evidence_dir,
+                              prev=steps_all[i - 2] if i >= 2 else None)
             if 'comment' in step:
                 print(f'   -- {detail}')
             else:

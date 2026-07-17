@@ -43,6 +43,7 @@ import argparse
 import hashlib
 import json
 import os
+import re
 import sys
 from pathlib import Path
 from datetime import datetime, timezone
@@ -223,15 +224,30 @@ def generate_java_map(
     it loads) whenever the version changes, so content-only preset edits
     (dialog/trade recompiles) roll out without any mapping change.
     """
-    npcs: dict[str, dict[str, str]] = {}
+    npcs: dict[str, dict] = {}
+    data_root = PROJECT_ROOT / "src/main/resources/data" / PRESET_NAMESPACE
     for uuid_str, preset, label in sorted(entries):
-        entry = {"preset": resolve_preset(preset, entity_type)}
+        rl = resolve_preset(preset, entity_type)
+        entry: dict = {"preset": rl}
         if label:
             entry["label"] = label
+        # Vanilla entity Tags baked into the preset SNBT (compiler round 13c). Easy NPC's
+        # `preset import data` onto an EXISTING uuid'd body silently ignores them (only
+        # import_new spawns from the full NBT) — verified live 2026-07-17: Feng carried no
+        # hz_granary despite the preset shipping it, dead-ending the Miller Walk survey.
+        # Surface them here so NpcPresetRefreshManager can apply them after each import.
+        snbt_path = data_root / rl.split(":", 1)[1]
+        if snbt_path.is_file():
+            m = re.search(r'\bTags:\s*\[([^\]]*)\]', snbt_path.read_text())
+            if m:
+                tags = re.findall(r'"([^"]+)"', m.group(1))
+                if tags:
+                    entry["tags"] = tags
         npcs[uuid_str] = entry
 
     digest = hashlib.sha1(
-        "\n".join(f"{u} {v['preset']}" for u, v in sorted(npcs.items())).encode()
+        "\n".join(f"{u} {v['preset']} {','.join(v.get('tags', []))}"
+                  for u, v in sorted(npcs.items())).encode()
     )
     preset_root = PROJECT_ROOT / "src/main/resources/data" / PRESET_NAMESPACE / PRESET_PREFIX
     for preset_file in sorted(preset_root.rglob(f"*{PRESET_SUFFIX}")):

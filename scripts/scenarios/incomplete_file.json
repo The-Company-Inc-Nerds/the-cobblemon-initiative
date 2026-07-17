@@ -1,0 +1,463 @@
+{
+  "name": "incomplete_file",
+  "description": "The Incomplete File (q.side_file) end-to-end at Lucian Scrollkeeper's Sango desk: open the Personnel File, recover the portrait backing (courier-cart chest click) and re-signed ledger page (shore-warehouse barrel click), refuse Musa's 900 CD buyout to keep the founding charter, file all three, then play the badge bridge and stages 2-3. Assumed-faked prerequisites: the third badge is faked via memory_fragment 3 (drives the badges_gte_3 band tag), the three Revision Notice pulls run their real pull_notice_N functions by rcon (notice posts + Company Surveyor are unplaced), and the stage-3 HQ gate is faked with tag defeated_villain_boss; assumes no pending Lucian delivery turn-ins (memo/letter/minutes/manifest tags) on the test player, which would preempt the stage entries.",
+  "steps": [
+    {
+      "comment": "-- reset (idempotent re-runs): every chain tag, granted items, quest scores --"
+    },
+    {
+      "comment": "-- defensive: an aborted courier run leaves carrying_dead_letter, whose priority delivery entry shadows every Lucian dialog (verified live, twice) --"
+    },
+    {
+      "rcon": "tag {player} remove carrying_dead_letter"
+    },
+    {
+      "rcon": "clear {player} minecraft:paper[minecraft:custom_name='{\"color\":\"gold\",\"italic\":false,\"text\":\"Dead Letter\"}']"
+    },
+    {
+      "rcon": "tag {player} remove met_lucian"
+    },
+    {
+      "rcon": "tag {player} remove file_opened"
+    },
+    {
+      "rcon": "tag {player} remove doc_portrait"
+    },
+    {
+      "rcon": "tag {player} remove doc_ledger"
+    },
+    {
+      "rcon": "tag {player} remove doc_charter"
+    },
+    {
+      "rcon": "tag {player} remove sold_docs"
+    },
+    {
+      "rcon": "tag {player} remove docs_filed"
+    },
+    {
+      "rcon": "tag {player} remove notice_1"
+    },
+    {
+      "rcon": "tag {player} remove notice_2"
+    },
+    {
+      "rcon": "tag {player} remove notice_3"
+    },
+    {
+      "rcon": "tag {player} remove notices_filed"
+    },
+    {
+      "rcon": "tag {player} remove file_refiled"
+    },
+    {
+      "rcon": "tag {player} remove defeated_villain_boss"
+    },
+    {
+      "rcon": "scoreboard players set {player} ci_notices 0"
+    },
+    {
+      "rcon": "scoreboard players set {player} memory_fragment 0"
+    },
+    {
+      "rcon": "clear {player} minecraft:writable_book"
+    },
+    {
+      "rcon": "clear {player} minecraft:paper"
+    },
+    {
+      "rcon": "clear {player} cobblemon:poke_ball"
+    },
+    {
+      "rcon": "clear {player} cobblemon:potion"
+    },
+    {
+      "rcon": "clear {player} cobblemon:antidote"
+    },
+    {
+      "rcon": "clear {player} cobblemon:rare_candy"
+    },
+    {
+      "rcon": "clear {player} cobblemon:exp_candy_l"
+    },
+    {
+      "rcon": "clear {player} cobblemon:exp_candy_xl"
+    },
+    {
+      "comment": "-- beat 1: Lucian opens the Personnel File (approach_once may auto-open on a fresh player; close defensively, then interact) --"
+    },
+    {
+      "rcon": "tp {player} 2626 119 2777"
+    },
+    {
+      "sleep": 1.5
+    },
+    {
+      "client": "screen.close"
+    },
+    {
+      "find_npc": "Lucian Scrollkeeper",
+      "save": "g"
+    },
+    {
+      "walk_to": [
+        "{g.x}",
+        "{g.z}"
+      ],
+      "tol": 2.0
+    },
+    {
+      "client": "screen.close"
+    },
+    {
+      "interact_npc": "{g.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "Stop a moment. I keep the histories the Company would rather you never read, and I have just found a gap shaped like you. Your file reads FOUND. No name. No history. And files, in my long experience, abhor a vacuum.",
+        "So let me open one. Standard registration, a place to keep what you learn on the roads — and one section you will fill yourself, one page at a time, and never tear out. Will you let me open a file on you?"
+      ]
+    },
+    {
+      "screenshot": "lucian_open_file"
+    },
+    {
+      "click": "Open my file"
+    },
+    {
+      "sleep": 0.7
+    },
+    {
+      "expect_screen_text": [
+        "The file is open, which means the errand stands. Three misfiled originals. A sun-faded portrait backing in a chest on the courier cart at the north end of town — yes, the Company cart; recover it politely. A re-signed ledger page in a barrel by the farm fountain on the south side. And the founding charter, carried by the courier himself, camped beside that same cart, who would rather buy your silence than surrender it.",
+        "Bring me what you notice. The region is being re-signed one document at a time, and I would like at least one copy that remembers the first draft."
+      ]
+    },
+    {
+      "click": "I will look"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=file_opened]",
+      "expect": "passed"
+    },
+    {
+      "rcon": "clear {player} minecraft:writable_book 0",
+      "expect": "Found"
+    },
+    {
+      "comment": "-- beat 2: the portrait backing - chest on the courier cart (Java click intercept, DocPropManager) --"
+    },
+    {
+      "path_to": [
+        2592,
+        111,
+        2815
+      ],
+      "tol": 2.0,
+      "timeout_ticks": 3600
+    },
+    {
+      "client": "interact.block",
+      "args": {
+        "x": 2591,
+        "y": 111,
+        "z": 2815
+      }
+    },
+    {
+      "wait_chat": "One of three misfiled records",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=doc_portrait]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 3: the re-signed ledger page - barrel in the shore warehouse (Java click intercept) --"
+    },
+    {
+      "path_to": [
+        2584,
+        107,
+        2925
+      ],
+      "tol": 2.5,
+      "timeout_ticks": 3600
+    },
+    {
+      "client": "interact.block",
+      "args": {
+        "x": 2584,
+        "y": 107,
+        "z": 2925
+      }
+    },
+    {
+      "wait_chat": "Two of three",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=doc_ledger]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 4: Musa the courier - refuse the 900 CD buyout, the founding charter falls loose --"
+    },
+    {
+      "path_to": [
+        2592,
+        111,
+        2815
+      ],
+      "tol": 2.0,
+      "timeout_ticks": 3600
+    },
+    {
+      "find_npc": "Musa",
+      "save": "c"
+    },
+    {
+      "interact_npc": "{c.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "Hold there, resident. Company courier, north-road distribution. You are carrying two documents that belong in a Company archive — a portrait backing, a ledger page. Old paper. Sentimental to somebody, valuable to nobody, and yet the branch has authorised nine hundred CobbleDollars for the pair, no questions, because the branch does not ask questions, it retires them.",
+        "I also carry the third — the founding charter. Complete the set on my end and everyone goes home lighter. Or keep your papers, and we both pretend this was a weather conversation."
+      ]
+    },
+    {
+      "screenshot": "courier_offer"
+    },
+    {
+      "click": "Keep the documents"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "take them to Lucian",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=doc_charter]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 5: stage 1 turn-in - Lucian files the three records --"
+    },
+    {
+      "path_to": [
+        2626,
+        119,
+        2777
+      ],
+      "tol": 2.0,
+      "timeout_ticks": 3600
+    },
+    {
+      "interact_npc": "{g.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "All three. The portrait backing, the re-signed ledger, the founding charter. You could have sold the lot to the courier and I would never have known. You did not. That tells me more about you than any of these papers do.",
+        "Give them here. I will cross-reference, and refund a records fee you never paid, because the ledger must balance and it is the only thing in this town that still does."
+      ]
+    },
+    {
+      "screenshot": "stage1_turnin"
+    },
+    {
+      "click": "Hand Lucian the three records"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "Stage one filed",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=docs_filed]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 6: the badge bridge - under three badges the file waits (same leave line on both the off-record prompt and the plain bridge, so either branch passes) --"
+    },
+    {
+      "sleep": 1.0
+    },
+    {
+      "interact_npc": "{g.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "The three records are filed — the ledger remembers its first draft again, and it has you to thank. The next chapter is being pasted up in a town you cannot argue with until you are wearing a third badge, so that part waits on the roads.",
+        "But there is one thing that will not keep, and it never touches a file. A word off the record, while the two grey coats in the square have their backs turned. If you have the nerve for something quiet, say so."
+      ]
+    },
+    {
+      "click": "Third badge. Noted."
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "comment": "-- beat 7: fake the third badge (memory_fragment drives badges_gte_3 in dialog/band_tags) - stage 2 brief --"
+    },
+    {
+      "rcon": "scoreboard players set {player} memory_fragment 3"
+    },
+    {
+      "sleep": 1.0
+    },
+    {
+      "interact_npc": "{g.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "The region is being re-signed again. A Company Surveyor walks Blossom Path pasting Revision Notices — this signage supersedes all prior signage, prior signage never existed, that sort of thing. I want three, intact, and I want them pulled while her eyes are elsewhere.",
+        "If she sees you holding one, she will not touch you. She will note the time and adjust her clipboard, and your intact notices will not be intact any more. Patience beats her. It usually does."
+      ]
+    },
+    {
+      "screenshot": "stage2_brief"
+    },
+    {
+      "click": "I will watch her loop"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "comment": "-- beat 8: pull the three Revision Notices via their real pull functions (posts + surveyor unplaced, so no sighting can zero the count) --"
+    },
+    {
+      "rcon": "execute as {player} at @s run function cobblemon_initiative:sidequest/personnel_file/pull_notice_1"
+    },
+    {
+      "rcon": "execute as {player} at @s run function cobblemon_initiative:sidequest/personnel_file/pull_notice_2"
+    },
+    {
+      "rcon": "execute as {player} at @s run function cobblemon_initiative:sidequest/personnel_file/pull_notice_3"
+    },
+    {
+      "rcon": "execute if score {player} ci_notices matches 3",
+      "expect": "passed"
+    },
+    {
+      "sleep": 1.0
+    },
+    {
+      "comment": "-- beat 9: stage 2 turn-in - the intact notices --"
+    },
+    {
+      "interact_npc": "{g.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "Three Revision Notices, corners uncurled"
+    },
+    {
+      "click": "Hand over the intact notices"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "Revision notices filed",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=notices_filed]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 10: fake the HQ raid gate (defeated_villain_boss) - stage 3, the record reassembled and closed --"
+    },
+    {
+      "rcon": "tag {player} add defeated_villain_boss"
+    },
+    {
+      "sleep": 1.0
+    },
+    {
+      "interact_npc": "{g.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "You came back. Good. I have laid all of it out — the portrait backing, the ledger, the charter, the notices. Read together they make one document, and the document has a shape where a name should be. The reassembly renders it as static. Every pass, static.",
+        "So I will say what the file says. This record was not lost. It was retired. No — that is wrong too. There was never a record. That is the sentence they wrote over the sentence that used to be here. Sit down. Let me close the file properly, and pay what the archive owes you for finishing its work."
+      ]
+    },
+    {
+      "screenshot": "record_reassembled"
+    },
+    {
+      "click": "Let her close the file"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "The file is closed",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=file_refiled]",
+      "expect": "passed"
+    },
+    {
+      "screenshot": "incomplete_file_closed"
+    },
+    {
+      "comment": "-- trailing cleanup: mid-run fakes must not leak into later scenarios (badge band tags re-derive from memory_fragment every tick) --"
+    },
+    {
+      "rcon": "scoreboard players set {player} memory_fragment 0"
+    },
+    {
+      "rcon": "tag {player} remove defeated_villain_boss"
+    }
+  ]
+}

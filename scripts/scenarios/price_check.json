@@ -1,0 +1,324 @@
+{
+  "name": "price_check",
+  "description": "Adjusted Retail (The Price Check), q.side_prices, Hua Zhan east market: meet Kaito Zhang at the mart (default entry latches met_hz_martkeeper), take the price check on the second conversation, note the ticket at all three stalls (Linh Hua produce, Wei Shun tools, Mei Lin's unverified southwest lane), and hand the notes back for the branded Company Verified Rate payout. The one faked prerequisite is the quest premise itself: the preamble pins the world instability index (#idx cd_instability = 12) past the gte-8 offer gate but under the 16 band, so the stalls show their standard-band tickets deterministically. Assumes an install run has applied the authored presets (names + dialogs) to the four persisted Hua Zhan bodies.",
+  "steps": [
+    {
+      "comment": "-- reset (idempotent re-runs): every tag the chain sets, plus payout candies --"
+    },
+    {
+      "rcon": "tag {player} remove met_hz_martkeeper"
+    },
+    {
+      "rcon": "tag {player} remove hz_price_check_active"
+    },
+    {
+      "rcon": "tag {player} remove hz_price_1"
+    },
+    {
+      "rcon": "tag {player} remove hz_price_2"
+    },
+    {
+      "rcon": "tag {player} remove hz_price_3"
+    },
+    {
+      "rcon": "tag {player} remove hz_prices_done"
+    },
+    {
+      "rcon": "clear {player} cobblemon:exp_candy_xs"
+    },
+    {
+      "rcon": "clear {player} cobblemon:exp_candy_s"
+    },
+    {
+      "rcon": "clear {player} cobblemon:exp_candy_m"
+    },
+    {
+      "rcon": "clear {player} cobblemon:exp_candy_l"
+    },
+    {
+      "comment": "-- prereq fake: the index has moved (offer gate cd_instability gte 8; 12 keeps the stalls in the standard band, under 16) --"
+    },
+    {
+      "rcon": "scoreboard players set #idx cd_instability 12"
+    },
+    {
+      "comment": "-- anchor: Kaito Zhang's mart counter; sleep lets chunks load and the tick re-derive band + inverse tags --"
+    },
+    {
+      "rcon": "tp {player} 1542 88 2110"
+    },
+    {
+      "sleep": 1.5
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=cd_instability_gte_8]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 1: first conversation — the verified sign (default entry; every button latches met_hz_martkeeper) --"
+    },
+    {
+      "find_npc": "Kaito Zhang",
+      "save": "g"
+    },
+    {
+      "interact_npc": "{g.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "Ask about the sign"
+    },
+    {
+      "screenshot": "kaito_verified_sign"
+    },
+    {
+      "click": "Ask about the sign"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "checks my ledger weekly",
+      "timeout": 10
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=met_hz_martkeeper]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 2: second conversation — the offer auto-opens (met + no_hz_price_check_active + cd_instability_gte_8) --"
+    },
+    {
+      "sleep": 0.7
+    },
+    {
+      "interact_npc": "{g.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "Take the price check"
+    },
+    {
+      "screenshot": "price_check_offer"
+    },
+    {
+      "click": "Take the price check"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "THE PRICE CHECK",
+      "kinds": [
+        "title"
+      ],
+      "timeout": 10
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=hz_price_check_active]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 3: stop 1/3 — Linh Hua, the produce stall (50 became 52; the scale got calibrated) --"
+    },
+    {
+      "comment": "-- WALKER LIMIT: the market-lane entrance at x~1529-31 pinches through a stall counter A* hops but a player cannot traverse (verified live, 3 attempts + detour probes). tp past the pinch onto the open lane; map feedback filed. --"
+    },
+    {
+      "rcon": "tp {player} 1533.5 86 2060.5"
+    },
+    {
+      "sleep": 1.0
+    },
+    {
+      "path_to": [
+        1544,
+        86,
+        2060
+      ],
+      "timeout_ticks": 3600
+    },
+    {
+      "find_npc": "Linh Hua",
+      "save": "linh"
+    },
+    {
+      "interact_npc": "{linh.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "Note the price"
+    },
+    {
+      "screenshot": "linh_produce_ticket"
+    },
+    {
+      "click": "Note the price"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "the produce crate",
+      "timeout": 10
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=hz_price_1]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 4: stop 2/3 — Wei Shun, the tool stall (208, and the rep quotes it in sheaves) --"
+    },
+    {
+      "path_to": [
+        1482,
+        87,
+        2096
+      ],
+      "timeout_ticks": 3600
+    },
+    {
+      "find_npc": "Wei Shun",
+      "save": "wei"
+    },
+    {
+      "interact_npc": "{wei.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "Note the price"
+    },
+    {
+      "click": "Note the price"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "in wheat equivalent",
+      "timeout": 10
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=hz_price_2]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 5: stop 3/3 — Mei Lin, the unverified southwest lane (the counter-example: nothing moved) --"
+    },
+    {
+      "path_to": [
+        1432,
+        90,
+        2152
+      ],
+      "timeout_ticks": 3600
+    },
+    {
+      "find_npc": "Mei Lin",
+      "save": "mei"
+    },
+    {
+      "interact_npc": "{mei.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "Note the price"
+    },
+    {
+      "screenshot": "mei_unverified_stall"
+    },
+    {
+      "click": "Note the price"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "prices did NOT move",
+      "timeout": 10
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=hz_price_3]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 6: turn-in — Kaito flips the sign; the branded receipt (rate actionbar) lands on the click, then the paid_out reaction --"
+    },
+    {
+      "path_to": [
+        1542,
+        88,
+        2110
+      ],
+      "timeout_ticks": 3600
+    },
+    {
+      "interact_npc": "{g.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "Hand over the notes"
+    },
+    {
+      "screenshot": "kaito_three_notes"
+    },
+    {
+      "click": "Hand over the notes"
+    },
+    {
+      "wait_chat": "Company Verified Rate",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "wait_chat": "ADJUSTED FOR RETAIL",
+      "kinds": [
+        "title"
+      ],
+      "timeout": 10
+    },
+    {
+      "sleep": 0.7
+    },
+    {
+      "expect_screen_text": [
+        "There. That yellow line over your hotbar — face value in, less out. One percent shaved for every four points the index climbs, capped only where the Company got embarrassed. Read the yellow number. That is the fee for being believed. I paid you the honest figure and the rails took their cut on camera.",
+        "Look at the yellow line. That is the rate the rails quote when they skim politely — the Company fee for being believed. Your notes were worth every step, and the shortfall you just watched is the whole report."
+      ]
+    },
+    {
+      "screenshot": "paid_out_receipt"
+    },
+    {
+      "click": "Pocket the pay"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=hz_prices_done]",
+      "expect": "passed"
+    },
+    {
+      "rcon": "clear {player} cobblemon:exp_candy_xs 0",
+      "expect": "Found"
+    },
+    {
+      "screenshot": "adjusted_for_retail"
+    }
+  ]
+}

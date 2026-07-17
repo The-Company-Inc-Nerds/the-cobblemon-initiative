@@ -1,0 +1,203 @@
+{
+  "name": "miller_walk",
+  "description": "Grain In, Goods Out (The Miller Walk), q.side_survey slot 76: accept Guo the Miller's survey at the Hua Zhan mill, walk within 5b of the Grain Buyer stall (Ping, hz_wheat_trader) and the Granary store (Feng, hz_granary) so the grain_survey tick latches both halves, then report back for the haircut payout and the paid-state dialog. No prerequisite tags — the intro gate is open on a fresh player; assumes fields_liberated < 4 (wheat traders not yet hostile) and re-runs accumulate CobbleDollars (the 300-fee rail has no reset).",
+  "steps": [
+    {
+      "comment": "-- reset (idempotent re-runs): the four chain tags + payout items --"
+    },
+    {
+      "rcon": "tag {player} remove hz_survey_active"
+    },
+    {
+      "rcon": "tag {player} remove hz_saw_pitch"
+    },
+    {
+      "rcon": "tag {player} remove hz_saw_granary"
+    },
+    {
+      "rcon": "tag {player} remove hz_survey_paid"
+    },
+    {
+      "rcon": "clear {player} minecraft:bread"
+    },
+    {
+      "rcon": "clear {player} cobblemon:oran_berry"
+    },
+    {
+      "rcon": "clear {player} cobblemon:exp_candy_s"
+    },
+    {
+      "rcon": "clear {player} cobblemon:exp_candy_m"
+    },
+    {
+      "rcon": "clear {player} cobblemon:exp_candy_l"
+    },
+    {
+      "comment": "-- beat 1: Guo the Miller at The Mill — accept the survey --"
+    },
+    {
+      "rcon": "tp {player} 1511 84 1987"
+    },
+    {
+      "sleep": 1.5
+    },
+    {
+      "find_npc": "Guo the Miller",
+      "save": "miller"
+    },
+    {
+      "interact_npc": "{miller.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "The Company owns the seed, and the field, and the silo. Grain in, goods out, they call it, like it is a courtesy they are doing me. Now they want the till as well.",
+        "I am the last mill in wheat country that still takes coin. The Granary stopped. The Grain Buyer in the square is telling my own customers the paper money is already dead. Do me one favour. Go and hear them both. Then come back and tell me I am wrong."
+      ]
+    },
+    {
+      "screenshot": "miller_intro"
+    },
+    {
+      "click": "I will run your survey"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=hz_survey_active]",
+      "expect": "passed"
+    },
+    {
+      "wait_chat": "Survey accepted",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "comment": "-- beat 2: the open pitch — stand at Ping's stall (hz_wheat_trader body, 5b latch) --"
+    },
+    {
+      "path_to": [
+        1538,
+        86,
+        2001
+      ],
+      "timeout_ticks": 3600
+    },
+    {
+      "wait_chat": "The company store remains",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 15
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=hz_saw_pitch]",
+      "expect": "passed"
+    },
+    {
+      "screenshot": "grain_buyer_stall"
+    },
+    {
+      "comment": "-- beat 3: the company store — stand at Feng's granary (hz_granary body, 5b latch) --"
+    },
+    {
+      "path_to": [
+        1526,
+        84,
+        2029
+      ],
+      "timeout_ticks": 3600
+    },
+    {
+      "wait_chat": "Report to Guo the Miller",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 15
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=hz_saw_granary]",
+      "expect": "passed"
+    },
+    {
+      "screenshot": "granary_store"
+    },
+    {
+      "comment": "-- beat 4: report back — the payout entry (all_tags gate, priority 40) --"
+    },
+    {
+      "path_to": [
+        1511,
+        84,
+        1987
+      ],
+      "timeout_ticks": 3600
+    },
+    {
+      "interact_npc": "{miller.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "Take the survey fee"
+    },
+    {
+      "screenshot": "miller_payout_offer"
+    },
+    {
+      "click": "Take the survey fee"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "sleep": 1.0
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=hz_survey_paid]",
+      "expect": "passed"
+    },
+    {
+      "wait_chat": "the coin only fails where they say it fails",
+      "timeout": 10
+    },
+    {
+      "rcon": "clear {player} minecraft:bread 0",
+      "expect": "Found"
+    },
+    {
+      "rcon": "clear {player} cobblemon:oran_berry 0",
+      "expect": "Found"
+    },
+    {
+      "comment": "-- beat 5: paid-state dialog — the thanks entry replaces the payout --"
+    },
+    {
+      "interact_npc": "{miller.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "Short, was it. It always is. They call it a rate. I call it a thumb on the scale you are not allowed to look at.",
+        "Keep your coin. Somebody in this town has to remember what it was worth before they decided it was worth less."
+      ]
+    },
+    {
+      "screenshot": "miller_walk_paid"
+    },
+    {
+      "click": "Take care, miller"
+    },
+    {
+      "wait_no_screen": true
+    }
+  ]
+}

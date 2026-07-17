@@ -1,19 +1,21 @@
 {
-  "_comment": "STARTER REVEAL — the three partners appear and the camera visits each in turn with its cry. relative+facingFrame so it plays wherever the lab table is; the three stand-ins are assumed in a short row in front of the player, in the ci_standin order (Skiddo left, Totodile centre, Hisuian Growlithe right). Trigger: 'cutscene play starter_reveal' the moment the starters appear (wire at the lab-entry / starter-spawn step). Cries derive from cobblemon:pokemon.<species>.cry. Tune the per-starter offsets to the real table with /cutscene record so each zoom centres its Pokémon.",
-  "relative": true,
-  "facingFrame": true,
+  "_comment": "STARTER REVEAL — plays from Acacia's 'Choose a partner' button the moment the three stand-ins spawn (professor_acacia starter_button, gated not_tag ci_starters_spawned so it fires exactly once). ABSOLUTE path anchored to the fixed stand-in spawn coords (Skiddo 2675.5/128/2899.5, Hisuian Growlithe 2676.5/128/2901.5, Totodile 2675.5/128/2903.5; Acacia behind the row at 2674.5/128/2901.5). KEYFRAME-Y CONVENTION (see docs/ENGINE_FINDINGS.md): the spectated rig renders ~1.78 above keyframe y (armor-stand eye height), so y here is 'feet level' — 127.6 renders the camera eye at ~129.4, head height for the one-block partners. Showrunner-tuned close-up positions 2026-07-16 (hard cuts ticks:1 + 55-tick holds, order Totodile -> Skiddo -> Growlithe = left -> right -> centre from the east camera, then a smooth zoom out). Lab interior RCON block-probed: open pocket x2672-2678 at z2899-2903, corridor mouth open through x2685 at z2900-2902; every rendered-eye position + sight line verified air. Dev-stack caveat (SMOKETEST 1.7): the Hisuian Growlithe stand-in needs AllTheMons (ships in the mrpack) to render the Hisuian model.",
+  "relative": false,
   "skippable": true,
   "keyframes": [
-    { "x": 0.0, "y": 1.4, "z": 2.2, "yaw": 0.0, "pitch": 10.0, "ticks": 25 },
-    { "x": -1.4, "y": 0.9, "z": 1.4, "yaw": -22.0, "pitch": 8.0, "ticks": 35 },
-    { "x": 0.0, "y": 0.9, "z": 1.2, "yaw": 0.0, "pitch": 8.0, "ticks": 35 },
-    { "x": 1.4, "y": 0.9, "z": 1.4, "yaw": 22.0, "pitch": 8.0, "ticks": 35 },
-    { "x": 0.0, "y": 1.5, "z": 2.6, "yaw": 0.0, "pitch": 10.0, "ticks": 25 }
+    { "x": 2680.5, "y": 128.4, "z": 2901.5, "yaw": 90.0, "pitch": 17.0, "ticks": 20 },
+    { "x": 2677.5, "y": 127.6, "z": 2903.8, "yaw": 98.0, "pitch": 25.0, "ticks": 1 },
+    { "x": 2677.5, "y": 127.6, "z": 2903.8, "yaw": 98.0, "pitch": 25.0, "ticks": 55 },
+    { "x": 2677.5, "y": 127.6, "z": 2899.4, "yaw": 87.0, "pitch": 22.0, "ticks": 1 },
+    { "x": 2677.5, "y": 127.6, "z": 2899.4, "yaw": 87.0, "pitch": 22.0, "ticks": 55 },
+    { "x": 2678.5, "y": 127.6, "z": 2901.8, "yaw": 98.0, "pitch": 25.0, "ticks": 1 },
+    { "x": 2678.5, "y": 127.6, "z": 2901.8, "yaw": 98.0, "pitch": 25.0, "ticks": 55 },
+    { "x": 2681.5, "y": 128.9, "z": 2901.5, "yaw": 90.0, "pitch": 20.0, "ticks": 40 }
   ],
   "cues": [
-    { "tick": 30, "sound": "cobblemon:pokemon.skiddo.cry", "volume": 1.2, "pitch": 1.0, "subtitle": "§aSkiddo — the steady one" },
-    { "tick": 68, "sound": "cobblemon:pokemon.totodile.cry", "volume": 1.2, "pitch": 1.0, "subtitle": "§bTotodile — the fierce one" },
-    { "tick": 105, "sound": "cobblemon:pokemon.growlithe.cry", "volume": 1.2, "pitch": 1.0, "subtitle": "§6Hisuian Growlithe — the loyal one" },
-    { "tick": 142, "title": "§fChoose your partner", "subtitle": "§7The road starts with one." }
+    { "tick": 24, "sound": "cobblemon:pokemon.totodile.cry", "volume": 1.2, "pitch": 1.0, "subtitle": "§bTotodile — the fierce one" },
+    { "tick": 80, "sound": "cobblemon:pokemon.skiddo.cry", "volume": 1.2, "pitch": 1.0, "subtitle": "§aSkiddo — the steady one" },
+    { "tick": 136, "sound": "cobblemon:pokemon.growlithe.cry", "volume": 1.2, "pitch": 1.0, "subtitle": "§6Hisuian Growlithe — the loyal one" },
+    { "tick": 195, "title": "§fChoose your partner", "subtitle": "§7The road starts with one." }
   ]
 }

@@ -1,0 +1,257 @@
+{
+  "name": "sango_classic",
+  "description": "The Sango Classic fishing derby (q.side_classic), played end-to-end at Deka's pier by the pond (2570 111 2856): take the loaner rod, pay the 150 CD entry (wallet faked to 1000 via cobbledollars set), hand in an empty bucket for the count line, then land the three catches (faked via rcon give MID-quarter — the begin-snapshot delta counts them exactly like real casts) and win the first-place purse + sango_classic_champion, closing on the champion pier line. No earlier-quest tags are required (Deka's default entry is ungated); the preamble resets all derby tags, the quarter clock, and every granted item so re-runs work.",
+  "steps": [
+    {
+      "comment": "-- reset (idempotent re-runs): derby tags, quarter clock, rod + fish + purse items --"
+    },
+    {
+      "rcon": "tag {player} remove classic_rod_given"
+    },
+    {
+      "rcon": "tag {player} remove classic_active"
+    },
+    {
+      "rcon": "tag {player} remove sango_classic_champion"
+    },
+    {
+      "rcon": "scoreboard players set #on ci_classic 0"
+    },
+    {
+      "rcon": "schedule clear cobblemon_initiative:sidequest/derby/second"
+    },
+    {
+      "rcon": "bossbar set cobblemon_initiative:sango_classic visible false"
+    },
+    {
+      "rcon": "clear {player} minecraft:fishing_rod"
+    },
+    {
+      "rcon": "clear {player} minecraft:cod"
+    },
+    {
+      "rcon": "clear {player} minecraft:salmon"
+    },
+    {
+      "rcon": "clear {player} minecraft:pufferfish"
+    },
+    {
+      "rcon": "clear {player} minecraft:tropical_fish"
+    },
+    {
+      "rcon": "clear {player} cobblemon:poke_rod"
+    },
+    {
+      "rcon": "clear {player} cobblemon:poke_ball"
+    },
+    {
+      "rcon": "clear {player} cobblemon:oran_berry"
+    },
+    {
+      "rcon": "clear {player} cobblemon:exp_candy_l"
+    },
+    {
+      "rcon": "clear {player} cobblemon:exp_candy_xl"
+    },
+    {
+      "rcon": "clear {player} cobblemon:hp_up"
+    },
+    {
+      "rcon": "clear {player} cobblemon:protein"
+    },
+    {
+      "rcon": "clear {player} cobblemon:iron"
+    },
+    {
+      "rcon": "clear {player} cobblemon:calcium"
+    },
+    {
+      "rcon": "clear {player} cobblemon:zinc"
+    },
+    {
+      "rcon": "clear {player} cobblemon:carbos"
+    },
+    {
+      "rcon": "cobbledollars set {player} 1000"
+    },
+    {
+      "comment": "-- beat 1: Deka's pier — the pitch, the spare rod, the 150 CD entry --"
+    },
+    {
+      "rcon": "tp {player} 2570 111 2856"
+    },
+    {
+      "sleep": 1.5
+    },
+    {
+      "find_npc": "Deka",
+      "save": "g"
+    },
+    {
+      "interact_npc": "{g.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "Deka. Angler, dealer in aquatic futures, and keeper of the Sango Classic — a quarterly fishing derby and the only quarterly report in this town nobody audits. Entry is one hundred fifty, the bar runs two minutes, three fish off this pond before it empties. Anything with fins counts, no favoritism.",
+        "Rules of the Classic: pay in, watch the bar, three fish before zero. Miss and you are out the entry and nothing else — the water keeps no other score. First timers get my spare rod, no charge. And if the derby is too honest for you, ask me about the other fish."
+      ]
+    },
+    {
+      "screenshot": "deka_pier_pitch"
+    },
+    {
+      "click": "Take the spare rod"
+    },
+    {
+      "sleep": 0.7
+    },
+    {
+      "wait_chat": "Received the spare fishing rod",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=classic_rod_given]",
+      "expect": "passed"
+    },
+    {
+      "rcon": "clear {player} minecraft:fishing_rod 0",
+      "expect": "Found"
+    },
+    {
+      "comment": "rod button has no close — the dialog is still open; enter straight from it"
+    },
+    {
+      "click": "Enter the Classic"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=classic_active]",
+      "expect": "passed"
+    },
+    {
+      "wait_chat": "THE SANGO CLASSIC",
+      "kinds": [
+        "title"
+      ],
+      "timeout": 10
+    },
+    {
+      "comment": "-- beat 2: empty-bucket hand-in — Deka counts 0 of 3, no early win --"
+    },
+    {
+      "interact_npc": "{g.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "Bar is running and the line should be wet! Three fish before it empties — cod, salmon, pufferfish, whatever bites. The Classic does not discriminate.",
+        "Less talking, more casting! Bring me the bucket when there are three in it."
+      ]
+    },
+    {
+      "click": "Hand in the catch"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "Keep casting",
+      "timeout": 10
+    },
+    {
+      "rcon": "execute unless entity @a[name={player},tag=sango_classic_champion]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 3: land three fish mid-quarter (post-snapshot rcon gives = this-quarter catches) and win --"
+    },
+    {
+      "rcon": "give {player} minecraft:cod 2"
+    },
+    {
+      "rcon": "give {player} minecraft:salmon 1"
+    },
+    {
+      "interact_npc": "{g.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "Bar is running and the line should be wet! Three fish before it empties — cod, salmon, pufferfish, whatever bites. The Classic does not discriminate.",
+        "Less talking, more casting! Bring me the bucket when there are three in it."
+      ]
+    },
+    {
+      "screenshot": "classic_full_bucket"
+    },
+    {
+      "click": "Hand in the catch"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=sango_classic_champion]",
+      "expect": "passed"
+    },
+    {
+      "rcon": "execute unless entity @a[name={player},tag=classic_active]",
+      "expect": "passed"
+    },
+    {
+      "wait_chat": "RECORD QUARTER",
+      "kinds": [
+        "title"
+      ],
+      "timeout": 10
+    },
+    {
+      "wait_chat": "First place in the Sango Classic",
+      "timeout": 10
+    },
+    {
+      "rcon": "clear {player} cobblemon:poke_rod 0",
+      "expect": "Found"
+    },
+    {
+      "rcon": "clear {player} minecraft:cod 0",
+      "expect": "No items"
+    },
+    {
+      "comment": "-- beat 4: the champion pier line (priority-30 entry now that classic_active dropped) --"
+    },
+    {
+      "interact_npc": "{g.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "The reigning Classic Champion, back at my pier. The title is quarterly, you know. There is always another quarter.",
+        "Best quarterly report in town, and your name is on it. Nobody audits the Classic — that is the whole charm. Fancy another run?"
+      ]
+    },
+    {
+      "click": "Resting on my laurels"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "screenshot": "sango_classic_champion"
+    }
+  ]
+}

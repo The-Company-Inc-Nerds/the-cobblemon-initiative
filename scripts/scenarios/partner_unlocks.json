@@ -1,0 +1,338 @@
+{
+  "name": "partner_unlocks",
+  "description": "Dex-Unlock Partners (q.side_partner), both rungs end-to-end at the Sango lab: fake dex_caught to 15 via /pokedex grant, Acacia unlocks the second partner, claim Skiddo (Lv. 25), raise the dex to 30, Acacia unlocks the last partner, claim Hisuian Growlithe (Lv. 40). Assumed-faked prereqs: chose_starter + ci_starters_spawned (opening chain), the stand-in trio is respawned by the preamble, and the dex threshold is granted (DexScoreManager mirrors real CAUGHT entries every 40t, so grants are the only fakeable path; grants persist across runs but the chain is tag-gated and monotonic, so re-runs stay green). Re-runs keep the claimed Pokemon (givemon has no dupe gate).",
+  "steps": [
+    {
+      "comment": "-- reset (idempotent re-runs): every tag the chain sets --"
+    },
+    {
+      "rcon": "tag {player} remove second_starter_unlocked"
+    },
+    {
+      "rcon": "tag {player} remove second_starter_claimed"
+    },
+    {
+      "rcon": "tag {player} remove third_starter_unlocked"
+    },
+    {
+      "rcon": "tag {player} remove third_starter_claimed"
+    },
+    {
+      "rcon": "tag {player} remove claimed_starter_skiddo"
+    },
+    {
+      "rcon": "tag {player} remove claimed_starter_hisuian_growlithe"
+    },
+    {
+      "comment": "-- prereq fakes: opening-chain tags (starter chosen, trio latch spent) --"
+    },
+    {
+      "rcon": "tag {player} add chose_starter"
+    },
+    {
+      "rcon": "tag {player} add ci_starters_spawned"
+    },
+    {
+      "comment": "-- anchor at the lab FIRST (chunks must be loaded for the entity reset below) --"
+    },
+    {
+      "rcon": "tp {player} 2672 128 2899"
+    },
+    {
+      "sleep": 1.5
+    },
+    {
+      "comment": "-- stand-in trio reset: kill + respawn at Acacia's canonical import spots (import_new lands a tick or two deferred) --"
+    },
+    {
+      "rcon": "kill @e[tag=ci_standin_skiddo]"
+    },
+    {
+      "rcon": "kill @e[tag=ci_standin_totodile]"
+    },
+    {
+      "rcon": "kill @e[tag=ci_standin_growlithe]"
+    },
+    {
+      "rcon": "easy_npc preset import_new data easy_npc:preset/cobblemon_npc/starter_skiddo.npc.snbt 2675.5 128 2899.5"
+    },
+    {
+      "rcon": "easy_npc preset import_new data easy_npc:preset/cobblemon_npc/starter_hisuian_growlithe.npc.snbt 2676.5 128 2901.5"
+    },
+    {
+      "rcon": "easy_npc preset import_new data easy_npc:preset/cobblemon_npc/starter_totodile.npc.snbt 2675.5 128 2903.5"
+    },
+    {
+      "sleep": 1.0
+    },
+    {
+      "rcon": "execute if entity @e[tag=ci_standin_skiddo]",
+      "expect": "passed"
+    },
+    {
+      "rcon": "execute if entity @e[tag=ci_standin_growlithe]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- dex fake, rung 1: 15 CAUGHT species (pokedex grant sets CAUGHT; DexScoreManager polls 40t; band_tags applies dex_gte_15 next tick) --"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon rattata level=5"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon pidgey level=5"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon caterpie level=5"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon weedle level=5"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon zubat level=5"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon geodude level=5"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon machop level=5"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon abra level=5"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon gastly level=5"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon oddish level=5"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon bellsprout level=5"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon poliwag level=5"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon tentacool level=5"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon magnemite level=5"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon sandshrew level=5"
+    },
+    {
+      "sleep": 3.0
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=dex_gte_15]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 1: Acacia notices the fifteen entries and unlocks the second partner --"
+    },
+    {
+      "find_npc": "Acacia",
+      "save": "g"
+    },
+    {
+      "interact_npc": "{g.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "There is a second partner here"
+    },
+    {
+      "screenshot": "acacia_second_partner"
+    },
+    {
+      "click": "See the partner"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=second_starter_unlocked]",
+      "expect": "passed"
+    },
+    {
+      "wait_chat": "A partner is ready to choose",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "comment": "-- beat 2: claim Skiddo (Lv. 25) from the stand-in trio --"
+    },
+    {
+      "find_npc": "Skiddo",
+      "save": "skiddo"
+    },
+    {
+      "interact_npc": "{skiddo.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "Choose Skiddo"
+    },
+    {
+      "screenshot": "skiddo_offer_lv25"
+    },
+    {
+      "click": "Choose Skiddo (Lv. 25)"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=second_starter_claimed]",
+      "expect": "passed"
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=claimed_starter_skiddo]",
+      "expect": "passed"
+    },
+    {
+      "wait_chat": "One partner still waits at the lab",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "comment": "-- dex fake, rung 2: 15 more CAUGHT species -> dex_gte_30 --"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon ekans level=5"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon spearow level=5"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon paras level=5"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon venonat level=5"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon diglett level=5"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon meowth level=5"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon psyduck level=5"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon mankey level=5"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon ponyta level=5"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon slowpoke level=5"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon doduo level=5"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon seel level=5"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon grimer level=5"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon shellder level=5"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon drowzee level=5"
+    },
+    {
+      "sleep": 3.0
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=dex_gte_30]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 3: back to Acacia; thirty entries unlock the last partner --"
+    },
+    {
+      "interact_npc": "{g.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "That is not luck, that is a trainer"
+    },
+    {
+      "screenshot": "acacia_third_partner"
+    },
+    {
+      "click": "See the partner"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=third_starter_unlocked]",
+      "expect": "passed"
+    },
+    {
+      "wait_chat": "A partner is ready to choose",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "comment": "-- beat 4: claim Hisuian Growlithe (Lv. 40) -- the lab empties --"
+    },
+    {
+      "find_npc": "Growlithe",
+      "save": "growlithe"
+    },
+    {
+      "interact_npc": "{growlithe.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "Choose Hisuian Growlithe"
+    },
+    {
+      "screenshot": "growlithe_offer_lv40"
+    },
+    {
+      "click": "Choose Hisuian Growlithe (Lv. 40)"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=third_starter_claimed]",
+      "expect": "passed"
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=claimed_starter_hisuian_growlithe]",
+      "expect": "passed"
+    },
+    {
+      "wait_chat": "The lab is empty now",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "screenshot": "partner_unlocks_lab_empty"
+    }
+  ]
+}

@@ -1,0 +1,192 @@
+{
+  "name": "quarterly_minutes",
+  "description": "Minutes of the Quarterly Review (q.side_minutes) end-to-end: enter the Hua Zhan branch office lobby (the tick poller self-latches hz_office_warned within 10b of the office staff), hold the top-floor door landing unseen for 8 continuous seconds to overhear the review (hz_minutes_heard + the Quarterly Minutes paper prop), confirm Chen Bao's post-reading line, then jump cross-map to Sango and file the minutes with Lucian Scrollkeeper (hz_minutes_filed, 400 CD + 2 super potions). No prerequisite tags are faked — the opening latch arms in-scenario; the preamble removes sting_memo_taken/yield_report_taken so Lucian's two higher-priority turn-ins (77/76) cannot shadow the minutes entry (75).",
+  "steps": [
+    {
+      "comment": "-- reset (idempotent re-runs): every tag/score/item the chain sets --"
+    },
+    {
+      "rcon": "tag {player} remove hz_office_warned"
+    },
+    {
+      "rcon": "tag {player} remove hz_office_seen"
+    },
+    {
+      "rcon": "tag {player} remove hz_minutes_heard"
+    },
+    {
+      "rcon": "tag {player} remove hz_minutes_filed"
+    },
+    {
+      "rcon": "scoreboard players reset {player} ci_loiter_hz"
+    },
+    {
+      "rcon": "clear {player} minecraft:paper"
+    },
+    {
+      "rcon": "clear {player} cobblemon:super_potion"
+    },
+    {
+      "rcon": "clear {player} cobblemon:exp_candy_s"
+    },
+    {
+      "rcon": "clear {player} cobblemon:exp_candy_m"
+    },
+    {
+      "rcon": "clear {player} cobblemon:exp_candy_l"
+    },
+    {
+      "comment": "-- neutralize Lucian's higher-priority turn-ins (memo712@77, rezoning@76) so minutes_turn_in@75 surfaces --"
+    },
+    {
+      "rcon": "tag {player} remove sting_memo_taken"
+    },
+    {
+      "rcon": "tag {player} remove yield_report_taken"
+    },
+    {
+      "comment": "-- beat 1: the branch office lobby — Ning's desk arms the hz_office_warned latch --"
+    },
+    {
+      "rcon": "tp {player} 1540 86 2001"
+    },
+    {
+      "sleep": 1.5
+    },
+    {
+      "wait_chat": "Floor privileges are assigned",
+      "timeout": 10
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=hz_office_warned]",
+      "expect": "passed"
+    },
+    {
+      "screenshot": "branch_office_lobby"
+    },
+    {
+      "comment": "-- beat 2: the top-floor door landing. tp, NOT path_to: analyst Lan's DIALOG-mode sight cone covers the stairwell and the Walker pauses under a surprise screen (documented Walker behavior), so the vertical A* leg would stall mid-flight --"
+    },
+    {
+      "rcon": "tp {player} 1536 99 1996"
+    },
+    {
+      "sleep": 1.5
+    },
+    {
+      "comment": "8 unseen seconds within 6b of Chen Bao: CLEAR countdown, then the review reads itself out"
+    },
+    {
+      "wait_chat": "hold position",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "sleep": 9.5
+    },
+    {
+      "wait_chat": "a voice reads slowly",
+      "timeout": 15
+    },
+    {
+      "wait_chat": "Quarterly Minutes secured",
+      "timeout": 10
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=hz_minutes_heard]",
+      "expect": "passed"
+    },
+    {
+      "rcon": "clear {player} minecraft:paper 0",
+      "expect": "Found"
+    },
+    {
+      "screenshot": "minutes_heard"
+    },
+    {
+      "comment": "-- beat 2b: Chen Bao's post-reading line (stage-1 target NPC; we are already on his landing, walk_to is a no-op leg) --"
+    },
+    {
+      "find_npc": "Chen Bao",
+      "save": "mgr"
+    },
+    {
+      "interact_npc": "{mgr.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "The quarterly is closed. The door was closed. The hallway is not a stakeholder, and yet here you are, standing like someone who has heard numbers.",
+        "Whatever you think you heard, the numbers were strong. They are always strong. That is what the word means now. Leave before I have to notice you."
+      ]
+    },
+    {
+      "screenshot": "chen_bao_post_reading"
+    },
+    {
+      "click": "Leave the office"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "comment": "-- beat 3: cross-map jump to Sango (Hua Zhan -> Sango is ~1350 blocks, not a town-internal leg) — Lucian files the minutes --"
+    },
+    {
+      "rcon": "tp {player} 2626 119 2777"
+    },
+    {
+      "sleep": 1.5
+    },
+    {
+      "comment": "Lucian's approach_once sight may auto-open her open_file dialog on a fresh player; screen.close is a no-op when nothing is open"
+    },
+    {
+      "client": "screen.close"
+    },
+    {
+      "find_npc": "Lucian",
+      "save": "arch"
+    },
+    {
+      "interact_npc": "{arch.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "Minutes. Actual branch minutes, initialed and circulated, and someone let them walk out the door. Regional Manager Shade signs like someone who has signed over another name — the hand drags where the old letters used to go.",
+        "And the closing boilerplate again, pressed one rank higher this time. Insistence is a fingerprint, and this one is climbing the org chart. Hand them here — the archive pays a records fee for live Company paper."
+      ]
+    },
+    {
+      "screenshot": "lucian_turn_in"
+    },
+    {
+      "click": "File the quarterly minutes"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=hz_minutes_filed]",
+      "expect": "passed"
+    },
+    {
+      "wait_chat": "copies the signature twice",
+      "timeout": 10
+    },
+    {
+      "rcon": "clear {player} cobblemon:super_potion 0",
+      "expect": "Found"
+    },
+    {
+      "screenshot": "quarterly_minutes_filed"
+    }
+  ]
+}

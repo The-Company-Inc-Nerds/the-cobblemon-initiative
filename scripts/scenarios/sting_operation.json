@@ -1,0 +1,280 @@
+{
+  "name": "sting_operation",
+  "description": "Plays the Sting Operation side quest (q.side_sting) end-to-end on Beekeeper Tomo at the Blossom Arch end of Takehara Falls: pry the four Company seals off the hive line in his gated dialog chain, talk past the Field Agent via the cite-the-notice button (deterministic no-battle route), take the wheat-APPROVED field memo, and accept the hive supplies through sting_reward_paid. The whole chain is hosted inline on Tomo's persisted body at 1920 105 2570 and the opening entry is ungated, so NO prerequisite tags are faked; the epilogue assert expects a player who has NOT beaten the Takehara gym yet (defeated_takehara_leader + sting_reward_paid would surface the hive_futures entry over post_reward). Preamble resets every sting_* tag the chain sets and clears paper/honey/honeycomb/potions indiscriminately.",
+  "steps": [
+    {
+      "comment": "-- reset (idempotent re-runs): all chain tags + granted items; no test entities spawned --"
+    },
+    {
+      "rcon": "tag {player} remove sting_seal_1"
+    },
+    {
+      "rcon": "tag {player} remove sting_seal_2"
+    },
+    {
+      "rcon": "tag {player} remove sting_seal_3"
+    },
+    {
+      "rcon": "tag {player} remove sting_seal_4_clear"
+    },
+    {
+      "rcon": "tag {player} remove sting_seal_4"
+    },
+    {
+      "rcon": "tag {player} remove sting_memo_taken"
+    },
+    {
+      "rcon": "tag {player} remove sting_reward_paid"
+    },
+    {
+      "rcon": "tag {player} remove sting_futures_paid"
+    },
+    {
+      "rcon": "clear {player} minecraft:paper"
+    },
+    {
+      "rcon": "clear {player} minecraft:honey_bottle"
+    },
+    {
+      "rcon": "clear {player} minecraft:honeycomb"
+    },
+    {
+      "rcon": "clear {player} cobblemon:potion"
+    },
+    {
+      "comment": "-- anchor: Tomo's body among the hive trees (Takehara entrance, Blossom Arch) --"
+    },
+    {
+      "rcon": "tp {player} 1920 105 2570"
+    },
+    {
+      "sleep": 1.5
+    },
+    {
+      "comment": "-- beat 1: Tomo, asset under valuation (default entry, ungated) --"
+    },
+    {
+      "find_npc": "Beekeeper Tomo",
+      "save": "g"
+    },
+    {
+      "interact_npc": "{g.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "Company stapled paperwork to my trees"
+    },
+    {
+      "screenshot": "tomo_asset_under_valuation"
+    },
+    {
+      "click": "Walk the hive line"
+    },
+    {
+      "sleep": 0.7
+    },
+    {
+      "comment": "-- beat 2: first seal --"
+    },
+    {
+      "expect_screen_text": "glue is stronger than it needs"
+    },
+    {
+      "click": "Pry the first seal loose"
+    },
+    {
+      "sleep": 0.7
+    },
+    {
+      "wait_chat": "Seal one removed",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=sting_seal_1]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 3: second seal (the barcoded bees) --"
+    },
+    {
+      "expect_screen_text": "a barcode on the landing board"
+    },
+    {
+      "click": "Pry the second seal loose"
+    },
+    {
+      "sleep": 0.7
+    },
+    {
+      "wait_chat": "Seal two removed",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=sting_seal_2]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 4: third seal (print on the back) --"
+    },
+    {
+      "expect_screen_text": "disagrees at roughly two hundred beats"
+    },
+    {
+      "click": "Pry the third seal loose"
+    },
+    {
+      "sleep": 0.7
+    },
+    {
+      "wait_chat": "Seal three removed",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=sting_seal_3]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 5: fourth seal - talk past the Field Agent (cite route; battle button is the alt path) --"
+    },
+    {
+      "expect_screen_text": "steps between you and the seal"
+    },
+    {
+      "screenshot": "field_agent_at_seal_four"
+    },
+    {
+      "click": "Cite his own do not disturb"
+    },
+    {
+      "sleep": 0.7
+    },
+    {
+      "wait_chat": "steps aside pending clarification",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=sting_seal_4_clear]",
+      "expect": "passed"
+    },
+    {
+      "expect_screen_text": "Pry the fourth seal loose"
+    },
+    {
+      "click": "Pry the fourth seal loose"
+    },
+    {
+      "sleep": 0.7
+    },
+    {
+      "wait_chat": "Seal four removed",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=sting_seal_4]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 6: the field memo (honey REJECTED, wheat APPROVED) --"
+    },
+    {
+      "expect_screen_text": "Take the field memo"
+    },
+    {
+      "screenshot": "field_memo_unfolded"
+    },
+    {
+      "click": "Take the field memo"
+    },
+    {
+      "sleep": 0.7
+    },
+    {
+      "wait_chat": "Field memo secured",
+      "timeout": 10
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=sting_memo_taken]",
+      "expect": "passed"
+    },
+    {
+      "rcon": "clear {player} minecraft:paper 0",
+      "expect": "Found"
+    },
+    {
+      "comment": "-- beat 7: thank-you entry chains straight in; accept the hive supplies --"
+    },
+    {
+      "expect_screen_text": "the hum is honey-colored again"
+    },
+    {
+      "screenshot": "four_seals_down"
+    },
+    {
+      "click": "Accept the hive supplies"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "The hives provide",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=sting_reward_paid]",
+      "expect": "passed"
+    },
+    {
+      "rcon": "clear {player} minecraft:honey_bottle 0",
+      "expect": "Found"
+    },
+    {
+      "rcon": "clear {player} minecraft:honeycomb 0",
+      "expect": "Found"
+    },
+    {
+      "rcon": "clear {player} cobblemon:potion 0",
+      "expect": "Found"
+    },
+    {
+      "comment": "-- epilogue: re-interact, Tomo files you under friend (post_reward entry) --"
+    },
+    {
+      "interact_npc": "{g.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "Yours is filed under friend"
+    },
+    {
+      "screenshot": "sting_operation_filed_under_friend"
+    },
+    {
+      "client": "screen.close"
+    },
+    {
+      "wait_no_screen": true
+    }
+  ]
+}

@@ -1,0 +1,168 @@
+{
+  "name": "natural_history",
+  "description": "Natural History (q.side_bones), played end-to-end at the Takehara museum: take the field brush from Curator Kenji (sets sq_museum_brush, opens the quest stage), donate six bones to Sayuri by the bone statue (donate_bones -> donate_pay: 400 CD + 2 Poke Balls, latches sq_museum_donation_done), then hear Kenji's completed-exhibit line. No earlier-quest tags are assumed; bones are given via rcon instead of brushing suspicious gravel. Re-runs re-pay the 400 CD CobbleDollars (economy balance cannot be reset by the preamble).",
+  "steps": [
+    {
+      "comment": "-- reset (idempotent re-runs): chain tags + granted items (CD payout is not resettable) --"
+    },
+    {
+      "rcon": "tag {player} remove sq_museum_brush"
+    },
+    {
+      "rcon": "tag {player} remove sq_museum_donation_done"
+    },
+    {
+      "rcon": "clear {player} minecraft:brush"
+    },
+    {
+      "rcon": "clear {player} minecraft:bone"
+    },
+    {
+      "rcon": "clear {player} cobblemon:poke_ball"
+    },
+    {
+      "rcon": "clear {player} cobblemon:exp_candy_s"
+    },
+    {
+      "rcon": "clear {player} cobblemon:exp_candy_m"
+    },
+    {
+      "rcon": "clear {player} cobblemon:exp_candy_l"
+    },
+    {
+      "comment": "-- beat 1: Curator Kenji, welcome + the field brush (museum, by the empty plinth) --"
+    },
+    {
+      "rcon": "tp {player} 1902 114 2337"
+    },
+    {
+      "sleep": 1.5
+    },
+    {
+      "find_npc": "Curator Kenji",
+      "save": "g"
+    },
+    {
+      "interact_npc": "{g.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "Welcome to the Takehara Museum of Natural History — three halls, one curator, and a single empty plinth head office relabeled PENDING RE-VERIFICATION. I preferred the old label. It said DONATED BY FRIENDS.",
+        "The falls have been cutting these cliffs for ten thousand years. Everything the water uncovers ends up in my strata — what the Company calls pre-verification assets, and I call fossils."
+      ]
+    },
+    {
+      "screenshot": "kenji_welcome"
+    },
+    {
+      "click": "Take the field brush"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=sq_museum_brush]",
+      "expect": "passed"
+    },
+    {
+      "rcon": "clear {player} minecraft:brush 0",
+      "expect": "Found"
+    },
+    {
+      "wait_chat": "Received a brush",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "comment": "-- beat 2: the dig, faked — six specimen bones straight into the bag --"
+    },
+    {
+      "rcon": "give {player} minecraft:bone 6"
+    },
+    {
+      "comment": "-- beat 3: Sayuri by the bone statue takes the anatomy-case donation --"
+    },
+    {
+      "path_to": [
+        1870,
+        114,
+        2330
+      ],
+      "timeout_ticks": 3600
+    },
+    {
+      "find_npc": "Sayuri",
+      "save": "s"
+    },
+    {
+      "interact_npc": "{s.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "How goes the brushing? The exhibit hall needs six assorted specimen bones to complete the comparative anatomy case. Bring me six and the museum pays a finders fee — an honest one, in actual money.",
+        "Soft pale gravel, low strokes, patience. The water did the hard part ten thousand years ago."
+      ]
+    },
+    {
+      "screenshot": "sayuri_donation_offer"
+    },
+    {
+      "click": "Donate six specimen bones"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=sq_museum_donation_done]",
+      "expect": "passed"
+    },
+    {
+      "rcon": "clear {player} cobblemon:poke_ball 0",
+      "expect": "Found"
+    },
+    {
+      "wait_chat": "the museum pays its finders fees",
+      "timeout": 10
+    },
+    {
+      "comment": "-- beat 4: back to Kenji — the plinth is not empty anymore --"
+    },
+    {
+      "path_to": [
+        1902,
+        114,
+        2337
+      ],
+      "timeout_ticks": 3600
+    },
+    {
+      "interact_npc": "{g.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "The comparative anatomy case is complete, and the plinth is not empty anymore — it is full of your bones. That came out wrong. Thank you.",
+        "Keep brushing the strata. The water is patient and so am I. And if a fossil turns up, my bench is yours — once."
+      ]
+    },
+    {
+      "screenshot": "natural_history_exhibit_complete"
+    },
+    {
+      "click": "Leave"
+    },
+    {
+      "wait_no_screen": true
+    }
+  ]
+}

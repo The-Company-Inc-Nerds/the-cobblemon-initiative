@@ -1,0 +1,314 @@
+#!/usr/bin/env python3
+"""scenario_lint — offline checker for e2e_run scenario files.
+
+Cross-references every scenario step against dialog-src (the authoring source of
+truth) so label typos, phantom tags, and structural mistakes are caught WITHOUT
+booting the game. Run it before the first live run of any new scenario; the
+authoring loop is: write scenario -> scenario_lint -> live e2e_run.
+
+  scripts/scenario_lint scripts/scenarios/foo.json [more.json ...]
+  scripts/scenario_lint --all          # lint everything in scripts/scenarios/
+
+Checks (ERROR fails the exit code, WARNING is advisory):
+  E unknown-step        step has no recognized vocabulary key
+  E label-not-found     click/expect_screen_text needle matches no dialog-src
+                        button/say/announce text (substring, ci)
+  E var-undefined       "{name.field}" used before any step saves that var
+  E coord-bounds        path_to/walk_to coordinate outside sane map bounds
+  W chat-not-found      wait_chat literal matches no announce/title in
+                        dialog-src or functions (Java-emitted lines can't be known)
+  W tag-unknown         a tag in an rcon step appears nowhere in dialog-src
+                        gates/actions, functions, or Java sources
+  W npc-unknown         find_npc/interact_npc name matches no character
+                        display_name (runtime-spawned bodies can be legit)
+  W interact-blind      interact_npc with no walk_to/path_to within the previous
+                        3 steps (server drops interacts beyond ~3b, silently)
+
+Output: [LINT] <scenario>#<step> <ERROR|WARNING> <check>: <detail>
+"""
+import difflib
+import glob
+import json
+import os
+import re
+import sys
+
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+STEP_KEYS = {'comment', 'rcon', 'client', 'find_npc', 'walk_to', 'path_to',
+             'interact_npc', 'wait_screen', 'wait_no_screen', 'wait_chat',
+             'expect_screen_text', 'click', 'screenshot', 'sleep'}
+OPTION_KEYS = {'expect', 'save', 'args', 'radius', 'tol', 'sprint', 'timeout',
+               'timeout_ticks', 'max_hops', 'allow_partial', 'kinds'}
+
+STRIP_FMT = re.compile(r'§.')
+
+
+def _norm(s):
+    return STRIP_FMT.sub('', s).lower()
+
+
+def load_corpus():
+    """Every player-visible string + tag dialog-src / functions / Java can produce."""
+    texts = set()    # button labels, say lines, announces, entry names, titles
+    tags = set()
+    npc_names = set()
+    rotations = []   # say[] lists with >1 line: Easy NPC shows ONE at random per open
+    buttons = set()  # button labels — ALWAYS on screen, stable across rotation
+
+    def walk(obj):
+        if isinstance(obj, dict):
+            for k, v in obj.items():
+                if k in ('text', 'say', 'name', 'label_text') and isinstance(v, str):
+                    texts.add(v)
+                if k == 'say' and isinstance(v, list):
+                    lines = [x for x in v if isinstance(x, str)]
+                    texts.update(lines)
+                    if len(lines) > 1:
+                        rotations.append(lines)
+                if k == 'buttons' and isinstance(v, list):
+                    buttons.update(b['text'] for b in v
+                                   if isinstance(b, dict) and isinstance(b.get('text'), str))
+                if k in ('tag', 'not_tag') and isinstance(v, str):
+                    tags.add(v)
+                if k in ('all_tags', 'any_tags', 'if_tags', 'not_tags', 'entity_tags') \
+                        and isinstance(v, list):
+                    tags.update(x for x in v if isinstance(x, str))
+                if k == 'cmd' and isinstance(v, str):
+                    for m in re.finditer(r'\btag\s+\S+\s+(?:add|remove)\s+([\w.-]+)', v):
+                        tags.add(m.group(1))
+                    for m in re.finditer(r'tag=!?([\w.-]+)', v):
+                        tags.add(m.group(1))
+                if k == 'label' and isinstance(v, str) and not v.islower():
+                    texts.add(v)  # quest register stage labels are player-visible
+                walk(v)
+        elif isinstance(obj, list):
+            for v in obj:
+                walk(v)
+
+    for f in glob.glob(os.path.join(ROOT, 'dialog-src', '**', '*.json'), recursive=True):
+        try:
+            d = json.load(open(f))
+        except Exception:
+            continue
+        walk(d)
+        if isinstance(d, dict) and d.get('kind') == 'character':
+            if isinstance(d.get('display_name'), str):
+                npc_names.add(d['display_name'])
+
+    # mcfunctions + Java: title/announce strings and tag manipulations
+    src_globs = [os.path.join(ROOT, 'src', 'main', 'resources', '**', '*.mcfunction'),
+                 os.path.join(ROOT, 'src', 'main', 'java', '**', '*.java')]
+    for pat in src_globs:
+        for f in glob.glob(pat, recursive=True):
+            try:
+                body = open(f, encoding='utf-8', errors='replace').read()
+            except Exception:
+                continue
+            for m in re.finditer(r'"text"\s*:\s*"([^"]+)"', body):
+                texts.add(m.group(1))
+            for m in re.finditer(r'\btag\s+\S+\s+(?:add|remove)\s+([\w.-]+)', body):
+                tags.add(m.group(1))
+            for m in re.finditer(r'tag=!?([\w.-]+)', body):
+                tags.add(m.group(1))
+            if f.endswith('.java'):
+                # literal chat/announce strings ("Totodile joined your team." etc.)
+                for m in re.finditer(r'"([^"\\]{8,120})"', body):
+                    texts.add(m.group(1))
+
+    return texts, tags, npc_names, rotations, buttons
+
+
+def suggest(needle, corpus, n=3):
+    close = difflib.get_close_matches(needle, corpus, n=n, cutoff=0.5)
+    return ('; close: ' + ' | '.join(repr(c[:60]) for c in close)) if close else ''
+
+
+def lint_file(path, texts, tags, npc_names, rotations, buttons):
+    findings = []  # (level, step_idx, check, msg)
+    norm_texts = {_norm(t) for t in texts}
+    norm_rotations = [[_norm(l) for l in lines] for lines in rotations]
+    norm_buttons = [_norm(b) for b in buttons]
+    try:
+        sc = json.load(open(path))
+    except Exception as e:
+        return [('ERROR', 0, 'parse', f'not valid JSON: {e}')]
+
+    def text_found(needle):
+        nn = _norm(needle)
+        return any(nn in t for t in norm_texts)
+
+    saved = {'player'}
+    steps = sc.get('steps', [])
+    for i, step in enumerate(steps, 1):
+        keys = set(step)
+        main = keys & STEP_KEYS
+        if not main:
+            findings.append(('ERROR', i, 'unknown-step',
+                             f'no recognized step key in {sorted(keys)}'))
+            continue
+        extra = keys - STEP_KEYS - OPTION_KEYS
+        if extra:
+            findings.append(('WARNING', i, 'unknown-option',
+                             f'unrecognized option(s) {sorted(extra)}'))
+
+        # var references
+        for m in re.finditer(r'\{(\w+)(?:\.\w+)?\}', json.dumps(step)):
+            if m.group(1) not in saved:
+                findings.append(('ERROR', i, 'var-undefined',
+                                 f'"{{{m.group(1)}...}}" referenced before save'))
+        if 'save' in step:
+            saved.add(step['save'])
+        elif 'find_npc' in step:
+            saved.add('npc')
+
+        if 'click' in step or 'expect_screen_text' in step:
+            raw = step.get('click', step.get('expect_screen_text'))
+            needles = [raw] if isinstance(raw, str) else list(raw)
+            for needle in needles:
+                if not text_found(needle):
+                    findings.append(('ERROR', i, 'label-not-found',
+                                     f'{needle!r} matches no dialog-src/function text'
+                                     f'{suggest(needle, texts)}'))
+            # Rotation hazard: Easy NPC multi-text entries show ONE say line at
+            # random per open. A single-needle expect that only lives inside a
+            # rotating say[] is a coin-flip test — every line must be covered.
+            if 'expect_screen_text' in step and isinstance(raw, str):
+                nn = _norm(raw)
+                if any(nn in b for b in norm_buttons):
+                    nn = None  # also a button label — stable regardless of rotation
+                for rot in (norm_rotations if nn else []):
+                    if any(nn in line for line in rot):
+                        uncovered = [l for l in rot
+                                     if not any(_norm(n) in l for n in needles)]
+                        if uncovered:
+                            findings.append(('ERROR', i, 'rotation-flaky',
+                                             f'{raw!r} matches 1 line of a {len(rot)}-line '
+                                             f'rotating say[] — shows ~1/{len(rot)} of opens. '
+                                             f'Use an any-of LIST covering every line, or '
+                                             f'assert a button label instead'))
+                        break
+
+        if 'wait_chat' in step:
+            pat = step['wait_chat']
+            if not re.search(r'[\\^$.|?*+()\[\]{]', pat):  # literal, not regex
+                if not text_found(pat):
+                    findings.append(('WARNING', i, 'chat-not-found',
+                                     f'{pat!r} matches no known announce/title'
+                                     f'{suggest(pat, texts)}'))
+
+        if 'rcon' in step:
+            cmd = step['rcon']
+            for m in re.finditer(r'\btag\s+\S+\s+(?:add|remove)\s+([\w.-]+)', cmd):
+                if m.group(1) not in tags:
+                    findings.append(('WARNING', i, 'tag-unknown',
+                                     f'tag {m.group(1)!r} not found in dialog-src/'
+                                     f'functions/Java{suggest(m.group(1), tags)}'))
+            for m in re.finditer(r'tag=!?([\w.-]+)', cmd):
+                if m.group(1) not in tags:
+                    findings.append(('WARNING', i, 'tag-unknown',
+                                     f'selector tag {m.group(1)!r} not found'
+                                     f'{suggest(m.group(1), tags)}'))
+
+        for key in ('find_npc', 'interact_npc'):
+            if key in step:
+                ref = str(step[key])
+                if '{' in ref or re.fullmatch(r'[0-9a-fA-F-]{36}', ref):
+                    continue  # var / uuid — checked elsewhere
+                rl = ref.lower()
+                # find_npc matches entity TYPE too (easy_npc:humanoid etc.)
+                if rl in ('easy_npc', 'cobblemon') or ':' in rl:
+                    continue
+                if not any(rl in n.lower() for n in npc_names):
+                    findings.append(('WARNING', i, 'npc-unknown',
+                                     f'{ref!r} matches no character display_name'
+                                     f'{suggest(ref, npc_names)}'))
+
+        if 'interact_npc' in step:
+            # interact_npc self-approaches (A*-chase within entity.list radius 32),
+            # but the player still needs to be brought NEAR the NPC first. A recent
+            # interact with the SAME ref counts — the player is already standing there.
+            recent = steps[max(0, i - 13):i - 1]
+            if not any(('walk_to' in s or 'path_to' in s or 'find_npc' in s
+                        or s.get('interact_npc') == step['interact_npc']
+                        or ('rcon' in s and ' tp ' in ' ' + s['rcon']))
+                       for s in recent):
+                findings.append(('WARNING', i, 'interact-blind',
+                                 'no approach context (tp/path_to/walk_to/find_npc/same-'
+                                 'ref interact) nearby — the chase only sees ~32b'))
+
+        for key in ('path_to', 'walk_to'):
+            if key in step:
+                vals = step[key]
+                nums = [v for v in vals if isinstance(v, (int, float))]
+                if any(abs(v) > 30000 for v in nums):
+                    findings.append(('ERROR', i, 'coord-bounds',
+                                     f'{key} {vals} outside sane bounds'))
+                if key == 'path_to' and len(vals) == 3 \
+                        and isinstance(vals[1], (int, float)) \
+                        and not (-64 <= vals[1] <= 320):
+                    findings.append(('ERROR', i, 'coord-bounds',
+                                     f'path_to y={vals[1]} outside world height'))
+
+    return findings
+
+
+def fix_rotations(paths, rotations, buttons):
+    """Rewrite single-string expect_screen_text needles that live inside a rotating
+    say[] into the full any-of list (every line of the rotation)."""
+    norm_buttons = [_norm(b) for b in buttons]
+    fixed = 0
+    for path in paths:
+        try:
+            sc = json.load(open(path))
+        except Exception:
+            continue
+        changed = False
+        for step in sc.get('steps', []):
+            raw = step.get('expect_screen_text')
+            if not isinstance(raw, str):
+                continue
+            nn = _norm(raw)
+            if any(nn in b for b in norm_buttons):
+                continue
+            for rot in rotations:
+                if any(nn in _norm(line) for line in rot):
+                    step['expect_screen_text'] = list(rot)
+                    changed = True
+                    fixed += 1
+                    break
+        if changed:
+            with open(path, 'w') as f:
+                json.dump(sc, f, indent=2, ensure_ascii=False)
+                f.write('\n')
+            print(f'[LINT] fixed rotations in {os.path.basename(path)}')
+    print(f'[LINT] --fix: {fixed} expect(s) expanded to any-of rotation lists')
+
+
+def main():
+    args = sys.argv[1:]
+    if not args or args[0] in ('-h', '--help'):
+        print(__doc__)
+        return 0
+    do_fix = '--fix' in args
+    args = [a for a in args if a != '--fix']
+    if args and args[0] == '--all':
+        args = sorted(glob.glob(os.path.join(ROOT, 'scripts', 'scenarios', '*.json')))
+    texts, tags, npc_names, rotations, buttons = load_corpus()
+    if do_fix:
+        fix_rotations(args, rotations, buttons)
+    total_err = 0
+    for path in args:
+        name = os.path.splitext(os.path.basename(path))[0]
+        findings = lint_file(path, texts, tags, npc_names, rotations, buttons)
+        errs = sum(1 for lv, *_ in findings if lv == 'ERROR')
+        total_err += errs
+        for lv, i, check, msg in findings:
+            print(f'[LINT] {name}#{i} {lv} {check}: {msg}')
+        print(f'[LINT] SUMMARY {name}: errors={errs} '
+              f'warnings={sum(1 for lv, *_ in findings if lv == "WARNING")}')
+    return 1 if total_err else 0
+
+
+if __name__ == '__main__':
+    sys.exit(main())

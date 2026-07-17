@@ -364,6 +364,15 @@ python3 scripts/mc_client.py state                    # ad-hoc single ops
 python3 scripts/mc_client.py entity.list match=easy_npc radius=32
 ```
 
+**`scripts/scenario_lint`** — offline pre-flight for scenario files: cross-references
+click/expect labels against dialog-src button/say/announce texts, tags against
+dialog-src gates/actions + functions + Java, NPC names against character
+display_names, plus structural checks (unknown step keys, `{var}` before save,
+interact without a preceding walk, coord bounds). ERRORs fail the exit code;
+WARNINGs are advisory (Java-emitted chat lines can't be fully known offline).
+The authoring loop is: write scenario → `scenario_lint` → live `e2e_run`.
+`--all` lints everything in `scripts/scenarios/`.
+
 **Battle beats are free**: enroll the REAL client player in the auto-battler —
 `execute as <PlayerN> run cobblemon-initiative dev bot autobattle on` (AutoBattler takes
 any ServerPlayer) — then the scenario just clicks the challenge button and

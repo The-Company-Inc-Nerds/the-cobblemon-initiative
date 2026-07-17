@@ -1,0 +1,259 @@
+{
+  "name": "wheat_war_first_farm",
+  "description": "The Wheat War opener (q.side_wheat) end-to-end: hear the grain pitch from Sedge, the Mystic Marsh wheat trader (heard_wheat_pitch), then take Firstfurrow Farm - beat Yield Officer Ming at the fence, then Acting Site Manager Jun by the barn, whose on_win fires liberation/free_field farm_1 (wheat_war_active + the FIRSTFURROW LIBERATED ceremony) so the sidebar objective lights. Assumes a fresh-ish test player - badges < 3 (recognition early, so the ungated fence_hail/quota entries show) and no prereq quest tags (none are needed); the preamble re-arms the two farm latches and gives a level-50 Garchomp for dev-bot autobattle (re-runs accumulate one per run, same caveat as first_steps' starter).",
+  "steps": [
+    {
+      "comment": "-- reset (idempotent re-runs): every tag the chain sets, the liberation latch, the memo book, the two farm bodies + their one-shot ambient latches --"
+    },
+    {
+      "rcon": "tag {player} remove heard_wheat_pitch"
+    },
+    {
+      "rcon": "tag {player} remove defeated_villain_yield_officer"
+    },
+    {
+      "rcon": "tag {player} remove defeated_villain_site_manager"
+    },
+    {
+      "rcon": "tag {player} remove field_1_transition_taken"
+    },
+    {
+      "rcon": "tag {player} remove wheat_war_active"
+    },
+    {
+      "rcon": "tag {player} remove field_1_liberated"
+    },
+    {
+      "rcon": "tag {player} remove wheat_trader_suspicious"
+    },
+    {
+      "rcon": "tag {player} remove wheat_trader_hostile"
+    },
+    {
+      "rcon": "scoreboard players reset farm_1 field_freed"
+    },
+    {
+      "rcon": "scoreboard players set {player} fields_liberated 0"
+    },
+    {
+      "rcon": "clear {player} minecraft:written_book"
+    },
+    {
+      "rcon": "kill @e[type=!player,name=Ming]"
+    },
+    {
+      "rcon": "kill @e[type=!player,name=Jun]"
+    },
+    {
+      "rcon": "scoreboard players set #amb_villain_yield_officer ci_ambient 0"
+    },
+    {
+      "rcon": "scoreboard players set #amb_villain_site_manager ci_ambient 0"
+    },
+    {
+      "comment": "-- setup: daylight for the route legs, a battle-capable party, autobattle armed for both farm fights --"
+    },
+    {
+      "rcon": "time set day"
+    },
+    {
+      "rcon": "weather clear"
+    },
+    {
+      "comment": "-- party reset: prior scenarios crowd the party with lv-5s and push the fighter to the PC; a junk party stalls the TBCS battle init (verified live). Empty to one slot, then the Garchomp. --"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon garchomp level=50"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative dev bot autobattle on"
+    },
+    {
+      "comment": "-- beat 1: the pitch. Sedge, Willowmire Causeway (Mystic Marsh). say[] lines roll randomly, so the screen assert targets the stable trade-button label; 'I will keep my coin' sets heard_wheat_pitch and closes --"
+    },
+    {
+      "rcon": "tp {player} 1058 64 2478"
+    },
+    {
+      "sleep": 1.5
+    },
+    {
+      "find_npc": "Sedge",
+      "save": "t"
+    },
+    {
+      "interact_npc": "{t.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "See the wares"
+    },
+    {
+      "screenshot": "wheat_pitch_sedge"
+    },
+    {
+      "click": "I will keep my coin"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=heard_wheat_pitch]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 2: Firstfurrow Farm north fence. Ming has sight (range 10, fence_hail) and may auto-hail during the settle sleep; interact_npc is a direct entity interact, so it just re-opens the same fence_hail entry --"
+    },
+    {
+      "rcon": "tp {player} 1586 90 2487"
+    },
+    {
+      "sleep": 2.0
+    },
+    {
+      "find_npc": "Ming",
+      "save": "o"
+    },
+    {
+      "interact_npc": "{o.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "Clear the gate"
+    },
+    {
+      "screenshot": "yield_officer_fence"
+    },
+    {
+      "click": "Clear the gate"
+    },
+    {
+      "client": "screen.close",
+      "comment_": "battle-start buttons have no close action; the fight runs server-side (autobattle) while the stale dialog stays up"
+    },
+    {
+      "wait_chat": "Perimeter integrity report",
+      "timeout": 180
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=defeated_villain_yield_officer]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 3: mid-field to the barn. Jun's fight button is gated on the Officer's defeat tag; its appearing IS the gate assert --"
+    },
+    {
+      "path_to": [
+        1603,
+        90,
+        2488
+      ]
+    },
+    {
+      "find_npc": "Jun",
+      "save": "m"
+    },
+    {
+      "interact_npc": "{m.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "Take the field back"
+    },
+    {
+      "screenshot": "site_manager_gate_open"
+    },
+    {
+      "click": "Take the field back"
+    },
+    {
+      "client": "screen.close",
+      "comment_": "battle-start buttons have no close action; the fight runs server-side (autobattle) while the stale dialog stays up"
+    },
+    {
+      "comment": "-- the win chain (anchored at the click): @2 win line, then free_field farm_1 -> actionbar + FIRSTFURROW ceremony title --"
+    },
+    {
+      "wait_chat": "Noted. The parcel is",
+      "timeout": 180
+    },
+    {
+      "wait_chat": "Field liberated",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 15
+    },
+    {
+      "wait_chat": "FIRSTFURROW",
+      "kinds": [
+        "title"
+      ],
+      "timeout": 15
+    },
+    {
+      "screenshot": "firstfurrow_liberated"
+    },
+    {
+      "comment": "-- state asserts: defeat + memo tags, the one-way field latch, the shared counter, the memo book, and both q.side_wheat if_tags together --"
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=defeated_villain_site_manager]",
+      "expect": "passed"
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=field_1_transition_taken]",
+      "expect": "passed"
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=wheat_war_active]",
+      "expect": "passed"
+    },
+    {
+      "rcon": "execute if score farm_1 field_freed matches 1",
+      "expect": "passed"
+    },
+    {
+      "rcon": "execute if score {player} fields_liberated matches 1..",
+      "expect": "passed"
+    },
+    {
+      "rcon": "clear {player} minecraft:written_book 0",
+      "expect": "Found"
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=wheat_war_active,tag=heard_wheat_pitch]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- cleanup + finale --"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative dev bot autobattle off"
+    },
+    {
+      "screenshot": "wheat_war_first_farm_done"
+    }
+  ]
+}

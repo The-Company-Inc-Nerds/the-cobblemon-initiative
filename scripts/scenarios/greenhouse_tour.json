@@ -1,0 +1,231 @@
+{
+  "name": "greenhouse_tour",
+  "description": "Verified Growth / The Greenhouse Tour (q.side_green) end-to-end: greeter Bo at the Hua Zhan south gate tags hz_arrived, archivist Shu reads the dispatch board on the seed-vault mezzanine, the catwalk volume fires the THE WORD IS WHEAT reveal (wheat_named + heard_wheat_pitch + toured_greenhouse), overseer Rong runs her shakedown (free exit taken), then Bo's post-reveal band closes the loop. No prerequisite tags are faked; assumes a player with fewer than 2 badges (Rong's catwalk_hail entry). Docent Wen is skipped — his body is not placed in-world (placement_plan only), and the reveal + quest stage do not depend on him.",
+  "steps": [
+    {
+      "comment": "-- reset (idempotent re-runs): every tag this chain sets; no items/entities to clean --"
+    },
+    {
+      "rcon": "tag {player} remove hz_arrived"
+    },
+    {
+      "rcon": "tag {player} remove wheat_named"
+    },
+    {
+      "rcon": "tag {player} remove heard_wheat_pitch"
+    },
+    {
+      "rcon": "tag {player} remove toured_greenhouse"
+    },
+    {
+      "rcon": "tag {player} remove met_hz_greeter"
+    },
+    {
+      "comment": "-- beat 1: Bo, the south-gate greeter (world body at 1482.5 87 2166.5) --"
+    },
+    {
+      "rcon": "tp {player} 1482 87 2166"
+    },
+    {
+      "sleep": 1.5
+    },
+    {
+      "comment": "Bo is an approach_once sight NPC: on a fresh world his one-shot may auto-open the welcome dialog; close anything so the manual walk-up is deterministic (welcome is the gateless default, it re-opens on interact)"
+    },
+    {
+      "client": "screen.close"
+    },
+    {
+      "find_npc": "Bo",
+      "save": "g",
+      "radius": 8
+    },
+    {
+      "interact_npc": "{g.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "Welcome to Hua Zhan City, and to the Company greenhouse program. Free public tours, every day, no account required. Verified growth. Verified value.",
+        "You came up the Harvest Road, I can tell — you have the look of someone who saw the fields. Come and see where they begin. The big glass tower at the north end. And do go all the way to the top. That is where it makes sense."
+      ]
+    },
+    {
+      "screenshot": "greeter_welcome"
+    },
+    {
+      "click": "Point me to the greenhouse"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=hz_arrived]",
+      "expect": "passed"
+    },
+    {
+      "wait_chat": "North end of town",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "comment": "-- beat 2: north to the glass tower, up to the seed-vault mezzanine (Shu at 1537.5 94 2112.5) --"
+    },
+    {
+      "path_to": [
+        1542,
+        88,
+        2110
+      ],
+      "timeout_ticks": 3600
+    },
+    {
+      "comment": "-- WALKER LIMIT: the glass-tower mezzanine stair pinches at (1541,94,2106) (verified live twice). tp the last 6b onto the mezzanine (Shu's own tile row = standable); map feedback filed. --"
+    },
+    {
+      "rcon": "tp {player} 1537.5 94 2112.5"
+    },
+    {
+      "sleep": 1.0
+    },
+    {
+      "find_npc": "Shu",
+      "save": "a",
+      "radius": 8
+    },
+    {
+      "interact_npc": "{a.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "comment": "assert the button label, not prose: her board vs determinations entry depends on sting_reward_paid, but both close with the same button"
+    },
+    {
+      "expect_screen_text": "Go up to the catwalk"
+    },
+    {
+      "screenshot": "archivist_dispatch_board"
+    },
+    {
+      "click": "Go up to the catwalk"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "comment": "-- beat 3: the catwalk reveal — entering the volume (x1535..1550 y98..106 z2101..2116) fires sidequest/greenhouse/reveal --"
+    },
+    {
+      "comment": "-- WALKER LIMIT: catwalk railing pinch at (1541,100,2106) (verified live). tp 2b onto the catwalk inside the reveal volume; map feedback filed. --"
+    },
+    {
+      "rcon": "tp {player} 1541.5 101 2108.5"
+    },
+    {
+      "sleep": 1.0
+    },
+    {
+      "wait_chat": "THE WORD IS WHEAT",
+      "kinds": [
+        "title"
+      ],
+      "timeout": 15
+    },
+    {
+      "screenshot": "the_word_is_wheat"
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=wheat_named]",
+      "expect": "passed"
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=heard_wheat_pitch]",
+      "expect": "passed"
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=toured_greenhouse]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 4: overseer Rong, right there on the catwalk (1541.5 101 2108.5) — take the free exit, never the 150 CD fee --"
+    },
+    {
+      "find_npc": "Rong",
+      "save": "o",
+      "radius": 8
+    },
+    {
+      "interact_npc": "{o.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "This is the catwalk. You were not cleared for the catwalk. Ground floor and the seed vault are the public tour. This floor is operations, and operations is not on the brochure.",
+        "I am not going to make a scene about it — scenes get filed, and filing is above my pay grade. So here is the arrangement. Pay the escorted-exit fee and we both forget the view, or walk yourself back down the stairs. Either way, you saw ferns."
+      ]
+    },
+    {
+      "screenshot": "overseer_catwalk"
+    },
+    {
+      "click": "Walk back down"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "comment": "-- beat 5: back down and out to Bo — his band has flipped to the post-reveal entry (gate wheat_named) --"
+    },
+    {
+      "comment": "-- WALKER LIMIT: tower interior stairs pinch both directions (verified live x3). tp down to the tower door, then walk to Bo for real. --"
+    },
+    {
+      "rcon": "tp {player} 1542.5 88 2110.5"
+    },
+    {
+      "sleep": 1.0
+    },
+    {
+      "path_to": [
+        1482,
+        87,
+        2166
+      ],
+      "timeout_ticks": 3600
+    },
+    {
+      "find_npc": "Bo",
+      "save": "g2",
+      "radius": 12
+    },
+    {
+      "interact_npc": "{g2.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "You did the full tour, then. All the way up. Wonderful. Everything you saw is entirely as scheduled.",
+        "The tour continues as scheduled. Verified growth. Verified value. Have a pleasant day — and do mind who you tell about the view."
+      ]
+    },
+    {
+      "click": "As scheduled"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "screenshot": "greenhouse_tour_finale"
+    }
+  ]
+}

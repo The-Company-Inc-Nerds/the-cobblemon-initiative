@@ -29,19 +29,25 @@ SERVERDATA_RESPONSE_VALUE = 0
 class Rcon:
     def __init__(self, host='127.0.0.1', port=25575, password='devtest',
                  timeout=600.0, retries=30, retry_delay=2.0):
+        self._host, self._port, self._password = host, port, password
+        self._timeout = timeout
+        self._connect(retries, retry_delay)
+
+    def _connect(self, retries=30, retry_delay=2.0):
         self._id = 0
         last = None
         for _ in range(retries):
             try:
-                self.sock = socket.create_connection((host, port), timeout=timeout)
+                self.sock = socket.create_connection((self._host, self._port),
+                                                     timeout=self._timeout)
                 break
             except OSError as e:
                 last = e
                 time.sleep(retry_delay)
         else:
-            raise ConnectionError(f'rcon: cannot reach {host}:{port}: {last}')
-        self.sock.settimeout(timeout)
-        if not self._auth(password):
+            raise ConnectionError(f'rcon: cannot reach {self._host}:{self._port}: {last}')
+        self.sock.settimeout(self._timeout)
+        if not self._auth(self._password):
             raise PermissionError('rcon: auth failed (check rcon.password)')
 
     def _send(self, ptype, body):
@@ -75,7 +81,24 @@ class Rcon:
                 return pid != -1
 
     def cmd(self, command):
-        """Run one command; return its full (possibly multi-packet) output."""
+        """Run one command; return its full (possibly multi-packet) output.
+
+        Reconnects and retries ONCE on a dropped socket — vanilla's RCON thread
+        occasionally closes long-lived connections mid-session (seen live twice
+        during multi-minute scenario runs), and harness commands are idempotent
+        enough that a transparent replay beats failing a 20-minute E2E run on
+        transport noise.
+        """
+        for attempt in (0, 1):
+            try:
+                return self._cmd_once(command)
+            except (ConnectionError, OSError):
+                if attempt:
+                    raise
+                self.close()
+                self._connect(retries=5, retry_delay=1.0)
+
+    def _cmd_once(self, command):
         cid = self._send(SERVERDATA_EXECCOMMAND, command)
         # Fence trick: a second, empty command; everything before its response
         # belongs to `command` (vanilla answers in-order on one connection).

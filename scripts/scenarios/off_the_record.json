@@ -1,0 +1,368 @@
+{
+  "name": "off_the_record",
+  "description": "Off the Record (q.side_offrec, Sango): Lucian's three quiet errands played end-to-end — ledger satchel to Oma, bread basket to Fara, get logged by an auditor (Bomani) on purpose, then back to Lucian for the quiet pay. Assumes the player has fewer than 3 badges and fakes docs_filed (Personnel File stage 1 turn-in) in the preamble so Lucian's off_record_prompt entry surfaces. Auditor sightings mid-carry are fail-soft (they only halve the errand pay and latch off_record_blown), so the run asserts tags, not the pay-variant actionbars.",
+  "steps": [
+    {
+      "comment": "-- reset (idempotent re-runs): every tag the chain sets, observation scores, granted items --"
+    },
+    {
+      "comment": "-- defensive: an aborted courier run leaves carrying_dead_letter, whose priority delivery entry shadows every Lucian dialog (verified live, twice) --"
+    },
+    {
+      "rcon": "tag {player} remove carrying_dead_letter"
+    },
+    {
+      "rcon": "clear {player} minecraft:paper[minecraft:custom_name='{\"color\":\"gold\",\"italic\":false,\"text\":\"Dead Letter\"}']"
+    },
+    {
+      "rcon": "tag {player} remove off_record_started"
+    },
+    {
+      "rcon": "tag {player} remove carrying_ledger"
+    },
+    {
+      "rcon": "tag {player} remove carrying_basket"
+    },
+    {
+      "rcon": "tag {player} remove errand1_done"
+    },
+    {
+      "rcon": "tag {player} remove errand2_done"
+    },
+    {
+      "rcon": "tag {player} remove errand3_done"
+    },
+    {
+      "rcon": "tag {player} remove off_errand_3_active"
+    },
+    {
+      "rcon": "tag {player} remove seen_by_auditor"
+    },
+    {
+      "rcon": "tag {player} remove off_record_blown"
+    },
+    {
+      "rcon": "tag {player} remove off_record_complete"
+    },
+    {
+      "comment": "load is idempotent (objectives add no-ops when present) — guarantees obs_count/obs_cd exist before the sets"
+    },
+    {
+      "rcon": "function cobblemon_initiative:sidequest/off_record/load"
+    },
+    {
+      "rcon": "scoreboard players set {player} obs_count 0"
+    },
+    {
+      "rcon": "scoreboard players set {player} obs_cd 0"
+    },
+    {
+      "rcon": "clear {player} minecraft:bread"
+    },
+    {
+      "rcon": "clear {player} cobblemon:oran_berry"
+    },
+    {
+      "rcon": "clear {player} cobblemon:heal_ball"
+    },
+    {
+      "comment": "-- prerequisite (assumed-faked): docs_filed = Personnel File stage 1 filed; with badges<3 that surfaces off_record_prompt (prio 51) over open_file (42) --"
+    },
+    {
+      "rcon": "tag {player} add docs_filed"
+    },
+    {
+      "comment": "-- beat 1: Lucian Scrollkeeper at her archive desk — take the ledger satchel --"
+    },
+    {
+      "rcon": "tp {player} 2627 119 2778"
+    },
+    {
+      "sleep": 1.5
+    },
+    {
+      "comment": "fresh-world guard: Lucian's approach_once (open_file) may auto-open on the very first ever visit; screen.close is a no-op otherwise"
+    },
+    {
+      "client": "screen.close"
+    },
+    {
+      "find_npc": "Lucian Scrollkeeper",
+      "save": "g"
+    },
+    {
+      "interact_npc": "{g.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "A word, off the record?"
+    },
+    {
+      "screenshot": "offrec_prompt"
+    },
+    {
+      "click": "A word, off the record?"
+    },
+    {
+      "sleep": 0.7
+    },
+    {
+      "expect_screen_text": [
+        "Lower your voice. The two grey coats in the square are on an observation sweep, and everything they see goes on a file that outlives the seer. Some of what this town does should stay off that file. Nothing illegal. Just neighborly, and quiet.",
+        "Carry my ledger satchel to Oma at her fence, and do it without a clipboard ever landing its eyes on you. If one does, it is not the end - it is only a line item, and line items can be redacted. But try for clean. Clean is a kind of freedom around here."
+      ]
+    },
+    {
+      "screenshot": "offrec_offer"
+    },
+    {
+      "click": "Take the ledger satchel"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=off_record_started]",
+      "expect": "passed"
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=carrying_ledger]",
+      "expect": "passed"
+    },
+    {
+      "wait_chat": "Carry the satchel to Oma",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "comment": "-- beat 2: errand 1 — the satchel to Oma at her fence (long leg south; sightings en route only cost pay) --"
+    },
+    {
+      "path_to": [
+        2586,
+        107,
+        2958
+      ],
+      "timeout_ticks": 3600
+    },
+    {
+      "find_npc": "Oma",
+      "save": "oma"
+    },
+    {
+      "interact_npc": "{oma.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "Lucians satchel. And no grey coat on your heel - or if there was, you lost it, which is the same thing to me. Set it here. The less that leaves this fence in writing, the better we all sleep.",
+        "One more, while you still have the quiet in you. Run this bread basket to Fara by the noticeboard, same rules. Eyes off you the whole way."
+      ]
+    },
+    {
+      "screenshot": "oma_satchel"
+    },
+    {
+      "click": "Hand over the satchel, take the basket"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=errand1_done]",
+      "expect": "passed"
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=carrying_basket]",
+      "expect": "passed"
+    },
+    {
+      "rcon": "execute unless entity @a[name={player},tag=carrying_ledger]",
+      "expect": "passed"
+    },
+    {
+      "wait_chat": "Carry the bread basket to Fara",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "comment": "-- beat 3: errand 2 — the basket to Fara by the market exchange --"
+    },
+    {
+      "path_to": [
+        2631,
+        112,
+        2806
+      ],
+      "timeout_ticks": 3600
+    },
+    {
+      "find_npc": "Fara",
+      "save": "fara"
+    },
+    {
+      "interact_npc": "{fara.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "Bread from Oma, and you came the long quiet way around the square - I watched you do it. Set it down. Whatever this is really about, I did not see a thing, which is my favourite thing to see.",
+        "You are one errand short of whatever Lucian is paying. The last one is backwards: go let the auditors get a good long look at you, reading the poster like the dullest resident alive. Sell them ordinary."
+      ]
+    },
+    {
+      "screenshot": "fara_basket"
+    },
+    {
+      "click": "Hand over the bread basket"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=errand2_done]",
+      "expect": "passed"
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=off_errand_3_active]",
+      "expect": "passed"
+    },
+    {
+      "rcon": "execute unless entity @a[name={player},tag=carrying_basket]",
+      "expect": "passed"
+    },
+    {
+      "wait_chat": "Basket delivered",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "comment": "-- beat 4: errand 3 (the inversion) — walk up to auditor Bomani and be logged ON PURPOSE --"
+    },
+    {
+      "comment": "-- CONTENT FINDING: Bomani (auditor_a, ambient_guard_patrol) drifts far off his post — no leash (found >48b away live; players may not find the sight cone either). Recall him for the test; recipe needs a Home leash (TODO). --"
+    },
+    {
+      "rcon": "tp @e[name=Bomani,limit=1] 2611.5 110 2792.5"
+    },
+    {
+      "sleep": 1.0
+    },
+    {
+      "path_to": [
+        2611,
+        110,
+        2792
+      ],
+      "timeout_ticks": 3600
+    },
+    {
+      "find_npc": "Bomani",
+      "save": "aud"
+    },
+    {
+      "comment": "the counted button is gated on seen_by_auditor, kept per-tick by sidequest/off_record/tick from the auditor's can_see_player — give the PASSIVE sight a moment to latch, then prove it before opening the dialog"
+    },
+    {
+      "find_npc": "Bomani",
+      "save": "aud",
+      "comment_": "re-find right before walking: Bomani strolls; a stale snapshot stalled this walk at 17.7b (verified live)"
+    },
+    {
+      "walk_to": [
+        "{aud.x}",
+        "{aud.z}"
+      ],
+      "tol": 3.0
+    },
+    {
+      "sleep": 2.0
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=seen_by_auditor]",
+      "expect": "passed"
+    },
+    {
+      "interact_npc": "{aud.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "walking toward the audit"
+    },
+    {
+      "screenshot": "auditor_stand_and_be_counted"
+    },
+    {
+      "click": "Stand and be counted"
+    },
+    {
+      "client": "screen.close",
+      "comment_": "the sweep's sight trigger re-opens a follow-up dialog right after the close action - force-close instead of waiting for no-screen (verified live)"
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=errand3_done]",
+      "expect": "passed"
+    },
+    {
+      "wait_chat": "LOGGED AS: local resident",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "comment": "-- beat 5: back to Lucian — the debrief and the quiet pay (300 CD; heal_ball only on a never-seen run, so not asserted) --"
+    },
+    {
+      "comment": "-- WALKER LIMIT: same archive-stair pinch as no_such_recipient (2628,117,2768). tp the last ~10b to Lucian's desk level. --"
+    },
+    {
+      "rcon": "tp {player} 2627.5 119 2778.5"
+    },
+    {
+      "sleep": 1.0
+    },
+    {
+      "interact_npc": "{g.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "All three, and the desk in the square is folding its legs. You carried what needed carrying and stood still when standing still was the whole trick. There is a page in my ledger for exactly this kind of work, and unlike theirs, mine forgets on purpose.",
+        "Here is what the archive owes you. Spend it on something that does not leave a receipt."
+      ]
+    },
+    {
+      "screenshot": "off_record_debrief"
+    },
+    {
+      "click": "Collect - off the record"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=off_record_complete]",
+      "expect": "passed"
+    },
+    {
+      "screenshot": "off_the_record_finale"
+    }
+  ]
+}

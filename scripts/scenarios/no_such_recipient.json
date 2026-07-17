@@ -1,0 +1,235 @@
+{
+  "name": "no_such_recipient",
+  "description": "No Such Recipient (q.side_letter), delivered branch end-to-end: take Uncle Marlow's dead letter in Sango Town, walk it to Lucian Scrollkeeper's archive desk, deliver it for the finders fee, then return to Marlow for the thanks and the Wingull. No prerequisite tags are assumed (Marlow's giver entry is ungated; the Blossom Path surrender checkpoint is unplaced so the walk cannot trip it). Preamble unregisters Lucian's approach_once sight for the run (a mid-walk auto-open pauses the Walker under the screen) and restores the shipped registration once the player is back at Marlow; re-runs keep the extra Wingull (givemon has no dupe gate) and earned CobbleDollar payouts.",
+  "steps": [
+    {
+      "comment": "-- reset (idempotent re-runs): chain tags, letter prop, thanks rewards --"
+    },
+    {
+      "rcon": "tag {player} remove carrying_dead_letter"
+    },
+    {
+      "rcon": "tag {player} remove letter_delivered"
+    },
+    {
+      "rcon": "tag {player} remove letter_surrendered"
+    },
+    {
+      "rcon": "tag {player} remove marlow_thanks_done"
+    },
+    {
+      "rcon": "clear {player} minecraft:paper[minecraft:custom_name='{\"color\":\"gold\",\"italic\":false,\"text\":\"Dead Letter\"}']"
+    },
+    {
+      "rcon": "clear {player} cobblemon:antidote"
+    },
+    {
+      "comment": "Lucian is approach_once (an auto-open during the walk leg would stall the Walker): unregister her sight for this run; restored verbatim in beat 4 once the player is a lane away"
+    },
+    {
+      "rcon": "npcsight remove 7aeca5b3-1f72-4072-a8c4-e6eef877f160"
+    },
+    {
+      "comment": "-- beat 1: Uncle Marlow, the mothballed courier (Sango lane, by his mailbag door) --"
+    },
+    {
+      "rcon": "tp {player} 2656.5 106 2897.5"
+    },
+    {
+      "sleep": 1.5
+    },
+    {
+      "find_npc": "Marlow",
+      "save": "m"
+    },
+    {
+      "interact_npc": "{m.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "One letter left in"
+    },
+    {
+      "screenshot": "marlow_dead_letter_offer"
+    },
+    {
+      "click": "Take the dead letter to the archivist"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=carrying_dead_letter]",
+      "expect": "passed"
+    },
+    {
+      "rcon": "clear {player} minecraft:paper[minecraft:custom_name='{\"color\":\"gold\",\"italic\":false,\"text\":\"Dead Letter\"}'] 0",
+      "expect": "Found"
+    },
+    {
+      "wait_chat": "Dead letter received",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "comment": "-- beat 2: while carrying, Marlow's in-transit line points at the archivist (register stage 1) --"
+    },
+    {
+      "find_npc": "Marlow",
+      "save": "m2"
+    },
+    {
+      "interact_npc": "{m2.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "Read the label again if you doubt me. Addressee — record expunged. No such recipient. Mail does not forget people. Systems forget people. Take it to Lucian, the archivist. She keeps what other people delete.",
+        "Mind the grey suits on Blossom Path. They have opinions about mail that moves without a barcode."
+      ]
+    },
+    {
+      "client": "screen.close"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "comment": "-- beat 3: walk the letter up the lane to Lucian's archive desk (A*) --"
+    },
+    {
+      "comment": "-- WALKER LIMIT: the archive-stair pinch at (2628,117,2768) stalls A* walking (verified live, 3 runs). tp the last ~10b to Lucian's desk level; map feedback filed. --"
+    },
+    {
+      "rcon": "tp {player} 2627.5 119 2778.5"
+    },
+    {
+      "sleep": 1.0
+    },
+    {
+      "find_npc": "Lucian Scrollkeeper",
+      "save": "l"
+    },
+    {
+      "interact_npc": "{l.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "shelved wars with smaller labels"
+    },
+    {
+      "screenshot": "lucian_dead_letter"
+    },
+    {
+      "click": "Deliver the dead letter"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=letter_delivered]",
+      "expect": "passed"
+    },
+    {
+      "rcon": "execute unless entity @a[name={player},tag=carrying_dead_letter]",
+      "expect": "passed"
+    },
+    {
+      "wait_chat": "files the letter under F",
+      "timeout": 10
+    },
+    {
+      "comment": "-- beat 4: back down the lane; tell Marlow it went through, take the Wingull --"
+    },
+    {
+      "path_to": [
+        2656,
+        106,
+        2897
+      ],
+      "timeout_ticks": 3600
+    },
+    {
+      "comment": "player is a lane away from the desk again: restore Lucian's shipped sight registration (verbatim dialog/register_sight.mcfunction lines; fired latch resets to fresh-world state)"
+    },
+    {
+      "rcon": "npcsight add 7aeca5b3-1f72-4072-a8c4-e6eef877f160 6 open_file"
+    },
+    {
+      "rcon": "npcsight mode 7aeca5b3-1f72-4072-a8c4-e6eef877f160 approach_once"
+    },
+    {
+      "rcon": "npcsight meettag 7aeca5b3-1f72-4072-a8c4-e6eef877f160 met_lucian"
+    },
+    {
+      "find_npc": "Marlow",
+      "save": "m3"
+    },
+    {
+      "interact_npc": "{m3.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "a keeper of records who went quiet"
+    },
+    {
+      "screenshot": "marlow_letter_went_through"
+    },
+    {
+      "click": "Accept the Wingull"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=marlow_thanks_done]",
+      "expect": "passed"
+    },
+    {
+      "rcon": "clear {player} cobblemon:antidote 0",
+      "expect": "Found"
+    },
+    {
+      "wait_chat": "Wingull joined you",
+      "timeout": 10
+    },
+    {
+      "comment": "-- finale: route closed, debt paid --"
+    },
+    {
+      "find_npc": "Marlow",
+      "save": "m4"
+    },
+    {
+      "interact_npc": "{m4.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "The bag hangs by the door now. Empty and honest. That is a better retirement than the Company offered.",
+        "Thirty one years and the last delivery on my route was made by a stranger. Best record I ever posted."
+      ]
+    },
+    {
+      "screenshot": "no_such_recipient_route_closed"
+    },
+    {
+      "client": "screen.close"
+    },
+    {
+      "wait_no_screen": true
+    }
+  ]
+}

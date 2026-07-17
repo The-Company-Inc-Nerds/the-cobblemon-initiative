@@ -12,8 +12,10 @@ import java.io.FileWriter;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -77,6 +79,14 @@ public final class NpcPresetRefreshManager {
   // Bundled content (read from mod resources on server start)
   private static String contentVersion = "";
   private static final Map<UUID, String> bundledPresets = new LinkedHashMap<>();
+  /**
+   * Vanilla entity Tags authored on the character (dialog-src entity_tags → preset SNBT
+   * Tags → surfaced per-uuid in preset_map.json). Easy NPC's {@code preset import data}
+   * onto an EXISTING body silently ignores vanilla Tags (only {@code import_new} spawns
+   * from the full NBT), so the refresh applies them itself after each confirmed import —
+   * proximity-sensor quests (Miller Walk's hz_granary, tenants' deng_camp…) depend on it.
+   */
+  private static final Map<UUID, List<String>> bundledTags = new LinkedHashMap<>();
 
   // Per-world state
   private static final Map<UUID, String> appliedVersion = new LinkedHashMap<>();
@@ -115,6 +125,7 @@ public final class NpcPresetRefreshManager {
   private static void load(MinecraftServer server) {
     contentVersion = "";
     bundledPresets.clear();
+    bundledTags.clear();
     appliedVersion.clear();
     presetOverride.clear();
     incoming.clear();
@@ -140,6 +151,13 @@ public final class NpcPresetRefreshManager {
                 ? value.getAsJsonObject().get("preset").getAsString()
                 : value.getAsString();
               bundledPresets.put(uuid, resolvePresetLocation(preset));
+              if (value.isJsonObject() && value.getAsJsonObject().has("tags")) {
+                List<String> tags = new ArrayList<>();
+                for (JsonElement t : value.getAsJsonObject().getAsJsonArray("tags")) {
+                  tags.add(t.getAsString());
+                }
+                bundledTags.put(uuid, tags);
+              }
             } catch (Exception bad) {
               LOGGER.warn("[NPC Refresh] Skipping bad preset map entry {}: {}",
                 e.getKey(), bad.getMessage());
@@ -294,6 +312,11 @@ public final class NpcPresetRefreshManager {
       appliedVersion.put(uuid, contentVersion);
       dirty = true;
       LOGGER.info("[NPC Refresh] Applied {} to {}", location, uuid);
+      for (String tag : bundledTags.getOrDefault(uuid, List.of())) {
+        if (entity.addTag(tag)) {
+          LOGGER.info("[NPC Refresh] Tagged {} +{}", uuid, tag);
+        }
+      }
       // No shipped preset carries a FOLLOW objective, so a follow goal that survived the
       // import is an orphan from the replaced objective set. The pre-import teardown covers
       // sight-manager follows; this purge is the backstop for everything else — e.g. the

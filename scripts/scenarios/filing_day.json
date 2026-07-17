@@ -1,0 +1,177 @@
+{
+  "name": "filing_day",
+  "description": "FILING DAY (q.side_papers, slot 75): the ci_papers_held aggregate — hold two unfiled Company papers, walk into Lucian Scrollkeeper's Sango archive, and file both (route manifest, then Transition Order 7-A) until the held count reads zero. The two held papers are assumed-faked in the preamble: took_route_manifest (Harvest Road survey wagon) and field_1_transition_taken (Firstfurrow site manager onwin); every other papers_tick held-source is cleared so ci_papers_held is deterministically 2 at the start.",
+  "steps": [
+    {
+      "comment": "-- reset (idempotent re-runs): chain-set tags, reward candies, and every OTHER papers_tick held-source so ci_papers_held starts exactly 0 --"
+    },
+    {
+      "rcon": "tag {player} remove manifest_paid"
+    },
+    {
+      "rcon": "tag {player} remove transition_paid"
+    },
+    {
+      "rcon": "tag {player} remove carrying_dead_letter"
+    },
+    {
+      "rcon": "tag {player} remove memo_heard"
+    },
+    {
+      "rcon": "tag {player} remove hz_minutes_heard"
+    },
+    {
+      "rcon": "tag {player} remove yield_report_taken"
+    },
+    {
+      "rcon": "tag {player} remove sting_memo_taken"
+    },
+    {
+      "rcon": "tag {player} remove doc_portrait"
+    },
+    {
+      "rcon": "tag {player} remove doc_ledger"
+    },
+    {
+      "rcon": "tag {player} remove doc_charter"
+    },
+    {
+      "rcon": "scoreboard players set {player} ci_notices 0"
+    },
+    {
+      "rcon": "clear {player} cobblemon:exp_candy_xs"
+    },
+    {
+      "rcon": "clear {player} cobblemon:exp_candy_s"
+    },
+    {
+      "rcon": "clear {player} cobblemon:exp_candy_m"
+    },
+    {
+      "rcon": "clear {player} cobblemon:exp_candy_l"
+    },
+    {
+      "comment": "-- prerequisites (assumed-faked earlier-quest latches): two live Company papers in hand --"
+    },
+    {
+      "rcon": "tag {player} add took_route_manifest"
+    },
+    {
+      "rcon": "tag {player} add field_1_transition_taken"
+    },
+    {
+      "comment": "-- anchor jump: Lucian's desk in the Sango archive (seated persisted body; placement 2626/119/2777) --"
+    },
+    {
+      "rcon": "tp {player} 2626 119 2777"
+    },
+    {
+      "sleep": 2.0
+    },
+    {
+      "comment": "her approach_once one-shot may auto-open the intro in a fresh world — close whatever popped, harmless if nothing did"
+    },
+    {
+      "client": "screen.close"
+    },
+    {
+      "comment": "papers_tick has recomputed by now: exactly the two faked papers are held (FILING DAY aggregate threshold)"
+    },
+    {
+      "rcon": "execute if score {player} ci_papers_held matches 2",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 1: file the route manifest (priority 74 — surfaces first) --"
+    },
+    {
+      "find_npc": "Lucian",
+      "save": "g"
+    },
+    {
+      "interact_npc": "{g.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "A corridor manifest. Every smallholding on Harvest Road, graded like produce — and Firstfurrow struck through as completed. They grade the land before they take it. That is not appetite, that is bookkeeping, which is worse.",
+        "Hand it here. The archive pays a records fee for live Company paper, and this is the liveliest I have seen."
+      ]
+    },
+    {
+      "screenshot": "manifest_turn_in"
+    },
+    {
+      "click": "File the route manifest"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=manifest_paid]",
+      "expect": "passed"
+    },
+    {
+      "wait_chat": "Lucian copies every grade into her own ledger",
+      "timeout": 10
+    },
+    {
+      "sleep": 1.0
+    },
+    {
+      "rcon": "execute if score {player} ci_papers_held matches 1",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 2: file Transition Order 7-A (priority 73 — next once manifest_paid latches) --"
+    },
+    {
+      "interact_npc": "{g.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "Transition Order 7-A. The family previously associated with this parcel has been transitioned to alternative outcomes. There it is again — the passive voice. Nobody ever does anything in these documents. Things merely happen to people, in triplicate.",
+        "The order says there was no prior operator. The order is itself paperwork about the prior operator. They never see the joke. Hand it here."
+      ]
+    },
+    {
+      "screenshot": "transition_turn_in"
+    },
+    {
+      "click": "File the transition order"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=transition_paid]",
+      "expect": "passed"
+    },
+    {
+      "wait_chat": "files the order under F for families",
+      "timeout": 10
+    },
+    {
+      "comment": "-- finale: the held ledger is empty, the filed ledger grew — FILING DAY line retires itself --"
+    },
+    {
+      "sleep": 1.0
+    },
+    {
+      "rcon": "execute if score {player} ci_papers_held matches 0",
+      "expect": "passed"
+    },
+    {
+      "rcon": "execute if score {player} ci_papers_filed matches 2..",
+      "expect": "passed"
+    },
+    {
+      "screenshot": "filing_day_complete"
+    }
+  ]
+}

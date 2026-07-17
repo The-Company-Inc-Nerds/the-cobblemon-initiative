@@ -30,10 +30,56 @@ distances (switchback flights stack in X/Z), Y-gate (never credit/skip a node st
 corner-cut locality ≤2b (consecutive nodes are the only guaranteed connectivity), jump only
 when the node is above (flat-segment hops mount roof rims), NODE_REACH 0.9.
 
-- [ ] 💻 **Quest scenarios** — author `scenarios/*.json` per town quest pack as they land
-  (gyms 3–7 wave): setup via RCON, walk-up + dialog click-through via driver (`path_to` for
-  any nontrivial leg), defeat/turn-in asserts via `[TEST]` + `hud.chat`. Battle beats: enroll
-  the client player via `execute as <name> run cobblemon-initiative dev bot autobattle on`.
+**Landed 2026-07-17 — the regression suite: 15 quest scenarios + scenario_lint + a content
+bug wave the suite caught on its first night.** 16 quests fanned out to author agents
+(digest dialog-src → author → lint); 15 authored, verified serially against the live stack.
+`scripts/scenario_lint` (offline pre-flight: labels/tags/NPCs vs dialog-src, rotation-flaky
+detection, structural checks; `--fix` auto-expands rotation expects) gates authoring.
+Runner robustness earned live: interact_npc now A*-chases strolling NPCs (find→interact is
+the canonical talk pattern); wait_screen retries once after an interact; scenario start
+closes leftover dialogs; wait_chat windows are emitter-anchored; rcon auto-reconnects;
+Walker gained a door reflex + persistent-collision fallback hop.
+
+**Content bugs the suite caught (fixed):**
+- **entity_tags never applied to uuid'd bodies** — Easy NPC `preset import data` ignores
+  vanilla Tags on existing entities (only `import_new` spawns carry them). 8 authored tags
+  across 7 characters were silently missing (hz_granary/hz_wheat_trader → Miller Walk
+  UNCOMPLETABLE, deng_camp, ci_canvasser, hz_branch_manager, aya_groundskeeper…). Fixed:
+  generate_npc_function surfaces preset Tags per-uuid in preset_map.json (version-bumped);
+  NpcPresetRefreshManager applies them after each confirmed import.
+- 🧱 **q.side_census blocked** — giver field_researcher_ume has no uuid/placement (Blossom
+  Path meadow table pending set dressing); quest untestable + unplayable until placed.
+- 🧱 **q.side_posters waypoint at y=64** (1915/64/2467) — placeholder-style coord ~100b from
+  the poster row; the known "buried at y=64" authoring smell (waypoint only; quest passes).
+
+**Open findings:**
+- [ ] 🔍 **FancyMenu × Cobblemon battle crash (POTENTIAL STREAM-BREAKER)** — FancyMenu's
+  entity-spawn broadcast mixin Gson-serializes a NaN double when Cobblemon sends out a
+  trainer's next Pokémon mid-battle (SwitchInstruction → sendOut → FancyMenu PacketHandler →
+  `IllegalArgumentException: NaN is not a valid double value`), killing Cobblemon's battle
+  scheduler — the battle HANGS with the player locked in the GUI. Reproduced on the dev
+  server (removed from run/mods_disabled/; it's in dev_sync's --lean skip list anyway).
+  VERIFY on the real single-player pack: if it reproduces, mid-battle trainer switches can
+  freeze the stream — consider dropping/updating FancyMenu in the .mrpack.
+- [ ] 💻 **Bomani (auditor_a) drifts off his post** — `ambient_guard_patrol` with no Home
+  leash; found >48b from the Off-the-Record sight cone live (the scenario now recalls him
+  by tp). Quest-critical sight NPCs must not roam: give the recipe/preset a Navigation.Home
+  + bounded patrol, or pin him. Audit other sight-gated NPCs for the same pattern.
+- [ ] 🧱 **Walker-hostile pinches** (scenarios tp-hop past them, commented in-file):
+  Hua Zhan market-lane entrance x≈1529–31/z2060 (stall counter blocks the lane mouth — check
+  a real player can actually enter the market row); glass-tower mezzanine stair at
+  (1541,94,2106). Both are also spots real players may fumble.
+- [ ] 💻 **wheat_war_first_farm battle beat** — everything green up to the fight; the TBCS
+  battle launched from Ming's dialog button starts (`tbcs` executes, player enters battle
+  state) but never progresses to a visible send-out/victory even with autobattle enrolled
+  and a clean lv-50 party (party reset via `takepokemon` is in the preamble now). Needs a
+  focused session on the TBCS-from-dialog × AutoBattler interplay (stadium-era notes:
+  "player participant = @s; attach→anchor first"). All non-battle beats of the scenario
+  pass (~46 steps).
+- [ ] 💻 **Quest scenarios, next waves** — shrines/nobles cluster, Battle Frontier halls,
+  daycare/stadium/safari facility regressions, and per town pack as gyms 3–7 land. Pattern
+  of record: scripts/scenarios/*.json + scenario_lint + the batch runner
+  (`for s in …; do scripts/e2e_run scripts/scenarios/$s.json; done`).
 
 ---
 
