@@ -8,6 +8,22 @@ done, Claude removes it **and** any release-removal it unblocks.
 
 ---
 
+## 2026-07-16 — client test driver + E2E scenarios (docs/TESTING_TOOLKIT.md § Client driver)
+
+- [x] 💻 **Client test driver (alpha.21)** — `devtools/client/` in-process JSON-lines socket
+  (dormant unless `CI_DRIVER_PORT` set): screen dump/click, walk-up interact, real movement,
+  HUD/title/sidebar reads, framebuffer screenshots + `scripts/mc_client.py` +
+  `scripts/e2e_run` scenario runner (`scripts/scenarios/`). Strip list updated (§A).
+- [ ] 🔍 **Live driver verification** — boot server + `CI_DRIVER_PORT=25580` client, run
+  `scripts/e2e_run scripts/scenarios/walkup_smoke.json`: dialog dump shows real text,
+  click works, screenshot lands.
+- [ ] 💻 **Quest scenarios** — author `scenarios/*.json` per town quest pack as they land
+  (gyms 3–7 wave): setup via RCON, walk-up + dialog click-through via driver, defeat/turn-in
+  asserts via `[TEST]` + `hud.chat`. Battle beats: enroll the client player via
+  `execute as <name> run cobblemon-initiative dev bot autobattle on`.
+
+---
+
 ## 2026-07-13 — review + fix pass (see `docs/CONTENT_REVIEW_2026-07-13.md`)
 
 **Landed this pass (💻, compiled clean — `content_compile` errors:0, 673 presets; needs `gradle

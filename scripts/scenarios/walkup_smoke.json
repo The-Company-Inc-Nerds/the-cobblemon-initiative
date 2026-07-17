@@ -1,0 +1,15 @@
+{
+  "name": "walkup_smoke",
+  "description": "Generic town beat: find the nearest Easy NPC, walk up (real movement — latch radii fire), right-click, verify a dialog actually rendered, screenshot it, close. Works anywhere the client player is parked near NPCs; no server-side setup needed.",
+  "steps": [
+    { "comment": "player-facing walk-up — the path no other channel can test" },
+    { "find_npc": "easy_npc", "save": "npc", "radius": 48 },
+    { "walk_to": ["{npc.x}", "{npc.z}"], "tol": 2.5, "timeout_ticks": 1200 },
+    { "interact_npc": "{npc.uuid}" },
+    { "wait_screen": "Dialog", "timeout": 15 },
+    { "client": "screen.dump", "save": "dialog" },
+    { "screenshot": "dialog_open" },
+    { "client": "screen.close" },
+    { "wait_no_screen": true }
+  ]
+}

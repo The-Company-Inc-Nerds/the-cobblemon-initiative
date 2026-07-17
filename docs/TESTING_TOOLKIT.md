@@ -311,3 +311,61 @@ stable prefixes, never line breaks); Carpet canonicalizes bot names (`smokebot` 
 `SmokeBot` — matching is case-insensitive); the RCON socket occasionally drops on a busy
 dev server (one silent reconnect, then the phase FAILs and later phases SKIP); the bot
 is spawned once, reused across phases, and reset + killed at the end of the run.
+
+---
+
+## Client driver + E2E scenarios (added 2026-07-16)
+
+The client channel was the last blind spot: "drives via *nothing*" (no input-injection
+tool on this box, and pixel-clicking would be blind anyway). Closed by an IN-PROCESS
+driver — `devtools/client/` (TestDriverClient, DriverServer, DriverOps, HudLog, Walker):
+a loopback-only JSON-lines socket that gives the harness SEMANTIC access to the client.
+Strips with devtools at 1.0.0 (DEVTOOL_STRIP §A).
+
+**Activation** — dormant unless the env var is set (it survives the gradle → game fork):
+
+```bash
+CI_DRIVER_PORT=25580 DISPLAY=:0 nix develop -c run-client \
+    '--args=--quickPlayMultiplayer 127.0.0.1'
+```
+
+**Op table** (implemented in `DriverOps`, mirrored by `scripts/mc_client.py` — keep all
+three in sync):
+
+| Op | What | Notes |
+|---|---|---|
+| `ping` / `state` | liveness; pos/health/food/dim, open screen class, move status | `state.connected=false` until world join (~minutes) |
+| `screen.dump` | widget tree (labels/bounds/active) + `texts` | `texts` = shallow reflection over the screen's Component/String fields — how Easy NPC dialog PROSE surfaces without compile-depending on Easy NPC |
+| `screen.click` | click widget by `text` (ci-contains) or `index` | AbstractButton→`onPress()`, else synthetic mouseClicked at center |
+| `screen.close` / `screen.key` | dismiss / keyPressed+charTyped | ESC = key 256 |
+| `entity.list` | nearby entities (uuid/name/type/pos/dist) | `match` filters name OR type; client only sees tracked range |
+| `interact.entity` | look at + right-click by uuid/name | THE walk-up-talk path; server rejects >6 blocks — walk first |
+| `attack.entity` / `interact.block` / `use.item` | left-click / block use / item use | |
+| `look.at` / `move.to` / `move.status` / `move.stop` | steer camera; REAL walking (keys+yaw per tick, hop on collision) | latch radii + zone triggers fire like for a human; dumb straight-line — chain short legs, tp long hauls |
+| `input.key` | hold forward/back/left/right/jump/sneak/sprint | |
+| `hud.chat` | ring buffer: chat/system/overlay/title/subtitle, seq-cursored | titles+actionbar captured by GuiTitleMixin at the Gui setters (`/title actionbar` bypasses ChatListener) |
+| `hud.sidebar` | rendered sidebar title+lines | E2E check for the quest tracker ▶ line |
+| `party` | Cobblemon client party (species/level/hp) | |
+| `screenshot` | framebuffer PNG via MC's own Screenshot | compositor-immune — no more grim-shoots-the-lock-screen |
+
+**`scripts/e2e_run`** — scenario runner composing BOTH channels: RCON does setup +
+server asserts, the driver does the player-facing path. ATTACHES to a running server +
+client (never boots; smoke_auto's model). Scenarios are JSON step lists
+(`scripts/scenarios/`; vocabulary in `e2e_run --list`); output is the standard
+`[TEST] e2e <name>#<step> PASS|FAIL` + `dev/evidence/<ts>_e2e_<name>/`
+(screenshots + transcript.jsonl). A failed step skips the scenario's remainder.
+
+```bash
+scripts/e2e_run scripts/scenarios/walkup_smoke.json   # generic town walk-up beat
+python3 scripts/mc_client.py state                    # ad-hoc single ops
+python3 scripts/mc_client.py entity.list match=easy_npc radius=32
+```
+
+**Battle beats are free**: enroll the REAL client player in the auto-battler —
+`execute as <PlayerN> run cobblemon-initiative dev bot autobattle on` (AutoBattler takes
+any ServerPlayer) — then the scenario just clicks the challenge button and
+`wait_chat`s for the victory line; the server picks moves.
+
+**Honest boundary after this**: aesthetics (camera feel, skins at a glance, audio),
+shader/visual quality, battle pacing. Everything else in "do quest X / town A /
+person A" is a scenario file.

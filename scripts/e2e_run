@@ -1,0 +1,229 @@
+#!/usr/bin/env python3
+"""e2e_run — scenario runner: play a quest/town/NPC beat end-to-end and assert it.
+
+Composes BOTH channels: RCON (mc_rcon.py) does server-side setup + asserts, the
+client driver (mc_client.py) does the player-facing path — walk up, right-click
+the NPC, read the dialog that actually rendered, click its buttons, screenshot
+evidence. ATTACHES to a running server (RCON 25575/devtest) and a running client
+(driver 25580) — it never boots either, matching smoke_auto's model. Boot lines:
+
+  server:  (headless harness / gradle runServer — see scripts/test_harness)
+  client:  CI_DRIVER_PORT=25580 DISPLAY=:0 nix develop -c run-client \
+               '--args=--quickPlayMultiplayer 127.0.0.1'
+
+Usage:
+  scripts/e2e_run scripts/scenarios/walkup_smoke.json [more.json ...]
+  scripts/e2e_run --list         # show step vocabulary
+
+Scenario file: {"name": ..., "description": ..., "steps": [ ... ]}
+Step vocabulary (one key per step, plus options):
+  {"comment": "..."}                          narration only
+  {"rcon": "cmd", "expect": "substr"?}        server command (+optional assert)
+  {"client": "op", "args": {...}?, "save": "var"?}   raw driver op
+  {"find_npc": "match", "save": "npc", "radius": 48?}  nearest entity match
+  {"walk_to": [x, z], "tol": 1.5?, "sprint": false?, "timeout_ticks": 1200?}
+  {"interact_npc": "{npc.uuid}" | "Name"}     look at + right-click
+  {"wait_screen": "ClassNeedle", "timeout": 15?}
+  {"wait_no_screen": true, "timeout": 15?}
+  {"wait_chat": "regex", "kinds": ["system","chat","overlay","title","subtitle"]?,
+   "timeout": 30?}                            HUD text since the previous step
+  {"expect_screen_text": "needle"}            dialog prose OR widget label contains
+  {"click": "label substr"}                   screen.click by text
+  {"screenshot": "name"}                      framebuffer PNG into the evidence dir
+  {"sleep": seconds}
+Values anywhere may reference vars: "{player}" (auto), "{npc.uuid}", "{npc.x}"...
+A string that is EXACTLY one "{path}" keeps its native type (numbers stay numbers).
+
+Output contract (greppable, same as the rest of the toolkit):
+  [TEST] e2e <scenario>#<step> <PASS|FAIL> <detail>
+  [TEST] SUMMARY category=e2e pass=N fail=N
+Evidence: dev/evidence/<ts>_e2e_<name>/ (screenshots + transcript.jsonl).
+Exit nonzero if any step FAILs (remaining steps in that scenario are skipped).
+"""
+import json
+import os
+import re
+import sys
+import time
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from mc_rcon import Rcon          # noqa: E402
+from mc_client import Driver, DriverError  # noqa: E402
+
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+VAR_RX = re.compile(r'\{([a-zA-Z0-9_.\[\]]+)\}')
+
+
+def lookup(vars_, path):
+    cur = vars_
+    for part in path.split('.'):
+        if isinstance(cur, list):
+            cur = cur[int(part)]
+        elif isinstance(cur, dict):
+            cur = cur[part]
+        else:
+            raise KeyError(path)
+    return cur
+
+
+def resolve(vars_, value):
+    if isinstance(value, str):
+        whole = VAR_RX.fullmatch(value)
+        if whole:
+            return lookup(vars_, whole.group(1))   # native type passthrough
+        return VAR_RX.sub(lambda m: str(lookup(vars_, m.group(1))), value)
+    if isinstance(value, list):
+        return [resolve(vars_, v) for v in value]
+    if isinstance(value, dict):
+        return {k: resolve(vars_, v) for k, v in value.items()}
+    return value
+
+
+class StepFail(Exception):
+    pass
+
+
+def run_step(step, rcon, drv, vars_, evidence_dir):
+    step = resolve(vars_, step)
+
+    if 'comment' in step:
+        return step['comment']
+
+    if 'rcon' in step:
+        out = rcon.cmd(step['rcon'])
+        if 'expect' in step and step['expect'] not in out:
+            raise StepFail(f'rcon {step["rcon"]!r}: expected {step["expect"]!r} '
+                           f'in output, got: {out[:300]!r}')
+        if 'save' in step:
+            vars_[step['save']] = out
+        return f'rcon {step["rcon"]!r} ok'
+
+    if 'client' in step:
+        data = drv.op(step['client'], **step.get('args', {}))
+        if 'save' in step:
+            vars_[step['save']] = data
+        return f'client {step["client"]} ok'
+
+    if 'find_npc' in step:
+        npc = drv.find_npc(step['find_npc'], radius=step.get('radius', 48))
+        if npc is None:
+            raise StepFail(f'find_npc {step["find_npc"]!r}: nothing loaded in range '
+                           f'(latch NPCs need the player within ~40b first)')
+        vars_[step.get('save', 'npc')] = npc
+        return f'found {npc["name"]} ({npc["type"]}) at {npc["dist"]:.1f}b'
+
+    if 'walk_to' in step:
+        x, z = step['walk_to']
+        s = drv.walk_to(float(x), float(z), tol=step.get('tol', 1.5),
+                        timeout_ticks=step.get('timeout_ticks', 1200),
+                        sprint=step.get('sprint', False))
+        return f'arrived ({s["dist"]:.1f}b of target)'
+
+    if 'interact_npc' in step:
+        ref = step['interact_npc']
+        key = 'uuid' if re.fullmatch(r'[0-9a-fA-F-]{36}', str(ref)) else 'name'
+        data = drv.op('interact.entity', **{key: ref})
+        return f'interacted {data["target"]} result={data["result"]}'
+
+    if 'wait_screen' in step:
+        drv.wait_screen(step['wait_screen'], timeout=step.get('timeout', 15))
+        return f'screen ~ {step["wait_screen"]!r} open'
+
+    if 'wait_no_screen' in step:
+        drv.wait_no_screen(timeout=step.get('timeout', 15))
+        return 'screen closed'
+
+    if 'wait_chat' in step:
+        entry, _ = drv.wait_chat(step['wait_chat'], since=vars_.get('_hud_cursor', -1),
+                                 timeout=step.get('timeout', 30),
+                                 kinds=step.get('kinds'))
+        return f'hud[{entry["kind"]}] matched: {entry["text"][:120]!r}'
+
+    if 'expect_screen_text' in step:
+        dump = drv.op('screen.dump')
+        if not dump.get('open'):
+            raise StepFail('expect_screen_text: no screen open')
+        needle = step['expect_screen_text'].lower()
+        haystacks = [t.lower() for t in dump.get('texts', [])]
+        haystacks += [w['text'].lower() for w in dump.get('widgets', [])]
+        haystacks.append(dump.get('title', '').lower())
+        if not any(needle in h for h in haystacks):
+            raise StepFail(f'expect_screen_text {step["expect_screen_text"]!r}: not on '
+                           f'screen. texts={dump.get("texts")!r:.400} '
+                           f'widgets={[w["text"] for w in dump.get("widgets", [])]!r:.200}')
+        return f'screen shows {step["expect_screen_text"]!r}'
+
+    if 'click' in step:
+        data = drv.op('screen.click', text=step['click'])
+        return f'clicked {data["clicked"]!r}'
+
+    if 'screenshot' in step:
+        path = os.path.join(evidence_dir, f'{step["screenshot"]}.png')
+        data = drv.op('screenshot', path=path)
+        return f'screenshot {data["path"]}'
+
+    if 'sleep' in step:
+        time.sleep(float(step['sleep']))
+        return f'slept {step["sleep"]}s'
+
+    raise StepFail(f'unknown step: {json.dumps(step)[:120]}')
+
+
+def run_scenario(path, rcon, drv):
+    with open(path) as f:
+        scenario = json.load(f)
+    name = scenario.get('name', os.path.basename(path))
+    ts = time.strftime('%Y%m%d-%H%M%S')
+    evidence_dir = os.path.join(ROOT, 'dev', 'evidence', f'{ts}_e2e_{name}')
+    os.makedirs(evidence_dir, exist_ok=True)
+    transcript = open(os.path.join(evidence_dir, 'transcript.jsonl'), 'w')
+
+    state = drv.op('state')
+    vars_ = {'player': (state.get('player') or {}).get('name', '')}
+    print(f'== {name}: {scenario.get("description", "")}')
+    print(f'   player={vars_["player"] or "(not in world!)"} evidence={evidence_dir}')
+
+    passed = failed = 0
+    for i, step in enumerate(scenario.get('steps', []), 1):
+        # fresh HUD cursor so wait_chat only sees text from AFTER the previous step
+        try:
+            vars_['_hud_cursor'] = drv.chat_cursor()
+        except Exception:
+            vars_['_hud_cursor'] = -1
+        try:
+            detail = run_step(step, rcon, drv, vars_, evidence_dir)
+            if 'comment' in step:
+                print(f'   -- {detail}')
+            else:
+                print(f'[TEST] e2e {name}#{i} PASS {detail}')
+                passed += 1
+            transcript.write(json.dumps(
+                {'step': i, 'ok': True, 'detail': detail, 'src': step}) + '\n')
+        except (StepFail, DriverError, TimeoutError, ConnectionError, KeyError) as e:
+            print(f'[TEST] e2e {name}#{i} FAIL {e}')
+            transcript.write(json.dumps(
+                {'step': i, 'ok': False, 'error': str(e), 'src': step}) + '\n')
+            failed += 1
+            break  # a broken beat invalidates everything after it
+    transcript.close()
+    return passed, failed
+
+
+def main():
+    args = [a for a in sys.argv[1:]]
+    if not args or '--list' in args:
+        print(__doc__)
+        return 0 if args else 2
+    total_pass = total_fail = 0
+    with Rcon(retries=1, retry_delay=0, timeout=120) as rcon, \
+         Driver(retries=1, retry_delay=0) as drv:
+        for path in args:
+            p, f = run_scenario(path, rcon, drv)
+            total_pass += p
+            total_fail += f
+    print(f'[TEST] SUMMARY category=e2e pass={total_pass} fail={total_fail}')
+    return 1 if total_fail else 0
+
+
+if __name__ == '__main__':
+    sys.exit(main())

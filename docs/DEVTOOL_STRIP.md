@@ -21,15 +21,19 @@ AutoInstall / InstallCommand / InitiativeInit / DaycareManager) — it lives in 
 
 ---
 
-## §A — devtools/ package (13 classes) + entrypoint + mixin + dep
-1. **Delete** `src/main/java/com/thecompanyinc/cobblemoninitiative/devtools/` (all 13: AutoBattler,
+## §A — devtools/ package (18 classes) + entrypoints + mixins + dep
+1. **Delete** `src/main/java/com/thecompanyinc/cobblemoninitiative/devtools/` (all 18: AutoBattler,
    DevBotCommand, DevCommands, DevNoteCommand, DevNoteInit, DevNoteStorage, DevPlaceManager,
-   DevTestManager, DevToolsInit, DevWandTool, GymMarkCommand, GymMarkStorage, GymMarkWand).
-2. `src/main/resources/fabric.mod.json` — remove `"…devtools.DevToolsInit"` from `entrypoints.main`.
-3. `src/main/resources/cobblemon-initiative.mixins.json` — remove `"DevWandInputMixin"` from `mixins[]`.
-4. **Delete** `src/main/java/…/mixin/DevWandInputMixin.java` (imports the deleted DevWandTool).
-5. `build.gradle.kts:65` — remove the `fabric-message-api-v1` `modImplementation` line (used **only** by
-   DevWandTool's chat-note capture; verified sole consumer).
+   DevTestManager, DevToolsInit, DevWandTool, GymMarkCommand, GymMarkStorage, GymMarkWand, plus the
+   `client/` test driver: TestDriverClient, DriverServer, DriverOps, HudLog, Walker).
+2. `src/main/resources/fabric.mod.json` — remove `"…devtools.DevToolsInit"` from `entrypoints.main`
+   **and** `"…devtools.client.TestDriverClient"` from `entrypoints.client`.
+3. `src/main/resources/cobblemon-initiative.mixins.json` — remove `"DevWandInputMixin"` from `mixins[]`
+   **and** `"GuiTitleMixin"` from `client[]`.
+4. **Delete** `src/main/java/…/mixin/DevWandInputMixin.java` (imports the deleted DevWandTool) **and**
+   `src/main/java/…/mixin/GuiTitleMixin.java` (imports the deleted HudLog).
+5. `build.gradle.kts:65` — remove the `fabric-message-api-v1` `modImplementation` line (consumers:
+   DevWandTool's chat-note capture + devtools/client/HudLog — both die in this section).
 
 ## §B — npcmap/ dev classes (4) + InstallCommand decouple
 1. **Delete** `npcmap/{NpcMapCommand, NpcMapEntry, NpcMapInit, NpcMapStorage}.java`.
@@ -81,5 +85,7 @@ strip once those are baked. (Keep if you want runtime shrine debugging.)
 - `scripts/test_harness --static` then a `runServer` boot to `Done` with no ClassNotFound / entrypoint errors.
 
 ## Not part of the jar (informational)
-`scripts/{smoke_frontier, smoke_towns, smoke_auto, test_harness, mc_rcon.py}` are dev/CI harness scripts,
-**not** bundled in the mod jar — keep them as a regression harness or delete from the repo; not a release blocker.
+`scripts/{smoke_frontier, smoke_towns, smoke_auto, test_harness, mc_rcon.py, mc_client.py, e2e_run,
+scenarios/}` are dev/CI harness scripts, **not** bundled in the mod jar — keep them as a regression
+harness or delete from the repo; not a release blocker. (`mc_client.py`/`e2e_run` go dead once §A
+removes the in-mod driver they talk to.)
