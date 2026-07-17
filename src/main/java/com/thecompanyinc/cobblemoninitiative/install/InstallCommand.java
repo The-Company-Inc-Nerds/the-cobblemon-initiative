@@ -89,6 +89,20 @@ public class InstallCommand {
     MinecraftServer server = ctx.getSource().getServer();
     StringBuilder sb = new StringBuilder("[Install] Status:\n\n  Gamerules:\n");
 
+    // Tag-ceiling monitor: vanilla hard-caps scoreboard tags at 1024 PER ENTITY and
+    // `tag add` fails silently past it — dialog gates would quietly misbehave. The
+    // inverse-band pattern (no_*) puts a fresh player at ~515 tags already; warn with
+    // headroom to spare. (Audit 2026-07-17: 831 distinct tags, 503 inverse.)
+    var tagPlayer = ctx.getSource().getPlayer();
+    if (tagPlayer != null) {
+      int tagCount = tagPlayer.getTags().size();
+      sb.append("  Player tags: ").append(tagCount).append(" / 1024 (vanilla cap)");
+      if (tagCount >= 800) {
+        sb.append("  ⚠ NEARING THE CAP — trim inverse bands before adding content");
+      }
+      sb.append('\n');
+    }
+
     for (var entry : config.gamerules.entrySet()) {
       String rule = entry.getKey();
       String target = entry.getValue();
@@ -579,6 +593,16 @@ public class InstallCommand {
           )
         );
     }
+    // One-shot world repairs (relocated latch NPCs etc.) — the function self-guards
+    // per wave, so dispatching on every install run is idempotent.
+    var repairsFn = net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(
+      "cobblemon_initiative", "install/repairs");
+    if (server.getFunctions().get(repairsFn).isPresent()) {
+      server
+        .getCommands()
+        .performPrefixedCommand(silentOp, "function cobblemon_initiative:install/repairs");
+    }
+
 
     // Legacy: also apply anything registered via the npc-map dev tool (world storage).
     // Only loaded NPCs can be updated in place; the execute-as guard skips the rest.

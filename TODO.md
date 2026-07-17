@@ -66,6 +66,18 @@ postmortem: tp BEFORE kill/latch-reset in preambles (kill silently no-ops in unl
 chunks, then the latch respawns a duplicate; wheat_war preamble reordered). Existing
 worlds: kill + re-latch the 4 Takehara trainers + the 2 Sango auditors.
 
+**Relocation-repair pattern (alpha.3):** when an NPC's coords change after worlds already
+latched the old body, add a wave to `install/repairs` (self-guarded by a `#repair_*` flag,
+dispatched from `InstallCommand.cmdRun` + shipped in the jar so mrpack installs auto-apply):
+forceload the site → kill the stale body → reset its `#amb_*` latch → it re-spawns at the
+new coords on next visit. Wave a2 covers the Takehara/auditor/mew-wisp/Oasis-pump moves.
+DON'T hand-write per-world kill commands in the runbook anymore — add a repair wave.
+
+**Small bug noticed (alpha.3, low priority):** NpcSight APPROACH_ONCE `fired` state and
+sight registration SURVIVE `npcsight remove`+re-add and `npcsight reload` (a re-registered
+walk-up NPC stays fired=true, won't re-trigger). Fine in production (one-time by design)
+but makes re-testing a walk-up need a fresh player. Consider a `fired` reset on `remove`.
+
 **Open findings:**
 - [ ] 🔍 **FancyMenu × Cobblemon battle crash (POTENTIAL STREAM-BREAKER)** — FancyMenu's
   entity-spawn broadcast mixin Gson-serializes a NaN double when Cobblemon sends out a
@@ -283,8 +295,9 @@ ramps; opt-in forced movement/camera.
       prize/tags), rift dragon (spawn, circles fightOrigin not 0,0, crystals heal, teardown on
       logout, dragon_slain grant), Cicada lift+descend+battle, tide flip + rain teams, whiteout
       sight triggers, heat gauge + banked full-Vulcan gate, mirror declare→variant, wall drops,
-      face-the-NPC camera snap (Mom walk-up, a DIALOG greeter, a pursue spotter run-down —
-      confirm the snap feels right and does not fight the camera; alpha.11).
+      face-the-NPC camera turn (Mom walk-up, a DIALOG greeter, a pursue spotter run-down;
+      now a SMOOTH tween as of alpha.3, server-verified — 🔍 remaining is the FEEL on a
+      real client: mouse contention + reads-well-on-camera).
 - [x] 💻 **Stadium BUILT (0.5.0-alpha.14)** — `stadium/` package: `/cobblemon-initiative
       stadium start <25|50|75|100>|abort|status` (perm 0); bracket level-lock via Cobblemon
       `BattleFormat.adjustLevel` (set around each dispatch, ALWAYS reset — the static leaks

@@ -518,7 +518,24 @@ public class NpcSightManager {
         player.lookAt(EntityAnchorArgument.Anchor.EYES, npc, EntityAnchorArgument.Anchor.EYES);
         it.remove();
       } else {
-        Vec3 stepDir = current.add(target.subtract(current).scale(0.35)).normalize();
+        // Rotate by a capped ANGLE per tick — vector nlerp degenerates near 180°
+        // (the interpolant collapses toward zero length, then normalization whips
+        // the whole arc in one tick = still a snap; caught by live yaw sampling).
+        double stepDeg = Mth.clamp(angle * 0.35, 4.0, 24.0);
+        Vec3 axis = current.cross(target);
+        if (axis.lengthSqr() < 1.0e-6) {
+          axis = Math.abs(current.y) < 0.9 ? new Vec3(0, 1, 0) : new Vec3(1, 0, 0);
+          axis = axis.subtract(current.scale(axis.dot(current)));
+        }
+        axis = axis.normalize();
+        double rad = Math.toRadians(stepDeg);
+        double cos = Math.cos(rad);
+        double sin = Math.sin(rad);
+        // Rodrigues: v' = v cosθ + (k×v) sinθ + k (k·v)(1−cosθ)
+        Vec3 stepDir = current.scale(cos)
+            .add(axis.cross(current).scale(sin))
+            .add(axis.scale(axis.dot(current) * (1.0 - cos)))
+            .normalize();
         player.lookAt(EntityAnchorArgument.Anchor.EYES, eye.add(stepDir.scale(8.0)));
         tw.lastYaw = player.getYRot();
         tw.lastPitch = player.getXRot();
