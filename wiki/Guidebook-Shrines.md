@@ -18,7 +18,7 @@ Each shrine **opens once you beat the adjacent gym leader**:
 | **Ice** ❄️ | Nifl Town (Gym 9) | High Priest Glacius |
 | **Fire** 🔥 | **the Royal League** (you must be Champion) | High Priest Ignis |
 
-Fire is the exception: its ash-priests *"only open to a champion,"* so the caldera stays sealed until you clear the [[Guidebook Route Map|Royal League]]. Every other shrine answers to the badge next door.
+Fire is the exception: its ash-priests *"only open to a champion,"* so the caldera stays sealed until you clear the [[Royal League|Guidebook Route Map]]. Every other shrine answers to the badge next door.
 
 Why bother?
 
