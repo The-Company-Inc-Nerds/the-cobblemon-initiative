@@ -25,7 +25,11 @@ Usage:
 Ops (see docs/TESTING_TOOLKIT.md § Client driver for the full table):
   ping state screen.dump screen.click screen.close screen.key entity.list
   interact.entity attack.entity interact.block use.item look.at move.to
-  move.status move.stop input.key hud.chat hud.sidebar party screenshot
+  move.path move.status move.stop input.key hud.chat hud.sidebar party screenshot
+
+Long hauls: don't chain guessed move.to legs — ask the server for a mob-grade A* route
+(`cobblemon-initiative dev path <player> <x> <y> <z>` via RCON, parse route=x,y,z;...)
+and feed it to Driver.follow_path(). e2e_run wraps both sides as the path_to step.
 
 Launch the client with the driver enabled (env var survives the gradle fork):
   CI_DRIVER_PORT=25580 DISPLAY=:0 nix develop -c run-client \
@@ -144,6 +148,26 @@ class Driver:
             time.sleep(0.25)
         self.op('move.stop')
         raise DriverError(f'walk_to({x},{z}): python-side timeout')
+
+    def follow_path(self, nodes, tol=1.5, timeout_ticks=2400, sprint=False):
+        """move.path + block until arrival. nodes = [[x,y,z],...] block ints from the
+        server's `dev path <player> <x> <y> <z>` A* probe (PathProbe). The Walker steers
+        node-to-node — stairs/steps/corners route the way mobs walk them. Raises on
+        stuck:node=i/n (mid-route snag; the index says where) / timeout / stop."""
+        self.op('move.path', nodes=nodes, tol=tol,
+                timeoutTicks=timeout_ticks, sprint=sprint)
+        deadline = time.time() + timeout_ticks / 20.0 + 10
+        while time.time() < deadline:
+            s = self.op('move.status')
+            if not s['active']:
+                if s['result'] != 'arrived':
+                    raise DriverError(
+                        f'follow_path({len(nodes)} nodes): {s["result"]} '
+                        f'at dist={s["dist"]:.1f}')
+                return s
+            time.sleep(0.25)
+        self.op('move.stop')
+        raise DriverError(f'follow_path({len(nodes)} nodes): python-side timeout')
 
     def find_npc(self, name=None, radius=48):
         """Nearest matching entity dict (or None). Easy NPCs match on custom name."""

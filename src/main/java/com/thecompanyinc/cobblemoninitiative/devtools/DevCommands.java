@@ -16,6 +16,8 @@ import java.util.Set;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 
@@ -64,6 +66,18 @@ public final class DevCommands {
           )
           .then(
             Commands.literal("kit").executes(DevCommands::devKit)
+          )
+          // Vanilla-A* route probe for the client driver (see PathProbe).
+          .then(
+            Commands.literal("path").then(
+              Commands.argument("player", EntityArgument.player()).then(
+                Commands.argument("target", BlockPosArgument.blockPos())
+                  .executes(ctx -> PathProbe.cmdPath(
+                    ctx.getSource(),
+                    EntityArgument.getPlayer(ctx, "player"),
+                    BlockPosArgument.getLoadedBlockPos(ctx, "target")))
+              )
+            )
           )
           // THE PRODUCER'S TOOL — one item for the whole marking walk (see DevWandTool).
           .then(

@@ -21,11 +21,11 @@ AutoInstall / InstallCommand / InitiativeInit / DaycareManager) — it lives in 
 
 ---
 
-## §A — devtools/ package (18 classes) + entrypoints + mixins + dep
-1. **Delete** `src/main/java/com/thecompanyinc/cobblemoninitiative/devtools/` (all 18: AutoBattler,
+## §A — devtools/ package (19 classes) + entrypoints + mixins + dep
+1. **Delete** `src/main/java/com/thecompanyinc/cobblemoninitiative/devtools/` (all 19: AutoBattler,
    DevBotCommand, DevCommands, DevNoteCommand, DevNoteInit, DevNoteStorage, DevPlaceManager,
-   DevTestManager, DevToolsInit, DevWandTool, GymMarkCommand, GymMarkStorage, GymMarkWand, plus the
-   `client/` test driver: TestDriverClient, DriverServer, DriverOps, HudLog, Walker).
+   DevTestManager, DevToolsInit, DevWandTool, GymMarkCommand, GymMarkStorage, GymMarkWand, PathProbe,
+   plus the `client/` test driver: TestDriverClient, DriverServer, DriverOps, HudLog, Walker).
 2. `src/main/resources/fabric.mod.json` — remove `"…devtools.DevToolsInit"` from `entrypoints.main`
    **and** `"…devtools.client.TestDriverClient"` from `entrypoints.client`.
 3. `src/main/resources/cobblemon-initiative.mixins.json` — remove `"DevWandInputMixin"` from `mixins[]`

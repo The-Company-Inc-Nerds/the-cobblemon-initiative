@@ -71,6 +71,7 @@ final class DriverOps {
       case "use.item" -> onGameThread(DriverOps::useItem);
       case "look.at" -> onGameThread(() -> lookAt(args));
       case "move.to" -> onGameThread(() -> moveTo(args));
+      case "move.path" -> onGameThread(() -> movePath(args));
       case "move.status" -> onGameThread(DriverOps::moveStatus);
       case "move.stop" -> onGameThread(DriverOps::moveStop);
       case "input.key" -> onGameThread(() -> inputKey(args));
@@ -458,6 +459,34 @@ final class DriverOps {
     Walker.start(x, z, tol, timeout, sprint);
     JsonObject out = new JsonObject();
     out.addProperty("started", true);
+    return out;
+  }
+
+  /**
+   * {@code move.path} — follow a vanilla-A* node list from the server's {@code dev path}
+   * probe. Nodes arrive as [[x,y,z],...] block ints; centered here (+0.5) for steering.
+   */
+  private static JsonObject movePath(JsonObject args) {
+    Minecraft mc = Minecraft.getInstance();
+    requirePlayer(mc);
+    JsonArray arr = args.getAsJsonArray("nodes");
+    if (arr == null || arr.isEmpty()) {
+      throw new IllegalArgumentException("move.path needs nodes=[[x,y,z],...]");
+    }
+    List<double[]> nodes = new ArrayList<>();
+    for (var el : arr) {
+      JsonArray p = el.getAsJsonArray();
+      nodes.add(new double[] {
+        p.get(0).getAsDouble() + 0.5, p.get(1).getAsDouble(), p.get(2).getAsDouble() + 0.5,
+      });
+    }
+    double tol = args.has("tol") ? args.get("tol").getAsDouble() : 1.5;
+    int timeout = args.has("timeoutTicks") ? args.get("timeoutTicks").getAsInt() : 2400;
+    boolean sprint = args.has("sprint") && args.get("sprint").getAsBoolean();
+    Walker.startPath(nodes, tol, timeout, sprint);
+    JsonObject out = new JsonObject();
+    out.addProperty("started", true);
+    out.addProperty("nodes", nodes.size());
     return out;
   }
 

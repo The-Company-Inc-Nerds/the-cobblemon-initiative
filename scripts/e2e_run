@@ -22,6 +22,10 @@ Step vocabulary (one key per step, plus options):
   {"client": "op", "args": {...}?, "save": "var"?}   raw driver op
   {"find_npc": "match", "save": "npc", "radius": 48?}  nearest entity match
   {"walk_to": [x, z], "tol": 1.5?, "sprint": false?, "timeout_ticks": 1200?}
+  {"path_to": [x, y, z], "tol": 1.5?, "sprint": false?, "timeout_ticks": 2400?,
+   "max_hops": 6?, "allow_partial": false?}   server A* (dev path) -> client follows
+        node-to-node; partial paths re-probe from where they end (hop-chaining) until
+        reached / no progress (allow_partial: accept the final dead-end as success)
   {"interact_npc": "{npc.uuid}" | "Name"}     look at + right-click
   {"wait_screen": "ClassNeedle", "timeout": 15?}
   {"wait_no_screen": true, "timeout": 15?}
@@ -119,6 +123,57 @@ def run_step(step, rcon, drv, vars_, evidence_dir):
                         sprint=step.get('sprint', False))
         return f'arrived ({s["dist"]:.1f}b of target)'
 
+    if 'path_to' in step:
+        # Hop-chained A*, self-healing like a real mob (mobs recompute paths every few
+        # ticks; a single probe followed blindly cannot). Two live-verified reasons a
+        # hop legitimately falls short: (1) the probe's visited-node budget exhausts on
+        # long searches -> reached=false with a partial that may even wander onto a
+        # heuristic-friendly dead-end ledge; (2) the Walker can fall off an exposed
+        # corner mid-route -> stuck:node=i/n. Both heal the same way: re-probe from
+        # wherever the player actually is and keep walking. Fail only on no progress
+        # (same probe dead-end, or stuck at the same spot, twice in a row).
+        x, y, z = step['path_to']
+        max_hops = step.get('max_hops', 6)
+        total_nodes, last_end, last_stuck = 0, None, None
+        for hop in range(max_hops):
+            out = rcon.cmd(f'cobblemon-initiative dev path {vars_["player"]} '
+                           f'{int(x)} {int(y)} {int(z)}')
+            m = re.search(r'reached=(\w+) nodes=\d+ route=([0-9,;-]*)', out)
+            if not m or not m.group(2):
+                raise StepFail(f'path_to: no A* route to ({x},{y},{z}): {out[:200]!r}')
+            reached = m.group(1) == 'true'
+            nodes = [[int(v) for v in n.split(',')] for n in m.group(2).split(';') if n]
+            end = nodes[-1]
+            if not reached:
+                if last_end is not None and sum(abs(a - b) for a, b in zip(end, last_end)) <= 2:
+                    if step.get('allow_partial'):
+                        return (f'pathed {total_nodes} A* nodes, PARTIAL '
+                                f'(dead-end at {end[0]},{end[1]},{end[2]})')
+                    raise StepFail(f'path_to: A* dead-ends at {end[0]},{end[1]},{end[2]} '
+                                   f'short of ({x},{y},{z}) — no progress across hops')
+                last_end = end
+            try:
+                s = drv.follow_path(nodes, tol=step.get('tol', 1.5),
+                                    timeout_ticks=step.get('timeout_ticks', 2400),
+                                    sprint=step.get('sprint', False))
+            except DriverError as e:
+                if 'stuck' not in str(e):
+                    raise
+                total_nodes += len(nodes)
+                p = drv.op('state')['player']
+                pos = (p['x'], p['y'], p['z'])
+                if last_stuck is not None and sum(abs(a - b) for a, b in zip(pos, last_stuck)) <= 2:
+                    raise StepFail(f'path_to: walker stuck twice at '
+                                   f'({pos[0]:.0f},{pos[1]:.0f},{pos[2]:.0f}) — {e}')
+                last_stuck = pos
+                continue
+            total_nodes += len(nodes)
+            if reached:
+                hops = f' in {hop + 1} hops' if hop else ''
+                return f'pathed {total_nodes} A* nodes{hops} ({s["dist"]:.1f}b of target)'
+        raise StepFail(f'path_to: not reached after {max_hops} hops '
+                       f'(last at {end[0]},{end[1]},{end[2]})')
+
     if 'interact_npc' in step:
         ref = step['interact_npc']
         key = 'uuid' if re.fullmatch(r'[0-9a-fA-F-]{36}', str(ref)) else 'name'
@@ -184,12 +239,33 @@ def run_scenario(path, rcon, drv):
     print(f'   player={vars_["player"] or "(not in world!)"} evidence={evidence_dir}')
 
     passed = failed = 0
-    for i, step in enumerate(scenario.get('steps', []), 1):
-        # fresh HUD cursor so wait_chat only sees text from AFTER the previous step
+    # wait_chat windows: a wait_chat scans everything emitted since the FIRST emitter
+    # step after the previous wait_chat (or scenario start). Any number of passive steps
+    # (wait_no_screen, rcon asserts, sleeps, screenshots) AND even further emitter clicks
+    # may sit between the step that emits a line and the wait_chat that asserts it
+    # (VERIFIED live, both directions: Mom's actionbar announce fires at a click two
+    # assert steps before its wait_chat; the ROAD WEST title fires at the shoes click one
+    # dialog page — one more click — before its wait_chat). Each wait_chat closes the
+    # window and the next emitter re-opens it, so a line consumed before an emitter
+    # boundary can't satisfy a later wait.
+    PASSIVE = ('comment', 'sleep', 'wait_screen', 'wait_no_screen', 'wait_chat',
+               'expect_screen_text', 'screenshot', 'find_npc')
+
+    def hud_cursor():
         try:
-            vars_['_hud_cursor'] = drv.chat_cursor()
+            return drv.chat_cursor()
         except Exception:
-            vars_['_hud_cursor'] = -1
+            return -1
+
+    window_cursor, window_armed = hud_cursor(), True
+    for i, step in enumerate(scenario.get('steps', []), 1):
+        is_passive = (any(k in step for k in PASSIVE)
+                      or ('rcon' in step and 'expect' in step))  # rcon+expect = read-only assert
+        if not is_passive and not window_armed:
+            window_cursor, window_armed = hud_cursor(), True
+        vars_['_hud_cursor'] = window_cursor
+        if 'wait_chat' in step:
+            window_armed = False
         try:
             detail = run_step(step, rcon, drv, vars_, evidence_dir)
             if 'comment' in step:

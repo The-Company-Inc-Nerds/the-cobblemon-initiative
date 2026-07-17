@@ -10,17 +10,30 @@ done, Claude removes it **and** any release-removal it unblocks.
 
 ## 2026-07-16 — client test driver + E2E scenarios (docs/TESTING_TOOLKIT.md § Client driver)
 
-- [x] 💻 **Client test driver (alpha.21)** — `devtools/client/` in-process JSON-lines socket
-  (dormant unless `CI_DRIVER_PORT` set): screen dump/click, walk-up interact, real movement,
-  HUD/title/sidebar reads, framebuffer screenshots + `scripts/mc_client.py` +
-  `scripts/e2e_run` scenario runner (`scripts/scenarios/`). Strip list updated (§A).
-- [ ] 🔍 **Live driver verification** — boot server + `CI_DRIVER_PORT=25580` client, run
-  `scripts/e2e_run scripts/scenarios/walkup_smoke.json`: dialog dump shows real text,
-  click works, screenshot lands.
+**Landed + live-verified 2026-07-16:** driver + runner shipped (alpha.21, strip list §A) and
+`walkup_smoke` passed 8/8 against the live stack — dialog prose dumped via reflection scan
+(`DialogScreenWrapper`), `screen.click "Goodbye"` closed the dialog, framebuffer screenshot
+landed in `dev/evidence/`. Field notes: interacts silently no-op beyond the ~3b server
+interaction range (walk within tol ≤2.5 first); the test-zone "Fairy"/"Humanoid" bodies
+have no dialog, so `find_npc` nearest can pick a dud there.
+
+**Landed + live-verified 2026-07-16 (late): mob-grade A\* pathing + the opening chain E2E.**
+`dev path <player> <x> <y> <z>` (PathProbe: GroundPathNavigation on a throwaway zombie, x8
+visited-node budget, particle trail) + Walker path mode (`move.path`) + `path_to` runner step
+with hop-chaining AND stuck→re-probe self-healing (mobs recompute; so do we).
+`scenarios/first_steps.json` **69/69 PASS**: spawn house → Mom → A\* across town and UP the
+lab's north-face switchback staircase (145 nodes/2 hops) → Totodile → Pokedex → back → Running
+Shoes → THE ROAD WEST card. Lab-entrance mystery SOLVED: ground (2669,106,2888) → two flights
+along z=2888 with a z≈2889–90 landing → third floor (2680,128,2888) → east walkway to the door.
+Walker fidelity rules that made it survivable (each verified against a live failure): 3D node
+distances (switchback flights stack in X/Z), Y-gate (never credit/skip a node still above you),
+corner-cut locality ≤2b (consecutive nodes are the only guaranteed connectivity), jump only
+when the node is above (flat-segment hops mount roof rims), NODE_REACH 0.9.
+
 - [ ] 💻 **Quest scenarios** — author `scenarios/*.json` per town quest pack as they land
-  (gyms 3–7 wave): setup via RCON, walk-up + dialog click-through via driver, defeat/turn-in
-  asserts via `[TEST]` + `hud.chat`. Battle beats: enroll the client player via
-  `execute as <name> run cobblemon-initiative dev bot autobattle on`.
+  (gyms 3–7 wave): setup via RCON, walk-up + dialog click-through via driver (`path_to` for
+  any nontrivial leg), defeat/turn-in asserts via `[TEST]` + `hud.chat`. Battle beats: enroll
+  the client player via `execute as <name> run cobblemon-initiative dev bot autobattle on`.
 
 ---
 

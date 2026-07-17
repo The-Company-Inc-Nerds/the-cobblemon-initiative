@@ -341,7 +341,8 @@ three in sync):
 | `entity.list` | nearby entities (uuid/name/type/pos/dist) | `match` filters name OR type; client only sees tracked range |
 | `interact.entity` | look at + right-click by uuid/name | THE walk-up-talk path; server rejects >6 blocks — walk first |
 | `attack.entity` / `interact.block` / `use.item` | left-click / block use / item use | |
-| `look.at` / `move.to` / `move.status` / `move.stop` | steer camera; REAL walking (keys+yaw per tick, hop on collision) | latch radii + zone triggers fire like for a human; dumb straight-line — chain short legs, tp long hauls |
+| `look.at` / `move.to` / `move.status` / `move.stop` | steer camera; REAL walking (keys+yaw per tick, hop on collision) | latch radii + zone triggers fire like for a human; dumb straight-line — for anything non-trivial use `move.path` |
+| `move.path` | follow a vanilla-A* node list (`nodes=[[x,y,z],…]`) node-to-node | pair with the server probe `cobblemon-initiative dev path <player> <x> <y> <z>` (PathProbe: mob-grade GroundPathNavigation on a throwaway zombie, water unwalkable, doors allowed; emits `[PATH] reached=… route=…` + a happy-villager particle trail). Fails fast with `stuck:node=i/n`. e2e step: `path_to` — hop-chains: a `reached=false` partial (the probe's visited-node budget, not geometry, is usually what truncates) is walked, then re-probed from where it ends, until reached / no progress (`max_hops`, default 6) |
 | `input.key` | hold forward/back/left/right/jump/sneak/sprint | |
 | `hud.chat` | ring buffer: chat/system/overlay/title/subtitle, seq-cursored | titles+actionbar captured by GuiTitleMixin at the Gui setters (`/title actionbar` bypasses ChatListener) |
 | `hud.sidebar` | rendered sidebar title+lines | E2E check for the quest tracker ▶ line |
@@ -357,6 +358,8 @@ client (never boots; smoke_auto's model). Scenarios are JSON step lists
 
 ```bash
 scripts/e2e_run scripts/scenarios/walkup_smoke.json   # generic town walk-up beat
+scripts/e2e_run scripts/scenarios/first_steps.json    # the full opening chain:
+                       # Mom -> A* to the lab -> Totodile -> Pokedex -> Running Shoes
 python3 scripts/mc_client.py state                    # ad-hoc single ops
 python3 scripts/mc_client.py entity.list match=easy_npc radius=32
 ```
