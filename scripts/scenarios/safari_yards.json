@@ -1,0 +1,198 @@
+{
+  "name": "safari_yards",
+  "description": "Safari Zone regression \u2014 the Biodiversity Asset Preserve ('the Baiting Yards'). Full permit loop at the in-zone mew-wisp clearing [1303 64 1451]: badge-3 gate refuses a 0-badge player with the balance and inventory untouched, then badges 3 + 2000 CD -> enter charges the 1500 CD Day Permit via the deferred pay-probe (balance 500 after), issues exactly 20 marked Preserve-issue Safari Balls, kiosk bait give (honey_smear) + perm-2 scatter dev hook draws a tagged lure within the 5-15s suspense window, and voluntary exit claws every issued ball back, prints the empty ledger + confiscation receipt, sweeps the lures, and does NOT teleport the player. Session gating is by session state, not zone geometry, but the run sits inside the shipped 'Safari Zone' landmark polygon for honest evidence. Badges are restored to 0 at the end (wheat_war_first_farm assumes badges<3); CobbleDollars ride at 500 after a run (the fee rail has no reset, miller_walk precedent).",
+  "steps": [
+    {
+      "comment": "-- SITE + DESIGN NOTES: concierge NPC is authored but UNPLACED (TODO 'awaiting placement coords'), so every safari command is rcon-dispatched via 'execute as {player}' (enter/exit/status are perm 0; bait/scatter are perm 2 and MUST come from the console side). NO BATTLE BEAT BY DESIGN: BATTLE_STARTED_PRE is cancelled at Priority.HIGHEST while a session is active \u2014 do not add one (this also means no party prep, no autobattle, and the known TBCS battle-init stall caveat never applies to this scenario). NEEDLE RULE for this file: Preserve messages are Component.literal strings with embedded \u00a7 codes and HudLog stores getString() RAW, so every wait_chat needle sits inside ONE color run (never spanning a \u00a7-code boundary \u2014 e.g. 'Issued balls: \u00a7620' means the count can't be in the needle; the exact figures are asserted by the adjacent clear-probes instead). --"
+    },
+    {
+      "comment": "-- preamble: tp BEFORE any entity ops (kill silently no-ops in unloaded chunks). Site = 3b from the noble_giver_mew_wisp latch at 1300.5 64 1450.5 (compiled placement, live-swept grounded) inside the Safari Zone polygon x~1212-1552 / z~1344-1785, centerY 64. --"
+    },
+    {
+      "rcon": "tp {player} 1300.5 89 1450.5"
+    },
+    {
+      "comment": "-- hardcore protection: the clearing is OUTSIDE any safe zone (full mob spawns; two live deaths here \u2014 one fall-finish, one night mob). Day + regen keeps the run survivable; day-set also makes a homestead-income rollover mid-scenario impossible, protecting the exact-balance asserts. --"
+    },
+    {
+      "rcon": "time set day"
+    },
+    {
+      "rcon": "kill @e[type=!player,distance=..32,type=!minecraft:armor_stand,type=!easy_npc:humanoid,type=!easy_npc:fairy,type=!cobblemon:pokemon]"
+    },
+    {
+      "rcon": "effect give {player} minecraft:regeneration 240 2"
+    },
+    {
+      "sleep": 2.0
+    },
+    {
+      "comment": "-- reset (idempotent re-runs): stale session exit (claws back leftover issue balls; 'No active Day Permit' on clean runs is fine), stray lures from an aborted run (they would false-positive the lure poll), marked balls + bait items from a prior pass --"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative safari exit"
+    },
+    {
+      "rcon": "kill @e[tag=ci_safari_lure]"
+    },
+    {
+      "rcon": "clear {player} cobblemon:safari_ball"
+    },
+    {
+      "rcon": "clear {player} minecraft:honeycomb"
+    },
+    {
+      "rcon": "time set day"
+    },
+    {
+      "rcon": "weather clear"
+    },
+    {
+      "comment": "-- beat 1: the badge-3 gate HOLDS. 0 badges + a 900 CD balance (kept under 1000 \u2014 cobbledollars query abbreviates >=1000, exact below): enter must refuse BEFORE the pay dispatch, so the balance and inventory stay untouched --"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative dev badges 0",
+      "expect": "level cap now \u00a7e15"
+    },
+    {
+      "rcon": "cobbledollars set {player} 900"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative safari enter"
+    },
+    {
+      "wait_chat": "verified gym badges",
+      "timeout": 10
+    },
+    {
+      "rcon": "cobbledollars query {player}",
+      "expect": "$ 900"
+    },
+    {
+      "rcon": "clear {player} cobblemon:safari_ball 0",
+      "expect": "No items were found"
+    },
+    {
+      "comment": "-- beat 2: the permit. badges 3 (cap 37 pins the ladder), fund 2000 -> fee 1500 resolves ONE TICK after dispatch (SafariManager pendingPermits pay-probe defer), balance 500 after, exactly 20 marked balls issued --"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative dev badges 3",
+      "expect": "level cap now \u00a7e37"
+    },
+    {
+      "rcon": "cobbledollars set {player} 2000"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative safari enter"
+    },
+    {
+      "wait_chat": "Day Permit approved",
+      "timeout": 15
+    },
+    {
+      "sleep": 1.0
+    },
+    {
+      "rcon": "cobbledollars query {player}",
+      "expect": "$ 500"
+    },
+    {
+      "rcon": "clear {player} cobblemon:safari_ball 0",
+      "expect": "Found 20"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative safari status"
+    },
+    {
+      "wait_chat": "Issued balls:",
+      "timeout": 10
+    },
+    {
+      "screenshot": "permit_active"
+    },
+    {
+      "comment": "-- beat 3: kiosk bait give, then the perm-2 scatter dev hook. The REAL consumption path is a held-item right-click (UseBlockCallback) which the headless driver cannot select deterministically (placeItemBackInInventory picks an arbitrary slot); the hook drives the same enqueueScatter and is the proven smoke_auto path. It does NOT consume the bait item \u2014 cleaned up at the end. --"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative safari bait honey_smear"
+    },
+    {
+      "rcon": "clear {player} minecraft:honeycomb 0",
+      "expect": "Found 1"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative safari scatter honey_smear"
+    },
+    {
+      "wait_chat": "The grass stirs",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "comment": "-- lure poll: suspense is 5-15s, then 1-3 spawns that linger ~75s. The +8s and +15s probes are evidence-only retries (NO expect \u2014 a miss mid-suspense must not abort); the +21s probe is the gate. tag=ci_safari_lure keeps the poll immune to ordinary wild spawns in range. --"
+    },
+    {
+      "sleep": 8
+    },
+    {
+      "rcon": "execute as {player} at @s if entity @e[type=cobblemon:pokemon,tag=ci_safari_lure,distance=..40]"
+    },
+    {
+      "sleep": 7
+    },
+    {
+      "rcon": "execute as {player} at @s if entity @e[type=cobblemon:pokemon,tag=ci_safari_lure,distance=..40]"
+    },
+    {
+      "sleep": 6
+    },
+    {
+      "rcon": "execute as {player} at @s if entity @e[type=cobblemon:pokemon,tag=ci_safari_lure,distance=..40]",
+      "expect": "passed"
+    },
+    {
+      "screenshot": "lure_spawned"
+    },
+    {
+      "comment": "-- beat 4: voluntary exit. Clawback to zero, empty ledger (nothing was caught \u2014 no ball can be thrown headless), lure sweep, and NO escort teleport: voluntary exit never moves the player, only the clock-expiry eject does \u2014 the position assert pins that contract --"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative safari exit"
+    },
+    {
+      "wait_chat": "no assets acquired",
+      "timeout": 10
+    },
+    {
+      "wait_chat": "Unspent munitions confiscated at egress:",
+      "timeout": 10
+    },
+    {
+      "rcon": "clear {player} cobblemon:safari_ball 0",
+      "expect": "No items were found"
+    },
+    {
+      "rcon": "execute unless entity @e[tag=ci_safari_lure]",
+      "expect": "passed"
+    },
+    {
+      "rcon": "execute if entity @a[name={player},x=1300.5,y=89,z=1450.5,distance=..10]",
+      "expect": "passed"
+    },
+    {
+      "screenshot": "safari_yards_done"
+    },
+    {
+      "comment": "-- cleanup: the un-consumed bait item, and the badge restore \u2014 later scenarios assume a low-badge player (wheat_war_first_farm's early-recognition entries need badges<3). Balance rides at 500 (the fee rail has no reset). --"
+    },
+    {
+      "rcon": "clear {player} minecraft:honeycomb"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative dev badges 0",
+      "expect": "level cap now \u00a7e15"
+    }
+  ]
+}

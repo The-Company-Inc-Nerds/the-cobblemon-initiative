@@ -1,0 +1,423 @@
+{
+  "name": "pay_probes",
+  "description": "Broke-player E2E for the three balance-gated purchase rails (TODO 1.B pay-probes, closing the runtime check): Deka's 500 CD Magikarp at the Sango pond (2570 111 2856), Pondwarden Tayo's 150 CD Waterside Invitational entry at the Sango waterside (2542 108 2954), and Overseer Rong's 150 CD escorted-exit fee on the Hua Zhan greenhouse catwalk (1541.5 101 2108.5). Each rail is played twice: wallet zeroed -> click -> refusal actionbar + non-delivery (tag absent / berry absent / balance still $ 0), then wallet set to 700 -> click -> delivery + exact remainder via cobbledollars query (700 keeps every post-fee remainder under 1000, where query is exact — it K-abbreviates above). No battles anywhere (the bracket is paid into, never fought). ASSUMES badges < 2 (guard-asserted at beat 3: Rong's post_badge_2 entry at priority 15 would replace the catwalk_hail shakedown and its pay button); the preamble strips derby + bracket state that would preempt the purchase entries (sango_classic leaves sango_classic_champion, which hides Deka's karp button) and empties the party so the delivered Magikarp is the only mon. Run leaves the wallet at 550 and the Magikarp + berry with the player (preamble handles the re-run).",
+  "steps": [
+    {
+      "comment": "-- reset (idempotent re-runs): the two purchase tags + the berry the karp sale grants --"
+    },
+    {
+      "rcon": "tag {player} remove bought_magikarp"
+    },
+    {
+      "rcon": "tag {player} remove invit_entered"
+    },
+    {
+      "rcon": "clear {player} cobblemon:oran_berry"
+    },
+    {
+      "comment": "-- dead-letter defense: a prior sango_classic run leaves sango_classic_champion (or a live quarter leaves classic_active) — both outrank Deka's default entry, and only the default entry carries the karp button. Mirror sango_classic's own preamble clock reset. --"
+    },
+    {
+      "rcon": "tag {player} remove classic_active"
+    },
+    {
+      "rcon": "tag {player} remove sango_classic_champion"
+    },
+    {
+      "rcon": "scoreboard players set #on ci_classic 0"
+    },
+    {
+      "rcon": "schedule clear cobblemon_initiative:sidequest/derby/second"
+    },
+    {
+      "rcon": "bossbar set cobblemon_initiative:sango_classic visible false"
+    },
+    {
+      "comment": "-- bracket defense: defeated_sq_bracket_2/3 flip Tayo to final_round/champion entries, hiding the signup-desk pay button --"
+    },
+    {
+      "rcon": "tag {player} remove defeated_sq_bracket_2"
+    },
+    {
+      "rcon": "tag {player} remove defeated_sq_bracket_3"
+    },
+    {
+      "comment": "-- party emptied: the funded karp buy then delivers into slot 1 (no battles in this scenario, so an empty party is safe; all three beats sit in town safe zones) --"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "comment": "-- beat 1 BROKE: Deka at the pond — 500 CD growth vehicle refused on an empty wallet --"
+    },
+    {
+      "rcon": "tp {player} 2570 111 2856"
+    },
+    {
+      "sleep": 1.5
+    },
+    {
+      "rcon": "cobbledollars set {player} 0"
+    },
+    {
+      "rcon": "cobbledollars query {player}",
+      "expect": "$ 0"
+    },
+    {
+      "find_npc": "Deka",
+      "save": "d",
+      "radius": 8
+    },
+    {
+      "interact_npc": "{d.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "Ask about the other fish"
+    },
+    {
+      "click": "Ask about the other fish"
+    },
+    {
+      "sleep": 0.7
+    },
+    {
+      "expect_screen_text": "Buy the growth vehicle"
+    },
+    {
+      "screenshot": "karp_pitch_broke"
+    },
+    {
+      "click": "Buy the growth vehicle"
+    },
+    {
+      "comment": "broke path: buy_karp's #karp_ok pay-probe reads 0, every delivery line under the gate is skipped, and the button has no close — the karp_pitch page stays up. The refusal is an actionbar title (overlay kind)."
+    },
+    {
+      "wait_chat": "does not leave the lot on credit",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "rcon": "execute unless entity @a[name={player},tag=bought_magikarp]",
+      "expect": "passed"
+    },
+    {
+      "rcon": "clear {player} cobblemon:oran_berry 0",
+      "expect": "No items"
+    },
+    {
+      "rcon": "cobbledollars query {player}",
+      "expect": "$ 0"
+    },
+    {
+      "comment": "party transcript evidence (no rcon party read exists): emptied in the preamble, must still be empty — the mon, tag, and berry all hang off the same #karp_ok gate in buy_karp.mcfunction"
+    },
+    {
+      "client": "party",
+      "save": "party_broke"
+    },
+    {
+      "comment": "-- beat 1 FUNDED: 700 CD in, same button — delivery (mon + berry + tag) and the exact 200 remainder --"
+    },
+    {
+      "rcon": "cobbledollars set {player} 700"
+    },
+    {
+      "client": "screen.close"
+    },
+    {
+      "find_npc": "Deka",
+      "save": "d2",
+      "radius": 8
+    },
+    {
+      "interact_npc": "{d2.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "Ask about the other fish"
+    },
+    {
+      "click": "Ask about the other fish"
+    },
+    {
+      "sleep": 0.7
+    },
+    {
+      "expect_screen_text": "Buy the growth vehicle"
+    },
+    {
+      "click": "Buy the growth vehicle"
+    },
+    {
+      "wait_chat": "Asset transferred",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "wait_chat": "Magikarp joined your team",
+      "timeout": 10
+    },
+    {
+      "comment": "the buy button's gated open_dialog (gate bought_magikarp, evaluated after the function ran) should now land on karp_handoff; if this expect flakes, the gate-eval-after-command race is the suspect — the purchase asserts above already passed"
+    },
+    {
+      "expect_screen_text": "Take the fish and go"
+    },
+    {
+      "screenshot": "karp_handoff_paid"
+    },
+    {
+      "click": "Take the fish and go"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=bought_magikarp]",
+      "expect": "passed"
+    },
+    {
+      "rcon": "clear {player} cobblemon:oran_berry 0",
+      "expect": "Found"
+    },
+    {
+      "rcon": "cobbledollars query {player}",
+      "expect": "$ 200"
+    },
+    {
+      "client": "party",
+      "save": "party_paid"
+    },
+    {
+      "comment": "-- beat 2 BROKE: Pondwarden Tayo's signup desk — 150 CD entry refused on an empty wallet --"
+    },
+    {
+      "rcon": "tp {player} 2542 108 2954"
+    },
+    {
+      "sleep": 1.5
+    },
+    {
+      "rcon": "cobbledollars set {player} 0"
+    },
+    {
+      "rcon": "cobbledollars query {player}",
+      "expect": "$ 0"
+    },
+    {
+      "find_npc": "Tayo",
+      "save": "t",
+      "radius": 8
+    },
+    {
+      "interact_npc": "{t.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "Pay the 150 CD entry"
+    },
+    {
+      "screenshot": "invitational_desk_broke"
+    },
+    {
+      "click": "Pay the 150 CD entry"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "cannot take an entry it cannot bank",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "rcon": "execute unless entity @a[name={player},tag=invit_entered]",
+      "expect": "passed"
+    },
+    {
+      "rcon": "cobbledollars query {player}",
+      "expect": "$ 0"
+    },
+    {
+      "comment": "-- beat 2 FUNDED: 700 CD in, entry lands (invit_entered), 550 remains, and the desk flips to the in_bracket standing entry --"
+    },
+    {
+      "rcon": "cobbledollars set {player} 700"
+    },
+    {
+      "interact_npc": "{t.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "Pay the 150 CD entry"
+    },
+    {
+      "click": "Pay the 150 CD entry"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "Entered the Waterside Invitational",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=invit_entered]",
+      "expect": "passed"
+    },
+    {
+      "rcon": "cobbledollars query {player}",
+      "expect": "$ 550"
+    },
+    {
+      "interact_npc": "{t.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "On my way"
+    },
+    {
+      "screenshot": "invitational_in_bracket"
+    },
+    {
+      "click": "On my way"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "comment": "-- beat 3 BROKE: Overseer Rong on the greenhouse catwalk — 150 CD escorted exit refused. GUARD first: with badges_gte_2 her post_badge_2 entry (priority 15) replaces catwalk_hail and the pay button is gone; fail here, diagnosably, not at the expect. --"
+    },
+    {
+      "rcon": "execute unless entity @a[name={player},tag=badges_gte_2]",
+      "expect": "passed"
+    },
+    {
+      "comment": "the tp crosses the catwalk reveal volume: on a player without wheat_named the one-time THE WORD IS WHEAT title + tellraw fire (harmless — no actionbar, no overlay-kind collision; tags wheat_named/heard_wheat_pitch/toured_greenhouse land and are NOT this scenario's to reset)"
+    },
+    {
+      "rcon": "tp {player} 1541.5 101 2108.5"
+    },
+    {
+      "sleep": 1.5
+    },
+    {
+      "client": "screen.close"
+    },
+    {
+      "rcon": "cobbledollars set {player} 0"
+    },
+    {
+      "rcon": "cobbledollars query {player}",
+      "expect": "$ 0"
+    },
+    {
+      "find_npc": "Rong",
+      "save": "o",
+      "radius": 8
+    },
+    {
+      "interact_npc": "{o.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "Pay the escorted-exit fee"
+    },
+    {
+      "screenshot": "overseer_shakedown_broke"
+    },
+    {
+      "click": "Pay the escorted-exit fee"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "The envelope is short",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "comment": "exit_fee has no item/tag payload — the sink's non-delivery IS the refusal line plus the untouched zero balance (remove never ran; pay-probe read 0)"
+    },
+    {
+      "rcon": "cobbledollars query {player}",
+      "expect": "$ 0"
+    },
+    {
+      "comment": "-- beat 3 FUNDED: 700 CD in, the fee clears — Escorted out + exactly 550 left --"
+    },
+    {
+      "rcon": "cobbledollars set {player} 700"
+    },
+    {
+      "interact_npc": "{o.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "Pay the escorted-exit fee"
+    },
+    {
+      "click": "Pay the escorted-exit fee"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "Escorted out",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "rcon": "cobbledollars query {player}",
+      "expect": "$ 550"
+    },
+    {
+      "screenshot": "pay_probes_done"
+    }
+  ]
+}

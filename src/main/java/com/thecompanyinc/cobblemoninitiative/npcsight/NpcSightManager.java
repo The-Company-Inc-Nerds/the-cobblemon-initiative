@@ -1,7 +1,11 @@
 package com.thecompanyinc.cobblemoninitiative.npcsight;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
@@ -12,6 +16,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -76,6 +82,10 @@ public class NpcSightManager {
   // ---------------------------------------------------------------------------
 
   public void tick(MinecraftServer server) {
+    // Camera tweens advance EVERY tick — the sight interval gate below would turn the
+    // smooth turn back into a slideshow.
+    tickFaceTweens(server);
+
     if (++tickCounter < config.getTickInterval()) return;
     tickCounter = 0;
 
@@ -437,9 +447,84 @@ public class NpcSightManager {
       "easy_npc dialog open %s %s %s", npc.getUUID(), playerName(player), dialogName));
   }
 
-  /** Snap the player's camera to the NPC's eyes (server-authoritative, client-applied). */
-  private static void facePlayerAt(Entity npc, ServerPlayer player) {
-    player.lookAt(EntityAnchorArgument.Anchor.EYES, npc, EntityAnchorArgument.Anchor.EYES);
+  /**
+   * Turn the player's camera to the NPC's eyes — SMOOTHLY (showrunner request
+   * 2026-07-17: the old one-shot lookAt snap on Mom's walk-up was jarring). Starts a
+   * per-tick eased tween; each step re-sends the same ClientboundPlayerLookAtPacket
+   * vanilla `/tp … facing entity` uses, aimed at a point that slides toward the NPC
+   * (ease-out: 35% of the remaining arc per tick ≈ settled in ~0.5s). The target is
+   * re-resolved every tick, so a run-down spotter stays centered while still moving.
+   * If the client-reported rotation strays from what we last commanded, the player is
+   * steering — the tween aborts instantly rather than fight the mouse.
+   */
+  private void facePlayerAt(Entity npc, ServerPlayer player) {
+    faceTweens.put(player.getUUID(), new FaceTween(npc.getUUID(), 30));
+  }
+
+  /** Active camera tweens by player uuid — see {@link #facePlayerAt}. */
+  private final Map<UUID, FaceTween> faceTweens = new HashMap<>();
+
+  private static final class FaceTween {
+    final UUID npcId;
+    int ticksLeft;
+    float lastYaw;
+    float lastPitch;
+    boolean primed;
+
+    FaceTween(UUID npcId, int ticks) {
+      this.npcId = npcId;
+      this.ticksLeft = ticks;
+    }
+  }
+
+  private void tickFaceTweens(MinecraftServer server) {
+    if (faceTweens.isEmpty()) return;
+    Iterator<Map.Entry<UUID, FaceTween>> it = faceTweens.entrySet().iterator();
+    while (it.hasNext()) {
+      Map.Entry<UUID, FaceTween> e = it.next();
+      ServerPlayer player = server.getPlayerList().getPlayer(e.getKey());
+      FaceTween tw = e.getValue();
+      if (player == null || --tw.ticksLeft < 0) {
+        it.remove();
+        continue;
+      }
+      Entity npc = null;
+      for (ServerLevel level : server.getAllLevels()) {
+        npc = level.getEntity(tw.npcId);
+        if (npc != null) break;
+      }
+      if (npc == null || !npc.isAlive()) {
+        it.remove();
+        continue;
+      }
+
+      // Never fight the mouse: the client echoes our commanded rotation back within a
+      // tick, so a big deviation from the last command means deliberate player input.
+      if (tw.primed) {
+        float dyaw = Math.abs(Mth.degreesDifference(player.getYRot(), tw.lastYaw));
+        float dpitch = Math.abs(player.getXRot() - tw.lastPitch);
+        if (dyaw > 25.0f || dpitch > 25.0f) {
+          it.remove();
+          continue;
+        }
+      }
+
+      Vec3 eye = player.getEyePosition();
+      Vec3 target = npc.getEyePosition().subtract(eye).normalize();
+      Vec3 current = player.getLookAngle().normalize();
+      double dot = Mth.clamp(current.dot(target), -1.0, 1.0);
+      double angle = Math.toDegrees(Math.acos(dot));
+      if (angle < 2.5) {
+        player.lookAt(EntityAnchorArgument.Anchor.EYES, npc, EntityAnchorArgument.Anchor.EYES);
+        it.remove();
+      } else {
+        Vec3 stepDir = current.add(target.subtract(current).scale(0.35)).normalize();
+        player.lookAt(EntityAnchorArgument.Anchor.EYES, eye.add(stepDir.scale(8.0)));
+        tw.lastYaw = player.getYRot();
+        tw.lastPitch = player.getXRot();
+        tw.primed = true;
+      }
+    }
   }
 
   // ---------------------------------------------------------------------------

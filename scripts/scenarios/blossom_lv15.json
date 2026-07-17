@@ -1,0 +1,81 @@
+{
+  "name": "blossom_lv15",
+  "description": "A/B leg B (control): the same Jabari battle with an AT-CAP party (Totodile lv15, base cap 15) — distinguishes cap-gating from a general dialog-battle failure. Party is reset to just the Totodile + a dex filler.",
+  "steps": [
+    {
+      "rcon": "tag {player} remove defeated_sq_regular_meadow"
+    },
+    {
+      "rcon": "tag {player} remove in_trainer_battle"
+    },
+    {
+      "rcon": "time set day"
+    },
+    {
+      "comment": "-- party reset to at-cap: drop every slot, then totodile 15 + magikarp 3 for dex_gte_2 --"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative takepokemon {player} 1"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative takepokemon {player} 1"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative takepokemon {player} 1"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative takepokemon {player} 1"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative takepokemon {player} 1"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative takepokemon {player} 1"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon totodile level=15"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon magikarp level=3"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative dev bot autobattle on"
+    },
+    {
+      "rcon": "tp {player} 2380.5 94 2906.5"
+    },
+    {
+      "sleep": 3.0
+    },
+    {
+      "find_npc": "Jabari",
+      "save": "t"
+    },
+    {
+      "interact_npc": "{t.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "Meet her partners"
+    },
+    {
+      "click": "Meet her partners"
+    },
+    {
+      "client": "screen.close"
+    },
+    {
+      "wait_chat": "The meadow looks after its own",
+      "timeout": 120
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=defeated_sq_regular_meadow]",
+      "expect": "passed"
+    },
+    {
+      "screenshot": "after_battle_lv15"
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "name": "ming_nokill",
+  "description": "Hang bisect leg C: the exact wheat_war Ming battle (clicked dialog button, onwin blob) but WITHOUT the preamble kill/latch-respawn — interact the already-standing persisted body. If this wins, the hang is the fresh-respawn race, not the battle command.",
+  "steps": [
+    {
+      "rcon": "tag {player} remove defeated_villain_yield_officer"
+    },
+    {
+      "rcon": "tag {player} remove in_trainer_battle"
+    },
+    {
+      "rcon": "tag {player} remove heard_wheat_pitch"
+    },
+    {
+      "rcon": "time set day"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative dev bot autobattle on"
+    },
+    {
+      "rcon": "tp {player} 1586 90 2487"
+    },
+    {
+      "sleep": 3.0
+    },
+    {
+      "find_npc": "Ming",
+      "save": "o"
+    },
+    {
+      "interact_npc": "{o.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "Clear the gate"
+    },
+    {
+      "screenshot": "ming_dialog_nokill"
+    },
+    {
+      "click": "Clear the gate"
+    },
+    {
+      "client": "screen.close"
+    },
+    {
+      "wait_chat": "Perimeter integrity report",
+      "timeout": 120
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=defeated_villain_yield_officer]",
+      "expect": "passed"
+    },
+    {
+      "screenshot": "after_ming_nokill"
+    }
+  ]
+}

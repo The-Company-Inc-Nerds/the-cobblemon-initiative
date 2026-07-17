@@ -1,0 +1,202 @@
+{
+  "name": "mystic_mirror",
+  "description": "Fairy gym Mirror Match dialog-routing regression (ROUTING ONLY - no battle click). Titania's declare entry (prio 15, gate defeated_mystic_apprentice + no_mm_declared) offers five lead buttons; each tags lead_<type> + mm_declared, so the matching mirror_<type> entry (prio 16) preempts on re-open. mm_declared permanently blocks re-declare BY DESIGN (declare needs no_mm_declared and nothing removes mm_declared), so the second type is reached by rcon tag surgery. The preamble force-opens the routing lane on Titania's ladder: adds defeated_mystic_apprentice (declare/mirror gate), adds mc_gym3_done (suppresses mc_locked prio 18, gated no_mc_gym3_done), removes defeated_mystic_leader (suppresses the 'after' entry prio 20), and resets the mystic_tower score (suppresses ready_weakened prio 17 via the mystic_tower_gte_4 band tag). DELIBERATELY ends at the routing asserts: clicking 'Challenge the Gym' starts a TBCS battle exposed to the KNOWN intermittent TBCS stall (~50% - send-outs complete then the battle waits forever); the button RENDERING under the right lead tag IS the regression surface, so we never click it.",
+  "steps": [
+    {
+      "comment": "-- reset (idempotent re-runs): every tag this scenario sets, plus the three higher-priority entries that would preempt the mirror lane --"
+    },
+    {
+      "rcon": "tag {player} remove mm_declared"
+    },
+    {
+      "rcon": "tag {player} remove lead_fire"
+    },
+    {
+      "rcon": "tag {player} remove lead_water"
+    },
+    {
+      "rcon": "tag {player} remove lead_grass"
+    },
+    {
+      "rcon": "tag {player} remove lead_electric"
+    },
+    {
+      "rcon": "tag {player} remove lead_shadow"
+    },
+    {
+      "rcon": "tag {player} remove defeated_mystic_leader",
+      "comment_": "the 'after' entry (prio 20) gates on this; test player has not beaten Titania, remove defensively"
+    },
+    {
+      "rcon": "scoreboard players reset {player} mystic_tower",
+      "comment_": "ready_weakened (prio 17) gates on the mystic_tower_gte_4 band tag; band_tags drops it next tick once the score is unset"
+    },
+    {
+      "rcon": "tag {player} remove mystic_tower_gte_4",
+      "comment_": "instant removal so we do not race the band tick"
+    },
+    {
+      "rcon": "tag {player} add defeated_mystic_apprentice",
+      "comment_": "shared gate of declare + every mirror_<type> entry"
+    },
+    {
+      "rcon": "tag {player} add mc_gym3_done",
+      "comment_": "mc_locked (prio 18) needs no_mc_gym3_done; owning the milestone tag makes band_tags drop that inverse next tick"
+    },
+    {
+      "comment": "-- tp to the gym, then a settle sleep so band_tags resyncs the derived no_* tags (no_mm_declared must come BACK after the removal above, no_mc_gym3_done must drop) --"
+    },
+    {
+      "rcon": "tp {player} 944 69 2444"
+    },
+    {
+      "sleep": 2.0
+    },
+    {
+      "comment": "-- lane sanity: exactly the declare gate should hold now --"
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=no_mm_declared]",
+      "expect": "passed"
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=!no_mc_gym3_done]",
+      "expect": "passed"
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=!mystic_tower_gte_4]",
+      "expect": "passed"
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=defeated_mystic_apprentice,tag=!defeated_mystic_leader]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 1: the declare entry (prio 15) - assert via BUTTON labels, the say pair rotates --"
+    },
+    {
+      "find_npc": "Leader Titania",
+      "save": "t"
+    },
+    {
+      "interact_npc": "{t.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "My fire leads"
+    },
+    {
+      "expect_screen_text": "None of those lead"
+    },
+    {
+      "screenshot": "mm_declare"
+    },
+    {
+      "click": "My fire leads"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "sleep": 1.5,
+      "comment_": "button commands land, then band_tags must drop no_mm_declared before the re-open"
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=lead_fire,tag=mm_declared]",
+      "expect": "passed"
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=!no_mm_declared]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 2: re-open - mirror_fire (prio 16) must preempt; prose any-of covers both rotating say lines --"
+    },
+    {
+      "interact_npc": "{t.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "You lead with fire, so the marsh went looking for fire in me. Look at what surfaced beside my familiars — still water always sends back something of whoever leans over it. Come and fight what it made of you.",
+        "A flame at your front. The mist has been drinking its light since you declared it, and now something at my side flickers the same way. The marsh shows every challenger a piece of themselves. This piece is yours."
+      ]
+    },
+    {
+      "expect_screen_text": "Challenge the Gym",
+      "comment_": "the battle button rendering IS the assert - do NOT click it; that path starts a TBCS battle with the known ~50% stall"
+    },
+    {
+      "screenshot": "mirror_fire"
+    },
+    {
+      "click": "I need to prepare"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "comment": "-- beat 3: second type via tag surgery. Re-declare is impossible by design (mm_declared blocks declare and never clears), so swap the lead tag directly and keep mm_declared --"
+    },
+    {
+      "rcon": "tag {player} remove lead_fire"
+    },
+    {
+      "rcon": "tag {player} add lead_water"
+    },
+    {
+      "sleep": 1.0
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=lead_water,tag=mm_declared,tag=!lead_fire]",
+      "expect": "passed"
+    },
+    {
+      "interact_npc": "{t.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "You lead with water. Bold, to bring a current into a marsh — it has already been folded into mine. When my team meets yours, you will be fighting a little of your own reflection.",
+        "Water answers water here. The marsh borrowed the shape of your lead and handed it back to me. Do not blink when you recognize it across the field."
+      ]
+    },
+    {
+      "expect_screen_text": "Challenge the Gym",
+      "comment_": "again: render-assert only, never clicked (TBCS stall exposure)"
+    },
+    {
+      "screenshot": "mirror_water"
+    },
+    {
+      "click": "I need to prepare"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "comment": "-- cleanup: strip every tag this scenario set so no other scenario inherits the lane --"
+    },
+    {
+      "rcon": "tag {player} remove lead_water"
+    },
+    {
+      "rcon": "tag {player} remove mm_declared"
+    },
+    {
+      "rcon": "tag {player} remove mc_gym3_done"
+    },
+    {
+      "rcon": "tag {player} remove defeated_mystic_apprentice"
+    },
+    {
+      "screenshot": "mystic_mirror_done"
+    }
+  ]
+}

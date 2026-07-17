@@ -1,5 +1,8 @@
 package com.thecompanyinc.cobblemoninitiative.devtools;
 
+import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
+import com.cobblemon.mod.common.battles.BattleRegistry;
+import com.cobblemon.mod.common.battles.runner.ShowdownService;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -54,6 +57,14 @@ public final class DevCommands {
               Commands.argument("count", IntegerArgumentType.integer(0, 10))
                 .executes(DevCommands::devBadges)
             )
+          )
+          // dev showdown status|revive — the TBCS-stall recovery pair: status probes the
+          // shared Graal JS context; revive closes stuck battles and rebuilds the context
+          // (closeConnection -> openConnection = unbundle + createContext + boot).
+          .then(
+            Commands.literal("showdown")
+              .then(Commands.literal("status").executes(DevCommands::showdownStatus))
+              .then(Commands.literal("revive").executes(DevCommands::showdownRevive))
           )
           .then(
             Commands.literal("grant").then(
@@ -303,5 +314,138 @@ public final class DevCommands {
       return 0;
     }
     return fn.applyAsInt(p);
+  }
+
+  // ---------------------------------------------------------------------------
+  // Showdown engine probes — the wedge signature (2026-07-17 bisect): a battle whose
+  // actors all read mustChoose=false with request=true, frozen forever, after a Java
+  // exception unwound through the Graal context mid-interpretMessage. The context stays
+  // poisoned for every later battle until rebuilt. Graal types are jar-in-jar (not on
+  // the compile classpath), so the eval probe goes through reflection.
+
+  /** Try a trivial JS eval on the live showdown context. Returns null if healthy, else the failure. */
+  private static String probeShowdownContext() {
+    try {
+      Object svc = ShowdownService.Companion.getService();
+      Object ctx = svc.getClass().getMethod("getContext").invoke(svc);
+      Object result = ctx.getClass().getMethod("eval", String.class, CharSequence.class)
+          .invoke(ctx, "js", "1+1");
+      return result == null ? "eval returned null" : null;
+    } catch (Exception e) {
+      Throwable root = e.getCause() != null ? e.getCause() : e;
+      return root.getClass().getSimpleName() + ": " + String.valueOf(root.getMessage());
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  private static java.util.Map<java.util.UUID, PokemonBattle> battleMap() throws Exception {
+    java.lang.reflect.Field f = BattleRegistry.class.getDeclaredField("battleMap");
+    f.setAccessible(true);
+    return (java.util.Map<java.util.UUID, PokemonBattle>) f.get(null);
+  }
+
+  private static int showdownStatus(CommandContext<CommandSourceStack> context) {
+    String probe = probeShowdownContext();
+    StringBuilder sb = new StringBuilder("[TEST] showdown status context=")
+        .append(probe == null ? "ALIVE" : "DEAD(" + probe + ")");
+    try {
+      java.util.Map<java.util.UUID, PokemonBattle> map = battleMap();
+      sb.append(" battles=").append(map.size());
+      for (PokemonBattle b : map.values()) {
+        sb.append(" | ").append(b.getBattleId().toString(), 0, 8)
+          .append(" ended=").append(b.getEnded());
+      }
+    } catch (Exception e) {
+      sb.append(" battles=? (").append(e.getClass().getSimpleName()).append(')');
+    }
+    sb.append(" rctapiTracked=").append(rctapiTrackedCount());
+    String line = sb.toString();
+    context.getSource().sendSuccess(() -> Component.literal(line), false);
+    return 1;
+  }
+
+  /**
+   * rctapi's static battleToManager map is the second battle registry in play: its
+   * static tick() force-ends battles it still tracks, and doing that against a REBUILT
+   * showdown context sends into a battle id the fresh JS side has never seen —
+   * "TypeError: Cannot read property 'write' of undefined" in sendBattleMessage,
+   * uncaught on the server thread = server crash (reproduced 2026-07-17). Revive must
+   * therefore blind rctapi BEFORE cycling the context. Reflection because rctapi's
+   * internals are not API.
+   */
+  private static int rctapiTrackedCount() {
+    try {
+      Class<?> bm = Class.forName("com.gitlab.srcmc.rctapi.api.battle.BattleManager");
+      java.lang.reflect.Field f = bm.getDeclaredField("battleToManager");
+      f.setAccessible(true);
+      return ((java.util.Map<?, ?>) f.get(null)).size();
+    } catch (Exception e) {
+      return -1;
+    }
+  }
+
+  private static void clearRctapiBattles(StringBuilder sb) {
+    try {
+      Class<?> bm = Class.forName("com.gitlab.srcmc.rctapi.api.battle.BattleManager");
+      java.lang.reflect.Field mapF = bm.getDeclaredField("battleToManager");
+      mapF.setAccessible(true);
+      java.util.Map<?, ?> battleToManager = (java.util.Map<?, ?>) mapF.get(null);
+      java.lang.reflect.Field statesF = bm.getDeclaredField("battleStates");
+      statesF.setAccessible(true);
+      int managers = 0;
+      for (Object mgr : new java.util.HashSet<>(battleToManager.values())) {
+        ((java.util.Map<?, ?>) statesF.get(mgr)).clear();
+        managers++;
+      }
+      int tracked = battleToManager.size();
+      battleToManager.clear();
+      java.lang.reflect.Field cancelF = bm.getDeclaredField("BATTLE_QUERY_TO_CANCEL");
+      cancelF.setAccessible(true);
+      ((java.util.Map<?, ?>) cancelF.get(null)).clear();
+      sb.append(" rctapiCleared=").append(tracked).append('/').append(managers).append("mgr");
+    } catch (Exception e) {
+      sb.append(" rctapiClear=FAIL(").append(e.getClass().getSimpleName()).append(')');
+    }
+  }
+
+  private static int showdownRevive(CommandContext<CommandSourceStack> context) {
+    StringBuilder sb = new StringBuilder("[TEST] showdown revive");
+    // Blind rctapi's static tick FIRST — its forceEnd on a stale battle id against the
+    // rebuilt context is a server-crash (see clearRctapiBattles javadoc).
+    clearRctapiBattles(sb);
+    int closed = 0;
+    try {
+      for (PokemonBattle b : new ArrayList<>(battleMap().values())) {
+        try {
+          BattleRegistry.closeBattle(b);
+          closed++;
+        } catch (Exception e) {
+          sb.append(" closeFail=").append(e.getClass().getSimpleName());
+        }
+      }
+    } catch (Exception e) {
+      sb.append(" mapFail=").append(e.getClass().getSimpleName());
+    }
+    sb.append(" battlesClosed=").append(closed);
+    // Cobblemon's own /reloadshowdown = closeConnection + openConnection +
+    // resetAllRegistries + re-send of every registry (abilities/bagItems/heldItems/
+    // moves/species). A bare context cycle leaves the fresh JS with NO registry data —
+    // battles then start Java-side but the sim never answers (verified live). NOTE:
+    // /reloadshowdown ALONE is crash-bait with live rctapi battles (its stale tick
+    // touches dead ids in the fresh context) — the cleanup above is the safety.
+    try {
+      var server = context.getSource().getServer();
+      server.getCommands().performPrefixedCommand(
+          server.createCommandSourceStack().withSuppressedOutput(), "reloadshowdown");
+      sb.append(" reloadshowdown=dispatched");
+    } catch (Exception e) {
+      sb.append(" reloadshowdown=FAIL(").append(e.getClass().getSimpleName()).append(')');
+    }
+    String probe = probeShowdownContext();
+    sb.append(" context=").append(probe == null ? "ALIVE" : "DEAD(" + probe + ")");
+    sb.append(" — note: datapack species_additions may need a restart for full fidelity");
+    String line = sb.toString();
+    context.getSource().sendSuccess(() -> Component.literal(line), false);
+    return 1;
   }
 }

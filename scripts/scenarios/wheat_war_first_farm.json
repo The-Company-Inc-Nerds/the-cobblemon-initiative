@@ -39,6 +39,15 @@
       "rcon": "clear {player} minecraft:written_book"
     },
     {
+      "comment": "-- tp BEFORE the kills: kill needs loaded chunks; running it from spawn no-ops silently, then the latch reset below spawns a DUPLICATE body (found 5 stacked Mings after a week of runs) --"
+    },
+    {
+      "rcon": "tp {player} 1586 90 2487"
+    },
+    {
+      "sleep": 2.0
+    },
+    {
       "rcon": "kill @e[type=!player,name=Ming]"
     },
     {

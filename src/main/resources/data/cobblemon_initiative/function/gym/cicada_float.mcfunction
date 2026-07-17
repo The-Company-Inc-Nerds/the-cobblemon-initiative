@@ -6,9 +6,9 @@
 #
 # The preset's NoGravity (character `float: true`) HOLDS whatever Y the tp leaves him
 # at — vertical motion is these 0.5-block tp steps (~10 blocks/s), state is just his Y:
-#   player within 14 of the floor point  -> glide DOWN toward y139
-#   nobody within 26                     -> drift back UP toward y173
-#   in between                           -> hold (hysteresis; battles keep him down)
+#   player ON the arena floor (y137-141 box)  -> glide DOWN toward y139
+#   nobody within 26                          -> drift back UP toward y173
+#   in between                                -> hold (hysteresis; battles keep him down)
 #
 # One-shot lift (import-then-tp) arms the whole behavior the first time his chunk loads.
 execute unless score #cicada_lift ci_gym matches 1 if entity c577141c-305f-4c20-a6bb-444d3b4d5ae0 run function cobblemon_initiative:gym/cicada_lift
@@ -16,8 +16,11 @@ execute unless score #cicada_lift ci_gym matches 1 if entity c577141c-305f-4c20-
 # His Y as x10 fixed-point (1390 = y139.0, 1730 = y173.0) — exact step comparisons.
 execute if entity c577141c-305f-4c20-a6bb-444d3b4d5ae0 store result score #cicada_y ci_gym run data get entity c577141c-305f-4c20-a6bb-444d3b4d5ae0 Pos[1] 10
 
-# Glide down to conversation height while a challenger stands in the arena.
-execute if score #cicada_y ci_gym matches 1391.. positioned 2055.5 138.0 2460.5 if entity @a[distance=..14] as c577141c-305f-4c20-a6bb-444d3b4d5ae0 at @s run tp @s 2055.5 ~-0.5 2460.5
+# Glide down to conversation height while a challenger stands ON the arena floor.
+# Flat box (y137-141, ±14 blocks around the floor point), NOT a sphere — the old
+# distance=..14 reached the y151 walkway above and the approach below the arena, so he
+# descended before the challenger ever entered it (showrunner report 2026-07-17).
+execute if score #cicada_y ci_gym matches 1391.. if entity @a[x=2041.5,y=137,z=2446.5,dx=28,dy=4,dz=28] as c577141c-305f-4c20-a6bb-444d3b4d5ae0 at @s run tp @s 2055.5 ~-0.5 2460.5
 
 # Drift back up to the perch once the arena has emptied.
 execute if score #cicada_y ci_gym matches ..1729 positioned 2055.5 138.0 2460.5 unless entity @a[distance=..26] as c577141c-305f-4c20-a6bb-444d3b4d5ae0 at @s run tp @s 2055.5 ~0.5 2460.5

@@ -1,0 +1,248 @@
+{
+  "name": "daycare_board",
+  "description": "Daycare regression (daycare/ subsystem) end-to-end at Deka's pier, Sango Town (2570 111 2856 — safe zone, live-verified in sango_classic; the Gaviota keeper NPC is still UNPLACED in dialog-src, so the deposit command is driven by rcon exactly as the keeper's deposit_button would). Covers: the never-board-your-last-mon refusal, the deposit picker via the NEW screen.click_at op (slot-0 rectangle, custom mouseClicked hit-test — screen.click can never reach it), confirm via the real 'Board Selected' Button, custody asserts (boarding chat + daycare status + ci_daycare_standin stand-in poll at the player, pen unset in config so stand-ins spawn ON the depositor), then the funded withdraw (fee rail: 100 CD base, 0 levels gained at this pace) and the party-restored check via the client party op. Species asserts are DYNAMIC ({p0.party.0.species}) so the run survives either takepokemon semantics (full empty vs a kept last mon — wheat_war's 'empty to one slot' suggests the last mon may survive; slot 0 may then be a leftover starter, and it is that mon that boards). KNOWN RISK (architectural, not a scenario bug): the picker opens via DaycareManager.triggerPicker(), a same-JVM static polled by NuzlockeClientInit, and the screen's confirm deposits over minecraft.getSingleplayerServer() — BOTH are singleplayer bridges. On the two-process e2e harness (dedicated runServer + quickPlayMultiplayer client) the rcon deposit sets the flag in the SERVER JVM only, so wait_screen at the picker beat is expected to FAIL there until a server->client bridge (S2C payload or client-executed trigger) exists; everything before that beat is harness-proof and still regression-covers the guard rails. Cross-scenario leftovers (accepted, same caveat family as first_steps' starter): party keeps eevee+magikarp (+any leftover), wallet keeps ~800-900 CD.",
+  "steps": [
+    {
+      "comment": "-- preamble: tp FIRST (kill + stray-sweep need loaded chunks; stale stand-ins from prior runs sit at this same site), then fund the fee rail BEFORE the custody-clearing withdrawals (an unfunded withdraw is DECLINED and the mon stays boarded, wedging the deposit beat at 'pens are already full') --"
+    },
+    {
+      "rcon": "tp {player} 2570 111 2856"
+    },
+    {
+      "sleep": 2.0
+    },
+    {
+      "rcon": "cobbledollars set {player} 1000"
+    },
+    {
+      "comment": "-- custody clear: withdraw slot 1 twice (list shrinks, so 1-then-1 empties both pens). SEQUENTIAL with sleeps: the fee is a deferred pay-probe (resolved next tick via pendingWithdrawals, keyed per player) — a second withdraw before the first resolves OVERWRITES the pending entry and eats the fee. No expect: output is 'returned to you' or 'Nothing is boarding in that pen' depending on prior-run state. Edge not handled: a crashed-run custody mon whose deserialize failed ('paperwork' branch) cannot be withdrawn and keeps a pen --"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative daycare withdraw 1"
+    },
+    {
+      "sleep": 1.5
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative daycare withdraw 1"
+    },
+    {
+      "sleep": 1.5
+    },
+    {
+      "comment": "-- stray stand-in sweep: DaycareManager.tick() early-returns when custody is EMPTY, so reconcile never sweeps orphans from an aborted run — they would false-pass the stand-in poll below. /kill works on invulnerable entities; chunks are loaded because we tp'd here first --"
+    },
+    {
+      "rcon": "kill @e[type=!player,tag=ci_daycare_standin]"
+    },
+    {
+      "comment": "-- tag reset (idempotent re-runs + dead-letter defense for the click-handled echo) --"
+    },
+    {
+      "rcon": "tag {player} remove e2e_dc_click_True"
+    },
+    {
+      "rcon": "tag {player} remove e2e_dc_click_False"
+    },
+    {
+      "comment": "-- party reset: 6 takes leaves 0 mons — or 1 leftover if takepokemon guards the last mon (unconfirmed; wheat_war's preamble implies it). Both are fine: the guard beat below needs partySize <= 1, and every species assert later is dynamic --"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "time set day"
+    },
+    {
+      "comment": "-- beat 1: the last-mon guard (server-side, harness-proof). With 0-or-1 party mons the deposit command refuses BEFORE raising the picker flag — daycareDeposit's partySize<=1 branch covers both counts --"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative daycare deposit"
+    },
+    {
+      "wait_chat": "cannot board your last",
+      "timeout": 10
+    },
+    {
+      "comment": "-- beat 2: arm a legal party (eevee first — it lands in slot 0 unless a leftover survived the reset, in which case the leftover leads and is the one that boards). Snapshot the party (client op) so every later assert follows whatever ACTUALLY sits in slot 0/1; the say echo both logs the species into the transcript detail and hard-fails (KeyError) if fewer than 2 mons synced --"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon eevee level=5"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon magikarp level=3"
+    },
+    {
+      "sleep": 1.5
+    },
+    {
+      "client": "party",
+      "save": "p0"
+    },
+    {
+      "rcon": "say [e2e daycare_board] pre-deposit party: slot0={p0.party.0.species} slot1={p0.party.1.species}"
+    },
+    {
+      "comment": "-- beat 3: the deposit picker. BRIDGE WARNING: triggerPicker() is a same-JVM static (NuzlockeClientInit END_CLIENT_TICK polls consumePendingPicker); on the two-process harness the rcon deposit raises it in the SERVER JVM and this wait_screen TIMES OUT. That timeout diagnoses the missing server->client bridge, not this scenario. In singleplayer (the shipped experience) the picker opens the tick after the flag --"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative daycare deposit"
+    },
+    {
+      "wait_screen": "DaycareSelectionScreen",
+      "timeout": 20
+    },
+    {
+      "expect_screen_text": "Sango Daycare"
+    },
+    {
+      "expect_screen_text": "Board Selected"
+    },
+    {
+      "client": "screen.dump",
+      "save": "picker",
+      "comment_": "post-mortem anchor: the Board Selected Button bounds are (W/2-155, H-50, 150, 20) in GUI coords, so a dumped widget x recomputes W=2*(x+155), H=y+50 if the click_at below ever misses"
+    },
+    {
+      "screenshot": "daycare_picker_open"
+    },
+    {
+      "comment": "-- beat 4: screen.click_at slot 0. DERIVATION (DaycareSelectionScreen.init + PokemonSlot.isMouseOver): slotSize=80, spacing=10, totalWidth=3*80+2*10=260; startX=(W-260)/2, startY=H/2-80-5; slot i at col=i%3,row=i/3 -> rect [startX+col*90, +80) x [startY+row*90, +80). Slot-0 CENTER = ((W-260)/2+40, H/2-45) = (W/2-90, H/2-45). Harness geometry: client window 1266x1540 physical (161/172 evidence PNGs; one early run 1264) at options.txt guiScale:2 -> GUI 633x770 (632 gives the SAME center by int division). => slot-0 center (226, 340); rect x[186,266) y[300,380) leaves +-40px slack for tiling wobble. Coords are GUI-SCALED (screen.dump's space), never raw pixels --"
+    },
+    {
+      "client": "screen.click_at",
+      "args": {
+        "x": 226,
+        "y": 340
+      },
+      "save": "clk"
+    },
+    {
+      "comment": "-- handled-echo assert: mouseClicked returns true ONLY when the click landed inside a slot rectangle (the custom hit-test loop); a miss falls through to super and reads false. Python bool str()s as 'True' — the tag casing is deliberate --"
+    },
+    {
+      "rcon": "tag {player} add e2e_dc_click_{clk.handled}"
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=e2e_dc_click_True]",
+      "expect": "passed"
+    },
+    {
+      "screenshot": "daycare_slot0_selected"
+    },
+    {
+      "comment": "-- beat 5: confirm via the REAL Button (DaycareSelectionScreen.java:114-122; screen.click resolves AbstractButton -> onPress -> confirmDeposit). SECOND BRIDGE: confirmDeposit deposits over getSingleplayerServer().execute — on a dedicated connection it closes the screen WITHOUT boarding, so the boarding wait below is the harness failure point if beat 3 somehow passed. FALLBACK NOTE: every assert from here depends on custody existing; there is NO server-side command that seeds custody without this screen (deposit(uuid, mons) is only reachable from confirm), so the withdraw leg cannot be decoupled further than beats 1-4 already are --"
+    },
+    {
+      "click": "Board Selected"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "{p0.party.0.species}.*is now boarding",
+      "timeout": 15
+    },
+    {
+      "wait_chat": "Pickup rate",
+      "timeout": 10
+    },
+    {
+      "comment": "-- beat 6: custody asserts. Stand-in: pen is UNSET in config (penX/Y/Z 0,0,0) so the clone spawns AT the depositing player (slot 0 offset = +0x) — if the showrunner ever sets real pen coords, retarget this poll at the pen. Then the mid-boarding party head (client view lost the boarded mon) and the status ledger line --"
+    },
+    {
+      "rcon": "execute as {player} at @s if entity @e[tag=ci_daycare_standin,distance=..16]",
+      "expect": "passed"
+    },
+    {
+      "sleep": 1.0
+    },
+    {
+      "client": "party",
+      "save": "pmid"
+    },
+    {
+      "rcon": "say [e2e daycare_board] mid-boarding party head: {pmid.party.0.species}"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative daycare status"
+    },
+    {
+      "wait_chat": "1\\..*{p0.party.0.species}",
+      "timeout": 10,
+      "comment_": "the .* is load-bearing: the Java line is '§e1. §f' + name — HUD text keeps § codes, so a needle must never span a color-code boundary literally"
+    },
+    {
+      "wait_chat": "Pens free",
+      "timeout": 10
+    },
+    {
+      "screenshot": "daycare_standin_pen"
+    },
+    {
+      "comment": "-- beat 7: funded withdraw. Re-set the wallet (preamble withdrawals may have spent from the first 1000); fee = 100 base + 100/level gained (0 levels at this pace: drip is 40xp per 1200t). The fee is dispatched then resolved NEXT tick (pay-probe rail) — the 15s wait covers it --"
+    },
+    {
+      "rcon": "cobbledollars set {player} 1000"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative daycare withdraw 1"
+    },
+    {
+      "wait_chat": "{p0.party.0.species}.*returned to you",
+      "timeout": 15
+    },
+    {
+      "wait_chat": "Boarding invoice settled.*CD",
+      "timeout": 10
+    },
+    {
+      "comment": "-- beat 8: post-state. Stand-in discarded (positive unless-form: 'Test passed' when none remain), custody ledger empty, and the party op sees BOTH mons again (the say echo KeyErrors the step if party.1 is missing; the boarded mon returns to its old gap — PartyStore.add fills the first empty slot, so slot order is restored, but the assert deliberately only requires size>=2 + logs the species) --"
+    },
+    {
+      "rcon": "execute as {player} at @s unless entity @e[tag=ci_daycare_standin,distance=..16]",
+      "expect": "passed"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative daycare status"
+    },
+    {
+      "wait_chat": "No Pok.mon boarding",
+      "timeout": 10
+    },
+    {
+      "sleep": 1.0
+    },
+    {
+      "client": "party",
+      "save": "pend"
+    },
+    {
+      "rcon": "say [e2e daycare_board] post-withdraw party: slot0={pend.party.0.species} slot1={pend.party.1.species}"
+    },
+    {
+      "comment": "-- cleanup: drop the click echo (the False variant can only exist if the run already failed; preamble sweeps both anyway) --"
+    },
+    {
+      "rcon": "tag {player} remove e2e_dc_click_True"
+    },
+    {
+      "screenshot": "daycare_board_done"
+    }
+  ]
+}

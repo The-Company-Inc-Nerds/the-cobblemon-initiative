@@ -52,6 +52,20 @@ Walker gained a door reflex + persistent-collision fallback hop.
 - 🧱 **q.side_posters waypoint at y=64** (1915/64/2467) — placeholder-style coord ~100b from
   the poster row; the known "buried at y=64" authoring smell (waypoint only; quest passes).
 
+**Landed 2026-07-17 (showrunner field-report wave):** Takehara gym trainers relocated to
+the four greenhouses (Koji 2055.5/138/2502.6, Yuki 2055.5/151/2502.6, Shin 2055.3/151/
+2428.6, Taro 2055.3/138/2428.6 — latch-placed, all four live-verified at coords); Cicada
+premature descent fixed (descend trigger is now a y137-141 arena-floor box, not a 14b
+sphere that reached the y151 walkway above — descend/rise/hover-dialog live-verified);
+Fight or Flight move-indicator HUD hidden (`enable_move_indicator:false` in
+fightorflight_visual_effect.json5) and cobblemon-battle-extras gimmick panel disabled
+(`enableGimmickUsageDisplay:false` — its Gmax slot hard-references the absent Mega
+Showdown mod's texture = the checkerboard) — both flipped in run/config AND shipped as
+full files in mrpack/overrides/config/. Scenario rule from the 5-stacked-Mings
+postmortem: tp BEFORE kill/latch-reset in preambles (kill silently no-ops in unloaded
+chunks, then the latch respawns a duplicate; wheat_war preamble reordered). Existing
+worlds: kill + re-latch the 4 Takehara trainers + the 2 Sango auditors.
+
 **Open findings:**
 - [ ] 🔍 **FancyMenu × Cobblemon battle crash (POTENTIAL STREAM-BREAKER)** — FancyMenu's
   entity-spawn broadcast mixin Gson-serializes a NaN double when Cobblemon sends out a
@@ -61,25 +75,60 @@ Walker gained a door reflex + persistent-collision fallback hop.
   server (removed from run/mods_disabled/; it's in dev_sync's --lean skip list anyway).
   VERIFY on the real single-player pack: if it reproduces, mid-battle trainer switches can
   freeze the stream — consider dropping/updating FancyMenu in the .mrpack.
-- [ ] 💻 **Bomani (auditor_a) drifts off his post** — `ambient_guard_patrol` with no Home
-  leash; found >48b from the Off-the-Record sight cone live (the scenario now recalls him
-  by tp). Quest-critical sight NPCs must not roam: give the recipe/preset a Navigation.Home
-  + bounded patrol, or pin him. Audit other sight-gated NPCs for the same pattern.
+- [x] 💻 **Bomani (auditor_a) drifts off his post** — FIXED 2026-07-17: `movement.home`
+  authored for auditor_a AND auditor_b (compiles to Navigation.Home, giving the patrol
+  snippet's MOVE_BACK_TO_HOME prio-3 goal a real anchor). Audit: exactly 4 of 47
+  sight-gated characters combined sight + `ambient_guard_patrol` with no home — the two
+  auditors (fixed), company_surveyor (unplaced; add home when placed), company_canvasser
+  (uuid world body — check its builder Navigation live before overriding). Existing
+  worlds: kill + re-latch the two auditors to pick up the leash.
 - [ ] 🧱 **Walker-hostile pinches** (scenarios tp-hop past them, commented in-file):
   Hua Zhan market-lane entrance x≈1529–31/z2060 (stall counter blocks the lane mouth — check
   a real player can actually enter the market row); glass-tower mezzanine stair at
   (1541,94,2106). Both are also spots real players may fumble.
-- [ ] 💻 **wheat_war_first_farm battle beat** — everything green up to the fight; the TBCS
-  battle launched from Ming's dialog button starts (`tbcs` executes, player enters battle
-  state) but never progresses to a visible send-out/victory even with autobattle enrolled
-  and a clean lv-50 party (party reset via `takepokemon` is in the preamble now). Needs a
-  focused session on the TBCS-from-dialog × AutoBattler interplay (stadium-era notes:
-  "player participant = @s; attach→anchor first"). All non-battle beats of the scenario
-  pass (~46 steps).
-- [ ] 💻 **Quest scenarios, next waves** — shrines/nobles cluster, Battle Frontier halls,
-  daycare/stadium/safari facility regressions, and per town pack as gyms 3–7 land. Pattern
-  of record: scripts/scenarios/*.json + scenario_lint + the batch runner
-  (`for s in …; do scripts/e2e_run scripts/scenarios/$s.json; done`).
+- [ ] 💻 **Showdown-engine wedge (was: TBCS battle stall / wheat_war battle beat)** —
+  ROOT-CAUSED + RECOVERY SHIPPED 2026-07-17. The stall is an ENGINE-STATE wedge, not
+  content and not per-battle RNG alone: ~1 wedge event per ~10 battles (bred on demand
+  three sessions running: rounds 10/11/13/10), after which EVERY subsequent battle
+  freezes — send-outs complete, then all actors sit mustChoose=false/request=true
+  forever (`dev bot battlestate` reads it in one shot). The Graal CONTEXT still evals
+  (`dev showdown status` → context=ALIVE) — the poison is JS-side battle state.
+  Exceptions unwinding through the JS bridge are the crash-class culprit (zero
+  try/catch in sendToShowdown/sendFromShowdown; the FancyMenu NaN kill is the same
+  family). **RECOVERY VERIFIED LIVE:** `/cobblemon-initiative dev showdown revive` —
+  (1) blinds rctapi's static battleToManager + battleStates + BATTLE_QUERY_TO_CANCEL
+  by reflection (MANDATORY FIRST: rctapi's tick forceEnd on a stale id against a fresh
+  context = "TypeError: Cannot read property 'write' of undefined" = SERVER CRASH,
+  reproduced), (2) closes registered Cobblemon battles, (3) dispatches Cobblemon's own
+  `/reloadshowdown` (context rebuild + full registry re-push — a bare close/open leaves
+  the fresh JS with no species data and battles still stall, verified). Post-revive:
+  two consecutive battles WON, server stable. REMAINING 💻: (a) find the organic wedge
+  TRIGGER (catch one with battlestate + a JS-side error tap; suspect: a Java exception
+  mid-interpretMessage silently unwinding); (b) SHOWRUNNER DECISION for 1.0.0 — revive
+  lives in devtools (strips at 1.0.0) but the wedge presumably can hit the real
+  single-player stream: promote an auto-watchdog (detect frozen battle → auto-revive +
+  player toast) into shipped code, or accept relog-as-recovery; (c) `stopbattle` on a
+  hung battle pays the TRAINER'S win branch — decide if that stands for real players.
+- [ ] 💻 **Quest scenarios, next waves** — FIRST WAVE LANDED 2026-07-17 (workflow-authored,
+  live-verified): `mystic_mirror` 51/51 (Fairy Mirror-Match dialog routing — declare →
+  variant entry, two types; closes that gimmick's runtime-verify), `pay_probes` 107/107
+  (all 3 purchase probes broke+funded — closes the §1.B 🔍), `safari_yards` 47/47 (full
+  permit loop: gate/fee/balls/lure/clawback; cost THREE hardcore driver deaths to a
+  buried-at-y64 site — fixed, see below), `stadium_wave` 33/33 (bracket 25 register →
+  autobattle wins wave 1 → purse line → abort/second-run hygiene; NOTE a lone lv-25
+  lucario LOSES wave 1 under first-legal-move autobattle — scenarios need attrition
+  headroom, 2× garchomp works). `daycare_board` authored but PARKED: its picker beat is
+  architecturally single-player-only (DaycareManager.triggerPicker + the screen's
+  confirm both ride same-JVM singleplayer bridges — a dedicated-server client can never
+  see the picker; needs an S2C payload to be e2e-able), and the last-mon refusal line
+  didn't surface in chat on the harness (unresolved, low stakes). NEW DRIVER OP:
+  `screen.click_at {x,y}` (coordinate click for slot-based GUIs). Still to author:
+  shrines/nobles cluster, Battle Frontier halls, per-town packs gyms 3–7.
+  **Field find:** the Safari Zone clearing's real surface is y≈89 — the y64 latch
+  placement (noble_giver_mew_wisp) and noble mew.json center were BURIED (both fixed
+  → y89; the giver needs a kill+re-latch on existing worlds). Two of the three driver
+  deaths were suffocation INSIDE the terrain at y64; scenario rule: probe ground
+  (feet-air + head-air + solid-below) before any tp coordinate enters a scenario.
 
 ---
 
@@ -118,10 +167,13 @@ build` for the Java/rctmod half):**
   board team data destaled; Home version unstamped; CLAUDE quest count 26/57 → 28/69.
 
 **Still open from the review (💻, deliberately deferred — not started):**
-- **Purchase pay-probes** — 3 buttons (`sq_deka` 500 CD Magikarp, `sq_invitational_tayo` 150 CD entry,
-  `hz_greenhouse_overseer` 150 CD) still use bare `cobbledollars remove` (broke → free goods). Fix:
-  a per-button probe fn mirroring `route/decline_*` (`store result … cobbledollars pay @s N`).
-- **Remaining monologue chains** — Cynthia (recognise/default) + the wheat-trader ambush still rotate.
+- [x] **Purchase pay-probes** — DONE (commit b04981f; re-verified in-repo 2026-07-17): all 3
+  buttons ride balance-gated probe fns (`sidequest/deka/buy_karp`, `invitational/pay_entry`,
+  `greenhouse/exit_fee`) mirroring `route/decline_*`. Remaining 🔍: one broke-player E2E each.
+- [x] **Remaining monologue chains** — DONE (re-verified in-repo 2026-07-17): Cynthia
+  recognise/default/after and the wheat-trader hostile/ambush band are page-chained. Only the
+  wheat-trader ambient suspicious/default bands still rotate — plausibly intentional flavor
+  (showrunner call whether to chain those too).
 - [x] **Frontier "exhibition" no-death guard** — DONE (alpha.15). Datapack-maintained `frontier_active`
   tag (`frontier/region_tick` AABB over the plateau, self-cleaning) read by NuzlockeInit's three
   faint/flee/forfeit guards → suspends damage/removal/whiteout on the Frontier floor. Region box uses
@@ -270,8 +322,10 @@ wear-down) and **`chase`** (friendly flee-and-tag, e.g. Mew). Shipped: 6 combat 
 - [x] 💻 Engine: attack primitives, element themes, ambient themes, flyer mechanic, arena
       ring, stagger boss bar, phase-2 `BattleBuilder.pve` swap + capture/victory matching.
 - [x] 💻 Content: 6 encounter JSONs + `cobblemon_npc` presets + advancements; `/noble` + `/noble-abort`.
-- [ ] 🧱 Set each noble's arena `center`/`dimension` on the UPM map (currently `[0,0,0]` →
-      falls back to the player's position at `/noble start`). Themed sites.
+- [ ] 🧱 Noble arena THEMED SITES (set dressing only) — the centers are AUTHORED since
+      alpha.20 (all 7 encounter JSONs carry real coords; the [0,0,0]→player-position
+      fallback never triggers on shipped data). Remaining is dressing the sites if the
+      raw terrain disappoints — a screenshot survey of all 7 can pre-grade them.
 - [ ] 🧱 Per-noble balance pass: Phase-1 `max_health` + `staggerAtHealthFraction`, body
       `Root.Scale`, attack damage/cooldowns, Phase-2 `battleSpecies` level (catchable under the cap ladder).
 - [ ] 🧱 Decide the unlock gate/trigger per noble (story-flag-gated `/noble start`, an Easy NPC
@@ -515,7 +569,7 @@ Author in batches; each batch unblocks Claude wiring the same day:
   - [ ] 3 management (Regional Manager Shade, Senior Director Vex, COO Noir)
   - [ ] Acting CEO DJ at HQ `[1590 51 1028]`
   - [ ] 4 Board members + The Founder (post-Royal-League, The Boardroom)
-- [ ] **Wheat fields** — zones are DONE (10 farms in install.json, gated on `field_freed`/`farm_1`..`farm_10` — those ids are now canonical). **As shipped (2026-07-04) only `farm_1` is wired to `liberation/free_field` — `fields_liberated` maxes at 1**, so the HQ-raid gate (4), the wheat-trader escalation (2/4), the relief shop tiers (2/4), and the granary ambush (4) are all unreachable. **This is the single biggest Act-1→Act-2 blocker.** **PLACED (0.5.0-alpha.14):** the field-guard cast is the 23 `villain_{site_manager,yield_officer}_N` (farm staff, one pair per farm at its zone center) + `villain_route_agent_N` (route patrols) — authored alpha.13 with dialog+battles but at placeholder Y=64 (buried in stone); repositioned to real surface Y per-farm/route, Highfield pair de-stacked, in-world verified grounded+separated. *Remaining 💻:* wire each guard's battle onwin to `execute as {player} run function cobblemon_initiative:liberation/free_field {field:"farm_N"}` (maps site_manager/yield_officer N → farm N: 9=Highfield 10=Ashloam 2=Mirebloom 6=Fenceline 5=Crossroads 4=Dryrow; 3/7/8 = the western/northern/Frostveil farms — confirm N→farm_id).
+- [ ] **Wheat fields** — zones are DONE (10 farms in install.json, gated on `field_freed`/`farm_1`..`farm_10` — those ids are now canonical). **As shipped (2026-07-04) only `farm_1` is wired to `liberation/free_field` — `fields_liberated` maxes at 1**, so the HQ-raid gate (4), the wheat-trader escalation (2/4), the relief shop tiers (2/4), and the granary ambush (4) are all unreachable. **This is the single biggest Act-1→Act-2 blocker.** **PLACED (0.5.0-alpha.14):** the field-guard cast is the 23 `villain_{site_manager,yield_officer}_N` (farm staff, one pair per farm at its zone center) + `villain_route_agent_N` (route patrols) — authored alpha.13 with dialog+battles but at placeholder Y=64 (buried in stone); repositioned to real surface Y per-farm/route, Highfield pair de-stacked, in-world verified grounded+separated. *DONE (re-verified in-repo 2026-07-17):* every guard's battle onwin already fires `liberation/free_field {field:"farm_N"}` in the compiled presets; derived mapping 1=Firstfurrow 2=Mirebloom 3=Westwind 4=Dryrow 5=Crossroads 6=Fenceline 7=Coldfurrow 8=Frostfallow 9=Highfield 10=Ashloam. Remaining 🔍: clone the wheat_war scenario per farm (fight beats blocked on the TBCS battle-stall item above).
 - [ ] 🧱 **Place the compiled-but-unplaced NPCs** — the dead-letter checkpoint agent (`checkpoint_agent` tag), the Per My Last Memo courier, and the Head Count census wagon: compiled presets exist for all three, but there is no UUID mapping / import line yet.
 - [ ] **Wheat-trader NPCs** — place (trade→recognize→ambush) from `wheat_trader_gate` + `trade_wheat_trader` + `dialog_wheat_pitch`
 - [ ] **Granary trader NPC** — Company Inc. member selling items **for wheat**. **Infrastructure landed:**
@@ -555,7 +609,12 @@ Author in batches; each batch unblocks Claude wiring the same day:
   the Phase 0.4 entry; content_compile team warnings 28 → 0. Remaining casting debt:
   shrine cultist_3/4 (10), dragon_hydra_1..3, battle_frontier (24).
 - [ ] **villain_grunt_2 checkpoint dialog ladder** 💻 (minor polish): the `default` entry is dead code, and `contraband` is overshadowed at 3+ badges.
-- [ ] **RCT trainer data cleanup** 💻 (from the log-0.4.1-alpha.2 review): 86 trainers log "Model validation failure" — invalid gender/ability/move entries throughout; 3 Royal League trainers hold **mega_showdown items that are not in the pack** (elite_four_lorelei `blue_orb`, champion_terry `red_orb`, title_defense_zeph `steel_memory` — those items will simply be missing in the fights); gym-9 leader `skadi_gymleader1` references invalid species `cobblemon:ninetales_alola` (regional forms are species aspects in Cobblemon) — **she may silently drop that team member on stream**.
+- [x] **RCT trainer data cleanup** 💻 — RESOLVED (2026-07-17): `validate_trainers.py` runs
+  clean over all 255 shipped team files (0 errors; the named bad entries — lorelei/terry/zeph
+  mega_showdown items, skadi ninetales_alola — are gone since the alpha.10/0.6.0 retunes).
+  The remaining boot-log "Model validation failure" lines (e.g. `elite_four_bruno_0051`
+  `mega_showdown:rusted_sword`) come from rctmod's ~1500 BUILT-IN trainers, which never
+  spawn in this pack (globalSpawnChance=0) — log noise; allowlist in the log baseline.
 - [x] **Founder reveal (redesigned per decision)** — the Founder's nameplate stays fully `§k`-obfuscated all run (`§kfounder`); each Board defeat fires `reveal/board_fell` (4 oblique beats that circle the name); the name is only spoken at the mirror's defeat — `reveal/founder_defeated` renders **the defeating player's own name** live via selector ("The name on the chair was always ⟨you⟩"). No name baked anywhere. *(Propaganda-decay register: done — `dialog-src/registers/scrubbing.json`.)*
 
 ### C. Verify in-game 🔍 (can't be tested without the mod loader)

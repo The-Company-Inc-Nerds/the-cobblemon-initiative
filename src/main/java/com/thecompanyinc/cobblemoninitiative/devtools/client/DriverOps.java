@@ -62,6 +62,7 @@ final class DriverOps {
       case "state" -> onGameThread(DriverOps::state);
       case "screen.dump" -> onGameThread(DriverOps::screenDump);
       case "screen.click" -> onGameThread(() -> screenClick(args));
+      case "screen.click_at" -> onGameThread(() -> screenClickAt(args));
       case "screen.close" -> onGameThread(DriverOps::screenClose);
       case "screen.key" -> onGameThread(() -> screenKey(args));
       case "entity.list" -> onGameThread(() -> entityList(args));
@@ -263,6 +264,30 @@ final class DriverOps {
     JsonObject out = new JsonObject();
     out.addProperty("clicked", label);
     out.addProperty("type", target.getClass().getSimpleName());
+    return out;
+  }
+
+  /**
+   * Coordinate click for slot-based GUIs (party pickers, container slots, CobbleDollars
+   * shop rows) whose hit-tests are custom mouseClicked rectangles, not AbstractWidgets —
+   * screen.click can never reach those. Coords are GUI-SCALED (same space screen.dump
+   * reports widget bounds in), not raw pixels.
+   */
+  private static JsonObject screenClickAt(JsonObject args) {
+    Minecraft mc = Minecraft.getInstance();
+    Screen screen = mc.screen;
+    if (screen == null) throw new IllegalStateException("no screen open");
+    if (!args.has("x") || !args.has("y")) throw new IllegalArgumentException("screen.click_at needs x and y");
+    double x = args.get("x").getAsDouble();
+    double y = args.get("y").getAsDouble();
+    int button = args.has("button") ? args.get("button").getAsInt() : 0;
+    boolean handled = screen.mouseClicked(x, y, button);
+    screen.mouseReleased(x, y, button);
+    JsonObject out = new JsonObject();
+    out.addProperty("x", x);
+    out.addProperty("y", y);
+    out.addProperty("handled", handled);
+    out.addProperty("screen", screen.getClass().getSimpleName());
     return out;
   }
 

@@ -1,0 +1,70 @@
+{
+  "name": "blossom_lv100",
+  "description": "A/B leg A for the TBCS-from-dialog hang: battle the first Blossom Path trainer (Jabari, sq_regular_meadow, Hoppip/Sentret lv11-12) with a LEVEL 100 Garchomp leading. If rct/tbcs cap-gates dialog battles, this hangs or refuses; if not, autobattle wins and defeated_sq_regular_meadow lands. Second party slot (magikarp lv3) only exists to satisfy the dex_gte_2 dialog band via real dex registration.",
+  "steps": [
+    {
+      "comment": "-- reset + setup: fresh or reused player both fine; clear the defeat tag so the picnic-day battle entry shows --"
+    },
+    {
+      "rcon": "tag {player} remove defeated_sq_regular_meadow"
+    },
+    {
+      "rcon": "tag {player} remove in_trainer_battle"
+    },
+    {
+      "rcon": "time set day"
+    },
+    {
+      "rcon": "weather clear"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon garchomp level=100"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon magikarp level=3"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative dev bot autobattle on"
+    },
+    {
+      "rcon": "tp {player} 2380.5 94 2906.5"
+    },
+    {
+      "sleep": 3.0
+    },
+    {
+      "find_npc": "Jabari",
+      "save": "t"
+    },
+    {
+      "interact_npc": "{t.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "Meet her partners"
+    },
+    {
+      "screenshot": "jabari_dialog_lv100"
+    },
+    {
+      "click": "Meet her partners"
+    },
+    {
+      "client": "screen.close",
+      "comment_": "battle-start buttons have no close action; the fight runs server-side (autobattle) while the stale dialog stays up"
+    },
+    {
+      "wait_chat": "The meadow looks after its own",
+      "timeout": 120
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=defeated_sq_regular_meadow]",
+      "expect": "passed"
+    },
+    {
+      "screenshot": "after_battle_lv100"
+    }
+  ]
+}

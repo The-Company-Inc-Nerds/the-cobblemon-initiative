@@ -1,5 +1,8 @@
 package com.thecompanyinc.cobblemoninitiative.devtools;
 
+import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
+import com.cobblemon.mod.common.api.battles.model.actor.BattleActor;
+import com.cobblemon.mod.common.battles.BattleRegistry;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
@@ -116,6 +119,9 @@ public final class DevBotCommand {
                   .then(Commands.literal("on").executes(ctx -> autobattle(ctx, true)))
                   .then(Commands.literal("off").executes(ctx -> autobattle(ctx, false)))
               )
+              // dev bot battlestate — dump the source player's battle + per-actor
+              // choice state (which side a stalled TBCS battle is waiting on).
+              .then(Commands.literal("battlestate").executes(DevBotCommand::battleState))
           )
       )
     );
@@ -223,6 +229,39 @@ public final class DevBotCommand {
     boolean changed = AutoBattler.setEnrolled(player, on);
     String line = "[BOT] autobattle result=" + (on ? "on" : "off")
       + (changed ? "" : " (already)") + " player=" + player.getGameProfile().getName();
+    ctx.getSource().sendSuccess(() -> Component.literal(line), false);
+    return 1;
+  }
+
+  /**
+   * The TBCS-stall probe: a stalled battle shows send-outs done and then waits forever;
+   * this prints, per actor, whether it still owes a choice ({@code mustChoose}), whether
+   * its request ever arrived ({@code request}), and how many responses it has queued —
+   * one read of a hung battle identifies the waiting side (TODO § battle stall).
+   */
+  private static int battleState(CommandContext<CommandSourceStack> ctx) {
+    ServerPlayer player = requirePlayer(ctx);
+    if (player == null) return 0;
+
+    PokemonBattle battle = BattleRegistry.getBattleByParticipatingPlayer(player);
+    String name = player.getGameProfile().getName();
+    if (battle == null) {
+      String none = "[BOT] battlestate player=" + name + " battle=none";
+      ctx.getSource().sendSuccess(() -> Component.literal(none), false);
+      return 1;
+    }
+    StringBuilder sb = new StringBuilder("[BOT] battlestate player=").append(name)
+      .append(" battle=").append(battle.getBattleId())
+      .append(" ended=").append(battle.getEnded());
+    for (BattleActor actor : battle.getActors()) {
+      sb.append(" | actor=").append(actor.getClass().getSimpleName())
+        .append(" mustChoose=").append(actor.getMustChoose())
+        .append(" request=").append(actor.getRequest() != null)
+        .append(" responses=").append(actor.getResponses().size())
+        .append(" pendingPasses=").append(actor.getExpectingPassActions().size())
+        .append(" mons=").append(actor.getPokemonList().size());
+    }
+    String line = sb.toString();
     ctx.getSource().sendSuccess(() -> Component.literal(line), false);
     return 1;
   }
