@@ -13,6 +13,7 @@ import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
@@ -404,7 +405,7 @@ public final class NobleAttacks {
           ctx.target.getX() + (ctx.target.getX() - z.x), ctx.target.getZ() + (ctx.target.getZ() - z.z), 0.25, 0.0);
         else if (z.pull == 1) NobleFx.knockback(ctx.target, z.x, z.z, 0.25, 0.05);
         if (z.ticksLeft % 10 == 0) {
-          ctx.target.hurt(ctx.element.damageSource(ctx.target), z.tickDamage);
+          hurtCapped(ctx.target, ctx.element.damageSource(ctx.target), z.tickDamage);
           ctx.element.applyOnHit(ctx.target, 40);
           NobleFx.hurtTilt(ctx.target, z.x, z.z);
           // Standing in the lava pool / whirlpool audibly burns.
@@ -417,9 +418,29 @@ public final class NobleAttacks {
 
   // ── Helpers ─────────────────────────────────────────────────────────────────
 
+  /**
+   * A noble is never LETHAL (Legends-Arceus model, showrunner 2026-07-17): losing knocks you
+   * out and retreats you, it never kills — critical in hardcore, and doubly so now the birds
+   * always attack their towns. This caps every noble hit so it can't drop the player below
+   * {@link #KNOCKOUT_FLOOR}; the manager tick sees the floor and ends the fight as a retreat.
+   */
+  public static final float KNOCKOUT_FLOOR = 4.0f;
+
+  private static void hurtCapped(ServerPlayer target, DamageSource src, float damage) {
+    // Lethal mode (default): full damage — a noble can kill you. Knockout mode: cap so it can't
+    // drop you below the floor (the manager then ends the fight as a retreat).
+    if (com.thecompanyinc.cobblemoninitiative.config.NobleConfig.get().isLethalNobleFights()) {
+      target.hurt(src, damage);
+      return;
+    }
+    float allowed = Math.max(0f, target.getHealth() - KNOCKOUT_FLOOR);
+    float capped = Math.min(damage, allowed);
+    if (capped > 0f) target.hurt(src, capped);
+  }
+
   /** Apply themed damage + on-hit effect + knockback away from (fromX, fromZ). */
   private static void hit(Context ctx, float damage, double fromX, double fromZ, double knockback, double up) {
-    ctx.target.hurt(ctx.element.damageSource(ctx.target), damage);
+    hurtCapped(ctx.target, ctx.element.damageSource(ctx.target), damage);
     ctx.element.applyOnHit(ctx.target, EFFECT_TICKS);
     if (knockback > 0) NobleFx.knockback(ctx.target, fromX, fromZ, knockback, up);
     NobleFx.hurtTilt(ctx.target, fromX, fromZ);

@@ -183,6 +183,7 @@ execute unless score #amb_kalahar_survey_stone_2 ci_ambient matches 0.. run scor
 execute unless score #amb_kalahar_survey_stone_3 ci_ambient matches 0.. run scoreboard players set #amb_kalahar_survey_stone_3 ci_ambient 0
 execute unless score #amb_oasis_pump_manifold ci_ambient matches 0.. run scoreboard players set #amb_oasis_pump_manifold ci_ambient 0
 execute unless score #amb_warden_ossa ci_ambient matches 0.. run scoreboard players set #amb_warden_ossa ci_ambient 0
+execute unless score #amb_manaphy_giver ci_ambient matches 0.. run scoreboard players set #amb_manaphy_giver ci_ambient 0
 execute unless score #amb_noble_giver_mew_wisp ci_ambient matches 0.. run scoreboard players set #amb_noble_giver_mew_wisp ci_ambient 0
 execute unless score #amb_noble_giver_zapdos_warden ci_ambient matches 0.. run scoreboard players set #amb_noble_giver_zapdos_warden ci_ambient 0
 execute unless score #amb_noble_monument_groudon ci_ambient matches 0.. run scoreboard players set #amb_noble_monument_groudon ci_ambient 0

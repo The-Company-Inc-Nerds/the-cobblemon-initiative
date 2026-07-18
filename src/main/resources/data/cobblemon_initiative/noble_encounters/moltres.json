@@ -1,60 +1,103 @@
 {
   "id": "moltres",
-  "displayName": "§6§lMoltres — Noble of the Wildfire",
+  "displayName": "\u00a76\u00a7lMoltres \u2014 Noble of the Wildfire",
   "element": "fire",
   "bodyPreset": "easy_npc:preset/cobblemon/noble_moltres.npc.snbt",
   "bodyTag": "noble_moltres_body",
   "battleSpecies": "moltres level=82 min_perfect_ivs=6",
-
-  "startTitle": "§6§lMOLTRES",
-  "startSubtitle": "§7Ember and updraft",
+  "startTitle": "\u00a76\u00a7lMOLTRES",
+  "startSubtitle": "\u00a77Ember and updraft",
   "introSeconds": 4,
-
   "arena": {
-    "center": [3510, 51, 4702],
-    "radius": 20,
+    "radius": 40,
     "dimension": "minecraft:overworld"
   },
   "ambientTheme": "drought",
-  "flyer": { "hoverHeight": 7.0, "groundedWindowTicks": 120, "airTicks": 170 },
-
+  "flyer": {
+    "hoverHeight": 7.0,
+    "groundedWindowTicks": 120,
+    "airTicks": 170
+  },
   "stagger": {
     "staggerAtHealthFraction": 0.15,
     "bossBarColor": "RED",
     "bossBarOverlay": "NOTCHED_10",
     "script": "rebirth"
   },
-
   "phase1": {
     "attacks": [
-      { "type": "bolt_strike", "cooldownTicks": 120, "params": { "count": 3, "radius": 2.0, "damage": 6.0, "windupTicks": 18, "delayBetween": 10, "tracking": true } },
-      { "type": "projectile",  "cooldownTicks": 70,  "params": { "count": 6, "speed": 1.1, "spread": 0.3, "damage": 4.0 } },
-      { "type": "barrage_aoe", "cooldownTicks": 130, "params": { "strikes": 4, "pattern": "random", "radius": 4.0, "damage": 7.0, "knockback": 1.0, "windupTicks": 20, "delayBetween": 8 } },
-      { "type": "hazard_zone", "cooldownTicks": 150, "params": { "radius": 5.0, "durationTicks": 100, "pull": "none", "tickDamage": 2.0, "minRageTier": 2 } }
+      {
+        "type": "bolt_strike",
+        "cooldownTicks": 120,
+        "params": {
+          "count": 3,
+          "radius": 2.0,
+          "damage": 6.0,
+          "windupTicks": 18,
+          "delayBetween": 10,
+          "tracking": true
+        }
+      },
+      {
+        "type": "projectile",
+        "cooldownTicks": 70,
+        "params": {
+          "count": 6,
+          "speed": 1.1,
+          "spread": 0.3,
+          "damage": 4.0
+        }
+      },
+      {
+        "type": "barrage_aoe",
+        "cooldownTicks": 130,
+        "params": {
+          "strikes": 4,
+          "pattern": "random",
+          "radius": 4.0,
+          "damage": 7.0,
+          "knockback": 1.0,
+          "windupTicks": 20,
+          "delayBetween": 8
+        }
+      },
+      {
+        "type": "hazard_zone",
+        "cooldownTicks": 150,
+        "params": {
+          "radius": 5.0,
+          "durationTicks": 100,
+          "pull": "none",
+          "tickDamage": 2.0,
+          "minRageTier": 2
+        }
+      }
     ]
   },
-
   "phase2": {
     "healPartyBeforeBattle": true
   },
-
   "rewards": {
-    "storyFlag": { "objective": "defeated_noble_moltres", "holder": "@s", "value": 1 },
+    "storyFlag": {
+      "objective": "defeated_noble_moltres",
+      "holder": "@s",
+      "value": 1
+    },
     "achievement": "cobblemon_initiative:nobles/moltres",
     "commands": [
       "execute as {player} run function cobblemon_initiative:economy/reward/grand"
     ]
   },
-
-  "staggerTitle": "§6§lFROM ASHES",
-  "staggerSubtitle": "§7Moltres rises to face you",
-  "completeTitle": "§6§lNoble Subdued",
-  "completeSubtitle": "§7Moltres acknowledges you",
+  "staggerTitle": "\u00a76\u00a7lFROM ASHES",
+  "staggerSubtitle": "\u00a77Moltres rises to face you",
+  "completeTitle": "\u00a76\u00a7lNoble Subdued",
+  "completeSubtitle": "\u00a77Moltres acknowledges you",
   "sounds": {
     "start": "minecraft:entity.blaze.ambient",
     "stagger": "minecraft:block.fire.extinguish",
     "complete": "minecraft:ui.toast.challenge_complete",
     "loop": "minecraft:music_disc.pigstep",
     "loopSeconds": 148
-  }
+  },
+  "_comment": " | AMBIENT TOWN ATTACK (2026-07-17): arena.center removed so the AmbientNobleManager spawns it AT THE PLAYER anywhere in its town area (was a fixed arena the player stood outside of -> instant fail). radius 40 gives the flyer a big ring around your position."
 }

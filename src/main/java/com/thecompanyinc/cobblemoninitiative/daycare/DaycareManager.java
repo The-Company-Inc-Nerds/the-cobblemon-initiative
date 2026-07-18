@@ -231,14 +231,19 @@ public class DaycareManager {
       mon.pokemon = pokemon;
 
       // Stand-in anchor: the configured pen, or (pen unset) where the player is standing —
-      // the showrunner sets real pen coords in the daycare config later. Slots fan out on x
+      // the showrunner sets real pen coords in the daycare config later. Per-slot anchors
+      // (slot 0 = pen1, slot 1 = pen2); when unset, spawn at the player with a small offset
       // so two boarders never stack.
-      double baseX = config.isPenSet() ? config.getPenX() + 0.5 : player.getX();
-      double baseY = config.isPenSet() ? config.getPenY() : player.getY();
-      double baseZ = config.isPenSet() ? config.getPenZ() + 0.5 : player.getZ();
-      mon.standX = baseX + mon.penSlot * 2.0;
-      mon.standY = baseY;
-      mon.standZ = baseZ;
+      if (config.isPenSet()) {
+        int[] pen = config.penForSlot(mon.penSlot);
+        mon.standX = pen[0] + 0.5;
+        mon.standY = pen[1];
+        mon.standZ = pen[2] + 0.5;
+      } else {
+        mon.standX = player.getX() + mon.penSlot * 2.0;
+        mon.standY = player.getY();
+        mon.standZ = player.getZ();
+      }
 
       boarded.add(mon);
       spawnStandIn(level, mon);

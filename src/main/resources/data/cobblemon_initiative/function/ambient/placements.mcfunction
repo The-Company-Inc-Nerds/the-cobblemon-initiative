@@ -182,6 +182,7 @@ execute if score #amb_kalahar_survey_stone_2 ci_ambient matches 0 if entity @a[x
 execute if score #amb_kalahar_survey_stone_3 ci_ambient matches 0 if entity @a[x=2318.5,y=66,z=3542.5,distance=..40] run function cobblemon_initiative:ambient/place/kalahar_survey_stone_3
 execute if score #amb_oasis_pump_manifold ci_ambient matches 0 if entity @a[x=1740.5,y=116,z=4190.5,distance=..40] run function cobblemon_initiative:ambient/place/oasis_pump_manifold
 execute if score #amb_warden_ossa ci_ambient matches 0 if entity @a[x=2050.5,y=126,z=4085.5,distance=..40] run function cobblemon_initiative:ambient/place/warden_ossa
+execute if score #amb_manaphy_giver ci_ambient matches 0 if entity @a[x=2760.5,y=33,z=3490.5,distance=..40] run function cobblemon_initiative:ambient/place/manaphy_giver
 execute if score #amb_noble_giver_mew_wisp ci_ambient matches 0 if entity @a[x=1788.5,y=114,z=4212.5,distance=..40] run function cobblemon_initiative:ambient/place/noble_giver_mew_wisp
 execute if score #amb_noble_giver_zapdos_warden ci_ambient matches 0 if entity @a[x=1393.5,y=66,z=1065.5,distance=..40] run function cobblemon_initiative:ambient/place/noble_giver_zapdos_warden
 execute if score #amb_noble_monument_groudon ci_ambient matches 0 if entity @a[x=3805.5,y=110,z=3746.5,distance=..40] run function cobblemon_initiative:ambient/place/noble_monument_groudon

@@ -1,0 +1,189 @@
+{
+  "_comment": "Ambient / wandering noble rolls (AmbientNobleManager). One once-per-in-game-day roll per player: if they carry gateTag, are inside area (2D column around center, any Y), past the per-player cooldownDays latch (scoreboard noble_roam_<id>), and not already in a noble/Cobblemon battle, roll dailyChance -> NobleEncounterManager.start. The noble's OWN noble_encounters/<id>.json arena.center decides where it materialises: birds have a FIXED town arena (spawn there); roamers omit arena.center so start() spawns at the player's feet. Tune dailyChance/cooldownDays/radius per taste (ModMenu-free; edit + rebuild, or /reload the datapack in dev). area.center is [x,y,z] but only x/z are used.",
+  "rolls": [
+    {
+      "_comment": "Moltres ALWAYS attacks Scorchspire after the HQ raid (proximity event, showrunner 2026-07-17): while you're in the area and haven't caught/defeated it, it attacks; 4-min re-arm after a spawn so a flee/loss gives breathing room but it keeps coming. Stops once defeated_noble_moltres is set. Spawns at its fixed town arena.",
+      "nobleId": "moltres",
+      "area": {
+        "dim": "minecraft:overworld",
+        "center": [
+          3600,
+          64,
+          4620
+        ],
+        "radius": 260
+      },
+      "gateTag": "defeated_villain_boss",
+      "trigger": "proximity",
+      "rearmMinutes": 4
+    },
+    {
+      "_comment": "Articuno ALWAYS attacks Nifl Town after the HQ raid (proximity event, showrunner 2026-07-17): while you're in the area and haven't caught/defeated it, it attacks; 4-min re-arm after a spawn so a flee/loss gives breathing room but it keeps coming. Stops once defeated_noble_articuno is set. Spawns at its fixed town arena.",
+      "nobleId": "articuno",
+      "area": {
+        "dim": "minecraft:overworld",
+        "center": [
+          3600,
+          64,
+          1990
+        ],
+        "radius": 240
+      },
+      "gateTag": "defeated_villain_boss",
+      "trigger": "proximity",
+      "rearmMinutes": 4
+    },
+    {
+      "_comment": "Zapdos ALWAYS attacks Cyber City after the HQ raid (proximity event, showrunner 2026-07-17): while you're in the area and haven't caught/defeated it, it attacks; 4-min re-arm after a spawn so a flee/loss gives breathing room but it keeps coming. Stops once defeated_noble_zapdos is set. Spawns at its fixed town arena.",
+      "nobleId": "zapdos",
+      "area": {
+        "dim": "minecraft:overworld",
+        "center": [
+          1450,
+          64,
+          1150
+        ],
+        "radius": 300
+      },
+      "gateTag": "defeated_villain_boss",
+      "trigger": "proximity",
+      "rearmMinutes": 4
+    },
+    {
+      "_comment": "Dratini wandering mini-noble (badges_gte_1 era) \u2014 roams near [2185, 90, 2785]; spawns at the player's feet.",
+      "nobleId": "noble_dratini",
+      "area": {
+        "dim": "minecraft:overworld",
+        "center": [
+          2185,
+          90,
+          2785
+        ],
+        "radius": 200
+      },
+      "gateTag": "badges_gte_1",
+      "dailyChance": 0.25,
+      "cooldownDays": 3,
+      "oncePerRun": false
+    },
+    {
+      "_comment": "Larvitar wandering mini-noble (badges_gte_2 era) \u2014 roams near [1569, 90, 2421]; spawns at the player's feet.",
+      "nobleId": "noble_larvitar",
+      "area": {
+        "dim": "minecraft:overworld",
+        "center": [
+          1569,
+          90,
+          2421
+        ],
+        "radius": 200
+      },
+      "gateTag": "badges_gte_2",
+      "dailyChance": 0.25,
+      "cooldownDays": 3,
+      "oncePerRun": false
+    },
+    {
+      "_comment": "Bagon wandering mini-noble (badges_gte_3 era) \u2014 roams near [1372, 90, 2328]; spawns at the player's feet.",
+      "nobleId": "noble_bagon",
+      "area": {
+        "dim": "minecraft:overworld",
+        "center": [
+          1372,
+          90,
+          2328
+        ],
+        "radius": 200
+      },
+      "gateTag": "badges_gte_3",
+      "dailyChance": 0.25,
+      "cooldownDays": 3,
+      "oncePerRun": false
+    },
+    {
+      "_comment": "Gible wandering mini-noble (badges_gte_4 era) \u2014 roams near [1086, 90, 3005]; spawns at the player's feet.",
+      "nobleId": "noble_gible",
+      "area": {
+        "dim": "minecraft:overworld",
+        "center": [
+          1086,
+          90,
+          3005
+        ],
+        "radius": 200
+      },
+      "gateTag": "badges_gte_4",
+      "dailyChance": 0.25,
+      "cooldownDays": 3,
+      "oncePerRun": false
+    },
+    {
+      "_comment": "Beldum wandering mini-noble (badges_gte_5 era) \u2014 roams near [3042, 90, 2490]; spawns at the player's feet.",
+      "nobleId": "noble_beldum",
+      "area": {
+        "dim": "minecraft:overworld",
+        "center": [
+          3042,
+          90,
+          2490
+        ],
+        "radius": 200
+      },
+      "gateTag": "badges_gte_5",
+      "dailyChance": 0.25,
+      "cooldownDays": 3,
+      "oncePerRun": false
+    },
+    {
+      "_comment": "Deino wandering mini-noble (badges_gte_6 era) \u2014 roams near [1974, 90, 1035]; spawns at the player's feet.",
+      "nobleId": "noble_deino",
+      "area": {
+        "dim": "minecraft:overworld",
+        "center": [
+          1974,
+          90,
+          1035
+        ],
+        "radius": 220
+      },
+      "gateTag": "badges_gte_6",
+      "dailyChance": 0.25,
+      "cooldownDays": 3,
+      "oncePerRun": false
+    },
+    {
+      "_comment": "Salamence wandering mini-noble (badges_gte_9 era) \u2014 roams near [3544, 90, 2460]; spawns at the player's feet.",
+      "nobleId": "noble_salamence",
+      "area": {
+        "dim": "minecraft:overworld",
+        "center": [
+          3544,
+          90,
+          2460
+        ],
+        "radius": 260
+      },
+      "gateTag": "badges_gte_9",
+      "dailyChance": 0.25,
+      "cooldownDays": 3,
+      "oncePerRun": false
+    },
+    {
+      "_comment": "Hydreigon wandering mini-noble (badges_gte_10 era) \u2014 roams near [3681, 90, 3002]; spawns at the player's feet.",
+      "nobleId": "noble_hydreigon",
+      "area": {
+        "dim": "minecraft:overworld",
+        "center": [
+          3681,
+          90,
+          3002
+        ],
+        "radius": 240
+      },
+      "gateTag": "badges_gte_10",
+      "dailyChance": 0.25,
+      "cooldownDays": 3,
+      "oncePerRun": false
+    }
+  ]
+}

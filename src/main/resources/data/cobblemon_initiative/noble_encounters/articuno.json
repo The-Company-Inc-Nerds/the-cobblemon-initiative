@@ -1,57 +1,99 @@
 {
   "id": "articuno",
-  "displayName": "§b§lArticuno — Noble of the Frozen Gale",
+  "displayName": "\u00a7b\u00a7lArticuno \u2014 Noble of the Frozen Gale",
   "element": "ice",
   "bodyPreset": "easy_npc:preset/cobblemon/noble_articuno.npc.snbt",
   "bodyTag": "noble_articuno_body",
   "battleSpecies": "articuno level=72 min_perfect_ivs=6",
-
-  "startTitle": "§b§lARTICUNO",
-  "startSubtitle": "§7Winter takes wing",
+  "startTitle": "\u00a7b\u00a7lARTICUNO",
+  "startSubtitle": "\u00a77Winter takes wing",
   "introSeconds": 4,
-
   "arena": {
-    "center": [3644, 68, 1960],
-    "radius": 20,
+    "radius": 40,
     "dimension": "minecraft:overworld"
   },
   "ambientTheme": "blizzard",
-  "flyer": { "hoverHeight": 7.0, "groundedWindowTicks": 120, "airTicks": 170 },
-
+  "flyer": {
+    "hoverHeight": 7.0,
+    "groundedWindowTicks": 120,
+    "airTicks": 170
+  },
   "stagger": {
     "staggerAtHealthFraction": 0.15,
     "bossBarColor": "BLUE",
     "bossBarOverlay": "NOTCHED_10"
   },
-
   "phase1": {
     "attacks": [
-      { "type": "projectile",  "cooldownTicks": 60,  "params": { "count": 5, "speed": 1.0, "spread": 0.25, "damage": 4.0 } },
-      { "type": "barrage_aoe", "cooldownTicks": 120, "params": { "strikes": 3, "pattern": "circle", "radius": 4.0, "damage": 7.0, "knockback": 1.0, "windupTicks": 22, "delayBetween": 6 } },
-      { "type": "hazard_zone", "cooldownTicks": 150, "params": { "radius": 4.0, "durationTicks": 120, "pull": "none", "tickDamage": 1.0 } },
-      { "type": "bolt_strike", "cooldownTicks": 130, "params": { "count": 3, "radius": 2.0, "damage": 6.0, "windupTicks": 18, "delayBetween": 10, "tracking": true } }
+      {
+        "type": "projectile",
+        "cooldownTicks": 60,
+        "params": {
+          "count": 5,
+          "speed": 1.0,
+          "spread": 0.25,
+          "damage": 4.0
+        }
+      },
+      {
+        "type": "barrage_aoe",
+        "cooldownTicks": 120,
+        "params": {
+          "strikes": 3,
+          "pattern": "circle",
+          "radius": 4.0,
+          "damage": 7.0,
+          "knockback": 1.0,
+          "windupTicks": 22,
+          "delayBetween": 6
+        }
+      },
+      {
+        "type": "hazard_zone",
+        "cooldownTicks": 150,
+        "params": {
+          "radius": 4.0,
+          "durationTicks": 120,
+          "pull": "none",
+          "tickDamage": 1.0
+        }
+      },
+      {
+        "type": "bolt_strike",
+        "cooldownTicks": 130,
+        "params": {
+          "count": 3,
+          "radius": 2.0,
+          "damage": 6.0,
+          "windupTicks": 18,
+          "delayBetween": 10,
+          "tracking": true
+        }
+      }
     ]
   },
-
   "phase2": {
     "healPartyBeforeBattle": true
   },
-
   "rewards": {
-    "storyFlag": { "objective": "defeated_noble_articuno", "holder": "@s", "value": 1 },
+    "storyFlag": {
+      "objective": "defeated_noble_articuno",
+      "holder": "@s",
+      "value": 1
+    },
     "achievement": "cobblemon_initiative:nobles/articuno",
     "commands": [
       "execute as {player} run function cobblemon_initiative:economy/reward/grand"
     ]
   },
-
-  "completeTitle": "§6§lNoble Subdued",
-  "completeSubtitle": "§7Articuno acknowledges you",
+  "completeTitle": "\u00a76\u00a7lNoble Subdued",
+  "completeSubtitle": "\u00a77Articuno acknowledges you",
   "sounds": {
     "start": "minecraft:entity.polar_bear.warning",
     "stagger": "minecraft:entity.generic.explode",
     "complete": "minecraft:ui.toast.challenge_complete",
     "loop": "minecraft:music_disc.ward",
     "loopSeconds": 251
-  }
+  },
+  "_comment": " | AMBIENT TOWN ATTACK (2026-07-17): arena.center removed so the AmbientNobleManager spawns it AT THE PLAYER anywhere in its town area (was a fixed arena the player stood outside of -> instant fail). radius 40 gives the flyer a big ring around your position."
 }

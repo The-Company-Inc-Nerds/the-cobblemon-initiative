@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.DeathScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ServerboundClientCommandPacket;
 
 public class PokeballDeathScreen extends Screen {
 
@@ -20,6 +22,7 @@ public class PokeballDeathScreen extends Screen {
   private static final int SHOW_DEATH_SCREEN_TICKS = 100;
 
   private float pokeballScale = 0.0f;
+  private boolean choiceShown = false;
 
   public PokeballDeathScreen() {
     super(Component.literal("You Blacked Out!"));
@@ -49,14 +52,60 @@ public class PokeballDeathScreen extends Screen {
       shard.update();
     }
 
-    if (ticksOnScreen >= SHOW_DEATH_SCREEN_TICKS && this.minecraft != null) {
+    if (ticksOnScreen >= SHOW_DEATH_SCREEN_TICKS && this.minecraft != null && !choiceShown) {
       boolean isHardcore =
         this.minecraft.level != null &&
         this.minecraft.level.getLevelData().isHardcore();
 
-      this.minecraft.setScreen(
-        new DeathScreen(Component.literal("You Blacked Out!"), isHardcore)
-      );
+      if (isHardcore) {
+        // Hardcore: don't hand off to the vanilla screen. Offer the choice.
+        this.choiceShown = true;
+        showHardcoreChoice();
+      } else {
+        this.minecraft.setScreen(
+          new DeathScreen(Component.literal("You Blacked Out!"), false)
+        );
+      }
+    }
+  }
+
+  /**
+   * Hardcore death choice (showrunner 2026-07-17): accept the ending, or claw back at a
+   * cost. "Die with Honor" spectates the world (the true one-life end — same PERFORM_RESPAWN
+   * the vanilla hardcore Spectate button sends). "Dishonorable Respawn" runs the server
+   * command that revives the player in survival, keeps hardcore armed, and brands them.
+   */
+  private void showHardcoreChoice() {
+    int cx = this.width / 2;
+    int top = this.height / 2 + 24;
+    boolean dishonor = com.thecompanyinc.cobblemoninitiative.config.NuzlockeConfig.load()
+        .isDishonorableRespawnEnabled();
+    // Honor is left of a pair, centred when it's the only button.
+    int honorX = dishonor ? cx - 154 : cx - 75;
+    addRenderableWidget(Button.builder(
+        Component.literal("§a⚔ Die with Honor"),
+        b -> {
+          if (this.minecraft != null && this.minecraft.player != null) {
+            this.minecraft.player.connection.send(
+              new ServerboundClientCommandPacket(
+                ServerboundClientCommandPacket.Action.PERFORM_RESPAWN));
+          }
+        })
+      .bounds(honorX, top, 150, 20)
+      .build());
+    // The dishonorable option is opt-out (ModMenu → Nuzlocke): a purist run offers only the
+    // honorable ending.
+    if (dishonor) {
+      addRenderableWidget(Button.builder(
+          Component.literal("§4☠ Dishonorable Respawn"),
+          b -> {
+            if (this.minecraft != null && this.minecraft.player != null) {
+              this.minecraft.player.connection.sendCommand(
+                "cobblemon-initiative dishonored-respawn");
+            }
+          })
+        .bounds(cx + 4, top, 150, 20)
+        .build());
     }
   }
 
@@ -95,6 +144,20 @@ public class PokeballDeathScreen extends Screen {
 
     for (Shard shard : shards) {
       shard.render(graphics);
+    }
+
+    if (choiceShown) {
+      int cy = this.height / 2;
+      graphics.drawCenteredString(
+        this.font, Component.literal("§lYou Blacked Out"), centerX, cy - 40, 0xFFFFFFFF);
+      graphics.drawCenteredString(
+        this.font,
+        Component.literal("§7The run is over — unless you cannot let it be."),
+        centerX, cy - 24, 0xFFAAAAAA);
+      graphics.drawCenteredString(
+        this.font,
+        Component.literal("§8Dishonor is permanent. It is remembered."),
+        centerX, cy + 4, 0xFF777777);
     }
 
     super.render(graphics, mouseX, mouseY, delta);

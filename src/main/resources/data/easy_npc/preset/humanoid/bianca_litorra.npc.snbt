@@ -33,30 +33,77 @@
         CanPickUpLoot: 0b,
         CustomNameVisible: 1b,
         DialogData: {
-            Type: "BASIC",
+            Type: "STANDARD",
             DialogDataSet: [
                 {
                     Priority: 10,
                     Buttons: [
                         {
-                            Name: "Goodbye",
+                            Name: "Board a Pokemon (choose up to 2)",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative daycare deposit"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "deposit_button"
+                        },
+                        {
+                            Name: "Take back pen 1",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative daycare withdraw 1"
+                                }
+                            ],
+                            Label: "withdraw1_button"
+                        },
+                        {
+                            Name: "Take back pen 2",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative daycare withdraw 2"
+                                }
+                            ],
+                            Label: "withdraw2_button"
+                        },
+                        {
+                            Name: "How are they doing? (check the pens)",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative daycare status"
+                                }
+                            ],
+                            Label: "status_button"
+                        },
+                        {
+                            Name: "Leave them to it",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "goodbye_button"
+                            Label: "leave_button"
                         }
                     ],
                     Texts: [
                         {
-                            Text: "Shells, polished coral, a little painted buoy keychain that says Gaviota Open on it. The Company takes a cut of the keychains too, if you can believe it. A cut. Of keychains."
+                            Text: "Done selling shells — this desk is the real work now. Off to the gyms, are you? Leave a couple here and the salt air will do the rest — they come back a little bigger and none the worse. I keep them fed, I keep them safe, and I never let them battle. That is the whole promise."
                         },
                         {
-                            Text: "You are here for the Open, I can always tell. The rod-and-bright-eyes look. Buy a lucky staryu charm, they float face-up if the round is going to go your way. Probably."
+                            Text: "We are not Company, if that is your worry. They came round once with an offer and a form; I told them where to file it. A Pokemon left here is left with people, not a ledger."
                         },
                         {
-                            Text: "First real resort town on the route, they say. Enjoy it. It is the last one that pretends the water is just for swimming."
+                            Text: "Two pens is all I have room for. Drop off, pick up, or check on them — your call."
                         }
                     ],
                     Name: "Bianca Litorra",
@@ -151,18 +198,6 @@
             HasObjectives: 1b,
             HasTravelTarget: 0b,
             ObjectiveDataSet: [
-                {
-                    Type: "RANDOM_STROLL_AROUND_HOME",
-                    Prio: 2,
-                    Id: "ambient_stroll_home",
-                    SpeedModifier: 0.8d
-                },
-                {
-                    Type: "MOVE_BACK_TO_HOME",
-                    Prio: 3,
-                    Id: "ambient_back_home",
-                    SpeedModifier: 1.0d
-                },
                 {
                     Type: "LOOK_AT_PLAYER",
                     Prio: 9,

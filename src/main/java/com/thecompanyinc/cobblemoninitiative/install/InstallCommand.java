@@ -409,9 +409,27 @@ public class InstallCommand {
 
         int added = 0;
         int skipped = 0;
+        int backfilled = 0;
         for (InstallZone iz : config.zones) {
           if (existing.contains(iz.name.toLowerCase())) {
             skipped++;
+            // Backfill the polygon onto a zone baked before polygons existed, so a plain
+            // re-run upgrades an existing world's boundaries to match the map (no wipe).
+            if (iz.hasVertices()) {
+              for (NuzlockeConfig.SafeZone old : nzConfig.getSafeZones()) {
+                if (old.name != null
+                    && old.name.equalsIgnoreCase(iz.name)
+                    && old.polygon == null) {
+                  int[][] poly = new int[iz.vertices.size()][2];
+                  for (int vi = 0; vi < iz.vertices.size(); vi++) {
+                    poly[vi][0] = iz.vertices.get(vi).x;
+                    poly[vi][1] = iz.vertices.get(vi).z;
+                  }
+                  old.polygon = poly;
+                  backfilled++;
+                }
+              }
+            }
             continue;
           }
           NuzlockeConfig.SafeZone sz = new NuzlockeConfig.SafeZone(
@@ -428,6 +446,16 @@ public class InstallCommand {
           sz.subtitle = iz.subtitle != null ? iz.subtitle : "";
           sz.color = iz.color != null ? iz.color : "";
           sz.type = iz.type != null ? iz.type : "";
+          // Carry the exact polygon so contains() matches the map (Map Frontiers /
+          // JourneyMap) rather than the derived bounding circle, which fired early.
+          if (iz.hasVertices()) {
+            int[][] poly = new int[iz.vertices.size()][2];
+            for (int vi = 0; vi < iz.vertices.size(); vi++) {
+              poly[vi][0] = iz.vertices.get(vi).x;
+              poly[vi][1] = iz.vertices.get(vi).z;
+            }
+            sz.polygon = poly;
+          }
           sz.mobsSpawn = iz.mobsSpawn;
           sz.activeWhenObjective = iz.activeWhenObjective;
           sz.activeWhenHolder = iz.activeWhenHolder;
@@ -438,7 +466,8 @@ public class InstallCommand {
         nzConfig.save();
 
         final int a = added,
-          s = skipped;
+          s = skipped,
+          bf = backfilled;
         ctx
           .getSource()
           .sendSuccess(
@@ -448,7 +477,9 @@ public class InstallCommand {
                   a +
                   " added, " +
                   s +
-                  " skipped (name collision)."
+                  " skipped (name collision)" +
+                  (bf > 0 ? ", " + bf + " polygon-upgraded" : "") +
+                  "."
               ),
             true
           );

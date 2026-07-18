@@ -167,6 +167,13 @@ public class CobblemonInitiativeCommands {
               )
             )
         )
+        // Dishonorable Respawn — fired by the PokeballDeathScreen button. Perm 0, resolves
+        // the (dead) player from the source at runtime. Brings them back in SURVIVAL while
+        // leaving hardcore armed, and brands them permanently.
+        .then(
+          Commands.literal("dishonored-respawn")
+            .executes(CobblemonInitiativeCommands::dishonoredRespawn)
+        )
         // Daycare — player-facing (perm 0) AND dialog-button-ready: like `track`, targets
         // resolve at runtime (getPlayer() null-check), with NO parse-time entity requires —
         // an Easy NPC ExecAsUser source carries the player, but requires() is evaluated
@@ -1406,6 +1413,70 @@ public class CobblemonInitiativeCommands {
         ),
       true
     );
+    return 1;
+  }
+
+  /**
+   * Dishonorable Respawn (PokeballDeathScreen button, showrunner 2026-07-17). Brings a
+   * dead hardcore player back in SURVIVAL and brands them: hardcore stays ARMED (the next
+   * death is final again), a permanent {@code dishonored} tag is set, and a
+   * {@code dishonorable_respawns} score is incremented. The trick: vanilla
+   * {@code PlayerList.respawn} forces SPECTATOR when the world is hardcore, so we flip the
+   * hardcore flag OFF across the respawn call, then restore it — the same live
+   * {@link LevelSettingsAccessor} mutation the install command uses to promote a world.
+   */
+  private static int dishonoredRespawn(CommandContext<CommandSourceStack> context) {
+    ServerPlayer dead = context.getSource().getPlayer();
+    if (dead == null) return 0;
+    net.minecraft.server.MinecraftServer server = dead.getServer();
+    if (server == null) return 0;
+
+    net.minecraft.world.level.storage.WorldData worldData = server.getWorldData();
+    net.minecraft.world.level.LevelSettings settings =
+      (worldData instanceof net.minecraft.world.level.storage.PrimaryLevelData pld)
+        ? ((com.thecompanyinc.cobblemoninitiative.mixin.PrimaryLevelDataAccessor) (Object) pld).getSettings()
+        : null;
+    boolean wasHardcore = settings != null && settings.hardcore();
+
+    if (wasHardcore) {
+      ((com.thecompanyinc.cobblemoninitiative.mixin.LevelSettingsAccessor) (Object) settings).setHardcore(false);
+    }
+    ServerPlayer revived;
+    try {
+      revived = server.getPlayerList().respawn(
+        dead, false, net.minecraft.world.entity.Entity.RemovalReason.KILLED);
+    } finally {
+      if (wasHardcore) {
+        ((com.thecompanyinc.cobblemoninitiative.mixin.LevelSettingsAccessor) (Object) settings).setHardcore(true);
+      }
+    }
+
+    // Back on their feet, and marked for it.
+    revived.setGameMode(net.minecraft.world.level.GameType.SURVIVAL);
+    revived.setHealth(revived.getMaxHealth());
+    revived.getFoodData().setFoodLevel(20);
+    revived.addTag("dishonored");
+    net.minecraft.world.scores.Scoreboard board = server.getScoreboard();
+    net.minecraft.world.scores.Objective obj =
+      board.getObjective("dishonorable_respawns");
+    if (obj == null) {
+      obj = board.addObjective(
+        "dishonorable_respawns",
+        net.minecraft.world.scores.criteria.ObjectiveCriteria.DUMMY,
+        Component.literal("Dishonorable Respawns"),
+        net.minecraft.world.scores.criteria.ObjectiveCriteria.RenderType.INTEGER,
+        true, null);
+    }
+    net.minecraft.world.scores.ScoreAccess score =
+      board.getOrCreatePlayerScore(revived, obj);
+    score.set(score.get() + 1);
+
+    revived.sendSystemMessage(Component.literal(
+      "§8You claw back from the dark. That was not how it was meant to end — and the ledger remembers."));
+    revived.level().playSound(
+      null, revived.blockPosition(),
+      net.minecraft.sounds.SoundEvents.WITHER_SPAWN,
+      net.minecraft.sounds.SoundSource.MASTER, 0.4f, 0.6f);
     return 1;
   }
 }

@@ -144,6 +144,21 @@ public class InitiativeConfigScreen {
         .setSaveConsumer(config::setMysterySacrifice)
         .build()
     );
+    nuzlocke.addEntry(
+      entryBuilder
+        .startBooleanToggle(
+          Component.literal("Offer Dishonorable Respawn"),
+          config.isDishonorableRespawnEnabled()
+        )
+        .setDefaultValue(defaults.isDishonorableRespawnEnabled())
+        .setTooltip(
+          Component.literal(
+            "On a hardcore whiteout, show the \"Dishonorable Respawn\" button (revive in survival, stay hardcore-armed, permanent dishonored mark). Off = only the honorable spectate ending — a purist one-life run."
+          )
+        )
+        .setSaveConsumer(config::setDishonorableRespawnEnabled)
+        .build()
+    );
 
     // -------------------------------------------------------------------------
     // Capture Rules
@@ -985,6 +1000,62 @@ public class InitiativeConfigScreen {
         .setSaveConsumer(nobleConfig::setSfxPitch)
         .build()
     );
+    nobles.addEntry(
+      entryBuilder
+        .startBooleanToggle(Component.literal("Wandering Mini Nobles"), nobleConfig.isWanderingMinisEnabled())
+        .setDefaultValue(nobleDefaults.isWanderingMinisEnabled())
+        .setTooltip(Component.literal(
+          "The roaming pseudo-legendary minis that appear on stakes routes (perfect-IV prizes). Off = no random roamers; dialog / shrine nobles unaffected."))
+        .setSaveConsumer(nobleConfig::setWanderingMinisEnabled)
+        .build()
+    );
+    nobles.addEntry(
+      entryBuilder
+        .startFloatField(Component.literal("Wandering Mini Frequency"), nobleConfig.getAmbientChanceMultiplier())
+        .setDefaultValue(nobleDefaults.getAmbientChanceMultiplier())
+        .setMin(0.0f).setMax(5.0f)
+        .setTooltip(Component.literal(
+          "Scales how often the wandering minis appear (0 = never, 2 = twice as often)."))
+        .setSaveConsumer(nobleConfig::setAmbientChanceMultiplier)
+        .build()
+    );
+    nobles.addEntry(
+      entryBuilder
+        .startBooleanToggle(Component.literal("Town Bird Attacks"), nobleConfig.isTownBirdAttacksEnabled())
+        .setDefaultValue(nobleDefaults.isTownBirdAttacksEnabled())
+        .setTooltip(Component.literal(
+          "The legendary birds always attacking their towns after the HQ raid (Moltres → Scorchspire, Articuno → Nifl, Zapdos → Cyber City). Off = the towns stay quiet."))
+        .setSaveConsumer(nobleConfig::setTownBirdAttacksEnabled)
+        .build()
+    );
+    nobles.addEntry(
+      entryBuilder
+        .startIntField(Component.literal("Town Bird Cooldown (min)"), nobleConfig.getTownBirdCooldownMinutes())
+        .setDefaultValue(nobleDefaults.getTownBirdCooldownMinutes())
+        .setMin(0).setMax(60)
+        .setTooltip(Component.literal(
+          "Minutes before a bird re-attacks after you flee or lose (until you catch/defeat it). Lower = more relentless."))
+        .setSaveConsumer(nobleConfig::setTownBirdCooldownMinutes)
+        .build()
+    );
+    nobles.addEntry(
+      entryBuilder
+        .startBooleanToggle(Component.literal("Perfect-IV Noble Prizes"), nobleConfig.isPerfectIvPrizes())
+        .setDefaultValue(nobleDefaults.isPerfectIvPrizes())
+        .setTooltip(Component.literal(
+          "Noble catches roll perfect IVs. Off = normal random IVs (the min_perfect_ivs clause is dropped at catch time)."))
+        .setSaveConsumer(nobleConfig::setPerfectIvPrizes)
+        .build()
+    );
+    nobles.addEntry(
+      entryBuilder
+        .startBooleanToggle(Component.literal("Nobles Can Kill You"), nobleConfig.isLethalNobleFights())
+        .setDefaultValue(nobleDefaults.isLethalNobleFights())
+        .setTooltip(Component.literal(
+          "ON (default): losing a noble kills you — full hardcore stakes (their attacks and a party wipe can end the run). OFF: the Legends-Arceus knockout model — a loss knocks you out and retreats you, never a whiteout."))
+        .setSaveConsumer(nobleConfig::setLethalNobleFights)
+        .build()
+    );
 
     // -------------------------------------------------------------------------
     // Progression
@@ -1043,19 +1114,7 @@ public class InitiativeConfigScreen {
         .setDefaultValue(daycareDefaults.getIntervalTicks())
         .setTooltip(Component.literal("Ticks between XP drips (1200 = once a minute)."))
         .setSaveConsumer(daycareConfig::setIntervalTicks).build());
-    daycare.addEntry(
-      entryBuilder.startIntField(Component.literal("Pen X"), daycareConfig.getPenX())
-        .setDefaultValue(daycareDefaults.getPenX())
-        .setTooltip(Component.literal("Where boarded stand-ins appear. 0,0,0 = unset (they spawn on the depositor)."))
-        .setSaveConsumer(daycareConfig::setPenX).build());
-    daycare.addEntry(
-      entryBuilder.startIntField(Component.literal("Pen Y"), daycareConfig.getPenY())
-        .setDefaultValue(daycareDefaults.getPenY())
-        .setSaveConsumer(daycareConfig::setPenY).build());
-    daycare.addEntry(
-      entryBuilder.startIntField(Component.literal("Pen Z"), daycareConfig.getPenZ())
-        .setDefaultValue(daycareDefaults.getPenZ())
-        .setSaveConsumer(daycareConfig::setPenZ).build());
+    // Pen coordinates live in the daycare config JSON, not here — ModMenu is toggles/sliders only.
     daycare.addEntry(
       entryBuilder.startIntField(Component.literal("Pickup fee — base (CD)"), daycareConfig.getFeeBase())
         .setMin(0)
@@ -1124,19 +1183,7 @@ public class InitiativeConfigScreen {
       entryBuilder.startIntSlider(Component.literal("Spawns per scatter — max"), safariConfig.spawnsMax, 1, 6)
         .setDefaultValue(safariDefaults.spawnsMax)
         .setSaveConsumer(v -> safariConfig.spawnsMax = v).build());
-    safari.addEntry(
-      entryBuilder.startIntField(Component.literal("Eject pad X"), safariConfig.ejectX)
-        .setDefaultValue(safariDefaults.ejectX)
-        .setTooltip(Component.literal("Timer eject destination. 0,0,0 = unset (returns to the entry position)."))
-        .setSaveConsumer(v -> safariConfig.ejectX = v).build());
-    safari.addEntry(
-      entryBuilder.startIntField(Component.literal("Eject pad Y"), safariConfig.ejectY)
-        .setDefaultValue(safariDefaults.ejectY)
-        .setSaveConsumer(v -> safariConfig.ejectY = v).build());
-    safari.addEntry(
-      entryBuilder.startIntField(Component.literal("Eject pad Z"), safariConfig.ejectZ)
-        .setDefaultValue(safariDefaults.ejectZ)
-        .setSaveConsumer(v -> safariConfig.ejectZ = v).build());
+    // Eject-pad coordinates live in the safari config JSON, not here — ModMenu is toggles/sliders only.
 
     // -------------------------------------------------------------------------
     // Stadium (Cyber City Exhibition Circuit) — scalar knobs only; wave teams are content.

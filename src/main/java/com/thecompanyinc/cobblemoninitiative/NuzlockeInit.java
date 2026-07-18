@@ -323,7 +323,7 @@ public class NuzlockeInit implements ModInitializer {
     // the frontier/region_tick datapack function while the player stands on the plateau)
     // marks the "nothing you love dies on our floor" zone.
     if (StadiumManager.isStadiumActive(player.getUUID())
-        || player.getTags().contains(FRONTIER_ACTIVE_TAG)) return Unit.INSTANCE;
+        || player.getTags().contains(FRONTIER_ACTIVE_TAG) || isNobleActive(player)) return Unit.INSTANCE;
 
     PlayerPartyStore party = Cobblemon.INSTANCE.getStorage().getParty(player);
     int partyCount = countPartySize(party);
@@ -362,7 +362,7 @@ public class NuzlockeInit implements ModInitializer {
       // who lost nothing. StadiumManager ends the run after this handler returns.
       // The Battle Frontier (frontier_active tag) is likewise a no-forfeit safe exhibition.
       if (StadiumManager.isStadiumActive(player.getUUID())
-          || player.getTags().contains(FRONTIER_ACTIVE_TAG)) continue;
+          || player.getTags().contains(FRONTIER_ACTIVE_TAG) || isNobleActive(player)) continue;
 
       boolean wasTrainerBattle = false;
       for (BattleActor actor : event.getBattle().getActors()) {
@@ -440,7 +440,7 @@ public class NuzlockeInit implements ModInitializer {
     // exhibition suppresses damage/removal/whiteout so an optional above-cap grind can
     // never gut a hardcore-Nuzlocke box.
     if (StadiumManager.isStadiumActive(player.getUUID())
-        || player.getTags().contains(FRONTIER_ACTIVE_TAG)) return Unit.INSTANCE;
+        || player.getTags().contains(FRONTIER_ACTIVE_TAG) || isNobleActive(player)) return Unit.INSTANCE;
 
     PlayerPartyStore party = Cobblemon.INSTANCE.getStorage().getParty(player);
     int totalPartySize = countPartySize(party);
@@ -553,6 +553,20 @@ public class NuzlockeInit implements ModInitializer {
       if (pokemon != null) count++;
     }
     return Math.max(count, 1);
+  }
+
+  /**
+   * True only when a noble fight is active AND knockout mode is on (lethal nobles off). In that
+   * case the Nuzlocke death paths are suspended — the noble engine ends the encounter as a retreat
+   * instead. In the default LETHAL mode this returns false, so losing a noble whites you out
+   * normally. Mirrors the stadium / frontier exhibition guards.
+   */
+  private static boolean isNobleActive(net.minecraft.server.level.ServerPlayer player) {
+    if (com.thecompanyinc.cobblemoninitiative.config.NobleConfig.get().isLethalNobleFights()) {
+      return false;
+    }
+    var mgr = com.thecompanyinc.cobblemoninitiative.noble.NobleEncounterInit.getManager();
+    return mgr != null && mgr.hasActive(player.getUUID());
   }
 
   private static int countRemainingPokemon(PlayerPartyStore party, Pokemon justFainted) {

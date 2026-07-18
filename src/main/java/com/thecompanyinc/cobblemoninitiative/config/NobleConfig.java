@@ -56,6 +56,35 @@ public class NobleConfig {
   private float sfxVolume = 1.0f;
   private float sfxPitch = 1.0f;
 
+  /** Wandering pseudo-legendary MINI nobles (the daily-roll roamers). Independent of dialog nobles. */
+  private boolean wanderingMinisEnabled = true;
+
+  /** The always-attacking TOWN BIRDS (Moltres/Articuno/Zapdos proximity event). */
+  private boolean townBirdAttacksEnabled = true;
+
+  /**
+   * Scales the per-day chance of the wandering MINIS (not the birds). 0 = never; 2 = twice as
+   * often. 1.0 = the JSON-authored chances.
+   */
+  private float ambientChanceMultiplier = 1.0f;
+
+  /** Minutes before a town bird can re-attack after a spawn (overrides the per-roll JSON value). */
+  private int townBirdCooldownMinutes = 4;
+
+  /**
+   * Noble catches roll perfect IVs (the JSON prizes carry {@code min_perfect_ivs}). Off = the
+   * {@code min_perfect_ivs} clause is stripped at catch time, so the reward has normal random IVs.
+   */
+  private boolean perfectIvPrizes = true;
+
+  /**
+   * Nobles are LETHAL (default — hardcore stakes): losing kills you, phase-1 attacks and a
+   * phase-2 party wipe can end the run. OFF = the Legends-Arceus knockout model: a loss knocks
+   * you out (heal + retreat), never a whiteout. Gates damage-capping, the knockout retreat, and
+   * the Nuzlocke-death suspension.
+   */
+  private boolean lethalNobleFights = true;
+
   // ── Singleton / lifecycle ─────────────────────────────────────────────────────
 
   public static NobleConfig get() {
@@ -105,6 +134,12 @@ public class NobleConfig {
   public float getRingPushback() { return ringPushback; }
   public float getSfxVolume() { return sfxVolume; }
   public float getSfxPitch() { return clampPitch(sfxPitch); }
+  public boolean isWanderingMinisEnabled() { return wanderingMinisEnabled; }
+  public boolean isTownBirdAttacksEnabled() { return townBirdAttacksEnabled; }
+  public float getAmbientChanceMultiplier() { return clamp(ambientChanceMultiplier, 0.0f, 5.0f); }
+  public int getTownBirdCooldownMinutes() { return Math.max(0, townBirdCooldownMinutes); }
+  public boolean isPerfectIvPrizes() { return perfectIvPrizes; }
+  public boolean isLethalNobleFights() { return lethalNobleFights; }
 
   public void setNoblesEnabled(boolean v) { this.noblesEnabled = v; }
   public void setAttackDamageMultiplier(float v) { this.attackDamageMultiplier = Math.max(0f, v); }
@@ -115,6 +150,12 @@ public class NobleConfig {
   public void setRingPushback(float v) { this.ringPushback = v; }
   public void setSfxVolume(float v) { this.sfxVolume = v; }
   public void setSfxPitch(float v) { this.sfxPitch = clampPitch(v); }
+  public void setWanderingMinisEnabled(boolean v) { this.wanderingMinisEnabled = v; }
+  public void setTownBirdAttacksEnabled(boolean v) { this.townBirdAttacksEnabled = v; }
+  public void setAmbientChanceMultiplier(float v) { this.ambientChanceMultiplier = clamp(v, 0.0f, 5.0f); }
+  public void setTownBirdCooldownMinutes(int v) { this.townBirdCooldownMinutes = Math.max(0, v); }
+  public void setPerfectIvPrizes(boolean v) { this.perfectIvPrizes = v; }
+  public void setLethalNobleFights(boolean v) { this.lethalNobleFights = v; }
 
   private static float clampPitch(float v) { return clamp(v, 0.5f, 2.0f); }
   private static float clamp(float v, float min, float max) { return Math.max(min, Math.min(max, v)); }

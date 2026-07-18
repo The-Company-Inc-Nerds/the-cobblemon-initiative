@@ -21,6 +21,7 @@ public class NobleEncounterInit implements ModInitializer {
 
   private static NobleEncounterManager manager;
   private static RiftDragonManager riftDragon;
+  private static AmbientNobleManager ambientNobles;
 
   @Override
   public void onInitialize() {
@@ -28,6 +29,8 @@ public class NobleEncounterInit implements ModInitializer {
     manager.loadNobles();
     riftDragon = new RiftDragonManager();
     riftDragon.loadConfig();
+    ambientNobles = new AmbientNobleManager();
+    ambientNobles.load();
 
     CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
       NobleCommands.register(dispatcher);
@@ -59,6 +62,7 @@ public class NobleEncounterInit implements ModInitializer {
     ServerTickEvents.END_SERVER_TICK.register(server -> {
       manager.tick(server);
       riftDragon.tick(server);
+      ambientNobles.tick(server);
     });
     ServerLifecycleEvents.SERVER_STARTED.register(manager::onServerStarted);
     ServerLifecycleEvents.SERVER_STOPPING.register(server -> {

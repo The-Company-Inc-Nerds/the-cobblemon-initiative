@@ -32,6 +32,12 @@ public class NuzlockeConfig {
   private boolean mysterySacrifice = false;
   private boolean sendCaughtToPC = true;
   private boolean setCaughtToZeroHP = true;
+  /**
+   * On a hardcore whiteout, offer the "Dishonorable Respawn" button on the death screen (revive
+   * in survival, stay hardcore-armed, permanent {@code dishonored} mark). Off = only the honorable
+   * spectate ending is offered — a purist one-life run.
+   */
+  private boolean dishonorableRespawnEnabled = true;
   private DuplicateHandling duplicateHandling = DuplicateHandling.OFF;
   private Set<String> caughtSpecies = new HashSet<>();
   private boolean enableSafeZones = true;
@@ -121,6 +127,15 @@ public class NuzlockeConfig {
     public int radius;
     public boolean preventHostileOnly;
     public boolean cylindrical;
+    /**
+     * Optional polygon footprint ({@code [[x,z],…]}), carried from the install.json zone
+     * vertices. When present, {@link #contains} tests the ACTUAL polygon (2D column, any Y)
+     * instead of the derived bounding circle — so the entry announcement, safe-zone
+     * suppression, and Dark Urge all line up with what Map Frontiers / JourneyMap draw.
+     * The circumscribed circle fired early (it bulges past every polygon edge); this fixes
+     * the "announces on Blossom Path before the map boundary" drift. Null = circle fallback.
+     */
+    public int[][] polygon = null;
     /** If true, this zone does not suppress mob spawning (mobs spawn normally). */
     public boolean mobsSpawn = false;
     /** Optional liberation gate — see InstallZone.activeWhenObjective. Blank objective = always active. */
@@ -163,6 +178,13 @@ public class NuzlockeConfig {
     public boolean contains(String dim, int x, int y, int z) {
       if (!dimension.equals(dim)) return false;
 
+      // Polygon zones (the install.json footprint) match the map exactly — a 2D
+      // column test, any Y, same as Map Frontiers / JourneyMap draw it.
+      if (polygon != null && polygon.length >= 3) {
+        return pointInPolygon(polygon, x + 0.5, z + 0.5);
+      }
+
+      // Fallback: the legacy bounding circle (zones authored without vertices).
       int dx = x - centerX;
       int dz = z - centerZ;
       int distSq = dx * dx + dz * dz;
@@ -173,6 +195,21 @@ public class NuzlockeConfig {
       }
 
       return distSq <= (radius * radius);
+    }
+
+    /** Ray-casting point-in-polygon on the X/Z plane. */
+    private static boolean pointInPolygon(int[][] poly, double px, double pz) {
+      boolean inside = false;
+      int n = poly.length;
+      for (int i = 0, j = n - 1; i < n; j = i++) {
+        double xi = poly[i][0], zi = poly[i][1];
+        double xj = poly[j][0], zj = poly[j][1];
+        boolean straddles = (zi > pz) != (zj > pz);
+        if (straddles && px < (xj - xi) * (pz - zi) / (zj - zi) + xi) {
+          inside = !inside;
+        }
+      }
+      return inside;
     }
   }
 
@@ -227,6 +264,7 @@ public class NuzlockeConfig {
   public boolean isMysterySacrifice() { return mysterySacrifice; }
   public boolean isSendCaughtToPC() { return sendCaughtToPC; }
   public boolean isSetCaughtToZeroHP() { return setCaughtToZeroHP; }
+  public boolean isDishonorableRespawnEnabled() { return dishonorableRespawnEnabled; }
   public DuplicateHandling getDuplicateHandling() { return duplicateHandling; }
   public Set<String> getCaughtSpecies() { return caughtSpecies; }
   public boolean isEnableSafeZones() { return enableSafeZones; }
@@ -269,6 +307,7 @@ public class NuzlockeConfig {
   public void setMysterySacrifice(boolean v) { this.mysterySacrifice = v; }
   public void setSendCaughtToPC(boolean v) { this.sendCaughtToPC = v; }
   public void setSetCaughtToZeroHP(boolean v) { this.setCaughtToZeroHP = v; }
+  public void setDishonorableRespawnEnabled(boolean v) { this.dishonorableRespawnEnabled = v; }
   public void setDuplicateHandling(DuplicateHandling v) { this.duplicateHandling = v; }
   public void setEnableSafeZones(boolean v) { this.enableSafeZones = v; }
   public void setSafeZones(List<SafeZone> v) { this.safeZones = v; }
