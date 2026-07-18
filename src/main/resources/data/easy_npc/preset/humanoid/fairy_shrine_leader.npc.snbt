@@ -146,7 +146,34 @@
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "fairy_resolve_ready"
+                                }
+                            ],
                             Label: "yes_button"
+                        },
+                        {
+                            Name: "Step into the light",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "tellraw @initiator [{\"text\":\"The light holds you at its edge. Aurora does not move. Not yet - the radiance opens for a proven bond. Pass the Trial of Resolve at the altar, and it will part for you both.\",\"color\":\"gray\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_fairy_resolve_ready"
+                                }
+                            ],
+                            Label: "not_ready_button"
                         },
                         {
                             Name: "Not yet",

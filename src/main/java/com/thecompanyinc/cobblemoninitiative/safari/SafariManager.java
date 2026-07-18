@@ -130,6 +130,11 @@ public class SafariManager {
   private final Map<UUID, LifetimeStats> lifetime = new HashMap<>();
   /** Players whose permit fee is dispatched but unresolved — read #sf_ok next tick. */
   private final Set<UUID> pendingPermits = new HashSet<>();
+
+  /** A kiosk bait order whose fee is dispatched but unresolved — read #sfb_ok next tick. */
+  private record PendingBait(String type, int count, int fee) {}
+
+  private final Map<UUID, PendingBait> pendingBaits = new HashMap<>();
   private MinecraftServer server;
 
   // ── Wiring ────────────────────────────────────────────────────────────────────
@@ -332,6 +337,103 @@ public class SafariManager {
     if (calc == null) return false;
     return scoreboard
       .getOrCreatePlayerScore(ScoreHolder.forNameOnly("#sf_ok"), calc)
+      .get() >= 1;
+  }
+
+  // ── Bait kiosk purchase (permit-fee idiom, own #sfb_ok probe) ─────────────────
+
+  /** Per-unit kiosk price for a bait table — executive_blend is the premium tier. */
+  private int baitFeeFor(String type) {
+    return "executive_blend".equals(type) ? config.baitFeeExecutive : config.baitFee;
+  }
+
+  /**
+   * /cobblemon-initiative safari bait — charge the kiosk price, then issue. Fee
+   * dispatch + deferred read mirror {@link #enter}; a zero fee (config) falls back
+   * to the original free give. The bait itself is issued only after #sfb_ok
+   * confirms payment next tick.
+   */
+  public boolean buyBait(ServerPlayer player, String type, int count) {
+    MinecraftServer server = player.getServer();
+    if (server == null) return false;
+    this.server = server;
+
+    if (lureTables.getTable(type) == null) {
+      player.sendSystemMessage(
+        Component.literal(
+          "§cUnknown bait type: " + type + " §7(" + String.join(", ", getBaitTypes()) + ")")
+      );
+      return false;
+    }
+
+    int units = Math.max(1, count);
+    int fee = baitFeeFor(type) * units;
+    if (fee <= 0) {
+      return giveBait(player, type, units);
+    }
+
+    if (pendingBaits.containsKey(player.getUUID())) {
+      player.sendSystemMessage(
+        Component.literal("§e[Preserve] §7The kiosk is still processing your last order.")
+      );
+      return false;
+    }
+
+    dispatchBaitFee(server, player, fee);
+    pendingBaits.put(player.getUUID(), new PendingBait(type, units, fee));
+    return true;
+  }
+
+  /** Deferred half of buyBait(): #sfb_ok is readable one tick after the fee dispatch. */
+  private void resolvePendingBait(ServerPlayer player, PendingBait order) {
+    if (!readBaitProbe(server)) {
+      // The mcfunction already printed the branded actionbar decline; chat gets the receipt.
+      player.sendSystemMessage(
+        Component.literal(
+          "§c[Preserve] §7Payment declined — the kiosk does not extend credit. (§e" +
+          order.fee() + " CD§7 required)"
+        )
+      );
+      return;
+    }
+    if (giveBait(player, order.type(), order.count())) {
+      player.sendSystemMessage(
+        Component.literal("§6[Preserve] §7Bait charged to your account — §e" + order.fee() + " CD§7.")
+      );
+    }
+  }
+
+  /** Dispatch the bait pay-probe ({@code safari/bait_fee}) AS the buying player. */
+  private void dispatchBaitFee(MinecraftServer server, ServerPlayer player, int fee) {
+    Scoreboard scoreboard = server.getScoreboard();
+    Objective calc = scoreboard.getObjective("cd_calc");
+    if (calc == null) {
+      // economy/load normally owns cd_calc; create it so the probe works standalone.
+      calc = scoreboard.addObjective(
+        "cd_calc",
+        ObjectiveCriteria.DUMMY,
+        Component.literal("cd_calc"),
+        ObjectiveCriteria.RenderType.INTEGER,
+        true,
+        null
+      );
+    }
+    ScoreHolder probe = ScoreHolder.forNameOnly("#sfb_ok");
+    scoreboard.getOrCreatePlayerScore(probe, calc).set(0);
+
+    server.getCommands().performPrefixedCommand(
+      player.createCommandSourceStack().withPermission(2).withSuppressedOutput(),
+      "function cobblemon_initiative:safari/bait_fee {fee:" + fee + "}"
+    );
+  }
+
+  /** One tick after {@link #dispatchBaitFee}: 0 = broke/declined, amount = paid. */
+  private boolean readBaitProbe(MinecraftServer server) {
+    Scoreboard scoreboard = server.getScoreboard();
+    Objective calc = scoreboard.getObjective("cd_calc");
+    if (calc == null) return false;
+    return scoreboard
+      .getOrCreatePlayerScore(ScoreHolder.forNameOnly("#sfb_ok"), calc)
       .get() >= 1;
   }
 
@@ -709,6 +811,19 @@ public class SafariManager {
         ServerPlayer player = server.getPlayerList().getPlayer(id);
         if (player != null) {
           resolvePendingPermit(player);
+        }
+      }
+    }
+
+    // Deferred bait-order resolution — same one-tick contract as the permit probe.
+    if (!pendingBaits.isEmpty()) {
+      List<Map.Entry<UUID, PendingBait>> pendingOrders =
+        new ArrayList<>(pendingBaits.entrySet());
+      pendingBaits.clear();
+      for (Map.Entry<UUID, PendingBait> entry : pendingOrders) {
+        ServerPlayer player = server.getPlayerList().getPlayer(entry.getKey());
+        if (player != null) {
+          resolvePendingBait(player, entry.getValue());
         }
       }
     }

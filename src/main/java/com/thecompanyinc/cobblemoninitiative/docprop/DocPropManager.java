@@ -45,7 +45,14 @@ public class DocPropManager {
     // barrel by the farm fountain -> the re-signed ledger page
     new DocProp(
       new BlockPos(2584, 107, 2925), "file_opened", "doc_ledger",
-      "cobblemon_initiative:sidequest/personnel_file/give_doc_ledger")
+      "cobblemon_initiative:sidequest/personnel_file/give_doc_ledger"),
+    // Gaviota customs-float crate (The Tide Market) -> Odessa's seized-crate recovery.
+    // Was authored but wired to NOTHING (triage 2026-07-18) — coord is the register's
+    // PLACEHOLDER; 🧱 the showrunner still needs a clickable container AT this pos
+    // (or export the real crate pos) for the beat to be reachable in-world.
+    new DocProp(
+      new BlockPos(540, 63, 3530), "odessa_crate_started", "odessa_crate_recovered",
+      "cobblemon_initiative:sidequest/odessa/recover_crate")
   );
 
   /** {@code UseBlockCallback} handler — see class doc. */

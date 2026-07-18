@@ -42,6 +42,12 @@ public class SafariConfig {
   /** Gym badges required before Intake will sell a permit. */
   public int gateBadges = 3;
 
+  /** Kiosk bait price per unit for the four common tables (0 = free issue). */
+  public int baitFee = 60;
+
+  /** Kiosk bait price per unit for the premium executive_blend table. */
+  public int baitFeeExecutive = 250;
+
   /** Suspense window between a scatter and the spawn roll, in seconds (min..max). */
   public int suspenseMinSeconds = 5;
 

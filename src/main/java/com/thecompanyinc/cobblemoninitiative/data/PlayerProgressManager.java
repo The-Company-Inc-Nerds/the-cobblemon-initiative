@@ -164,6 +164,15 @@ public class PlayerProgressManager {
   public void onTrainerDefeated(ServerPlayer player, String trainerId) {
     PlayerProgress progress = getProgress(player);
 
+    // Shrine trials BEFORE the once-per-player dedup below: challenges are re-runnable
+    // (abort/faint/retry) but defeats record permanently, so a second hydra-gauntlet
+    // attempt re-defeats already-recorded stage trainers and the early return stranded
+    // the trial at stage 1 (live-caught 2026-07-18). The shrine handler is self-gated
+    // on an ACTIVE challenge + the exact current stage id, so repeats are harmless.
+    if (InitiativeInit.getShrineChallengeManager() != null) {
+      InitiativeInit.getShrineChallengeManager().onTrainerDefeated(player, trainerId);
+    }
+
     if (progress.hasDefeatedTrainer(trainerId)) {
       InitiativeInit.LOGGER.debug(
         "Player {} already defeated {}",
@@ -207,13 +216,7 @@ public class PlayerProgressManager {
 
     InitiativeInit.getLevelCapManager().updateLevelCap(player);
 
-    // Notify shrine challenge manager — advances hydra stages, completes dark gauntlet
-    if (InitiativeInit.getShrineChallengeManager() != null) {
-      InitiativeInit.getShrineChallengeManager().onTrainerDefeated(
-        player,
-        trainerId
-      );
-    }
+    // (Shrine notification moved ABOVE the already-defeated dedup — see method top.)
 
     if (player.getServer() != null) {
       saveProgress(player.getServer());
@@ -519,6 +522,12 @@ public class PlayerProgressManager {
         player.sendSystemMessage(
           Component.literal("§6§l[Level Cap] §r§eThe Board has fallen. Cap raised to 100 — one chair remains.")
         );
+        // The moment the mirror fight unlocks, shape it from the live party (re-shaped
+        // again on every join and at the Founder's own door — see FounderMirrorManager).
+        if (com.thecompanyinc.cobblemoninitiative.founder.FounderMirrorManager.refresh(player)) {
+          player.sendSystemMessage(Component.literal(
+            "§8Somewhere above the boardroom, something rearranges itself to match you."));
+        }
         var flavor = InitiativeInit.getFlavorConfig();
         if (flavor != null && flavor.isMilestoneLootEnabled()) {
           executeCommand(player, "give " + player.getName().getString() + " minecraft:netherite_ingot 2");

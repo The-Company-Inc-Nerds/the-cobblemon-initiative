@@ -1,9 +1,9 @@
 {
   "name": "safari_yards",
-  "description": "Safari Zone regression \u2014 the Biodiversity Asset Preserve ('the Baiting Yards'). Full permit loop at the in-zone mew-wisp clearing [1303 64 1451]: badge-3 gate refuses a 0-badge player with the balance and inventory untouched, then badges 3 + 2000 CD -> enter charges the 1500 CD Day Permit via the deferred pay-probe (balance 500 after), issues exactly 20 marked Preserve-issue Safari Balls, kiosk bait give (honey_smear) + perm-2 scatter dev hook draws a tagged lure within the 5-15s suspense window, and voluntary exit claws every issued ball back, prints the empty ledger + confiscation receipt, sweeps the lures, and does NOT teleport the player. Session gating is by session state, not zone geometry, but the run sits inside the shipped 'Safari Zone' landmark polygon for honest evidence. Badges are restored to 0 at the end (wheat_war_first_farm assumes badges<3); CobbleDollars ride at 500 after a run (the fee rail has no reset, miller_walk precedent).",
+  "description": "Safari Zone regression \u2014 the Biodiversity Asset Preserve ('the Baiting Yards'). Full permit loop at the in-zone mew-wisp clearing [1303 64 1451]: badge-3 gate refuses a 0-badge player with the balance and inventory untouched, then badges 3 + 2060 CD -> enter charges the 1500 CD Day Permit via the deferred pay-probe (balance 560 after), issues exactly 20 marked Preserve-issue Safari Balls, kiosk bait PURCHASE (honey_smear, 60 CD via the safari/bait_fee pay-probe since 0.6.0-alpha.6, issue deferred one tick behind payment) + perm-2 scatter dev hook draws a tagged lure within the 5-15s suspense window, and voluntary exit claws every issued ball back, prints the empty ledger + confiscation receipt, sweeps the lures, and does NOT teleport the player. Session gating is by session state, not zone geometry, but the run sits inside the shipped 'Safari Zone' landmark polygon for honest evidence. Badges are restored to 0 at the end (wheat_war_first_farm assumes badges<3); CobbleDollars ride at 500 after a run — 2060 - 1500 permit - 60 bait (the fee rail has no reset, miller_walk precedent).",
   "steps": [
     {
-      "comment": "-- SITE + DESIGN NOTES: concierge NPC is authored but UNPLACED (TODO 'awaiting placement coords'), so every safari command is rcon-dispatched via 'execute as {player}' (enter/exit/status are perm 0; bait/scatter are perm 2 and MUST come from the console side). NO BATTLE BEAT BY DESIGN: BATTLE_STARTED_PRE is cancelled at Priority.HIGHEST while a session is active \u2014 do not add one (this also means no party prep, no autobattle, and the known TBCS battle-init stall caveat never applies to this scenario). NEEDLE RULE for this file: Preserve messages are Component.literal strings with embedded \u00a7 codes and HudLog stores getString() RAW, so every wait_chat needle sits inside ONE color run (never spanning a \u00a7-code boundary \u2014 e.g. 'Issued balls: \u00a7620' means the count can't be in the needle; the exact figures are asserted by the adjacent clear-probes instead). --"
+      "comment": "-- SITE + DESIGN NOTES: concierge NPC is authored but UNPLACED (TODO 'awaiting placement coords'), so every safari command is rcon-dispatched via 'execute as {player}' (enter/exit/status are perm 0; bait/scatter are perm 2 and MUST come from the console side). NO BATTLE BEAT BY DESIGN: BATTLE_STARTED_PRE is cancelled at Priority.HIGHEST while a session is active \u2014 do not add one (this also means no party prep, no autobattle, and the known TBCS battle-init stall caveat never applies to this scenario). NEEDLE RULE for this file: Preserve messages are Component.literal strings with embedded \u00a7 codes and HudLog stores getString() RAW, so every wait_chat needle sits inside ONE color run (never spanning a \u00a7-code boundary \u2014 e.g. 'Issued balls: \u00a7620' means the count can't be in the needle; the exact figures are asserted by the adjacent clear-probes instead) \u2014 or bridges runs with a regex .* (daycare_board precedent, used for the bait receipt). --"
     },
     {
       "comment": "-- preamble: tp BEFORE any entity ops (kill silently no-ops in unloaded chunks). Site = 3b from the noble_giver_mew_wisp latch at 1300.5 64 1450.5 (compiled placement, live-swept grounded) inside the Safari Zone polygon x~1212-1552 / z~1344-1785, centerY 64. --"
@@ -18,7 +18,7 @@
       "rcon": "time set day"
     },
     {
-      "rcon": "kill @e[type=!player,distance=..32,type=!minecraft:armor_stand,type=!easy_npc:humanoid,type=!easy_npc:fairy,type=!cobblemon:pokemon]"
+      "rcon": "execute as {player} at @s run kill @e[type=!player,distance=..32,type=!minecraft:armor_stand,type=!easy_npc:humanoid,type=!easy_npc:fairy,type=!cobblemon:pokemon]"
     },
     {
       "rcon": "effect give {player} minecraft:regeneration 240 2"
@@ -73,14 +73,14 @@
       "expect": "No items were found"
     },
     {
-      "comment": "-- beat 2: the permit. badges 3 (cap 37 pins the ladder), fund 2000 -> fee 1500 resolves ONE TICK after dispatch (SafariManager pendingPermits pay-probe defer), balance 500 after, exactly 20 marked balls issued --"
+      "comment": "-- beat 2: the permit. badges 3 (cap 37 pins the ladder), fund 2060 (kept under the 1000-abbreviation ceiling AFTER the fee: 60-CD honey headroom + the 500 ride-out margin) -> fee 1500 resolves ONE TICK after dispatch (SafariManager pendingPermits pay-probe defer), balance 560 after, exactly 20 marked balls issued --"
     },
     {
       "rcon": "execute as {player} run cobblemon-initiative dev badges 3",
       "expect": "level cap now \u00a7e37"
     },
     {
-      "rcon": "cobbledollars set {player} 2000"
+      "rcon": "cobbledollars set {player} 2060"
     },
     {
       "rcon": "execute as {player} run cobblemon-initiative safari enter"
@@ -94,7 +94,7 @@
     },
     {
       "rcon": "cobbledollars query {player}",
-      "expect": "$ 500"
+      "expect": "$ 560"
     },
     {
       "rcon": "clear {player} cobblemon:safari_ball 0",
@@ -111,14 +111,22 @@
       "screenshot": "permit_active"
     },
     {
-      "comment": "-- beat 3: kiosk bait give, then the perm-2 scatter dev hook. The REAL consumption path is a held-item right-click (UseBlockCallback) which the headless driver cannot select deterministically (placeItemBackInInventory picks an arbitrary slot); the hook drives the same enqueueScatter and is the proven smoke_auto path. It does NOT consume the bait item \u2014 cleaned up at the end. --"
+      "comment": "-- beat 3: kiosk bait PURCHASE (60 CD, safari/bait_fee pay-probe \u2014 the bait is issued ONE TICK after payment resolves, so the receipt wait gates the clear-probe), then the perm-2 scatter dev hook. The REAL consumption path is a held-item right-click (UseBlockCallback) which the headless driver cannot select deterministically (placeItemBackInInventory picks an arbitrary slot); the hook drives the same enqueueScatter and is the proven smoke_auto path. It does NOT consume the bait item \u2014 cleaned up at the end. --"
     },
     {
       "rcon": "execute as {player} run cobblemon-initiative safari bait honey_smear"
     },
     {
+      "wait_chat": "Bait charged to your account.*60 CD",
+      "timeout": 10
+    },
+    {
       "rcon": "clear {player} minecraft:honeycomb 0",
       "expect": "Found 1"
+    },
+    {
+      "rcon": "cobbledollars query {player}",
+      "expect": "$ 500"
     },
     {
       "rcon": "execute as {player} run cobblemon-initiative safari scatter honey_smear"

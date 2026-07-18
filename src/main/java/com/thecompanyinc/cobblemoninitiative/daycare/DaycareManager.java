@@ -67,11 +67,6 @@ public class DaycareManager {
   private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
   private static final String CUSTODY_FILE_NAME = "cobblemon_initiative_daycare.json";
 
-  // Server→client picker bridge (mirrors NuzlockeInit.pendingSacrifice): the deposit command
-  // raises the flag; NuzlockeClientInit's tick poll opens DaycareSelectionScreen when no
-  // other screen is up (which also sequences naturally after Easy NPC's deferred dialog close).
-  private static boolean pendingPicker = false;
-
   private DaycareConfig config;
   private final Map<UUID, List<BoardedMon>> custody = new HashMap<>();
   private MinecraftServer server;
@@ -82,17 +77,8 @@ public class DaycareManager {
     this.config.save();
   }
 
-  public static void triggerPicker() {
-    pendingPicker = true;
-  }
-
-  public static boolean consumePendingPicker() {
-    if (pendingPicker) {
-      pendingPicker = false;
-      return true;
-    }
-    return false;
-  }
+  // The picker open/confirm flow is payload-driven since 0.6.0-alpha.6 — see
+  // network/InitiativePayloads (the old pendingPicker static bridge was singleplayer-only).
 
   public DaycareConfig getConfig() {
     return config;

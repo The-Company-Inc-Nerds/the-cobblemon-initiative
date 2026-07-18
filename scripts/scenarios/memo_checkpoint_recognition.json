@@ -1,0 +1,237 @@
+{
+  "name": "memo_checkpoint_recognition",
+  "description": "Checkpoint dialog-ladder regression for the 2026-07-18 villain_grunt_2 fix: with 3+ badges and an unprocessed dead letter, the contraband entry (prio 18→25) must OUTRANK mid recognition@20 (‘Your face is on a memo’ was swallowing the surrender/handling choice); the dead ‘default’ entry is deleted and the ungated checkpoint_hail@15 is the early greeting. Flow: badges 3 + carrying_dead_letter + no handling fee → contraband surfaces (say + all three buttons), pay the 250 CD handling fee → receipt, letter stays (‘remains your liability’); re-open at 3 badges → recognition correctly RESUMES (mid@20); badges back to 0 → the ungated hail@15 with the gated 120 CD fee button. Haruki is compiled-but-unplaced, so the preamble imports the shipped preset at the placement_plan tent coords itself. No battle button is ever clicked and the 20000 CD grant keeps checkpoint_handling_2's broke-branch auto-battle unreachable.",
+  "_probe_pending": [
+    "2043.5 64 2705.5",
+    "2043.5 64 2708.5"
+  ],
+  "steps": [
+    {
+      "comment": "-- SITE + DESIGN NOTES: Haruki (villain_grunt_2) is compiled-but-UNPLACED (TODO 'Place the compiled-but-unplaced NPCs'; the quest_targets register notes no tent coordinates exist in the repo), so this scenario imports the shipped preset itself at the placement_plan.json checkpoint-tent coords (x=2043 z=2708, Blossom Path pinch — plan only, no baked Y exists, hence _probe_pending; partner_unlocks import_new idiom; the working-tree preset carries the recompiled ladder, contraband Priority 25). Deliberately NO npcsight registration and NO checkpoint_agent entity tag: sight (mode dialog) force-opens the checkpoint_hail LABEL and would bypass the priority ladder under test, and checkpoint_agent arms the Per-My-Last-Memo loiter tick (EYES ON YOU / CLEAR actionbar noise). A direct interact makes Easy NPC pick the highest-priority passing entry — the exact regression surface. NO BATTLE CLICKS BY DESIGN: every entry carries a battle button (known TBCS stall caveat) and checkpoint_handling_2's broke branch auto-starts a TBCS battle vs this agent — the 20000 CD grant keeps it unreachable, and 'Refuse and face the agent' / 'Fight' / 'Decline verification and face them' are render-asserts only, never clicked. Fee receipts are actionbar titles (overlay kind); needles sit inside ONE color run. --"
+    },
+    {
+      "comment": "-- scenario start: close any leftover dialog (no-op when nothing is open), then tp BEFORE any kill (kill no-ops in unloaded chunks; a stale Haruki body from a prior run would dupe on re-import). Route site outside any safe zone — full mob spawns on a hardcore player: day + sweep + regen. tp Y is PROBE PENDING (see _probe_pending). --"
+    },
+    {
+      "client": "screen.close"
+    },
+    {
+      "rcon": "tp {player} 2043.5 64 2705.5"
+    },
+    {
+      "rcon": "time set day"
+    },
+    {
+      "rcon": "execute as {player} at @s run kill @e[type=!player,distance=..32,type=!minecraft:armor_stand,type=!easy_npc:humanoid,type=!easy_npc:fairy,type=!cobblemon:pokemon]"
+    },
+    {
+      "rcon": "effect give {player} minecraft:regeneration 240 2"
+    },
+    {
+      "sleep": 2.0
+    },
+    {
+      "comment": "-- reset (idempotent re-runs): stale imported body, then every tag/score this scenario sets. paid_handling_fee is the contraband not_tag (its inverse no_paid_handling_fee comes back via band_tags next tick); removing paid_checkpoint_fee keeps processed@16 out of the ladder AND keeps the hail's gated 120 CD fee button visible in beat 3. The letter gate is tag-only — the paper prop is irrelevant because the surrender button is never clicked. --"
+    },
+    {
+      "rcon": "execute as {player} at @s run kill @e[type=easy_npc:humanoid,name=Haruki,distance=..48]"
+    },
+    {
+      "rcon": "tag {player} remove paid_handling_fee"
+    },
+    {
+      "rcon": "tag {player} remove paid_checkpoint_fee"
+    },
+    {
+      "rcon": "tag {player} add carrying_dead_letter"
+    },
+    {
+      "comment": "-- 3 badges + the band source. Recognition tiers read the badges_gte_N band tags, which derive from the memory_fragment score (fragments ≡ badges in canon); dev badges does NOT mirror the score, so set it explicitly. Fund generously (also starves the handling broke-branch). Import Y is PROBE PENDING. --"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative dev badges 3",
+      "expect": "level cap now §e37"
+    },
+    {
+      "rcon": "scoreboard players set {player} memory_fragment 3"
+    },
+    {
+      "rcon": "cobbledollars give {player} 20000"
+    },
+    {
+      "rcon": "easy_npc preset import_new data easy_npc:preset/humanoid/villain_grunt_2.npc.snbt 2043.5 64 2708.5"
+    },
+    {
+      "sleep": 2.0,
+      "comment_": "import lands + band_tags settles the derived lane (no_paid_handling_fee back, badges_gte_3 on)"
+    },
+    {
+      "comment": "-- lane sanity: contraband gate holds, mid@20 is ELIGIBLE (badges_gte_3) and late@30 is not — so entry selection, not gating, decides the winner --"
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=carrying_dead_letter,tag=no_paid_handling_fee]",
+      "expect": "passed"
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=badges_gte_3,tag=!badges_gte_7]",
+      "expect": "passed"
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=!paid_checkpoint_fee]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 1: THE regression assert. Easy NPC opens exactly one entry, so the contraband say line rendering (single line, no rotation) proves prio 25 beat mid@20; 'Your face is on a memo' appearing here means the ladder regressed. All three buttons render; only the pay button is clicked. --"
+    },
+    {
+      "find_npc": "Haruki",
+      "save": "h"
+    },
+    {
+      "interact_npc": "{h.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "That is mail, and you are not a rail"
+    },
+    {
+      "expect_screen_text": "Hand over the letter"
+    },
+    {
+      "expect_screen_text": "Pay the 250 CD handling fee"
+    },
+    {
+      "expect_screen_text": "Refuse and face the agent"
+    },
+    {
+      "screenshot": "contraband_entry"
+    },
+    {
+      "click": "Pay the 250 CD handling fee"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "Handling fee logged",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "sleep": 1.5,
+      "comment_": "button command lands, then band_tags must drop no_paid_handling_fee before the re-open"
+    },
+    {
+      "comment": "-- fee semantics: the handling fee does NOT take the letter ('remains your liability') --"
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=paid_handling_fee,tag=carrying_dead_letter]",
+      "expect": "passed"
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=!no_paid_handling_fee]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 2: re-open at 3 badges. Contraband is now gated off (paid_handling_fee), so recognition correctly RESUMES: mid@20 is the designed winner. any-of covers the rotating say pair; the Fight button is render-assert only. --"
+    },
+    {
+      "find_npc": "Haruki",
+      "save": "h2"
+    },
+    {
+      "interact_npc": "{h2.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "Your face is on a memo. The kind with a black bar over the name and the words do not engage, report immediately.",
+        "You are supposed to be a closed file. Closed files do not get to walk away."
+      ]
+    },
+    {
+      "expect_screen_text": "Fight"
+    },
+    {
+      "screenshot": "mid_after_handling"
+    },
+    {
+      "client": "screen.close"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "comment": "-- beat 3: strip the badge band (score reset + instant tag removal so we do not race the band tick — mystic_mirror precedent): the ungated checkpoint_hail@15 must be the early greeting now that the dead 'default' entry is deleted. Badge restore to 0 here also honors the cross-scenario contract (wheat_war_first_farm assumes badges<3). The 120 CD fee button's not_tag paid_checkpoint_fee gate must hold (no_paid_checkpoint_fee band tag present) — render-assert only, clicking would charge and flip the shared checkpoint tag. --"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative dev badges 0",
+      "expect": "level cap now §e15"
+    },
+    {
+      "rcon": "scoreboard players reset {player} memory_fragment"
+    },
+    {
+      "rcon": "tag {player} remove badges_gte_3"
+    },
+    {
+      "sleep": 1.5
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=!badges_gte_3,tag=!paid_checkpoint_fee]",
+      "expect": "passed"
+    },
+    {
+      "find_npc": "Haruki",
+      "save": "h3"
+    },
+    {
+      "interact_npc": "{h3.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "Step lively. Voluntary verification — the good kind of voluntary, where everyone volunteers.",
+        "Blossom Path service point. We verify trust and we verify value. You look like you carry at least one of those."
+      ]
+    },
+    {
+      "expect_screen_text": "Pay the 120 CD processing fee"
+    },
+    {
+      "expect_screen_text": "Decline verification and face them"
+    },
+    {
+      "screenshot": "checkpoint_hail_low_badges"
+    },
+    {
+      "client": "screen.close"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "comment": "-- cleanup: strip every tag this scenario set and despawn the imported body (doubly covered by the preamble's stale-body kill). The 20000 CD grant rides — the fee rail has no reset (miller precedent); balance-exact scenarios set their own. Badges already restored to 0 in beat 3. --"
+    },
+    {
+      "rcon": "tag {player} remove carrying_dead_letter"
+    },
+    {
+      "rcon": "tag {player} remove paid_handling_fee"
+    },
+    {
+      "rcon": "execute as {player} at @s run kill @e[type=easy_npc:humanoid,name=Haruki,distance=..48]"
+    },
+    {
+      "screenshot": "memo_checkpoint_recognition_done"
+    }
+  ]
+}

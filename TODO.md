@@ -8,6 +8,113 @@ done, Claude removes it **and** any release-removal it unblocks.
 
 ---
 
+## 2026-07-18 — alpha.6 wave (items 2/3/4/5/1/6 of the 07-18 plan; all live-verified unless marked)
+
+**Landed + live-verified on the headless stack (server + driver client):**
+- **Hydra gauntlet is now PLAYABLE e2e** — the dragon shrine's stage battles had no
+  battle source (no rctmod teams, no dispatcher). Authored `rctmod/trainers/dragon_hydra_1..3`
+  (names exact-match the Initiative displayNames so defeats resolve to stage ids) +
+  a stage dispatcher in ShrineChallengeManager (anchored tbcs, Stadium pattern: 2-3s
+  delay, silent-refusal retry→abort watchdog, anchor sweep on every exit). Verified:
+  stages 1→2→3 dispatch/advance/heal, completion latches `dragon_shrine_trial_clear`,
+  RE-RUN works — which caught a real engine bug: **PlayerProgressManager.onTrainerDefeated
+  early-returned on already-recorded defeats BEFORE notifying the shrine manager**, so any
+  second trial attempt stranded at stage 1; shrine notify now runs before the dedup.
+  Nuzlocke note: hydra faints removed 3 mons + whiteout-killed the probe bot on attempt 1 —
+  shrine trials are brutal-by-design, but scenario runs need a safe-zone site or big teams.
+- **Cultist_3/4 trimmed** (10 dead ids): prerequisites are runtime-inert (`canBattleTrainer`
+  has ZERO call sites) and the ids had no teams/bodies/placements; shrine leaders now
+  prereq cultist_1/2, npc_map_template rows dropped.
+- **Safari bait is charged** — 60 CD commons / 250 executive_blend (`safari.json`
+  baitFee/baitFeeExecutive), `safari/bait_fee` pay-probe (#sfb_ok), issue deferred one
+  tick; concierge buttons show prices. e2e 56/56 incl. the broke path.
+- **partyhas quest helper** — `/cobblemon-initiative partyhas <type> <tag>` (party
+  elemental-type probe, tags synchronously so dialog functions branch in-place).
+- **Marsh-Child Bryn built** (doc 01 §2 cast 6/6, Open Q3 resolved KEEP): show-a-Fairy-type
+  errand → Wisp-Lantern (soul lantern, Lysira tie-in) + fairy-shrine nudge; child scale
+  visuals. e2e 54/54 (incl. the no-fairy path). Boot log caught set_lore needing 1.21's
+  `mode` key.
+- **villain_grunt_2 ladder fixed** — contraband 18→25 (outranks mid recognition at 3+
+  badges), dead `default` entry deleted. e2e 58/58.
+- **NpcSight fired-reset** — `remove`/`reset` now clear the tag-profile session cache
+  (the APPROACH_ONCE latch survived remove+re-add); `reload` clears all sessions.
+- **Founder party-mirror (runtime)** — `founder/FounderMirrorManager`: rctapi registry
+  swap (public API via reflection: unregisterById + registerNPC; TBCS auto-mirrors on
+  the registry events; teams are read at battle-build so NO reload). Party cloned,
+  level 100, healed. Triggers: board_cleared grant, join-while-board_cleared, the
+  Founder's "Face myself" button (prepended `mirror refresh`), `/ca mirror refresh`.
+  Live-verified: swap executes clean against rctapi 0.15.2. 🔍 remaining: a full battle
+  vs the mirrored team (needs the Founder placed).
+- **Daycare/MomCare picker is payload-driven** — `network/InitiativePayloads` (S2C
+  picker_open w/ real free-slot count, C2S picker_deposit); screen + client poll reworked,
+  singleplayer static bridges deleted. **daycare_board UNPARKED: 58/58 on the two-process
+  harness.**
+- **Showdown wedge trap SHIPPED** — GraalShowdownServiceMixin wraps sendFromShowdown
+  (bytecode-verified one-liner re-impl in try/catch): a Java exception mid-interpretMessage
+  is now CONTAINED (logged w/ battleId+raw message+stack via compat/ShowdownWedgeTrap,
+  one-line player toast, `dev showdown trap` reader) instead of unwinding into the JS
+  engine and wedging every later battle. The organic trigger auto-captures on next
+  occurrence; 0 faults in ~10 battles this session. Remaining showrunner call: `stopbattle`
+  paying the trainer's win branch (unchanged).
+- **GROUND-PROBE PASS + repair wave a6 — only 4/48 gyms-3-7 spec-cast placements were
+  valid.** Live block-probed every alpha.17/20 town-pack placement: 34 buried 1-26 blocks
+  (whole cyber cast ~25 deep, gaviota ~20), 10 with no pocket at authored Y (Deepcore's
+  real floor is y≈109-123, not 129; the deep office y114 not y40). All 44 dialog-src
+  placements re-based to probed feet-Y, `install/repairs_a6_*` kills stale bodies +
+  re-arms latches (shipped, auto-applies), scenario tp coords re-based. Bryn found at
+  1.0b post-repair = the pattern works.
+- **Stale-claim cleanup**: mew giver location Safari Zone→Kalahar Oasis + `q.side_wisp`/
+  `q.side_deep` labels + kyogre buoy notes (alpha.4/5 relocations), safari concierge
+  bait comment, wiki §1.E + town-pages claims below.
+
+**Scenario wave 3 AUTHORED (workflow, 13 agents): 33 scenarios, `scenario_lint --all`
+errors:0** — town packs gyms 3-7 (17), shrine_dragon + shrine_wiring, Frontier (registrar +
+7 halls + complete), noble_giver_smoke, safari_bait_fee, bryn_wisp, memo_checkpoint_recognition,
+plus safari_yards funding + daycare_board un-park edits. **Live-verified so far: daycare_board
+58/58, safari_bait_fee 56/56, bryn_wisp 54/54, memo_checkpoint_recognition 58/58 + the hydra
+run above. 🔍 REMAINING: serial live verification of the other ~28** (the established loop;
+tp coords already re-based onto the probe data).
+
+**Content findings from the authoring wave — ALL TRIAGED + FIXED 2026-07-18 (showrunner
+rulings applied; runtime re-verify rides the scenario loop):**
+- [x] `wheat_trader.json` §k bleed → `§r` reset added after the scrambled fragment
+- [x] `heard_wheat_pitch` now set by ALL tiers (suspicious buttons + hostile chain), not
+  just the default pitch — `q.side_rate` can always light
+- [x] `kalahar_pump_crew` recognized_late fight_button gated `not_tag
+  defeated_sq_pump_foreman` (the pair's last fight closes both — no more prize spigot)
+- [x] `cyber_door_downtown` — the reported dead-end was FALSE (ungated default catches);
+  the real issue was the stale pre-Volt pitch: added a `settled` epilogue @20
+- [x] **RULING: fairy trial MANDATORY** — resolve-pass latches `fairy_resolve_ready`
+  (Java), Aurora's battle button gates on it, a not-ready button explains the Trial of
+  Resolve. Yes, that includes the shiny. Brutal as intended. 🔍 live-verify the gate
+- [x] **RULING: checkpoint softened** — all four fee functions latch `checkpoint_settled`;
+  BOTH agents' mid-recognition entries gate `not_tag checkpoint_settled` (paid players get
+  the civil band; LATE recognition still overrides). Sani's contraband also raised 18→25
+  (same shadow bug as Haruki)
+- [x] **RULING: frontier bleed fixed, names kept** — Sterling re-voiced/re-located to the
+  Market; roster fiction re-voiced to one-time on all three lines; Palmer's duplicate
+  beaten line re-voiced
+- [x] **RULING: Nurse Rurik → Nurse Rilka** (miner keeps Rurik Deepdelve); dialog +
+  character + scenario + docs updated
+- [x] **RULING: grain-factor dig ambush KEPT** (thematic — late-campaign Kalahar is
+  hostile ground)
+- [x] survey stones 1/2 got ungated `locked` fallbacks (pre-accept rendered NO entry);
+  stone 3's fallback no longer name-drops Ossa pre-meeting
+- [x] `met_cyber_nurse` wired for real — q.side_signal/q.side_exchange stages now gate on
+  it (the documented mm_nurse pattern; was write-only)
+- [x] Marisol's report_water Q+A merged to one deterministic line (rotation showed the
+  answer without the question); "Bruno students"→"the Bruno students" ×2; "Kaito
+  problem"→"a problem for Kaito"
+- [x] Odessa's customs crate wired into DocPropManager at the register placeholder
+  [540 63 3530] — 🧱 REMAINING: a clickable container must exist AT that pos (or export
+  the real crate coord)
+- [x] `dev badges N` now mirrors `memory_fragment` (recognition band tags follow dev grants)
+- [x] scenario_lint: escape-aware text extractors (mcfunction + Java) + win/lose/
+  already_beaten lines in the corpus (warnings 221→194); safari_yards hostile sweep
+  re-anchored `execute as {player} at @s` (was measuring from world spawn)
+
+---
+
 ## 2026-07-16 — client test driver + E2E scenarios (docs/TESTING_TOOLKIT.md § Client driver)
 
 **Landed + live-verified 2026-07-16:** driver + runner shipped (alpha.21, strip list §A) and
@@ -73,10 +180,9 @@ forceload the site → kill the stale body → reset its `#amb_*` latch → it r
 new coords on next visit. Wave a2 covers the Takehara/auditor/mew-wisp/Oasis-pump moves.
 DON'T hand-write per-world kill commands in the runbook anymore — add a repair wave.
 
-**Small bug noticed (alpha.3, low priority):** NpcSight APPROACH_ONCE `fired` state and
-sight registration SURVIVE `npcsight remove`+re-add and `npcsight reload` (a re-registered
-walk-up NPC stays fired=true, won't re-trigger). Fine in production (one-time by design)
-but makes re-testing a walk-up need a fresh player. Consider a `fired` reset on `remove`.
+**Small bug noticed (alpha.3, low priority):** ~~NpcSight APPROACH_ONCE `fired` survives
+`npcsight remove`+re-add / `reload`~~ — FIXED alpha.6 (2026-07-18): `remove`+`reset` clear
+the tag-profile session cache, `reload` clears all sessions.
 
 **Open findings:**
 - [ ] 🔍 **FancyMenu × Cobblemon battle crash (POTENTIAL STREAM-BREAKER)** — FancyMenu's
@@ -114,13 +220,14 @@ but makes re-testing a walk-up need a fresh player. Consider a `fired` reset on 
   reproduced), (2) closes registered Cobblemon battles, (3) dispatches Cobblemon's own
   `/reloadshowdown` (context rebuild + full registry re-push — a bare close/open leaves
   the fresh JS with no species data and battles still stall, verified). Post-revive:
-  two consecutive battles WON, server stable. REMAINING 💻: (a) find the organic wedge
-  TRIGGER (catch one with battlestate + a JS-side error tap; suspect: a Java exception
-  mid-interpretMessage silently unwinding); (b) SHOWRUNNER DECISION for 1.0.0 — revive
-  lives in devtools (strips at 1.0.0) but the wedge presumably can hit the real
-  single-player stream: promote an auto-watchdog (detect frozen battle → auto-revive +
-  player toast) into shipped code, or accept relog-as-recovery; (c) `stopbattle` on a
-  hung battle pays the TRAINER'S win branch — decide if that stands for real players.
+  two consecutive battles WON, server stable. **UPDATE alpha.6 (2026-07-18): (a) is SHIPPED
+  as containment** — GraalShowdownServiceMixin wraps sendFromShowdown in try/catch; a Java
+  exception mid-interpretMessage is trapped (ShowdownWedgeTrap: battleId + raw message +
+  full stack in the log, one-line player toast, `dev showdown trap` reader) instead of
+  unwinding into the JS loop — the engine no longer wedges AND the organic trigger
+  self-captures on next occurrence (0 faults in ~10 battles so far). This also largely
+  settles (b): containment ships, revive stays a dev tool. REMAINING: (c) `stopbattle` on
+  a hung battle pays the TRAINER'S win branch — showrunner call.
 - [ ] 💻 **Quest scenarios, next waves** — FIRST WAVE LANDED 2026-07-17 (workflow-authored,
   live-verified): `mystic_mirror` 51/51 (Fairy Mirror-Match dialog routing — declare →
   variant entry, two types; closes that gimmick's runtime-verify), `pay_probes` 107/107
@@ -134,8 +241,10 @@ but makes re-testing a walk-up need a fresh player. Consider a `fired` reset on 
   confirm both ride same-JVM singleplayer bridges — a dedicated-server client can never
   see the picker; needs an S2C payload to be e2e-able), and the last-mon refusal line
   didn't surface in chat on the harness (unresolved, low stakes). NEW DRIVER OP:
-  `screen.click_at {x,y}` (coordinate click for slot-based GUIs). Still to author:
-  shrines/nobles cluster, Battle Frontier halls, per-town packs gyms 3–7.
+  `screen.click_at {x,y}` (coordinate click for slot-based GUIs). ~~Still to author:
+  shrines/nobles cluster, Battle Frontier halls, per-town packs gyms 3–7~~ — AUTHORED
+  2026-07-18 (wave 3, 33 files, lint errors:0 — see the alpha.6 section at the top;
+  ~28 still need their serial live runs).
   **Field find:** the Safari Zone clearing's real surface is y≈89 — the y64 latch
   placement (noble_giver_mew_wisp) and noble mew.json center were BURIED (both fixed
   → y89; the giver needs a kill+re-latch on existing worlds). Two of the three driver
@@ -211,8 +320,8 @@ build` for the Java/rctmod half):**
   folds the coords into each character's `placement` + recompiles.
 - **Wiki (💻, this round):** added a **Facilities** page (Stadium/Daycare/Safari) and a **Gym
   Mechanics** page (all 10 gimmicks + the trainer-layout note); gate references corrected to 6.
-  *Still missing (need built quest content first):* town quest pages for gyms 3–10, HQ, League,
-  Frontier — ship slim stubs as each town's dialog compiles.
+  *~~Still missing~~ — verified 2026-07-18: ALL 11 town/HQ/League/Frontier pages exist in
+  `wiki/` as the intended slim stubs (published + synced); flesh out as content live-verifies.*
 
 ---
 
@@ -335,10 +444,24 @@ wear-down) and **`chase`** (friendly flee-and-tag, e.g. Mew). Shipped: 6 combat 
 - [x] 💻 Engine: attack primitives, element themes, ambient themes, flyer mechanic, arena
       ring, stagger boss bar, phase-2 `BattleBuilder.pve` swap + capture/victory matching.
 - [x] 💻 Content: 6 encounter JSONs + `cobblemon_npc` presets + advancements; `/noble` + `/noble-abort`.
+- [x] 💻 **Trio no-spawn FIXED (alpha.5, live-verified 18/18)** — "Groudon/Kyogre/
+      Rayquaza won't spawn" was a monument↔arena coordinate desync (alpha.4 moved the
+      arenas, not the monuments → body imported into unloaded chunks → 4s manifest
+      timeout), NOT AllTheMons. Monuments moved to their arenas (kyogre buoy →
+      Mystic Island shore, rayquaza altar → Sky Ring deck, groudon stone → the REAL
+      south rim — terrain probe found the caldera is a lava lake at y295, rim y296-312;
+      old y110/y70 site was ~200b inside the mountain; arena recentered [3790,313,3813]).
+      Repair wave a5 re-latches existing worlds + sweeps leaked phase-1 bodies. Phase-2
+      guard added: unregistered battleSpecies now fails loudly instead of silently
+      substituting a random mon (protects datapack-less worlds — groudon/kyogre are
+      implemented:false in base Cobblemon).
 - [ ] 🧱 Noble arena THEMED SITES (set dressing only) — the centers are AUTHORED since
       alpha.20 (all 7 encounter JSONs carry real coords; the [0,0,0]→player-position
       fallback never triggers on shipped data). Remaining is dressing the sites if the
       raw terrain disappoints — a screenshot survey of all 7 can pre-grade them.
+      **Groudon south rim is the priority**: the shelf is raw slope and the arena-ring
+      edge nears the lava lake on N/NE — wants a built fight platform / rim guard rail
+      before the endgame set-piece ships.
 - [ ] 🧱 Per-noble balance pass: Phase-1 `max_health` + `staggerAtHealthFraction`, body
       `Root.Scale`, attack damage/cooldowns, Phase-2 `battleSpecies` level (catchable under the cap ladder).
 - [ ] 🧱 Decide the unlock gate/trigger per noble (story-flag-gated `/noble start`, an Easy NPC
@@ -506,11 +629,14 @@ Harvest Road villains, Deng camp, garden stations).
   code; build/config cruft. NOT the gitignored maps/cache/dist/build. This is DISCOVERY,
   broader than §2 (the pre-identified dev-tool strip) — good fit for a workflow (finders
   → verify each candidate is truly unused → report before deleting). **Candidates already
-  spotted this session** (verify before cutting): `dialog-src/dialog/sq_lucian_deliveries.json`
-  (stale pre-merge dup of sq_personnel_file), `sq_perf_review_guide.json` (merge file not
-  wired to a character), JEI `.disabled` support in build_mrpack (shelved), `level.dat.bak`
-  in the staged map, `docs/QUEST_OPTIONS_TOWNS_1-2.md` (planning doc — still current?),
-  the 28 empty/missing `{}` trainer teams (future-act, NOT stale — pre-wired, leave).
+  spotted** (statuses re-verified 2026-07-18): `dialog-src/dialog/sq_lucian_deliveries.json`
+  DELETED alpha.6 (triple-confirmed orphan merge file; marlow comment repointed);
+  `sq_perf_review_guide.json` already retired 2026-07-06 (lives in dialog/takehara_guide.json);
+  `level.dat.bak` KEEP — build_mrpack deliberately bakes + ships it as vanilla's corruption
+  fallback; JEI `.disabled` support in build_mrpack (shelved — still a candidate);
+  `docs/QUEST_OPTIONS_TOWNS_1-2.md` KEEP until Phase 1 item 4 (its Status section is the
+  live placement list); the 28 empty/missing `{}` trainer teams (future-act, NOT stale —
+  pre-wired, leave).
 
 ### Phase 1 — Map authoring sprint 🧱 (parallelizable with Phase 2 wiring)
 Author in batches; each batch unblocks Claude wiring the same day:
@@ -620,7 +746,8 @@ Author in batches; each batch unblocks Claude wiring the same day:
 - [x] ~~Smoke-test `cobbledollars add @s`~~ — **moot (2026-07-03):** CobbleDollars 2.0.0-Beta-5.1 has **no `add` subcommand at all** (jar-verified grammar: pay/query/give/remove/set/reload/leaderboard). Every `cobbledollars add` in the repo (pay_macro, granary ambush, all 143 battle-prize onwin strings) was a dead command — all replaced with `cobbledollars give <targets> <amount>` (selector-first, accepts @s under execute-as). Verify in-game that a battle prize actually lands (runbook Round 5 canary #5).
 - [x] **Cast the 20 empty + author the 18 missing trainer teams (0.5.0-alpha.12)** — see
   the Phase 0.4 entry; content_compile team warnings 28 → 0. Remaining casting debt:
-  shrine cultist_3/4 (10), dragon_hydra_1..3, battle_frontier (24).
+  ~~shrine cultist_3/4 (10)~~ trimmed alpha.6 (dead ids, prereqs inert), ~~dragon_hydra_1..3~~
+  authored alpha.6 (+ the stage dispatcher — gauntlet e2e-verified), battle_frontier done (alpha.15).
 - [ ] **villain_grunt_2 checkpoint dialog ladder** 💻 (minor polish): the `default` entry is dead code, and `contraband` is overshadowed at 3+ badges.
 - [x] **RCT trainer data cleanup** 💻 — RESOLVED (2026-07-17): `validate_trainers.py` runs
   clean over all 255 shipped team files (0 errors; the named bad entries — lorelei/terry/zeph
@@ -644,7 +771,7 @@ Author in batches; each batch unblocks Claude wiring the same day:
 - [ ] Confirm hardcore flag + relog
 
 ### E. Docs & wiki 💻/🧱
-- [ ] **Publish the wiki** — initialize the GitHub wiki once (create any page in the repo's *Wiki* tab), then run `publish-wiki` to push `wiki/` (it link-checks first; URL defaults to `<origin>.wiki.git`).
+- [x] **Publish the wiki** — DONE (verified 2026-07-18: GitHub wiki live, synced 2026-07-17, byte-identical to local `wiki/`, 33 pages).
 - [ ] After editing `wiki/` pages, re-run `publish-wiki` to keep the live wiki in sync.
 
 ### F. Zone-mapper & dev environment 💻
@@ -726,8 +853,8 @@ deletable.
   one NPC does intake + bait kiosk: buttons run `safari enter` (closes), `status`,
   `exit`, and `safari bait <type>` for all 5 baits; compiled, awaiting **placement
   coords AT THE ZONE ENTRANCE** 🧱 (enter starts the clock where the player stands — no
-  teleport-in). OPEN 💻: bait is currently FREE (`safari bait` just issues it) — add a
-  CD-charge wrapper if bait should cost (concept: 60-250 CD/tier). 🧱 REMAINING: paddock
+  teleport-in). ~~OPEN 💻: bait is currently FREE~~ — CHARGED since alpha.6 (60/250 CD via
+  `safari/bait_fee` pay-probe, ModMenu-tunable; e2e 56/56 incl. broke path). 🧱 REMAINING: paddock
   dressing on the shipped zone polygon, post-DJ liberation flip (designed, not built).
 
 - [ ] 🧱💻 **Legends-style legendary boss battles** (showrunner idea 2026-07-05 — I'll

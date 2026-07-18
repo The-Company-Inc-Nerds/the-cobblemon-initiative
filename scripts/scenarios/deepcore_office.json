@@ -1,0 +1,140 @@
+{
+  "name": "deepcore_office",
+  "description": "The Deep Office (q.side_office slot 51, Deepcore SQ4 - the scrubbing-artifact set-piece): the Abandoned Branch Office prop body sealed down the played-out shaft at y~40. No cash, no battle - the beats are the oblique recognition seed (the unscrubbed founder portrait, never named) and the Gaviota manifest hook. Chain: deepcore_restructure_started is injected as the register context (it is the reason to be down the shaft; the reserve scenario earns it for real), then the default entry's read_button sets seen_deep_office (the Dark-Urge stir announce), the REVISITED entry (prio 20) must preempt on re-open with the manifest button still live, taking the manifest sets took_deep_manifest (aqua Gaviota announce), and a third open shows the revisited entry with the manifest button now hidden by its not_tag (absence is not assertable headless - the stable Seal-it-again label is the anchor). Both quest tags are one-way latches left set BY DESIGN (seen_deep_office closes the q.side_office line); the preamble resets them for re-runs.",
+  "_probe_pending": [
+    "985.5 40 3120.5"
+  ],
+  "_probe_note": "The office coord is the character file's own PLACEHOLDER - authored y=40 with an explicit 'confirm at placement; if absent, relocate to a surface old-assay-office' note. MUST be ground/void-probed (and the sealed-wing build confirmed to exist) before the first live run; the safari buried-y64 incident is the precedent.",
+  "steps": [
+    {
+      "comment": "-- preamble: close any leftover dialog, reset the two quest latches (idempotent re-runs), and inject the register context tag --"
+    },
+    {
+      "client": "screen.close"
+    },
+    {
+      "rcon": "tag {player} remove seen_deep_office"
+    },
+    {
+      "rcon": "tag {player} remove took_deep_manifest"
+    },
+    {
+      "rcon": "tag {player} add deepcore_restructure_started",
+      "comment_": "the q.side_office stage gates on it; idempotent - deepcore_reserve earns and resets it in its own runs"
+    },
+    {
+      "comment": "-- tp BEFORE the hostile sweep (kill no-ops in unloaded chunks): y~40 is cave darkness outside any safe zone, so clear the room and keep the hardcore player alive through the reading --"
+    },
+    {
+      "rcon": "tp {player} 985.5 114 3120.5"
+    },
+    {
+      "sleep": 2.0
+    },
+    {
+      "rcon": "kill @e[type=!player,distance=..32,type=!minecraft:armor_stand,type=!easy_npc:humanoid,type=!easy_npc:fairy,type=!cobblemon:pokemon]"
+    },
+    {
+      "rcon": "effect give {player} minecraft:regeneration 240 2"
+    },
+    {
+      "sleep": 1.5,
+      "comment_": "latch settle - the prop body spawns within 40b of the placement"
+    },
+    {
+      "comment": "-- beat 1: the sealed office. say[] rotates 2 lines, so assert the stable read_button label; reading sets seen_deep_office + the Dark-Urge stir announce (dark_gray, single color run) --"
+    },
+    {
+      "find_npc": "Abandoned Branch Office",
+      "save": "o"
+    },
+    {
+      "interact_npc": "{o.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "Look at the portrait"
+    },
+    {
+      "screenshot": "office_sealed_room"
+    },
+    {
+      "click": "Look at the portrait"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "My hand knows this motion better than I do",
+      "timeout": 10
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=seen_deep_office]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 2: re-open - the revisited entry (prio 20) must preempt the default; say pair covered any-of; the manifest button is still live (took_deep_manifest not yet set) --"
+    },
+    {
+      "interact_npc": "{o.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "The office is as you left it. Sealed air, a desk, an unsigned charter, and the portrait nobody came back to take down. The brass plate under it is scratched to bare metal. Whoever this was, they were somebody once.",
+        "Still sealed, still airless, still hung with the one portrait the scrubbers never reached - full colour, the plate beneath it scratched blank. The face in the frame keeps your eyes longer than a stranger should. You do not know why. You do not like that you do not know why."
+      ]
+    },
+    {
+      "expect_screen_text": "Take the shipping manifest"
+    },
+    {
+      "screenshot": "office_revisited"
+    },
+    {
+      "click": "Take the shipping manifest"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "The manifest routes the reserve down to Gaviota Port",
+      "timeout": 10
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=took_deep_manifest]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 3: third open - still the revisited entry; the manifest button is now hidden by its not_tag gate (button ABSENCE is not assertable headless - the evidence screenshot carries it; the stable leave label anchors the entry) --"
+    },
+    {
+      "interact_npc": "{o.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "Seal it again"
+    },
+    {
+      "screenshot": "office_manifest_taken"
+    },
+    {
+      "click": "Seal it again"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "comment": "-- cleanup: seen_deep_office + took_deep_manifest are one-way quest latches left set BY DESIGN (they close the sidebar line); deepcore_restructure_started stays for the reserve chain, whose own scenario resets it --"
+    },
+    {
+      "screenshot": "deepcore_office_done"
+    }
+  ]
+}

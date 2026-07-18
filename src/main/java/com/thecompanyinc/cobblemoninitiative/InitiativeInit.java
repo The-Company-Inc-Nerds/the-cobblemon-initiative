@@ -134,6 +134,18 @@ public class InitiativeInit implements ModInitializer {
       shrineChallengeManager.tick(server)
     );
 
+    // Showdown wedge trap toast — a contained engine fault deserves one visible line
+    // (the battle it hit may need /stopbattle; every detail is already in the log).
+    ServerTickEvents.END_SERVER_TICK.register(server -> {
+      if (com.thecompanyinc.cobblemoninitiative.compat.ShowdownWedgeTrap.consumePendingNotify()) {
+        for (net.minecraft.server.level.ServerPlayer p : server.getPlayerList().getPlayers()) {
+          p.sendSystemMessage(net.minecraft.network.chat.Component.literal(
+            "§c[Initiative] §7A battle-engine fault was contained. If the current battle "
+              + "hangs, §f/stopbattle§7 recovers it — details are in the log."));
+        }
+      }
+    });
+
     // Stadium wave loop — countdowns, battle-id capture, stale-run sweep (like shrine).
     ServerTickEvents.END_SERVER_TICK.register(StadiumManager::tick);
 
@@ -228,6 +240,9 @@ public class InitiativeInit implements ModInitializer {
       LOGGER.info("Loaded player progress data.");
     });
 
+    // S2C/C2S payloads (party-picker flow) — types must register before any join.
+    com.thecompanyinc.cobblemoninitiative.network.InitiativePayloads.register();
+
     // Migrate players saved under the wrong/empty rctmod series (new players are placed by
     // the healed initialSeries; this only fixes pre-existing stat.dat).
     net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents.JOIN.register(
@@ -235,6 +250,11 @@ public class InitiativeInit implements ModInitializer {
         com.thecompanyinc.cobblemoninitiative.compat.RctmodServerConfig.ensurePlayerSeries(handler.player);
         snapFirstJoinToSpawn(handler.player, server);
         flavorConfig.applyGymGateTag(handler.player); // gym MC gate on/off for the joiner
+        // Post-Board endgame: keep the Founder mirror tracking the live party across
+        // sessions (silent; the dialog-button refresh covers the fight itself).
+        if (progressManager.getProgress(handler.player).hasAchievement("board_cleared")) {
+          com.thecompanyinc.cobblemoninitiative.founder.FounderMirrorManager.refresh(handler.player);
+        }
       });
 
     ServerLifecycleEvents.SERVER_STOPPING.register(server -> {

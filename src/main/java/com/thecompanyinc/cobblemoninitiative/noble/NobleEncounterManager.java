@@ -771,6 +771,14 @@ public class NobleEncounterManager {
         species = species.replaceAll("\\s*min_perfect_ivs=\\d+", "");
       }
       PokemonProperties props = PokemonProperties.Companion.parse(species);
+      if (props.getSpecies() == null) {
+        // parse() silently substitutes a random mon for an unregistered species (e.g. a
+        // world missing the AllTheMons datapack) — fail loudly instead of handing out
+        // the wrong catch.
+        InitiativeInit.LOGGER.error("Noble {} battleSpecies '{}' is not a registered species — is the AllTheMons datapack missing from this world?", state.getNobleId(), species);
+        fail(server, player, state, "§cThe noble's true form could not take shape.");
+        return;
+      }
       PokemonEntity gr = props.createEntity(level);
       float yaw = (float) (Math.toDegrees(Math.atan2(player.getZ() - sz, player.getX() - sx)) - 90.0);
       gr.moveTo(sx, sy, sz, yaw, 0f);

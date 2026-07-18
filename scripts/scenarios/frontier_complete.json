@@ -1,0 +1,410 @@
+{
+  "name": "frontier_complete",
+  "description": "Frontier aggregate capstone: force-set six of the seven frontier_<facility>_cleared tags via rcon, clear the LAST hall (Battle Market - last stage of the q.side_frontier_hall ladder) live through Market Mogul Sterling, and assert the seventh-bow beat from frontier/hall_cleared ('THE WARDEN STIRS' / 'The Deep Dark door is open.' / frontier_warden_stirred / #halls==7). Then the Deep Dark capstone itself: Selene's sealed-door default entry BEFORE the seventh hall falls, her recognition entry after (9-tag gate: seven halls + both cave challenger tags, force-set), the GEN_9_DOUBLES fight (two mons required - hence the 2x Garchomp), and the frontier_all_cleared beat from frontier/frontier_complete: 'FRONTIER CLEARED' title, 'Every hall bowed. The dark stood down.' subtitle, skewed 20000 purse ('Verified Rate' actionbar via economy/payout - cd_instability haircut to a 75% floor, so the balance is NEVER asserted exactly), the one-shot sendoff actionbar, and Selene's beaten lane. Idempotence: the four one-shot latches (frontier_warden_stirred / frontier_all_cleared / frontier_purse_paid / frontier_sendoff_seen) are stripped preamble-side - a riding frontier_sendoff_seen would starve its wait_chat on re-runs. Win waits ride the KNOWN TBCS stall / showdown wedge; a timeout is almost certainly the stall, re-run before filing.",
+  "_probe_pending": [
+    "3806.5 159 2996.5"
+  ],
+  "steps": [
+    {
+      "comment": "-- SITE NOTES: latch-placed bodies on the shipped RCT plateau anchors - Sterling [3800.5 159 2999.5], Selene [3812.5 159 2996.5], market challengers [3797.5/3803.5 159 2993.5]. The y=159 cluster was never ground-verified live (Frontier memory: 'coords/atlas + runtime smoke pending'; the market char file even notes an atlas-intent Battle Port [4230 64 2809]) - hence _probe_pending; do NOT guess a corrected Y. The tp lands between Sterling and Selene, inside every relevant 40b latch. frontier_active region tick suspends Nuzlocke, but day + regen below because this is NOT a SafeZone. --"
+    },
+    {
+      "comment": "-- reset (idempotent re-runs): the live hall's tags + the four one-shot aggregate latches --"
+    },
+    {
+      "rcon": "tag {player} remove frontier_market_cleared"
+    },
+    {
+      "rcon": "tag {player} remove frontier_warden_stirred"
+    },
+    {
+      "rcon": "tag {player} remove frontier_all_cleared"
+    },
+    {
+      "rcon": "tag {player} remove frontier_purse_paid"
+    },
+    {
+      "rcon": "tag {player} remove frontier_sendoff_seen"
+    },
+    {
+      "comment": "-- force-set: the six other halls (tower/factory/castle/arcade/port/pyramid), Sterling's two market-challenger gate tags (his hires are not this scenario's surface), Selene's two cave-challenger gate tags, and the champion arm --"
+    },
+    {
+      "rcon": "tag {player} add frontier_tower_cleared"
+    },
+    {
+      "rcon": "tag {player} add frontier_factory_cleared"
+    },
+    {
+      "rcon": "tag {player} add frontier_castle_cleared"
+    },
+    {
+      "rcon": "tag {player} add frontier_arcade_cleared"
+    },
+    {
+      "rcon": "tag {player} add frontier_port_cleared"
+    },
+    {
+      "rcon": "tag {player} add frontier_pyramid_cleared"
+    },
+    {
+      "rcon": "tag {player} add defeated_market_challenger_1"
+    },
+    {
+      "rcon": "tag {player} add defeated_market_challenger_2"
+    },
+    {
+      "rcon": "tag {player} add defeated_cave_challenger_1"
+    },
+    {
+      "rcon": "tag {player} add defeated_cave_challenger_2"
+    },
+    {
+      "rcon": "tag {player} add royal_league_champion"
+    },
+    {
+      "comment": "-- tp BEFORE any entity-adjacent work (latch spawns within 40b); long settle covers first-visit preset import --"
+    },
+    {
+      "rcon": "tp {player} 3806.5 159 2996.5"
+    },
+    {
+      "sleep": 3.0
+    },
+    {
+      "comment": "-- leftover-state guards: close any stale dialog; stopbattle force-ends a stale battle (clean-player no-op) --"
+    },
+    {
+      "client": "screen.close"
+    },
+    {
+      "rcon": "stopbattle {player}"
+    },
+    {
+      "sleep": 1.5
+    },
+    {
+      "rcon": "time set day"
+    },
+    {
+      "rcon": "weather clear"
+    },
+    {
+      "rcon": "effect give {player} minecraft:regeneration 480 2"
+    },
+    {
+      "comment": "-- party: six empties then two lv-100 Garchomp - Selene is GEN_9_DOUBLES, two mons are mandatory, and both fights sit at the ceiling --"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon garchomp level=100"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon garchomp level=100"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative dev bot autobattle on"
+    },
+    {
+      "comment": "-- wallet baseline: informational only. economy/payout skews by cd_instability (75% floor) and prize rails accrue, so NO exact-balance assert anywhere in this file (stadium_wave lesson) --"
+    },
+    {
+      "rcon": "cobbledollars set {player} 0"
+    },
+    {
+      "comment": "-- settle + lane sanity: band tick re-derives no_frontier_market_cleared / no_frontier_all_cleared after the removals; six-hall force-set verified in one selector --"
+    },
+    {
+      "sleep": 2.0
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=royal_league_champion,tag=no_frontier_market_cleared]",
+      "expect": "passed"
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=no_frontier_all_cleared,tag=!frontier_warden_stirred]",
+      "expect": "passed"
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=frontier_tower_cleared,tag=frontier_factory_cleared,tag=frontier_castle_cleared,tag=frontier_arcade_cleared,tag=frontier_port_cleared,tag=frontier_pyramid_cleared]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 1: the sealed door. Six halls down, market still standing -> Selene's default entry (the recognition entry needs all seven). Prose any-of covers the 3-line rotation; the leave button is the stable assert --"
+    },
+    {
+      "find_npc": "Cave Warden Selene",
+      "save": "warden"
+    },
+    {
+      "interact_npc": "{warden.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "My door stays shut. Seven Brains stand between you and this dark - bow to all of them, then come back with a lamp and a spine.",
+        "The Deep Dark keeps its own. Clear the other halls; the Warden does not open early.",
+        "Not yet. Seven bows first. The dark down here is load-bearing - do not enter it half-earned."
+      ]
+    },
+    {
+      "expect_screen_text": "Come back later"
+    },
+    {
+      "screenshot": "warden_door_shut"
+    },
+    {
+      "click": "Come back later"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "comment": "-- beat 2: the seventh bow, live - Market Mogul Sterling. His button gates champion + both (force-set) hire tags + no_frontier_market_cleared --"
+    },
+    {
+      "find_npc": "Market Mogul Sterling",
+      "save": "mogul"
+    },
+    {
+      "interact_npc": "{mogul.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "Battle Market Mogul Sterling"
+    },
+    {
+      "screenshot": "market_gate_open"
+    },
+    {
+      "click": "Battle Market Mogul Sterling"
+    },
+    {
+      "comment": "-- battle buttons have no close action - close the stale dialog; the aggregate chain anchors here: win line -> 'A Frontier hall falls.' -> #halls==7 -> WARDEN STIRS title pair + frontier_warden_stirred --"
+    },
+    {
+      "client": "screen.close"
+    },
+    {
+      "wait_chat": "Every asset on my books, spent.",
+      "timeout": 240
+    },
+    {
+      "wait_chat": "A Frontier hall falls.",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 15
+    },
+    {
+      "wait_chat": "THE WARDEN STIRS",
+      "kinds": [
+        "title"
+      ],
+      "timeout": 15
+    },
+    {
+      "wait_chat": "The Deep Dark door is open.",
+      "kinds": [
+        "subtitle"
+      ],
+      "timeout": 15
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=frontier_market_cleared,tag=frontier_warden_stirred]",
+      "expect": "passed"
+    },
+    {
+      "rcon": "execute if score #halls quest_hud matches 7",
+      "expect": "passed"
+    },
+    {
+      "screenshot": "warden_stirs"
+    },
+    {
+      "comment": "-- beat 3: the Deep Dark. Re-open Selene - the recognition entry (prio 30, 9-tag gate) must now preempt the sealed door. Doubles fight, then frontier/frontier_complete: FRONTIER CLEARED pair, skewed purse, one-shot sendoff --"
+    },
+    {
+      "sleep": 1.5
+    },
+    {
+      "find_npc": "Cave Warden Selene",
+      "save": "warden"
+    },
+    {
+      "interact_npc": "{warden.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "Face the Warden - opt in"
+    },
+    {
+      "screenshot": "warden_opt_in"
+    },
+    {
+      "click": "Face the Warden"
+    },
+    {
+      "client": "screen.close"
+    },
+    {
+      "wait_chat": "The dark stands down. No challenger has ever taken this cave",
+      "timeout": 300
+    },
+    {
+      "wait_chat": "FRONTIER CLEARED",
+      "kinds": [
+        "title"
+      ],
+      "timeout": 15
+    },
+    {
+      "wait_chat": "Every hall bowed. The dark stood down.",
+      "kinds": [
+        "subtitle"
+      ],
+      "timeout": 15
+    },
+    {
+      "wait_chat": "Verified Rate",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 15
+    },
+    {
+      "wait_chat": "There is a doorstep waiting past the maps",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 15
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=frontier_all_cleared,tag=frontier_purse_paid,tag=frontier_sendoff_seen]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- purse read is informational only: skewed purse (>=15000 at max instability) + Selene's 5000 prize rail; never assert exactly --"
+    },
+    {
+      "rcon": "cobbledollars query {player}"
+    },
+    {
+      "screenshot": "frontier_cleared"
+    },
+    {
+      "comment": "-- beat 4: Selene's beaten lane (prio 40, gate frontier_all_cleared) - 2-line rotation covered. Re-find refreshes the approach context (the battle chain pushed the last one out of range) --"
+    },
+    {
+      "sleep": 1.5
+    },
+    {
+      "find_npc": "Cave Warden Selene",
+      "save": "warden"
+    },
+    {
+      "interact_npc": "{warden.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "You beat me in my own dark. Nobody does that. The Frontier is yours, every hall of it - go find whatever doorstep is waiting past the maps I keep.",
+        "The lamp you carried was your own nerve. Keep it lit out there. The dark I guard is nothing next to the one you are walking toward."
+      ]
+    },
+    {
+      "expect_screen_text": "Leave the dark"
+    },
+    {
+      "screenshot": "warden_beaten"
+    },
+    {
+      "click": "Leave the dark"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "comment": "-- cleanup: autobattle off; strip EVERYTHING this run set or earned (halls, hires, warden/all/purse/sendoff latches, champion) so later scenarios inherit an early-game player --"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative dev bot autobattle off"
+    },
+    {
+      "rcon": "tag {player} remove frontier_tower_cleared"
+    },
+    {
+      "rcon": "tag {player} remove frontier_factory_cleared"
+    },
+    {
+      "rcon": "tag {player} remove frontier_castle_cleared"
+    },
+    {
+      "rcon": "tag {player} remove frontier_arcade_cleared"
+    },
+    {
+      "rcon": "tag {player} remove frontier_port_cleared"
+    },
+    {
+      "rcon": "tag {player} remove frontier_pyramid_cleared"
+    },
+    {
+      "rcon": "tag {player} remove frontier_market_cleared"
+    },
+    {
+      "rcon": "tag {player} remove defeated_market_challenger_1"
+    },
+    {
+      "rcon": "tag {player} remove defeated_market_challenger_2"
+    },
+    {
+      "rcon": "tag {player} remove defeated_cave_challenger_1"
+    },
+    {
+      "rcon": "tag {player} remove defeated_cave_challenger_2"
+    },
+    {
+      "rcon": "tag {player} remove frontier_warden_stirred"
+    },
+    {
+      "rcon": "tag {player} remove frontier_all_cleared"
+    },
+    {
+      "rcon": "tag {player} remove frontier_purse_paid"
+    },
+    {
+      "rcon": "tag {player} remove frontier_sendoff_seen"
+    },
+    {
+      "rcon": "tag {player} remove royal_league_champion"
+    },
+    {
+      "screenshot": "frontier_complete_done"
+    }
+  ]
+}

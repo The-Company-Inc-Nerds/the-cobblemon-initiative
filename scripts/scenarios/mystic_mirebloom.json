@@ -1,0 +1,227 @@
+{
+  "name": "mystic_mirebloom",
+  "description": "The Mirebloom Paddy (q.side_mirebloom, slot 54) - the farm_2 field liberation, wheat_war_first_farm's marsh sibling. Steward Halvard holds the paddy gate (villain_forced: no decline, opt-in by geography); badges are pinned to 0 so the ungated default entry shows (the 'mid' recognition entry needs badges_gte_3). Beating him fires the full onwin chain: +500 CD, defeated_mm_field_guard, the fence-down say line, then liberation/free_field farm_2 -> the Field-liberated actionbar, the first-liberation subtitle ('The Company will notice.' - fields_liberated is reset to 0 in the preamble so n lands on 1), the MIREBLOOM PADDIES - LIBERATED ceremony title, wheat_war_active, and the farm_2 field_freed latch that band_tags mirrors into field_2_liberated for the tombstone dialog. The preamble kills + re-latches the gate body so the RCT trainer is fresh on re-runs. Battle click is exposed to the known intermittent TBCS/showdown wedge (~1/10) - a timeout on the win-line wait is that engine bug, not this content. Note the wait_chat order copies the ceremony's EMISSION order (overlay, subtitle, THEN title - ceremony.mcfunction issues the subtitle command first).",
+  "_probe_pending": [
+    "1229.5 64 2820.5"
+  ],
+  "steps": [
+    {
+      "comment": "-- preamble: tp FIRST (kill/latch-reset no-op in unloaded chunks, then dupe on respawn - found 5 stacked Mings once). Site = the paddy gate latch at 1229.5 64 2820.5 - AUTHORED y=64 PLACEHOLDER, not yet ground-probed (see _probe_pending): confirm the real surface Y before the first live run --"
+    },
+    {
+      "rcon": "tp {player} 1229.5 90 2820.5"
+    },
+    {
+      "sleep": 2.0
+    },
+    {
+      "rcon": "time set day"
+    },
+    {
+      "rcon": "weather clear"
+    },
+    {
+      "client": "screen.close"
+    },
+    {
+      "comment": "-- (screen.close above = leftover-dialog guard) re-arm the fight: kill the gate body + reset the ambient latch so a FRESH RCT trainer spawns during the settle sleep --"
+    },
+    {
+      "rcon": "kill @e[type=!player,name=\"Steward Halvard\"]"
+    },
+    {
+      "rcon": "scoreboard players set #amb_mm_field_guard ci_ambient 0"
+    },
+    {
+      "comment": "-- reset (idempotent re-runs): defeat tag, the one-way liberation latch + its band mirror, the shared war flags --"
+    },
+    {
+      "rcon": "tag {player} remove defeated_mm_field_guard"
+    },
+    {
+      "rcon": "tag {player} remove field_2_liberated"
+    },
+    {
+      "rcon": "tag {player} remove wheat_war_active"
+    },
+    {
+      "rcon": "scoreboard players reset farm_2 field_freed"
+    },
+    {
+      "rcon": "scoreboard players set {player} fields_liberated 0"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative dev badges 0",
+      "expect": "level cap now §e15"
+    },
+    {
+      "comment": "-- party reset + battle prep: junk lv-5 parties stall TBCS battle init (verified live in wheat_war); 2x lv-100 Garchomp = attrition headroom vs Mightyena 27 / Obstagoon 29 --"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon garchomp level=100"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon garchomp level=100"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative dev bot autobattle on"
+    },
+    {
+      "comment": "-- settle: latch respawn + band re-derivation; lane sanity = fresh guard, un-liberated paddy, recognition early --"
+    },
+    {
+      "sleep": 2.0
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=no_defeated_mm_field_guard]",
+      "expect": "passed"
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=!field_2_liberated,tag=!badges_gte_3]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 1: the gate refusal (default entry, prio 10) and the forced fight. Battle button has no close action - close the stale dialog and let the server-side autobattler fight --"
+    },
+    {
+      "find_npc": "Steward Halvard",
+      "save": "h"
+    },
+    {
+      "interact_npc": "{h.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "Far enough. Mirebloom Paddies are verified Company ground - fenced, filed, and none of yours. The grain goes where the grain goes. You match a description we were told to forget, but a description is not a permit. Turn around.",
+        "This water is Company water now, whatever the town says it used to be. Move along, or make it a matter for the ledger. Your choice, and the ledger always wins."
+      ]
+    },
+    {
+      "expect_screen_text": "Take the paddy"
+    },
+    {
+      "screenshot": "halvard_gate"
+    },
+    {
+      "click": "Take the paddy"
+    },
+    {
+      "client": "screen.close"
+    },
+    {
+      "comment": "-- the win chain, in emission order: say line -> free_field actionbar -> ceremony subtitle (n=1) -> ceremony title --"
+    },
+    {
+      "wait_chat": "The fence comes down",
+      "timeout": 180
+    },
+    {
+      "wait_chat": "Field liberated",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 15
+    },
+    {
+      "wait_chat": "The Company will notice",
+      "kinds": [
+        "subtitle"
+      ],
+      "timeout": 15
+    },
+    {
+      "wait_chat": "MIREBLOOM",
+      "kinds": [
+        "title"
+      ],
+      "timeout": 15
+    },
+    {
+      "screenshot": "mirebloom_liberated"
+    },
+    {
+      "comment": "-- state asserts: defeat tag, the one-way field latch, the shared counter, the war flag, then (after a band tick) the field_2_liberated mirror the tombstone dialog gates on --"
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=defeated_mm_field_guard]",
+      "expect": "passed"
+    },
+    {
+      "rcon": "execute if score farm_2 field_freed matches 1",
+      "expect": "passed"
+    },
+    {
+      "rcon": "execute if score {player} fields_liberated matches 1..",
+      "expect": "passed"
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=wheat_war_active]",
+      "expect": "passed"
+    },
+    {
+      "sleep": 1.5
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=field_2_liberated]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 2: the fence-down tombstone (prio 40, field_2_liberated) with the Quarry Road / Deepcore forward-nudge --"
+    },
+    {
+      "find_npc": "Steward Halvard",
+      "save": "h"
+    },
+    {
+      "interact_npc": "{h.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "The water runs where it likes now. Marsh-rice for the town again, not for a ledger. I stood the gate because it was the job. I am not sorry it is over.",
+        "Nothing to guard here anymore, pilgrim. The fen took its field back. Mind Quarry Road south - the stone is Company ground too, and Deepcore does not give an inch."
+      ]
+    },
+    {
+      "screenshot": "fence_down"
+    },
+    {
+      "click": "The marsh remembers"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "comment": "-- cleanup: bot off; the liberation rides as played state (one field freed keeps miller_walk's fields_liberated<4 assumption; the preamble resets it on re-runs) --"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative dev bot autobattle off"
+    },
+    {
+      "screenshot": "mystic_mirebloom_done"
+    }
+  ]
+}

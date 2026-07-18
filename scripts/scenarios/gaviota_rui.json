@@ -1,0 +1,333 @@
+{
+  "name": "gaviota_rui",
+  "description": "Mending the Deep Nets (q.side_rui slot 44) end-to-end at the Gaviota deep pier: the short-count refusal (5 string -> 'Not eight yet', inventory untouched), the 8-string turn-in (clears exactly 8, 300 CD skewed payout + reward/standard, bosun_net_done + the 'Restrung.' actionbar), the wager entry render (both buttons), the PAID bow-out (route/decline_sq_rui_wager: 100 CD, declined_sq_rui_wager, 'Non-engagement processed' actionbar), the declined stand-down re-open (the wager entry still shows but BOTH buttons gate on no_declined_sq_rui_wager -> a button-less ESC-only page, asserted as-is), then tag surgery re-arms the wager and the autobattler wins it (win say + wager_sweetener roll + defeated_sq_rui_wager), ending on the net_flavor poststate. Balance asserts are skipped on purpose: payout/decline ride the skewed rail + cobbledollars query abbreviates >= 1000. KNOWN CAVEAT: the intermittent TBCS battle-init stall / rare showdown wedge - a win-wait timeout is almost certainly that, not a quest regression; re-run before filing (wedge recovery: blind rctapi maps then dev showdown revive). Cross-scenario leftovers (canon caveat family): 2x lv-100 Garchomp stay in the party, wallet rides +20000-ish per run.",
+  "_probe_pending": [
+    "605.5 64 3660.5"
+  ],
+  "steps": [
+    {
+      "comment": "-- preamble: close any leftover dialog from a prior scenario, sweep a stale battle (stopbattle fires no event; the sleep lets TBCS liveness settle) --"
+    },
+    {
+      "client": "screen.close"
+    },
+    {
+      "rcon": "stopbattle {player}"
+    },
+    {
+      "sleep": 1.5
+    },
+    {
+      "comment": "-- tp FIRST (loaded chunks; the 40b latch spawns Rui on a fresh world). Coordinate is gaviota_fisher's authored placement - PLACEHOLDER y64, _probe_pending until the first live run confirms the pier deck --"
+    },
+    {
+      "rcon": "tp {player} 605.5 93 3660.5"
+    },
+    {
+      "sleep": 2.0
+    },
+    {
+      "rcon": "time set day",
+      "comment_": "the wharf spiders the quest lore feeds on spawn after dark; day keeps the run clean (and survivable if the pier sits outside the town polygon)"
+    },
+    {
+      "rcon": "weather clear"
+    },
+    {
+      "comment": "-- reset (idempotent re-runs): every tag this scenario sets, the fetch item, and a generous fee/stake fund (wager 200 + bow-out 100 both draw on it) --"
+    },
+    {
+      "rcon": "tag {player} remove bosun_net_done"
+    },
+    {
+      "rcon": "tag {player} remove defeated_sq_rui_wager"
+    },
+    {
+      "rcon": "tag {player} remove declined_sq_rui_wager"
+    },
+    {
+      "rcon": "clear {player} minecraft:string"
+    },
+    {
+      "rcon": "cobbledollars give {player} 20000"
+    },
+    {
+      "sleep": 1.5,
+      "comment_": "band_tags must re-derive the no_* inverses (no_bosun_net_done / no_defeated_sq_rui_wager / no_declined_sq_rui_wager) after the removals before any dialog opens"
+    },
+    {
+      "comment": "-- lane sanity: fresh fetch, nothing declined or defeated --"
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=no_bosun_net_done,tag=no_defeated_sq_rui_wager,tag=no_declined_sq_rui_wager]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- party prep for the wager beat: junk lv-5 parties stall TBCS battle init (wheat_war live lesson). Empty all six slots, then 2x lv-100 Garchomp - the wager is opt-in, never level-locked --"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon garchomp level=100"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon garchomp level=100"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative dev bot autobattle on"
+    },
+    {
+      "comment": "-- beat 1: the request + short count. 5 string in hand, turn_in_net counts via clear-with-0 and refuses without touching the inventory --"
+    },
+    {
+      "rcon": "give {player} minecraft:string 5"
+    },
+    {
+      "find_npc": "Netmender Bosun Rui",
+      "save": "rui"
+    },
+    {
+      "interact_npc": "{rui.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "Rui. Boatswain of the Gaviota deep fleet, forty years, until the big nets rotted through and the yard stopped ordering line - budget adjustment, they called it. Bring me eight lengths of string and I will restring two deep-sea nets, one for the fleet and one for you.",
+        "You have the look of a river-hand. Somebody taught you a rod once. Bring me eight lengths of string and I will restring two deep-sea nets - one for the fleet, one for you - and I will teach you what the tide teaches. String comes off the water, off the wharf, off any spider that dares the boardwalk after dark."
+      ]
+    },
+    {
+      "expect_screen_text": "Hand over 8 string"
+    },
+    {
+      "screenshot": "rui_request"
+    },
+    {
+      "click": "Hand over 8 string"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "Not eight yet",
+      "timeout": 10
+    },
+    {
+      "rcon": "clear {player} minecraft:string 0",
+      "expect": "Found 5",
+      "comment_": "the short count must leave the 5 lengths untouched"
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=no_bosun_net_done]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 2: the full turn-in. 3 more lengths -> exactly 8; net_success clears them, pays, latches bosun_net_done, actionbar receipt --"
+    },
+    {
+      "rcon": "give {player} minecraft:string 3"
+    },
+    {
+      "interact_npc": "{rui.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "click": "Hand over 8 string"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "The deep nets remember the fleet",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "sleep": 1.0
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=bosun_net_done]",
+      "expect": "passed"
+    },
+    {
+      "rcon": "clear {player} minecraft:string 0",
+      "expect": "No items were found",
+      "comment_": "all 8 lengths consumed"
+    },
+    {
+      "comment": "-- beat 3: the wager entry (prio 30) - both buttons render, then the PAID bow-out --"
+    },
+    {
+      "interact_npc": "{rui.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "That net will hold now. So - one boatswain to a promising deckhand - a wager. Two hundred CobbleDollars says my two deep-water pair put yours on the sand. They run a shade over your cap, so it is a stretch, not a mugging. Lose and the stake is mine. Decline and we still share the pier.",
+        "No shame in waving it off. The tide waits, and so, it seems, do I. Two hundred on the line if you take it - their team runs level 52, over your cap, so eyes open."
+      ]
+    },
+    {
+      "expect_screen_text": "Take the wager - 200 CD on the line (their team runs level 52, over your cap)"
+    },
+    {
+      "screenshot": "rui_wager_offer"
+    },
+    {
+      "client": "screen.click",
+      "args": {
+        "text": "Pay 100 CD to bow out"
+      },
+      "comment_": "the bow-out label is COMPILER-SYNTHESIZED from battle.decline_fee (verified verbatim in the compiled gaviota_fisher preset), so scenario_lint's dialog-src corpus cannot see it - raw screen.click both clicks AND asserts presence (it fails the step if the button is missing)"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "Non-engagement processed",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "sleep": 1.0
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=declined_sq_rui_wager]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 4: the declined stand-down. The wager entry still gates in (bosun_net_done + no_defeated) but BOTH its buttons condition on no_declined_sq_rui_wager -> a button-less, ESC-only page. Asserted as-is; flagged upstream as a content observation (no declined-flavor entry exists) --"
+    },
+    {
+      "interact_npc": "{rui.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "That net will hold now. So - one boatswain to a promising deckhand - a wager. Two hundred CobbleDollars says my two deep-water pair put yours on the sand. They run a shade over your cap, so it is a stretch, not a mugging. Lose and the stake is mine. Decline and we still share the pier.",
+        "No shame in waving it off. The tide waits, and so, it seems, do I. Two hundred on the line if you take it - their team runs level 52, over your cap, so eyes open."
+      ]
+    },
+    {
+      "screenshot": "rui_stand_down"
+    },
+    {
+      "client": "screen.close",
+      "comment_": "no buttons render under declined - ESC is the only exit"
+    },
+    {
+      "comment": "-- beat 5: tag surgery re-arms the wager (declined is permanent by design - mystic_mirror precedent), then the autobattler takes it --"
+    },
+    {
+      "rcon": "tag {player} remove declined_sq_rui_wager"
+    },
+    {
+      "sleep": 1.5,
+      "comment_": "band_tags must re-derive no_declined_sq_rui_wager before the buttons can render"
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=no_declined_sq_rui_wager]",
+      "expect": "passed"
+    },
+    {
+      "interact_npc": "{rui.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "click": "Take the wager"
+    },
+    {
+      "wait_no_screen": true,
+      "comment_": "the wager button carries CLOSE_DIALOG after the tbcs dispatch"
+    },
+    {
+      "wait_chat": "you read the tide, not the wave",
+      "timeout": 240,
+      "comment_": "Rui's onwin win_line say; a timeout here is almost certainly the TBCS stall / showdown wedge, not a regression"
+    },
+    {
+      "wait_chat": "The purse runs heavy",
+      "timeout": 10,
+      "comment_": "wager_sweetener always announces its +25..100 CD roll"
+    },
+    {
+      "sleep": 1.0
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=defeated_sq_rui_wager]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 6: net_flavor poststate (prio 40) --"
+    },
+    {
+      "interact_npc": "{rui.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "Good tide today. I log the catch, force of habit - three runs, one keeper, one that broke the line and my pride with it. A cleaner tally than the dock master ever gets to keep.",
+        "The sea does not restate its earnings. That is the difference between the water and the Company - one of them still tells you the truth about what you hauled in. The rest of the region ships east now, to Dunewind and the desert, but the tide keeps honest books."
+      ]
+    },
+    {
+      "expect_screen_text": "Fish a while"
+    },
+    {
+      "screenshot": "rui_net_flavor"
+    },
+    {
+      "click": "Fish a while"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "comment": "-- cleanup: strip every tag this scenario set so no other scenario inherits the lane (Garchomps + wallet ride, canon caveat) --"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative dev bot autobattle off"
+    },
+    {
+      "rcon": "tag {player} remove bosun_net_done"
+    },
+    {
+      "rcon": "tag {player} remove defeated_sq_rui_wager"
+    },
+    {
+      "screenshot": "gaviota_rui_done"
+    }
+  ]
+}

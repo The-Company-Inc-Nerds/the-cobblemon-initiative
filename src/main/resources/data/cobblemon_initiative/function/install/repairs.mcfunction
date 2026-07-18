@@ -8,3 +8,13 @@
 # ── wave a2 (0.6.0-alpha.2): Takehara greenhouse cast, Sango auditor leashes,
 #    mew-wisp giver + Oasis pump crew (all moved; old bodies stale or buried)
 execute unless score #repair_a2 ci_ambient matches 1 run function cobblemon_initiative:install/repairs_a2_arm
+
+# ── wave a5 (0.6.0-alpha.5): noble monuments moved to their (alpha.4-relocated)
+#    arenas — kyogre buoy → Mystic Island, rayquaza altar → Sky Ring, groudon stone
+#    → the real south rim (old site ~200 blocks inside the volcano); plus a sweep of
+#    phase-1 noble bodies leaked by the failed distant-arena starts
+execute unless score #repair_a5 ci_ambient matches 1 run function cobblemon_initiative:install/repairs_a5_arm
+
+# ── wave a6 (0.6.0-alpha.6): gyms-3-7 spec-cast ground-probe repositioning (44
+# NPCs; see repairs_a6_arm for scope) ──
+execute unless score #repair_a6 ci_ambient matches 1 run function cobblemon_initiative:install/repairs_a6_arm

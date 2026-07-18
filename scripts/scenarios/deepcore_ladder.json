@@ -1,0 +1,325 @@
+{
+  "name": "deepcore_ladder",
+  "description": "The Iron Ladder (q.side_ladder slot 52, Deepcore SQ2): Old Dun's 3-round NO-HEAL gauntlet down the played-out shaft. Locked-gate beat first (no defeated_deepcore_trainer_2 -> the locked_button explains the gym gate, iron_ladder_active must NOT set), then the shipped gym-trainer defeat tag is injected by rcon (Battle Girl Mika's tag - fighting her for real is the gym scenarios' job), the start button arms iron_ladder_active, and the three rounds run back-to-back via dev-bot autobattle with NO heal command anywhere between them (the party carries damage forward - that is the design under test; two lv-100 Garchomp are the attrition headroom over aces L34/35/37). Round buttons are defeat-tag chained (round N+1 only renders after defeated_sq_ladder_N), claim pays face 700 via the skewed payout + Expert Belt + iron_ladder_cleared, and the cleared entry (prio 40) tombstones. No fees anywhere on the ladder (walking off is free - fairness floor), so no funding in the preamble. Re-runs accumulate one Garchomp pair per run.",
+  "_probe_pending": [
+    "1060.5 129 3200.5"
+  ],
+  "_probe_note": "Old Dun's compiled latch rides the y=129 plaza height but the neighboring live-swept roggenrola ambient sits at y=119 three blocks away (1063.5,119,3202.5) - the shaft mouth terrain drops; ground-probe before the first live run.",
+  "steps": [
+    {
+      "comment": "-- preamble: close any leftover dialog, then reset the whole ladder state (idempotent re-runs) including the injected gym tag and the claim item --"
+    },
+    {
+      "client": "screen.close"
+    },
+    {
+      "rcon": "tag {player} remove iron_ladder_active"
+    },
+    {
+      "rcon": "tag {player} remove iron_ladder_cleared"
+    },
+    {
+      "rcon": "tag {player} remove defeated_sq_ladder_1"
+    },
+    {
+      "rcon": "tag {player} remove defeated_sq_ladder_2"
+    },
+    {
+      "rcon": "tag {player} remove defeated_sq_ladder_3"
+    },
+    {
+      "rcon": "tag {player} remove defeated_deepcore_trainer_2"
+    },
+    {
+      "rcon": "clear {player} cobblemon:expert_belt"
+    },
+    {
+      "comment": "-- tp to the shaft (latch spawns within 40b; the body persists - no kill/latch-reset needed), then daylight + battle prep --"
+    },
+    {
+      "rcon": "tp {player} 1060.5 119 3200.5"
+    },
+    {
+      "sleep": 2.0
+    },
+    {
+      "rcon": "time set day"
+    },
+    {
+      "rcon": "weather clear"
+    },
+    {
+      "rcon": "stopbattle {player}"
+    },
+    {
+      "sleep": 1.5
+    },
+    {
+      "comment": "-- party reset: junk lv-5 parties stall TBCS battle init (verified live); empty all 6 slots, then the two-Garchomp attrition pair. NO heal will be issued again until the scenario ends --"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon garchomp level=100"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon garchomp level=100"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative dev bot autobattle on"
+    },
+    {
+      "comment": "-- beat 1: the gym gate HOLDS. Without defeated_deepcore_trainer_2 only the locked_button shows; clicking it explains the gate and must NOT arm the ladder --"
+    },
+    {
+      "find_npc": "Old Dun",
+      "save": "d"
+    },
+    {
+      "interact_npc": "{d.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "I need to prove myself first"
+    },
+    {
+      "screenshot": "ladder_locked"
+    },
+    {
+      "click": "I need to prove myself first"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "The ladder is for people who can already swing",
+      "timeout": 10
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=!iron_ladder_active]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 2: inject the shipped gym-trainer defeat tag (Battle Girl Mika - the real fight belongs to the gym scenarios), then the start button must render and arm the ladder --"
+    },
+    {
+      "rcon": "tag {player} add defeated_deepcore_trainer_2"
+    },
+    {
+      "sleep": 1.0
+    },
+    {
+      "interact_npc": "{d.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "Start the Iron Ladder"
+    },
+    {
+      "screenshot": "ladder_offer"
+    },
+    {
+      "click": "Start the Iron Ladder"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "The Iron Ladder is live",
+      "timeout": 10
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=iron_ladder_active]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 3: Round 1 (sq_ladder_1, ace L34). in_progress entry (prio 30); the round button closes the dialog itself, the fight runs server-side, the @2 win line anchors the wait --"
+    },
+    {
+      "interact_npc": "{d.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "Fight Round 1"
+    },
+    {
+      "click": "Fight Round 1"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "One down. No water. Next.",
+      "timeout": 180
+    },
+    {
+      "sleep": 1.0
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=defeated_sq_ladder_1]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 4: Round 2 (sq_ladder_2, ace L35). NO heal between rounds - carried damage stands; the Round 2 button rendering at all IS the defeat-tag chain assert --"
+    },
+    {
+      "interact_npc": "{d.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "Fight Round 2"
+    },
+    {
+      "screenshot": "ladder_round_2"
+    },
+    {
+      "click": "Fight Round 2"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "Two. The rock does not soften. One more waits.",
+      "timeout": 180
+    },
+    {
+      "sleep": 1.0
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=defeated_sq_ladder_2]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 5: Round 3, the last swing (sq_ladder_3, ace L37). Still no heal --"
+    },
+    {
+      "interact_npc": "{d.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "Fight Round 3 - the last swing"
+    },
+    {
+      "click": "Fight Round 3 - the last swing"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "no water, still standing. That is the ladder.",
+      "timeout": 180
+    },
+    {
+      "sleep": 1.0
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=defeated_sq_ladder_3]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 6: the claim. Pays face 700 via the skewed payout (receipt overlay, amount not exact-asserted - rate rides cd_instability), Expert Belt, IRON LADDER CLEARED --"
+    },
+    {
+      "interact_npc": "{d.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "Claim the Iron Ladder"
+    },
+    {
+      "screenshot": "ladder_claim_offer"
+    },
+    {
+      "click": "Claim the Iron Ladder"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "Verified Rate",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "wait_chat": "IRON LADDER CLEARED",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "sleep": 1.0
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=iron_ladder_cleared]",
+      "expect": "passed"
+    },
+    {
+      "rcon": "clear {player} cobblemon:expert_belt 0",
+      "expect": "Found 1"
+    },
+    {
+      "comment": "-- beat 7: the cleared entry (prio 40) tombstones - assert via its stable button label (say pair rotates and both lines carry the Gaviota hook) --"
+    },
+    {
+      "interact_npc": "{d.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "Laddered"
+    },
+    {
+      "screenshot": "ladder_cleared"
+    },
+    {
+      "click": "Laddered"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "comment": "-- cleanup: the injected gym tag comes OFF (the test player has not really beaten Mika - other content gates on it); iron_ladder_cleared stays as the quest-done latch (preamble resets it on re-runs) --"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative dev bot autobattle off"
+    },
+    {
+      "rcon": "tag {player} remove defeated_deepcore_trainer_2"
+    },
+    {
+      "screenshot": "deepcore_ladder_done"
+    }
+  ]
+}

@@ -1,0 +1,455 @@
+{
+  "name": "kalahar_water",
+  "description": "Dry Season (Water Rights), q.side_kalahar_water slot 42, end-to-end: take Well-Keeper Marisol's brief (board -> dry_brief -> dry_season_active), walk the Oasis raid - beat the Yield Officer (sq_pump_officer, ace 50), then the Site Foreman (sq_pump_foreman, ace 51, dialog-gated on the officers defeat tag), shut the manifold (shut_pump: oasis_pump_off + the -3 #idx cd_instability clawback), then report back for water_reward (750-face payout + mystic_water x2 + super_potion x2 + oasis_restored + dry_season_done) and the dry_done tombstone with the Cyber City forward hook. TWO REAL BATTLE BEATS via dev-bot autobattle (2x lv-100 Garchomp; the fights are not level-locked) - exposed to the known intermittent TBCS battle-init stall / showdown wedge (~1/10; recovery is dev showdown revive + /reloadshowdown, blind the rctapi maps first). The Oasis is a WILD zone (mobsSpawn true): day + hostile sweep + regen bracket the fights (safari_yards precedent). The instability index is pinned to 10 in the preamble so the shut-off clawback is observable above the 0 floor; payouts are instability-skewed so item counts, not balances, are the reward asserts. Re-runs accumulate two Garchomps per run past the party-emptying preamble (wheat_war caveat).",
+  "_probe_pending": [
+    "2040 126 4100",
+    "1740.5 114 4194.5"
+  ],
+  "steps": [
+    {
+      "comment": "-- SITE NOTES: Marisols coords are an integer-authored PROPOSED placement (builder-confirm pending) - probe before first run. The Oasis crew trio carry half-block hand-adjusted placements (y 114/116, matching the live-fixed mew-wisp giver at y=114 next door) but are unconfirmed by this author, so the stand-spot is probe-listed too. Crew display names are exactly Yield Officer / Site Foreman - the wheat farms field their OWN yield-officer cast, so every named kill below carries a distance guard. --"
+    },
+    {
+      "client": "screen.close",
+      "comment_": "leftover-dialog guard: a prior aborted run can leave a dialog up; closing with no screen open is a no-op"
+    },
+    {
+      "comment": "-- reset (idempotent re-runs): every tag the chain sets, plus the recognized_late preempt (fields_liberated gte 4 flips the crew dialog to the stand-down entry), plus the reward items, plus the instability pin --"
+    },
+    {
+      "rcon": "tag {player} remove dry_season_active"
+    },
+    {
+      "rcon": "tag {player} remove defeated_sq_pump_officer"
+    },
+    {
+      "rcon": "tag {player} remove defeated_sq_pump_foreman"
+    },
+    {
+      "rcon": "tag {player} remove oasis_pump_off"
+    },
+    {
+      "rcon": "tag {player} remove oasis_restored"
+    },
+    {
+      "rcon": "tag {player} remove dry_season_done"
+    },
+    {
+      "rcon": "tag {player} remove met_kalahar_marisol"
+    },
+    {
+      "rcon": "scoreboard players set {player} fields_liberated 0",
+      "comment_": "recognized_late (prio 30) preempts both crew entries at fields_liberated >= 4; this scenario asserts the default + foreman_ready lane"
+    },
+    {
+      "rcon": "tag {player} remove fields_liberated_gte_4",
+      "comment_": "instant band-tag removal so we do not race the band tick"
+    },
+    {
+      "rcon": "scoreboard players set #idx cd_instability 10",
+      "comment_": "dev-world global: pins the index so the shut-off clawback (-3, floored at 0) is observable; asserted 7 after the shut, reset to 0 in cleanup"
+    },
+    {
+      "rcon": "clear {player} cobblemon:mystic_water"
+    },
+    {
+      "rcon": "clear {player} cobblemon:super_potion"
+    },
+    {
+      "comment": "-- tp BEFORE the kills (kill silently no-ops in unloaded chunks, then the latch re-arm dupes the body - wheat_war lesson). Crew bodies are killed + latches re-armed for a FRESH fight: the defeat tags stripped above reset the dialog lane, the respawn resets the trainer. Stand on-site through the re-arm sleep - the latch needs a player within 40b at tick time. --"
+    },
+    {
+      "rcon": "tp {player} 1740.5 114 4194.5"
+    },
+    {
+      "sleep": 2.0
+    },
+    {
+      "rcon": "time set day"
+    },
+    {
+      "rcon": "weather clear"
+    },
+    {
+      "rcon": "kill @e[type=!player,distance=..32,type=!minecraft:armor_stand,type=!easy_npc:humanoid,type=!easy_npc:fairy,type=!cobblemon:pokemon]",
+      "comment_": "wild-zone hostile sweep, safari_yards selector"
+    },
+    {
+      "rcon": "kill @e[type=!player,name=\"Yield Officer\",distance=..32]"
+    },
+    {
+      "rcon": "kill @e[type=!player,name=\"Site Foreman\",distance=..32]"
+    },
+    {
+      "rcon": "scoreboard players set #amb_agent_pump_officer ci_ambient 0"
+    },
+    {
+      "rcon": "scoreboard players set #amb_agent_pump_foreman ci_ambient 0"
+    },
+    {
+      "sleep": 3.0,
+      "comment_": "latch respawn fires on the ambient tick while we stand inside the 40b window"
+    },
+    {
+      "comment": "-- party prep: empty to one slot (a junk party stalls the TBCS battle init, wheat_war verified live), two lv-100 Garchomps for attrition headroom across both fights, autobattle armed --"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon garchomp level=100"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon garchomp level=100"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative dev bot autobattle on"
+    },
+    {
+      "comment": "-- beat 1: Marisol at the dry well - the board (prio 20 preempts the default greet while oasis_restored is absent), then the dry_brief sub-dialog, then the accept. open_dialog swaps the entry in place (pay_probes precedent: click, short sleep, expect). --"
+    },
+    {
+      "rcon": "tp {player} 2040 136 4100"
+    },
+    {
+      "sleep": 2.0
+    },
+    {
+      "find_npc": "Well-Keeper Marisol",
+      "save": "m"
+    },
+    {
+      "interact_npc": "{m.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "Kalahar Reach. Half a town and a whole lot of dust. The wells died in one night - all of them - and the caravans went from rude to dangerous the same week.",
+        "If you are the helping kind: my wells. And ask Warden Ossa about the boundary stones - she thinks the northern fields were never the Company to sell. Word is a field already went quiet under someone out there. The grain barons did not take it well."
+      ]
+    },
+    {
+      "expect_screen_text": "Tell me about the wells"
+    },
+    {
+      "screenshot": "marisol_board"
+    },
+    {
+      "click": "Tell me about the wells"
+    },
+    {
+      "sleep": 0.7,
+      "comment_": "open_dialog transition settles in place"
+    },
+    {
+      "expect_screen_text": [
+        "The Oasis, southwest of town, out in the open sand where the mobs still roam. There is a Company pump crew there running a line north to water the granary they took. They drained us to grow their wheat.",
+        "Shut their pump and the aquifer finds us again. It is a walk through live country and they will not thank you for it. But the Reach will."
+      ]
+    },
+    {
+      "screenshot": "marisol_dry_brief"
+    },
+    {
+      "click": "I will shut the pump"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "find the Company pump crew",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=dry_season_active]",
+      "expect": "passed"
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=met_kalahar_marisol]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 2: the Oasis - Yield Officer first (the crew falls in order). Fresh sweep + regen brackets the fights; battle buttons have no close action, so the stale dialog is dismissed while the fight runs server-side (wheat_war precedent) --"
+    },
+    {
+      "rcon": "tp {player} 1740.5 114 4194.5"
+    },
+    {
+      "sleep": 2.0
+    },
+    {
+      "rcon": "time set day"
+    },
+    {
+      "rcon": "kill @e[type=!player,distance=..32,type=!minecraft:armor_stand,type=!easy_npc:humanoid,type=!easy_npc:fairy,type=!cobblemon:pokemon]"
+    },
+    {
+      "rcon": "effect give {player} minecraft:regeneration 240 2"
+    },
+    {
+      "find_npc": "Yield Officer",
+      "save": "off"
+    },
+    {
+      "interact_npc": "{off.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "This is a licensed extraction site. Agricultural yield optimization, filed and verified. The water goes where the Company needs it.",
+        "The town wells are a legacy allocation under review. Your concern is noted and will be processed. Now step back from the manifold."
+      ]
+    },
+    {
+      "screenshot": "pump_officer_hail"
+    },
+    {
+      "click": "Make them stop pumping"
+    },
+    {
+      "client": "screen.close",
+      "comment_": "battle-start buttons have no close action; the fight runs server-side (autobattle) while the stale dialog stays up"
+    },
+    {
+      "wait_chat": "Yield disruption logged",
+      "timeout": 180
+    },
+    {
+      "sleep": 1.5,
+      "comment_": "defeat tag + band_tags settle before the foreman gate is read"
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=defeated_sq_pump_officer]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 3: the Site Foreman. foreman_ready (prio 25) is gated on the officers defeat tag - its say rendering IS the order-gate assert --"
+    },
+    {
+      "find_npc": "Site Foreman",
+      "save": "fore"
+    },
+    {
+      "interact_npc": "{fore.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "The officer logged you and ran. I hold the valve. Line pressure is my job and my job is filed, verified, and none of your concern.",
+        "You came all the way out here to argue with a wheel. Make them stop pumping, then - if you can get past me."
+      ]
+    },
+    {
+      "screenshot": "pump_foreman_gate_open"
+    },
+    {
+      "click": "Make them stop pumping"
+    },
+    {
+      "client": "screen.close",
+      "comment_": "battle-start buttons have no close action; the fight runs server-side (autobattle) while the stale dialog stays up"
+    },
+    {
+      "wait_chat": "reroute AROUND you",
+      "timeout": 180
+    },
+    {
+      "sleep": 1.5
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=defeated_sq_pump_foreman]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 4: the manifold. The ready entry (prio 20) unlocks only with BOTH crew down; shut_pump latches oasis_pump_off + claws the pinned index 10 -> 7 (title fires before the subtitle in the function, so the title is the wait) --"
+    },
+    {
+      "find_npc": "Pump Manifold",
+      "save": "valve"
+    },
+    {
+      "interact_npc": "{valve.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "The crew is down and the manifold is yours. A single wheel valve holds the whole diversion. Turn it and give Kalahar its aquifer back."
+    },
+    {
+      "screenshot": "manifold_ready"
+    },
+    {
+      "click": "Shut the valve"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "THE REACH DRINKS",
+      "kinds": [
+        "title"
+      ],
+      "timeout": 10
+    },
+    {
+      "sleep": 1.0
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=oasis_pump_off]",
+      "expect": "passed"
+    },
+    {
+      "rcon": "scoreboard players get #idx cd_instability",
+      "expect": "has 7",
+      "comment_": "the -3 clawback off the pinned 10"
+    },
+    {
+      "comment": "-- beat 5: report to Marisol (report_water, prio 30). water_reward fires subtitle THEN title; wait_chat is seq-cursored since the previous step, so the shut-offs earlier title cannot satisfy this second REACH DRINKS --"
+    },
+    {
+      "rcon": "tp {player} 2040 136 4100"
+    },
+    {
+      "sleep": 2.0
+    },
+    {
+      "interact_npc": "{m.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "You are back - dust to your knees, which means you walked the Oasis. Then it is over: the line is dead and the ground is ours again."
+      ]
+    },
+    {
+      "screenshot": "marisol_report"
+    },
+    {
+      "click": "The pump is shut - the Reach drinks"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "ADJUSTMENT: rounding, in the Company favor",
+      "kinds": [
+        "subtitle"
+      ],
+      "timeout": 10
+    },
+    {
+      "wait_chat": "THE REACH DRINKS",
+      "kinds": [
+        "title"
+      ],
+      "timeout": 10
+    },
+    {
+      "sleep": 1.0
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=oasis_restored,tag=dry_season_done,tag=oasis_pump_off]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- the goodwill bundle: mystic_water x2 + super_potion x2, exact counts (preamble cleared both ids). The 750-face payout is instability-skewed (index rides at 7 here), so no exact balance assert --"
+    },
+    {
+      "rcon": "clear {player} cobblemon:mystic_water 0",
+      "expect": "Found 2"
+    },
+    {
+      "rcon": "clear {player} cobblemon:super_potion 0",
+      "expect": "Found 2"
+    },
+    {
+      "comment": "-- beat 6: the dry_done tombstone (prio 40) + the Cyber City forward hook. No buttons on this entry - close via the driver --"
+    },
+    {
+      "find_npc": "Well-Keeper Marisol",
+      "save": "m"
+    },
+    {
+      "interact_npc": "{m.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "You shut their pump. The well spat mud, then sand, then water. I had forgotten the sound. Whatever you are, stranger, the Reach drinks tonight because of you.",
+        "They filed our thirst as yield optimization. You filed it back. Go on to Cyber City if you are going - the caravans say the Company builds its real work in the wired town past the eastern gap."
+      ]
+    },
+    {
+      "screenshot": "marisol_dry_done"
+    },
+    {
+      "client": "screen.close",
+      "comment_": "the tombstone entry has no buttons"
+    },
+    {
+      "comment": "-- cleanup: autobattle off, every latched tag stripped so no other scenario inherits the lane, reward items cleared, the instability pin released to the dev-world baseline 0. The two Garchomps ride in the party (wheat_war caveat); the balance rides (no reset rail). --"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative dev bot autobattle off"
+    },
+    {
+      "rcon": "tag {player} remove dry_season_active"
+    },
+    {
+      "rcon": "tag {player} remove defeated_sq_pump_officer"
+    },
+    {
+      "rcon": "tag {player} remove defeated_sq_pump_foreman"
+    },
+    {
+      "rcon": "tag {player} remove oasis_pump_off"
+    },
+    {
+      "rcon": "tag {player} remove oasis_restored"
+    },
+    {
+      "rcon": "tag {player} remove dry_season_done"
+    },
+    {
+      "rcon": "tag {player} remove met_kalahar_marisol"
+    },
+    {
+      "rcon": "clear {player} cobblemon:mystic_water"
+    },
+    {
+      "rcon": "clear {player} cobblemon:super_potion"
+    },
+    {
+      "rcon": "scoreboard players set #idx cd_instability 0"
+    },
+    {
+      "screenshot": "kalahar_water_done"
+    }
+  ]
+}

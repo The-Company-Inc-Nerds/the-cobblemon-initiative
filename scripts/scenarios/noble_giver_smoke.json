@@ -1,0 +1,332 @@
+{
+  "name": "noble_giver_smoke",
+  "description": "Noble encounter START/TEARDOWN wiring smoke at two giver sites - NEVER fights the boss. Leg 1: the Mew chase giver 'A Giggle in the Grass' at the Oasis NE bank (giver 1788.5/114/4212.5, arena center [1780,114,4220] 11b away - chase-type body is IsInvulnerable and never attacks, so this leg is intrinsically safe). Leg 2: the Kyogre monument buoy 'Warning Buoy' on the Mystic Island shore (234.5/65/2347.5, 12b west of arena center [246,66,2347] - the alpha.5 monument-to-arena desync fix IS the regression surface here; a buoy still at the old Gullwing pier makes find_npc fail loudly). Each leg: talk, assert the offer entry renders, click the noble-start button, wait the overture (start title + the Java retreat line 'Retreat any time with' - needle chosen INSIDE one color run and common to BOTH lethalNobleFights variants), assert the phase-1 body manifested by its unique tag, then /noble-abort and assert clean teardown: the withdraw line, the dread-beat overlay 'It watches you go', body swept (covers the bodyUuid-null discovery-failure sweep - abort can land inside the 4s intro), and a second /noble-abort returning 'You have no active noble encounter' as the session-empty probe (fake-sky restore is per-player packets, not assertable headless). KYOGRE SAFETY: lethalNobleFights defaults TRUE and kyogre's attacks do 5-8 dmg to the hardcore driver, so the leg wears Resistance V + Regen and aborts within the ~4s intro window (first attack cooldowns are >=70 ticks past the REALTIME flip - the belt to the resistance braces). Dialog gates are band tags: default entries need badges_gte_3 + defeated_noble_<id>_lte_0 (recognition:mid compiles to the LOWER bound only; the storyFlag is a SCOREBOARD mirrored by dialog/band_tags, quest/render backfills unset to 0) - the preamble sets memory_fragment=3 and adds the tags instantly so we never race the band tick (mystic_mirror precedent). Cleanup restores memory_fragment=0 (wheat_war_first_farm assumes badges<3); defeated_noble_* ride at 0 = the fresh-player natural state.",
+  "_probe_pending": [
+    "1788.5 114 4212.5"
+  ],
+  "_probe_notes": "Mew Oasis giver spot only: the alpha.4 relocation commit claims 'All probed for solid footing' for the NE bank (RCON probe), but no live player stand-test is on record for THIS coord (the y89 Safari clearing verification predates the Oasis move and no longer applies). Kyogre buoy 234.5 65 2347.5 is deliberately NOT listed: alpha.5 authored it on probed-solid Mystic Island shore (surface y65) and the fix wave was live-verified 18/18 on the headless server.",
+  "steps": [
+    {
+      "comment": "-- SITE + DESIGN NOTES: both givers are latch-placed (ambient/place/noble_giver_mew_wisp + noble_monument_kyogre import at the tp coords; latch fires within 40b if this world has not spawned them yet - the settle sleep covers it). Buttons run 'noble start <id>' ExecAsUser (perm elevation engine-verified). NO BATTLE, NO PHASE-2: we abort in phase 1, so the TBCS/showdown stall family is never exposed and no autobattle/garchomp/funding preamble is needed (no fees or shops touched either). --"
+    },
+    {
+      "comment": "-- leftover-dialog guard: scenario contract, close anything a prior run left open --"
+    },
+    {
+      "client": "screen.close"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "comment": "-- global preamble (player-bound state, chunk-independent - entity ops wait until after each leg's tp): open the mid-band dialog gate and zero both storyFlag scoreboards; tags added/removed INSTANTLY alongside their scores so we do not race the band tick --"
+    },
+    {
+      "rcon": "scoreboard players set {player} memory_fragment 3"
+    },
+    {
+      "rcon": "tag {player} add badges_gte_3"
+    },
+    {
+      "rcon": "scoreboard players set {player} defeated_noble_mew 0"
+    },
+    {
+      "rcon": "tag {player} add defeated_noble_mew_lte_0"
+    },
+    {
+      "rcon": "tag {player} remove defeated_noble_mew_gte_1"
+    },
+    {
+      "rcon": "scoreboard players set {player} defeated_noble_kyogre 0"
+    },
+    {
+      "rcon": "tag {player} add defeated_noble_kyogre_lte_0"
+    },
+    {
+      "rcon": "tag {player} remove defeated_noble_kyogre_gte_1"
+    },
+    {
+      "rcon": "execute as {player} run noble-abort",
+      "comment_": "clear any session a crashed run left in the manager map ('You have no active noble encounter' on clean runs is fine); a stray BODY in unloaded chunks survives this - swept by tag after each leg's tp, per the tp-before-kill rule"
+    },
+    {
+      "comment": "-- LEG 1: MEW (chase giver, Oasis NE bank). tp BEFORE any kill (kill silently no-ops in unloaded chunks). Wilderness site - full mob spawns; day + hostile sweep + armor effects keep the hardcore driver honest even though the chase body itself never attacks. --"
+    },
+    {
+      "rcon": "tp {player} 1788.5 114 4212.5"
+    },
+    {
+      "rcon": "time set day"
+    },
+    {
+      "rcon": "weather clear"
+    },
+    {
+      "rcon": "execute at @a[name={player}] run kill @e[type=!player,type=!minecraft:armor_stand,type=!easy_npc:humanoid,type=!easy_npc:fairy,type=!cobblemon:pokemon,distance=..48]",
+      "comment_": "safari_yards' hostile sweep, positioned at the player (a bare console kill measures distance from world spawn, not the site)"
+    },
+    {
+      "rcon": "kill @e[tag=noble_mew_body]",
+      "comment_": "stray phase-1 body from an aborted run - loaded now that we stand at the arena; /kill's GENERIC_KILL bypasses the chase body's IsInvulnerable"
+    },
+    {
+      "rcon": "effect give {player} minecraft:resistance 180 4 true"
+    },
+    {
+      "rcon": "effect give {player} minecraft:regeneration 180 2 true"
+    },
+    {
+      "sleep": 2.5,
+      "comment_": "band tick settles the tag lane + the latch places the giver on a first visit"
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=badges_gte_3,tag=defeated_noble_mew_lte_0]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 1: the wisp's offer entry (prio 10) - prose any-of covers both rotating say lines, the button is the stable assert --"
+    },
+    {
+      "find_npc": "Giggle",
+      "save": "wisp"
+    },
+    {
+      "walk_to": [
+        "{wisp.x}",
+        "{wisp.z}"
+      ],
+      "tol": 2.5
+    },
+    {
+      "interact_npc": "{wisp.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "Hee. Something pink and impossible flits where the tall grass hides it. It will not stand and fight - it will run, and blink, and giggle. Touch it enough times and it tires itself silly, and then it is yours if you are gentle.",
+        "You felt that too, did you. It wants to play, not to fight. Chase it, corner it, be kind - and mind the keep up north where the sky has a temper, for that is no game at all."
+      ]
+    },
+    {
+      "expect_screen_text": "Chase the wisp"
+    },
+    {
+      "screenshot": "mew_offer"
+    },
+    {
+      "comment": "-- beat 2: start the chase - overture = start title + the retreat system line, then the body manifests at the arena center 11b away --"
+    },
+    {
+      "click": "Chase the wisp"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "Mew!",
+      "kinds": [
+        "title"
+      ],
+      "timeout": 15
+    },
+    {
+      "wait_chat": "Retreat any time with",
+      "kinds": [
+        "system"
+      ],
+      "timeout": 10
+    },
+    {
+      "sleep": 1.0
+    },
+    {
+      "rcon": "execute if entity @e[tag=noble_mew_body]",
+      "expect": "passed"
+    },
+    {
+      "screenshot": "mew_started"
+    },
+    {
+      "comment": "-- beat 3: withdraw - abort line, dread-beat overlay, body swept, session empty --"
+    },
+    {
+      "rcon": "execute as {player} run noble-abort"
+    },
+    {
+      "wait_chat": "You withdrew from the noble",
+      "kinds": [
+        "system"
+      ],
+      "timeout": 10
+    },
+    {
+      "wait_chat": "It watches you go",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "rcon": "execute unless entity @e[tag=noble_mew_body]",
+      "expect": "passed"
+    },
+    {
+      "rcon": "execute as {player} run noble-abort"
+    },
+    {
+      "wait_chat": "You have no active noble encounter",
+      "kinds": [
+        "system"
+      ],
+      "timeout": 10
+    },
+    {
+      "screenshot": "mew_aborted"
+    },
+    {
+      "comment": "-- LEG 2: KYOGRE (monument buoy, Mystic Island shore). Same shape; abort stays inside the ~4s intro so no attack ever fires (and Resistance V holds if timing slips). tp BEFORE the kills, again. --"
+    },
+    {
+      "rcon": "tp {player} 234.5 65 2347.5"
+    },
+    {
+      "rcon": "time set day"
+    },
+    {
+      "rcon": "execute at @a[name={player}] run kill @e[type=!player,type=!minecraft:armor_stand,type=!easy_npc:humanoid,type=!easy_npc:fairy,type=!cobblemon:pokemon,distance=..48]"
+    },
+    {
+      "rcon": "kill @e[tag=noble_kyogre_body]"
+    },
+    {
+      "rcon": "effect give {player} minecraft:resistance 180 4 true",
+      "comment_": "refresh - this is the leg the armor exists for (lethalNobleFights defaults true)"
+    },
+    {
+      "rcon": "effect give {player} minecraft:regeneration 180 2 true"
+    },
+    {
+      "sleep": 2.5
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=badges_gte_3,tag=defeated_noble_kyogre_lte_0]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 4: the buoy's offer entry (prio 10) --"
+    },
+    {
+      "find_npc": "Warning Buoy",
+      "save": "buoy"
+    },
+    {
+      "walk_to": [
+        "{buoy.x}",
+        "{buoy.z}"
+      ],
+      "tol": 2.5
+    },
+    {
+      "interact_npc": "{buoy.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "A lantern buoy, chained to the seabed. The log bolted to its side reads: WARNING - the sea seems violent in these parts. Below that, in a harbourmaster hand that no longer draws Company pay: it surfaces for those who ask. Ring the bell only if you mean it.",
+        "The chain groans against something enormous down there, patient as a debt. Ring the buoy bell and it will rise - do not ring it unless you are ready for the deep."
+      ]
+    },
+    {
+      "expect_screen_text": "Ring the bell - call the deep"
+    },
+    {
+      "screenshot": "kyogre_offer"
+    },
+    {
+      "comment": "-- beat 5: ring the bell - then move FAST (no settle sleep before the body assert; the two wait_chats already span the spawn tick) --"
+    },
+    {
+      "click": "Ring the bell"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "KYOGRE",
+      "kinds": [
+        "title"
+      ],
+      "timeout": 15
+    },
+    {
+      "wait_chat": "Retreat any time with",
+      "kinds": [
+        "system"
+      ],
+      "timeout": 10
+    },
+    {
+      "rcon": "execute if entity @e[tag=noble_kyogre_body]",
+      "expect": "passed"
+    },
+    {
+      "screenshot": "kyogre_started"
+    },
+    {
+      "comment": "-- beat 6: withdraw inside the intro - identical teardown contract --"
+    },
+    {
+      "rcon": "execute as {player} run noble-abort"
+    },
+    {
+      "wait_chat": "You withdrew from the noble",
+      "kinds": [
+        "system"
+      ],
+      "timeout": 10
+    },
+    {
+      "wait_chat": "It watches you go",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "rcon": "execute unless entity @e[tag=noble_kyogre_body]",
+      "expect": "passed"
+    },
+    {
+      "rcon": "execute as {player} run noble-abort"
+    },
+    {
+      "wait_chat": "You have no active noble encounter",
+      "kinds": [
+        "system"
+      ],
+      "timeout": 10
+    },
+    {
+      "screenshot": "kyogre_aborted"
+    },
+    {
+      "comment": "-- cleanup: badge band back under 3 (score + tag together, no band-tick race); defeated_noble_* stay 0 = natural fresh-player state (band tick keeps the lte_0 mirrors); effect clear drops the noble armor and the dread-beat darkness --"
+    },
+    {
+      "rcon": "scoreboard players set {player} memory_fragment 0"
+    },
+    {
+      "rcon": "tag {player} remove badges_gte_3"
+    },
+    {
+      "rcon": "effect clear {player}"
+    },
+    {
+      "screenshot": "noble_giver_smoke_done"
+    }
+  ]
+}

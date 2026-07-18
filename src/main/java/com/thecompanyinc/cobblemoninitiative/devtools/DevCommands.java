@@ -65,6 +65,7 @@ public final class DevCommands {
             Commands.literal("showdown")
               .then(Commands.literal("status").executes(DevCommands::showdownStatus))
               .then(Commands.literal("revive").executes(DevCommands::showdownRevive))
+              .then(Commands.literal("trap").executes(DevCommands::showdownTrap))
           )
           .then(
             Commands.literal("grant").then(
@@ -223,6 +224,17 @@ public final class DevCommands {
     }
     for (String a : grant) progress.addAchievement(a);
 
+    // Mirror the memory_fragment score band_tags derives badges_gte_N from — without
+    // this, dev-granted badges never light the recognition tiers (live-caught by the
+    // memo_checkpoint scenario authoring, 2026-07-18).
+    if (player.getServer() != null) {
+      var scoreboard = player.getServer().getScoreboard();
+      var fragObj = scoreboard.getObjective("memory_fragment");
+      if (fragObj != null) {
+        scoreboard.getOrCreatePlayerScore(player, fragObj).set(n);
+      }
+    }
+
     InitiativeInit.getLevelCapManager().updateLevelCap(player);
     if (player.getServer() != null) {
       InitiativeInit.getProgressManager().saveProgress(player.getServer());
@@ -322,6 +334,30 @@ public final class DevCommands {
   // exception unwound through the Graal context mid-interpretMessage. The context stays
   // poisoned for every later battle until rebuilt. Graal types are jar-in-jar (not on
   // the compile classpath), so the eval probe goes through reflection.
+
+  /** dev showdown trap — dump the wedge trap's contained faults (trigger evidence). */
+  private static int showdownTrap(CommandContext<CommandSourceStack> ctx) {
+    var reports = com.thecompanyinc.cobblemoninitiative.compat.ShowdownWedgeTrap.reportsSnapshot();
+    int total = com.thecompanyinc.cobblemoninitiative.compat.ShowdownWedgeTrap.totalTrapped();
+    if (reports.isEmpty()) {
+      ctx.getSource().sendSuccess(() -> Component.literal(
+        "[Showdown] No interpret faults trapped this session."), false);
+      return 0;
+    }
+    StringBuilder sb = new StringBuilder("[Showdown] Trapped faults: " + total
+      + " total, last " + reports.size() + ":\n");
+    for (var r : reports) {
+      String firstStackLine = r.stack().lines().limit(2).reduce("", (a, b) -> a.isEmpty() ? b : a + " / " + b);
+      sb.append("  #").append(r.ordinal())
+        .append(" battle=").append(r.battleId())
+        .append("\n    msg=").append(r.message().length() > 160
+          ? r.message().substring(0, 157) + "…" : r.message())
+        .append("\n    ").append(firstStackLine).append("\n");
+    }
+    String out = sb.toString().trim();
+    ctx.getSource().sendSuccess(() -> Component.literal(out), false);
+    return total;
+  }
 
   /** Try a trivial JS eval on the live showdown context. Returns null if healthy, else the failure. */
   private static String probeShowdownContext() {

@@ -80,7 +80,7 @@ already exist. Coords marked PLACEHOLDER are PROPOSED inside the Deepcore zone p
 
 | id | display_name | role | one-line concept | placement anchor |
 |---|---|---|---|---|
-| `deepcore_nurse` | Nurse Rurik | healer | paid Center nurse; short re-verified shipments; rumour hub | `~1092 129 3208` PLACEHOLDER |
+| `deepcore_nurse` | Nurse Rilka | healer | paid Center nurse; short re-verified shipments; rumour hub | `~1092 129 3208` PLACEHOLDER |
 | `deepcore_martkeeper` | Sten Vale | merchant | badge_4 Pokemart; default CobbleDollars shop | `~1100 129 3215` PLACEHOLDER |
 | `deepcore_foreman_kang` | Foreman Kang | quest_giver | retired union pit-foreman; SQ1 giver, smells fraud in the ore ledger | `~1120 129 3300` PLACEHOLDER |
 | `deepcore_ledger_board` | Re-Verified Reserve Ledger | civilian (prop) | scrubbing-artifact board at the Company field office | `~1152 129 3284` PLACEHOLDER |
@@ -110,7 +110,7 @@ gauntlet; the mandated trader-recognition beat; and the scrubbing-artifact set-p
 
 ---
 
-### SQ0 — Rumour Hub: Nurse Rurik (the pointer NPC)
+### SQ0 — Rumour Hub: Nurse Rilka (the pointer NPC)
 
 **Concept:** the town's paid Center nurse *is* the rumour hub (house style). Her heal rides
 the shipped `economy/heal_paid`. Her dialog carries gated pointers to the three active
@@ -131,7 +131,7 @@ since the fields came back) — carried on **every** greeting alternative so it 
   "$schema": "../../schema/character.schema.json",
   "kind": "character",
   "id": "deepcore_nurse",
-  "display_name": "Nurse Rurik",
+  "display_name": "Nurse Rilka",
   "role": "healer",
   "act": "1",
   "location": "Deepcore City - Pit-Head Center",
@@ -160,7 +160,7 @@ not-done tag, so they never depend on which greeting rolled.
   "entries": [
     {
       "label": "default",
-      "name": "Nurse Rurik",
+      "name": "Nurse Rilka",
       "priority": 10,
       "default": true,
       "say": [

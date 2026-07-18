@@ -220,9 +220,14 @@ public class NpcSightCommand {
     UUID uuid = parseUUID(ctx, uuidStr);
     if (uuid == null) return 0;
 
-    if (storage.remove(uuid)) {
+    boolean stored = storage.remove(uuid);
+    // Tag-profile NPCs cache their behaviour state (incl. the APPROACH_ONCE fired latch)
+    // in the manager's session map — evict it too, or a remove+re-add keeps fired=true.
+    boolean session = manager.clearSession(uuid);
+    if (stored || session) {
+      final String suffix = session ? " (session state cleared)" : "";
       ctx.getSource().sendSuccess(
-        () -> Component.literal("[NPC Sight] Unregistered " + uuidStr), true
+        () -> Component.literal("[NPC Sight] Unregistered " + uuidStr + suffix), true
       );
       return 1;
     }
@@ -354,16 +359,21 @@ public class NpcSightCommand {
     if (uuid == null) return 0;
 
     NpcSightData data = storage.get(uuid);
-    if (data == null) {
+    // Session-cached (tag-profile) NPCs may not be in storage at all — evicting the
+    // session entry rebuilds it fresh (fired=false) on the next discovery tick.
+    boolean session = manager.clearSession(uuid);
+    if (data == null && !session) {
       ctx.getSource().sendFailure(
         Component.literal("[NPC Sight] UUID not registered: " + uuidStr)
       );
       return 0;
     }
 
-    data.fired = false;
-    data.pursuing = false;
-    storage.put(data);
+    if (data != null) {
+      data.fired = false;
+      data.pursuing = false;
+      storage.put(data);
+    }
 
     ctx.getSource().sendSuccess(
       () -> Component.literal("[NPC Sight] " + uuidStr + " one-shot reset (fired=false)"), true
@@ -426,8 +436,11 @@ public class NpcSightCommand {
   private static int cmdReload(CommandContext<CommandSourceStack> ctx) {
     NpcSightConfig newConfig = NpcSightConfig.load();
     manager.reloadConfig(newConfig);
+    // Full re-evaluation: drop cached session state (fired latches, pursue flags) so
+    // reload behaves like a fresh discovery pass instead of preserving old one-shots.
+    manager.clearAllSessions();
     ctx.getSource().sendSuccess(
-      () -> Component.literal("[NPC Sight] Config reloaded."), true
+      () -> Component.literal("[NPC Sight] Config reloaded, session state cleared."), true
     );
     return 1;
   }

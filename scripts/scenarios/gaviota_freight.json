@@ -1,0 +1,391 @@
+{
+  "name": "gaviota_freight",
+  "description": "Adjusted Freight / The Manifest Audit (q.side_freight slot 46) end-to-end: Kaito's accept at the harbourmaster shack (start latches gaviota_manifest_check_active + ADJUSTED FREIGHT title, button open_dialogs straight into the counting page), the premature turn-in guard at 0/3 ('Not all three yet' - the dialog button is UNGATED by design, turn_in recounts #manifests internally), the three note-stops in walk order (Pell main-pier stack -> note_1, Odile wharf crates -> note_2, Bram deep-pier Dunewind load -> note_3; each is the shipped price_check note idiom with an idempotent 'Logged (N/3)' tellraw + per-point tag, and Pell also proves the noted-flip entry), then the report-back (turn_in at 3/3 -> payout: 400 CD skewed honorarium, gaviota_manifests_filed, ADJUSTMENT LOGGED title) and Kaito's filed tombstone entry. Preamble pins dev badges 0 so recognise_mid (lowered to badges_gte_3) stays hidden and the plain default accept renders deterministically. All four wharf coords are authored town placements at PLACEHOLDER y - tp between stops (only the 4b shack->Pell hop is a real walk) and _probe_pending until the first live run; convert the hops to path_to once the ground is probed. No balance asserts (skewed payout rail).",
+  "_probe_pending": [
+    "566.5 64 3560.5",
+    "588.5 64 3600.5",
+    "605.5 64 3650.5"
+  ],
+  "steps": [
+    {
+      "comment": "-- preamble: close any leftover dialog from a prior scenario --"
+    },
+    {
+      "client": "screen.close"
+    },
+    {
+      "comment": "-- tp FIRST (loaded chunks; the 40b latches spawn Kaito + Pell on a fresh world). Coordinate is gaviota_dockmaster's authored placement - PLACEHOLDER y64, _probe_pending until the first live run confirms the shack floor --"
+    },
+    {
+      "rcon": "tp {player} 566.5 84 3560.5"
+    },
+    {
+      "sleep": 2.0
+    },
+    {
+      "rcon": "time set day"
+    },
+    {
+      "rcon": "weather clear"
+    },
+    {
+      "comment": "-- reset (idempotent re-runs): badges 0 hides recognise_mid (badges_gte_3) so the plain default accept is deterministic; then the full audit tag chain + the HUD scratch --"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative dev badges 0",
+      "expect": "level cap now §e15"
+    },
+    {
+      "rcon": "tag {player} remove gaviota_manifest_check_active"
+    },
+    {
+      "rcon": "tag {player} remove gaviota_manifest_1"
+    },
+    {
+      "rcon": "tag {player} remove gaviota_manifest_2"
+    },
+    {
+      "rcon": "tag {player} remove gaviota_manifest_3"
+    },
+    {
+      "rcon": "tag {player} remove gaviota_manifests_filed"
+    },
+    {
+      "rcon": "scoreboard players set #manifests quest_hud 0"
+    },
+    {
+      "sleep": 2.0,
+      "comment_": "band_tags must re-derive no_gaviota_manifest_check_active / no_gaviota_manifests_filed and drop badges_gte_3 before the dialog opens"
+    },
+    {
+      "comment": "-- lane sanity: audit unwound, recognition band below mid --"
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=no_gaviota_manifest_check_active,tag=no_gaviota_manifests_filed,tag=!badges_gte_3]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 1: the accept. say[] rotates, so the entry assert covers both lines; the button open_dialogs into the counting page (no close) --"
+    },
+    {
+      "find_npc": "Dockmaster Kaito",
+      "save": "kaito"
+    },
+    {
+      "interact_npc": "{kaito.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "Dockmaster Kaito. I run the wharf, or I run what the wharf tells me to run. Lately the manifests and the barrels do not agree, and the disagreement is always the port losing.",
+        "You want work? I have three manifests that will not add up. Count the barrels against them and I will pay you what the union can still afford."
+      ]
+    },
+    {
+      "expect_screen_text": "I will count your barrels"
+    },
+    {
+      "screenshot": "kaito_accept"
+    },
+    {
+      "click": "I will count your barrels"
+    },
+    {
+      "wait_chat": "ADJUSTED FREIGHT",
+      "kinds": [
+        "title"
+      ],
+      "timeout": 10
+    },
+    {
+      "wait_chat": "log the shortfall at three wharf points",
+      "timeout": 10
+    },
+    {
+      "sleep": 1.5,
+      "comment_": "start's commands land, then the open_dialog swap to the counting page settles"
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=gaviota_manifest_check_active]",
+      "expect": "passed"
+    },
+    {
+      "expect_screen_text": "Report the three shortfalls"
+    },
+    {
+      "expect_screen_text": "Still counting"
+    },
+    {
+      "screenshot": "kaito_counting"
+    },
+    {
+      "comment": "-- guard probe: the turn-in button is ungated in dialog by design (gates read @s, not the #manifests scratch); at 0/3 turn_in must refuse and name the remaining points --"
+    },
+    {
+      "click": "Report the three shortfalls"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "Not all three yet",
+      "timeout": 10
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=no_gaviota_manifests_filed]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- stop 1: Tally Clerk Pell, the main-pier freight stack - 4b from the shack, a real walk --"
+    },
+    {
+      "walk_to": [
+        566.5,
+        3564.5
+      ]
+    },
+    {
+      "sleep": 1.5
+    },
+    {
+      "find_npc": "Tally Clerk Pell",
+      "save": "pell"
+    },
+    {
+      "interact_npc": "{pell.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "Kaito sent you? Then read it and weep. This manifest claims forty barrels off the morning tide. I have counted the stack three times and it says thirty-six. Four barrels of pay that sailed without a boat - and the paper swears they were never here.",
+        "Forty on the sheet, thirty-six on the pier. The gap is always the same direction and the same size, tide after tide. Write it down. Written down is the only place we win."
+      ]
+    },
+    {
+      "expect_screen_text": "Log the shortfall"
+    },
+    {
+      "screenshot": "manifest_pell"
+    },
+    {
+      "click": "Log the shortfall"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "forty claimed, thirty-six aboard",
+      "timeout": 10
+    },
+    {
+      "sleep": 1.0
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=gaviota_manifest_1]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- noted flip (stop 1 only): the prio-20 on-the-record entry replaces the counting page --"
+    },
+    {
+      "interact_npc": "{pell.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "You logged mine already. Take it up the pier before the tide restates it.",
+        "My four barrels are in your notebook. Two more wharf points to count, then it is a problem for Kaito, thank the tide."
+      ]
+    },
+    {
+      "click": "On my way"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "comment": "-- stop 2: Tally Clerk Odile, the wharf crates (Dock Hand Mattias wanders ~8b away - find_npc is name-matched, no collision) --"
+    },
+    {
+      "rcon": "tp {player} 588.5 86 3600.5"
+    },
+    {
+      "sleep": 2.0
+    },
+    {
+      "find_npc": "Tally Clerk Odile",
+      "save": "odile"
+    },
+    {
+      "interact_npc": "{odile.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "Log the shortfall"
+    },
+    {
+      "screenshot": "manifest_odile"
+    },
+    {
+      "click": "Log the shortfall"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "tariff booked at nine, paid at twelve",
+      "timeout": 10
+    },
+    {
+      "sleep": 1.0
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=gaviota_manifest_2]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- stop 3: Tally Clerk Bram, the deep-pier Dunewind load (Rui sits 10b south - name-matched) --"
+    },
+    {
+      "rcon": "tp {player} 605.5 87 3650.5"
+    },
+    {
+      "sleep": 2.0
+    },
+    {
+      "find_npc": "Tally Clerk Bram",
+      "save": "bram"
+    },
+    {
+      "interact_npc": "{bram.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "Log the shortfall"
+    },
+    {
+      "screenshot": "manifest_bram"
+    },
+    {
+      "click": "Log the shortfall"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "two hundred claimed for Dunewind, one ninety-one aboard",
+      "timeout": 10
+    },
+    {
+      "sleep": 1.0
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=gaviota_manifest_1,tag=gaviota_manifest_2,tag=gaviota_manifest_3]",
+      "expect": "passed",
+      "comment_": "all three per-point tags - turn_in will recount these into #manifests"
+    },
+    {
+      "comment": "-- beat 3: report back - turn_in recounts 3/3, payout fires (400 CD skewed), the audit files --"
+    },
+    {
+      "rcon": "tp {player} 566.5 84 3560.5"
+    },
+    {
+      "sleep": 2.0
+    },
+    {
+      "interact_npc": "{kaito.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "Report the three shortfalls"
+    },
+    {
+      "click": "Report the three shortfalls"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "ADJUSTMENT LOGGED",
+      "kinds": [
+        "title"
+      ],
+      "timeout": 10
+    },
+    {
+      "wait_chat": "Kaito signs the union sheet",
+      "timeout": 10
+    },
+    {
+      "sleep": 1.0
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=gaviota_manifests_filed]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- filed tombstone: the prio-50 entry replaces everything --"
+    },
+    {
+      "interact_npc": "{kaito.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "Three manifests, three shortfalls, all rounding in one direction - theirs. I filed it with the union. It will change nothing, but now it is written down, and written down is how you fight these people. Ask the founder, if you could find one.",
+        "The dock owes you a pay it can barely make. It is done, and so are you - take my thanks, lighter than they should be, and we both know whose fault that is."
+      ]
+    },
+    {
+      "expect_screen_text": "Fair tides"
+    },
+    {
+      "screenshot": "kaito_filed"
+    },
+    {
+      "click": "Fair tides"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "comment": "-- cleanup: strip every tag this scenario set + reset the HUD scratch so no other scenario inherits the lane --"
+    },
+    {
+      "rcon": "tag {player} remove gaviota_manifest_check_active"
+    },
+    {
+      "rcon": "tag {player} remove gaviota_manifest_1"
+    },
+    {
+      "rcon": "tag {player} remove gaviota_manifest_2"
+    },
+    {
+      "rcon": "tag {player} remove gaviota_manifest_3"
+    },
+    {
+      "rcon": "tag {player} remove gaviota_manifests_filed"
+    },
+    {
+      "rcon": "scoreboard players set #manifests quest_hud 0"
+    },
+    {
+      "screenshot": "gaviota_freight_done"
+    }
+  ]
+}

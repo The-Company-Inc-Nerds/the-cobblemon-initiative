@@ -1,0 +1,390 @@
+{
+  "name": "cyber_signal",
+  "description": "Signal Integrity (q.side_signal, slot 35, Cyber City gym-7 pack) end-to-end on Signal Tech Rell: nurse rumor pointer (tip_signal, gated not ci_signal_done, latches met_cyber_nurse), accept at the comms van (ci_signal_active + SIGNAL INTEGRITY title), scrub the three glitching-billboard props downtown in 1-2-3 order (each latches its ci_board_N via sidequest/signal/scrub_N with a unique actionbar tail, so a wrong-prop interact is caught twice), a premature turn-in nudge after board 1 (count-check holds: 'Not all scrubbed yet', no ci_signal_done), full turn-in (700 CD skewed payout via the unbranded Verified Rate rail + FEED SCRUBBED title + ci_signal_done), then the done-state entry. Available pre-Volt - NO prerequisite tags are faked and NO battle exists on this chain (zero TBCS stall exposure). Board say lines embed section-sign-k glitch codes, so screen needles sit on the plain-text side of each code run. reward/standard candies are NOT asserted (they scale on the memory_fragment score, unpinned here - canon precedent: miller/noncompliance assert only bespoke items); CobbleDollars ride upward on re-runs (payout rail has no reset, miller_walk precedent). DO NOT run before ground-probing _probe_pending - every tp Y below is an authored town-placement placeholder.",
+  "_probe_pending": [
+    "1478 65 1150",
+    "1560 66 1090",
+    "1610 66 1110",
+    "1470 65 1140"
+  ],
+  "steps": [
+    {
+      "comment": "-- SITE NOTES: Cyber City downtown is a town safe zone (no mob spawns). Nurse Ampere 1478,65,1150; Rell's van 1470,65,1140 (10.6b SW of the nurse); board_1 1490,66,1132 (~22b E of the van, latch-spawned while we stand at the nurse); board_2 1560,66,1090 and board_3 1610,66,1110 are cross-downtown tp hops. All Ys are authored placeholders - see _probe_pending. interact_npc self-approaches (A* chase, 32b), so sub-30b hops need no walk step. --"
+    },
+    {
+      "client": "screen.close",
+      "comment_": "leftover-dialog guard: a prior scenario's stale screen would eat the first interact"
+    },
+    {
+      "comment": "-- reset (idempotent re-runs): the accept latch, the done latch, the three prop tags, the nurse-met latch --"
+    },
+    {
+      "rcon": "tag {player} remove ci_signal_active"
+    },
+    {
+      "rcon": "tag {player} remove ci_signal_done"
+    },
+    {
+      "rcon": "tag {player} remove ci_board_1"
+    },
+    {
+      "rcon": "tag {player} remove ci_board_2"
+    },
+    {
+      "rcon": "tag {player} remove ci_board_3"
+    },
+    {
+      "rcon": "tag {player} remove met_cyber_nurse"
+    },
+    {
+      "rcon": "tp {player} 1478 89 1150"
+    },
+    {
+      "rcon": "time set day"
+    },
+    {
+      "rcon": "weather clear"
+    },
+    {
+      "sleep": 2.0,
+      "comment_": "latch spawns within 40b + band_tags resync of the no_* inverses (tip_signal gates not ci_signal_done)"
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=!ci_signal_active,tag=!ci_signal_done]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 1: Nurse Ampere rumor hub - tip_signal renders (gate: not ci_signal_done) and latches met_cyber_nurse --"
+    },
+    {
+      "find_npc": "Nurse Ampere",
+      "save": "nurse"
+    },
+    {
+      "interact_npc": "{nurse.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "click": "What is the word downtown?"
+    },
+    {
+      "sleep": 1.5,
+      "comment_": "open_dialog swap to the rumors entry needs a packet round-trip before the dump"
+    },
+    {
+      "expect_screen_text": "The billboards are glitching"
+    },
+    {
+      "screenshot": "nurse_tip_signal"
+    },
+    {
+      "click": "The billboards are glitching"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "scrubbed before management notices they are readable",
+      "timeout": 10
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=met_cyber_nurse]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 2: Rell at the comms van (10b SW) - accept. say[] rotates, so the any-of covers both lines --"
+    },
+    {
+      "find_npc": "Signal Tech Rell",
+      "save": "rell"
+    },
+    {
+      "interact_npc": "{rell.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "Rell, city signals. I keep the boards lit. Lately they are lit with things I was never given to broadcast - a memo, plain as day, about a man who was retired and then unretired into never existing.",
+        "Management thinks nobody reads a glitch. Somebody should scrub the three worst boards before that stops being true. No cameras on you if you move quick."
+      ]
+    },
+    {
+      "screenshot": "rell_offer"
+    },
+    {
+      "click": "I will scrub them"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "sleep": 0.5
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=ci_signal_active]",
+      "expect": "passed"
+    },
+    {
+      "wait_chat": "SIGNAL INTEGRITY",
+      "kinds": [
+        "title"
+      ],
+      "timeout": 10
+    },
+    {
+      "comment": "-- beat 3: board 1 (1490,66,1132 - 22b E, nearest 'Glitching Billboard' by 70b+; the interact chase covers the gap). Say needles sit clear of the section-sign-k glitch runs --"
+    },
+    {
+      "find_npc": "Glitching Billboard",
+      "save": "b1"
+    },
+    {
+      "interact_npc": "{b1.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "we told them the founder retired",
+        "The feed corrupts mid-loop"
+      ]
+    },
+    {
+      "expect_screen_text": "Scrub the feed"
+    },
+    {
+      "screenshot": "board_glitch"
+    },
+    {
+      "click": "Scrub the feed"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "sleep": 0.5
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=ci_board_1]",
+      "expect": "passed"
+    },
+    {
+      "wait_chat": "the retired-then-never-existed memo goes dark",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "comment": "-- beat 4: premature turn-in - the count-check must HOLD with 1/3 boards --"
+    },
+    {
+      "interact_npc": "{rell.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "Report the boards scrubbed"
+    },
+    {
+      "click": "Report the boards scrubbed"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "Not all scrubbed yet",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=!ci_signal_done]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 5: board 2 (cross-downtown tp - 95b, buildings defeat straight-line walking) --"
+    },
+    {
+      "rcon": "tp {player} 1560 93 1090"
+    },
+    {
+      "sleep": 2.0
+    },
+    {
+      "find_npc": "Glitching Billboard",
+      "save": "b2"
+    },
+    {
+      "interact_npc": "{b2.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "click": "Scrub the feed"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "sleep": 0.5
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=ci_board_2]",
+      "expect": "passed"
+    },
+    {
+      "wait_chat": "another board stops broadcasting the cover-up",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "comment": "-- beat 6: board 3 --"
+    },
+    {
+      "rcon": "tp {player} 1610 92 1110"
+    },
+    {
+      "sleep": 2.0
+    },
+    {
+      "find_npc": "Glitching Billboard",
+      "save": "b3"
+    },
+    {
+      "interact_npc": "{b3.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "click": "Scrub the feed"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "sleep": 0.5
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=ci_board_3]",
+      "expect": "passed"
+    },
+    {
+      "wait_chat": "the last board goes quiet",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "comment": "-- beat 7: full turn-in - accepted entry (prio 30), payout via signal/reward --"
+    },
+    {
+      "rcon": "tp {player} 1470 89 1140"
+    },
+    {
+      "sleep": 1.5
+    },
+    {
+      "interact_npc": "{rell.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "Three boards, downtown. Get to each one and scrub the corrupted feed before a suit notices it is readable. I will keep the comms van between you and the cameras.",
+        "Same fault they had in Kalahar, the techs say. It started spreading the week the coin went soft. Scrub all three and come back."
+      ]
+    },
+    {
+      "screenshot": "rell_turnin"
+    },
+    {
+      "click": "Report the boards scrubbed"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "sleep": 1.0
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=ci_signal_done]",
+      "expect": "passed"
+    },
+    {
+      "wait_chat": "FEED SCRUBBED",
+      "kinds": [
+        "title"
+      ],
+      "timeout": 10
+    },
+    {
+      "wait_chat": "Verified Rate",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "comment": "-- beat 8: done-state entry (prio 40) replaces the accept --"
+    },
+    {
+      "interact_npc": "{rell.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "Three boards, scrubbed. Every one of them was leaking the same story - the founder retired, then the founder never existed, both memos on the same loop. That is somebody editing the truth in public and getting sloppy.",
+        "The clean feed all routes through the north tower. If you want the boards to stop lying, that is where the signal comes from."
+      ]
+    },
+    {
+      "screenshot": "signal_done"
+    },
+    {
+      "click": "Understood"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "comment": "-- cleanup: strip every tag this scenario set (mystic precedent) so no other cyber scenario inherits the lane; CobbleDollars ride --"
+    },
+    {
+      "rcon": "tag {player} remove ci_board_1"
+    },
+    {
+      "rcon": "tag {player} remove ci_board_2"
+    },
+    {
+      "rcon": "tag {player} remove ci_board_3"
+    },
+    {
+      "rcon": "tag {player} remove ci_signal_active"
+    },
+    {
+      "rcon": "tag {player} remove ci_signal_done"
+    },
+    {
+      "rcon": "tag {player} remove met_cyber_nurse"
+    },
+    {
+      "screenshot": "cyber_signal_done"
+    }
+  ]
+}

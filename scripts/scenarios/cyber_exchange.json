@@ -1,0 +1,387 @@
+{
+  "name": "cyber_exchange",
+  "description": "Exchange Rate (q.side_exchange, slot 34, Cyber City gym-7 pack) end-to-end on the Verified Value Teller: nurse rumor pointer (tip_exchange, gated not ci_reserves_done, latches met_cyber_nurse), accept at the kiosk (ci_reserves_active + THE EXCHANGE RATE title), re-verify the three reserve-tag props downtown in 1-2-3 order (each latches ci_reserve_N via sidequest/exchange/note_N with a unique tellraw tail, so a wrong-prop interact is caught twice), a premature turn-in nudge after tag 1 (count-check holds: 'Not all re-verified yet', no ci_reserves_done), full turn-in (900 CD skewed payout via the COMPANY-branded rail - the attribution receipt is the point - + ADJUSTMENT title + ci_reserves_done), then the paid_out entry. Available pre-Volt - NO prerequisite tags faked, NO battle on this chain (zero TBCS stall exposure). The reserve props pair up physically with the signal boards (1490/1560/1610 corners) but display names differ, so find_npc never confuses them. reward/standard candies NOT asserted (memory_fragment-scaled, unpinned - miller/noncompliance precedent); the branded line-item roll after the receipt is random-pool and deliberately un-asserted; CobbleDollars ride upward on re-runs. DO NOT run before ground-probing _probe_pending - every tp Y below is an authored town-placement placeholder.",
+  "_probe_pending": [
+    "1478 65 1150",
+    "1500 65 1120",
+    "1560 64 1092",
+    "1610 64 1112"
+  ],
+  "steps": [
+    {
+      "comment": "-- SITE NOTES: Cyber City downtown is a town safe zone. Nurse Ampere 1478,65,1150; teller kiosk 1500,65,1120 (37b - beyond the 32b interact chase, so tp); reserve_1 1490,64,1128 (13b NW of the kiosk, chase covers it); reserve_2 1560,64,1092 and reserve_3 1610,64,1112 are cross-downtown tp hops. All Ys are authored placeholders - see _probe_pending. --"
+    },
+    {
+      "client": "screen.close",
+      "comment_": "leftover-dialog guard: a prior scenario's stale screen would eat the first interact"
+    },
+    {
+      "comment": "-- reset (idempotent re-runs): the accept latch, the done latch, the three prop tags, the nurse-met latch --"
+    },
+    {
+      "rcon": "tag {player} remove ci_reserves_active"
+    },
+    {
+      "rcon": "tag {player} remove ci_reserves_done"
+    },
+    {
+      "rcon": "tag {player} remove ci_reserve_1"
+    },
+    {
+      "rcon": "tag {player} remove ci_reserve_2"
+    },
+    {
+      "rcon": "tag {player} remove ci_reserve_3"
+    },
+    {
+      "rcon": "tag {player} remove met_cyber_nurse"
+    },
+    {
+      "rcon": "tp {player} 1478 89 1150"
+    },
+    {
+      "rcon": "time set day"
+    },
+    {
+      "rcon": "weather clear"
+    },
+    {
+      "sleep": 2.0,
+      "comment_": "latch spawns within 40b + band_tags resync of the no_* inverses (tip_exchange gates not ci_reserves_done)"
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=!ci_reserves_active,tag=!ci_reserves_done]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 1: Nurse Ampere rumor hub - tip_exchange renders (gate: not ci_reserves_done) and latches met_cyber_nurse --"
+    },
+    {
+      "find_npc": "Nurse Ampere",
+      "save": "nurse"
+    },
+    {
+      "interact_npc": "{nurse.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "click": "What is the word downtown?"
+    },
+    {
+      "sleep": 1.5,
+      "comment_": "open_dialog swap to the rumors entry needs a packet round-trip before the dump"
+    },
+    {
+      "expect_screen_text": "The exchange board is nonsense"
+    },
+    {
+      "screenshot": "nurse_tip_exchange"
+    },
+    {
+      "click": "The exchange board is nonsense"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "re-verify the reserve tags the Company stopped checking",
+      "timeout": 10
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=met_cyber_nurse]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 2: the teller at the kiosk - accept. say[] rotates, so the any-of covers both lines --"
+    },
+    {
+      "rcon": "tp {player} 1500 91 1120"
+    },
+    {
+      "sleep": 1.5
+    },
+    {
+      "find_npc": "Verified Value Teller",
+      "save": "t"
+    },
+    {
+      "interact_npc": "{t.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "Verified Trust, Verified Value - that is the slogan on the wall behind me, and I cannot look at it. The board reads fifty-six. That is not a rate, that is a scream.",
+        "The Company is supposed to verify the nether-star reserves that back every coin. They stopped. Would you walk downtown and re-verify three reserve tags for me. I need to know how bad it is."
+      ]
+    },
+    {
+      "screenshot": "teller_offer"
+    },
+    {
+      "click": "I will re-verify them"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "sleep": 0.5
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=ci_reserves_active]",
+      "expect": "passed"
+    },
+    {
+      "wait_chat": "THE EXCHANGE RATE",
+      "kinds": [
+        "title"
+      ],
+      "timeout": 10
+    },
+    {
+      "comment": "-- beat 3: reserve tag 1 (1490,64,1128 - 13b NW, nearest 'Reserve Tag' by 50b+; the interact chase covers the gap) --"
+    },
+    {
+      "find_npc": "Reserve Tag",
+      "save": "r1"
+    },
+    {
+      "interact_npc": "{r1.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "A nether-star reserve placard. The current signature is fresh ink over a sanded-off older one. The Company says it was always this one signature.",
+        "A reserve placard for the stars that back the coin. Somebody sanded a name off and re-signed it. The stamp is new. The paper is old."
+      ]
+    },
+    {
+      "expect_screen_text": "Re-verify this tag"
+    },
+    {
+      "screenshot": "reserve_tag"
+    },
+    {
+      "click": "Re-verify this tag"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "sleep": 0.5
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=ci_reserve_1]",
+      "expect": "passed"
+    },
+    {
+      "wait_chat": "The reserve reads short",
+      "timeout": 10
+    },
+    {
+      "comment": "-- beat 4: premature turn-in - the count-check must HOLD with 1/3 tags --"
+    },
+    {
+      "interact_npc": "{t.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "Report the count"
+    },
+    {
+      "click": "Report the count"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "Not all re-verified yet",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=!ci_reserves_done]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 5: reserve tag 2 (cross-downtown tp - 66b, buildings defeat straight-line walking) --"
+    },
+    {
+      "rcon": "tp {player} 1560 93 1092"
+    },
+    {
+      "sleep": 2.0
+    },
+    {
+      "find_npc": "Reserve Tag",
+      "save": "r2"
+    },
+    {
+      "interact_npc": "{r2.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "click": "Re-verify this tag"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "sleep": 0.5
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=ci_reserve_2]",
+      "expect": "passed"
+    },
+    {
+      "wait_chat": "another name sanded off",
+      "timeout": 10
+    },
+    {
+      "comment": "-- beat 6: reserve tag 3 --"
+    },
+    {
+      "rcon": "tp {player} 1610 92 1112"
+    },
+    {
+      "sleep": 2.0
+    },
+    {
+      "find_npc": "Reserve Tag",
+      "save": "r3"
+    },
+    {
+      "interact_npc": "{r3.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "click": "Re-verify this tag"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "sleep": 0.5
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=ci_reserve_3]",
+      "expect": "passed"
+    },
+    {
+      "wait_chat": "Three tags, three cover stories",
+      "timeout": 10
+    },
+    {
+      "comment": "-- beat 7: full turn-in - accepted entry (prio 30), payout via exchange/reward (payout_company: the branded receipt IS the tell) --"
+    },
+    {
+      "rcon": "tp {player} 1500 91 1120"
+    },
+    {
+      "sleep": 1.5
+    },
+    {
+      "interact_npc": "{t.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "Three reserve tags, posted downtown. Re-verify each one and bring me the count. If the star reserves are short, at least we will know it and not just feel it.",
+        "You checked the tickets in wheat country, did you not. This is the same rot, three towns further gone. Bring me the count when you have all three."
+      ]
+    },
+    {
+      "screenshot": "teller_turnin"
+    },
+    {
+      "click": "Report the count"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "sleep": 1.0
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=ci_reserves_done]",
+      "expect": "passed"
+    },
+    {
+      "wait_chat": "ADJUSTMENT",
+      "kinds": [
+        "title"
+      ],
+      "timeout": 10
+    },
+    {
+      "wait_chat": "Company Verified Rate",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "comment": "-- beat 8: paid_out entry (prio 40) replaces the accept --"
+    },
+    {
+      "interact_npc": "{t.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "Three tags, re-verified. Every one re-signed over somebody older. That is not accounting, that is a cover story with a stamp on it.",
+        "Someone is offering an alternative south of here. Grain, they say. After what those tags showed me, maybe I should listen."
+      ]
+    },
+    {
+      "screenshot": "exchange_done"
+    },
+    {
+      "click": "Take care of yourself"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "comment": "-- cleanup: strip every tag this scenario set (mystic precedent); CobbleDollars ride --"
+    },
+    {
+      "rcon": "tag {player} remove ci_reserve_1"
+    },
+    {
+      "rcon": "tag {player} remove ci_reserve_2"
+    },
+    {
+      "rcon": "tag {player} remove ci_reserve_3"
+    },
+    {
+      "rcon": "tag {player} remove ci_reserves_active"
+    },
+    {
+      "rcon": "tag {player} remove ci_reserves_done"
+    },
+    {
+      "rcon": "tag {player} remove met_cyber_nurse"
+    },
+    {
+      "screenshot": "cyber_exchange_done"
+    }
+  ]
+}

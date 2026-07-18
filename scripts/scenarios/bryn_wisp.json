@@ -1,0 +1,215 @@
+{
+  "name": "bryn_wisp",
+  "description": "Marsh-Child Bryn's show-a-Fairy-type flavor errand (BRAND-NEW cast member, doc 01 §2 #6 of 6; deliberately NO register slot, no combat, no economy). Both branches of sidequest/bryn/show_fairy in one run: first the NO-FAIRY path - the party is rebuilt to a single non-fairy Garchomp, verified fairy-free by the same partyhas probe the function uses (rcon guard, so a leaked fairy from a prior run fails LOUDLY instead of false-passing), and the click lands the squint actionbar with no latch and no lantern - then flabebe level=15 joins mid-scenario and the same button pays out: the Wisp-Lantern keepsake (a named soul lantern from npc_gift/wisp_lantern), the eyes-go-wide tellraw, and the bryn_wisp_done latch. (Needle choice: Bryn's kid-speech runs are quote-wrapped in the mcfunctions, which scenario_lint's \"text\" extractor cannot see into, so the waits target the unquoted narrator prefixes - 'Bryn squints at your party' / 'eyes go wide'; the second, fully quote-wrapped drift-line tellraw renders but is not needle-asserted.) The re-open lands on the lantern-friends done entry (prio 20) and its 'Where do the wisps go?' button delivers the Fairy Shrine breadcrumb (rumors/shrine_fairy, gated not defeated_fairy_shrine_leader - removed defensively in the preamble). Cleanup claws the flabebe back (party slot 2) so later fairy-probe assumptions stay deterministic. Bryn WANDERS (ambient_wander) - find_npc uses the default 48b radius from the boardwalk latch point.",
+  "_probe_pending": [
+    "1064.5 64 2470.5"
+  ],
+  "steps": [
+    {
+      "comment": "-- preamble: tp FIRST (loaded chunks for the latch spawn). Site = the fen boardwalk latch at 1064.5 64 2470.5 - AUTHORED y=64 PLACEHOLDER, not yet ground-probed (see _probe_pending): confirm the real surface Y before the first live run. Near-canon reference: Sedge's live-verified tp at 1058 78 2478 suggests the causeway really sits near y64, but probe anyway --"
+    },
+    {
+      "rcon": "tp {player} 1064.5 65 2470.5"
+    },
+    {
+      "sleep": 2.0
+    },
+    {
+      "rcon": "time set day"
+    },
+    {
+      "client": "screen.close"
+    },
+    {
+      "comment": "-- (screen.close above = leftover-dialog guard) reset (idempotent re-runs): the errand latch, the probe scratch tag, the keepsake; defeated_fairy_shrine_leader removed defensively so the done-entry wisp button's no_ gate holds (mystic_mirror's defeated_mystic_leader precedent) --"
+    },
+    {
+      "rcon": "tag {player} remove bryn_wisp_done"
+    },
+    {
+      "rcon": "tag {player} remove bryn_fairy_ok"
+    },
+    {
+      "rcon": "tag {player} remove defeated_fairy_shrine_leader"
+    },
+    {
+      "rcon": "clear {player} minecraft:soul_lantern"
+    },
+    {
+      "comment": "-- party: empty all 6 slots (stadium_wave precedent), then ONE known non-fairy stand-in so the no-fairy branch is deterministic (no battle here - the level is irrelevant) --"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon garchomp level=50"
+    },
+    {
+      "comment": "-- settle (latch spawn + band re-derivation), then the fairy-free guard: probe with the SAME partyhas primitive show_fairy uses; if a fairy leaked into the party this fails loudly here instead of false-passing beat 1 --"
+    },
+    {
+      "sleep": 2.0
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative partyhas fairy bryn_fairy_ok"
+    },
+    {
+      "rcon": "execute unless entity @a[name={player},tag=bryn_fairy_ok]",
+      "expect": "passed"
+    },
+    {
+      "rcon": "tag {player} remove bryn_fairy_ok"
+    },
+    {
+      "comment": "-- beat 1: the NO-FAIRY path. Default entry (chasing wisps), click the show button with a fairy-less party: squint actionbar, no latch, no lantern --"
+    },
+    {
+      "find_npc": "Marsh-Child Bryn",
+      "save": "b"
+    },
+    {
+      "interact_npc": "{b.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "Shh — you'll scare it! …Aw. It went under the boardwalk. The blue ones only come out at dusk, and they never let me catch up.",
+        "Da says the wisps are just marsh-light. But marsh-light doesn't WAIT for you at the bend. Hey — trainers carry glimmery ones, don't they? The pink-sparkly kind? Show me one! Just once!"
+      ]
+    },
+    {
+      "expect_screen_text": "Show Bryn a Fairy-type"
+    },
+    {
+      "screenshot": "bryn_chasing_wisps"
+    },
+    {
+      "click": "Show Bryn a Fairy-type"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "Bryn squints at your party",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "rcon": "execute unless entity @a[name={player},tag=bryn_wisp_done]",
+      "expect": "passed"
+    },
+    {
+      "rcon": "clear {player} minecraft:soul_lantern 0",
+      "expect": "No items were found"
+    },
+    {
+      "comment": "-- beat 2: the fairy joins (assignment-canon flabebe level=15), same button pays out: latch + Wisp-Lantern + both tellraw lines --"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon flabebe level=15"
+    },
+    {
+      "sleep": 1.0
+    },
+    {
+      "find_npc": "Marsh-Child Bryn",
+      "save": "b"
+    },
+    {
+      "interact_npc": "{b.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "click": "Show Bryn a Fairy-type"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "eyes go wide",
+      "timeout": 10
+    },
+    {
+      "sleep": 1.0
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=bryn_wisp_done]",
+      "expect": "passed"
+    },
+    {
+      "rcon": "clear {player} minecraft:soul_lantern 0",
+      "expect": "Found 1"
+    },
+    {
+      "screenshot": "wisp_lantern_given"
+    },
+    {
+      "comment": "-- beat 3: the lantern-friends done entry (prio 20, positive bryn_wisp_done) + the Fairy Shrine breadcrumb button --"
+    },
+    {
+      "sleep": 1.5
+    },
+    {
+      "find_npc": "Marsh-Child Bryn",
+      "save": "b"
+    },
+    {
+      "interact_npc": "{b.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "You still have the lantern? Good. Lysira says a lantern only counts if somebody is under it.",
+        "The wisps went shrine-way again last night. Past the last lantern, where the boardwalk stops being brave. If you go, tell them Bryn says hello."
+      ]
+    },
+    {
+      "expect_screen_text": "Where do the wisps go?"
+    },
+    {
+      "screenshot": "bryn_lantern_friends"
+    },
+    {
+      "click": "Where do the wisps go?"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "a shrine older than the town",
+      "timeout": 10
+    },
+    {
+      "comment": "-- cleanup: claw the flabebe back (slot 2 - the garchomp stand-in stays slot 1) so no later scenario inherits a surprise fairy; the lantern rides as a keepsake, preamble clears it --"
+    },
+    {
+      "rcon": "takepokemon {player} 2"
+    },
+    {
+      "screenshot": "bryn_wisp_done"
+    }
+  ]
+}

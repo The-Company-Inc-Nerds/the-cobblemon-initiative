@@ -1,0 +1,313 @@
+{
+  "name": "frontier_tower",
+  "description": "Battle Tower hall end-to-end (q.side_frontier_hall stage 1): Climber Jasper -> Contender Mira -> Tower Tycoon Palmer under dev-bot autobattle, then the beaten lane. Same shape as frontier_pyramid: champion arm (royal_league_champion, stripped at cleanup), Palmer's button gating on both challenger tags is the gate assert, on_win fires frontier/hall_cleared ('A Frontier hall falls.' + #halls recount), and the preamble strips the OTHER six hall tags + frontier_warden_stirred so '#halls==1 / warden not stirred' holds. Neither the one_time challengers nor the gym_leader brain despawn on win - re-runs are tag surgery only. NOTE Palmer's win_line is verbatim the first sentence of his beaten say[0]; the chat wait and the screen assert are different channels, so no collision. Win waits ride the KNOWN TBCS stall / showdown wedge - a timeout there is almost certainly the stall, re-run before filing.",
+  "_probe_pending": [
+    "3800.5 159 2959.5"
+  ],
+  "steps": [
+    {
+      "comment": "-- SITE NOTES: latch-placed bodies on the shipped RCT anchors - Jasper [3797.5 159 2959.5], Mira [3803.5 159 2959.5], Palmer [3800.5 159 2962.5]. ALL THREE tower character files carry a PLACEHOLDER-placement warning (atlas-intent facility Battle Tower [4026 64 3068] vs the shipped y=159 plateau anchor, never live-verified) - hence _probe_pending on the tp; do NOT guess a corrected Y. frontier_active region tick suspends Nuzlocke here, but it is NOT a SafeZone - day + regen below for the hardcore player. --"
+    },
+    {
+      "comment": "-- reset (idempotent re-runs): this hall's three defeat tags, PLUS the other six hall tags + the warden latch so the aggregate asserts stay exact --"
+    },
+    {
+      "rcon": "tag {player} remove defeated_tower_challenger_1"
+    },
+    {
+      "rcon": "tag {player} remove defeated_tower_challenger_2"
+    },
+    {
+      "rcon": "tag {player} remove frontier_tower_cleared"
+    },
+    {
+      "rcon": "tag {player} remove frontier_factory_cleared"
+    },
+    {
+      "rcon": "tag {player} remove frontier_castle_cleared"
+    },
+    {
+      "rcon": "tag {player} remove frontier_arcade_cleared"
+    },
+    {
+      "rcon": "tag {player} remove frontier_port_cleared"
+    },
+    {
+      "rcon": "tag {player} remove frontier_pyramid_cleared"
+    },
+    {
+      "rcon": "tag {player} remove frontier_market_cleared"
+    },
+    {
+      "rcon": "tag {player} remove frontier_warden_stirred"
+    },
+    {
+      "rcon": "tag {player} remove frontier_all_cleared"
+    },
+    {
+      "comment": "-- gate arm: champion. Stripped again at cleanup --"
+    },
+    {
+      "rcon": "tag {player} add royal_league_champion"
+    },
+    {
+      "comment": "-- tp BEFORE any entity-adjacent work (latch NPCs spawn within 40b); long settle covers first-visit preset import --"
+    },
+    {
+      "rcon": "tp {player} 3800.5 159 2959.5"
+    },
+    {
+      "sleep": 3.0
+    },
+    {
+      "comment": "-- leftover-state guards: close any stale dialog; stopbattle force-ends a stale battle (clean-player no-op) --"
+    },
+    {
+      "client": "screen.close"
+    },
+    {
+      "rcon": "stopbattle {player}"
+    },
+    {
+      "sleep": 1.5
+    },
+    {
+      "rcon": "time set day"
+    },
+    {
+      "rcon": "weather clear"
+    },
+    {
+      "rcon": "effect give {player} minecraft:regeneration 480 2"
+    },
+    {
+      "comment": "-- party reset: six empties then two lv-100 Garchomp (ceiling fights; junk parties stall TBCS init; two mons = attrition headroom) --"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon garchomp level=100"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon garchomp level=100"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative dev bot autobattle on"
+    },
+    {
+      "comment": "-- settle + lane sanity: band tick re-derives the no_* inverses dropped-side --"
+    },
+    {
+      "sleep": 2.0
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=royal_league_champion,tag=no_frontier_tower_cleared]",
+      "expect": "passed"
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=no_defeated_tower_challenger_1,tag=no_defeated_tower_challenger_2]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 1: Climber Jasper, ground floor - stable battle-button assert (say[] rotates) --"
+    },
+    {
+      "find_npc": "Climber Jasper",
+      "save": "c1"
+    },
+    {
+      "interact_npc": "{c1.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "Battle Climber Jasper"
+    },
+    {
+      "screenshot": "tower_jasper"
+    },
+    {
+      "click": "Battle Climber Jasper"
+    },
+    {
+      "comment": "-- battle buttons have no close action - close the stale dialog; win wait anchors here --"
+    },
+    {
+      "client": "screen.close"
+    },
+    {
+      "wait_chat": "Floor cleared. You move up.",
+      "timeout": 240
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=defeated_tower_challenger_1]",
+      "expect": "passed"
+    },
+    {
+      "sleep": 1.0
+    },
+    {
+      "comment": "-- beat 2: Contender Mira, floor two --"
+    },
+    {
+      "find_npc": "Contender Mira",
+      "save": "c2"
+    },
+    {
+      "interact_npc": "{c2.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "Battle Contender Mira"
+    },
+    {
+      "screenshot": "tower_mira"
+    },
+    {
+      "click": "Battle Contender Mira"
+    },
+    {
+      "client": "screen.close"
+    },
+    {
+      "wait_chat": "Two floors up. The lift to the Tycoon is open.",
+      "timeout": 240
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=defeated_tower_challenger_2]",
+      "expect": "passed"
+    },
+    {
+      "sleep": 1.0
+    },
+    {
+      "comment": "-- beat 3: Tower Tycoon Palmer - button gates on both challenger tags; it appearing IS the gate assert --"
+    },
+    {
+      "find_npc": "Tower Tycoon Palmer",
+      "save": "brain"
+    },
+    {
+      "interact_npc": "{brain.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "Challenge Tower Tycoon Palmer"
+    },
+    {
+      "screenshot": "tower_palmer_gate_open"
+    },
+    {
+      "click": "Challenge Tower Tycoon Palmer"
+    },
+    {
+      "client": "screen.close"
+    },
+    {
+      "comment": "-- win chain: defeat tag -> Palmer's win line -> frontier/hall_cleared actionbar + #halls recount --"
+    },
+    {
+      "wait_chat": "Top floor. There is no promotion above this one",
+      "timeout": 240
+    },
+    {
+      "wait_chat": "A Frontier hall falls.",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 15
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=frontier_tower_cleared]",
+      "expect": "passed"
+    },
+    {
+      "rcon": "execute if score #halls quest_hud matches 1",
+      "expect": "passed"
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=!frontier_warden_stirred]",
+      "expect": "passed"
+    },
+    {
+      "screenshot": "tower_hall_falls"
+    },
+    {
+      "comment": "-- beat 4: the beaten lane - priority-20 entry; prose any-of covers all three rotating say lines. Re-find refreshes the approach context (the battle chain pushed the last one out of range) --"
+    },
+    {
+      "sleep": 1.5
+    },
+    {
+      "find_npc": "Tower Tycoon Palmer",
+      "save": "brain"
+    },
+    {
+      "interact_npc": "{brain.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "The chair behind the desk stays mine, but the floor is yours. Take the view in - most people never see the tower from this side.",
+        "You reached the summit and held it. I ran this tower back when the Company still built things for people to enjoy instead of things to squeeze them with. Good to see it still means the climb.",
+        "The office at the top is yours whenever you want it. Nobody hands out the corner anymore - people just take the stairs. You took them all."
+      ]
+    },
+    {
+      "expect_screen_text": "Step down from the summit"
+    },
+    {
+      "screenshot": "tower_beaten"
+    },
+    {
+      "click": "Step down from the summit"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "comment": "-- cleanup: autobattle off; strip champion + everything this run earned --"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative dev bot autobattle off"
+    },
+    {
+      "rcon": "tag {player} remove frontier_tower_cleared"
+    },
+    {
+      "rcon": "tag {player} remove defeated_tower_challenger_1"
+    },
+    {
+      "rcon": "tag {player} remove defeated_tower_challenger_2"
+    },
+    {
+      "rcon": "tag {player} remove royal_league_champion"
+    },
+    {
+      "screenshot": "frontier_tower_done"
+    }
+  ]
+}

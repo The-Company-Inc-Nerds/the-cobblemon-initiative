@@ -1,0 +1,341 @@
+{
+  "name": "cyber_door",
+  "description": "The Door Downtown (q.side_door, slot 37, Cyber City gym-7 pack) on Grid Broker Ohmond - the HQ-raid on-ramp. Pre-Volt default holds first (no defeated_cyber_leader: prio-10 'come back after Volt'), then the gate is opened by tag surgery (the only faked prerequisite), nurse rumor pointer (tip_hq: defeated_cyber_leader + not hq_pointer_done), the wager_offer entry, and the pointer via the PAID DECLINE rail (door/decline_wager: exact-balance 900 -> 300 fee -> 600, kept under the 1000 query-abbreviation ceiling, safari precedent) - Verified Charge receipt + THE DOOR DOWNTOWN title + the raid-gate math tellraw + hq_pointer_done. Then the pointer_done entry (prio 40) render-asserts, a Tara Keylock flavor stop (the keycard-cloner foreshadow; persisted CSV body at REAL coords, the one tp NOT probe-pending), and LAST the opt-in above-cap wager battle (sq_cyber_broker_wager ~64-65): autobattle + 2x lv-100 Garchomp headroom, win line 'The stake is yours, fair and audited', defeated_sq_cyber_broker_wager. The battle sits at the tail ON PURPOSE - the known TBCS battle-init stall can only cost the final beat, never the pointer coverage; on_win re-runs deliver_pointer but the hq_pointer_done guard makes it a silent no-op (idempotence is exercised, not asserted). Wager-LOSS pointer delivery is untestable here (autobattle wins) - covered by the decline rail sharing the same function. CobbleDollars ride high after a run (+20000 battle-fee funding, fee rail has no reset). DO NOT run before ground-probing _probe_pending - broker + nurse tp Ys are authored town-placement placeholders.",
+  "_probe_pending": [
+    "1555 65 1108",
+    "1478 65 1150"
+  ],
+  "steps": [
+    {
+      "comment": "-- SITE NOTES: downtown seam, Cyber City (town safe zone). Ohmond 1555,65,1108 (latch-placed); Nurse Ampere 1478,65,1150 (tp hop, 88b); Tara Keylock 1536,134,1260 is a persisted CSV world body (uuid d7ae5287, REAL Y - exempt from _probe_pending). Ohmond is NOT despawned on the wager defeat (no easy_npc delete on the battle block), so no body/latch reset is needed in the preamble. --"
+    },
+    {
+      "client": "screen.close",
+      "comment_": "leftover-dialog guard: a prior scenario's stale screen would eat the first interact"
+    },
+    {
+      "comment": "-- reset (idempotent re-runs): the pointer one-shot, the wager defeat tag, the faked Volt gate, the nurse-met latch --"
+    },
+    {
+      "rcon": "tag {player} remove hq_pointer_done"
+    },
+    {
+      "rcon": "tag {player} remove defeated_sq_cyber_broker_wager"
+    },
+    {
+      "rcon": "tag {player} remove defeated_cyber_leader"
+    },
+    {
+      "rcon": "tag {player} remove met_cyber_nurse"
+    },
+    {
+      "rcon": "tp {player} 1555 92 1108"
+    },
+    {
+      "rcon": "time set day"
+    },
+    {
+      "rcon": "weather clear"
+    },
+    {
+      "sleep": 2.0,
+      "comment_": "latch spawns within 40b + band_tags resync of the no_* inverses (wager_offer needs no_hq_pointer_done back, pointer_done needs no_defeated_sq_cyber_broker_wager)"
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=!defeated_cyber_leader,tag=!hq_pointer_done,tag=!defeated_sq_cyber_broker_wager]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 1: the pre-Volt default HOLDS (prio 10) - no door math for an unproven trainer --"
+    },
+    {
+      "find_npc": "Grid Broker Ohmond",
+      "save": "o"
+    },
+    {
+      "interact_npc": "{o.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "Ohmond, grid broker. I buy blackout futures and sell the truth cheap. Make your name in the gym and come back - I only tell the door math to trainers the tower is scared of.",
+        "That tower on the north plaza. There is a way in, and a number that opens it. Beat Volt and I will spell it out."
+      ]
+    },
+    {
+      "screenshot": "ohmond_prelock"
+    },
+    {
+      "click": "Soon"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "comment": "-- beat 2: open the post-Volt gate by tag surgery, then the nurse pointer (tip_hq: defeated_cyber_leader + not hq_pointer_done) --"
+    },
+    {
+      "rcon": "tag {player} add defeated_cyber_leader"
+    },
+    {
+      "rcon": "tp {player} 1478 89 1150"
+    },
+    {
+      "sleep": 2.0
+    },
+    {
+      "find_npc": "Nurse Ampere",
+      "save": "nurse"
+    },
+    {
+      "interact_npc": "{nurse.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "click": "What is the word downtown?"
+    },
+    {
+      "sleep": 1.5,
+      "comment_": "open_dialog swap to the rumors entry needs a packet round-trip before the dump"
+    },
+    {
+      "expect_screen_text": "The tower on the north plaza"
+    },
+    {
+      "screenshot": "nurse_tip_hq"
+    },
+    {
+      "click": "The tower on the north plaza"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "he can tell you the number that opens the door",
+      "timeout": 10
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=met_cyber_nurse]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 3: wager_offer (prio 30) + the PAID DECLINE. Exact balance: set 900 (under the 1000 query-abbreviation ceiling), fee 300 via the pay-probe rail, 600 after. The 'Take the wager' render is asserted but NOT clicked here --"
+    },
+    {
+      "rcon": "cobbledollars set {player} 900"
+    },
+    {
+      "rcon": "tp {player} 1555 92 1108"
+    },
+    {
+      "sleep": 1.5
+    },
+    {
+      "interact_npc": "{o.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "You want the door math, I will give you the door math - but a broker never gives advice for free. A friendly wager first. My team is above your cap, so this is a real risk, printed plain.",
+        "Fifteen hundred CobbleDollars if you win, fifteen hundred if you lose, three hundred to walk away and just hear the math. No pressure. Either way you leave knowing the number."
+      ]
+    },
+    {
+      "expect_screen_text": "Take the wager - 1500 CD on the line"
+    },
+    {
+      "screenshot": "ohmond_wager_offer"
+    },
+    {
+      "click": "Pay 300 and just tell me the door math"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "sleep": 1.0,
+      "comment_": "decline_wager's pay-probe resolves, then deliver_pointer fires in the same function"
+    },
+    {
+      "wait_chat": "Verified Charge: 300 CD",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "wait_chat": "THE DOOR DOWNTOWN",
+      "kinds": [
+        "title"
+      ],
+      "timeout": 10
+    },
+    {
+      "wait_chat": "seven badges and four liberated fields",
+      "timeout": 10
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=hq_pointer_done]",
+      "expect": "passed"
+    },
+    {
+      "rcon": "cobbledollars query {player}",
+      "expect": "$ 600"
+    },
+    {
+      "comment": "-- beat 4: re-open - pointer_done (prio 40) must preempt the offer now that hq_pointer_done is set --"
+    },
+    {
+      "rcon": "tp {player} 1555 92 1108",
+      "comment_": "re-anchor (already standing here) - keeps the interact approach-context window honest"
+    },
+    {
+      "interact_npc": "{o.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "You have the math now. Seven badges, four fields flipped, and the tower door stops being a wall. The acting man upstairs is praying you cannot count that high.",
+        "Fenceline Acres is south of town, Coldfurrow is east on the Ryujin road. Both still feed his desk. Empty them and the number opens. Fancy a wager while you decide."
+      ]
+    },
+    {
+      "expect_screen_text": "I have fences to kick"
+    },
+    {
+      "screenshot": "ohmond_pointer_done"
+    },
+    {
+      "click": "I have fences to kick"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "comment": "-- beat 5: Tara Keylock flavor stop (Central Terraces) - the grey-market badge-cloner who foreshadows the keycard marquee. Inline BASIC, authored with no buttons - close via the driver --"
+    },
+    {
+      "rcon": "tp {player} 1536 134 1260"
+    },
+    {
+      "sleep": 1.5
+    },
+    {
+      "find_npc": "Tara Keylock",
+      "save": "tara"
+    },
+    {
+      "interact_npc": "{tara.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "Locks, keys, and the occasional badge that opens a door it was not meant to. I do not ask which door. I especially do not ask about the Company badges people bring me lately, all trembling, all in a hurry.",
+        "A keycard is only as good as the reader believing it. And the readers downtown are old and tired and mostly want to say yes. Comforting thought, if you are the right kind of desperate."
+      ]
+    },
+    {
+      "screenshot": "tara_keylock"
+    },
+    {
+      "client": "screen.close"
+    },
+    {
+      "comment": "-- beat 6: the opt-in above-cap wager, LAST (TBCS battle-init stall exposure confined to the tail). Party reset to one junk slot (a crowded lv-5 party stalls TBCS init, wheat_war lesson), 2x lv-100 Garchomp attrition headroom, autobattle, and +20000 CD so a fluke loss_fee can never clamp at zero --"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon garchomp level=100"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon garchomp level=100"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative dev bot autobattle on"
+    },
+    {
+      "rcon": "cobbledollars give {player} 20000"
+    },
+    {
+      "rcon": "tp {player} 1555 92 1108"
+    },
+    {
+      "sleep": 1.5
+    },
+    {
+      "interact_npc": "{o.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "Take the wager - 1500 CD on the line"
+    },
+    {
+      "click": "Take the wager"
+    },
+    {
+      "client": "screen.close",
+      "comment_": "battle-start buttons have no close action; the fight runs server-side (autobattle) while the stale dialog stays up"
+    },
+    {
+      "wait_chat": "The stake is yours, fair and audited",
+      "timeout": 180
+    },
+    {
+      "sleep": 1.0
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=defeated_sq_cyber_broker_wager]",
+      "expect": "passed"
+    },
+    {
+      "screenshot": "door_wager_won"
+    },
+    {
+      "comment": "-- cleanup: autobattle off, strip every tag this scenario set (other scenarios assume a pre-gym-7 player); CobbleDollars ride --"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative dev bot autobattle off"
+    },
+    {
+      "rcon": "tag {player} remove defeated_cyber_leader"
+    },
+    {
+      "rcon": "tag {player} remove met_cyber_nurse"
+    },
+    {
+      "rcon": "tag {player} remove hq_pointer_done"
+    },
+    {
+      "rcon": "tag {player} remove defeated_sq_cyber_broker_wager"
+    },
+    {
+      "screenshot": "cyber_door_done"
+    }
+  ]
+}

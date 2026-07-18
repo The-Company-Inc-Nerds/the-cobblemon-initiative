@@ -1,0 +1,368 @@
+{
+  "name": "shrine_dragon",
+  "description": "Dragon Shrine end-to-end (q.side_shrine_dragon, slot 96) including the BRAND-NEW hydra-gauntlet auto-dispatch (ShrineChallengeManager): climb the two-cultist ladder via their dialog battles (Acolyte Wyrm then Zealot Scale, one_time recipes whose onwin latches defeated_dragon_shrine_cultist_1/2 + pays 400 each), open Draconis and click the begin-trial button - it fires the dragon_trial_help rules tellraw then 'cobblemon-initiative shrine dragon start'; the manager dispatches the three hydra stage battles (rctmod:dragon_hydra_1/2/3, GEN_9_DOUBLES, lv 64-74, anchored-armor-stand tbcs AT the player, first stage 2s after start and each next ~3s after the previous head falls, healParty between stages), dev-bot autobattle wins them, the 'Stage N defeated!' lines assert each head, completion shows the 'Challenge Complete!' title and latches dragon_shrine_trial_clear, and a re-open render-asserts the unlocked 'Face the wyrm' leader battle button. The leader battle is NOT clicked: TBCS-stall precedent (mystic_mirror) plus a Draconis defeat would latch dragon_shrine_complete/crystal/memory-fragment state this scenario has no business owning. PREAMBLE MUST RESET PROGRESS: PlayerProgressManager.onTrainerDefeated early-returns on already-recorded defeats and never re-notifies the shrine manager, so a re-run with recorded dragon_hydra_* defeats would wedge at stage 1 forever - no per-trainer un-defeat exists, hence the full 'cobblemon-initiative reset' (clears ALL defeated trainers + achievements, cap back to base 15; consistent with the suite's fresh low-badge player assumption, safari_yards precedent) in BOTH preamble and cleanup. WEDGE NOTE (per assignment): the line '[Initiative] A battle-engine fault was contained' may appear mid-run (ShowdownWedgeTrap toast, ~1/10 battles) - RECORD its presence from transcript.jsonl in the run report; it is NOT a scenario failure and no step asserts on it. If a stage wait then times out, that IS the wedge: recover per the wedge recipe (blind rctapi maps FIRST, then dev showdown revive, then /reloadshowdown) and re-run before filing a regression. A one-off '[Hydra Gauntlet] The head recoils... and strikes again' line is the manager's own benign silent-refusal retry, not a failure. Prize money (400+400) rides across runs (the fee rail has no reset, miller_walk precedent).",
+  "_probe_pending": [
+    "2000 66 921"
+  ],
+  "steps": [
+    {
+      "comment": "-- SITE + DESIGN NOTES: Dragon Shrine, wilderness (NOT a safe zone - full mob spawns). Cultist latch placements: Acolyte Wyrm [1998 66 921], Zealot Scale [2001 66 924]; Draconis persisted body ~[2008 66 921] (trainers-file coords). Cultist dialog gates are pure tags (cultist_1 default is ungated; RCT prerequisites like ryujin_leader are NOT enforced at battle time - canBattleTrainer has no callers), so no gym state is faked. Begin-trial button gates on the band-tag inverse no_dragon_shrine_trial_clear, hence the settle sleeps after tag surgery (band_tags resync, mystic_mirror precedent). --"
+    },
+    {
+      "comment": "-- preamble: tp FIRST (kills/latches need loaded chunks; the shrine tp Y is the authored placement Y and is UNPROBED - see _probe_pending, do not trust 66 until a live ground-probe) --"
+    },
+    {
+      "rcon": "tp {player} 2000 66 921"
+    },
+    {
+      "sleep": 2.0
+    },
+    {
+      "rcon": "time set day"
+    },
+    {
+      "rcon": "weather clear"
+    },
+    {
+      "rcon": "kill @e[type=!player,distance=..48,type=!minecraft:armor_stand,type=!easy_npc:humanoid,type=!easy_npc:fairy,type=!cobblemon:pokemon]",
+      "comment_": "hostile sweep (safari_yards filter) - five back-to-back battles in the open is a long time to share a field with a creeper"
+    },
+    {
+      "rcon": "effect give {player} minecraft:regeneration 900 1 true"
+    },
+    {
+      "comment": "-- stale-state sweep: stopbattle force-ends any battle a previous scenario left live (fires NO event); shrine stop clears a stale hydra dispatch AND sweeps its per-player battle anchor ('You have no active shrine challenge.' on clean runs is the normal no-op) --"
+    },
+    {
+      "rcon": "stopbattle {player}"
+    },
+    {
+      "sleep": 1.5
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative shrine dragon stop"
+    },
+    {
+      "comment": "-- progress reset (THE re-run linchpin): onTrainerDefeated skips already-recorded trainers before notifying ShrineChallengeManager, so recorded dragon_hydra_* defeats from a prior pass would make the gauntlet advance NEVER fire. Full reset is the only lever (no per-trainer un-defeat). Side effect: badges/achievements wiped, cap 15 - the suite's fresh-player baseline --"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative reset",
+      "expect": "Your progress has been reset"
+    },
+    {
+      "comment": "-- tag reset (idempotent re-runs): every tag the ladder + trial latch, plus defensive leader/battle-wrapper tags --"
+    },
+    {
+      "rcon": "tag {player} remove defeated_dragon_shrine_cultist_1"
+    },
+    {
+      "rcon": "tag {player} remove defeated_dragon_shrine_cultist_2"
+    },
+    {
+      "rcon": "tag {player} remove dragon_shrine_trial_clear"
+    },
+    {
+      "rcon": "tag {player} remove defeated_dragon_shrine_leader",
+      "comment_": "the leader 'after' entry gates on this; test player never beats Draconis here, remove defensively"
+    },
+    {
+      "rcon": "tag {player} remove in_trainer_battle"
+    },
+    {
+      "rcon": "clear {player} cobblemon:ultra_ball",
+      "comment_": "cultist defeat rewards (3 each) from a prior pass"
+    },
+    {
+      "comment": "-- party: empty all 6 slots then 3x lv-100 Garchomp (assignment spec: hydra runs 64-74, doubles needs 2 leads + attrition headroom; no level lock on hydra dispatch, no entry heal) --"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon garchomp level=100"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon garchomp level=100"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon garchomp level=100"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative dev bot autobattle on"
+    },
+    {
+      "sleep": 2.0,
+      "comment_": "settle: cultist latches spawn within 40b of the tp, and band_tags must re-derive no_dragon_shrine_trial_clear after the tag removal above"
+    },
+    {
+      "comment": "-- beat 1: Acolyte Wyrm (outer coil, ungated default entry) - dialog battle, onwin latches cultist_1 --"
+    },
+    {
+      "find_npc": "Dragon Acolyte Wyrm",
+      "save": "c1"
+    },
+    {
+      "walk_to": [
+        "{c1.x}",
+        "{c1.z}"
+      ],
+      "tol": 2.5
+    },
+    {
+      "interact_npc": "{c1.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "Halt at the coil. You carry Ryujin of the Keep and think you know the shape of a dragon. The fire here is older than the keep, older than the towns, and it stirred when your shadow crossed it.",
+        "Prove you will not be consumed. The old coil does not warm a hand it cannot trust.",
+        "Tell me - do you feel old, somewhere under the skin. The fire seems to think so. Face me, and we will see what it remembers."
+      ]
+    },
+    {
+      "screenshot": "acolyte_challenge"
+    },
+    {
+      "click": "Face the acolyte"
+    },
+    {
+      "client": "screen.close"
+    },
+    {
+      "wait_chat": "after her the hydra breathes",
+      "timeout": 240,
+      "comment_": "win_line via the onwin '@2 say' rail (ming_nokill precedent); autobattle plays the fight"
+    },
+    {
+      "sleep": 1.5
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=defeated_dragon_shrine_cultist_1]",
+      "expect": "passed"
+    },
+    {
+      "screenshot": "acolyte_beaten"
+    },
+    {
+      "comment": "-- beat 2: Zealot Scale (default entry gated on cultist_1 tag; her 'locked' entry would show if the ladder skipped) - no heal exists between cultist fights, so top up --"
+    },
+    {
+      "rcon": "healpokemon {player}"
+    },
+    {
+      "find_npc": "Dragon Zealot Scale",
+      "save": "c2"
+    },
+    {
+      "walk_to": [
+        "{c2.x}",
+        "{c2.z}"
+      ],
+      "tol": 2.5
+    },
+    {
+      "interact_npc": "{c2.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "You passed the outer coil. Do not swagger. My fire is hotter, and three of us tend the hydra that guards the keeper - I am the last hand before its heads.",
+        "Stand for me. If the coil still leans toward you after I have poured everything the old fire has into you, then Draconis and his wyrm will want their measure of you too."
+      ]
+    },
+    {
+      "screenshot": "zealot_challenge"
+    },
+    {
+      "click": "Face the zealot"
+    },
+    {
+      "client": "screen.close"
+    },
+    {
+      "wait_chat": "What waits at the coil is Draconis",
+      "timeout": 240
+    },
+    {
+      "sleep": 1.5
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=defeated_dragon_shrine_cultist_2]",
+      "expect": "passed"
+    },
+    {
+      "screenshot": "zealot_beaten"
+    },
+    {
+      "comment": "-- beat 3: Draconis - the begin-trial button (gated no_dragon_shrine_trial_clear) fires the rules tellraw + 'shrine dragon start'. Heal first: the gauntlet only heals BETWEEN its own stages --"
+    },
+    {
+      "rcon": "healpokemon {player}"
+    },
+    {
+      "find_npc": "High Priest Draconis",
+      "save": "d"
+    },
+    {
+      "walk_to": [
+        "{d.x}",
+        "{d.z}"
+      ],
+      "tol": 2.5
+    },
+    {
+      "interact_npc": "{d.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "Halt. You stand in the breath of the Dragon Shrine, where the oldest fire still coils and waits. I am Draconis, and I keep its hunger. You passed my tenders; the wyrm itself is not so easily flattered.",
+        "Rouse the hydra first - three heads, one hunger, and it heals between each fall so a single answer will not do. Field a party built for two-on-two; the wyrm does not fight one at a time, and neither do I. The old fire stirs for you the way it stirs for things it has tasted before.",
+        "Power is not given at this gate. It is taken, scale by scale, from one who would deny it. Wake the wyrm and face me, and we will see what the fire already suspects."
+      ]
+    },
+    {
+      "expect_screen_text": "Wake the hydra and face Draconis"
+    },
+    {
+      "screenshot": "draconis_begin_trial"
+    },
+    {
+      "click": "Wake the hydra and face Draconis"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "three heads, one hunger",
+      "timeout": 10,
+      "comment_": "the dragon_trial_help rules tellraw - proves the button's first action fired"
+    },
+    {
+      "wait_chat": "Hydra Gauntlet",
+      "kinds": [
+        "title"
+      ],
+      "timeout": 10,
+      "comment_": "startChallenge title splash (same emitter burst as the help line - consecutive waits share the click-anchored window)"
+    },
+    {
+      "wait_chat": "Stage 1 — Face the first head!",
+      "timeout": 10
+    },
+    {
+      "screenshot": "hydra_stage1_announce"
+    },
+    {
+      "comment": "-- the three heads: stage 1 dispatches 2s after start (anchored tbcs AT the player), each next head ~3s after the previous falls; autobattle wins all three. WEDGE WATCH: if '[Initiative] A battle-engine fault was contained' appears anywhere in this stretch, RECORD it in the run report from transcript.jsonl - do NOT count it as a failure; only a stage-wait timeout is (and that timeout usually IS the wedge - revive + re-run before filing). 'The head recoils' is the manager's benign one-shot retry --"
+    },
+    {
+      "wait_chat": "Stage 1 defeated!",
+      "timeout": 300
+    },
+    {
+      "screenshot": "hydra_stage1_down"
+    },
+    {
+      "wait_chat": "Stage 2 defeated!",
+      "timeout": 300
+    },
+    {
+      "screenshot": "hydra_stage2_down"
+    },
+    {
+      "wait_chat": "Challenge Complete!",
+      "kinds": [
+        "title"
+      ],
+      "timeout": 300,
+      "comment_": "third head down -> completeChallenge title; the '[Shrine Challenge] Hydra Gauntlet completed!' system line rides the same burst"
+    },
+    {
+      "sleep": 1.5,
+      "comment_": "completion latch + band_tags must drop no_dragon_shrine_trial_clear before the re-open below"
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=dragon_shrine_trial_clear]",
+      "expect": "passed"
+    },
+    {
+      "screenshot": "hydra_complete"
+    },
+    {
+      "comment": "-- beat 4: the unlock - re-open Draconis; with the trial cleared the begin-trial button hides and 'Face the wyrm' (tag-gated battle) renders. RENDER-ASSERT ONLY, never clicked: TBCS stall exposure + a leader defeat would latch dragon_shrine_complete/crystal/first_keeper state --"
+    },
+    {
+      "find_npc": "High Priest Draconis",
+      "save": "d",
+      "comment_": "re-resolve: the player has not moved since beat 3's walk, but a fresh find keeps the uuid honest after five battles"
+    },
+    {
+      "interact_npc": "{d.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "Face the wyrm"
+    },
+    {
+      "screenshot": "draconis_unlocked"
+    },
+    {
+      "click": "I am not ready"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "comment": "-- cleanup: autobattle off, defensive trial stop (anchor sweep), strip every tag this run latched, reset the recorded defeats (fresh-player baseline for the rest of the suite + re-arms the NEXT run's hydra advance), drop the cultist reward balls. Garchomps stay banked-out-then-given like stadium_wave; the 800 CD prize rides --"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative dev bot autobattle off"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative shrine dragon stop"
+    },
+    {
+      "rcon": "tag {player} remove defeated_dragon_shrine_cultist_1"
+    },
+    {
+      "rcon": "tag {player} remove defeated_dragon_shrine_cultist_2"
+    },
+    {
+      "rcon": "tag {player} remove dragon_shrine_trial_clear"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative reset",
+      "expect": "Your progress has been reset"
+    },
+    {
+      "rcon": "clear {player} cobblemon:ultra_ball"
+    },
+    {
+      "screenshot": "shrine_dragon_done"
+    }
+  ]
+}

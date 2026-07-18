@@ -1,0 +1,310 @@
+{
+  "name": "mystic_wisps",
+  "description": "Wisps in the Reeds (q.side_wisps, slot 56) end-to-end at Charm-Weaver Marigold's stall: the short-count refusal (0 string -> 'Not eight yet', nothing consumed), the 8x minecraft:string turn-in (clear-with-0 count check, NO has_item gate) paying face 300 via economy/payout plus the badge-0 standard reward (2x exp_candy_s + 1x exp_candy_m), then the opt-in 200 CD charm-reading wager vs sq_marigold_charm (Clefable 28/Granbull 29; onwin pays a flat 200 + defeated_sq_marigold_charm), and the post-wager free-reading tombstone. Exact-balance rails: #idx cd_instability is pinned to 0 (rate 100% -> the 300 face pays 300; price_check/tick mirrors the index onto the player each tick) and cobbledollars uses SET not give so every query stays under the 1000-abbreviation threshold (safari_yards precedent). The preamble kills + re-latches the stall body so the RCT trainer is fresh on re-runs (wheat_war precedent). Battle click is exposed to the known intermittent TBCS/showdown wedge (~1/10) - a timeout on the win-line wait is that engine bug, not this content.",
+  "_probe_pending": [
+    "1076.5 64 2452.5"
+  ],
+  "steps": [
+    {
+      "comment": "-- preamble: tp FIRST (kill/latch-reset no-op in unloaded chunks, then dupe on respawn). Site = the charm stall latch at 1076.5 64 2452.5 - AUTHORED y=64 PLACEHOLDER, not yet ground-probed (see _probe_pending): confirm the real surface Y before the first live run --"
+    },
+    {
+      "rcon": "tp {player} 1076.5 66 2452.5"
+    },
+    {
+      "sleep": 2.0
+    },
+    {
+      "rcon": "time set day"
+    },
+    {
+      "rcon": "weather clear"
+    },
+    {
+      "client": "screen.close"
+    },
+    {
+      "comment": "-- (screen.close above = leftover-dialog guard) re-arm the wager: kill the stall body + reset the ambient latch so a FRESH RCT trainer spawns during the settle sleep (RCT remembers defeats per body; wheat_war precedent) --"
+    },
+    {
+      "rcon": "kill @e[type=!player,name=\"Charm-Weaver Marigold\"]"
+    },
+    {
+      "rcon": "scoreboard players set #amb_mm_charm_seller ci_ambient 0"
+    },
+    {
+      "comment": "-- reset (idempotent re-runs): the quest latch, both wager outcomes, fetch + payout items --"
+    },
+    {
+      "rcon": "tag {player} remove mm_charms_done"
+    },
+    {
+      "rcon": "tag {player} remove defeated_sq_marigold_charm"
+    },
+    {
+      "rcon": "tag {player} remove declined_sq_marigold_charm"
+    },
+    {
+      "rcon": "clear {player} minecraft:string"
+    },
+    {
+      "rcon": "clear {player} cobblemon:exp_candy_s"
+    },
+    {
+      "rcon": "clear {player} cobblemon:exp_candy_m"
+    },
+    {
+      "rcon": "clear {player} cobblemon:exp_candy_l"
+    },
+    {
+      "comment": "-- deterministic rails: index 0 -> Verified Rate 100% (payout = face 300); badges 0 -> standard reward tier ..2 AND no recognition entries anywhere near; balance 500 keeps every exact query under the 1000 abbreviation --"
+    },
+    {
+      "rcon": "scoreboard players set #idx cd_instability 0"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative dev badges 0",
+      "expect": "level cap now §e15"
+    },
+    {
+      "rcon": "cobbledollars set {player} 500"
+    },
+    {
+      "comment": "-- party reset + battle prep: junk lv-5 parties stall TBCS battle init (verified live in wheat_war); 2x lv-100 Garchomp = attrition headroom for the wager --"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon garchomp level=100"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon garchomp level=100"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative dev bot autobattle on"
+    },
+    {
+      "comment": "-- settle: latch respawns the body (player already inside the 40b radius), band_tags re-derives the no_* inverses --"
+    },
+    {
+      "sleep": 2.0
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=no_mm_charms_done]",
+      "expect": "passed"
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=no_defeated_sq_marigold_charm,tag=no_declined_sq_marigold_charm]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 1: the string request (default entry, prio 10) and the short-count refusal - 0 string in, nothing consumed, no latch --"
+    },
+    {
+      "find_npc": "Charm-Weaver Marigold",
+      "save": "m"
+    },
+    {
+      "interact_npc": "{m.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "Marigold, charm-weaver - I catch the will-o-wisps and bottle a little of their glow into a ward. Only my charms have gone dark. The glimmer needs silk to hold it, real silk, and mine rotted through. Bring me eight lengths of string and I will restring the lot - one ward for me, one for you, warded against fairy-mischief and worse.",
+        "Eight lengths of string, love. The reed-spiders spin it thick after dark, out past the boardwalk where the sensible folk do not go. Bring it and you keep a charm that laughs at a hard hit. You will want that where the road is taking you."
+      ]
+    },
+    {
+      "expect_screen_text": "Hand over 8 string"
+    },
+    {
+      "screenshot": "marigold_intro"
+    },
+    {
+      "click": "Hand over 8 string"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "Not eight yet",
+      "timeout": 10
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=no_mm_charms_done]",
+      "expect": "passed"
+    },
+    {
+      "rcon": "cobbledollars query {player}",
+      "expect": "$ 500"
+    },
+    {
+      "comment": "-- beat 2: the real turn-in. 8 string -> charm_success clears exactly 8, pays face 300 (Verified Rate receipt), drops the badge-0 standard reward, latches mm_charms_done --"
+    },
+    {
+      "rcon": "give {player} minecraft:string 8"
+    },
+    {
+      "sleep": 0.7
+    },
+    {
+      "find_npc": "Charm-Weaver Marigold",
+      "save": "m"
+    },
+    {
+      "interact_npc": "{m.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "click": "Hand over 8 string"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "Verified Rate",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "wait_chat": "A little marsh-luck",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "sleep": 1.0
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=mm_charms_done]",
+      "expect": "passed"
+    },
+    {
+      "rcon": "clear {player} minecraft:string 0",
+      "expect": "No items were found"
+    },
+    {
+      "rcon": "cobbledollars query {player}",
+      "expect": "$ 800"
+    },
+    {
+      "rcon": "clear {player} cobblemon:exp_candy_s 0",
+      "expect": "Found 2"
+    },
+    {
+      "rcon": "clear {player} cobblemon:exp_candy_m 0",
+      "expect": "Found 1"
+    },
+    {
+      "screenshot": "charm_restrung"
+    },
+    {
+      "comment": "-- beat 3: the wager (prio 30: mm_charms_done + not defeated). Balance re-pinned to 300 so the flat +200 win lands on an exact $ 500 (and covers the 200 loss_fee if the bot somehow drops it). Battle button has no close action - close the stale dialog and let the server-side autobattler fight --"
+    },
+    {
+      "rcon": "cobbledollars set {player} 300"
+    },
+    {
+      "sleep": 1.5
+    },
+    {
+      "find_npc": "Charm-Weaver Marigold",
+      "save": "m"
+    },
+    {
+      "interact_npc": "{m.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "That charm settle right on you? Good. Then a proposition, weaver to a lucky one: a friendly reading-wager. Two hundred CobbleDollars says my two wisp-dancers put yours in the reeds. Lose and the stake is mine; decline and we stay friends and I still read your cards.",
+        "No pressure at all. The fen is patient and so am I. But the wisps do so love an audience."
+      ]
+    },
+    {
+      "expect_screen_text": "Take the wager - 200 CD on the line"
+    },
+    {
+      "screenshot": "wager_offer"
+    },
+    {
+      "click": "Take the wager"
+    },
+    {
+      "client": "screen.close"
+    },
+    {
+      "wait_chat": "the cards said you would win",
+      "timeout": 180
+    },
+    {
+      "sleep": 1.5
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=defeated_sq_marigold_charm]",
+      "expect": "passed"
+    },
+    {
+      "rcon": "cobbledollars query {player}",
+      "expect": "$ 500"
+    },
+    {
+      "comment": "-- beat 4: the free reading (prio 40, gated on the defeat) - the Deepcore forward-nudge tombstone --"
+    },
+    {
+      "interact_npc": "{m.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "Sit, sit - the reading is free now, you have earned my curiosity. The cards say stone ahead. Quarry Road, and Deepcore past it, where they settle everything with fists. Carry something that laughs at a punch - a fairy thing, a charm thing. The marsh gave you one. Do not lose it in the dark.",
+        "Funny - three cards came up upside down and every one of them was about you. A face that ought to be forgotten and is not. The fen loves a riddle. So do I. Come back when you have walked a little further into it."
+      ]
+    },
+    {
+      "screenshot": "free_reading"
+    },
+    {
+      "click": "I will remember the charm"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "comment": "-- cleanup: bot off; quest tags ride as played state (the preamble resets them on re-runs, miller_walk precedent) --"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative dev bot autobattle off"
+    },
+    {
+      "screenshot": "mystic_wisps_done"
+    }
+  ]
+}

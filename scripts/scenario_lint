@@ -61,6 +61,11 @@ def load_corpus():
             for k, v in obj.items():
                 if k in ('text', 'say', 'name', 'label_text') and isinstance(v, str):
                     texts.add(v)
+                # battle chat lines emitted by the compiled onwin/onlose chains — these
+                # were never collected, producing false chat-not-found on every
+                # battle-win wait (triage 2026-07-18)
+                if k in ('win_line', 'lose_line', 'already_beaten_line') and isinstance(v, str):
+                    texts.add(v)
                 if k == 'say' and isinstance(v, list):
                     lines = [x for x in v if isinstance(x, str)]
                     texts.update(lines)
@@ -105,16 +110,21 @@ def load_corpus():
                 body = open(f, encoding='utf-8', errors='replace').read()
             except Exception:
                 continue
-            for m in re.finditer(r'"text"\s*:\s*"([^"]+)"', body):
-                texts.add(m.group(1))
+            # escape-aware: components whose text starts with \" (quoted speech in
+            # tellraw json-in-mcfunction) were invisible to the old [^"]+ pattern
+            # (triage 2026-07-18) — capture through escapes, then unescape
+            for m in re.finditer(r'"text"\s*:\s*"((?:[^"\\]|\\.)+)"', body):
+                texts.add(m.group(1).replace('\\"', '"').replace('\\\\', '\\'))
             for m in re.finditer(r'\btag\s+\S+\s+(?:add|remove)\s+([\w.-]+)', body):
                 tags.add(m.group(1))
             for m in re.finditer(r'tag=!?([\w.-]+)', body):
                 tags.add(m.group(1))
             if f.endswith('.java'):
-                # literal chat/announce strings ("Totodile joined your team." etc.)
-                for m in re.finditer(r'"([^"\\]{8,120})"', body):
-                    texts.add(m.group(1))
+                # literal chat/announce strings ("Totodile joined your team." etc.);
+                # escape-aware + newline-bounded so concatenated literals can't pair
+                # a closer quote with the next literal's opener (triage 2026-07-18)
+                for m in re.finditer(r'"((?:[^"\\\n]|\\.){8,200})"', body):
+                    texts.add(m.group(1).replace('\\"', '"').replace('\\\\', '\\'))
 
     return texts, tags, npc_names, rotations, buttons
 

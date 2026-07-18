@@ -73,6 +73,21 @@ public class NpcSightManager {
     return profiles.size();
   }
 
+  /**
+   * Evict one entity's cached session state so the next discovery tick rebuilds it fresh
+   * from its profile. Without this, a tag-profile NPC's APPROACH_ONCE {@code fired} latch
+   * (and pursue state) survives {@code /npcsight remove}+re-add — the sessionData entry is
+   * only evicted on despawn or SERVER_STARTED (TODO 2026-07-17 re-test finding).
+   */
+  public boolean clearSession(java.util.UUID uuid) {
+    return sessionData.remove(uuid) != null;
+  }
+
+  /** Drop every cached session so all profile NPCs re-evaluate fresh (/npcsight reload). */
+  public void clearAllSessions() {
+    sessionData.clear();
+  }
+
   public NpcSightConfig getConfig() {
     return config;
   }

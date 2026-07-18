@@ -2,6 +2,7 @@ package com.thecompanyinc.cobblemoninitiative.shrine;
 
 import com.cobblemon.mod.common.Cobblemon;
 import com.cobblemon.mod.common.api.storage.party.PlayerPartyStore;
+import com.cobblemon.mod.common.battles.BattleRegistry;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.google.gson.Gson;
 import com.thecompanyinc.cobblemoninitiative.InitiativeInit;
@@ -40,6 +41,10 @@ public class ShrineChallengeManager {
 
   private final Map<UUID, ShrineChallengeState> activeStates = new HashMap<>();
   private final Map<String, ShrineChallengeConfig> challenges = new HashMap<>();
+
+  /** Players with a hydra stage battle scheduled or awaiting capture — see the
+   *  "Hydra gauntlet stage dispatch" section. */
+  private final Map<UUID, HydraDispatch> hydraDispatches = new HashMap<>();
 
   /** Per-world recorded safe-path positions (writable; ships with the map save). */
   private final ShrinePathStorage pathStorage = new ShrinePathStorage();
@@ -176,6 +181,9 @@ public class ShrineChallengeManager {
             "§5§l[Hydra Gauntlet] §r§7Stage 1 — Face the first head!"
           )
         );
+        // The heads have no NPC bodies — the manager dispatches each stage battle
+        // at the challenger (anchored tbcs, the Stadium wave pattern).
+        scheduleHydraStage(player, HYDRA_FIRST_DELAY_TICKS);
       }
       case "fairy_tests" -> {
         player.sendSystemMessage(
@@ -244,6 +252,7 @@ public class ShrineChallengeManager {
 
     clearChallengeEffects(player);
     activeStates.remove(player.getUUID());
+    cancelHydraDispatch(player.getServer(), player.getUUID());
     player.sendSystemMessage(
       Component.literal(
         "§7Shrine challenge ended. Return to try again whenever you're ready."
@@ -388,6 +397,10 @@ public class ShrineChallengeManager {
         }
 
         state.setFairyTestPokemonUuid(lead.getUuid());
+        // Showrunner ruling 2026-07-18: the Five Tests are MANDATORY — Aurora's battle
+        // button gates on this persistent tag, so only a resolve-passed player may fight
+        // her. (Relog-safety: the tag survives; re-run resolve to re-register the mon.)
+        player.addTag("fairy_resolve_ready");
         player.sendSystemMessage(Component.literal(
           "§d" + leadName + " §7is worthy. Seek out the §dHigh Priestess§7 and defeat her — " +
           "this is your only Pokémon, and your bond is all you have."
@@ -482,11 +495,14 @@ public class ShrineChallengeManager {
               Component.literal(
                 "§5§l[Hydra Gauntlet] §r§7Stage " +
                   (current + 1) +
-                  " defeated! §aYour party is healed. §7Advance to Stage " +
+                  " defeated! §aYour party is healed. §7Stage " +
                   (next + 1) +
-                  "!"
+                  " — the next head stirs…"
               )
             );
+            // Schedule only (this runs nested inside the battle-victory event —
+            // dispatching a fresh battle here would race the old one's teardown).
+            scheduleHydraStage(player, HYDRA_NEXT_DELAY_TICKS);
           }
         }
       }
@@ -559,7 +575,149 @@ public class ShrineChallengeManager {
 
     expired.forEach(activeStates::remove);
 
+    tickHydraDispatches(server);
     tickRecording(server);
+  }
+
+  // ── Hydra gauntlet stage dispatch ────────────────────────────────────────────
+  //
+  // The hydra heads have no NPC bodies: each stage battle is dispatched at the
+  // player through tbcs, anchored to an invisible armor stand (the Stadium wave
+  // pattern — TBCS refuses "vs rctmod:<id>" unless the trainer is attached to a
+  // live entity). No level lock and no entry heal: the heads fight at their
+  // authored levels and the gauntlet's own healParty runs between stages.
+  // Stage advancement itself stays event-driven (onTrainerDefeated).
+
+  private static final int HYDRA_FIRST_DELAY_TICKS = 40;
+  private static final int HYDRA_NEXT_DELAY_TICKS = 60;
+  /** Ticks after a dispatch to wait for a live battle before assuming a silent refusal. */
+  private static final int HYDRA_CAPTURE_TIMEOUT_TICKS = 100;
+
+  private static final class HydraDispatch {
+    int delayTicks;
+    int captureTicks;
+    boolean dispatched;
+    boolean retried;
+
+    HydraDispatch(int delayTicks) {
+      this.delayTicks = delayTicks;
+    }
+  }
+
+  private void scheduleHydraStage(ServerPlayer player, int delayTicks) {
+    hydraDispatches.put(player.getUUID(), new HydraDispatch(delayTicks));
+  }
+
+  private String hydraAnchorTag(UUID playerId) {
+    return "ci_shrine_anchor_" + playerId;
+  }
+
+  private void sweepHydraAnchor(MinecraftServer server, UUID playerId) {
+    server.getCommands().performPrefixedCommand(
+      server.createCommandSourceStack().withSuppressedOutput(),
+      "kill @e[tag=" + hydraAnchorTag(playerId) + "]");
+  }
+
+  /** Drop any scheduled stage and its battle anchor — abort/complete/restart paths. */
+  private void cancelHydraDispatch(MinecraftServer server, UUID playerId) {
+    hydraDispatches.remove(playerId);
+    if (server != null) {
+      sweepHydraAnchor(server, playerId);
+    }
+  }
+
+  private void tickHydraDispatches(MinecraftServer server) {
+    if (hydraDispatches.isEmpty()) return;
+    Iterator<Map.Entry<UUID, HydraDispatch>> it = hydraDispatches.entrySet().iterator();
+    while (it.hasNext()) {
+      Map.Entry<UUID, HydraDispatch> entry = it.next();
+      UUID uuid = entry.getKey();
+      HydraDispatch pending = entry.getValue();
+
+      ShrineChallengeState state = activeStates.get(uuid);
+      ServerPlayer player = server.getPlayerList().getPlayer(uuid);
+      ShrineChallengeConfig config =
+        state == null ? null : challenges.get(state.getShrineId());
+      if (player == null || config == null
+        || !"hydra_gauntlet".equals(config.getType())
+        || state.getCurrentStageIndex() >= config.getStageTrainerIds().size()) {
+        // Challenge ended, player left, or gauntlet finished — drop + sweep.
+        it.remove();
+        sweepHydraAnchor(server, uuid);
+        continue;
+      }
+
+      if (!pending.dispatched) {
+        if (--pending.delayTicks > 0) continue;
+        dispatchHydraStage(server, player, config, state.getCurrentStageIndex());
+        pending.dispatched = true;
+        pending.captureTicks = 0;
+        continue;
+      }
+
+      // Dispatched: once a live battle exists this entry is done (advancement is
+      // event-driven). Known edge: an unrelated battle the player started in the
+      // gap also satisfies this check — the gauntlet then waits; /shrine-abort
+      // and restart recovers.
+      if (BattleRegistry.getBattleByParticipatingPlayer(player) != null) {
+        it.remove();
+        continue;
+      }
+      if (++pending.captureTicks > HYDRA_CAPTURE_TIMEOUT_TICKS) {
+        if (!pending.retried) {
+          // A battle can fail to form without any error (runtime-found on the
+          // Stadium waves) — one silent retry before giving up.
+          pending.retried = true;
+          pending.dispatched = false;
+          pending.delayTicks = 20;
+          player.sendSystemMessage(Component.literal(
+            "§5[Hydra Gauntlet] §7The head recoils… and strikes again."));
+        } else {
+          player.sendSystemMessage(Component.literal(
+            "§c[Hydra Gauntlet] §7The head refuses to take the field. The trial has "
+              + "been reset — begin again at the shrine."));
+          it.remove();
+          sweepHydraAnchor(server, uuid);
+          clearChallengeEffects(player);
+          activeStates.remove(uuid);
+        }
+      }
+    }
+  }
+
+  private void dispatchHydraStage(
+    MinecraftServer server,
+    ServerPlayer player,
+    ShrineChallengeConfig config,
+    int stageIndex
+  ) {
+    String trainerId = config.getStageTrainerIds().get(stageIndex);
+    com.thecompanyinc.cobblemoninitiative.config.TrainerConfig trainer =
+      InitiativeInit.getConfigLoader().getTrainer(trainerId);
+    String format = trainer != null && trainer.getBattleFormat() != null
+      ? trainer.getBattleFormat()
+      : "GEN_9_SINGLES";
+
+    var src = server.createCommandSourceStack().withSuppressedOutput();
+    String anchorTag = hydraAnchorTag(player.getUUID());
+    server.getCommands().performPrefixedCommand(src,
+      "kill @e[tag=" + anchorTag + "]");
+    server.getCommands().performPrefixedCommand(src,
+      "execute at " + player.getGameProfile().getName()
+        + " run summon minecraft:armor_stand ~2 ~ ~ {Invisible:1b,NoGravity:1b,Tags:[\""
+        + anchorTag + "\"]}");
+    server.getCommands().performPrefixedCommand(src,
+      "tbcs attach rctmod:" + trainerId + " @e[tag=" + anchorTag + ",limit=1]");
+
+    // Dispatch AS the player — @s resolves the entity directly (the Stadium
+    // finding: bare names go through TBCS's trainer NAME registry and miss bots).
+    server.getCommands().performPrefixedCommand(
+      player.createCommandSourceStack().withSuppressedOutput().withPermission(2),
+      "tbcs battle " + format + " @s vs rctmod:" + trainerId);
+
+    InitiativeInit.LOGGER.info(
+      "[Shrine] Dispatched hydra stage {} ({}) for {}.",
+      stageIndex + 1, trainerId, player.getName().getString());
   }
 
   /** Captures every block a recording dev walks over as a safe-path position. */
@@ -760,6 +918,9 @@ public class ShrineChallengeManager {
 
     clearChallengeEffects(player);
     activeStates.remove(player.getUUID());
+    // Hydra runs leave the final stage's battle anchor standing — sweep it (harmless
+    // no-op for the other challenge types).
+    cancelHydraDispatch(player.getServer(), player.getUUID());
 
     // Persist a completion tag so the ladder + leader can gate on the trial. Previously this
     // method only showed a title and latched NOTHING — the whole trial→keeper chain was dead

@@ -1,0 +1,161 @@
+{
+  "name": "deepcore_rate",
+  "description": "The Better Rate (q.side_rate slot 50, Deepcore SQ3 - the MANDATED trader-recognition-at-2-fields beat): Corliss at the mine commissary runs the shared dialog:wheat_trader tree, tier-gated by the wheat_trader/tick poller off the SHARED fields_liberated counter (0-1 pitch / 2-3 suspicious / 4+ hostile). Beat 1 plays the default pitch at fields=0 and sets heard_wheat_pitch via the walk-away button; beat 2 sets fields_liberated=2 by rcon (liberating real farms is the wheat-war scenarios' job), waits for the tick poller to latch wheat_trader_suspicious, and asserts the SUSPICIOUS entry preempts (say any-of all 3 lines + the 'Browse wares' label that replaces 'See the wares'). Negative bounds both ways: suspicious must NOT fire at fields=0, hostile must NOT fire at fields=2 (the ON_DISTANCE_VERY_CLOSE forced battle is hostile-only - the Kalahar payoff, deliberately out of scope here, so no battle prep). The register stage gate (heard_wheat_pitch + not hostile + not defeated_deepcore_wheat_trader) is asserted as one selector. Tier tags are one-way in canon - rcon removal is test surgery; cleanup restores fields=0 and strips everything injected.",
+  "_probe_pending": [
+    "1180.5 129 3260.5"
+  ],
+  "_probe_note": "Corliss's compiled latch rides the y=129 plaza height but the live-swept makuhita ambient 26b away sits at y=123 (1177.5,123,3234.5) - the commissary terrace may sit lower; ground-probe before the first live run.",
+  "steps": [
+    {
+      "comment": "-- preamble: close any leftover dialog, then reset the tier state. The suspicious/hostile tags are additive one-way in canon (the poller never clears them) - removing them here is deliberate test surgery for idempotent re-runs --"
+    },
+    {
+      "client": "screen.close"
+    },
+    {
+      "rcon": "tag {player} remove heard_wheat_pitch"
+    },
+    {
+      "rcon": "tag {player} remove wheat_trader_suspicious"
+    },
+    {
+      "rcon": "tag {player} remove wheat_trader_hostile"
+    },
+    {
+      "rcon": "tag {player} remove defeated_deepcore_wheat_trader"
+    },
+    {
+      "rcon": "scoreboard players set {player} fields_liberated 0"
+    },
+    {
+      "sleep": 1.5,
+      "comment_": "one poller pass at fields=0: with the score at 0 nothing re-adds, so the removals stand"
+    },
+    {
+      "comment": "-- tp to the commissary (latch spawns within 40b; body persists - no kill needed), daylight, stale-battle sweep (a leftover battle would eat the interact), and shop-adjacent funding --"
+    },
+    {
+      "rcon": "tp {player} 1180.5 123 3260.5"
+    },
+    {
+      "sleep": 2.0
+    },
+    {
+      "rcon": "time set day"
+    },
+    {
+      "rcon": "weather clear"
+    },
+    {
+      "rcon": "stopbattle {player}"
+    },
+    {
+      "sleep": 1.5
+    },
+    {
+      "rcon": "cobbledollars give {player} 20000",
+      "comment_": "the beat touches the trade shop lane; fund generously even though nothing is bought headless"
+    },
+    {
+      "comment": "-- beat 1: the default pitch at fields=0. say[] rotates 3 lines, so assert the stable default-tier trade label; the walk-away button sets heard_wheat_pitch --"
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=!wheat_trader_suspicious]",
+      "expect": "passed",
+      "comment_": "lower bound: recognition must NOT fire before 2 fields"
+    },
+    {
+      "find_npc": "Corliss",
+      "save": "c"
+    },
+    {
+      "interact_npc": "{c.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "See the wares"
+    },
+    {
+      "screenshot": "rate_pitch"
+    },
+    {
+      "click": "I will keep my coin"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=heard_wheat_pitch]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 2: two fields fall (rcon - the real liberations live in the wheat-war scenarios), the tick poller latches recognition, and the SUSPICIOUS entry (prio 20) must preempt the pitch --"
+    },
+    {
+      "rcon": "scoreboard players set {player} fields_liberated 2"
+    },
+    {
+      "sleep": 2.0,
+      "comment_": "the poller runs every tick; the settle covers the tag landing plus Easy NPC picking it up"
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=wheat_trader_suspicious]",
+      "expect": "passed"
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=heard_wheat_pitch,tag=!wheat_trader_hostile,tag=!defeated_deepcore_wheat_trader]",
+      "expect": "passed",
+      "comment_": "the exact q.side_rate stage gate - the sidebar line is live in this state"
+    },
+    {
+      "interact_npc": "{c.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "You again. Hands where I can see the ledger. I will still take your trade — coin is coin, for now.",
+        "Something about you sits wrong, like a number that will not add. Buy what you came for and keep walking.",
+        "I have heard the talk. A face from the old company, walking the routes. Probably nothing. Probably. Wares are open."
+      ]
+    },
+    {
+      "expect_screen_text": "Browse wares",
+      "comment_": "the suspicious-tier trade label - 'See the wares' is the default tier's; the swap IS the tier assert"
+    },
+    {
+      "screenshot": "rate_suspicious"
+    },
+    {
+      "click": "Just passing"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "comment": "-- upper bound: at 2 fields the trader is wary but NOT hostile - no hostile tag, so the ON_DISTANCE_VERY_CLOSE forced battle can never have fired (that payoff belongs to Kalahar at 4+ fields) --"
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=!wheat_trader_hostile]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- cleanup: restore the fresh-player state this scenario injected (wheat_war_first_farm assumes fields_liberated 0 and re-earns heard_wheat_pitch itself) --"
+    },
+    {
+      "rcon": "scoreboard players set {player} fields_liberated 0"
+    },
+    {
+      "rcon": "tag {player} remove wheat_trader_suspicious"
+    },
+    {
+      "rcon": "tag {player} remove heard_wheat_pitch"
+    },
+    {
+      "screenshot": "deepcore_rate_done"
+    }
+  ]
+}

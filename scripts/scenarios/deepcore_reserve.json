@@ -1,0 +1,416 @@
+{
+  "name": "deepcore_reserve",
+  "description": "Deep Restructuring (q.side_reserve slot 53, Deepcore SQ1 marquee) end-to-end: Nurse Rilka's rumor hub points at Kang (met_deepcore_nurse), Kang's ask starts the chain (deepcore_restructure_started), the Re-Verified Reserve Ledger board arms the turn-in (deepcore_ledger_seen), a SHORT-COUNT refusal proves the clear-with-0 page count (0 pages -> 'Not six yet', no state change), then 6x minecraft:paper -> turn_in pays face 900 via the skewed payout + Black Belt + deepcore_restructure_done, the debrief entry (prio 40) opens the wager_offer lane, and the 250 CD stake wager vs the Restructuring Officer (sq_deepcore_assessor, ace L35) runs via dev-bot autobattle: 'Stake logged' -> win line -> wager_sweetener. Epilogue re-reads both bodies at the vault: Roderick's beaten entry (prio 40, despawn_on_win false - the vault persists) and the board's FILED addendum (prio 20). Payout amounts are NOT exact-asserted (payout rate rides cd_instability 75-100%, sweetener rolls 25..100); re-runs accumulate CD and one Garchomp pair per run.",
+  "_probe_pending": [
+    "1092.5 129 3208.5",
+    "1120.5 129 3300.5",
+    "1152.5 129 3284.5",
+    "1150.5 129 3282.5"
+  ],
+  "_probe_note": "Deepcore quest-pack latches (nurse/Kang/board/assessor) are newer than the alpha.13 live sweep and their compiled placements ride the y=129 plaza height; nearby verified ambients sit at y=119-129, so ground-probe each tp site before the first live run.",
+  "steps": [
+    {
+      "comment": "-- preamble: close any leftover dialog from a prior scenario, then reset every tag this chain sets (idempotent re-runs) plus the turn-in items --"
+    },
+    {
+      "client": "screen.close"
+    },
+    {
+      "rcon": "tag {player} remove met_deepcore_nurse"
+    },
+    {
+      "rcon": "tag {player} remove deepcore_restructure_started"
+    },
+    {
+      "rcon": "tag {player} remove deepcore_ledger_seen"
+    },
+    {
+      "rcon": "tag {player} remove deepcore_restructure_done"
+    },
+    {
+      "rcon": "tag {player} remove defeated_sq_deepcore_assessor"
+    },
+    {
+      "rcon": "tag {player} remove declined_sq_deepcore_assessor"
+    },
+    {
+      "rcon": "clear {player} minecraft:paper"
+    },
+    {
+      "rcon": "clear {player} cobblemon:black_belt"
+    },
+    {
+      "comment": "-- tp to the pit-head Center FIRST (latches spawn within 40b; no kills needed here - all four bodies persist, no latch reset), then daylight + battle prep --"
+    },
+    {
+      "rcon": "tp {player} 1092.5 114 3208.5"
+    },
+    {
+      "sleep": 2.0
+    },
+    {
+      "rcon": "time set day"
+    },
+    {
+      "rcon": "weather clear"
+    },
+    {
+      "comment": "-- stale-battle sweep + party reset: junk lv-5 parties stall TBCS battle init (verified live); empty all 6 slots, then two lv-100 Garchomp for attrition headroom (assessor ace is L35) --"
+    },
+    {
+      "rcon": "stopbattle {player}"
+    },
+    {
+      "sleep": 1.5
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon garchomp level=100"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon garchomp level=100"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative dev bot autobattle on"
+    },
+    {
+      "rcon": "cobbledollars give {player} 20000",
+      "comment_": "the 250 CD stake must never bounce off the broke-probe; balances are never exact-asserted in this scenario"
+    },
+    {
+      "comment": "-- beat 1: Nurse Rilka's rumor hub. say[] rotates 3 lines, so the screen assert targets the stable heal-button label; the Kang rumor button sets met_deepcore_nurse + announces --"
+    },
+    {
+      "find_npc": "Nurse Rilka",
+      "save": "n"
+    },
+    {
+      "interact_npc": "{n.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "Heal my team - posted rate"
+    },
+    {
+      "screenshot": "reserve_rumor_hub"
+    },
+    {
+      "click": "Anyone need a hand around here?"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "Foreman Kang, if you can stand his grumbling",
+      "timeout": 10
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=met_deepcore_nurse]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 2: Foreman Kang's ask (default entry, gated not_tag deepcore_restructure_started) --"
+    },
+    {
+      "rcon": "tp {player} 1120.5 111 3300.5"
+    },
+    {
+      "sleep": 2.0
+    },
+    {
+      "find_npc": "Foreman Kang",
+      "save": "k"
+    },
+    {
+      "interact_npc": "{k.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "I will get your pages"
+    },
+    {
+      "screenshot": "reserve_kang_ask"
+    },
+    {
+      "click": "I will get your pages"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "Six struck pages from the shredder bins by the Company field office",
+      "timeout": 10
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=deepcore_restructure_started]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 3: the Re-Verified Reserve Ledger at the Company field office - read_button arms the turn-in stage (deepcore_ledger_seen) --"
+    },
+    {
+      "rcon": "tp {player} 1152.5 146 3284.5"
+    },
+    {
+      "sleep": 2.0
+    },
+    {
+      "find_npc": "Re-Verified Reserve Ledger",
+      "save": "b"
+    },
+    {
+      "interact_npc": "{b.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "Read the re-verified count closely"
+    },
+    {
+      "screenshot": "reserve_ledger_board"
+    },
+    {
+      "click": "Read the re-verified count closely"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "Kang was right",
+      "timeout": 10
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=deepcore_ledger_seen]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 4: SHORT-COUNT refusal. Back to Kang with ZERO pages: the turn_in entry (prio 30) must show, and the clear-with-0 count check must refuse without state change --"
+    },
+    {
+      "rcon": "tp {player} 1120.5 111 3300.5"
+    },
+    {
+      "sleep": 1.5
+    },
+    {
+      "interact_npc": "{k.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "Hand over 6 struck pages"
+    },
+    {
+      "screenshot": "reserve_short_count"
+    },
+    {
+      "click": "Hand over 6 struck pages"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "Not six yet",
+      "timeout": 10
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=!deepcore_restructure_done]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 5: the pages + turn-in. 6x vanilla paper (the Genji parallel - scrounged from the field-office bins in canon), then restructure_success: clears exactly 6, skewed payout receipt, RESERVE FRAUD FILED, Black Belt --"
+    },
+    {
+      "rcon": "give {player} minecraft:paper 6"
+    },
+    {
+      "interact_npc": "{k.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "click": "Hand over 6 struck pages"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "Verified Rate",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "wait_chat": "RESERVE FRAUD FILED",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "sleep": 1.0
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=deepcore_restructure_done]",
+      "expect": "passed"
+    },
+    {
+      "rcon": "clear {player} minecraft:paper 0",
+      "expect": "No items were found",
+      "comment_": "exactly the 6 given were consumed"
+    },
+    {
+      "rcon": "clear {player} cobblemon:black_belt 0",
+      "expect": "Found 1"
+    },
+    {
+      "comment": "-- beat 6: the debrief (prio 40) + the dojo wager lane. The Officer button announces, then open_dialog swaps to wager_offer WITHOUT closing - the screen stays Dialog, so assert by the new entry's button --"
+    },
+    {
+      "interact_npc": "{k.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "That Officer at the vault - is he still there?"
+    },
+    {
+      "screenshot": "reserve_kang_debrief"
+    },
+    {
+      "click": "That Officer at the vault - is he still there?"
+    },
+    {
+      "wait_chat": "Still guarding a lie",
+      "timeout": 10
+    },
+    {
+      "sleep": 1.0
+    },
+    {
+      "expect_screen_text": "Take the wager - 250 CD on the line"
+    },
+    {
+      "screenshot": "reserve_wager_offer"
+    },
+    {
+      "comment": "-- beat 7: the wager. stake_assessor charges the 250 stake (broke-probe), fires the TBCS battle; the win chain is 500 CD + defeat tag + the Officer's win line + wager_sweetener --"
+    },
+    {
+      "click": "Take the wager - 250 CD on the line"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "Stake logged: 250 CD",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "wait_chat": "Adjustment reversed",
+      "timeout": 180
+    },
+    {
+      "wait_chat": "The purse runs heavy",
+      "timeout": 15
+    },
+    {
+      "sleep": 1.0
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=defeated_sq_deepcore_assessor]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 8: vault epilogue. Roderick persists (despawn_on_win false) and must show the beaten entry (prio 40); the board must show the FILED addendum (prio 20, say pair covered any-of) --"
+    },
+    {
+      "rcon": "tp {player} 1150.5 146 3282.5"
+    },
+    {
+      "sleep": 1.5
+    },
+    {
+      "find_npc": "Roderick",
+      "save": "r"
+    },
+    {
+      "interact_npc": "{r.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "Read the count"
+    },
+    {
+      "screenshot": "reserve_officer_reconciled"
+    },
+    {
+      "click": "Read the count"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "interact_npc": "{b.uuid}",
+      "comment_": "the board stands 2b from the Officer - the player is already at the vault"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "ADDENDUM, filed over the verified count. Reserve reconciliation flagged for external review, per union petition. The Company thanks the Deepcore workforce for its verified confidence and regrets any adjustment to same.",
+        "The addendum is stamped VERIFIED twice, as if saying it harder makes the vein whole again."
+      ]
+    },
+    {
+      "screenshot": "reserve_ledger_addendum"
+    },
+    {
+      "click": "Step away from the board"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "comment": "-- cleanup: quest-done latches (deepcore_restructure_done, defeated_sq_deepcore_assessor) stay set BY DESIGN - re-runs reset them in the preamble; only the bot enrollment comes off --"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative dev bot autobattle off"
+    },
+    {
+      "screenshot": "deepcore_reserve_done"
+    }
+  ]
+}

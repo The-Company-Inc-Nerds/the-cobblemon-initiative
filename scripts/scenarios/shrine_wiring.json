@@ -1,0 +1,220 @@
+{
+  "name": "shrine_wiring",
+  "description": "Wiring smoke across the four non-dragon shrines (fairy, ice, fire, ground): for each, tp to the shrine forecourt, start the challenge via rcon 'execute as {player} run cobblemon-initiative shrine <id> start' (the exact command Aurora/Glacius/Ignis/Terran's begin_trial_button dispatches; the shrine node is perm 2, console-side execute-as is the established rail), assert the start title (config startTitle, kinds=title) plus the type-specific start system line, then '/shrine-abort' and assert the clean-end line 'Shrine challenge ended.'. Fairy additionally runs 'shrine fairy test friendship' between start and abort and asserts the 'Test — Bond of Friendship' header + the numeric friendship readout (pass/fail agnostic — the lead's friendship is whatever it is; the wiring IS the assert). NO BATTLES BY DESIGN (pure command/announce smoke — the TBCS stall caveat never applies). Coordinates are the <el>_shrine_cultist_1 latch placements from dialog-src (the shrine entrance cluster; the challenge configs carry no coords) — authored, never live-probed, hence _probe_pending: fairy sits at y=-7 (underground chamber) and a wrong floor is a hardcore death (safari precedent), so the preamble armors the player (resistance IV + fire res + regen) before any tp. Ice: the start tile is implicitly safe (ShrineChallengeManager punishes only NON-reset hazard tiles) and the player never moves, so the ice floor cannot fire; the 'Stay on the safe path' line doubles as an assert that the floor hazard is ARMED (per-shrine iceFloorEnabled AND the ShrineConfig master toggle — if ModMenu disabled it, this step fails honestly). Ground: start halves max HP (darkGauntletStartHealthFraction 0.5) and abort clears blindness but NOT the health, so the section ends with an instant_health top-up; the 45s earthquake never fires in a seconds-long window. Ice/fire post-abort asserts pin that abort does NOT latch <el>_shrine_trial_clear (the real leader-battle gates). Re-runs: givemon has no dupe gate (the fairy-test lead accumulates an eevee per run if the party started empty); trial-clear tags are stripped in the preamble; effects are cleared at the end.",
+  "_probe_pending": [
+    "947.5 -7 2715.5",
+    "3634.5 68 1960.5",
+    "3500.5 51 4702.5",
+    "1899.5 83 4049.5"
+  ],
+  "steps": [
+    {
+      "comment": "-- preamble: close any leftover dialog, sweep stale shrine state (abort no-ops with 'You have no active shrine challenge.' on clean runs), day for survivability, tp-armor effects BEFORE the first tp (fairy is an unprobed y=-7 chamber), strip the two gate-bearing trial-clear tags so the post-abort asserts are honest, and guarantee a party lead for the fairy test --"
+    },
+    {
+      "client": "screen.close"
+    },
+    {
+      "rcon": "execute as {player} run shrine-abort"
+    },
+    {
+      "rcon": "time set day"
+    },
+    {
+      "rcon": "effect give {player} minecraft:resistance 600 4 true"
+    },
+    {
+      "rcon": "effect give {player} minecraft:fire_resistance 600 0 true"
+    },
+    {
+      "rcon": "effect give {player} minecraft:regeneration 600 1 true"
+    },
+    {
+      "rcon": "tag {player} remove ice_shrine_trial_clear"
+    },
+    {
+      "rcon": "tag {player} remove fire_shrine_trial_clear"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon eevee level=5"
+    },
+    {
+      "comment": "-- FAIRY: Five Tests of the Heart (fairy_tests). Start splash + the Test 1 pointer lines, then the friendship stat-check, then abort. The double-abort at the end pins the no-active-state path once for the whole file --"
+    },
+    {
+      "rcon": "tp {player} 947.5 -7 2715.5"
+    },
+    {
+      "sleep": 1.5
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative shrine fairy start"
+    },
+    {
+      "wait_chat": "Five Tests of the Heart$",
+      "kinds": [
+        "title"
+      ],
+      "timeout": 10
+    },
+    {
+      "wait_chat": "Test 1:",
+      "timeout": 10
+    },
+    {
+      "wait_chat": "Bring your first Pokémon to the shrine altar",
+      "timeout": 10
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative shrine fairy test friendship"
+    },
+    {
+      "wait_chat": "Test — Bond of Friendship",
+      "timeout": 10
+    },
+    {
+      "wait_chat": "friendship: \\d+/160",
+      "timeout": 10
+    },
+    {
+      "screenshot": "fairy_friendship_test"
+    },
+    {
+      "rcon": "execute as {player} run shrine-abort"
+    },
+    {
+      "wait_chat": "Shrine challenge ended",
+      "timeout": 10
+    },
+    {
+      "rcon": "execute as {player} run shrine-abort"
+    },
+    {
+      "wait_chat": "You have no active shrine challenge",
+      "timeout": 10
+    },
+    {
+      "comment": "-- ICE: The Frozen Path (timed_parkour + ice floor). Title, the 180s timer line, and the safe-path hazard line (proves the floor is armed: per-shrine flag AND the ShrineConfig master toggle). Standing still on the start tile is implicitly safe --"
+    },
+    {
+      "rcon": "tp {player} 3634.5 68 1960.5"
+    },
+    {
+      "sleep": 1.5
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative shrine ice start"
+    },
+    {
+      "wait_chat": "The Frozen Path$",
+      "kinds": [
+        "title"
+      ],
+      "timeout": 10
+    },
+    {
+      "wait_chat": "Timer started — §e180 seconds\\.",
+      "timeout": 10
+    },
+    {
+      "wait_chat": "Stay on the safe path",
+      "timeout": 10
+    },
+    {
+      "screenshot": "ice_frozen_path"
+    },
+    {
+      "rcon": "execute as {player} run shrine-abort"
+    },
+    {
+      "wait_chat": "Shrine challenge ended",
+      "timeout": 10
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=!ice_shrine_trial_clear]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- FIRE: Trial by Flame (timed_parkour, no floor hazard). Title + the 120s timer line pin the per-config time limit --"
+    },
+    {
+      "rcon": "tp {player} 3500.5 51 4702.5"
+    },
+    {
+      "sleep": 1.5
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative shrine fire start"
+    },
+    {
+      "wait_chat": "Trial by Flame$",
+      "kinds": [
+        "title"
+      ],
+      "timeout": 10
+    },
+    {
+      "wait_chat": "Timer started — §e120 seconds\\.",
+      "timeout": 10
+    },
+    {
+      "screenshot": "fire_burning_path"
+    },
+    {
+      "rcon": "execute as {player} run shrine-abort"
+    },
+    {
+      "wait_chat": "Shrine challenge ended",
+      "timeout": 10
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=!fire_shrine_trial_clear]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- GROUND: The Buried Maze (dark_gauntlet). Start halves HP and applies blindness; abort clears blindness but NOT health, so the section ends with an instant_health top-up. The 45s earthquake never reaches its first tick in this window --"
+    },
+    {
+      "rcon": "tp {player} 1899.5 83 4049.5"
+    },
+    {
+      "sleep": 1.5
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative shrine ground start"
+    },
+    {
+      "wait_chat": "The Buried Maze",
+      "kinds": [
+        "title"
+      ],
+      "timeout": 10
+    },
+    {
+      "wait_chat": "Sight dims",
+      "timeout": 10
+    },
+    {
+      "screenshot": "ground_buried_maze"
+    },
+    {
+      "rcon": "execute as {player} run shrine-abort"
+    },
+    {
+      "wait_chat": "Shrine challenge ended",
+      "timeout": 10
+    },
+    {
+      "rcon": "effect give {player} minecraft:instant_health 1 10 true"
+    },
+    {
+      "comment": "-- cleanup: strip the armor/regen buffs (instant_health has already applied). Trial-clear tags were never latched (asserted above); the eevee rides (givemon has no dupe gate, canon precedent) --"
+    },
+    {
+      "rcon": "effect clear {player}"
+    },
+    {
+      "screenshot": "shrine_wiring_done"
+    }
+  ]
+}

@@ -1,0 +1,224 @@
+{
+  "name": "mystic_verified",
+  "description": "Verified Weather (q.side_verified, slot 55) - Osric's flickering exchange board, the first prices-adjusting beat. The quest premise is the one faked prerequisite: #idx cd_instability = 18 pins the NERVOUS register (prio 20 needs gte 16, staying under the gte-24 over-explaining band; price_check/tick mirrors the index onto the player so band_tags can fire - price_check.json precedent at 12). Three 'Watch the board flicker' reads increment ci_mm_reads with a distinct flicker actionbar each; the third fires witness_pay - the deliberately-SHORT witness fee (face 60 at rate 96% pays exactly 57; the receipt gag IS the assert: balance 500 -> 557) and latches mm_board_done, so the re-open lands on the done_flavor tombstone (prio 40). No battle, no items - pure dialog/economy routing. Cleanup returns the index to 0 so no later scenario inherits a nervous world.",
+  "_probe_pending": [
+    "1082.5 64 2448.5"
+  ],
+  "steps": [
+    {
+      "comment": "-- preamble: tp FIRST (loaded chunks for the latch). Site = the exchange-board latch at 1082.5 64 2448.5 - AUTHORED y=64 PLACEHOLDER, not yet ground-probed (see _probe_pending): confirm the real surface Y before the first live run --"
+    },
+    {
+      "rcon": "tp {player} 1082.5 66 2448.5"
+    },
+    {
+      "sleep": 2.0
+    },
+    {
+      "rcon": "time set day"
+    },
+    {
+      "rcon": "weather clear"
+    },
+    {
+      "client": "screen.close"
+    },
+    {
+      "comment": "-- (screen.close above = leftover-dialog guard) reset (idempotent re-runs): the micro-quest latch + the read counter --"
+    },
+    {
+      "rcon": "tag {player} remove mm_board_done"
+    },
+    {
+      "rcon": "scoreboard players reset {player} ci_mm_reads"
+    },
+    {
+      "comment": "-- prereq fake: the index has moved (nervous gate cd_instability gte 16; 18 stays under the 24 over-explaining band and makes the witness fee exactly 60*96/100 = 57) --"
+    },
+    {
+      "rcon": "scoreboard players set #idx cd_instability 18"
+    },
+    {
+      "rcon": "cobbledollars set {player} 500"
+    },
+    {
+      "comment": "-- settle: mirror tick copies #idx onto the player, band_tags derives the gte bands + no_mm_board_done --"
+    },
+    {
+      "sleep": 2.0
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=cd_instability_gte_16,tag=!cd_instability_gte_24]",
+      "expect": "passed"
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=no_mm_board_done]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 1: read 1/3 - the nervous register (prio 20), first flicker line --"
+    },
+    {
+      "find_npc": "Verified Clerk Osric",
+      "save": "o"
+    },
+    {
+      "interact_npc": "{o.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "The board is adjusting. A temporary recalibration of value - the Company is on top of it, the Company is always on top of it. My payout came up short again this week, which is, ah, also being recalibrated. Nothing to see. Verified trust, verified value.",
+        "Policy says I need a witness on the rate now. Watch it settle a few times and sign off that it is stable? There is a witness fee in it - modest, honestly quite modest these days. Would you mind."
+      ]
+    },
+    {
+      "expect_screen_text": "Watch the board flicker"
+    },
+    {
+      "screenshot": "osric_nervous"
+    },
+    {
+      "click": "Watch the board flicker"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "41 CD to the star",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "rcon": "execute if score {player} ci_mm_reads matches 1",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 2: read 2/3 - second flicker line --"
+    },
+    {
+      "sleep": 0.7
+    },
+    {
+      "interact_npc": "{o.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "click": "Watch the board flicker"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "A healthy adjustment",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "rcon": "execute if score {player} ci_mm_reads matches 2",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 3: read 3/3 - witness_pay fires: the Verified Rate receipt (96%, 60 -> 57), the ADJUSTMENT gag line, mm_board_done --"
+    },
+    {
+      "sleep": 0.7
+    },
+    {
+      "find_npc": "Verified Clerk Osric",
+      "save": "o"
+    },
+    {
+      "interact_npc": "{o.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "click": "Watch the board flicker"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "Verified Rate",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "wait_chat": "rounding, in the Company favor",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "sleep": 1.0
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=mm_board_done]",
+      "expect": "passed"
+    },
+    {
+      "rcon": "execute if score {player} ci_mm_reads matches 3",
+      "expect": "passed"
+    },
+    {
+      "rcon": "cobbledollars query {player}",
+      "expect": "$ 557"
+    },
+    {
+      "screenshot": "witness_paid_short"
+    },
+    {
+      "comment": "-- beat 4: the tombstone (done_flavor, prio 40, positive mm_board_done gate) - everything is fine, everything is verified --"
+    },
+    {
+      "sleep": 1.0
+    },
+    {
+      "find_npc": "Verified Clerk Osric",
+      "save": "o"
+    },
+    {
+      "interact_npc": "{o.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "Thank you for witnessing. The board is stable, the rate is verified, and your fee was processed at the standard witness schedule. If it felt light, that is the rounding, and the rounding is in the Company favor - as posted. Everything is fine. Everything is verified. Do enjoy the marsh.",
+        "The southern corridor is fully recalibrated, per the notice. Deepcore is under review, Quarry Road is under review, the fen is under review. All perfectly routine. Move along and trade with total confidence."
+      ]
+    },
+    {
+      "screenshot": "verified_tombstone"
+    },
+    {
+      "click": "Right. Fine."
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "comment": "-- cleanup: return the world index to calm (the mirror tick pushes 0 back onto the player next tick, dropping the gte bands); mm_board_done rides as played state, preamble resets it --"
+    },
+    {
+      "rcon": "scoreboard players set #idx cd_instability 0"
+    },
+    {
+      "screenshot": "mystic_verified_done"
+    }
+  ]
+}

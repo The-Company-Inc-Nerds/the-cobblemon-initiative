@@ -3,30 +3,28 @@ package com.thecompanyinc.cobblemoninitiative.screen;
 import com.cobblemon.mod.common.client.CobblemonClient;
 import com.cobblemon.mod.common.client.storage.ClientParty;
 import com.cobblemon.mod.common.pokemon.Pokemon;
-import com.thecompanyinc.cobblemoninitiative.daycare.DaycareManager;
+import com.thecompanyinc.cobblemoninitiative.network.InitiativePayloads;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import java.util.function.BiConsumer;
-import java.util.function.ToIntFunction;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.MinecraftServer;
 
 /**
- * Party picker — the voluntary sibling of {@link SacrificeSelectionScreen} (same layout, same
- * singleplayer-server bridge), with multi-select capped at the facility's free slots, ESC
- * allowed, and a hard guard that at least one Pokémon stays in the party. Confirm hands the
- * selection to the facility's boarding method on the server thread, which re-validates
- * everything server-side.
+ * Party picker — the voluntary sibling of {@link SacrificeSelectionScreen} (same layout),
+ * with multi-select capped at the facility's free slots, ESC allowed, and a hard guard
+ * that at least one Pokémon stays in the party. Fully network-driven since 0.6.0-alpha.6:
+ * the server's PickerOpenPayload carries the real free-slot count, and confirm sends a
+ * PickerDepositPayload the server re-validates — no singleplayer-server bridge, so the
+ * picker works on dedicated servers (and the e2e harness) too.
  *
- * Parameterised so it serves BOTH the Sango daycare (XP boarding, 2 slots) and Mom's friendship
- * care (1 slot) — the no-arg constructor is the daycare; the full constructor takes the title,
- * slot count, live boarded-count lookup, and the deposit callback.
+ * Parameterised so it serves BOTH the Sango daycare (XP boarding, 2 slots) and Mom's
+ * friendship care (1 slot) — the facility key routes the deposit server-side.
  */
 public class DaycareSelectionScreen extends Screen {
 
@@ -37,38 +35,23 @@ public class DaycareSelectionScreen extends Screen {
 
   private final String facilityTitle;
   private final int titleColor;
-  private final int maxSlots;
+  private final int freeSlots;
   private final String confirmLabel;
-  private final transient ToIntFunction<UUID> boardedCountFn;
-  private final transient BiConsumer<UUID, List<UUID>> onConfirm;
+  private final String facilityKey;
 
-  /** Sango daycare (default): 2 slots, XP boarding. */
-  public DaycareSelectionScreen() {
-    this(
-      "Sango Daycare",
-      0x55FF55,
-      DaycareManager.MAX_SLOTS,
-      "Board Selected",
-      uuid -> com.thecompanyinc.cobblemoninitiative.InitiativeInit.getDaycareManager().boardedCount(uuid),
-      (uuid, mons) -> com.thecompanyinc.cobblemoninitiative.InitiativeInit.getDaycareManager().deposit(uuid, mons));
-  }
-
-  /** Facility-neutral picker (used for Mom's friendship care). */
   public DaycareSelectionScreen(
     String facilityTitle,
     int titleColor,
-    int maxSlots,
+    int freeSlots,
     String confirmLabel,
-    ToIntFunction<UUID> boardedCountFn,
-    BiConsumer<UUID, List<UUID>> onConfirm
+    String facilityKey
   ) {
     super(Component.literal(facilityTitle));
     this.facilityTitle = facilityTitle;
     this.titleColor = titleColor;
-    this.maxSlots = maxSlots;
+    this.freeSlots = freeSlots;
     this.confirmLabel = confirmLabel;
-    this.boardedCountFn = boardedCountFn;
-    this.onConfirm = onConfirm;
+    this.facilityKey = facilityKey;
   }
 
   @Override
@@ -78,13 +61,8 @@ public class DaycareSelectionScreen extends Screen {
 
     if (this.minecraft == null || this.minecraft.player == null) return;
 
-    // Singleplayer bridge (same as SacrificeSelectionScreen / NuzlockeInit.sacrificePokemon):
-    // free slot count comes straight from the server-side manager.
-    MinecraftServer server = this.minecraft.getSingleplayerServer();
-    int alreadyBoarded = server != null
-      ? boardedCountFn.applyAsInt(this.minecraft.player.getUUID())
-      : 0;
-    capacity = Math.max(0, maxSlots - alreadyBoarded);
+    // The server computed the free-slot count when it sent the open payload.
+    capacity = Math.max(0, freeSlots);
 
     ClientParty party = CobblemonClient.INSTANCE.getStorage().getParty();
     List<Pokemon> partyPokemon = new ArrayList<>();
@@ -220,13 +198,6 @@ public class DaycareSelectionScreen extends Screen {
       return;
     }
 
-    MinecraftServer server = this.minecraft.getSingleplayerServer();
-    if (server == null) {
-      this.minecraft.setScreen(null);
-      return;
-    }
-
-    UUID playerUuid = this.minecraft.player.getUUID();
     List<UUID> monUuids = new ArrayList<>();
     for (PokemonSlot slot : pokemonSlots) {
       if (selectedSlots.contains(slot.index)) {
@@ -234,8 +205,10 @@ public class DaycareSelectionScreen extends Screen {
       }
     }
 
-    // Hop to the server thread — deposit mutates party + custody state.
-    server.execute(() -> onConfirm.accept(playerUuid, monUuids));
+    // The server-side receiver routes to the facility manager, which re-validates
+    // slots, ownership, and the last-mon guard before mutating anything.
+    ClientPlayNetworking.send(
+      new InitiativePayloads.PickerDepositPayload(facilityKey, monUuids));
 
     this.minecraft.setScreen(null);
   }

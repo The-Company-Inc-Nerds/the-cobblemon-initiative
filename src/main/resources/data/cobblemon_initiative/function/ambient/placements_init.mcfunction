@@ -200,6 +200,7 @@ execute unless score #amb_mm_exchange_clerk ci_ambient matches 0.. run scoreboar
 execute unless score #amb_mm_field_guard ci_ambient matches 0.. run scoreboard players set #amb_mm_field_guard ci_ambient 0
 execute unless score #amb_mm_nurse ci_ambient matches 0.. run scoreboard players set #amb_mm_nurse ci_ambient 0
 execute unless score #amb_mm_wheat_trader ci_ambient matches 0.. run scoreboard players set #amb_mm_wheat_trader ci_ambient 0
+execute unless score #amb_mm_will_o_wisp_child ci_ambient matches 0.. run scoreboard players set #amb_mm_will_o_wisp_child ci_ambient 0
 execute unless score #amb_nifl_cubchoo ci_ambient matches 0.. run scoreboard players set #amb_nifl_cubchoo ci_ambient 0
 execute unless score #amb_nifl_seel ci_ambient matches 0.. run scoreboard players set #amb_nifl_seel ci_ambient 0
 execute unless score #amb_nifl_sneasel ci_ambient matches 0.. run scoreboard players set #amb_nifl_sneasel ci_ambient 0

@@ -1,0 +1,265 @@
+{
+  "name": "frontier_market",
+  "description": "Battle Market hall clear (q.side_frontier_hall lane): Merchant Vance and Trader Fiona (one_time daily-roster challengers, defeat tags via TBCS onwin), then Market Mogul Sterling (brain, battle button gated all_tags on both defeats) whose on_win runs frontier/hall_cleared and tags frontier_market_cleared. The champion gate is opened by tag surgery (royal_league_champion - gate.champion lowers to that player tag); stripped in cleanup. NOTE the market group is CO-LOCATED on the Port cluster (casting brief: both at 'Battle Frontier - Battle Port'; shipped RCT coords put the market line at z2993.5, brain z2999.5 - the Port trio sits ~5b away at z2990.5/2996.5, all inside one find_npc radius). Full display-name needles keep matches unique - beware the 'Stern'/'Sterling' stem collision: 'Captain Stern' and 'Market Mogul Sterling' both contain 'Stern', so never shorten those needles. Fights under dev-bot autobattle with 2x lv-100 Garchomp (Sterling fights at the ceiling - 'level hundred, no discount'). Site is inside the frontier_active region-tick AABB (Nuzlocke faint paths suspended); atlas re-survey open, hence _probe_pending. KNOWN CAVEAT: intermittent TBCS battle-init stall / rare showdown wedge - a win-wait timeout is almost certainly that, not a hall regression; re-run before filing.",
+  "_probe_pending": [
+    "3800.5 159 2991.5"
+  ],
+  "steps": [
+    {
+      "comment": "-- preamble: close any leftover dialog, sweep a stale battle --"
+    },
+    {
+      "client": "screen.close"
+    },
+    {
+      "rcon": "stopbattle {player}"
+    },
+    {
+      "sleep": 1.5
+    },
+    {
+      "comment": "-- tp FIRST (loaded chunks for the kill sweep + the 40b latches spawn Vance/Fiona/Sterling on a fresh world). Coordinate is the shipped RCT market stall line (ch1 3797.5 / ch2 3803.5 at z2993.5, brain 3800.5 z2999.5), stood 2b north - _probe_pending until the first live run confirms the floor --"
+    },
+    {
+      "rcon": "tp {player} 3800.5 159 2991.5"
+    },
+    {
+      "sleep": 2.0
+    },
+    {
+      "rcon": "time set day"
+    },
+    {
+      "rcon": "weather clear"
+    },
+    {
+      "rcon": "kill @e[type=!player,distance=..32,type=!minecraft:armor_stand,type=!easy_npc:humanoid,type=!easy_npc:fairy,type=!cobblemon:pokemon]",
+      "comment_": "plateau is outside any safe zone; frontier_active only suspends Nuzlocke faint paths, not real mob damage"
+    },
+    {
+      "comment": "-- reset (idempotent re-runs): every tag this scenario or its battles set, plus the champion gate surgery. No latch resets - the bodies persist and are never killed here --"
+    },
+    {
+      "rcon": "tag {player} remove defeated_market_challenger_1"
+    },
+    {
+      "rcon": "tag {player} remove defeated_market_challenger_2"
+    },
+    {
+      "rcon": "tag {player} remove frontier_market_cleared"
+    },
+    {
+      "rcon": "tag {player} add royal_league_champion",
+      "comment_": "gate.champion lowers to this player tag; stripped in cleanup"
+    },
+    {
+      "sleep": 1.5,
+      "comment_": "band_tags must re-derive the no_* inverses after the removals before any dialog opens"
+    },
+    {
+      "comment": "-- lane sanity: champion gate open, nothing defeated, hall uncleared --"
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=royal_league_champion,tag=no_defeated_market_challenger_1,tag=no_defeated_market_challenger_2,tag=no_frontier_market_cleared]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- party reset: junk parties stall TBCS battle init (verified live). Empty all six slots, then 2x lv-100 Garchomp --"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon garchomp level=100"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon garchomp level=100"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative dev bot autobattle on"
+    },
+    {
+      "comment": "-- beat 1: Merchant Vance, the morning fresh catch. say[] rotates, so the screen assert targets the stable battle-button label (its rendering IS the champion-gate assert) --"
+    },
+    {
+      "find_npc": "Merchant Vance",
+      "save": "vance"
+    },
+    {
+      "interact_npc": "{vance.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "Battle Merchant Vance"
+    },
+    {
+      "screenshot": "market_vance_gate"
+    },
+    {
+      "click": "Battle Merchant Vance"
+    },
+    {
+      "client": "screen.close",
+      "comment_": "battle-start buttons have no close action; the fight runs server-side (autobattle) while the stale dialog stays up"
+    },
+    {
+      "wait_chat": "Clean transaction",
+      "timeout": 240,
+      "comment_": "Vance's onwin win_line say; a timeout here is almost certainly the TBCS stall, not a regression"
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=defeated_market_challenger_1]",
+      "expect": "passed"
+    },
+    {
+      "sleep": 2.0,
+      "comment_": "battle teardown settle before the next TBCS dispatch"
+    },
+    {
+      "comment": "-- beat 2: Trader Fiona, todays rival --"
+    },
+    {
+      "find_npc": "Trader Fiona",
+      "save": "fiona"
+    },
+    {
+      "interact_npc": "{fiona.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "Battle Trader Fiona"
+    },
+    {
+      "screenshot": "market_fiona_gate"
+    },
+    {
+      "click": "Battle Trader Fiona"
+    },
+    {
+      "client": "screen.close",
+      "comment_": "battle-start buttons have no close action; the fight runs server-side"
+    },
+    {
+      "wait_chat": "You drove a hard bargain",
+      "timeout": 240
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=defeated_market_challenger_2]",
+      "expect": "passed"
+    },
+    {
+      "sleep": 2.0,
+      "comment_": "battle teardown settle + band_tags window before the brain's all_tags gate is read"
+    },
+    {
+      "comment": "-- beat 3: Market Mogul Sterling. His battle button gates all_tags on both challenger defeats - it rendering now IS the ladder assert. Win chain: prize -> frontier_market_cleared tag -> win say -> frontier/hall_cleared (actionbar) --"
+    },
+    {
+      "find_npc": "Market Mogul Sterling",
+      "save": "sterling"
+    },
+    {
+      "interact_npc": "{sterling.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "Battle Market Mogul Sterling"
+    },
+    {
+      "screenshot": "market_brain_gate"
+    },
+    {
+      "click": "Battle Market Mogul Sterling"
+    },
+    {
+      "client": "screen.close",
+      "comment_": "battle-start buttons have no close action; the fight runs server-side"
+    },
+    {
+      "wait_chat": "Every asset on my books",
+      "timeout": 240
+    },
+    {
+      "wait_chat": "A Frontier hall falls",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 15,
+      "comment_": "frontier/hall_cleared actionbar - fires from Sterling's on_win right after the win say"
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=frontier_market_cleared]",
+      "expect": "passed"
+    },
+    {
+      "screenshot": "market_hall_cleared"
+    },
+    {
+      "comment": "-- beat 4: cleared-state dialog - Sterling's beaten entry (prio 20, gate frontier_market_cleared) preempts; prose any-of covers all three rotating say lines (including the late-tier half-recognition beat) --"
+    },
+    {
+      "interact_npc": "{sterling.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "The harbormaster of this dock is you now, whether you wanted the title or not. Fresh challengers still arrive every dawn - they will be arriving for you.",
+        "I ran a fair market for a long time after the old owners stopped watching. You closed it cleaner than they ever did. There is a doorstep past the last generated ridge with your name on it. Go find it.",
+        "I half know that face, and I will keep the half I know to myself. Enough of us do. The Market is yours - and so is anything the tide still brings in to sell."
+      ]
+    },
+    {
+      "screenshot": "market_beaten"
+    },
+    {
+      "click": "Fair trade"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "comment": "-- cleanup: strip everything this scenario set so no other scenario inherits the lane; CD prizes ride (the prize rail has no reset) --"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative dev bot autobattle off"
+    },
+    {
+      "rcon": "tag {player} remove defeated_market_challenger_1"
+    },
+    {
+      "rcon": "tag {player} remove defeated_market_challenger_2"
+    },
+    {
+      "rcon": "tag {player} remove frontier_market_cleared"
+    },
+    {
+      "rcon": "tag {player} remove royal_league_champion"
+    },
+    {
+      "screenshot": "frontier_market_done"
+    }
+  ]
+}

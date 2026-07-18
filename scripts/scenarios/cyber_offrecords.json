@@ -1,0 +1,443 @@
+{
+  "name": "cyber_offrecords",
+  "description": "Off the Records (q.side_offrecords, slot 36, Cyber City gym-7 pack) end-to-end on Off-Records Clerk Maren - the peak-recognition stand-down beat. Pre-Volt prelock holds first (no defeated_cyber_leader: prio-10 entry, no quest access), then the gate is opened by tag surgery (this is the ONLY faked prerequisite; the test ladder never actually beats Volt), nurse rumor pointer (tip_records, gated defeated_cyber_leader + not ci_file_done), Maren's accept (ci_file_active + OFF THE RECORDS title + the frag_7 'You signed this charter' subtitle), the three archive-drop props at her doorstep (walk_to x,z hops - no Y guessing - each latches ci_page_N via off_records/recover_N with a unique actionbar tail AND a per-prop 'Pocket the page' gate render-assert: the button only exists while ci_file_active and not ci_file_done), a premature turn-in nudge after page 1 (count-check holds: 'Not all recovered yet'), full turn-in (1200 CD skewed payout, unbranded Verified Rate rail + ASSET RECLAIMED title + ci_file_done), then the done-state entry. NO battle on this chain (she stands down BY DESIGN - zero TBCS stall exposure). Distinct from the shipped q.side_offrec Hua Zhan chain (off_the_record.json). reward/standard candies NOT asserted (memory_fragment-scaled, unpinned); CobbleDollars ride upward on re-runs. DO NOT run before ground-probing _probe_pending - both tp Ys are authored town-placement placeholders.",
+  "_probe_pending": [
+    "1520 66 1100",
+    "1478 65 1150"
+  ],
+  "steps": [
+    {
+      "comment": "-- SITE NOTES: records annex, Cyber City (town safe zone). Maren 1520,66,1100; archive drops at her doorstep: drop1 1518,65,1096 (4.5b), drop2 1524,65,1104 (5.7b), drop3 1512,65,1092 (11.3b). The three props share the display name 'Archive Drop', so each is reached by walk_to its exact x,z BEFORE find_npc - nearest-match from Maren's spot would be a 4.5b-vs-5.7b coin flip. Nurse Ampere 1478,65,1150 is a tp hop (52b). --"
+    },
+    {
+      "client": "screen.close",
+      "comment_": "leftover-dialog guard: a prior scenario's stale screen would eat the first interact"
+    },
+    {
+      "comment": "-- reset (idempotent re-runs): the accept + done latches, the three page tags, the nurse-met latch, and the faked Volt gate --"
+    },
+    {
+      "rcon": "tag {player} remove ci_file_active"
+    },
+    {
+      "rcon": "tag {player} remove ci_file_done"
+    },
+    {
+      "rcon": "tag {player} remove ci_page_1"
+    },
+    {
+      "rcon": "tag {player} remove ci_page_2"
+    },
+    {
+      "rcon": "tag {player} remove ci_page_3"
+    },
+    {
+      "rcon": "tag {player} remove met_cyber_nurse"
+    },
+    {
+      "rcon": "tag {player} remove defeated_cyber_leader"
+    },
+    {
+      "rcon": "tp {player} 1520 89 1100"
+    },
+    {
+      "rcon": "time set day"
+    },
+    {
+      "rcon": "weather clear"
+    },
+    {
+      "sleep": 2.0,
+      "comment_": "latch spawns within 40b + band_tags resync of the no_* inverses after the removals"
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=!defeated_cyber_leader,tag=!ci_file_active,tag=!ci_file_done]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 1: the prelock HOLDS pre-Volt - prio-10 default entry, no quest access --"
+    },
+    {
+      "find_npc": "Off-Records Clerk Maren",
+      "save": "m"
+    },
+    {
+      "interact_npc": "{m.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "You are new. Make your name in the gym before you go poking around the annex - a stranger reading the archives gets filed, and I am done filing people.",
+        "Come find me after you beat Volt. There is something I want to say to a face, and I want to be sure it is the right one."
+      ]
+    },
+    {
+      "screenshot": "maren_prelock"
+    },
+    {
+      "click": "Later, then"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "comment": "-- beat 2: open the post-Volt gate by tag surgery, then the nurse pointer (tip_records: defeated_cyber_leader + not ci_file_done) --"
+    },
+    {
+      "rcon": "tag {player} add defeated_cyber_leader"
+    },
+    {
+      "rcon": "tp {player} 1478 89 1150"
+    },
+    {
+      "sleep": 2.0
+    },
+    {
+      "find_npc": "Nurse Ampere",
+      "save": "nurse"
+    },
+    {
+      "interact_npc": "{nurse.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "click": "What is the word downtown?"
+    },
+    {
+      "sleep": 1.5,
+      "comment_": "open_dialog swap to the rumors entry needs a packet round-trip before the dump"
+    },
+    {
+      "expect_screen_text": "Who is the clerk on the annex step?"
+    },
+    {
+      "screenshot": "nurse_tip_records"
+    },
+    {
+      "click": "Who is the clerk on the annex step?"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "asking after you by a description, not a name",
+      "timeout": 10
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=met_cyber_nurse]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 3: the stand-down accept (prio 30: defeated_cyber_leader + not ci_file_active) --"
+    },
+    {
+      "rcon": "tp {player} 1520 89 1100"
+    },
+    {
+      "sleep": 1.5
+    },
+    {
+      "interact_npc": "{m.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "I know your face. Not your name - they took the name off everything, I helped them do it. But I dusted that face off a portrait the size of a door and I have not slept right since.",
+        "I am not going to fight you. Nobody in that tower who remembers the charter is going to raise a hand to you. I am asking a favor instead - there is a file they are about to burn, and it is yours, though you do not know it. Get me the pages before the furnace does."
+      ]
+    },
+    {
+      "screenshot": "maren_stand_down"
+    },
+    {
+      "click": "Where are the pages?"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "sleep": 0.5
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=ci_file_active]",
+      "expect": "passed"
+    },
+    {
+      "wait_chat": "OFF THE RECORDS",
+      "kinds": [
+        "title"
+      ],
+      "timeout": 10
+    },
+    {
+      "wait_chat": "You signed this charter",
+      "kinds": [
+        "subtitle"
+      ],
+      "timeout": 10
+    },
+    {
+      "comment": "-- beat 4: archive drop 1. The 'Pocket the page' render IS the gate assert (button gates ci_file_active + not ci_file_done) --"
+    },
+    {
+      "walk_to": [
+        1518,
+        1096
+      ]
+    },
+    {
+      "find_npc": "Archive Drop",
+      "save": "a1"
+    },
+    {
+      "interact_npc": "{a1.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "A banker box stamped for quality review. Inside, a page of a personnel file with the name column razored out.",
+        "A box bound for the furnace tonight. A photo is still clipped to the corner - a face you keep almost remembering."
+      ]
+    },
+    {
+      "expect_screen_text": "Pocket the page"
+    },
+    {
+      "screenshot": "archive_drop"
+    },
+    {
+      "click": "Pocket the page"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "sleep": 0.5
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=ci_page_1]",
+      "expect": "passed"
+    },
+    {
+      "wait_chat": "the name column is razored out",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "comment": "-- beat 5: premature turn-in - the count-check must HOLD with 1/3 pages --"
+    },
+    {
+      "interact_npc": "{m.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "I have the pages"
+    },
+    {
+      "click": "I have the pages"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "Not all recovered yet",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=!ci_file_done]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 6: drops 2 and 3 (walk_to the exact x,z first - identical display names) --"
+    },
+    {
+      "walk_to": [
+        1524,
+        1104
+      ]
+    },
+    {
+      "find_npc": "Archive Drop",
+      "save": "a2"
+    },
+    {
+      "interact_npc": "{a2.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "click": "Pocket the page"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "sleep": 0.5
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=ci_page_2]",
+      "expect": "passed"
+    },
+    {
+      "wait_chat": "another signature you almost recognize",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "walk_to": [
+        1512,
+        1092
+      ]
+    },
+    {
+      "find_npc": "Archive Drop",
+      "save": "a3"
+    },
+    {
+      "interact_npc": "{a3.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "click": "Pocket the page"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "sleep": 0.5
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=ci_page_3]",
+      "expect": "passed"
+    },
+    {
+      "wait_chat": "Take the file to Maren",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "comment": "-- beat 7: full turn-in - filed entry (prio 40), payout via off_records/reward --"
+    },
+    {
+      "walk_to": [
+        1520,
+        1100
+      ]
+    },
+    {
+      "interact_npc": "{m.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "Three drops in the annex, all stamped for quality review, all headed for the furnace tonight. Recover the pages and bring me the count. We keep the file, we keep the man.",
+        "The eviction papers you have been tearing up out on the farms - they were all signed by the same hand. That hand is why I am doing this and not sleeping."
+      ]
+    },
+    {
+      "screenshot": "maren_turnin"
+    },
+    {
+      "click": "I have the pages"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "sleep": 1.0
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=ci_file_done]",
+      "expect": "passed"
+    },
+    {
+      "wait_chat": "ASSET RECLAIMED",
+      "kinds": [
+        "title"
+      ],
+      "timeout": 10
+    },
+    {
+      "wait_chat": "Verified Rate",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "comment": "-- beat 8: done-state entry (prio 50) - the charter-signature echo --"
+    },
+    {
+      "interact_npc": "{m.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "It is out of the building. Whatever they do to the paint on the walls, this one page they do not get to burn. I have wanted to do one honest thing since the day I carried that portrait to the incinerator.",
+        "The signature under every transition order is the same one. It is on the charter in that tower. You would know it anywhere - I think you already do."
+      ]
+    },
+    {
+      "screenshot": "offrecords_done"
+    },
+    {
+      "click": "I think I might"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "comment": "-- cleanup: strip every tag this scenario set, INCLUDING the faked Volt gate (other scenarios assume a pre-gym-7 player); CobbleDollars ride --"
+    },
+    {
+      "rcon": "tag {player} remove ci_page_1"
+    },
+    {
+      "rcon": "tag {player} remove ci_page_2"
+    },
+    {
+      "rcon": "tag {player} remove ci_page_3"
+    },
+    {
+      "rcon": "tag {player} remove ci_file_active"
+    },
+    {
+      "rcon": "tag {player} remove ci_file_done"
+    },
+    {
+      "rcon": "tag {player} remove met_cyber_nurse"
+    },
+    {
+      "rcon": "tag {player} remove defeated_cyber_leader"
+    },
+    {
+      "screenshot": "cyber_offrecords_done"
+    }
+  ]
+}

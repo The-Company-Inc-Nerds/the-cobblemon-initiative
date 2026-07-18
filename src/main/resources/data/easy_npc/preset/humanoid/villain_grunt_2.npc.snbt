@@ -112,6 +112,11 @@
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
                             Name: "badges_gte_3"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "no_checkpoint_settled"
                         }
                     ],
                     Priority: 20,
@@ -190,7 +195,7 @@
                             Name: "no_paid_handling_fee"
                         }
                     ],
-                    Priority: 18,
+                    Priority: 25,
                     Buttons: [
                         {
                             Name: "Hand over the letter",
@@ -442,70 +447,6 @@
                     ],
                     Name: "Checkpoint — the hail",
                     Label: "checkpoint_hail"
-                },
-                {
-                    Priority: 10,
-                    Buttons: [
-                        {
-                            Name: "Fight",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "defeated_villain_grunt_2"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "say We have a file open on you now. I do not need a second look. Move along."
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_defeated_villain_grunt_2"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tbcs attach rctmod:villain_grunt_2 @s"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_defeated_villain_grunt_2"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:villain_grunt_2 onwin {1: ['cobbledollars give @1 240', 'tag @1 add defeated_villain_grunt_2', '@2 say Logged as an unscheduled deviation. The outpost will note your face.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 110', '@1 say Asset secured. The Company appreciates your cooperation.']}"
-                                },
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "yes_button"
-                        }
-                    ],
-                    Texts: [
-                        {
-                            Text: "Company business. This route is closed for restructuring, and there is no walking away from it."
-                        },
-                        {
-                            Text: "We settle this the old way. Wait. Do I know you from somewhere?"
-                        }
-                    ],
-                    Name: "Grunt — early (no recognition)",
-                    Label: "default"
                 }
             ]
         },

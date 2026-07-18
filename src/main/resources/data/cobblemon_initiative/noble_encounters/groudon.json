@@ -1,58 +1,100 @@
 {
-  "id": "groudon",
-  "displayName": "§4§lGroudon — Noble of the Scorched Depths",
-  "element": "fire",
-  "bodyPreset": "easy_npc:preset/cobblemon/noble_groudon.npc.snbt",
-  "bodyTag": "noble_groudon_body",
-  "battleSpecies": "groudon level=78 min_perfect_ivs=6",
-
-  "startTitle": "§4§lGROUDON",
-  "startSubtitle": "§7The mountain wakes...",
-  "introSeconds": 4,
-
-  "arena": {
-    "center": [3805, 70, 3746],
-    "radius": 20,
-    "dimension": "minecraft:overworld"
+ "id": "groudon",
+ "displayName": "\u00a74\u00a7lGroudon \u2014 Noble of the Scorched Depths",
+ "element": "fire",
+ "bodyPreset": "easy_npc:preset/cobblemon/noble_groudon.npc.snbt",
+ "bodyTag": "noble_groudon_body",
+ "battleSpecies": "groudon level=78 min_perfect_ivs=6",
+ "startTitle": "\u00a74\u00a7lGROUDON",
+ "startSubtitle": "\u00a77The mountain wakes...",
+ "introSeconds": 4,
+ "arena": {
+  "center": [
+   3790,
+   313,
+   3813
+  ],
+  "radius": 20,
+  "dimension": "minecraft:overworld"
+ },
+ "ambientTheme": "drought",
+ "flyer": null,
+ "stagger": {
+  "staggerAtHealthFraction": 0.15,
+  "bossBarColor": "RED",
+  "bossBarOverlay": "NOTCHED_10"
+ },
+ "phase1": {
+  "attacks": [
+   {
+    "type": "projectile",
+    "cooldownTicks": 70,
+    "params": {
+     "count": 3,
+     "speed": 1.1,
+     "spread": 0.14,
+     "damage": 5.0
+    }
+   },
+   {
+    "type": "barrage_aoe",
+    "cooldownTicks": 130,
+    "params": {
+     "strikes": 4,
+     "pattern": "random",
+     "radius": 5.0,
+     "damage": 8.0,
+     "knockback": 1.0,
+     "windupTicks": 22,
+     "delayBetween": 8
+    }
+   },
+   {
+    "type": "hazard_zone",
+    "cooldownTicks": 170,
+    "params": {
+     "radius": 4.0,
+     "durationTicks": 120,
+     "pull": "none",
+     "tickDamage": 2.0
+    }
+   },
+   {
+    "type": "stomp",
+    "cooldownTicks": 60,
+    "params": {
+     "range": 4.0,
+     "damage": 6.0,
+     "knockback": 1.6,
+     "windupTicks": 10,
+     "castSound": "minecraft:entity.ravager.roar",
+     "impactSound": "minecraft:entity.ravager.stunned"
+    }
+   }
+  ]
+ },
+ "phase2": {
+  "healPartyBeforeBattle": true
+ },
+ "rewards": {
+  "storyFlag": {
+   "objective": "defeated_noble_groudon",
+   "holder": "@s",
+   "value": 1
   },
-  "ambientTheme": "drought",
-  "flyer": null,
-
-  "stagger": {
-    "staggerAtHealthFraction": 0.15,
-    "bossBarColor": "RED",
-    "bossBarOverlay": "NOTCHED_10"
-  },
-
-  "phase1": {
-    "attacks": [
-      { "type": "projectile",  "cooldownTicks": 70,  "params": { "count": 3, "speed": 1.1, "spread": 0.14, "damage": 5.0 } },
-      { "type": "barrage_aoe", "cooldownTicks": 130, "params": { "strikes": 4, "pattern": "random", "radius": 5.0, "damage": 8.0, "knockback": 1.0, "windupTicks": 22, "delayBetween": 8 } },
-      { "type": "hazard_zone", "cooldownTicks": 170, "params": { "radius": 4.0, "durationTicks": 120, "pull": "none", "tickDamage": 2.0 } },
-      { "type": "stomp",       "cooldownTicks": 60,  "params": { "range": 4.0, "damage": 6.0, "knockback": 1.6, "windupTicks": 10, "castSound": "minecraft:entity.ravager.roar", "impactSound": "minecraft:entity.ravager.stunned" } }
-    ]
-  },
-
-  "phase2": {
-    "healPartyBeforeBattle": true
-  },
-
-  "rewards": {
-    "storyFlag": { "objective": "defeated_noble_groudon", "holder": "@s", "value": 1 },
-    "achievement": "cobblemon_initiative:nobles/groudon",
-    "commands": [
-      "execute as {player} run function cobblemon_initiative:economy/reward/grand"
-    ]
-  },
-
-  "completeTitle": "§6§lNoble Subdued",
-  "completeSubtitle": "§7Groudon acknowledges you",
-  "sounds": {
-    "start": "minecraft:entity.ender_dragon.growl",
-    "stagger": "minecraft:entity.generic.explode",
-    "complete": "minecraft:ui.toast.challenge_complete",
-    "loop": "minecraft:music.dragon",
-    "loopSeconds": 344,
-    "hornOnStart": true
-  }
+  "achievement": "cobblemon_initiative:nobles/groudon",
+  "commands": [
+   "execute as {player} run function cobblemon_initiative:economy/reward/grand"
+  ]
+ },
+ "completeTitle": "\u00a76\u00a7lNoble Subdued",
+ "completeSubtitle": "\u00a77Groudon acknowledges you",
+ "sounds": {
+  "start": "minecraft:entity.ender_dragon.growl",
+  "stagger": "minecraft:entity.generic.explode",
+  "complete": "minecraft:ui.toast.challenge_complete",
+  "loop": "minecraft:music.dragon",
+  "loopSeconds": 344,
+  "hornOnStart": true
+ }
 }

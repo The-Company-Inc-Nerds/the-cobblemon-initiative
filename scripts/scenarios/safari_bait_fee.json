@@ -1,0 +1,226 @@
+{
+  "name": "safari_bait_fee",
+  "description": "Bait-kiosk charge regression (0.6.0-alpha.6) — `safari bait` is no longer a free give: SafariManager.buyBait charges 60 CD commons / 250 CD executive_blend through the safari/bait_fee pay-probe (#sfb_ok on cd_calc, permit-fee idiom) and issues the bait ONE TICK after payment resolves. Run at the safari_yards site (mew-wisp clearing, live-verified surface y89 inside the Safari Zone polygon x~1212-1552 / z~1344-1785). The concierge character is authored but UNPLACED (AWAITING SHOWRUNNER placement), so the preamble imports a throwaway body from the compiled preset — the preset carries the full compiled dialog, including today's priced bait labels — and deletes it at the end. Funded path: 20000 CD + badge 3 -> permit via `safari enter` (1500 CD), then click 'Honey Smear — 60 CD' on the concierge bait page -> chat receipt 'Bait charged to your account — 60 CD' + exactly 1 honeycomb + #sfb_ok>=1. Broke path: balance drained to 10 -> click 'Dried Skewer — 60 CD' -> mcfunction actionbar 'Purchase declined' + Java chat 'Payment declined — the kiosk does not extend credit' + no bone issued + #sfb_ok=0. NO BATTLE BEAT BY DESIGN (BATTLE_STARTED_PRE is cancelled while a session is active — no party prep, no autobattle). NEEDLE RULE: Preserve lines embed § codes and HudLog stores getString() RAW, so single-run needles only — regex .* spans a color boundary where the fee amount sits in its own §e run (daycare_board precedent). Post-state matches the safari family: badges restored to 0, balance set to 500 (safari_yards's documented ride-out).",
+  "steps": [
+    {
+      "comment": "-- preamble: tp BEFORE any entity ops (kill silently no-ops in unloaded chunks). Site + mob-sweep + day/regen protection copied verbatim from safari_yards (clearing is OUTSIDE any safe zone; day-set also blocks a homestead-income rollover mid-run). --"
+    },
+    {
+      "rcon": "tp {player} 1300.5 89 1450.5"
+    },
+    {
+      "rcon": "time set day"
+    },
+    {
+      "rcon": "kill @e[type=!player,distance=..32,type=!minecraft:armor_stand,type=!easy_npc:humanoid,type=!easy_npc:fairy,type=!cobblemon:pokemon]"
+    },
+    {
+      "rcon": "effect give {player} minecraft:regeneration 240 2"
+    },
+    {
+      "sleep": 2.0
+    },
+    {
+      "client": "screen.close",
+      "comment_": "leftover-dialog defense: a prior aborted scenario can strand an open screen; harmless no-op when nothing is open"
+    },
+    {
+      "comment": "-- reset (idempotent re-runs): stale session exit ('No active Day Permit' on clean runs is fine), stray lures, marked balls + both bait items this run can mint, and any prior concierge import (by-name kill is safe: the character is unplaced everywhere else, and the site chunk is loaded because we tp'd first) --"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative safari exit"
+    },
+    {
+      "rcon": "kill @e[tag=ci_safari_lure]"
+    },
+    {
+      "rcon": "clear {player} cobblemon:safari_ball"
+    },
+    {
+      "rcon": "clear {player} minecraft:honeycomb"
+    },
+    {
+      "rcon": "clear {player} minecraft:bone"
+    },
+    {
+      "rcon": "kill @e[type=easy_npc:humanoid,name=\"Preserve Intake Concierge\"]"
+    },
+    {
+      "rcon": "weather clear"
+    },
+    {
+      "comment": "-- concierge import: throwaway body from the compiled preset (import_new lands a tick or two deferred — partner_unlocks precedent). Spot = 2b east of the tp point, same z-row of the live-swept clearing surface (NOT a y=64 town placement, no probe needed). --"
+    },
+    {
+      "rcon": "easy_npc preset import_new data easy_npc:preset/humanoid/safari_concierge.npc.snbt 1302.5 89 1450.5"
+    },
+    {
+      "sleep": 1.5
+    },
+    {
+      "rcon": "execute if entity @e[type=easy_npc:humanoid,name=\"Preserve Intake Concierge\"]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 1: the permit. Badge 3 (cap 37) opens the gate; fund 20000 (generous-funding rule — no exact-balance asserts in this file, cobbledollars query abbreviates >=1000); enter's 1500 CD fee resolves ONE TICK after dispatch --"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative dev badges 3",
+      "expect": "level cap now §e37"
+    },
+    {
+      "rcon": "cobbledollars give {player} 20000"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative safari enter"
+    },
+    {
+      "wait_chat": "Day Permit approved",
+      "timeout": 15
+    },
+    {
+      "sleep": 1.0
+    },
+    {
+      "rcon": "clear {player} cobblemon:safari_ball 0",
+      "expect": "Found 20"
+    },
+    {
+      "comment": "-- beat 2 (funded): walk the REAL player path — intake page, Browse bait, buy the Honey Smear. Say pairs rotate (Easy NPC shows ONE per open), so prose asserts are any-of lists; button labels are the stable anchor --"
+    },
+    {
+      "find_npc": "Preserve Intake Concierge",
+      "save": "c"
+    },
+    {
+      "interact_npc": "{c.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "Welcome to the Biodiversity Asset Preserve. Verified access, verified value. A Day Permit is fifteen hundred CobbleDollars: twenty issue balls, fifteen minutes on the grounds, catch-only — no injuries occur on Company property.",
+        "Scatter the bait we sell, wait, and the assets come to you. Everything you take home is filed to your Pokedex. Munitions are Company property and are collected at egress. Shall I process a permit?"
+      ]
+    },
+    {
+      "expect_screen_text": "Browse bait"
+    },
+    {
+      "screenshot": "concierge_intake"
+    },
+    {
+      "click": "Browse bait"
+    },
+    {
+      "sleep": 1.5,
+      "comment_": "open_dialog swaps the page server-side; the class stays Dialog so wait_screen would pass on the STALE page — the bait-page prose assert below is the real transition gate"
+    },
+    {
+      "expect_screen_text": [
+        "Bait lots, all scent-calibrated. Honey draws the small foragers; skewers bring the predators; grit calls the rock and steel and spark; chum is for the water paddock. The Executive Blend is our premium draw.",
+        "Sixty CobbleDollars a lot, billed to your account — the Blend runs two hundred fifty. Scatter it on open ground inside the grounds."
+      ]
+    },
+    {
+      "expect_screen_text": "Honey Smear — 60 CD (bug / fairy / grass)"
+    },
+    {
+      "screenshot": "bait_counter"
+    },
+    {
+      "click": "Honey Smear — 60 CD (bug / fairy / grass)"
+    },
+    {
+      "comment": "-- the receipt: fee dispatched on click, #sfb_ok read + bait issued NEXT tick. Bait buttons deliberately keep the dialog OPEN (repeat buys) — HudLog captures chat regardless. Regex .* spans the §7->§e color boundary before the fee figure --"
+    },
+    {
+      "wait_chat": "Bait charged to your account.*60 CD",
+      "timeout": 10
+    },
+    {
+      "rcon": "execute if score #sfb_ok cd_calc matches 1..",
+      "expect": "passed"
+    },
+    {
+      "rcon": "clear {player} minecraft:honeycomb 0",
+      "expect": "Found 1"
+    },
+    {
+      "screenshot": "bait_charged"
+    },
+    {
+      "comment": "-- beat 3 (broke): drain to 10 (< 60) and order again off the still-open bait page. Same tick: the bait_fee mcfunction's branded actionbar decline; next tick: buyBait's chat receipt. No item, probe stays 0 --"
+    },
+    {
+      "rcon": "cobbledollars set {player} 10"
+    },
+    {
+      "click": "Dried Skewer — 60 CD (dark / fire / predators)"
+    },
+    {
+      "wait_chat": "Purchase declined",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "wait_chat": "Payment declined.*kiosk does not extend credit",
+      "timeout": 10,
+      "comment_": "the '.*kiosk' half pins the BAIT rail — the permit decline says 'the Preserve does not extend credit'"
+    },
+    {
+      "rcon": "execute if score #sfb_ok cd_calc matches 0",
+      "expect": "passed"
+    },
+    {
+      "rcon": "clear {player} minecraft:bone 0",
+      "expect": "No items were found"
+    },
+    {
+      "screenshot": "bait_declined"
+    },
+    {
+      "comment": "-- cleanup: close the kiosk page, end the session (clawback prints the confiscation receipt), delete the throwaway concierge, clear the purchased bait, restore badges to 0 (wheat_war_first_farm assumes badges<3) and park the balance at the safari-family 500 CD ride-out --"
+    },
+    {
+      "client": "screen.close"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative safari exit"
+    },
+    {
+      "wait_chat": "Unspent munitions confiscated at egress:",
+      "timeout": 10
+    },
+    {
+      "rcon": "clear {player} cobblemon:safari_ball 0",
+      "expect": "No items were found"
+    },
+    {
+      "rcon": "clear {player} minecraft:honeycomb"
+    },
+    {
+      "rcon": "kill @e[type=easy_npc:humanoid,name=\"Preserve Intake Concierge\"]"
+    },
+    {
+      "rcon": "execute unless entity @e[type=easy_npc:humanoid,name=\"Preserve Intake Concierge\"]",
+      "expect": "passed"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative dev badges 0",
+      "expect": "level cap now §e15"
+    },
+    {
+      "rcon": "cobbledollars set {player} 500"
+    },
+    {
+      "screenshot": "safari_bait_fee_done"
+    }
+  ]
+}

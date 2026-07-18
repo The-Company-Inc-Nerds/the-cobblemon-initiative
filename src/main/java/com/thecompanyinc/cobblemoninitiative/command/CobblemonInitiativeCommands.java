@@ -3,6 +3,7 @@ package com.thecompanyinc.cobblemoninitiative.command;
 import com.cobblemon.mod.common.Cobblemon;
 import com.cobblemon.mod.common.api.pokemon.PokemonProperties;
 import com.cobblemon.mod.common.api.storage.party.PlayerPartyStore;
+import com.cobblemon.mod.common.api.types.ElementalType;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
@@ -142,6 +143,36 @@ public class CobblemonInitiativeCommands {
             .then(
               Commands.argument("properties", StringArgumentType.greedyString())
                 .executes(ctx -> givemon(ctx, StringArgumentType.getString(ctx, "properties")))
+            )
+        )
+        // Founder party-mirror refresh: rebuilds villain_final_boss from the live party
+        // (registry swap, no reload — see FounderMirrorManager). Fired by the Founder's
+        // "Face myself" dialog button right before the battle, and available to admins.
+        .then(
+          Commands.literal("mirror")
+            .requires(source -> source.hasPermission(2))
+            .then(
+              Commands.literal("refresh")
+                .executes(CobblemonInitiativeCommands::mirrorRefresh)
+            )
+        )
+        // Party elemental-type probe: adds <tag> to the player if ANY party member has the
+        // given type. Silent both ways — the tag is added synchronously, so the SAME dialog
+        // function can branch on it right after the call (Bryn's show-a-Fairy-type beat).
+        // OP-2 like the other quest helpers. /cobblemon-initiative partyhas <type> <tag>
+        .then(
+          Commands.literal("partyhas")
+            .requires(source -> source.hasPermission(2))
+            .then(
+              Commands.argument("type", StringArgumentType.word())
+                .then(
+                  Commands.argument("tag", StringArgumentType.word())
+                    .executes(ctx -> partyHas(
+                      ctx,
+                      StringArgumentType.getString(ctx, "type"),
+                      StringArgumentType.getString(ctx, "tag")
+                    ))
+                )
             )
         )
         .then(
@@ -525,7 +556,9 @@ public class CobblemonInitiativeCommands {
     return InitiativeInit.getSafariManager().status(player);
   }
 
-  /** /cobblemon-initiative safari bait <type> [count] — perm-2 kiosk give. */
+  /** /cobblemon-initiative safari bait <type> [count] — perm-2 kiosk purchase.
+   *  Charges the per-unit bait fee via the pay-probe before issuing (buyBait);
+   *  a zero fee falls through to a straight give. */
   private static int safariBait(
     CommandContext<CommandSourceStack> context,
     String type,
@@ -536,7 +569,44 @@ public class CobblemonInitiativeCommands {
       context.getSource().sendFailure(Component.literal("Must be run by a player."));
       return 0;
     }
-    return InitiativeInit.getSafariManager().giveBait(player, type, count) ? 1 : 0;
+    return InitiativeInit.getSafariManager().buyBait(player, type, count) ? 1 : 0;
+  }
+
+  /** /cobblemon-initiative mirror refresh — rebuild the Founder from the live party. */
+  private static int mirrorRefresh(CommandContext<CommandSourceStack> context) {
+    ServerPlayer player = context.getSource().getPlayer();
+    if (player == null) {
+      context.getSource().sendFailure(Component.literal("Must be run by a player."));
+      return 0;
+    }
+    return com.thecompanyinc.cobblemoninitiative.founder.FounderMirrorManager.refresh(player)
+      ? 1 : 0;
+  }
+
+  /** /cobblemon-initiative partyhas <type> <tag> — tag the player if any party member
+   *  has the elemental type. Result 1/0 mirrors the tag for command-block chains. */
+  private static int partyHas(
+    CommandContext<CommandSourceStack> context,
+    String type,
+    String tag
+  ) {
+    ServerPlayer player = context.getSource().getPlayer();
+    if (player == null) {
+      context.getSource().sendFailure(Component.literal("Must be run by a player."));
+      return 0;
+    }
+    PlayerPartyStore party = Cobblemon.INSTANCE.getStorage().getParty(player);
+    for (int i = 0; i < 6; i++) {
+      Pokemon pokemon = party.get(i);
+      if (pokemon == null) continue;
+      for (ElementalType partyType : pokemon.getTypes()) {
+        if (partyType.getName().equalsIgnoreCase(type)) {
+          player.addTag(tag);
+          return 1;
+        }
+      }
+    }
+    return 0;
   }
 
   // ── Quest tracking (player-facing, permission 0 — driven by the ] / [ keybinds) ──
@@ -603,7 +673,11 @@ public class CobblemonInitiativeCommands {
       player.sendSystemMessage(Component.literal("§cYou cannot board your last Pokémon."));
       return 0;
     }
-    com.thecompanyinc.cobblemoninitiative.daycare.DaycareManager.triggerPicker();
+    com.thecompanyinc.cobblemoninitiative.network.InitiativePayloads.sendPickerOpen(
+      player,
+      com.thecompanyinc.cobblemoninitiative.network.InitiativePayloads.FACILITY_DAYCARE,
+      com.thecompanyinc.cobblemoninitiative.daycare.DaycareManager.MAX_SLOTS
+        - daycare.boardedCount(player.getUUID()));
     return 1;
   }
 
@@ -695,7 +769,11 @@ public class CobblemonInitiativeCommands {
       player.sendSystemMessage(Component.literal("§cMom already has one of your Pokémon."));
       return 0;
     }
-    com.thecompanyinc.cobblemoninitiative.momcare.MomCareManager.triggerPicker();
+    com.thecompanyinc.cobblemoninitiative.network.InitiativePayloads.sendPickerOpen(
+      player,
+      com.thecompanyinc.cobblemoninitiative.network.InitiativePayloads.FACILITY_MOMCARE,
+      com.thecompanyinc.cobblemoninitiative.momcare.MomCareManager.MAX_SLOTS
+        - mom.boardedCount(player.getUUID()));
     return 1;
   }
 

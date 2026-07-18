@@ -1,0 +1,270 @@
+{
+  "name": "frontier_castle",
+  "description": "Battle Castle hall clear (q.side_frontier_hall lane): the champion-gated opt-in ladder - Knight Aldric and Guard Captain Elara (one_time challengers, defeat tags fire via TBCS onwin, achievementOnDefeat is null by design so the DIALOG gate is the progression), then Castle Lord Percival (brain, battle button gated all_tags on both challenger defeats) whose on_win runs frontier/hall_cleared ('A Frontier hall falls.' actionbar + the seven-hall counter) and tags frontier_castle_cleared. The champion gate is opened by tag surgery: gate.champion lowers to the player tag royal_league_champion (content_compile line 205ff) - the test player has NOT cleared the Royal League, so the tag is added in the preamble and stripped in cleanup. Fights run under dev-bot autobattle with 2x lv-100 Garchomp (brains fight at the ceiling; frontier fights are never level-locked). Site is the shipped RCT frontier cluster at y159 - the preamble asserts frontier_active (region_tick AABB), the trigger NuzlockeInit reads to suspend faint damage/party removal/whiteout: the no-death safe-exhibition promise, though the Java suppression itself needs a real faint and is not asserted here (smoke_frontier precedent). The atlas [4096 2965] cluster re-survey (15 Open Q1) is still open - hence _probe_pending. KNOWN CAVEAT: the intermittent TBCS battle-init stall (and the rarer showdown engine wedge) means a win-wait timeout is almost certainly NOT a hall regression - re-run before filing (wedge recovery: blind rctapi maps then dev showdown revive).",
+  "_probe_pending": [
+    "3788.5 159 2960.5"
+  ],
+  "steps": [
+    {
+      "comment": "-- preamble: close any leftover dialog from a prior scenario, then sweep a stale battle (stopbattle fires no event; the sleep lets TBCS liveness settle) --"
+    },
+    {
+      "client": "screen.close"
+    },
+    {
+      "rcon": "stopbattle {player}"
+    },
+    {
+      "sleep": 1.5
+    },
+    {
+      "comment": "-- tp FIRST (loaded chunks for the kill sweep below + the 40b hall latches spawn Aldric/Elara/Percival if the world is fresh). Coordinate is 2b north of the shipped Castle gate line (ch1 3785.5 / ch2 3791.5 at z2962.5, brain 3788.5 z2968.5) - _probe_pending until the first live run confirms the floor --"
+    },
+    {
+      "rcon": "tp {player} 3788.5 159 2960.5"
+    },
+    {
+      "sleep": 2.0
+    },
+    {
+      "rcon": "time set day"
+    },
+    {
+      "rcon": "weather clear"
+    },
+    {
+      "rcon": "execute as {player} at @s run kill @e[type=!player,distance=..24,type=!minecraft:armor_stand,type=!easy_npc:humanoid,type=!easy_npc:fairy,type=!cobblemon:pokemon]",
+      "comment_": "plateau is outside any safe zone; frontier_active only suspends Nuzlocke faint paths, not real mob damage. Armor stands excluded (TBCS anchors), NPC bodies + pokemon excluded"
+    },
+    {
+      "comment": "-- reset (idempotent re-runs): every tag this scenario or its battles set, plus the champion gate surgery. No latch resets - the three bodies persist (one_time challengers and gym_leader brains never despawn on win) --"
+    },
+    {
+      "rcon": "tag {player} remove defeated_castle_challenger_1"
+    },
+    {
+      "rcon": "tag {player} remove defeated_castle_challenger_2"
+    },
+    {
+      "rcon": "tag {player} remove frontier_castle_cleared"
+    },
+    {
+      "rcon": "tag {player} add royal_league_champion",
+      "comment_": "gate.champion lowers to this player tag; stripped in cleanup - later scenarios assume a fresh low-badge player"
+    },
+    {
+      "sleep": 1.5,
+      "comment_": "band_tags must re-derive the no_* inverses (no_defeated_castle_challenger_* and no_frontier_castle_cleared) after the removals before any dialog opens"
+    },
+    {
+      "comment": "-- lane sanity: champion gate open, nothing defeated, hall uncleared, and the region tick has painted the safe-exhibition tag --"
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=royal_league_champion,tag=no_defeated_castle_challenger_1,tag=no_defeated_castle_challenger_2,tag=no_frontier_castle_cleared]",
+      "expect": "passed"
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=frontier_active]",
+      "expect": "passed",
+      "comment_": "frontier/region_tick AABB - the trigger NuzlockeInit reads for the no-death exhibition"
+    },
+    {
+      "comment": "-- party reset: junk lv-5 parties from earlier scenarios stall TBCS battle init (verified live in wheat_war). Empty all six slots, then 2x lv-100 Garchomp - attrition headroom for three straight ceiling fights (the doubles brain needs two able mons anyway) --"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon garchomp level=100"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon garchomp level=100"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative dev bot autobattle on"
+    },
+    {
+      "comment": "-- beat 1: Knight Aldric, the gate. say[] rotates, so the screen assert targets the stable battle-button label (its rendering IS the champion-gate assert) --"
+    },
+    {
+      "find_npc": "Knight Aldric",
+      "save": "aldric"
+    },
+    {
+      "interact_npc": "{aldric.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "Battle Knight Aldric"
+    },
+    {
+      "screenshot": "castle_aldric_gate"
+    },
+    {
+      "click": "Battle Knight Aldric"
+    },
+    {
+      "client": "screen.close",
+      "comment_": "battle-start buttons have no close action; the fight runs server-side (autobattle) while the stale dialog stays up"
+    },
+    {
+      "wait_chat": "The forms are satisfied",
+      "timeout": 240,
+      "comment_": "Aldric's onwin win_line say; a timeout here is almost certainly the TBCS stall, not a regression"
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=defeated_castle_challenger_1]",
+      "expect": "passed"
+    },
+    {
+      "sleep": 2.0,
+      "comment_": "battle teardown settle before the next TBCS dispatch"
+    },
+    {
+      "comment": "-- beat 2: Guard Captain Elara, the wall --"
+    },
+    {
+      "find_npc": "Guard Captain Elara",
+      "save": "elara"
+    },
+    {
+      "interact_npc": "{elara.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "Battle Guard Captain Elara"
+    },
+    {
+      "screenshot": "castle_elara_gate"
+    },
+    {
+      "click": "Battle Guard Captain Elara"
+    },
+    {
+      "client": "screen.close",
+      "comment_": "battle-start buttons have no close action; the fight runs server-side"
+    },
+    {
+      "wait_chat": "The wall yields to the steadier hand",
+      "timeout": 240
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=defeated_castle_challenger_2]",
+      "expect": "passed"
+    },
+    {
+      "sleep": 2.0,
+      "comment_": "battle teardown settle + band_tags window before the brain's all_tags gate is read"
+    },
+    {
+      "comment": "-- beat 3: Castle Lord Percival. His battle button gates all_tags on both challenger defeats - it rendering now IS the ladder assert. Win chain: prize -> frontier_castle_cleared tag -> win say -> frontier/hall_cleared (actionbar) --"
+    },
+    {
+      "find_npc": "Castle Lord Percival",
+      "save": "percival"
+    },
+    {
+      "interact_npc": "{percival.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "Battle Castle Lord Percival"
+    },
+    {
+      "screenshot": "castle_brain_gate"
+    },
+    {
+      "click": "Battle Castle Lord Percival"
+    },
+    {
+      "client": "screen.close",
+      "comment_": "battle-start buttons have no close action; the fight runs server-side"
+    },
+    {
+      "wait_chat": "The wall of the keep breaks at last",
+      "timeout": 240
+    },
+    {
+      "wait_chat": "A Frontier hall falls",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 15,
+      "comment_": "frontier/hall_cleared actionbar - fires from Percival's on_win right after the win say"
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=frontier_castle_cleared]",
+      "expect": "passed"
+    },
+    {
+      "screenshot": "castle_hall_cleared"
+    },
+    {
+      "comment": "-- beat 4: cleared-state dialog - Percival's beaten entry (prio 20, gate frontier_castle_cleared) preempts; prose any-of covers all three rotating say lines --"
+    },
+    {
+      "interact_npc": "{percival.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "The keep is yours. Old money, older rules, and you honoured every one - I could not ask for a cleaner victor.",
+        "I keep saying I know that face from somewhere. No matter. A caretaker of old forms keeps such thoughts to himself. Well fought, Champion.",
+        "The Castle stands defeated and stands grateful. Wonder built these halls once; you reminded me why."
+      ]
+    },
+    {
+      "screenshot": "castle_beaten"
+    },
+    {
+      "click": "Take your leave"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "comment": "-- cleanup: strip everything this scenario set (champion surgery + defeat ladder + hall clear) so no other scenario inherits the lane; CD prizes ride (the prize rail has no reset, miller_walk precedent) --"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative dev bot autobattle off"
+    },
+    {
+      "rcon": "tag {player} remove defeated_castle_challenger_1"
+    },
+    {
+      "rcon": "tag {player} remove defeated_castle_challenger_2"
+    },
+    {
+      "rcon": "tag {player} remove frontier_castle_cleared"
+    },
+    {
+      "rcon": "tag {player} remove royal_league_champion"
+    },
+    {
+      "screenshot": "frontier_castle_done"
+    }
+  ]
+}

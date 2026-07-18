@@ -1,0 +1,471 @@
+{
+  "name": "kalahar_stones",
+  "description": "The Reach Remembers (Boundary Stones), q.side_kalahar_stones slot 43, end-to-end: accept Warden Ossa's survey at the records post, dig the two dune-line stones (seal_stone_1/_2), clear the guarded third stone on the Old Caravan Road via the CITE fork (150 CD pay-probe, cite_surveyor.mcfunction -> stone3_guard_clear), pry the two-seal rubbing (seal_stone_3), file the counter-claim (file_claim: 600-face payout + npc_gift/kalahar_ground + kalahar_claim_filed + boundary_stones_done), then read the filed tombstone + granary hook. NO BATTLE BY DESIGN: the wager fight (sq_boundary_surveyor, lv 50-51, above-cap) is render-asserted only, never clicked - mystic_mirror precedent, the button rendering IS the surface and clicking it exposes the known intermittent TBCS battle-init stall. Both cite forks are exercised (declined at 100 CD, accepted at 900 CD); balance asserts sit under 1000 because cobbledollars query abbreviates >= 1000 (safari_yards precedent). Movement is tp-based (mystic_mirror precedent) - the quest surface is dialog/tag routing, not proximity latches. Fresh player: no prereq tags (Ossa's accept is open by default).",
+  "_probe_pending": [
+    "2050 126 4085",
+    "1980 126 3960",
+    "2140 120 3900",
+    "2318 66 3542"
+  ],
+  "steps": [
+    {
+      "comment": "-- SITE NOTES: all four tp targets are integer-authored PROPOSED placements (character files say builder-confirm in-world) - the Y values are unverified, listed in _probe_pending; ground-probe live before the first run. Stones 1+2 share the display name Basalt Survey Stone but sit ~170b apart, far outside the 48b find radius, so nearest-match find_npc is safe at each site. --"
+    },
+    {
+      "client": "screen.close",
+      "comment_": "leftover-dialog guard: a prior aborted run can leave a dialog up; closing with no screen open is a no-op"
+    },
+    {
+      "comment": "-- reset (idempotent re-runs): every tag the chain sets + the keepsake items. No kills / latch resets needed - all five bodies are pure dialog props whose state lives on the player. Defensive: grain_factor_kalahar (ON_DISTANCE_VERY_CLOSE ambush when the wheat traders are hostile) stands ~17b from stone_1's dune-line site, so the hostility tags AND their driving score are cleared (wheat_war_first_farm precedent). --"
+    },
+    {
+      "rcon": "tag {player} remove boundary_stones_active"
+    },
+    {
+      "rcon": "tag {player} remove seal_stone_1"
+    },
+    {
+      "rcon": "tag {player} remove seal_stone_2"
+    },
+    {
+      "rcon": "tag {player} remove seal_stone_3"
+    },
+    {
+      "rcon": "tag {player} remove stone3_guard_clear"
+    },
+    {
+      "rcon": "tag {player} remove kalahar_claim_filed"
+    },
+    {
+      "rcon": "tag {player} remove boundary_stones_done"
+    },
+    {
+      "rcon": "tag {player} remove wheat_trader_suspicious"
+    },
+    {
+      "rcon": "tag {player} remove wheat_trader_hostile"
+    },
+    {
+      "rcon": "scoreboard players set {player} fields_liberated 0",
+      "comment_": "a campaign player at fields_liberated >= 4 re-derives wheat_trader_hostile next tick and the grain factor beside stone_1 would force a DOUBLES ambush"
+    },
+    {
+      "rcon": "tag {player} remove fields_liberated_gte_4",
+      "comment_": "instant band-tag removal so we do not race the band tick"
+    },
+    {
+      "rcon": "clear {player} cobblemon:hard_stone"
+    },
+    {
+      "rcon": "clear {player} cobblemon:soft_sand"
+    },
+    {
+      "rcon": "clear {player} minecraft:sand"
+    },
+    {
+      "rcon": "cobbledollars set {player} 20000",
+      "comment_": "generous funding for the fee rail; the cite beat pins exact sub-1000 values later (query abbreviates >= 1000)"
+    },
+    {
+      "rcon": "time set day"
+    },
+    {
+      "rcon": "weather clear"
+    },
+    {
+      "comment": "-- beat 1: Warden Ossa at the records post - the accept. say[] rolls one line at random per open --"
+    },
+    {
+      "rcon": "tp {player} 2050 129 4085"
+    },
+    {
+      "sleep": 2.0,
+      "comment_": "latch spawn on first visit + band_tags re-derives the no_* inverses stripped above"
+    },
+    {
+      "find_npc": "Warden Ossa",
+      "save": "ossa"
+    },
+    {
+      "interact_npc": "{ossa.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "Ossa. I keep the old land records - what the dunes have not eaten. The Company holds title to the northern fields. Their title is paper.",
+        "The real boundary was cut into three basalt survey stones a lifetime ago - common land, all of it - then the sand took them. Unearth the three and I can file a counter-claim that the granary they seized was never theirs to sell. Walk the dune line. The stones remember."
+      ]
+    },
+    {
+      "screenshot": "ossa_accept"
+    },
+    {
+      "click": "I will dig up the stones"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "unearth three survey stones",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=boundary_stones_active]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 2: stone 1 at the dune line - dig + rubbing --"
+    },
+    {
+      "rcon": "tp {player} 1980 120 3960"
+    },
+    {
+      "sleep": 2.0
+    },
+    {
+      "find_npc": "Basalt Survey Stone",
+      "save": "s1"
+    },
+    {
+      "interact_npc": "{s1.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "A basalt slab, most of it under the dune. Brush it clear and a boundary mark shows - older than any Company charter. Ossa will want a rubbing of this."
+    },
+    {
+      "screenshot": "stone_1"
+    },
+    {
+      "click": "Clear the sand and take a rubbing"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "First survey stone read",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=seal_stone_1]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 3: stone 2 at the dune edge east - same dig pattern --"
+    },
+    {
+      "rcon": "tp {player} 2140 132 3900"
+    },
+    {
+      "sleep": 2.0
+    },
+    {
+      "find_npc": "Basalt Survey Stone",
+      "save": "s2"
+    },
+    {
+      "interact_npc": "{s2.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "A second basalt slab, half-swallowed by the dune. The same old mark runs across it - common land, all of it. Ossa will want this rubbing too."
+    },
+    {
+      "screenshot": "stone_2"
+    },
+    {
+      "click": "Clear the sand and take a rubbing"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "Second survey stone read",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=seal_stone_2]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 4: the guarded stone on the Old Caravan Road. First the DECLINED cite fork: balance 100 sits under the 150 CD filing fee, so cite_surveyor's pay-probe must fail-soft - no charge, no tag. The wager button is render-asserted only (see description). --"
+    },
+    {
+      "rcon": "tp {player} 2318 83 3542"
+    },
+    {
+      "sleep": 2.0
+    },
+    {
+      "rcon": "cobbledollars set {player} 100"
+    },
+    {
+      "find_npc": "Guarded Survey Stone",
+      "save": "s3"
+    },
+    {
+      "interact_npc": "{s3.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "A Land Surveyor from the Company stands squarely on the third stone, clipboard out, boots on the boundary mark. He informs you this stretch is surveyed, verified, and closed pending review.",
+        "You can fight him for the ground, or read his own boundary law back at him and watch the clipboard win the argument for you."
+      ]
+    },
+    {
+      "expect_screen_text": "Wager battle - 400 CD purse, 200 CD if you lose, above the cap",
+      "comment_": "render-assert ONLY, never clicked: the wager starts a TBCS battle exposed to the known intermittent battle-init stall, and the fight sits above-cap by design; the cite fork is this scenario's mainline"
+    },
+    {
+      "screenshot": "stone_3_guarded"
+    },
+    {
+      "click": "Cite Ossas counter-charter back at him - 150 CD filing fee"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "Payment declined",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "rcon": "cobbledollars query {player}",
+      "expect": "$ 100"
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=!stone3_guard_clear]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- the FUNDED cite: 900 CD -> fee 150 lands, balance 750, the surveyor stands down (stone3_guard_clear) --"
+    },
+    {
+      "rcon": "cobbledollars set {player} 900"
+    },
+    {
+      "interact_npc": "{s3.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "Cite Ossas counter-charter back at him - 150 CD filing fee"
+    },
+    {
+      "click": "Cite Ossas counter-charter back at him - 150 CD filing fee"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "The surveyor reads his own boundary law",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "sleep": 1.0,
+      "comment_": "the cd_calc probe + charge + tag land, then band_tags before the re-open"
+    },
+    {
+      "rcon": "cobbledollars query {player}",
+      "expect": "$ 750"
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=stone3_guard_clear]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- the pry: cleared entry (prio 25) preempts the guard, the rubbing sets seal_stone_3 --"
+    },
+    {
+      "interact_npc": "{s3.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "The surveyor has stepped aside. The stone is clear to read. Under the sand: two seals, one older than the Company itself."
+    },
+    {
+      "screenshot": "stone_3_cleared"
+    },
+    {
+      "click": "Take the rubbing - both seals"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "Third stone read",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=seal_stone_1,tag=seal_stone_2,tag=seal_stone_3]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 5: back to Ossa - the two-seal recognition deflect (return_stone3, prio 30) + the filing. file_claim fires subtitle THEN title; wait_chat is seq-cursored, so the subtitle is waited first --"
+    },
+    {
+      "rcon": "tp {player} 2050 129 4085"
+    },
+    {
+      "sleep": 2.0
+    },
+    {
+      "interact_npc": "{ossa.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "You brought all three rubbings. Common land, marked and dated - the Company title is paper over paper.",
+        "This third stone. It bears two seals. The Company mark, yes. But under it, older, a personal cut - and I have seen that cut on exactly one charter in my life. The founders own hand. And it is the same stroke as the way you just signed my log. Funny thing, the desert. It keeps what people bury.",
+        "No. I am an old woman reading marks in bad light. Let it lie. Take your reward and my thanks."
+      ]
+    },
+    {
+      "expect_screen_text": "File the counter-claim with Ossa"
+    },
+    {
+      "screenshot": "ossa_two_seals"
+    },
+    {
+      "click": "File the counter-claim with Ossa"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "ADJUSTMENT: rounding, in the Company favor",
+      "kinds": [
+        "subtitle"
+      ],
+      "timeout": 10,
+      "comment_": "receipt sting fires on the real turn-in only, before the tombstone tag latches"
+    },
+    {
+      "wait_chat": "CLAIM FILED",
+      "kinds": [
+        "title"
+      ],
+      "timeout": 10
+    },
+    {
+      "sleep": 1.0
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=kalahar_claim_filed]",
+      "expect": "passed"
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=boundary_stones_done]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- the keepsake bundle (npc_gift/kalahar_ground): 1x hard stone + 2x soft sand + 4x sand, exact counts - the preamble cleared all three ids. The 600-face payout is instability-skewed, so no exact balance assert (miller_walk precedent: items, not coin). --"
+    },
+    {
+      "rcon": "clear {player} cobblemon:hard_stone 0",
+      "expect": "Found 1"
+    },
+    {
+      "rcon": "clear {player} cobblemon:soft_sand 0",
+      "expect": "Found 2"
+    },
+    {
+      "rcon": "clear {player} minecraft:sand 0",
+      "expect": "Found 4"
+    },
+    {
+      "comment": "-- beat 6: the filed tombstone (prio 40) + the Crossroads Granary liberation hook. No buttons on this entry - close via the driver --"
+    },
+    {
+      "find_npc": "Warden Ossa",
+      "save": "ossa"
+    },
+    {
+      "interact_npc": "{ossa.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "Three stones, three rubbings, one counter-claim filed in ink older than the Company. The northern fields were common land. Paper says so now, and paper is testimony.",
+        "If you find yourself out by the Crossroads Granary - it was never theirs to hold. Someone should go take it back. I filed the reason; you can be the argument."
+      ]
+    },
+    {
+      "screenshot": "ossa_filed"
+    },
+    {
+      "client": "screen.close",
+      "comment_": "the tombstone entry has no buttons"
+    },
+    {
+      "comment": "-- cleanup: strip everything the chain latched so no other scenario inherits it (Marisols stones_button gates on not boundary_stones_done; kalahar_claim_filed is a farm_5 liberation callback). Keepsakes cleared; the balance rides at ~750 + the skewed payout (the fee rail has no reset, miller_walk precedent). --"
+    },
+    {
+      "rcon": "tag {player} remove boundary_stones_active"
+    },
+    {
+      "rcon": "tag {player} remove seal_stone_1"
+    },
+    {
+      "rcon": "tag {player} remove seal_stone_2"
+    },
+    {
+      "rcon": "tag {player} remove seal_stone_3"
+    },
+    {
+      "rcon": "tag {player} remove stone3_guard_clear"
+    },
+    {
+      "rcon": "tag {player} remove kalahar_claim_filed"
+    },
+    {
+      "rcon": "tag {player} remove boundary_stones_done"
+    },
+    {
+      "rcon": "clear {player} cobblemon:hard_stone"
+    },
+    {
+      "rcon": "clear {player} cobblemon:soft_sand"
+    },
+    {
+      "rcon": "clear {player} minecraft:sand"
+    },
+    {
+      "screenshot": "kalahar_stones_done"
+    }
+  ]
+}

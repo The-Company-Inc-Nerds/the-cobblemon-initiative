@@ -1,0 +1,228 @@
+{
+  "name": "gaviota_odessa",
+  "description": "The Tide Market (q.side_odessa slot 45) end-to-end: Nurse Coralie's rumor hub (the rumor button sets met_gaviota_nurse - the register gate that lights the find-the-fence stage - and rolls a 'Coralie, quietly:' town rumor), then Fence Odessa's guarded intro under the boardwalk (accept latches odessa_crate_started + THE TIDE MARKET title), the crate recovery (sidequest/odessa/recover_crate: one-shot guard, 150 CD finder token, odessa_crate_recovered, started latch cleared), and the open_shop unlock render ('See the tide market' -> OPEN_TRADING_SCREEN; render-assert ONLY per the wheat_war/mystic_mirror precedent - the trading screen class is unverified headless and the shop is not the quest surface). The customs-float crate prop is UNPLACED (register: interaction block at PLACEHOLDER ~[540 63 3530] still to be wired), so the recovery is rcon-dispatched as the player - the safari concierge precedent; convert to a real walk-up + interact.block once the prop lands. Nurse screen asserts target BUTTON labels only: the post_docks entry (cd_instability_gte_24, a live world score band) can preempt the default entry, and both carry the same heal/rumor buttons. No exact balance asserts (skewed payout rail + query abbreviation >= 1000); wallet rides +20000-ish per run.",
+  "_probe_pending": [
+    "560.5 65 3540.5",
+    "552.5 63 3552.5"
+  ],
+  "steps": [
+    {
+      "comment": "-- preamble: close any leftover dialog from a prior scenario --"
+    },
+    {
+      "client": "screen.close"
+    },
+    {
+      "comment": "-- tp FIRST (loaded chunks; the 40b latches spawn Coralie and Odessa on a fresh world). Coordinate is gaviota_nurse's authored placement - PLACEHOLDER y65, _probe_pending until the first live run confirms the Center floor --"
+    },
+    {
+      "rcon": "tp {player} 560.5 82 3540.5"
+    },
+    {
+      "sleep": 2.0
+    },
+    {
+      "rcon": "time set day"
+    },
+    {
+      "rcon": "weather clear"
+    },
+    {
+      "comment": "-- reset (idempotent re-runs): every tag this scenario sets, plus a generous fund (the tide market is a fee/shop surface) --"
+    },
+    {
+      "rcon": "tag {player} remove met_gaviota_nurse"
+    },
+    {
+      "rcon": "tag {player} remove odessa_crate_started"
+    },
+    {
+      "rcon": "tag {player} remove odessa_crate_recovered"
+    },
+    {
+      "rcon": "cobbledollars give {player} 20000"
+    },
+    {
+      "sleep": 1.5,
+      "comment_": "band_tags must re-derive no_odessa_crate_recovered after the removal before Odessa's guarded default can gate in"
+    },
+    {
+      "comment": "-- lane sanity: nurse unmet, crate chain fully unwound --"
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=!met_gaviota_nurse,tag=!odessa_crate_started,tag=no_odessa_crate_recovered]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 1: the rumor hub. post_docks (prio 25, cd_instability_gte_24) may preempt the default in a live world; BOTH entries carry the same heal + rumor buttons, so the asserts target labels, never say prose --"
+    },
+    {
+      "find_npc": "Nurse Coralie",
+      "save": "nurse"
+    },
+    {
+      "interact_npc": "{nurse.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "Heal my team - posted rate"
+    },
+    {
+      "expect_screen_text": "What is the word on the docks?"
+    },
+    {
+      "screenshot": "coralie_hub"
+    },
+    {
+      "click": "What is the word on the docks?"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "Coralie, quietly",
+      "timeout": 10,
+      "comment_": "every rumor roll and the fallback share the aqua 'Coralie, quietly: ' prefix - the one deterministic needle on a 1..5 roll"
+    },
+    {
+      "sleep": 1.0
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=met_gaviota_nurse]",
+      "expect": "passed",
+      "comment_": "the register gate that lights the q.side_odessa find-the-fence stage"
+    },
+    {
+      "comment": "-- beat 2: the fence under the boardwalk - guarded intro + accept --"
+    },
+    {
+      "rcon": "tp {player} 552.5 81 3552.5"
+    },
+    {
+      "sleep": 2.0
+    },
+    {
+      "find_npc": "Fence Odessa",
+      "save": "fence"
+    },
+    {
+      "interact_npc": "{fence.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "Easy. You are not customs - customs does not come down here alone. I move what the Company prices out of reach. That is not theft. Theft was the tariff. This is just the water correcting a bad ledger.",
+        "Want to trade? Prove you are on the tide side. Customs floated a seized crate off the far slip and left it bobbing as a warning. Bring it back and my slip is open to you."
+      ]
+    },
+    {
+      "expect_screen_text": "I will get your crate"
+    },
+    {
+      "screenshot": "odessa_guarded"
+    },
+    {
+      "click": "I will get your crate"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "THE TIDE MARKET",
+      "kinds": [
+        "title"
+      ],
+      "timeout": 10
+    },
+    {
+      "wait_chat": "customs floated a seized crate off the far slip",
+      "timeout": 10
+    },
+    {
+      "sleep": 1.0
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=odessa_crate_started]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 3: the crate. Prop UNPLACED (no interaction block wired yet; register keeps the PLACEHOLDER float coord ~[540 63 3530]), so the turn-in fires by rcon exactly as the prop would - as the player, one-shot guarded --"
+    },
+    {
+      "rcon": "execute as {player} run function cobblemon_initiative:sidequest/odessa/recover_crate"
+    },
+    {
+      "wait_chat": "CRATE RECOVERED",
+      "kinds": [
+        "title"
+      ],
+      "timeout": 10
+    },
+    {
+      "wait_chat": "The tide market opens",
+      "kinds": [
+        "subtitle"
+      ],
+      "timeout": 10
+    },
+    {
+      "sleep": 1.0
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=odessa_crate_recovered,tag=!odessa_crate_started]",
+      "expect": "passed",
+      "comment_": "recovered latched AND the started latch cleared"
+    },
+    {
+      "comment": "-- beat 4: the unlock. open_shop (prio 30) preempts the guarded default; 'See the tide market' rendering IS the assert - never clicked (OPEN_TRADING_SCREEN class unverified headless, wheat_war 'See the wares' precedent) --"
+    },
+    {
+      "find_npc": "Fence Odessa",
+      "save": "fence",
+      "comment_": "player has not moved since beat 2; re-find refreshes the approach context"
+    },
+    {
+      "interact_npc": "{fence.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "You got the crate back off the float. Good. Then we are past introductions. This is what the tariff took and the tide returned - same goods, honest weight, no verified surcharge stapled on top.",
+        "Buy what you like. Half of it is bound for the desert road anyway - Dunewind takes everything the port is not allowed to sell here. Funny how the things they overtax always find the water."
+      ]
+    },
+    {
+      "expect_screen_text": "See the tide market"
+    },
+    {
+      "screenshot": "tide_market_open"
+    },
+    {
+      "click": "Later"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "comment": "-- cleanup: strip every tag this scenario set so no other scenario inherits the lane --"
+    },
+    {
+      "rcon": "tag {player} remove met_gaviota_nurse"
+    },
+    {
+      "rcon": "tag {player} remove odessa_crate_recovered"
+    },
+    {
+      "rcon": "tag {player} remove odessa_crate_started"
+    },
+    {
+      "screenshot": "gaviota_odessa_done"
+    }
+  ]
+}

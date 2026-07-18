@@ -1,0 +1,268 @@
+{
+  "name": "frontier_registrar",
+  "description": "Frontier concourse economy loop at Registrar Odette (q.side_frontier sign-in lane): the one-shot ledger sign (default entry gated not_tag frontier_registered via the no_ band inverse; frontier/register tags frontier_registered, grants the first hall pass gratis and fires the FRONTIER LEDGER SIGNED title), then the returning 'signed' entry (prio 30) and its 200 CD hall-pass window - frontier/buy_pass runs the verified pay-probe idiom (store result cobbledollars pay -> remove does the single deduction), so the balance read MUST defer past the dispatch tick and the wallet sits under 1000 in the read windows (cobbledollars query K-abbreviates >=1000, exact below - safari_yards precedent). Broke lane asserts the clamp: no pass, balance pinned at 0. frontier_passes is a soft prestige sink (never consumed, never gates a battle - NO decline fees anywhere on the Frontier), so the score is the exact receipt ledger: 1 after sign, 2 after buy, 2 after the refusal. The warden-hook rumor button (open_dialog routing) is asserted and then ESC-closed - its 'Understood' button runs open_default, and on a REGISTERED player the 'default'-labeled entry's gate FAILS, so that return path is left unexercised rather than coin-flipped. No champion surgery needed: the registrar dialog carries no champion gate (only the sidebar unlock does, and the sidebar is not asserted here). No battles, so the TBCS stall caveat does not apply. Run leaves the wallet at 0 and the sign/pass state stripped (preamble re-arms everything for re-runs).",
+  "_probe_pending": [
+    "3800.5 159 2995.5"
+  ],
+  "steps": [
+    {
+      "comment": "-- preamble: close any dialog a prior scenario left open, then tp FIRST (loaded chunks for the kill sweep; the 40b concourse latch spawns Odette if the world is fresh). Coordinate is 2b north of the shipped concourse anchor [3800.5 159 2997.5] - _probe_pending until the first live run confirms the floor --"
+    },
+    {
+      "client": "screen.close"
+    },
+    {
+      "rcon": "tp {player} 3800.5 159 2995.5"
+    },
+    {
+      "sleep": 2.0
+    },
+    {
+      "rcon": "time set day"
+    },
+    {
+      "rcon": "weather clear"
+    },
+    {
+      "rcon": "execute as {player} at @s run kill @e[type=!player,distance=..24,type=!minecraft:armor_stand,type=!easy_npc:humanoid,type=!easy_npc:fairy,type=!cobblemon:pokemon]",
+      "comment_": "plateau is outside any safe zone (frontier_active only suspends Nuzlocke faint paths, not real mob damage); hostiles swept around the PLAYER, NPC bodies + stands + pokemon excluded"
+    },
+    {
+      "comment": "-- reset (idempotent re-runs): the sign tag + the pass ledger, then generous funding per the fee rule (exact-read windows are set tighter per beat below) --"
+    },
+    {
+      "rcon": "tag {player} remove frontier_registered"
+    },
+    {
+      "rcon": "scoreboard players set {player} frontier_passes 0"
+    },
+    {
+      "rcon": "cobbledollars set {player} 20000"
+    },
+    {
+      "sleep": 1.5,
+      "comment_": "band_tags must re-derive no_frontier_registered after the removal before the dialog opens (the sign entry gates on it)"
+    },
+    {
+      "comment": "-- lane sanity: unregistered lane open, and the region tick has painted the safe-exhibition tag --"
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=no_frontier_registered,tag=!frontier_registered]",
+      "expect": "passed"
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=frontier_active]",
+      "expect": "passed",
+      "comment_": "frontier/region_tick AABB covers the concourse - the trigger NuzlockeInit reads for the no-death exhibition promise"
+    },
+    {
+      "comment": "-- beat 1: the ledger sign. say[] rotates (3 lines, any-of), the sign button is the stable assert. register.mcfunction: tag + first pass gratis + title/subtitle --"
+    },
+    {
+      "find_npc": "Frontier Registrar Odette",
+      "save": "reg"
+    },
+    {
+      "interact_npc": "{reg.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "Champion. The seat you took at the League bought your name on this ledger - sign, and the halls are yours.",
+        "House rules before you sign: the Frontier lends the team, your own stay in the box. Nothing you love dies here.",
+        "The passes are cheap now - the money finally holds still. First one is on the house. Just put your name down."
+      ]
+    },
+    {
+      "expect_screen_text": "Sign the ledger"
+    },
+    {
+      "screenshot": "registrar_arrival"
+    },
+    {
+      "click": "Sign the ledger"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "FRONTIER LEDGER SIGNED",
+      "kinds": [
+        "title"
+      ],
+      "timeout": 10
+    },
+    {
+      "wait_chat": "One hall pass, on the house",
+      "kinds": [
+        "subtitle"
+      ],
+      "timeout": 10
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=frontier_registered]",
+      "expect": "passed"
+    },
+    {
+      "rcon": "scoreboard players get {player} frontier_passes",
+      "expect": "has 1",
+      "comment_": "the gratis pass"
+    },
+    {
+      "comment": "-- beat 2 FUNDED: the returning 'signed' entry (prio 30 preempts now) + the 200 CD pass. Wallet pinned to 900 for the exact post-fee read (query abbreviates >=1000); buy_pass's pay-probe resolves a tick after dispatch, hence the deferred read --"
+    },
+    {
+      "rcon": "cobbledollars set {player} 900"
+    },
+    {
+      "sleep": 1.0
+    },
+    {
+      "find_npc": "Frontier Registrar Odette",
+      "save": "reg"
+    },
+    {
+      "interact_npc": "{reg.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "Back for more. Passes are at the window, house rules on the wall - our teams, not yours. Nothing you love dies on this floor.",
+        "The Warden in the Deep Dark keeps her door shut until the other seven Brains bow. Bring me a pass and pick a hall.",
+        "Seven halls and a sealed cave. Your name is on the ledger, so the floors are yours. The window is open."
+      ]
+    },
+    {
+      "expect_screen_text": "Buy a hall pass - 200 CD"
+    },
+    {
+      "screenshot": "registrar_signed"
+    },
+    {
+      "click": "Buy a hall pass - 200 CD"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "Verified Charge: 200 CD",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "sleep": 1.5,
+      "comment_": "deferred pay-probe read - the remove lands a tick after the button command"
+    },
+    {
+      "rcon": "cobbledollars query {player}",
+      "expect": "$ 700"
+    },
+    {
+      "rcon": "scoreboard players get {player} frontier_passes",
+      "expect": "has 2"
+    },
+    {
+      "screenshot": "registrar_pass_bought"
+    },
+    {
+      "comment": "-- beat 3 BROKE: same button on an empty wallet - the pay soft-fails, no pass, balance clamped at 0 (CobbleDollars never goes negative) --"
+    },
+    {
+      "rcon": "cobbledollars set {player} 0"
+    },
+    {
+      "sleep": 1.0
+    },
+    {
+      "find_npc": "Frontier Registrar Odette",
+      "save": "reg"
+    },
+    {
+      "interact_npc": "{reg.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "click": "Buy a hall pass - 200 CD"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "The window stays shut",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "sleep": 1.5
+    },
+    {
+      "rcon": "cobbledollars query {player}",
+      "expect": "$ 0"
+    },
+    {
+      "rcon": "scoreboard players get {player} frontier_passes",
+      "expect": "has 2",
+      "comment_": "refusal grants nothing - the ledger holds at 2"
+    },
+    {
+      "comment": "-- beat 4: the warden-hook rumor button (open_dialog routing; gated not_tag frontier_all_cleared - the no_ inverse holds on this player). Asserted then ESC-closed: 'Understood' runs open_default, and the 'default'-labeled entry's gate fails on a registered player, so that return hop stays unexercised by design --"
+    },
+    {
+      "find_npc": "Frontier Registrar Odette",
+      "save": "reg"
+    },
+    {
+      "interact_npc": "{reg.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "Where do I end up?"
+    },
+    {
+      "click": "Where do I end up?"
+    },
+    {
+      "sleep": 1.0,
+      "comment_": "open_dialog swaps the entry in place - settle before reading the new prose"
+    },
+    {
+      "expect_screen_text": "Seven halls, then the Warden of the Deep Dark - and only her. Clear the Brains and her door opens on its own."
+    },
+    {
+      "expect_screen_text": "Understood"
+    },
+    {
+      "screenshot": "registrar_warden_hook"
+    },
+    {
+      "client": "screen.close"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "comment": "-- cleanup: strip the sign state + ledger so no other scenario inherits the lane; the wallet rides at 0 (fee rails have no reset - every fee scenario funds itself, miller_walk precedent) --"
+    },
+    {
+      "rcon": "tag {player} remove frontier_registered"
+    },
+    {
+      "rcon": "scoreboard players set {player} frontier_passes 0"
+    },
+    {
+      "screenshot": "frontier_registrar_done"
+    }
+  ]
+}

@@ -1,0 +1,264 @@
+{
+  "name": "frontier_factory",
+  "description": "Battle Factory hall clear (q.side_frontier_hall lane): the champion-gated opt-in ladder - Technician Rex and Engineer Lydia (one_time challengers, defeat tags fire via TBCS onwin, achievementOnDefeat is null by design so the DIALOG gate is the progression), then Factory Head Noland (brain, battle button gated all_tags on both challenger defeats) whose on_win runs frontier/hall_cleared ('A Frontier hall falls.' actionbar + the seven-hall counter) and tags frontier_factory_cleared. The champion gate is opened by tag surgery: gate.champion lowers to the player tag royal_league_champion (content_compile line 205ff) - the test player has NOT cleared the Royal League, so the tag is added in the preamble and stripped in cleanup. Fights run under dev-bot autobattle with 2x lv-100 Garchomp (brains fight at the ceiling; frontier fights are never level-locked). Site is the shipped RCT frontier cluster at y159 - inside the frontier_active region-tick AABB, so NuzlockeInit suspends faint damage/party removal/whiteout (the safe-exhibition promise) - but the atlas-intent [4060 64 2774] re-survey is still open, hence _probe_pending. KNOWN CAVEAT: the intermittent TBCS battle-init stall (and the rarer showdown engine wedge) means a win-wait timeout is almost certainly NOT a hall regression - re-run before filing (wedge recovery: blind rctapi maps then dev showdown revive).",
+  "_probe_pending": [
+    "3812.5 159 2960.5"
+  ],
+  "steps": [
+    {
+      "comment": "-- preamble: close any leftover dialog from a prior scenario, then sweep a stale battle (stopbattle fires no event; the sleep lets TBCS liveness settle) --"
+    },
+    {
+      "client": "screen.close"
+    },
+    {
+      "rcon": "stopbattle {player}"
+    },
+    {
+      "sleep": 1.5
+    },
+    {
+      "comment": "-- tp FIRST (loaded chunks for the kill sweep below + the 40b hall latches spawn Rex/Lydia/Noland if the world is fresh). Coordinate is the shipped RCT Factory bench line (ch1 3809.5 / ch2 3815.5 at z2962.5, brain 3812.5 z2968.5), stood 2b north - _probe_pending until the first live run confirms the floor --"
+    },
+    {
+      "rcon": "tp {player} 3812.5 159 2960.5"
+    },
+    {
+      "sleep": 2.0
+    },
+    {
+      "rcon": "time set day"
+    },
+    {
+      "rcon": "weather clear"
+    },
+    {
+      "rcon": "kill @e[type=!player,distance=..32,type=!minecraft:armor_stand,type=!easy_npc:humanoid,type=!easy_npc:fairy,type=!cobblemon:pokemon]",
+      "comment_": "plateau is outside any safe zone; frontier_active only suspends Nuzlocke faint paths, not real mob damage. Armor stands excluded (TBCS anchors), NPC bodies + pokemon excluded"
+    },
+    {
+      "comment": "-- reset (idempotent re-runs): every tag this scenario or its battles set, plus the champion gate surgery. No latch resets - the three bodies persist and are never killed here --"
+    },
+    {
+      "rcon": "tag {player} remove defeated_factory_challenger_1"
+    },
+    {
+      "rcon": "tag {player} remove defeated_factory_challenger_2"
+    },
+    {
+      "rcon": "tag {player} remove frontier_factory_cleared"
+    },
+    {
+      "rcon": "tag {player} add royal_league_champion",
+      "comment_": "gate.champion lowers to this player tag; stripped in cleanup - later scenarios assume a fresh low-badge player"
+    },
+    {
+      "sleep": 1.5,
+      "comment_": "band_tags must re-derive the no_* inverses (no_defeated_factory_challenger_* and no_frontier_factory_cleared) after the removals before any dialog opens"
+    },
+    {
+      "comment": "-- lane sanity: champion gate open, nothing defeated, hall uncleared --"
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=royal_league_champion,tag=no_defeated_factory_challenger_1,tag=no_defeated_factory_challenger_2,tag=no_frontier_factory_cleared]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- party reset: junk lv-5 parties from earlier scenarios stall TBCS battle init (verified live in wheat_war). Empty all six slots, then 2x lv-100 Garchomp - attrition headroom for three straight ceiling fights --"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "takepokemon {player} 1"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon garchomp level=100"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon garchomp level=100"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative dev bot autobattle on"
+    },
+    {
+      "comment": "-- beat 1: Technician Rex, the first rental bench. say[] rotates, so the screen assert targets the stable battle-button label (its rendering IS the champion-gate assert) --"
+    },
+    {
+      "find_npc": "Technician Rex",
+      "save": "rex"
+    },
+    {
+      "interact_npc": "{rex.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "Battle Technician Rex"
+    },
+    {
+      "screenshot": "factory_rex_gate"
+    },
+    {
+      "click": "Battle Technician Rex"
+    },
+    {
+      "client": "screen.close",
+      "comment_": "battle-start buttons have no close action; the fight runs server-side (autobattle) while the stale dialog stays up"
+    },
+    {
+      "wait_chat": "The rental held and so did you",
+      "timeout": 240,
+      "comment_": "Rex's onwin win_line say; a timeout here is almost certainly the TBCS stall, not a regression"
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=defeated_factory_challenger_1]",
+      "expect": "passed"
+    },
+    {
+      "sleep": 2.0,
+      "comment_": "battle teardown settle before the next TBCS dispatch"
+    },
+    {
+      "comment": "-- beat 2: Engineer Lydia, the swap bench --"
+    },
+    {
+      "find_npc": "Engineer Lydia",
+      "save": "lydia"
+    },
+    {
+      "interact_npc": "{lydia.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "Battle Engineer Lydia"
+    },
+    {
+      "screenshot": "factory_lydia_gate"
+    },
+    {
+      "click": "Battle Engineer Lydia"
+    },
+    {
+      "client": "screen.close",
+      "comment_": "battle-start buttons have no close action; the fight runs server-side"
+    },
+    {
+      "wait_chat": "Swap logged, bench beaten",
+      "timeout": 240
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=defeated_factory_challenger_2]",
+      "expect": "passed"
+    },
+    {
+      "sleep": 2.0,
+      "comment_": "battle teardown settle + band_tags window before the brain's all_tags gate is read"
+    },
+    {
+      "comment": "-- beat 3: Factory Head Noland. His battle button gates all_tags on both challenger defeats - it rendering now IS the ladder assert. Win chain: prize -> frontier_factory_cleared tag -> win say -> frontier/hall_cleared (actionbar) --"
+    },
+    {
+      "find_npc": "Factory Head Noland",
+      "save": "noland"
+    },
+    {
+      "interact_npc": "{noland.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "Battle Factory Head Noland"
+    },
+    {
+      "screenshot": "factory_brain_gate"
+    },
+    {
+      "click": "Battle Factory Head Noland"
+    },
+    {
+      "client": "screen.close",
+      "comment_": "battle-start buttons have no close action; the fight runs server-side"
+    },
+    {
+      "wait_chat": "cleared on borrowed steel",
+      "timeout": 240
+    },
+    {
+      "wait_chat": "A Frontier hall falls",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 15,
+      "comment_": "frontier/hall_cleared actionbar - fires from Noland's on_win right after the win say"
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=frontier_factory_cleared]",
+      "expect": "passed"
+    },
+    {
+      "screenshot": "factory_hall_cleared"
+    },
+    {
+      "comment": "-- beat 4: cleared-state dialog - Noland's beaten entry (prio 20, gate frontier_factory_cleared) preempts; prose any-of covers both rotating say lines --"
+    },
+    {
+      "interact_npc": "{noland.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "You broke the house on borrowed steel. I designed every bench in this hall and none of it was enough. The Factory is yours.",
+        "Rentals only, and you still cleared the top floor. Old management would have hated that - a thing they built to be lent, walking out the door beaten."
+      ]
+    },
+    {
+      "screenshot": "factory_beaten"
+    },
+    {
+      "click": "Onward"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "comment": "-- cleanup: strip everything this scenario set (champion surgery + defeat ladder + hall clear) so no other scenario inherits the lane; CD prizes ride (the prize rail has no reset, miller_walk precedent) --"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative dev bot autobattle off"
+    },
+    {
+      "rcon": "tag {player} remove defeated_factory_challenger_1"
+    },
+    {
+      "rcon": "tag {player} remove defeated_factory_challenger_2"
+    },
+    {
+      "rcon": "tag {player} remove frontier_factory_cleared"
+    },
+    {
+      "rcon": "tag {player} remove royal_league_champion"
+    },
+    {
+      "screenshot": "frontier_factory_done"
+    }
+  ]
+}

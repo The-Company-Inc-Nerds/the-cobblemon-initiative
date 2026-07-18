@@ -51,10 +51,6 @@ public class MomCareManager {
   private static final String CUSTODY_FILE_NAME = "cobblemon_initiative_momcare.json";
   private static final int TICK_INTERVAL = 40; // day-latch poll cadence (2s)
 
-  // Server→client picker bridge (mirrors DaycareManager): the deposit command raises this flag;
-  // NuzlockeClientInit's tick poll opens the picker (a 1-slot DaycareSelectionScreen) when idle.
-  private static boolean pendingPicker = false;
-
   private MomCareConfig config;
   private final Map<UUID, BoardedMon> custody = new HashMap<>();
   private final Map<UUID, Integer> pendingWithdrawFees = new HashMap<>();
@@ -67,12 +63,7 @@ public class MomCareManager {
     this.config.save();
   }
 
-  public static void triggerPicker() { pendingPicker = true; }
-
-  public static boolean consumePendingPicker() {
-    if (pendingPicker) { pendingPicker = false; return true; }
-    return false;
-  }
+  // Picker open/confirm is payload-driven since 0.6.0-alpha.6 — see network/InitiativePayloads.
 
   public MomCareConfig getConfig() { return config; }
 
