@@ -19,6 +19,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.thecompanyinc.cobblemoninitiative.config.NuzlockeConfig;
 import com.thecompanyinc.cobblemoninitiative.config.ProgressionConfig;
 import com.thecompanyinc.cobblemoninitiative.stadium.StadiumManager;
+import com.thecompanyinc.cobblemoninitiative.streamsync.StreamSyncEvents;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -274,6 +275,7 @@ public class NuzlockeInit implements ModInitializer {
       if (shouldRelease) {
         PlayerPartyStore party = Cobblemon.INSTANCE.getStorage().getParty(player);
         party.remove(pokemon);
+        StreamSyncEvents.pokemonLost(player, pokemon, StreamSyncEvents.CAUSE_DUPLICATE_RELEASE);
         player.sendSystemMessage(
           Component.literal("§e" + speciesName + " was automatically released (duplicate species).")
         );
@@ -333,6 +335,7 @@ public class NuzlockeInit implements ModInitializer {
         Component.literal("§4You fled with only one Pokémon! There is no escape...")
       );
       pendingWhiteoutDeath = true;
+      StreamSyncEvents.whiteout(player, StreamSyncEvents.REASON_FLEE);
       player.kill();
       LOGGER.info("Player {} fled with only one Pokemon - killed", player.getName().getString());
       return Unit.INSTANCE;
@@ -390,6 +393,7 @@ public class NuzlockeInit implements ModInitializer {
             Component.literal("§4You forfeited with only one Pokémon! There is no escape...")
           );
           pendingWhiteoutDeath = true;
+          StreamSyncEvents.whiteout(player, StreamSyncEvents.REASON_FORFEIT);
           player.kill();
         } else {
           player.sendSystemMessage(
@@ -452,6 +456,7 @@ public class NuzlockeInit implements ModInitializer {
     if (config.isRemoveFaintedPokemon()) {
       Pokemon faintedPokemonObj = faintedPokemon.getEffectedPokemon();
       party.remove(faintedPokemonObj);
+      StreamSyncEvents.pokemonLost(player, faintedPokemonObj, StreamSyncEvents.CAUSE_FAINT);
       LOGGER.info("Removed {} from {}'s party", pokemonName, player.getName().getString());
     }
 
@@ -536,6 +541,8 @@ public class NuzlockeInit implements ModInitializer {
       if (pokemon != null && pokemon.getUuid().equals(pokemonUuid)) {
         String name = pokemon.getSpecies().getName();
         party.remove(pokemon);
+        // CLIENT thread — the bus reads the pokemon here and only enqueues a finished JsonObject.
+        StreamSyncEvents.pokemonLost(player, pokemon, StreamSyncEvents.CAUSE_SACRIFICE);
         player.sendSystemMessage(Component.literal("§c" + name + " was sacrificed for your escape!"));
         LOGGER.info("Sacrificed {} for player {}", name, player.getName().getString());
         break;
@@ -601,6 +608,7 @@ public class NuzlockeInit implements ModInitializer {
       String releaseText = config.isRemoveFaintedPokemon() ? " and was released" : "";
       message = "§4" + pokemonName + " fainted" + releaseText + "! You have no Pokémon left!";
       pendingWhiteoutDeath = true;
+      StreamSyncEvents.whiteout(player, StreamSyncEvents.REASON_FAINT);
       // Layer the shadow's ledger voice over the mechanical line — the whiteout is the
       // run's most-replayed moment and should sound like the Company, not vanilla.
       String[] whiteoutVoice = {

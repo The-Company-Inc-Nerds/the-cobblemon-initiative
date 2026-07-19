@@ -1337,6 +1337,47 @@ public class InitiativeConfigScreen {
         .setSaveConsumer(homesteadConfig::setClaimRadius).build());
 
     // -------------------------------------------------------------------------
+    // Stream Sync (OBS overlay push — off by default; the mrpack override enables it)
+    // -------------------------------------------------------------------------
+    StreamSyncConfig streamSyncConfig = StreamSyncConfig.load();
+    StreamSyncConfig streamSyncDefaults = new StreamSyncConfig();
+
+    ConfigCategory streamSync = builder.getOrCreateCategory(Component.literal("Stream Sync"));
+    streamSync.addEntry(
+      entryBuilder.startBooleanToggle(Component.literal("Enabled"), streamSyncConfig.isEnabled())
+        .setDefaultValue(streamSyncDefaults.isEnabled())
+        .setTooltip(Component.literal(
+          "Push live run state (party, deaths, badges, event toasts) to the OBS overlay "
+          + "service. Off = no thread, no network. Takes effect on world load or "
+          + "/streamsync reload."))
+        .setSaveConsumer(streamSyncConfig::setEnabled).build());
+    streamSync.addEntry(
+      entryBuilder.startStrField(Component.literal("Endpoint URL"), streamSyncConfig.getEndpointUrl())
+        .setDefaultValue(streamSyncDefaults.getEndpointUrl())
+        .setTooltip(Component.literal("The overlay service's ingest endpoint (HTTP POST)."))
+        .setSaveConsumer(streamSyncConfig::setEndpointUrl).build());
+    streamSync.addEntry(
+      entryBuilder.startStrField(Component.literal("Auth Token"), streamSyncConfig.getAuthToken())
+        .setDefaultValue(streamSyncDefaults.getAuthToken())
+        .setTooltip(Component.literal(
+          "Optional bearer token sent with every push. Blank = none (the firewall is the gate)."))
+        .setSaveConsumer(streamSyncConfig::setAuthToken).build());
+    streamSync.addEntry(
+      entryBuilder.startIntSlider(
+          Component.literal("Snapshot Interval (ticks)"), streamSyncConfig.getSnapshotIntervalTicks(), 10, 200)
+        .setDefaultValue(streamSyncDefaults.getSnapshotIntervalTicks())
+        .setTooltip(Component.literal(
+          "How often game state is checked for changes (only changes are pushed). 40 = every 2s."))
+        .setSaveConsumer(streamSyncConfig::setSnapshotIntervalTicks).build());
+    streamSync.addEntry(
+      entryBuilder.startIntSlider(
+          Component.literal("Heartbeat (seconds)"), streamSyncConfig.getHeartbeatSeconds(), 5, 120)
+        .setDefaultValue(streamSyncDefaults.getHeartbeatSeconds())
+        .setTooltip(Component.literal(
+          "Unchanged state is still re-pushed this often so the overlay can detect staleness."))
+        .setSaveConsumer(streamSyncConfig::setHeartbeatSeconds).build());
+
+    // -------------------------------------------------------------------------
     // Mom's Care (friendship boarding — docs/PHONE_AND_CARE.md §3/§4)
     // -------------------------------------------------------------------------
     MomCareConfig momConfig = MomCareConfig.load();
@@ -1410,6 +1451,7 @@ public class InitiativeConfigScreen {
       stadiumConfig.save();
       homesteadConfig.save();
       momConfig.save();
+      streamSyncConfig.save();
       flavorScreenConfig.save();
       NuzlockeInit.reloadConfig();
       NpcSightInit.reloadConfig();
@@ -1417,6 +1459,8 @@ public class InitiativeConfigScreen {
       LootChestConfig.reload();
       NobleConfig.reload();
       ProgressionConfig.reload();
+      // Session start/stop stays lifecycle-gated (/streamsync reload applies it live).
+      StreamSyncConfig.reload();
       if (InitiativeInit.getDaycareManager() != null) InitiativeInit.getDaycareManager().reloadConfig();
       if (InitiativeInit.getSafariManager() != null) InitiativeInit.getSafariManager().load();
       StadiumManager.reloadConfig();

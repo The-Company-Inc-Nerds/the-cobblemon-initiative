@@ -5,6 +5,7 @@ import com.thecompanyinc.cobblemoninitiative.config.ConfigLoader;
 import com.thecompanyinc.cobblemoninitiative.config.LevelCapConfig;
 import com.thecompanyinc.cobblemoninitiative.config.ProgressionConfig;
 import com.thecompanyinc.cobblemoninitiative.data.PlayerProgress;
+import com.thecompanyinc.cobblemoninitiative.streamsync.StreamSyncEvents;
 import java.util.List;
 import java.util.UUID;
 import net.minecraft.network.chat.Component;
@@ -48,6 +49,7 @@ public class LevelCapManager {
     int newCap = computeLevelCap(progress);
     if (newCap != progress.getCurrentLevelCap()) {
       progress.setCurrentLevelCap(newCap);
+      StreamSyncEvents.levelCapChanged(player, newCap);
       player.sendSystemMessage(
         Component.literal("§6Level cap increased to §e" + newCap + "§6!")
       );

@@ -6,6 +6,7 @@ import com.google.gson.reflect.TypeToken;
 import com.thecompanyinc.cobblemoninitiative.InitiativeInit;
 import com.thecompanyinc.cobblemoninitiative.config.ProgressionConfig;
 import com.thecompanyinc.cobblemoninitiative.config.TrainerConfig;
+import com.thecompanyinc.cobblemoninitiative.streamsync.StreamSyncEvents;
 import java.io.*;
 import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
@@ -183,6 +184,7 @@ public class PlayerProgressManager {
     }
 
     progress.addDefeatedTrainer(trainerId);
+    StreamSyncEvents.trainerDefeated(player, trainerId);
     InitiativeInit.LOGGER.info(
       "Player {} defeated trainer {}",
       player.getName().getString(),
@@ -408,6 +410,11 @@ public class PlayerProgressManager {
 
     if (advancementPath != null) {
       grantAdvancement(player, advancementPath);
+      // The gyms/badge_ milestone — posted here (not inside grantMilestoneLoot) so the
+      // flavor-loot toggle can never silence badge toasts on the overlay.
+      if (advancementPath.startsWith("cobblemon_initiative:gyms/badge_")) {
+        StreamSyncEvents.badgeEarned(player, advancementPath.substring(advancementPath.lastIndexOf('/') + 1));
+      }
       grantMilestoneLoot(player, trainerId, advancementPath);
     }
   }
