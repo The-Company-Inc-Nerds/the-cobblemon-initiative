@@ -105,10 +105,12 @@ public class FrontierManager {
   private static final String PORT_PARTNER = "port_deckhand";
   private static final int PORT_CREW_PURSE = 1500;
 
-  /** Pyramid gauntlet stages (no heals between) — the ancients, then the giant. */
+  /** Pyramid gauntlet stages (no heals between) — the ancients, then the giant.
+   *  Purses are the authored prizes from the retired dialog battle blocks. */
   private static final String[] PYRAMID_STAGES = {
     "pyramid_challenger_1", "pyramid_challenger_2", "frontier_brain_pyramid"
   };
+  private static final int[] PYRAMID_PURSES = {800, 800, 3000};
 
   /** Tower floors 2..9: trainer / level lock (0 = authored) / purse. Floor 9 is the
    *  Tycoon at full authored strength — the climb's fights are level-locked clones
@@ -345,6 +347,13 @@ public class FrontierManager {
     var score = sb.getOrCreatePlayerScore(player, obj);
     switch (action) {
       case "enter" -> {
+        // Once the Lord has yielded, the ledger never reopens — an enter→claim loop
+        // would otherwise be an infinite 60-point (900 CD) faucet.
+        if (player.getTags().contains("defeated_frontier_brain_castle")) {
+          player.sendSystemMessage(Component.literal(
+            "§c[Castle] §7The house does not extend credit to its conqueror. The ledger is closed."));
+          return 0;
+        }
         score.set(CASTLE_BUDGET);
         player.sendSystemMessage(Component.literal(
           "§6§l[Castle] §r§7Old money, older rules. Your ledger opens at §e" + CASTLE_BUDGET
@@ -404,6 +413,14 @@ public class FrontierManager {
       player.sendSystemMessage(Component.literal("§c[Market] §7One purchase at a time."));
       return 0;
     }
+    // The ladder is 1 → 2 → brain, so a defeated brain means the stall is empty.
+    // Refuse BEFORE the fee probe — otherwise the fee is charged and the dispatch
+    // then refuses on alreadyBeaten, eating the player's CD for nothing.
+    if (player.getTags().contains("defeated_frontier_brain_market")) {
+      player.sendSystemMessage(Component.literal(
+        "§c[Market] §7Sold out — you bought every fight the stall had."));
+      return 0;
+    }
     dispatchFeeProbe(player, spec[0]);
     pendingMarket.put(player.getUUID(), listing);
     return 1;
@@ -429,16 +446,21 @@ public class FrontierManager {
 
   /** frontier port crew — the 2v2 MULTI: player + deckhand vs the rival pair. */
   public int portCrew(ServerPlayer player) {
+    // Refuses only when BOTH tags are set: a legacy half-pair save (one tag from the
+    // old singles wiring) can still muster and complete the pair — the win grants both.
     if (player.getTags().contains("defeated_port_challenger_1")
       && player.getTags().contains("defeated_port_challenger_2")) {
       player.sendSystemMessage(Component.literal(
         "§c[Port] §7The rival crew already struck their colors — the Admiral holds the pier head."));
       return 0;
     }
+    if (dispatches.containsKey(player.getUUID())) {
+      player.sendSystemMessage(Component.literal("§c[Frontier] §7One fight at a time."));
+      return 0;
+    }
     Dispatch d = new Dispatch(player.getUUID(), "port_crew",
       "port_challenger_1", "GEN_9_MULTI", 0, PORT_CREW_PURSE);
     // MULTI needs THREE attached trainers: the partner + both opponents.
-    String name = player.getGameProfile().getName();
     String a1 = anchor(player, PORT_PARTNER, 1.5, 0);
     String a2 = anchor(player, "port_challenger_1", -2, 2);
     String a3 = anchor(player, "port_challenger_2", 2, 2);
@@ -459,8 +481,29 @@ public class FrontierManager {
       player.sendSystemMessage(Component.literal("§c[Pyramid] §7The ancients already knelt."));
       return 0;
     }
+    if (pyramidStage.containsKey(player.getUUID())) {
+      // Mid-gauntlet re-entry: never a fresh start — a re-run here would hand out a
+      // free door-heal (defeating the no-heal rule) and desync the stage counter.
+      if (dispatches.containsKey(player.getUUID())
+        || pendingChain.containsKey(player.getUUID())) {
+        player.sendSystemMessage(Component.literal(
+          "§c[Pyramid] §7The gauntlet is already underway. There is no second door."));
+        return 0;
+      }
+      // Nothing in flight but a stage is held (relog / failed dispatch): resume the
+      // chain where it stopped — no heal; the dark remembers what you carried in.
+      player.sendSystemMessage(Component.literal(
+        "§6[Pyramid] §7The dark takes you back where it left you. §cNo respite.§7"));
+      scheduleChain(player, 40);
+      return 1;
+    }
+    // Fresh gauntlet: strip stage defeat tags from a prior broken run — dispatch()
+    // exempts pyramid from alreadyBeaten, but dialogs read these for beaten lanes.
+    String name = player.getGameProfile().getName();
+    runAsConsole("tag " + name + " remove defeated_pyramid_challenger_1");
+    runAsConsole("tag " + name + " remove defeated_pyramid_challenger_2");
     pyramidStage.put(player.getUUID(), 0);
-    runAsConsole("healpokemon " + player.getGameProfile().getName());
+    runAsConsole("healpokemon " + name);
     player.sendSystemMessage(Component.literal(
       "§6§l[Pyramid] §r§7Three ancients, then the giant. §cNo healing between fights§7 — "
         + "what you carry out of each is what you carry into the next."));
@@ -524,7 +567,8 @@ public class FrontierManager {
     saveCustody(player.getServer());
     player.sendSystemMessage(Component.literal(
       "§6§l[Factory] §r§7Your team is logged into custody. Three Company-issue units on "
-        + "loan — borrowed steel wins or it does not. Run §f factory return§7 to swap back."));
+        + "loan — borrowed steel wins or it does not. Run "
+        + "§f/cobblemon-initiative frontier factory return§7 to swap back."));
     return 1;
   }
 
@@ -572,7 +616,7 @@ public class FrontierManager {
     player.sendSystemMessage(Component.literal(
       "§6[Pyramid] §7" + (stage < 2 ? "An ancient rises." : "§lThe giant wakes.")));
     dispatch(player, new Dispatch(player.getUUID(), "pyramid", trainerId,
-      "GEN_9_SINGLES", 0, 0));
+      "GEN_9_SINGLES", 0, PYRAMID_PURSES[stage]));
   }
 
   private void onFightWon(ServerPlayer player, Dispatch d) {
@@ -649,7 +693,11 @@ public class FrontierManager {
       player.sendSystemMessage(Component.literal("§c[Frontier] §7One fight at a time."));
       return;
     }
-    if (alreadyBeaten(player, d.trainerId) && !"tower".equals(d.hall)) {
+    // Tower + pyramid re-fight their roster by design (the climb repeats trainers;
+    // the gauntlet restarts after a loss with stale stage tags possible) — their own
+    // entry points hold the real latches (brain defeat tags).
+    if (alreadyBeaten(player, d.trainerId)
+      && !"tower".equals(d.hall) && !"pyramid".equals(d.hall)) {
       player.sendSystemMessage(Component.literal("§c[Frontier] §7That opponent already yielded."));
       return;
     }

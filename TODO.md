@@ -8,7 +8,57 @@ done, Claude removes it **and** any release-removal it unblocks.
 
 ---
 
-## 2026-07-18 — alpha.6 wave (items 2/3/4/5/1/6 of the 07-18 plan; all live-verified unless marked)
+## 2026-07-19 — Frontier REAL mechanics (alpha.7 build + alpha.8 friction wave)
+
+**Showrunner directive "I want this stuff to actual gameplay mechanics" — all seven
+halls now cash their fiction mechanically via `frontier/FrontierManager` (shipped in
+alpha.7; the friction wave below is alpha.8). Forks ruled: Factory full-park custody /
+Port crew MULTI / Arcade conditions-only / Tower nine floors incl. the main floor.**
+- **Factory** — party PARKED in hall custody (daycare persistence, write-through to
+  `cobblemon_initiative_factory.json`), 3 Company-issue loaners granted; `factory return`
+  claws loaners + restores; join reminder while parked.
+- **Arcade** — `arcade spin` arms a wheel condition (level lock 50/75/100, doubles flip,
+  purse ×2/×3 — conditions only, never the wallet); next `arcade fight` rides it.
+- **Castle** — 60-point ledger per run (heal 20 / scout 15 — scout reads the next team's
+  species from the bundled rctmod JSON); leftover points pay ×15 CD after the Lord falls.
+- **Market** — priced opponents (bargain 200/fair 500/premium 1000 CD) via the deferred
+  `#fr_ok` pay-probe; purse 400/1200/3000.
+- **Port** — GEN_9_MULTI 2v2 crew battle: player + Deckhand Maru (`port_deckhand` team
+  authored) vs the rival pair; one fight grants BOTH challenger tags.
+- **Pyramid** — 3-stage no-heal gauntlet (door-heal once, chained dispatches, loss resets).
+- **Tower** — 8-fight climb at escalating level locks {40..88} + the Tycoon authored-strength
+  at the top; floor tracked on `frontier_tower_floor`; loss resets to the main floor.
+- All halls: anchored tbcs dispatch + AWAITING-capture adjustLevel reset timing (Stadium
+  idioms), Java-side purse pay + `defeated_*` tag grants on BATTLE_VICTORY (dialog gates
+  unchanged), brains still fire `frontier_<hall>_cleared` + `hall_cleared`. Hall dialogs
+  re-cut to command buttons; 7 hall scenarios re-cut (lint errors:0; compile 747/751
+  errors:0).
+- [x] **FRICTION WAVE (alpha.8) — hall-agent reports closed:** castle enter now REFUSES
+  post-clear (enter→claim was an infinite 900-CD faucet); pyramid start strips stale stage
+  defeat tags + refuses mid-gauntlet re-entry (free door-heal exploit) + RESUMES an
+  interrupted gauntlet (relog/failed dispatch) with no heal; pyramid exempted from
+  dispatch's alreadyBeaten (gauntlet restarts re-fight the roster; the wedge refused
+  stage 0 after a loss); pyramid pays the authored purses 800/800/3000 (was the only
+  zero-payout hall); market refuses BEFORE the fee once the brain is beaten (fee was
+  charged, then dispatch refused — CD eaten); portCrew one-fight-at-a-time guard
+  (re-clicking the muster during the capture window overwrote the live dispatch); port
+  muster gate not_tag challenger_2 (was _1 — a legacy half-pair save lost the button);
+  factory return-command copy; dead local. Champion gate on the raw command surface left
+  OPEN per the post-game-gating-waived ruling.
+- [ ] 🔍 **LIVE-VERIFY the frontier mechanics** — the re-cut hall scenarios (frontier_*
+  ×7 + frontier_complete) have NOT run against the new manager yet (the alpha.7 "halls
+  green" runs were the OLD dialog-battle cuts). Needs a stack session: install run, then
+  the 8 scenarios + shrine_dragon re-cut + keeper crystal-claim beats.
+- [ ] Open ruling: the Arcade brain's authored DOUBLES block is retired under the wheel
+  (Dahlia fights the rolled condition's format instead) — flag if her doubles identity
+  should override a singles roll. Optional dev nicety: `frontier arcade clear` wheel reset.
+
+**Shrine structure rework (same session, ruled):** cultists exist ONLY where a trial
+calls for them; the leader is the end-of-trial dialog + ALWAYS the crystal giver
+(cleared@30 entries: crystal give + `<el>_crystal_claimed`); ice/fire/dragon leader
+battle blocks removed; shrine_pilgrim retargeted to crystal_claimed; the 10 standalone
+cultists deleted (repair a8 removes placed bodies). Shrine quests rebuilt on the
+cleared→claim→trial stage pattern.
 
 **Landed + live-verified on the headless stack (server + driver client):**
 - **Hydra gauntlet is now PLAYABLE e2e** — the dragon shrine's stage battles had no
@@ -116,10 +166,10 @@ killed the driver twice).
   them into `shrine_challenges/{fire,ice}.json` so fresh installs ship them.
 - [x] **RULED 2026-07-19 — shrine crystals are working AS DESIGNED**: the crystal is
   placed anywhere → raw-spawns the shrine guardian as a REAL WILD Cobblemon to fight and
-  capture (fire→Moltres, ground→Groudon, ice→Articuno, dragon→Rayquaza, fairy→Xerneas,
-  all lv 70). It is NOT a noble launcher — the old "crystal-launch Java repoint" deferred
-  note is retired. (The guardians that also have noble encounters keep those as separate
-  site-based set-pieces; the crystal is the free-placement capture path.)
+  capture, all lv 70. It is NOT a noble launcher — the old "crystal-launch Java repoint"
+  deferred note is retired. **Guardians RE-PICKED same day** (the first picks collided
+  with the noble roster): fire→Ho-Oh, ground→Landorus, ice→Glastrier, dragon→Kyurem,
+  fairy keeps Xerneas.
 - **GROUND-PROBE WAVE 2 (shrine + noble-giver casts — same placeholder-Y class):** 12 of
   17 probed placements were buried/floating — fairy shrine cast authored at y=-7 (real
   floor y4-9!), Manaphy giver y33→63, ice cultist_2 68→74, dragon cultists ±4. All
