@@ -65,6 +65,10 @@ public class StreamSyncPusher {
     this.requestTimeoutMs = Math.max(250, cfg.getRequestTimeoutMs());
     this.maxQueuedMessages = Math.max(1, cfg.getMaxQueuedMessages());
     this.http = HttpClient.newBuilder()
+      // The JDK client defaults to HTTP/2, which over plain http:// sends an
+      // h2c Upgrade request that Deno.serve rejects with 400 before the overlay
+      // handler runs (found live, 2026-07-19). The overlay is HTTP/1.1 only.
+      .version(HttpClient.Version.HTTP_1_1)
       .connectTimeout(Duration.ofMillis(this.requestTimeoutMs))
       .build();
     this.thread = new Thread(this::run, "cobblemon-initiative-streamsync");
