@@ -12,7 +12,8 @@
       "comment": "-- preamble: tp FIRST (kills/latches need loaded chunks; the shrine tp Y is the authored placement Y and is UNPROBED - see _probe_pending, do not trust 66 until a live ground-probe) --"
     },
     {
-      "rcon": "tp {player} 2000 66 921"
+      "rcon": "tp {player} 2000 69 921",
+      "comment_": "probed feet y69 (shrine floor was solid through 68 — the cast was buried 3-4 blocks pre-a7)"
     },
     {
       "sleep": 2.0
@@ -94,13 +95,28 @@
       "rcon": "takepokemon {player} 1"
     },
     {
-      "rcon": "execute as {player} run cobblemon-initiative givemon garchomp level=100"
+      "rcon": "execute as {player} run cobblemon-initiative givemon raikou level=100 ability=wonderguard held_item=cobblemon:air_balloon moves=icebeam,surf,thunderbolt,flashcannon",
+      "comment_": "WONDER TEAM (showrunner idea 2026-07-19, brain-fight solo-verified): pure Electric's only weakness is Ground -> Air Balloon negates it; Wonder Guard blocks everything else and the balloon never pops (nothing lands). Slot-1 Ice Beam: accurate, NO type is immune (an Electric lead vs enemy Ground-types would zero-damage-loop under first-legal-move autobattle)."
     },
     {
-      "rcon": "execute as {player} run cobblemon-initiative givemon garchomp level=100"
+      "rcon": "execute as {player} run cobblemon-initiative givemon raikou level=100 ability=wonderguard held_item=cobblemon:air_balloon moves=icebeam,surf,thunderbolt,flashcannon",
+      "comment_": "WONDER TEAM (showrunner idea 2026-07-19, brain-fight solo-verified): pure Electric's only weakness is Ground -> Air Balloon negates it; Wonder Guard blocks everything else and the balloon never pops (nothing lands). Slot-1 Ice Beam: accurate, NO type is immune (an Electric lead vs enemy Ground-types would zero-damage-loop under first-legal-move autobattle)."
     },
     {
-      "rcon": "execute as {player} run cobblemon-initiative givemon garchomp level=100"
+      "rcon": "execute as {player} run cobblemon-initiative givemon raikou level=100 ability=wonderguard held_item=cobblemon:air_balloon moves=icebeam,surf,thunderbolt,flashcannon",
+      "comment_": "WONDER TEAM (showrunner idea 2026-07-19, brain-fight solo-verified): pure Electric's only weakness is Ground -> Air Balloon negates it; Wonder Guard blocks everything else and the balloon never pops (nothing lands). Slot-1 Ice Beam: accurate, NO type is immune (an Electric lead vs enemy Ground-types would zero-damage-loop under first-legal-move autobattle)."
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon raikou level=100 ability=wonderguard held_item=cobblemon:air_balloon moves=icebeam,surf,thunderbolt,flashcannon",
+      "comment_": "WONDER TEAM (showrunner idea 2026-07-19, brain-fight solo-verified): pure Electric's only weakness is Ground -> Air Balloon negates it; Wonder Guard blocks everything else and the balloon never pops (nothing lands). Slot-1 Ice Beam: accurate, NO type is immune (an Electric lead vs enemy Ground-types would zero-damage-loop under first-legal-move autobattle)."
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon raikou level=100 ability=wonderguard held_item=cobblemon:air_balloon moves=icebeam,surf,thunderbolt,flashcannon",
+      "comment_": "WONDER TEAM (showrunner idea 2026-07-19, brain-fight solo-verified): pure Electric's only weakness is Ground -> Air Balloon negates it; Wonder Guard blocks everything else and the balloon never pops (nothing lands). Slot-1 Ice Beam: accurate, NO type is immune (an Electric lead vs enemy Ground-types would zero-damage-loop under first-legal-move autobattle)."
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon raikou level=100 ability=wonderguard held_item=cobblemon:air_balloon moves=icebeam,surf,thunderbolt,flashcannon",
+      "comment_": "WONDER TEAM (showrunner idea 2026-07-19, brain-fight solo-verified): pure Electric's only weakness is Ground -> Air Balloon negates it; Wonder Guard blocks everything else and the balloon never pops (nothing lands). Slot-1 Ice Beam: accurate, NO type is immune (an Electric lead vs enemy Ground-types would zero-damage-loop under first-legal-move autobattle)."
     },
     {
       "rcon": "execute as {player} run cobblemon-initiative dev bot autobattle on"
@@ -110,107 +126,13 @@
       "comment_": "settle: cultist latches spawn within 40b of the tp, and band_tags must re-derive no_dragon_shrine_trial_clear after the tag removal above"
     },
     {
-      "comment": "-- beat 1: Acolyte Wyrm (outer coil, ungated default entry) - dialog battle, onwin latches cultist_1 --"
+      "rcon": "tag {player} remove dragon_crystal_claimed"
     },
     {
-      "find_npc": "Dragon Acolyte Wyrm",
-      "save": "c1"
+      "rcon": "clear {player} cobblemon_initiative:dragon_shrine_crystal"
     },
     {
-      "walk_to": [
-        "{c1.x}",
-        "{c1.z}"
-      ],
-      "tol": 2.5
-    },
-    {
-      "interact_npc": "{c1.uuid}"
-    },
-    {
-      "wait_screen": "Dialog"
-    },
-    {
-      "expect_screen_text": [
-        "Halt at the coil. You carry Ryujin of the Keep and think you know the shape of a dragon. The fire here is older than the keep, older than the towns, and it stirred when your shadow crossed it.",
-        "Prove you will not be consumed. The old coil does not warm a hand it cannot trust.",
-        "Tell me - do you feel old, somewhere under the skin. The fire seems to think so. Face me, and we will see what it remembers."
-      ]
-    },
-    {
-      "screenshot": "acolyte_challenge"
-    },
-    {
-      "click": "Face the acolyte"
-    },
-    {
-      "client": "screen.close"
-    },
-    {
-      "wait_chat": "after her the hydra breathes",
-      "timeout": 240,
-      "comment_": "win_line via the onwin '@2 say' rail (ming_nokill precedent); autobattle plays the fight"
-    },
-    {
-      "sleep": 1.5
-    },
-    {
-      "rcon": "execute if entity @a[name={player},tag=defeated_dragon_shrine_cultist_1]",
-      "expect": "passed"
-    },
-    {
-      "screenshot": "acolyte_beaten"
-    },
-    {
-      "comment": "-- beat 2: Zealot Scale (default entry gated on cultist_1 tag; her 'locked' entry would show if the ladder skipped) - no heal exists between cultist fights, so top up --"
-    },
-    {
-      "rcon": "healpokemon {player}"
-    },
-    {
-      "find_npc": "Dragon Zealot Scale",
-      "save": "c2"
-    },
-    {
-      "walk_to": [
-        "{c2.x}",
-        "{c2.z}"
-      ],
-      "tol": 2.5
-    },
-    {
-      "interact_npc": "{c2.uuid}"
-    },
-    {
-      "wait_screen": "Dialog"
-    },
-    {
-      "expect_screen_text": [
-        "You passed the outer coil. Do not swagger. My fire is hotter, and three of us tend the hydra that guards the keeper - I am the last hand before its heads.",
-        "Stand for me. If the coil still leans toward you after I have poured everything the old fire has into you, then Draconis and his wyrm will want their measure of you too."
-      ]
-    },
-    {
-      "screenshot": "zealot_challenge"
-    },
-    {
-      "click": "Face the zealot"
-    },
-    {
-      "client": "screen.close"
-    },
-    {
-      "wait_chat": "What waits at the coil is Draconis",
-      "timeout": 240
-    },
-    {
-      "sleep": 1.5
-    },
-    {
-      "rcon": "execute if entity @a[name={player},tag=defeated_dragon_shrine_cultist_2]",
-      "expect": "passed"
-    },
-    {
-      "screenshot": "zealot_beaten"
+      "comment": "-- (STRUCTURE RULING 2026-07-19: cultist beats removed — no trial calls for them; the hydra IS the dragon trial and Draconis is its dialog-only keeper.) --"
     },
     {
       "comment": "-- beat 3: Draconis - the begin-trial button (gated no_dragon_shrine_trial_clear) fires the rules tellraw + 'shrine dragon start'. Heal first: the gauntlet only heals BETWEEN its own stages --"
@@ -237,19 +159,17 @@
     },
     {
       "expect_screen_text": [
-        "Halt. You stand in the breath of the Dragon Shrine, where the oldest fire still coils and waits. I am Draconis, and I keep its hunger. You passed my tenders; the wyrm itself is not so easily flattered.",
-        "Rouse the hydra first - three heads, one hunger, and it heals between each fall so a single answer will not do. Field a party built for two-on-two; the wyrm does not fight one at a time, and neither do I. The old fire stirs for you the way it stirs for things it has tasted before.",
-        "Power is not given at this gate. It is taken, scale by scale, from one who would deny it. Wake the wyrm and face me, and we will see what the fire already suspects."
+        "Halt. You stand in the breath of the Dragon Shrine, where the oldest fire still coils and waits. I am Draconis, and I keep its hunger. The wyrm itself is not easily flattered."
       ]
     },
     {
-      "expect_screen_text": "Wake the hydra and face Draconis"
+      "expect_screen_text": "Wake the hydra"
     },
     {
       "screenshot": "draconis_begin_trial"
     },
     {
-      "click": "Wake the hydra and face Draconis"
+      "click": "Wake the hydra"
     },
     {
       "wait_no_screen": true
@@ -279,14 +199,14 @@
     },
     {
       "wait_chat": "Stage 1 defeated!",
-      "timeout": 300
+      "timeout": 600
     },
     {
       "screenshot": "hydra_stage1_down"
     },
     {
       "wait_chat": "Stage 2 defeated!",
-      "timeout": 300
+      "timeout": 600
     },
     {
       "screenshot": "hydra_stage2_down"
@@ -296,7 +216,7 @@
       "kinds": [
         "title"
       ],
-      "timeout": 300,
+      "timeout": 600,
       "comment_": "third head down -> completeChallenge title; the '[Shrine Challenge] Hydra Gauntlet completed!' system line rides the same burst"
     },
     {
@@ -311,12 +231,11 @@
       "screenshot": "hydra_complete"
     },
     {
-      "comment": "-- beat 4: the unlock - re-open Draconis; with the trial cleared the begin-trial button hides and 'Face the wyrm' (tag-gated battle) renders. RENDER-ASSERT ONLY, never clicked: TBCS stall exposure + a leader defeat would latch dragon_shrine_complete/crystal/first_keeper state --"
+      "comment": "-- beat 4: the CLAIM — with the trial cleared, Draconis' cleared@30 entry fronts; the claim button gives the crystal (the guardian is now Kyurem, wild-spawned wherever the crystal is placed) and latches dragon_crystal_claimed --"
     },
     {
       "find_npc": "High Priest Draconis",
-      "save": "d",
-      "comment_": "re-resolve: the player has not moved since beat 3's walk, but a fresh find keeps the uuid honest after five battles"
+      "save": "d"
     },
     {
       "interact_npc": "{d.uuid}"
@@ -325,16 +244,32 @@
       "wait_screen": "Dialog"
     },
     {
-      "expect_screen_text": "Face the wyrm"
+      "expect_screen_text": [
+        "Three heads bowed. The shrine counts that as a word given. Take the crystal — the old scale-and-storm sleeps in it, and it wakes wherever you set it down. Choose that ground with more care than the Company ever chose theirs."
+      ]
     },
     {
-      "screenshot": "draconis_unlocked"
+      "screenshot": "draconis_crystal_offer"
     },
     {
-      "click": "I am not ready"
+      "click": "Receive the Dragon Shrine Crystal"
     },
     {
       "wait_no_screen": true
+    },
+    {
+      "sleep": 1.5
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=dragon_crystal_claimed]",
+      "expect": "passed"
+    },
+    {
+      "rcon": "clear {player} cobblemon_initiative:dragon_shrine_crystal 0",
+      "expect": "Found 1"
+    },
+    {
+      "screenshot": "dragon_crystal_claimed"
     },
     {
       "comment": "-- cleanup: autobattle off, defensive trial stop (anchor sweep), strip every tag this run latched, reset the recorded defeats (fresh-player baseline for the rest of the suite + re-arms the NEXT run's hydra advance), drop the cultist reward balls. Garchomps stay banked-out-then-given like stadium_wave; the 800 CD prize rides --"
@@ -363,6 +298,12 @@
     },
     {
       "screenshot": "shrine_dragon_done"
+    },
+    {
+      "rcon": "tag {player} remove dragon_crystal_claimed"
+    },
+    {
+      "rcon": "clear {player} cobblemon_initiative:dragon_shrine_crystal"
     }
   ]
 }

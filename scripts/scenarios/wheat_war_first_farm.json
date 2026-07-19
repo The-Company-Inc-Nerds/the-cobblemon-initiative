@@ -42,7 +42,7 @@
       "comment": "-- tp BEFORE the kills: kill needs loaded chunks; running it from spawn no-ops silently, then the latch reset below spawns a DUPLICATE body (found 5 stacked Mings after a week of runs) --"
     },
     {
-      "rcon": "tp {player} 1586 90 2487"
+      "rcon": "tp {player} 1588.0 91 2485.0"
     },
     {
       "sleep": 2.0
@@ -90,13 +90,17 @@
       "rcon": "execute as {player} run cobblemon-initiative givemon garchomp level=50"
     },
     {
+      "rcon": "healpokemon {player}",
+      "comment_": "cross-scenario attrition guard (live-caught 2026-07-18: fights entered with fainted leads make autobattle pass turns forever = endless slow loss)"
+    },
+    {
       "rcon": "execute as {player} run cobblemon-initiative dev bot autobattle on"
     },
     {
       "comment": "-- beat 1: the pitch. Sedge, Willowmire Causeway (Mystic Marsh). say[] lines roll randomly, so the screen assert targets the stable trade-button label; 'I will keep my coin' sets heard_wheat_pitch and closes --"
     },
     {
-      "rcon": "tp {player} 1058 78 2478"
+      "rcon": "tp {player} 1056.0 78 2476.0"
     },
     {
       "sleep": 1.5
@@ -131,7 +135,7 @@
       "comment": "-- beat 2: Firstfurrow Farm north fence. Ming has sight (range 10, fence_hail) and may auto-hail during the settle sleep; interact_npc is a direct entity interact, so it just re-opens the same fence_hail entry --"
     },
     {
-      "rcon": "tp {player} 1586 90 2487"
+      "rcon": "tp {player} 1588.0 91 2485.0"
     },
     {
       "sleep": 2.0
@@ -161,7 +165,7 @@
     },
     {
       "wait_chat": "Perimeter integrity report",
-      "timeout": 180
+      "timeout": 360
     },
     {
       "rcon": "execute if entity @a[name={player},tag=defeated_villain_yield_officer]",
@@ -205,7 +209,7 @@
     },
     {
       "wait_chat": "Noted. The parcel is",
-      "timeout": 180
+      "timeout": 360
     },
     {
       "wait_chat": "Field liberated",

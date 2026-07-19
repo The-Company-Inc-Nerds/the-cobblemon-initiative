@@ -8,17 +8,22 @@ import net.minecraft.world.item.Item;
 
 public class ModItems {
 
+  // Shrine crystal guardians (showrunner-ruled 2026-07-19): distinct from the noble
+  // roster — the old fire→Moltres / ground→Groudon / ice→Articuno / dragon→Rayquaza
+  // picks collided with the noble bird/trio set-pieces. The crystal is the
+  // place-anywhere WILD capture path; nobles keep their own site-based fights.
+
   public static final ShrineCrystalItem FIRE_SHRINE_CRYSTAL =
-    new ShrineCrystalItem("fire", "moltres", 70);
+    new ShrineCrystalItem("fire", "hooh", 70);
 
   public static final ShrineCrystalItem GROUND_SHRINE_CRYSTAL =
-    new ShrineCrystalItem("ground", "groudon", 70);
+    new ShrineCrystalItem("ground", "landorus", 70);
 
   public static final ShrineCrystalItem ICE_SHRINE_CRYSTAL =
-    new ShrineCrystalItem("ice", "articuno", 70);
+    new ShrineCrystalItem("ice", "glastrier", 70);
 
   public static final ShrineCrystalItem DRAGON_SHRINE_CRYSTAL =
-    new ShrineCrystalItem("dragon", "rayquaza", 70);
+    new ShrineCrystalItem("dragon", "kyurem", 70);
 
   public static final ShrineCrystalItem FAIRY_SHRINE_CRYSTAL =
     new ShrineCrystalItem("fairy", "xerneas", 70);

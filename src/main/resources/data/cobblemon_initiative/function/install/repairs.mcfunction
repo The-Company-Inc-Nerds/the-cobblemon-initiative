@@ -18,3 +18,9 @@ execute unless score #repair_a5 ci_ambient matches 1 run function cobblemon_init
 # ── wave a6 (0.6.0-alpha.6): gyms-3-7 spec-cast ground-probe repositioning (44
 # NPCs; see repairs_a6_arm for scope) ──
 execute unless score #repair_a6 ci_ambient matches 1 run function cobblemon_initiative:install/repairs_a6_arm
+
+# ── wave a7 (0.6.0-alpha.6): shrine cultist + noble-giver ground-probe repositioning ──
+execute unless score #repair_a7 ci_ambient matches 1 run function cobblemon_initiative:install/repairs_a7_arm
+
+# ── wave a8 (0.6.0-alpha.7): shrine cultists retired (structure ruling) ──
+execute unless score #repair_a8 ci_ambient matches 1 run function cobblemon_initiative:install/repairs_a8_arm

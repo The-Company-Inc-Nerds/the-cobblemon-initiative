@@ -61,6 +61,9 @@
                         },
                         {
                             Text: "A trade is a trade, and this one went to you. Fresh challengers daily down here - I might be one of them again tomorrow."
+                        },
+                        {
+                            Text: "Sold. You drove a hard bargain and walked off with the whole crate. That is the Port for you - it rewards the sharp."
                         }
                     ],
                     Name: "Fiona - books balanced",
@@ -69,67 +72,6 @@
                 {
                     Priority: 10,
                     Buttons: [
-                        {
-                            Name: "Battle Trader Fiona",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "defeated_market_challenger_2"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "say We already settled our account. The docks list a new challenger by dawn - go see who the tide brought in."
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_defeated_market_challenger_2"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tbcs attach rctmod:market_challenger_2 @s"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_defeated_market_challenger_2"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:market_challenger_2 onwin {1: ['cobbledollars give @1 800', 'tag @1 add defeated_market_challenger_2', '@2 say Sold. You drove a hard bargain and walked off with the whole crate. That is the Port for you - it rewards the sharp.'], 2: ['@1 say My ledger closes in the black today. You did not have the goods - come back on the next tide and try again.']}"
-                                },
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Conditions: [
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "royal_league_champion"
-                                },
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "no_defeated_market_challenger_2"
-                                }
-                            ],
-                            Label: "battle_button"
-                        },
                         {
                             Name: "Not right now",
                             Actions: [
@@ -142,13 +84,13 @@
                     ],
                     Texts: [
                         {
-                            Text: "Trader Fiona. I moved goods on this dock before it was a battle port, and now the goods are punches. Fair and fresh, restocked every morning."
+                            Text: "Trader Fiona. I moved goods on this dock before it was a battle port, and now the goods are punches. Fair and fresh, restocked every morning - and sold off the Mogul stall like everything else here."
                         },
                         {
-                            Text: "You look like a champion pretending to be a tourist. The Port does not care what you cleared upriver - my Machamp will not read your resume."
+                            Text: "You look like a champion pretending to be a tourist. The Port does not care what you cleared upriver - buy a listing off Sterling and my Machamp will not read your resume."
                         },
                         {
-                            Text: "Every day a new manifest, every day a new fight. I am on todays. Care to close it?"
+                            Text: "The stall serves the manifest in strict order - Vance, then me, then Sterling himself. Your coin picks the terms and the purse; the tide picks the opponent."
                         }
                     ],
                     Name: "Fiona - todays rival",

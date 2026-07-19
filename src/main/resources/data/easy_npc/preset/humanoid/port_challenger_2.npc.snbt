@@ -57,10 +57,10 @@
                     ],
                     Texts: [
                         {
-                            Text: "You out-sailed the rival on shift, and the log records it once, for good. The Admiral is the only mark left on this dock - go find him."
+                            Text: "Well sailed. Todays rival strikes his colors - the Admiral holds the deep berth at the pier head."
                         },
                         {
-                            Text: "Fair winds and a fairer beating. The Port does not hold a grudge, only a schedule. Onward to the deep berth."
+                            Text: "Fair winds and a fairer beating. The log records the crew fight once, for good - the Port does not hold a grudge, only a schedule. Onward to the deep berth."
                         }
                     ],
                     Name: "Crest - the rival tips a cap",
@@ -69,67 +69,6 @@
                 {
                     Priority: 10,
                     Buttons: [
-                        {
-                            Name: "Battle Sailor Crest",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "defeated_port_challenger_2"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "say You already bested todays rival. Save your legs for the Admiral - he does not rotate out."
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_defeated_port_challenger_2"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tbcs attach rctmod:port_challenger_2 @s"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_defeated_port_challenger_2"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:port_challenger_2 onwin {1: ['cobbledollars give @1 800', 'tag @1 add defeated_port_challenger_2', '@2 say Well sailed. Todays rival strikes his colors - the Admiral holds the deep berth at the pier head.'], 2: ['@1 say The rip current caught you. It happens to the best crews. Come back and try the channel again.']}"
-                                },
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Conditions: [
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "royal_league_champion"
-                                },
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "no_defeated_port_challenger_2"
-                                }
-                            ],
-                            Label: "battle_button"
-                        },
                         {
                             Name: "Not yet",
                             Actions: [
@@ -142,10 +81,10 @@
                     ],
                     Texts: [
                         {
-                            Text: "I am the name posted on the Port roster today - fresh challengers daily, that is the whole trick of this dock. House rules: the harbor lends the team, yours stay dry in the box. Fancy a match?"
+                            Text: "I am the name posted on the Port roster today - and this dawn the pier posted two of us, because this dock fights as a crew now. Two on two, one tide. Captain Stern calls the muster; I just answer the whistle. Step to him when your flank is ready."
                         },
                         {
-                            Text: "Every dawn the pier posts a new rival, and right now that is me. Nothing you love drowns on this floor. Step up when you like."
+                            Text: "House rules on this floor: crews, not duels. Stern and I take the dock side, you take the water with Deckhand Maru on your flank - and nothing you love drowns out here. The Captain does the mustering, not me."
                         }
                     ],
                     Name: "Crest - the rotating rival",

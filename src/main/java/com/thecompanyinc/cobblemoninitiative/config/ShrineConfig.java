@@ -49,6 +49,17 @@ public class ShrineConfig {
   private float iceCrackSoundVolume = 1.0f;
   private float iceCrackSoundPitch = 0.8f;
 
+  // ── parkour trial timers (fire + ice) ─────────────────────────────────────────
+  /**
+   * Live-tunable time limits for the two timed_parkour trials, overriding the
+   * jar-baked {@code shrine_challenges/{fire,ice}.json} values so the showrunner can
+   * calibrate by feel from ModMenu (change → save → run again; no rebuild). Once a
+   * value settles, bake it back into the challenge JSON so fresh installs ship it.
+   */
+  private int fireTimeLimitSeconds = 120;
+
+  private int iceTimeLimitSeconds = 180;
+
   // ── ground shrine — the buried maze (dark_gauntlet) ───────────────────────────
   /** Fraction of max health the player starts the ground shrine at. */
   private float darkGauntletStartHealthFraction = 0.5f;
@@ -114,6 +125,14 @@ public class ShrineConfig {
   public void setIceFloorEnabled(boolean v) { this.iceFloorEnabled = v; }
   public void setIceFloorDamage(float v) { this.iceFloorDamage = v; }
   public void setIceFloorHitCooldownTicks(int v) { this.iceFloorHitCooldownTicks = v; }
+
+  // Getter clamps (Gson bypasses setters on load; keep hand-edited configs sane —
+  // ModMenu sliders bound 10..200 either way).
+  public int getFireTimeLimitSeconds() { return Math.max(10, Math.min(200, fireTimeLimitSeconds)); }
+  public int getIceTimeLimitSeconds() { return Math.max(10, Math.min(200, iceTimeLimitSeconds)); }
+
+  public void setFireTimeLimitSeconds(int v) { this.fireTimeLimitSeconds = v; }
+  public void setIceTimeLimitSeconds(int v) { this.iceTimeLimitSeconds = v; }
 
   public float getIceCrackSoundVolume() { return iceCrackSoundVolume; }
   public float getIceCrackSoundPitch() { return iceCrackSoundPitch; }

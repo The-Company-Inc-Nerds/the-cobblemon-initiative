@@ -46,7 +46,7 @@
                     Priority: 20,
                     Buttons: [
                         {
-                            Name: "Ride the lift up",
+                            Name: "Back to the climb",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -57,13 +57,13 @@
                     ],
                     Texts: [
                         {
-                            Text: "Second floor is yours. The Tycoon runs the top, and the lift only opens for people who clear my floor. You did."
+                            Text: "Floor three is yours - so I moved up. Re-manned and re-locked, the higher odd floors are still mine to hold. The lift to the Tycoon knows the way. Do not keep the top waiting."
                         },
                         {
-                            Text: "Cleared. I used to think the corner office meant something. Now the office is empty and the only rank left is how high you can climb. You climb well."
+                            Text: "Cleared. I used to think the corner office meant something. Now the office is empty and the only rank left is how high you climb before a loss resets it. You climb well."
                         },
                         {
-                            Text: "You move up. Save something for the summit - Palmer does not hand out promotions."
+                            Text: "You move up, I re-man higher. That is the arrangement - the roster rides the lift same as you. Save something for floor nine; Palmer does not flatten his team for anyone."
                         }
                     ],
                     Name: "Contender Mira - floor cleared",
@@ -72,67 +72,6 @@
                 {
                     Priority: 10,
                     Buttons: [
-                        {
-                            Name: "Battle Contender Mira",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "defeated_tower_challenger_2"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "say You cleared my floor already. The Tycoon is at the top, waiting."
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_defeated_tower_challenger_2"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tbcs attach rctmod:tower_challenger_2 @s"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_defeated_tower_challenger_2"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:tower_challenger_2 onwin {1: ['cobbledollars give @1 800', 'tag @1 add defeated_tower_challenger_2', '@2 say Two floors up. The lift to the Tycoon is open. Do not keep the top waiting.'], 2: ['@1 say Held at floor two. The climb resets - come back and earn the lift.']}"
-                                },
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Conditions: [
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "royal_league_champion"
-                                },
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "no_defeated_tower_challenger_2"
-                                }
-                            ],
-                            Label: "battle_button"
-                        },
                         {
                             Name: "Step off the floor",
                             Actions: [
@@ -145,13 +84,13 @@
                     ],
                     Texts: [
                         {
-                            Text: "Floor two. You cleared Jasper, so you are on the ladder for real now. Beat me and the lift to the Tycoon opens."
+                            Text: "The odd floors are mine - three, five, seven. The lift decides when you see me; Jasper runs the desk downstairs. The locks rise eight levels a landing, so bring depth, not one ace."
                         },
                         {
-                            Text: "Everyone in this tower wants the same promotion. The difference is I am willing to lose ten times to earn it. Are you?"
+                            Text: "Everyone in this tower wants the same promotion. The difference is I am willing to lose ten times to earn it. Are you? Mind your footing - a loss resets the climb."
                         },
                         {
-                            Text: "House rules stand: borrowed team, nothing of yours at stake. Take the floor, or step off and keep your footing."
+                            Text: "House rules stand: house teams, flattened both sides, nothing of yours at stake below the summit. Clear my floor and I re-man the next one up, tougher."
                         }
                     ],
                     Name: "Contender Mira",

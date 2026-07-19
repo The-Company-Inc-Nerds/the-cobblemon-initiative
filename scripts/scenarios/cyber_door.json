@@ -29,7 +29,7 @@
       "rcon": "tag {player} remove met_cyber_nurse"
     },
     {
-      "rcon": "tp {player} 1555 92 1108"
+      "rcon": "tp {player} 1553.0 92 1110.0"
     },
     {
       "rcon": "time set day"
@@ -80,7 +80,7 @@
       "rcon": "tag {player} add defeated_cyber_leader"
     },
     {
-      "rcon": "tp {player} 1478 89 1150"
+      "rcon": "tp {player} 1476.0 89 1148.0"
     },
     {
       "sleep": 2.0
@@ -129,7 +129,7 @@
       "rcon": "cobbledollars set {player} 900"
     },
     {
-      "rcon": "tp {player} 1555 92 1108"
+      "rcon": "tp {player} 1553.0 92 1110.0"
     },
     {
       "sleep": 1.5
@@ -192,7 +192,7 @@
       "comment": "-- beat 4: re-open - pointer_done (prio 40) must preempt the offer now that hq_pointer_done is set --"
     },
     {
-      "rcon": "tp {player} 1555 92 1108",
+      "rcon": "tp {player} 1553.0 92 1110.0",
       "comment_": "re-anchor (already standing here) - keeps the interact approach-context window honest"
     },
     {
@@ -275,13 +275,17 @@
       "rcon": "execute as {player} run cobblemon-initiative givemon garchomp level=100"
     },
     {
+      "rcon": "healpokemon {player}",
+      "comment_": "cross-scenario attrition guard (live-caught 2026-07-18: fights entered with fainted leads make autobattle pass turns forever = endless slow loss)"
+    },
+    {
       "rcon": "execute as {player} run cobblemon-initiative dev bot autobattle on"
     },
     {
       "rcon": "cobbledollars give {player} 20000"
     },
     {
-      "rcon": "tp {player} 1555 92 1108"
+      "rcon": "tp {player} 1553.0 92 1110.0"
     },
     {
       "sleep": 1.5
@@ -304,7 +308,7 @@
     },
     {
       "wait_chat": "The stake is yours, fair and audited",
-      "timeout": 180
+      "timeout": 360
     },
     {
       "sleep": 1.0

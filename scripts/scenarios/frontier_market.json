@@ -1,6 +1,6 @@
 {
   "name": "frontier_market",
-  "description": "Battle Market hall clear (q.side_frontier_hall lane): Merchant Vance and Trader Fiona (one_time daily-roster challengers, defeat tags via TBCS onwin), then Market Mogul Sterling (brain, battle button gated all_tags on both defeats) whose on_win runs frontier/hall_cleared and tags frontier_market_cleared. The champion gate is opened by tag surgery (royal_league_champion - gate.champion lowers to that player tag); stripped in cleanup. NOTE the market group is CO-LOCATED on the Port cluster (casting brief: both at 'Battle Frontier - Battle Port'; shipped RCT coords put the market line at z2993.5, brain z2999.5 - the Port trio sits ~5b away at z2990.5/2996.5, all inside one find_npc radius). Full display-name needles keep matches unique - beware the 'Stern'/'Sterling' stem collision: 'Captain Stern' and 'Market Mogul Sterling' both contain 'Stern', so never shorten those needles. Fights under dev-bot autobattle with 2x lv-100 Garchomp (Sterling fights at the ceiling - 'level hundred, no discount'). Site is inside the frontier_active region-tick AABB (Nuzlocke faint paths suspended); atlas re-survey open, hence _probe_pending. KNOWN CAVEAT: intermittent TBCS battle-init stall / rare showdown wedge - a win-wait timeout is almost certainly that, not a hall regression; re-run before filing.",
+  "description": "Battle Market hall clear, MANAGER-OWNED (FrontierManager.marketBuy, alpha.16 real-mechanics wave): every fight is bought off Market Mogul Sterling's stall via `cobblemon-initiative frontier market buy <bargain|fair|premium>` (fee 200/500/1000 CD through the frontier/fee pay-probe; the stall auto-serves the next uncleared opponent ch1 Vance -> ch2 Fiona -> the Mogul; bargain locks the floor at 40, fair at 70, premium fights Sterling as authored at 100; purses 400/1200/3000 paid by the manager as '[Frontier] Purse paid: N CD' + defeated_* tags + frontier_market_cleared/hall_cleared on the brain). Vance/Fiona dialogs are pure flavor now - no battle buttons anywhere in the hall; their beaten entries (fed by the manager-set tags) carry the old win_line prose. BROKE lane runs FIRST: wallet set to 50, bargain click -> 'Declined - the stall does not run tabs' chat, no dispatch, no tags. Then fund 5000 and buy the ladder up. The champion gate is opened by tag surgery (royal_league_champion - gate.champion lowers to that player tag); stripped in cleanup. NOTE the market group is CO-LOCATED on the Port cluster (casting brief: both at 'Battle Frontier - Battle Port'; shipped RCT coords put the challengers at z2993.5, brain z2999.5 - the Port trio sits ~5b away, all inside one find_npc radius). Full display-name needles keep matches unique - beware the 'Stern'/'Sterling' stem collision: 'Captain Stern' and 'Market Mogul Sterling' both contain 'Stern', so never shorten those needles. Fights run under dev-bot autobattle with 6x lv-100 wonder Raikou: locked fights flatten CLONES (attrition-free) so the wonder team wins those too; premium is Sterling at full authored strength (brain-fight solo-verified). Win waits target the manager rail ('Purse paid' chat + rcon tag asserts), NOT trainer say lines - manager fights have no onwin. Site is inside the frontier_active region-tick AABB (Nuzlocke faint paths suspended); atlas re-survey open, hence _probe_pending. KNOWN CAVEAT: intermittent TBCS battle-init stall / rare showdown wedge - a win-wait timeout is almost certainly that, not a hall regression; re-run before filing.",
   "_probe_pending": [
     "3800.5 159 2991.5"
   ],
@@ -37,7 +37,7 @@
       "comment_": "plateau is outside any safe zone; frontier_active only suspends Nuzlocke faint paths, not real mob damage"
     },
     {
-      "comment": "-- reset (idempotent re-runs): every tag this scenario or its battles set, plus the champion gate surgery. No latch resets - the bodies persist and are never killed here --"
+      "comment": "-- reset (idempotent re-runs): every tag this scenario or the manager sets, plus the champion gate surgery. No latch resets - the bodies persist and are never killed here --"
     },
     {
       "rcon": "tag {player} remove defeated_market_challenger_1"
@@ -64,7 +64,7 @@
       "expect": "passed"
     },
     {
-      "comment": "-- party reset: junk parties stall TBCS battle init (verified live). Empty all six slots, then 2x lv-100 Garchomp --"
+      "comment": "-- party reset: junk parties stall TBCS battle init (verified live). Empty all six slots, then 6x lv-100 wonder Raikou --"
     },
     {
       "rcon": "takepokemon {player} 1"
@@ -85,93 +85,147 @@
       "rcon": "takepokemon {player} 1"
     },
     {
-      "rcon": "execute as {player} run cobblemon-initiative givemon garchomp level=100"
+      "rcon": "execute as {player} run cobblemon-initiative givemon raikou level=100 ability=wonderguard held_item=cobblemon:air_balloon moves=icebeam,surf,thunderbolt,flashcannon",
+      "comment_": "WONDER TEAM (showrunner idea 2026-07-19, brain-fight solo-verified): pure Electric's only weakness is Ground -> Air Balloon negates it; Wonder Guard blocks everything else and the balloon never pops (nothing lands). Slot-1 Ice Beam: accurate, NO type is immune (an Electric lead vs enemy Ground-types would zero-damage-loop under first-legal-move autobattle). Locked stall fights flatten CLONES of these - Wonder Guard rides the flatten."
     },
     {
-      "rcon": "execute as {player} run cobblemon-initiative givemon garchomp level=100"
+      "rcon": "execute as {player} run cobblemon-initiative givemon raikou level=100 ability=wonderguard held_item=cobblemon:air_balloon moves=icebeam,surf,thunderbolt,flashcannon"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon raikou level=100 ability=wonderguard held_item=cobblemon:air_balloon moves=icebeam,surf,thunderbolt,flashcannon"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon raikou level=100 ability=wonderguard held_item=cobblemon:air_balloon moves=icebeam,surf,thunderbolt,flashcannon"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon raikou level=100 ability=wonderguard held_item=cobblemon:air_balloon moves=icebeam,surf,thunderbolt,flashcannon"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon raikou level=100 ability=wonderguard held_item=cobblemon:air_balloon moves=icebeam,surf,thunderbolt,flashcannon"
+    },
+    {
+      "rcon": "healpokemon {player}",
+      "comment_": "cross-scenario attrition guard (live-caught 2026-07-18: fights entered with fainted leads make autobattle pass turns forever = endless slow loss)"
+    },
+    {
+      "comment": "-- frontier residue strip (2026-07-18): failed runs skip cleanup, so cleared/defeat tags leak across attempts and reroute gated entries (the 'open Warden door' false alarm) --"
+    },
+    {
+      "comment": "-- brain latch re-arm (2026-07-19): a consumed fight leaves the brain BODY gone with #amb=1 - every later run finds nothing (all 7 brains were bodiless by round 4; three scenarios then false-matched STALE buffer win lines). Kill any stale body + reset the latch; the 40b approach respawns him fresh. --"
+    },
+    {
+      "rcon": "execute as {player} at @s run kill @e[name=\"frontier_brain_market\",type=!minecraft:player,distance=..64]"
+    },
+    {
+      "rcon": "scoreboard players set #amb_frontier_brain_market ci_ambient 0"
+    },
+    {
+      "rcon": "tag {player} remove frontier_arcade_cleared"
+    },
+    {
+      "rcon": "tag {player} remove defeated_arcade_challenger_1"
+    },
+    {
+      "rcon": "tag {player} remove defeated_arcade_challenger_2"
+    },
+    {
+      "rcon": "tag {player} remove defeated_frontier_brain_arcade"
+    },
+    {
+      "rcon": "tag {player} remove frontier_castle_cleared"
+    },
+    {
+      "rcon": "tag {player} remove defeated_castle_challenger_1"
+    },
+    {
+      "rcon": "tag {player} remove defeated_castle_challenger_2"
+    },
+    {
+      "rcon": "tag {player} remove defeated_frontier_brain_castle"
+    },
+    {
+      "rcon": "tag {player} remove frontier_factory_cleared"
+    },
+    {
+      "rcon": "tag {player} remove defeated_factory_challenger_1"
+    },
+    {
+      "rcon": "tag {player} remove defeated_factory_challenger_2"
+    },
+    {
+      "rcon": "tag {player} remove defeated_frontier_brain_factory"
+    },
+    {
+      "rcon": "tag {player} remove frontier_market_cleared"
+    },
+    {
+      "rcon": "tag {player} remove defeated_market_challenger_1"
+    },
+    {
+      "rcon": "tag {player} remove defeated_market_challenger_2"
+    },
+    {
+      "rcon": "tag {player} remove defeated_frontier_brain_market"
+    },
+    {
+      "rcon": "tag {player} remove frontier_port_cleared"
+    },
+    {
+      "rcon": "tag {player} remove defeated_port_challenger_1"
+    },
+    {
+      "rcon": "tag {player} remove defeated_port_challenger_2"
+    },
+    {
+      "rcon": "tag {player} remove defeated_frontier_brain_port"
+    },
+    {
+      "rcon": "tag {player} remove frontier_pyramid_cleared"
+    },
+    {
+      "rcon": "tag {player} remove defeated_pyramid_challenger_1"
+    },
+    {
+      "rcon": "tag {player} remove defeated_pyramid_challenger_2"
+    },
+    {
+      "rcon": "tag {player} remove defeated_frontier_brain_pyramid"
+    },
+    {
+      "rcon": "tag {player} remove frontier_tower_cleared"
+    },
+    {
+      "rcon": "tag {player} remove defeated_tower_challenger_1"
+    },
+    {
+      "rcon": "tag {player} remove defeated_tower_challenger_2"
+    },
+    {
+      "rcon": "tag {player} remove defeated_frontier_brain_tower"
+    },
+    {
+      "rcon": "tag {player} remove frontier_cave_cleared"
+    },
+    {
+      "rcon": "tag {player} remove defeated_cave_challenger_1"
+    },
+    {
+      "rcon": "tag {player} remove defeated_cave_challenger_2"
+    },
+    {
+      "rcon": "tag {player} remove defeated_frontier_brain_cave"
+    },
+    {
+      "rcon": "tag {player} remove frontier_all_cleared"
     },
     {
       "rcon": "execute as {player} run cobblemon-initiative dev bot autobattle on"
     },
     {
-      "comment": "-- beat 1: Merchant Vance, the morning fresh catch. say[] rotates, so the screen assert targets the stable battle-button label (its rendering IS the champion-gate assert) --"
+      "comment": "-- beat 0, BROKE lane: wallet set to 50 (under the 200 CD bargain fee), click the listing -> the fee pay-probe declines NEXT TICK (deferred read), no dispatch, no tags. Runs FIRST so a declined click can never eat a cleared ladder --"
     },
     {
-      "find_npc": "Merchant Vance",
-      "save": "vance"
-    },
-    {
-      "interact_npc": "{vance.uuid}"
-    },
-    {
-      "wait_screen": "Dialog"
-    },
-    {
-      "expect_screen_text": "Battle Merchant Vance"
-    },
-    {
-      "screenshot": "market_vance_gate"
-    },
-    {
-      "click": "Battle Merchant Vance"
-    },
-    {
-      "client": "screen.close",
-      "comment_": "battle-start buttons have no close action; the fight runs server-side (autobattle) while the stale dialog stays up"
-    },
-    {
-      "wait_chat": "Clean transaction",
-      "timeout": 240,
-      "comment_": "Vance's onwin win_line say; a timeout here is almost certainly the TBCS stall, not a regression"
-    },
-    {
-      "rcon": "execute if entity @a[name={player},tag=defeated_market_challenger_1]",
-      "expect": "passed"
-    },
-    {
-      "sleep": 2.0,
-      "comment_": "battle teardown settle before the next TBCS dispatch"
-    },
-    {
-      "comment": "-- beat 2: Trader Fiona, todays rival --"
-    },
-    {
-      "find_npc": "Trader Fiona",
-      "save": "fiona"
-    },
-    {
-      "interact_npc": "{fiona.uuid}"
-    },
-    {
-      "wait_screen": "Dialog"
-    },
-    {
-      "expect_screen_text": "Battle Trader Fiona"
-    },
-    {
-      "screenshot": "market_fiona_gate"
-    },
-    {
-      "click": "Battle Trader Fiona"
-    },
-    {
-      "client": "screen.close",
-      "comment_": "battle-start buttons have no close action; the fight runs server-side"
-    },
-    {
-      "wait_chat": "You drove a hard bargain",
-      "timeout": 240
-    },
-    {
-      "rcon": "execute if entity @a[name={player},tag=defeated_market_challenger_2]",
-      "expect": "passed"
-    },
-    {
-      "sleep": 2.0,
-      "comment_": "battle teardown settle + band_tags window before the brain's all_tags gate is read"
-    },
-    {
-      "comment": "-- beat 3: Market Mogul Sterling. His battle button gates all_tags on both challenger defeats - it rendering now IS the ladder assert. Win chain: prize -> frontier_market_cleared tag -> win say -> frontier/hall_cleared (actionbar) --"
+      "rcon": "cobbledollars set {player} 50"
     },
     {
       "find_npc": "Market Mogul Sterling",
@@ -184,21 +238,152 @@
       "wait_screen": "Dialog"
     },
     {
-      "expect_screen_text": "Battle Market Mogul Sterling"
+      "expect_screen_text": "Bargain lot - 200 CD",
+      "comment_": "the stall listings render = champion gate open (gate.champion on every listing button); button labels are stable across the say[] rotation"
     },
     {
-      "screenshot": "market_brain_gate"
+      "screenshot": "market_stall_listings"
     },
     {
-      "click": "Battle Market Mogul Sterling"
+      "click": "Bargain lot - 200 CD"
+    },
+    {
+      "wait_chat": "the stall does not run tabs",
+      "timeout": 15,
+      "comment_": "manager decline chat ([Market] Declined - the stall does not run tabs. (200 CD)); the fee actionbar twin fires the same tick"
+    },
+    {
+      "sleep": 1.5,
+      "comment_": "band tick settle before reading the inverse tag"
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=no_defeated_market_challenger_1,tag=no_frontier_market_cleared]",
+      "expect": "passed",
+      "comment_": "declined = no dispatch: Vance still undefeated, hall still uncleared"
+    },
+    {
+      "comment": "-- fund the ladder: 5000 CD covers all three listings (200+500+1000) with margin --"
+    },
+    {
+      "rcon": "cobbledollars set {player} 5000"
+    },
+    {
+      "comment": "-- beat 1: bargain lot -> the stall serves Merchant Vance (first uncleared). Locked at 40 (clone-flatten, attrition-free). Win signal = manager rail: Sold chat, then Purse paid 400 + defeated_market_challenger_1 --"
+    },
+    {
+      "rcon": "healpokemon {player}",
+      "comment_": "between-fights heal (live-caught: a fainted lead makes autobattle pass-loop to a slow loss in the NEXT fight)"
+    },
+    {
+      "interact_npc": "{sterling.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "Fair price - 500 CD"
+    },
+    {
+      "click": "Bargain lot - 200 CD",
+      "comment_": "listing buttons carry their own CLOSE action - the dialog drops and the fee resolves next tick"
+    },
+    {
+      "wait_chat": "Sold. The",
+      "timeout": 15,
+      "comment_": "manager dispatch ack ([Market] Sold. The bargain listing takes the floor - purse 400 CD.); needle avoids crossing the embedded color-code boundaries"
+    },
+    {
+      "wait_chat": "Purse paid",
+      "timeout": 600,
+      "comment_": "manager win rail; a timeout here is almost certainly the TBCS stall, not a regression"
     },
     {
       "client": "screen.close",
-      "comment_": "battle-start buttons have no close action; the fight runs server-side"
+      "comment_": "defensive: the battle GUI may still be up when the win chat lands - a stale screen eats the next interact (live-caught arcade/factory/port)"
     },
     {
-      "wait_chat": "Every asset on my books",
-      "timeout": 240
+      "sleep": 2.0
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=defeated_market_challenger_1]",
+      "expect": "passed"
+    },
+    {
+      "sleep": 2.0,
+      "comment_": "battle teardown settle before the next stall dispatch"
+    },
+    {
+      "comment": "-- beat 2: fair price -> the stall serves Trader Fiona (locked at 70). Purse 1200 --"
+    },
+    {
+      "rcon": "healpokemon {player}"
+    },
+    {
+      "find_npc": "Market Mogul Sterling",
+      "save": "sterling"
+    },
+    {
+      "interact_npc": "{sterling.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "Premium stock - 1,000 CD"
+    },
+    {
+      "click": "Fair price - 500 CD"
+    },
+    {
+      "wait_chat": "Sold. The",
+      "timeout": 15
+    },
+    {
+      "wait_chat": "Purse paid",
+      "timeout": 600
+    },
+    {
+      "client": "screen.close"
+    },
+    {
+      "sleep": 2.0
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=defeated_market_challenger_2]",
+      "expect": "passed"
+    },
+    {
+      "sleep": 2.0
+    },
+    {
+      "comment": "-- beat 3: premium stock -> the stall serves the Mogul himself, fought AS AUTHORED (level 100, no lock). Win chain is all manager: defeated_frontier_brain_market + frontier_market_cleared tags, frontier/hall_cleared actionbar, Purse paid 3000 --"
+    },
+    {
+      "rcon": "healpokemon {player}"
+    },
+    {
+      "find_npc": "Market Mogul Sterling",
+      "save": "sterling"
+    },
+    {
+      "interact_npc": "{sterling.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "Bargain lot - 200 CD"
+    },
+    {
+      "click": "Premium stock - 1,000 CD"
+    },
+    {
+      "wait_chat": "Sold. The",
+      "timeout": 15
+    },
+    {
+      "wait_chat": "Purse paid",
+      "timeout": 600
     },
     {
       "wait_chat": "A Frontier hall falls",
@@ -206,17 +391,27 @@
         "overlay"
       ],
       "timeout": 15,
-      "comment_": "frontier/hall_cleared actionbar - fires from Sterling's on_win right after the win say"
+      "comment_": "frontier/hall_cleared actionbar - fired by the manager right before the purse chat, same wait window (consecutive wait_chats share the cursor)"
     },
     {
-      "rcon": "execute if entity @a[name={player},tag=frontier_market_cleared]",
+      "client": "screen.close"
+    },
+    {
+      "sleep": 2.0
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=frontier_market_cleared,tag=defeated_frontier_brain_market]",
       "expect": "passed"
     },
     {
       "screenshot": "market_hall_cleared"
     },
     {
-      "comment": "-- beat 4: cleared-state dialog - Sterling's beaten entry (prio 20, gate frontier_market_cleared) preempts; prose any-of covers all three rotating say lines (including the late-tier half-recognition beat) --"
+      "comment": "-- beat 4: cleared-state dialog - Sterling's beaten entry (prio 20, gate frontier_market_cleared) preempts the stall; prose any-of covers all four rotating say lines (three originals + the folded win_line Zoroark beat) --"
+    },
+    {
+      "find_npc": "Market Mogul Sterling",
+      "save": "sterling"
     },
     {
       "interact_npc": "{sterling.uuid}"
@@ -228,7 +423,8 @@
       "expect_screen_text": [
         "The harbormaster of this dock is you now, whether you wanted the title or not. Fresh challengers still arrive every dawn - they will be arriving for you.",
         "I ran a fair market for a long time after the old owners stopped watching. You closed it cleaner than they ever did. There is a doorstep past the last generated ridge with your name on it. Go find it.",
-        "I half know that face, and I will keep the half I know to myself. Enough of us do. The Market is yours - and so is anything the tide still brings in to sell."
+        "I half know that face, and I will keep the half I know to myself. Enough of us do. The Market is yours - and so is anything the tide still brings in to sell.",
+        "Every asset on my books, spent. That Zoroark wore three faces and you saw through all of them. The Port has a new mogul, and it is not me. Go on to whatever waits past the map."
       ]
     },
     {
@@ -241,7 +437,62 @@
       "wait_no_screen": true
     },
     {
-      "comment": "-- cleanup: strip everything this scenario set so no other scenario inherits the lane; CD prizes ride (the prize rail has no reset) --"
+      "comment": "-- beat 5: challenger beaten flavor - the manager-set defeat tags must open the SAME dialog gates the button battles used to (contract: existing gates keep working). Vance beaten entry gates defeated_market_challenger_1; any-of covers his three rotating lines incl. the folded win_line --"
+    },
+    {
+      "find_npc": "Merchant Vance",
+      "save": "vance"
+    },
+    {
+      "interact_npc": "{vance.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "Sold out, cleaned out - you bought the whole stall, and I am not restocking against you. The Mogul keeps the last word in this hall.",
+        "No hard feelings - a duel-for-hire loses sometimes. The Port turns over daily, so I will have a new pitch by morning.",
+        "Clean transaction. You took the stall apart piece by piece. The Port respects a buyer who pays in full."
+      ]
+    },
+    {
+      "screenshot": "market_vance_beaten"
+    },
+    {
+      "click": "Good match"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "find_npc": "Trader Fiona",
+      "save": "fiona"
+    },
+    {
+      "interact_npc": "{fiona.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "Balanced my books the hard way - you took the lot. The entry stands on my ledger in your ink; what you won, you keep.",
+        "A trade is a trade, and this one went to you. Fresh challengers daily down here - I might be one of them again tomorrow.",
+        "Sold. You drove a hard bargain and walked off with the whole crate. That is the Port for you - it rewards the sharp."
+      ]
+    },
+    {
+      "screenshot": "market_fiona_beaten"
+    },
+    {
+      "click": "Well fought"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "comment": "-- cleanup: strip everything this scenario set so no other scenario inherits the lane; CD purses ride (the prize rail has no reset) --"
     },
     {
       "rcon": "execute as {player} run cobblemon-initiative dev bot autobattle off"
@@ -251,6 +502,9 @@
     },
     {
       "rcon": "tag {player} remove defeated_market_challenger_2"
+    },
+    {
+      "rcon": "tag {player} remove defeated_frontier_brain_market"
     },
     {
       "rcon": "tag {player} remove frontier_market_cleared"

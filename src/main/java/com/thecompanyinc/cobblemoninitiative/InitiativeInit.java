@@ -54,6 +54,7 @@ public class InitiativeInit implements ModInitializer {
   private static LootChestManager lootChestManager;
   private static DocPropManager docPropManager;
   private static SafariManager safariManager;
+  private static com.thecompanyinc.cobblemoninitiative.frontier.FrontierManager frontierManager;
   private static QuestTrackManager questTrackManager;
   private static DaycareManager daycareManager;
   private static MinecraftFlavorConfig flavorConfig;
@@ -118,6 +119,11 @@ public class InitiativeInit implements ModInitializer {
     safariManager.load();
     safariManager.registerEvents();
 
+    // Battle Frontier hall mechanics — rentals, the wheel, castle points, priced
+    // opponents, crew battles, the no-heal gauntlet, the streak climb (2026-07-19).
+    frontierManager = new com.thecompanyinc.cobblemoninitiative.frontier.FrontierManager();
+    frontierManager.registerEvents();
+
     // Map Frontiers integration is applied lazily at /cobblemon-initiative install run
     // (see MapFrontiersBridge); no init-time registration is needed.
 
@@ -175,6 +181,11 @@ public class InitiativeInit implements ModInitializer {
       safariManager.tick(server)
     );
 
+    // Frontier hall mechanics — fee resolution, chain delays, capture watchdogs.
+    ServerTickEvents.END_SERVER_TICK.register(server ->
+      frontierManager.tick(server)
+    );
+
     // THE INCOMPLETE FILE props: click the ledger barrel / portrait chest to "find" the
     // document. Registered BEFORE LootChest so it wins at the portrait chest during the
     // pickup window (a non-PASS result short-circuits later UseBlock handlers).
@@ -227,6 +238,7 @@ public class InitiativeInit implements ModInitializer {
       lootChestManager.load(server);
       questTrackManager.load(server);
       safariManager.onServerStarted(server); // lifetime stats + stray-lure sweep
+      frontierManager.onServerStarted(server); // factory custody load
       daycareManager.load(server);
       homesteadManager.load(server);
       momCareManager.load(server);
@@ -255,6 +267,7 @@ public class InitiativeInit implements ModInitializer {
         if (progressManager.getProgress(handler.player).hasAchievement("board_cleared")) {
           com.thecompanyinc.cobblemoninitiative.founder.FounderMirrorManager.refresh(handler.player);
         }
+        frontierManager.onPlayerJoin(handler.player); // parked-party reminder
       });
 
     ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
@@ -262,6 +275,7 @@ public class InitiativeInit implements ModInitializer {
       shrineChallengeManager.savePaths();
       lootChestManager.save();
       safariManager.onServerStopping(server); // forfeit live sessions + save stats
+      frontierManager.onServerStopping(server); // factory custody save
       questTrackManager.save(server); // also hands the ▶-highlighted lines back
       daycareManager.save(); // belt-and-braces — custody already write-through saves
       homesteadManager.save();
@@ -492,6 +506,10 @@ public class InitiativeInit implements ModInitializer {
 
   public static DaycareManager getDaycareManager() {
     return daycareManager;
+  }
+
+  public static com.thecompanyinc.cobblemoninitiative.frontier.FrontierManager getFrontierManager() {
+    return frontierManager;
   }
 
   public static SafariManager getSafariManager() {

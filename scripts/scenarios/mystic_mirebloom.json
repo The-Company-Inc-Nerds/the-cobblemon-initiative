@@ -9,7 +9,7 @@
       "comment": "-- preamble: tp FIRST (kill/latch-reset no-op in unloaded chunks, then dupe on respawn - found 5 stacked Mings once). Site = the paddy gate latch at 1229.5 64 2820.5 - AUTHORED y=64 PLACEHOLDER, not yet ground-probed (see _probe_pending): confirm the real surface Y before the first live run --"
     },
     {
-      "rcon": "tp {player} 1229.5 90 2820.5"
+      "rcon": "tp {player} 1227.5 90 2818.5"
     },
     {
       "sleep": 2.0
@@ -82,6 +82,10 @@
       "rcon": "execute as {player} run cobblemon-initiative givemon garchomp level=100"
     },
     {
+      "rcon": "healpokemon {player}",
+      "comment_": "cross-scenario attrition guard (live-caught 2026-07-18: fights entered with fainted leads make autobattle pass turns forever = endless slow loss)"
+    },
+    {
       "rcon": "execute as {player} run cobblemon-initiative dev bot autobattle on"
     },
     {
@@ -134,7 +138,7 @@
     },
     {
       "wait_chat": "The fence comes down",
-      "timeout": 180
+      "timeout": 360
     },
     {
       "wait_chat": "Field liberated",

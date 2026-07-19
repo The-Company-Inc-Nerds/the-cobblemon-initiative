@@ -40,6 +40,58 @@
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
+                            Name: "fairy_shrine_trial_clear"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "no_fairy_crystal_claimed"
+                        }
+                    ],
+                    Priority: 30,
+                    Buttons: [
+                        {
+                            Name: "Receive the Fairy Shrine Crystal",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "give @s cobblemon_initiative:fairy_shrine_crystal"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add fairy_crystal_claimed"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "claim_button"
+                        },
+                        {
+                            Name: "Not yet",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The light parted for a proven bond, and it leaves a keepsake: its own radiance, crystallized. Set it anywhere under open sky and the light will take a shape you can catch — if the two of you are quick enough to deserve it."
+                        }
+                    ],
+                    Name: "Aurora — the crystal",
+                    Label: "cleared"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
                             Name: "defeated_fairy_shrine_leader"
                         }
                     ],
@@ -187,7 +239,7 @@
                     ],
                     Texts: [
                         {
-                            Text: "Soft now. You have come to the Fairy Shrine, where the light does not warm so much as it reveals. I am Aurora, its keeper and its servant. You passed my acolytes; the light itself is not so easily flattered."
+                            Text: "Soft now. You have come to the Fairy Shrine, where the light does not warm so much as it reveals. I am Aurora, its keeper and its servant. The light itself is not easily flattered."
                         },
                         {
                             Text: "The radiance does not test a team. It tests a bond. Bring one companion to the altar at my feet - a shiny thing, named by you, well fed, close of heart, and alone on your belt - and the light will know if the two of you are true. Begin the tests, then run resolve at the altar when your companion is ready."

@@ -37,7 +37,7 @@
       "comment": "-- tp to the shaft (latch spawns within 40b; the body persists - no kill/latch-reset needed), then daylight + battle prep --"
     },
     {
-      "rcon": "tp {player} 1060.5 119 3200.5"
+      "rcon": "tp {player} 1058.5 119 3198.5"
     },
     {
       "sleep": 2.0
@@ -80,6 +80,10 @@
     },
     {
       "rcon": "execute as {player} run cobblemon-initiative givemon garchomp level=100"
+    },
+    {
+      "rcon": "healpokemon {player}",
+      "comment_": "cross-scenario attrition guard (live-caught 2026-07-18: fights entered with fainted leads make autobattle pass turns forever = endless slow loss)"
     },
     {
       "rcon": "execute as {player} run cobblemon-initiative dev bot autobattle on"
@@ -168,11 +172,12 @@
       "click": "Fight Round 1"
     },
     {
-      "wait_no_screen": true
+      "client": "screen.close",
+      "comment_": "battle GUI replaces the dialog now that the dispatch is ANCHORED (2026-07-18) — close it and let the win-line wait pace the fight (wisps idiom)"
     },
     {
       "wait_chat": "One down. No water. Next.",
-      "timeout": 180
+      "timeout": 360
     },
     {
       "sleep": 1.0
@@ -200,11 +205,12 @@
       "click": "Fight Round 2"
     },
     {
-      "wait_no_screen": true
+      "client": "screen.close",
+      "comment_": "battle GUI replaces the dialog now that the dispatch is ANCHORED (2026-07-18) — close it and let the win-line wait pace the fight (wisps idiom)"
     },
     {
       "wait_chat": "Two. The rock does not soften. One more waits.",
-      "timeout": 180
+      "timeout": 360
     },
     {
       "sleep": 1.0
@@ -229,11 +235,12 @@
       "click": "Fight Round 3 - the last swing"
     },
     {
-      "wait_no_screen": true
+      "client": "screen.close",
+      "comment_": "battle GUI replaces the dialog now that the dispatch is ANCHORED (2026-07-18) — close it and let the win-line wait pace the fight (wisps idiom)"
     },
     {
       "wait_chat": "no water, still standing. That is the ladder.",
-      "timeout": 180
+      "timeout": 360
     },
     {
       "sleep": 1.0

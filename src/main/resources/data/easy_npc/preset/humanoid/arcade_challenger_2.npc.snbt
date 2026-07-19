@@ -61,6 +61,9 @@
                         },
                         {
                             Text: "Good pull. I have been a regular on this floor since before the Company fell, and I do not lose to just anyone."
+                        },
+                        {
+                            Text: "You beat the odds and the regular who set them. The Star is spinning behind me - she is the last wheel on this floor."
                         }
                     ],
                     Name: "Suki - cashed out",
@@ -70,47 +73,12 @@
                     Priority: 10,
                     Buttons: [
                         {
-                            Name: "Battle Player Suki",
+                            Name: "Spin the wheel",
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "defeated_arcade_challenger_2"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "say We settled our wager already. Dahlia is the only spin left for you here."
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_defeated_arcade_challenger_2"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tbcs attach rctmod:arcade_challenger_2 @s"
-                                },
-                                {
-                                    Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_defeated_arcade_challenger_2"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:arcade_challenger_2 onwin {1: ['cobbledollars give @1 800', 'tag @1 add defeated_arcade_challenger_2', '@2 say You beat the odds and the regular who set them. The Star is spinning behind me - she is the last wheel on this floor.'], 2: ['@1 say The dealer wins again. No shame - the house is built to. Come back with a better hand.']}"
+                                    Cmd: "cobblemon-initiative frontier arcade spin"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -128,7 +96,33 @@
                                     Name: "no_defeated_arcade_challenger_2"
                                 }
                             ],
-                            Label: "battle_button"
+                            Label: "spin_button"
+                        },
+                        {
+                            Name: "Battle Player Suki",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative frontier arcade fight 2"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "royal_league_champion"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_arcade_challenger_2"
+                                }
+                            ],
+                            Label: "fight_button"
                         },
                         {
                             Name: "Not this spin",
@@ -145,10 +139,10 @@
                             Text: "A Champion at my table. I like long odds. Beat Fritz already, did you? Then you know how this floor pays - fast and all at once. The house always spins."
                         },
                         {
-                            Text: "I have played this Arcade since Company money kept the lights on. Now no coin owns the floor, and the game is finally honest. Care to wager a battle?"
+                            Text: "I have played this Arcade since Company money kept the lights on. Now no coin owns the floor, and the game is finally honest - the wheel calls the terms, levels or doubles or the size of the purse, and both players live with the call."
                         },
                         {
-                            Text: "Glass cannons and coin flips - that is my whole box. One good roll wins it, one bad one ends it. Same as you spinning your way through the whole region, no?"
+                            Text: "Glass cannons and coin flips - that is my whole box. Same rule for me as for you: no stake on the table, no fight. The wheel spins once per fight - spin it, then we play what it lands on."
                         }
                     ],
                     Name: "Player Suki",

@@ -61,6 +61,9 @@
                         },
                         {
                             Text: "House lost that round. Rare, but it happens. Go spin Suki, then take your luck to the Star herself."
+                        },
+                        {
+                            Text: "Your number came up. The house does not sulk - it deals the next hand. Move up the floor."
                         }
                     ],
                     Name: "Fritz - the wheel came up your color",
@@ -70,47 +73,12 @@
                     Priority: 10,
                     Buttons: [
                         {
-                            Name: "Battle Gambler Fritz",
+                            Name: "Spin the wheel",
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "defeated_arcade_challenger_1"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "say You already spun my table and won. Take your streak to Suki up the floor."
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_defeated_arcade_challenger_1"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tbcs attach rctmod:arcade_challenger_1 @s"
-                                },
-                                {
-                                    Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_defeated_arcade_challenger_1"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:arcade_challenger_1 onwin {1: ['cobbledollars give @1 800', 'tag @1 add defeated_arcade_challenger_1', '@2 say Your number came up. The house does not sulk - it deals the next hand. Move up the floor.'], 2: ['@1 say Snake eyes. The wheel does not care who you were - spin again when you can afford it.']}"
+                                    Cmd: "cobblemon-initiative frontier arcade spin"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -128,7 +96,33 @@
                                     Name: "no_defeated_arcade_challenger_1"
                                 }
                             ],
-                            Label: "battle_button"
+                            Label: "spin_button"
+                        },
+                        {
+                            Name: "Battle Gambler Fritz",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative frontier arcade fight 1"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "royal_league_champion"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_arcade_challenger_1"
+                                }
+                            ],
+                            Label: "fight_button"
                         },
                         {
                             Name: "Not this spin",
@@ -145,10 +139,10 @@
                             Text: "New face on the floor. The League seat you took at the top bought you a chair here - the Arcade always seats a Champion. The house always spins."
                         },
                         {
-                            Text: "Everyone told the Company to shut this wing down for a fast-cash floor. Nobody did. So the wheel still turns, and every turn is a wager - want to spin?"
+                            Text: "Everyone told the Company to shut this wing down for a fast-cash floor. Nobody did. So the wheel still turns, and every turn is a wager - it can flatten the levels, flip the table to doubles, or fatten the purse. The wheel decides, not you."
                         },
                         {
-                            Text: "Fast teams, glass jaws, no second chances - my kind of game. One spin, one battle. Odds are even, which is more than the old boardroom ever offered."
+                            Text: "Fast teams, glass jaws, no second chances - my kind of game. House rules: the wheel spins once per fight, and no fight starts without a stake on the table. Spin first, then sit."
                         }
                     ],
                     Name: "Gambler Fritz",

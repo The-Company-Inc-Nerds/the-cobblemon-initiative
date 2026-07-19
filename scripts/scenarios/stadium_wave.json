@@ -1,9 +1,9 @@
 {
   "name": "stadium_wave",
-  "description": "Stadium facility regression (StadiumManager, alpha.14): register bracket 25, hear the circuit + wave-1 announce (Exhibition Roster: Mailroom, purse 200), let the MANAGER-launched TBCS wave play out under dev-bot autobattle, assert the purse paid ($0 baseline -> $ 200 via cobbledollars query, exact under 1000), abort inside the 5s COUNTDOWN, then prove the clean exit by starting (and aborting) a SECOND run and reading 'No active run' from status. Deliberately does NOT run all 5 waves. Bracket level-lock is NOT asserted here: with adjustLevel set Cobblemon fights CLONES \u2014 the client party op only ever shows the untouched real party, so there is nothing cheap to read (the lock itself was bot-verified in alpha.14, Eevee 20->25 / Mailroom 50->25); we give the fighter AT 25 so nothing depends on it. Whiteout-guard (NuzlockeInit isStadiumActive) needs a LOSS to observe \u2014 skipped, autobattle attempts the win. No tags/scores are set by the stadium on a 1-wave-then-abort run (stadium_challenged only increments on a FULL circuit), so the preamble only has to clear stale battles/runs and the wallet.",
+  "description": "Stadium facility regression (StadiumManager, alpha.14): register bracket 25, hear the circuit + wave-1 announce (Exhibition Roster: Mailroom, purse 200), let the MANAGER-launched TBCS wave play out under dev-bot autobattle, assert the purse paid ($0 baseline -> $ 200 via cobbledollars query, exact under 1000), abort inside the 5s COUNTDOWN, then prove the clean exit by starting (and aborting) a SECOND run and reading 'No active run' from status. Deliberately does NOT run all 5 waves. Bracket level-lock is NOT asserted here: with adjustLevel set Cobblemon fights CLONES — the client party op only ever shows the untouched real party, so there is nothing cheap to read (the lock itself was bot-verified in alpha.14, Eevee 20->25 / Mailroom 50->25); we give the fighter AT 25 so nothing depends on it. Whiteout-guard (NuzlockeInit isStadiumActive) needs a LOSS to observe — skipped, autobattle attempts the win. No tags/scores are set by the stadium on a 1-wave-then-abort run (stadium_challenged only increments on a FULL circuit), so the preamble only has to clear stale battles/runs and the wallet.",
   "steps": [
     {
-      "comment": "-- preamble: park in Sango (safe zone, no hostiles to pinch the bout; waves fight WHERE THE PLAYER STANDS \u2014 no facility building exists yet). tp FIRST per the preamble rule so everything below runs in loaded chunks --"
+      "comment": "-- preamble: park in Sango (safe zone, no hostiles to pinch the bout; waves fight WHERE THE PLAYER STANDS — no facility building exists yet). tp FIRST per the preamble rule so everything below runs in loaded chunks --"
     },
     {
       "rcon": "tp {player} 2570 111 2856"
@@ -12,7 +12,7 @@
       "sleep": 2.0
     },
     {
-      "comment": "-- stale-state sweep: stopbattle force-ends any battle a previous scenario left live (fires NO event \u2014 StadiumManager's IN_BATTLE liveness tick then voids a stale stadium run, hence the sleep); the abort covers a COUNTDOWN leftover. '[Stadium] You are not on the circuit.' on a clean player is the normal no-op --"
+      "comment": "-- stale-state sweep: stopbattle force-ends any battle a previous scenario left live (fires NO event — StadiumManager's IN_BATTLE liveness tick then voids a stale stadium run, hence the sleep); the abort covers a COUNTDOWN leftover. '[Stadium] You are not on the circuit.' on a clean player is the normal no-op --"
     },
     {
       "rcon": "stopbattle {player}"
@@ -24,7 +24,7 @@
       "rcon": "execute as {player} run cobblemon-initiative stadium abort"
     },
     {
-      "comment": "-- party reset: empty all 6 slots, then ONE lv-25 fighter (junk lv-5 parties from earlier scenarios stall TBCS battle init \u2014 verified live in wheat_war). Lucario is level-legal at 25 (friendship evo, no level gate) and fighting-type vs wave 1's normals (Furret/Raticate). 25 == the bracket, so the level lock is a no-op on our side by design --"
+      "comment": "-- party reset: empty all 6 slots, then ONE lv-25 fighter (junk lv-5 parties from earlier scenarios stall TBCS battle init — verified live in wheat_war). Lucario is level-legal at 25 (friendship evo, no level gate) and fighting-type vs wave 1's normals (Furret/Raticate). 25 == the bracket, so the level lock is a no-op on our side by design --"
     },
     {
       "rcon": "takepokemon {player} 1"
@@ -49,13 +49,17 @@
     },
     {
       "rcon": "execute as {player} run cobblemon-initiative givemon garchomp level=25",
-      "comment_": "second garchomp \u2014 first-legal-move autobattle needs attrition headroom vs 2-mon waves (a lone lucario LOST wave 1 live)"
+      "comment_": "second garchomp — first-legal-move autobattle needs attrition headroom vs 2-mon waves (a lone lucario LOST wave 1 live)"
+    },
+    {
+      "rcon": "healpokemon {player}",
+      "comment_": "cross-scenario attrition guard (live-caught 2026-07-18: fights entered with fainted leads make autobattle pass turns forever = endless slow loss)"
     },
     {
       "rcon": "execute as {player} run cobblemon-initiative dev bot autobattle on"
     },
     {
-      "comment": "-- purse baseline: wallet to 0 (set 0 is a proven pattern \u2014 smoke_frontier) so the wave-1 purse reads as an exact '$ 200' (query abbreviates >=1000, exact below). CAVEAT: a natural day rollover paying homestead beacon income (+25) mid-scenario would skew this read --"
+      "comment": "-- purse baseline: wallet to 0 (set 0 is a proven pattern — smoke_frontier) so the wave-1 purse reads as an exact '$ 200' (query abbreviates >=1000, exact below). CAVEAT: a natural day rollover paying homestead beacon income (+25) mid-scenario would skew this read --"
     },
     {
       "rcon": "cobbledollars set {player} 0"
@@ -79,17 +83,17 @@
     },
     {
       "rcon": "cobbledollars set {player} 1",
-      "comment_": "re-baseline right before the bout (belt-and-braces: a dropped RCON or inter-run accrual poisons the exact purse read; set 1 not 0 \u2014 distinguishes 'purse paid' 201 from 'never zeroed'). Also the win-wait window anchors here."
+      "comment_": "re-baseline right before the bout (belt-and-braces: a dropped RCON or inter-run accrual poisons the exact purse read; set 1 not 0 — distinguishes 'purse paid' 201 from 'never zeroed'). Also the win-wait window anchors here."
     },
     {
-      "comment": "-- beat 2: the wave bout \u2014 manager-launched TBCS (armor-stand anchor + @s dispatch; this path was reliable headless in alpha.14), autobattle plays it. KNOWN intermittent TBCS stall (~50%): send-outs complete then the battle waits forever \u2014 if this wait times out, it is almost certainly the stall, NOT a stadium regression; re-run before filing. Only passive steps sit between the start emitter and this wait so the window covers the whole bout --"
+      "comment": "-- beat 2: the wave bout — manager-launched TBCS (armor-stand anchor + @s dispatch; this path was reliable headless in alpha.14), autobattle plays it. KNOWN intermittent TBCS stall (~50%): send-outs complete then the battle waits forever — if this wait times out, it is almost certainly the stall, NOT a stadium regression; re-run before filing. Only passive steps sit between the start emitter and this wait so the window covers the whole bout --"
     },
     {
       "wait_chat": "Wave 1 cleared",
-      "timeout": 240
+      "timeout": 360
     },
     {
-      "comment": "-- beat 3: abort MUST land inside the 5s COUNTDOWN (ticksBetweenWaves=100) before wave 2 dispatches \u2014 abort refuses while a bout is live/forming, so keep these two steps back-to-back. The withdraw line arriving IS the abort-accepted assert (a refusal prints 'The bout is live' instead and this times out) --"
+      "comment": "-- beat 3: abort MUST land inside the 5s COUNTDOWN (ticksBetweenWaves=100) before wave 2 dispatches — abort refuses while a bout is live/forming, so keep these two steps back-to-back. The withdraw line arriving IS the abort-accepted assert (a refusal prints 'The bout is live' instead and this times out) --"
     },
     {
       "rcon": "execute as {player} run cobblemon-initiative stadium abort"
@@ -106,10 +110,10 @@
     },
     {
       "rcon": "cobbledollars query {player}",
-      "comment_": "informational only \u2014 the payout ASSERT is the 'Wave 1 cleared \u2026 CobbleDollars credited' line (printed by onWaveWon immediately after payPurse, same code path). Exact-balance reads proved unreliable on a session-damaged player (CobbleDollars balance resynced across deaths/zombie-resurrections)."
+      "comment_": "informational only — the payout ASSERT is the 'Wave 1 cleared … CobbleDollars credited' line (printed by onWaveWon immediately after payPurse, same code path). Exact-balance reads proved unreliable on a session-damaged player (CobbleDollars balance resynced across deaths/zombie-resurrections)."
     },
     {
-      "comment": "-- beat 4: clean-exit proof \u2014 a SECOND start must take. A leaked activeRuns entry would print 'You are already on the circuit' and this announce would never re-fire --"
+      "comment": "-- beat 4: clean-exit proof — a SECOND start must take. A leaked activeRuns entry would print 'You are already on the circuit' and this announce would never re-fire --"
     },
     {
       "rcon": "execute as {player} run cobblemon-initiative stadium start 25"
@@ -119,7 +123,7 @@
       "timeout": 10
     },
     {
-      "comment": "-- cleanup abort for run 2 must land inside FIRST_WAVE_DELAY (3s) \u2014 again back-to-back with the wait above (the announce is synchronous with start, so the wait matches near-instantly) --"
+      "comment": "-- cleanup abort for run 2 must land inside FIRST_WAVE_DELAY (3s) — again back-to-back with the wait above (the announce is synchronous with start, so the wait matches near-instantly) --"
     },
     {
       "rcon": "execute as {player} run cobblemon-initiative stadium abort"
@@ -129,7 +133,7 @@
       "timeout": 10
     },
     {
-      "comment": "-- beat 5: final state \u2014 status confirms the table is empty, autobattle off --"
+      "comment": "-- beat 5: final state — status confirms the table is empty, autobattle off --"
     },
     {
       "rcon": "execute as {player} run cobblemon-initiative stadium status"

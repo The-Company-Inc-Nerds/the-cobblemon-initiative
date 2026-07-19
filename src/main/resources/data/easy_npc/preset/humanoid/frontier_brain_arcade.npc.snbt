@@ -61,6 +61,9 @@
                         },
                         {
                             Text: "You broke the wheel and did not even flinch. I half-know that steadiness. I dealt cards to someone who moved like that, a long time ago, before the fall. I will keep my thoughts to myself - but well played."
+                        },
+                        {
+                            Text: "The wheel stops on you. The house is out of spins - this hall is yours, Champion. There is no bigger jackpot on this floor."
                         }
                     ],
                     Name: "Dahlia - the house paid out",
@@ -70,47 +73,12 @@
                     Priority: 10,
                     Buttons: [
                         {
-                            Name: "Challenge Arcade Star Dahlia",
+                            Name: "Spin the wheel",
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "frontier_arcade_cleared"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "say You already broke my wheel. The Arcade has no spin left that can touch you - go clear another hall."
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_frontier_arcade_cleared"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tbcs attach rctmod:frontier_brain_arcade @s"
-                                },
-                                {
-                                    Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_frontier_arcade_cleared"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tbcs battle GEN_9_DOUBLES @s vs rctmod:frontier_brain_arcade onwin {1: ['cobbledollars give @1 3000', 'tag @1 add frontier_arcade_cleared', '@2 say The wheel stops on you. The house is out of spins - this hall is yours, Champion. There is no bigger jackpot on this floor.', 'execute as @1 run function cobblemon_initiative:frontier/hall_cleared'], 2: ['@1 say The house takes the pot, as the house does. The wheel is still here. Buy back in when you are ready to spin again.']}"
+                                    Cmd: "cobblemon-initiative frontier arcade spin"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -138,7 +106,43 @@
                                     Name: "no_frontier_arcade_cleared"
                                 }
                             ],
-                            Label: "battle_button"
+                            Label: "spin_button"
+                        },
+                        {
+                            Name: "Challenge Arcade Star Dahlia",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative frontier arcade fight brain"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "royal_league_champion"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "defeated_arcade_challenger_1"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "defeated_arcade_challenger_2"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_frontier_arcade_cleared"
+                                }
+                            ],
+                            Label: "fight_button"
                         },
                         {
                             Name: "Not yet",
@@ -152,13 +156,13 @@
                     ],
                     Texts: [
                         {
-                            Text: "Both my regulars folded to you. That earns you the last table. I am the house, and the house always spins - sit, and let the wheel decide who walks away."
+                            Text: "Both my regulars folded to you. That earns you the last table. I am the house, and the house always spins - put your stake on the wheel, and let it decide the terms we fight under."
                         },
                         {
-                            Text: "The old Company built one floor for wonder instead of the ledger, and this was it. Nobody scrubbed the Arcade - a coup does not bother erasing a toy. So the wheel still turns, and it turns for you now."
+                            Text: "The old Company built one floor for wonder instead of the ledger, and this was it. Nobody scrubbed the Arcade - a coup does not bother erasing a toy. So the wheel still turns, and it turns for you now. It may flatten us both to one level, deal the fight as doubles, or swell the purse - even I do not get a say."
                         },
                         {
-                            Text: "You have the walk of someone who used to own a place like this. Funny. I do not chase old faces - down here the name on the door means nothing, only whether you can beat the spin. Ante up."
+                            Text: "You have the walk of someone who used to own a place like this. Funny. I do not chase old faces - down here the name on the door means nothing, only whether you can beat the spin. One spin per fight, and no fight without a stake on the table. Ante up."
                         }
                     ],
                     Name: "Arcade Star Dahlia",

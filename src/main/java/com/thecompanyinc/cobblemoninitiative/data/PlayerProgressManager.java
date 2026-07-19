@@ -208,7 +208,11 @@ public class PlayerProgressManager {
       }
     }
 
-    grantShrineCrystal(player, trainerId);
+    // (Shrine crystals moved to the KEEPERS' dialogs — structure ruling 2026-07-19:
+    // the leader always gives the crystal via the cleared-entry claim button, gated on
+    // <el>_shrine_trial_clear. The old defeat-reward grant was double-broken anyway:
+    // the rewards used the dashed `cobblemon-initiative:` namespace, which never
+    // resolved against the underscored item registry.)
 
     grantAdvancementForTrainer(player, trainerId);
 
@@ -258,23 +262,6 @@ public class PlayerProgressManager {
           e
         );
       }
-    }
-  }
-
-  private void grantShrineCrystal(ServerPlayer player, String trainerId) {
-    boolean isShrine = switch (trainerId) {
-      case "fire_shrine_leader", "ground_shrine_leader", "ice_shrine_leader",
-           "dragon_shrine_leader", "fairy_shrine_leader" -> true;
-      default -> false;
-    };
-
-    if (isShrine) {
-      // Crystal item is granted via TrainerConfig rewards; only send the flavour message here.
-      player.sendSystemMessage(
-        Component.literal(
-          "§d§l[Shrine Crystal Obtained!] §r§7Place it to summon the legendary guardian!"
-        )
-      );
     }
   }
 

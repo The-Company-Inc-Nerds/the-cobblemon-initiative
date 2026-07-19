@@ -64,6 +64,9 @@
                         },
                         {
                             Text: "Nice climb, Champion. The pyramid keeps its dark, but it will not keep you. Go on down."
+                        },
+                        {
+                            Text: "First chamber cleared and your torch never went out. That is the whole trick down here. Priya is waiting deeper."
                         }
                     ],
                     Name: "Beaten",
@@ -72,67 +75,6 @@
                 {
                     Priority: 10,
                     Buttons: [
-                        {
-                            Name: "Battle Explorer Marco",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "defeated_pyramid_challenger_1"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "say You already lit your way past me. The next chamber is deeper, and Priya does not lend torches."
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_defeated_pyramid_challenger_1"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tbcs attach rctmod:pyramid_challenger_1 @s"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_defeated_pyramid_challenger_1"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:pyramid_challenger_1 onwin {1: ['cobbledollars give @1 800', 'tag @1 add defeated_pyramid_challenger_1', '@2 say First chamber cleared and your torch never went out. That is the whole trick down here. Priya is waiting deeper.'], 2: ['@1 say The dark took you this time. No shame - the climb resets. Come back with a steadier light.']}"
-                                },
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Conditions: [
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "royal_league_champion"
-                                },
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "no_defeated_pyramid_challenger_1"
-                                }
-                            ],
-                            Label: "battle_button"
-                        },
                         {
                             Name: "Not yet",
                             Actions: [
@@ -145,13 +87,13 @@
                     ],
                     Texts: [
                         {
-                            Text: "House rules, Champion - the Frontier lends the team, your caught ones stay in the box. Nothing you love dies on this floor. There is no light down here but what you carry. Ready to climb?"
+                            Text: "New house rules, Champion - the King runs the descent whole now. One heal at his door and none after, three of us in the dark back to back. Your own six do the carrying, and this floor keeps death off the table - but not the hurt. Speak to Brandon below when your torch is ready."
                         },
                         {
-                            Text: "The old Company built this pyramid for wonder, not the ledger, then walked off and left the dark behind. I guide people through it. Bring your own light and I will bring the battle."
+                            Text: "The old Company built this pyramid for wonder, not the ledger, then walked off and left the dark behind. I hold the first chamber. When Brandon opens the descent, I am the first thing your torch finds - and after me it only gets darker."
                         },
                         {
-                            Text: "Everyone thinks the Battle Pyramid is about the Regis at the bottom. It is not. It is about whether you can fight in the dark. Step in - my team, your call."
+                            Text: "Everyone thinks the Battle Pyramid is about the Regis at the bottom. It is not. It is about what you carry - out of my chamber, into the next, all the way down. The King starts the climb at his door. I just start the hurting."
                         }
                     ],
                     Name: "Default",

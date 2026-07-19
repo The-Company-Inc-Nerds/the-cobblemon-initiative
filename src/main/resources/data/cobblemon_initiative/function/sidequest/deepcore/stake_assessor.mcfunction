@@ -11,5 +11,11 @@ execute if score #stk_ok cd_calc matches 1.. run cobbledollars remove @s 250
 execute if score #stk_ok cd_calc matches 1.. run title @s actionbar [{"text":"Stake logged: 250 CD. ","color":"gold"},{"text":"The vault wager is live.","color":"gray"}]
 # Win side carries the shipped wager_sweetener rider (+25..100 CD, announced; the 500 return and
 # the 250 stake stay FIXED - committed amounts never roll). onwin lists are single-quoted SNBT.
-execute if score #stk_ok cd_calc matches 1.. run tbcs battle GEN_9_SINGLES @s vs rctmod:sq_deepcore_assessor onwin {1: ['cobbledollars give @1 500', 'tag @1 add defeated_sq_deepcore_assessor', '@2 say Adjustment reversed. The vault is yours to read. I was told you were a closed file - the file appears to be open.', 'execute as @1 run function cobblemon_initiative:economy/wager_sweetener'], 2: ['@1 say Non-compliance is billable. The stake reconciles in the Company favor. Do enjoy the receipt.']}
+# TBCS refuses an unattached trainer ("X is not attached to an entity" — the Stadium
+# finding; live-caught for this dispatch 2026-07-18). Anchor idiom: invisible stand at
+# the player, attach, battle; both onwin branches sweep the anchor.
+execute if score #stk_ok cd_calc matches 1.. run kill @e[tag=ci_anchor_sq_deepcore_assessor]
+execute if score #stk_ok cd_calc matches 1.. at @s run summon minecraft:armor_stand ~1.5 ~ ~ {Invisible:1b,NoGravity:1b,Tags:["ci_anchor_sq_deepcore_assessor"]}
+execute if score #stk_ok cd_calc matches 1.. run tbcs attach rctmod:sq_deepcore_assessor @e[tag=ci_anchor_sq_deepcore_assessor,limit=1]
+execute if score #stk_ok cd_calc matches 1.. run tbcs battle GEN_9_SINGLES @s vs rctmod:sq_deepcore_assessor onwin {1: ['kill @e[tag=ci_anchor_sq_deepcore_assessor]', 'cobbledollars give @1 500', 'tag @1 add defeated_sq_deepcore_assessor', '@2 say Adjustment reversed. The vault is yours to read. I was told you were a closed file - the file appears to be open.', 'execute as @1 run function cobblemon_initiative:economy/wager_sweetener'], 2: ['kill @e[tag=ci_anchor_sq_deepcore_assessor]', '@1 say Non-compliance is billable. The stake reconciles in the Company favor. Do enjoy the receipt.']}
 execute if score #stk_ok cd_calc matches 0 unless entity @s[tag=defeated_sq_deepcore_assessor] unless entity @s[tag=declined_sq_deepcore_assessor] run title @s actionbar [{"text":"Stake declined. ","color":"red"},{"text":"The vault does not extend credit. (250 CD required)","color":"gray"}]

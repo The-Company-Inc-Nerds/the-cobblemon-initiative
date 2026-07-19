@@ -64,6 +64,9 @@
                         },
                         {
                             Text: "Champion of the whole climb. The old stones bowed to your torch. Whatever you were before you walked in here stays walled in the dark with them. Go on up to the light."
+                        },
+                        {
+                            Text: "You held your light to the very bottom. The Pyramid is yours, Champion - and so is whatever the dark down here was keeping for you."
                         }
                     ],
                     Name: "Beaten",
@@ -73,47 +76,12 @@
                     Priority: 10,
                     Buttons: [
                         {
-                            Name: "Battle Pyramid King Brandon",
+                            Name: "Enter the dark",
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "frontier_pyramid_cleared"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "say You woke my stones and put them back to sleep. The summit of the Pyramid is yours. The dark remembers you now - it does not need to say why."
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_frontier_pyramid_cleared"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tbcs attach rctmod:frontier_brain_pyramid @s"
-                                },
-                                {
-                                    Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_frontier_pyramid_cleared"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:frontier_brain_pyramid onwin {1: ['cobbledollars give @1 3000', 'tag @1 add frontier_pyramid_cleared', '@2 say The three ancients kneel and the giant with them. You held your light to the very bottom. The Pyramid is yours, Champion - and so is whatever the dark down here was keeping for you.', 'execute as @1 run function cobblemon_initiative:frontier/hall_cleared'], 2: ['@1 say The stones stand and the dark keeps its bottom. No shame - the old Regis have buried better torches than yours. Relight, and come find the summit again.']}"
+                                    Cmd: "cobblemon-initiative frontier pyramid start"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -128,20 +96,10 @@
                                 {
                                     Type: "PLAYER_TAG",
                                     Operation: "EQUALS",
-                                    Name: "defeated_pyramid_challenger_1"
-                                },
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "defeated_pyramid_challenger_2"
-                                },
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
                                     Name: "no_frontier_pyramid_cleared"
                                 }
                             ],
-                            Label: "battle_button"
+                            Label: "start_button"
                         },
                         {
                             Name: "Not yet",
@@ -155,13 +113,13 @@
                     ],
                     Texts: [
                         {
-                            Text: "So you reached the bottom with your light still burning. Good. I am Brandon - I woke the three ancient Regis from the stone and I fight beside them here, in the last wing the Company ever built for wonder instead of the ledger. House rules: my team, your box stays sealed. Bring your own light."
+                            Text: "So you reached the bottom with your light still burning. Good. I am Brandon - I woke the three ancient Regis from the stone, and I run the descent whole now, here in the last wing the Company ever built for wonder instead of the ledger. My door heals you once. After that, nothing does - what you carry out of each fight is what you carry into the next."
                         },
                         {
-                            Text: "The King of the dark climb, they call me. I remember the day this pyramid opened - a hand was shaken, a plaque was hung, nobody down here ever took it down. Odd, that a face from that day should walk to the bottom of my dark. Fight me. My stones, your torch, your call."
+                            Text: "The King of the dark climb, they call me. I remember the day this pyramid opened - a hand was shaken, a plaque was hung, nobody down here ever took it down. Odd, that a face from that day should walk to the bottom of my dark. The rules are old ones: one heal at the door, then Marco, then Priya, then me, back to back with nothing between. Fall to any of us and you start again at the door."
                         },
                         {
-                            Text: "Regirock, Regice, Registeel - and the giant that sleeps behind them. Older than the Company, older than the coup, older than whatever the world decided to forget. You want the summit of the Pyramid, you take it from them. Step into the dark."
+                            Text: "Regirock, Regice, Registeel - and the giant that sleeps behind them. Older than the Company, older than the coup, older than whatever the world decided to forget. You want the summit of the Pyramid, you take the whole descent in one breath - no healing between chambers, and a loss resets it all. Step into the dark when you are ready to stay there."
                         }
                     ],
                     Name: "Default",

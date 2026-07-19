@@ -115,13 +115,17 @@
       "rcon": "execute as {player} run cobblemon-initiative givemon garchomp level=100"
     },
     {
+      "rcon": "healpokemon {player}",
+      "comment_": "cross-scenario attrition guard (live-caught 2026-07-18: fights entered with fainted leads make autobattle pass turns forever = endless slow loss)"
+    },
+    {
       "rcon": "execute as {player} run cobblemon-initiative dev bot autobattle on"
     },
     {
       "comment": "-- beat 1: Marisol at the dry well - the board (prio 20 preempts the default greet while oasis_restored is absent), then the dry_brief sub-dialog, then the accept. open_dialog swaps the entry in place (pay_probes precedent: click, short sleep, expect). --"
     },
     {
-      "rcon": "tp {player} 2040 136 4100"
+      "rcon": "tp {player} 2038.0 136 4098.0"
     },
     {
       "sleep": 2.0
@@ -231,7 +235,7 @@
     },
     {
       "wait_chat": "Yield disruption logged",
-      "timeout": 180
+      "timeout": 360
     },
     {
       "sleep": 1.5,
@@ -272,7 +276,7 @@
     },
     {
       "wait_chat": "reroute AROUND you",
-      "timeout": 180
+      "timeout": 360
     },
     {
       "sleep": 1.5
@@ -329,7 +333,7 @@
       "comment": "-- beat 5: report to Marisol (report_water, prio 30). water_reward fires subtitle THEN title; wait_chat is seq-cursored since the previous step, so the shut-offs earlier title cannot satisfy this second REACH DRINKS --"
     },
     {
-      "rcon": "tp {player} 2040 136 4100"
+      "rcon": "tp {player} 2038.0 136 4098.0"
     },
     {
       "sleep": 2.0

@@ -70,10 +70,64 @@ done, Claude removes it **and** any release-removal it unblocks.
 **Scenario wave 3 AUTHORED (workflow, 13 agents): 33 scenarios, `scenario_lint --all`
 errors:0** — town packs gyms 3-7 (17), shrine_dragon + shrine_wiring, Frontier (registrar +
 7 halls + complete), noble_giver_smoke, safari_bait_fee, bryn_wisp, memo_checkpoint_recognition,
-plus safari_yards funding + daycare_board un-park edits. **Live-verified so far: daycare_board
-58/58, safari_bait_fee 56/56, bryn_wisp 54/54, memo_checkpoint_recognition 58/58 + the hydra
-run above. 🔍 REMAINING: serial live verification of the other ~28** (the established loop;
-tp coords already re-based onto the probe data).
+plus safari_yards funding + daycare_board un-park edits.
+
+**VERIFICATION LOOP RUN 2026-07-18/19 — 22 of 32 FULLY GREEN:** all five town packs
+(mystic ×3 + bryn, deepcore ×4 incl. the full Iron Ladder 87/87, gaviota ×3, kalahar ×2,
+cyber ×4), memo_checkpoint (soften ruling verified 60/60), shrine_wiring 53/53 (incl. the
+mandatory-fairy gate), frontier_registrar 64/64, daycare_board 58/58, safari_bait_fee 56/56.
+Loop fixes that landed (all scenario/harness-side): battle dispatch ANCHORING for 7
+function-dispatched trainer ids (see below — real content bug), between-fight `healpokemon`
+in every battle scenario (a fainted lead makes autobattle pass-loop to a slow loss),
+frontier residue strips (failed runs skip cleanup → cleared/defeat tags leak), battle-GUI
+`screen.close`+win-line pacing idiom, win-line windows 360-600s (Cobblemon paces battle
+messages — fights run minutes), tp-off-the-import-point offsets in 22 scenarios (an NPC
+import at the player's exact spot SHOVES them into adjacent blocks = hardcore suffocation;
+killed the driver twice).
+- [x] **CLOSED 2026-07-19 — WONDER TEAM (showrunner idea): 31 of 33 wave-3 scenarios now
+  FULLY GREEN.** The brain-fight autobattle ceiling fell to
+  `givemon raikou level=100 ability=wonderguard held_item=cobblemon:air_balloon
+  moves=icebeam,surf,thunderbolt,flashcannon` — pure Electric's only weakness is Ground,
+  the balloon negates it, Wonder Guard blocks the rest and the balloon never pops (nothing
+  ever lands); slot-1 Ice Beam because NO type is immune (an Electric lead vs an enemy
+  Ground-type would zero-damage-loop under first-legal-move). Solo'd a frontier brain on
+  the first live test; `moves=`/`ability=`/`held_item=` all work in givemon property
+  strings. All 7 halls green (114-128 steps each), shrine_dragon 94/94 (a7 applied via
+  direct function call — `/reload` eats scheduled applies), noble_giver_smoke 73/73.
+  **SHRINE LEADERS PLACED**: all five had NO body source at all (alpha.18 authored their
+  dialogs, never their bodies) — placed at the trainer-config altar coords with live-probed
+  ground (fairy re-placed INSIDE the underground shrine at [951,3,2715]; Draconis on the
+  y69-71 trial floor). Harness law added: a consumed fight leaves the brain body gone with
+  #amb=1 — hall preambles now kill+re-arm the BRAIN latch too (stale hud-buffer win-line
+  matches made three scenarios false-pass while all seven brains were bodiless).
+- [x] **RULED 2026-07-19 — Warden early-open ACCEPTED (post-game gating/order waived by
+  showrunner).** The 9-condition `all_tags` early-open is documented in ENGINE_FINDINGS
+  §2 as an Easy NPC caveat (never rely on wide ANDs for story-critical gates; lower to a
+  band tag instead — no shipped story-critical gate uses >2). frontier_complete's
+  shut-door beat removed per the ruling; expected green on its next live run.
+- [ ] 🧱 **Parkour timer calibration (fire + ice)** — fully self-serve now:
+  **ModMenu → Trial Timers** has 10-200s sliders for both trials that override the
+  baked values LIVE (adjust → save → run again, no rebuild); the finish line prints
+  RAW ELAPSED ("Finished in 47s — with 1m 13s to spare") and the timeout line prints
+  elapsed too, so even a busted walk yields the number. Guidance: **fire = clean run
+  × 2** (the timer IS the trial — endgame, no floor hazard), **ice = careful clean
+  run × 2.5** (the hazard floor is the real challenge; timer as backstop). When the
+  numbers settle, hand them to me (or leave them in the slider config) and I bake
+  them into `shrine_challenges/{fire,ice}.json` so fresh installs ship them.
+- [x] **RULED 2026-07-19 — shrine crystals are working AS DESIGNED**: the crystal is
+  placed anywhere → raw-spawns the shrine guardian as a REAL WILD Cobblemon to fight and
+  capture (fire→Moltres, ground→Groudon, ice→Articuno, dragon→Rayquaza, fairy→Xerneas,
+  all lv 70). It is NOT a noble launcher — the old "crystal-launch Java repoint" deferred
+  note is retired. (The guardians that also have noble encounters keep those as separate
+  site-based set-pieces; the crystal is the free-placement capture path.)
+- **GROUND-PROBE WAVE 2 (shrine + noble-giver casts — same placeholder-Y class):** 12 of
+  17 probed placements were buried/floating — fairy shrine cast authored at y=-7 (real
+  floor y4-9!), Manaphy giver y33→63, ice cultist_2 68→74, dragon cultists ±4. All
+  re-based + repair wave a7 shipped. The five noble monuments/givers probed OK (alpha.5's
+  work held).
+- **Wedge trap: ZERO faults trapped all session** across ~40 battles — today's stall
+  reports were all pacing/attrition/attach, a different family than the 07-17 wedge. The
+  containment stays armed.
 
 **Content findings from the authoring wave — ALL TRIAGED + FIXED 2026-07-18 (showrunner
 rulings applied; runtime re-verify rides the scenario loop):**
@@ -112,6 +166,13 @@ rulings applied; runtime re-verify rides the scenario loop):**
 - [x] scenario_lint: escape-aware text extractors (mcfunction + Java) + win/lose/
   already_beaten lines in the corpus (warnings 221→194); safari_yards hostile sweep
   re-anchored `execute as {player} at @s` (was measuring from world spawn)
+- [x] **TBCS ATTACH BUG (live-caught in the loop, REAL content bug): 7 function-dispatched
+  trainer ids battled UNATTACHED** — "X is not attached to an entity", the battles could
+  never fire in-world: granary_ambush, sq_deepcore_assessor (stake + decline),
+  sq_headcount_wager, sq_hz_analyst (stake + decline each), sq_ladder_1/2/3. All 10
+  dispatch functions now carry the armor-stand anchor idiom (summon→attach→battle,
+  anchor swept in both onwin branches). Dialog-launched battles were always fine (the
+  compiler emits `tbcs attach ... @s` in the preset button chain).
 
 ---
 

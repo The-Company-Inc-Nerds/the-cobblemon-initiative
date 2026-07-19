@@ -57,10 +57,10 @@
                     ],
                     Texts: [
                         {
-                            Text: "Fresh challengers dock here daily and you outsailed the first of them. The Admiral holds the deep water at the end of the pier."
+                            Text: "Clean crossing. The pier is yours - the Admiral waits in the deep water past the last mooring."
                         },
                         {
-                            Text: "You read the swell before it crested. Off you go - the Port does not keep the ones who can already swim."
+                            Text: "You out-sailed the whole crew of us in one tide. The Port does not keep the ones who can already swim - off to the deep berth with you."
                         }
                     ],
                     Name: "Stern - the tide turns",
@@ -70,47 +70,12 @@
                     Priority: 10,
                     Buttons: [
                         {
-                            Name: "Battle Captain Stern",
+                            Name: "Muster the crew - 2v2",
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "defeated_port_challenger_1"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "say You already cleared my crossing. The Admiral holds the far end of the pier - that is where the real deep water starts."
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_defeated_port_challenger_1"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tbcs attach rctmod:port_challenger_1 @s"
-                                },
-                                {
-                                    Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_defeated_port_challenger_1"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:port_challenger_1 onwin {1: ['cobbledollars give @1 800', 'tag @1 add defeated_port_challenger_1', '@2 say Clean crossing. The pier is yours - the Admiral waits in the deep water past the last mooring.'], 2: ['@1 say The sea does not forgive a slack sail. Dry off and come back for another crossing.']}"
+                                    Cmd: "cobblemon-initiative frontier port crew"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -128,7 +93,7 @@
                                     Name: "no_defeated_port_challenger_1"
                                 }
                             ],
-                            Label: "battle_button"
+                            Label: "muster_button"
                         },
                         {
                             Name: "Not this tide",
@@ -142,13 +107,13 @@
                     ],
                     Texts: [
                         {
-                            Text: "Battle Port. Fresh challengers daily - today that is me, and tomorrow it is somebody else. The Company built this dock for spectacle, back when it built things for people. Care to test the water?"
+                            Text: "Battle Port. Fresh challengers daily - and today the roster posts two of us, because on this dock we fight as a crew. Two on two on the open water, house rules. The Company built this dock for spectacle, back when it built things for people. Care to test the water?"
                         },
                         {
-                            Text: "The harbor lends the teams, so nothing of yours goes down with the ship. My rain is already falling. Step aboard when you are ready."
+                            Text: "One tide, one muster, all four hulls on the water at once - that is the whole trick of this dock. Crest sails at my shoulder, and Deckhand Maru takes your flank the moment you call it. Nothing of yours goes down on this floor. My rain is already falling."
                         }
                     ],
-                    Name: "Stern - the docker on shift",
+                    Name: "Stern - the crew on shift",
                     Label: "default"
                 }
             ]

@@ -46,74 +46,12 @@
                     Priority: 20,
                     Buttons: [
                         {
-                            Name: "Take the stairs up",
+                            Name: "Take the lift",
                             Actions: [
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "leave_button"
-                        }
-                    ],
-                    Texts: [
-                        {
-                            Text: "Floor one is yours. You go up. That is the only direction this tower knows."
-                        },
-                        {
-                            Text: "Cleared. The Company built these floors to sort people into ranks - climb high enough and you were somebody. Nobody sorts you now. You just climb."
-                        },
-                        {
-                            Text: "Promotion granted. The desk on the next floor is empty, same as this one. We run the ladder ourselves these days."
-                        }
-                    ],
-                    Name: "Climber Jasper - floor cleared",
-                    Label: "beaten"
-                },
-                {
-                    Priority: 10,
-                    Buttons: [
-                        {
-                            Name: "Battle Climber Jasper",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "defeated_tower_challenger_1"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "say You already hold this floor. The promotion is one flight up."
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_defeated_tower_challenger_1"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tbcs attach rctmod:tower_challenger_1 @s"
-                                },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_defeated_tower_challenger_1"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:tower_challenger_1 onwin {1: ['cobbledollars give @1 800', 'tag @1 add defeated_tower_challenger_1', '@2 say Floor cleared. You move up. That is how this tower works.'], 2: ['@1 say Down a floor. No shame in it - the climb resets. Come back and take it again.']}"
+                                    Cmd: "cobblemon-initiative frontier tower climb"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -128,10 +66,63 @@
                                 {
                                     Type: "PLAYER_TAG",
                                     Operation: "EQUALS",
-                                    Name: "no_defeated_tower_challenger_1"
+                                    Name: "no_frontier_tower_cleared"
                                 }
                             ],
-                            Label: "battle_button"
+                            Label: "climb_button"
+                        },
+                        {
+                            Name: "Step away from the desk",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Floor cleared. You move up - and so do I. The roster re-mans every landing, so the lift will find me again on a higher floor at a higher lock. That is how this tower works."
+                        },
+                        {
+                            Text: "You beat me down here and I signed the promotion myself. Do not get comfortable - I am already re-manned upstairs, and the ceiling only rises. The lift is waiting."
+                        },
+                        {
+                            Text: "Cleared. The Company built these floors to sort people into ranks - climb high enough and you were somebody. Nobody sorts you now. Mind the one rule that survived: a loss resets the climb."
+                        }
+                    ],
+                    Name: "Climber Jasper - floor cleared",
+                    Label: "beaten"
+                },
+                {
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "Take the lift",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative frontier tower climb"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "royal_league_champion"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_frontier_tower_cleared"
+                                }
+                            ],
+                            Label: "climb_button"
                         },
                         {
                             Name: "Step off the floor",
@@ -145,13 +136,13 @@
                     ],
                     Texts: [
                         {
-                            Text: "Welcome to the ground floor. Every floor above is a promotion, and I am the first review you have to pass."
+                            Text: "Welcome to the ground floor. Nine floors, one lift, and every floor above is a promotion review. House teams both sides, flattened to the floor level - nothing you love is at stake on the way up."
                         },
                         {
-                            Text: "The tower does not care who you toppled at the League. Down here you start at the bottom like everyone else - so, climb."
+                            Text: "The tower does not care who you toppled at the League. The lift opens one floor at a time, the roster re-mans every landing, and a loss resets the climb to this desk. So - climb."
                         },
                         {
-                            Text: "House rules: my team, not yours. Nothing you love dies on this floor. Beat me and you earn the floor above."
+                            Text: "House rules: floor two starts flattened at forty and the lock rises every landing to eighty-eight. The Tycoon holds floor nine and he does not flatten anything. Take the lift when you are ready."
                         }
                     ],
                     Name: "Climber Jasper",

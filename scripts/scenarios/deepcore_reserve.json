@@ -43,7 +43,7 @@
       "comment": "-- tp to the pit-head Center FIRST (latches spawn within 40b; no kills needed here - all four bodies persist, no latch reset), then daylight + battle prep --"
     },
     {
-      "rcon": "tp {player} 1092.5 114 3208.5"
+      "rcon": "tp {player} 1090.5 114 3206.5"
     },
     {
       "sleep": 2.0
@@ -86,6 +86,10 @@
     },
     {
       "rcon": "execute as {player} run cobblemon-initiative givemon garchomp level=100"
+    },
+    {
+      "rcon": "healpokemon {player}",
+      "comment_": "cross-scenario attrition guard (live-caught 2026-07-18: fights entered with fainted leads make autobattle pass turns forever = endless slow loss)"
     },
     {
       "rcon": "execute as {player} run cobblemon-initiative dev bot autobattle on"
@@ -170,7 +174,7 @@
       "comment": "-- beat 3: the Re-Verified Reserve Ledger at the Company field office - read_button arms the turn-in stage (deepcore_ledger_seen) --"
     },
     {
-      "rcon": "tp {player} 1152.5 146 3284.5"
+      "rcon": "tp {player} 1150.5 146 3282.5"
     },
     {
       "sleep": 2.0
@@ -326,7 +330,8 @@
       "click": "Take the wager - 250 CD on the line"
     },
     {
-      "wait_no_screen": true
+      "client": "screen.close",
+      "comment_": "battle GUI replaces the dialog now that the dispatch is ANCHORED (2026-07-18) — close it and let the win-line wait pace the fight (wisps idiom)"
     },
     {
       "wait_chat": "Stake logged: 250 CD",
@@ -337,7 +342,7 @@
     },
     {
       "wait_chat": "Adjustment reversed",
-      "timeout": 180
+      "timeout": 360
     },
     {
       "wait_chat": "The purse runs heavy",
@@ -354,7 +359,7 @@
       "comment": "-- beat 8: vault epilogue. Roderick persists (despawn_on_win false) and must show the beaten entry (prio 40); the board must show the FILED addendum (prio 20, say pair covered any-of) --"
     },
     {
-      "rcon": "tp {player} 1150.5 146 3282.5"
+      "rcon": "tp {player} 1148.5 146 3280.5"
     },
     {
       "sleep": 1.5

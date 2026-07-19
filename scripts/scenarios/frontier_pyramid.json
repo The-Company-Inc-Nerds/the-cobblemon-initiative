@@ -1,21 +1,24 @@
 {
   "name": "frontier_pyramid",
-  "description": "Battle Pyramid hall end-to-end (q.side_frontier_hall stage 6): Explorer Marco -> Archaeologist Priya -> Pyramid King Brandon under dev-bot autobattle, then the beaten lane. Every frontier battle button gates on champion (compiles to PLAYER_TAG royal_league_champion, force-set here, stripped at cleanup); Brandon's button additionally gates on both challenger defeat tags, so it RENDERING after the two wins IS the gate assert (wheat_war precedent). The brain's on_win fires frontier/hall_cleared: 'A Frontier hall falls.' actionbar + the #halls quest_hud recount - the preamble strips the OTHER six hall tags plus frontier_warden_stirred so '#halls==1 / warden not stirred' holds regardless of what earlier frontier runs left behind. Challengers are type one_time and the brain gym_leader - neither despawns on win (only villain/gauntlet types do), so re-runs need tag surgery only, no kill/latch re-arm. Win waits ride the KNOWN intermittent TBCS stall (~50% family) + the ~1/10 showdown engine wedge: a timeout there is almost certainly the stall, not a pyramid regression - re-run before filing.",
+  "description": "Battle Pyramid hall end-to-end (q.side_frontier_hall stage 6) — RE-CUT for the FrontierManager gauntlet (2026-07-19): the hall no longer has dialog battle buttons. Brandon's 'Enter the dark' button fires 'cobblemon-initiative frontier pyramid start'; the manager heals ONCE at the door then chains Marco -> Priya -> Brandon ~2-3s apart with NO heals between, and a loss resets the gauntlet. Pyramid fights are PURSE-LESS and lock=0 (REAL fights vs the authored teams, not flattened clones) — do NOT wait on '[Frontier] Purse paid' here; each fight is waited via the manager's chat beat then CONFIRMED by the defeat-tag rcon assert. The two 'It kneels.' waits are duplicate lines: each is preceded by a 'dev bot battlestate' probe (an EMITTER — it re-opens the wait_chat window past the previous match, and dumps stall evidence into the transcript). Fights auto-dispatch server-side under dev-bot autobattle; the manager sets the exact same tags the old onwin chain did (defeated_pyramid_challenger_1/2, defeated_frontier_brain_pyramid, frontier_pyramid_cleared) so every beaten lane and the hall_cleared chain ('A Frontier hall falls.' + #halls recount) still fire. The 'Enter the dark' button RENDERING is the champion-gate assert (compiles to PLAYER_TAG royal_league_champion + no_frontier_pyramid_cleared). Win waits ride the KNOWN intermittent TBCS stall (~50% family) + the ~1/10 showdown engine wedge: a timeout there is almost certainly the stall, not a pyramid regression - re-run before filing.",
   "_probe_pending": [
     "3815.5 159 2976.5"
   ],
   "steps": [
     {
-      "comment": "-- SITE NOTES: all three bodies are latch-placed (no uuid) on the shipped RCT frontier plateau anchors - Marco [3812.5 159 2976.5], Priya [3818.5 159 2976.5], Brandon [3815.5 159 2982.5]. The y=159 cluster has NEVER been ground-verified live (Frontier memory: 'coords/atlas + runtime smoke pending'), hence _probe_pending on the tp; do NOT guess a corrected Y. The frontier_active region tick (AABB x3760-3840 y150-195 z2945-3015) suspends Nuzlocke faint mechanics here - safe exhibition, but NOT a SafeZone: mobs still spawn and still hurt the hardcore player, hence day + regen below. --"
+      "comment": "-- SITE NOTES: all three bodies are latch-placed (no uuid) on the shipped RCT frontier plateau anchors - Marco [3812.5 159 2976.5], Priya [3818.5 159 2976.5], Brandon [3815.5 159 2982.5]. The y=159 cluster has NEVER been ground-verified live (Frontier memory: 'coords/atlas + runtime smoke pending'), hence _probe_pending on the tp; do NOT guess a corrected Y. The frontier_active region tick (AABB x3760-3840 y150-195 z2945-3015) suspends Nuzlocke faint mechanics here - safe exhibition, but NOT a SafeZone: mobs still spawn and still hurt the hardcore player, hence day + regen below. Manager fights dispatch AT THE PLAYER (invisible anchor stands ~2b out, swept on battle end), so standing at Brandon's door is all the positioning the gauntlet needs. --"
     },
     {
-      "comment": "-- reset (idempotent re-runs): this hall's three defeat tags, PLUS the other six hall tags + the warden latch so the aggregate asserts stay exact --"
+      "comment": "-- reset (idempotent re-runs): this hall's four defeat tags, PLUS the other six hall tags + the warden latch so the aggregate asserts stay exact. The manager's alreadyBeaten guard SKIPS a chain stage whose defeat tag is present (chain wedges) - stripping them is now load-bearing for the start, not just for the asserts --"
     },
     {
       "rcon": "tag {player} remove defeated_pyramid_challenger_1"
     },
     {
       "rcon": "tag {player} remove defeated_pyramid_challenger_2"
+    },
+    {
+      "rcon": "tag {player} remove defeated_frontier_brain_pyramid"
     },
     {
       "rcon": "tag {player} remove frontier_pyramid_cleared"
@@ -84,7 +87,7 @@
       "rcon": "effect give {player} minecraft:regeneration 480 2"
     },
     {
-      "comment": "-- party reset: empty all six slots then two lv-100 Garchomp - the Frontier fights at the ceiling, a junk lv-5 party stalls TBCS battle init (wheat_war lesson), and two mons give first-legal-move autobattle its attrition headroom --"
+      "comment": "-- party reset: empty all six slots then six lv-100 Raikou - the Frontier fights at the ceiling, a junk lv-5 party stalls TBCS battle init (wheat_war lesson). Pyramid fights are lock=0 REAL fights, but Wonder Guard + Air Balloon means the team takes no damage anyway - the no-heal chain costs it nothing but PP --"
     },
     {
       "rcon": "takepokemon {player} 1"
@@ -105,10 +108,138 @@
       "rcon": "takepokemon {player} 1"
     },
     {
-      "rcon": "execute as {player} run cobblemon-initiative givemon garchomp level=100"
+      "rcon": "execute as {player} run cobblemon-initiative givemon raikou level=100 ability=wonderguard held_item=cobblemon:air_balloon moves=icebeam,surf,thunderbolt,flashcannon",
+      "comment_": "WONDER TEAM (showrunner idea 2026-07-19, brain-fight solo-verified): pure Electric's only weakness is Ground -> Air Balloon negates it; Wonder Guard blocks everything else and the balloon never pops (nothing lands). Slot-1 Ice Beam: accurate, NO type is immune (an Electric lead vs enemy Ground-types would zero-damage-loop under first-legal-move autobattle)."
     },
     {
-      "rcon": "execute as {player} run cobblemon-initiative givemon garchomp level=100"
+      "rcon": "execute as {player} run cobblemon-initiative givemon raikou level=100 ability=wonderguard held_item=cobblemon:air_balloon moves=icebeam,surf,thunderbolt,flashcannon"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon raikou level=100 ability=wonderguard held_item=cobblemon:air_balloon moves=icebeam,surf,thunderbolt,flashcannon"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon raikou level=100 ability=wonderguard held_item=cobblemon:air_balloon moves=icebeam,surf,thunderbolt,flashcannon"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon raikou level=100 ability=wonderguard held_item=cobblemon:air_balloon moves=icebeam,surf,thunderbolt,flashcannon"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon raikou level=100 ability=wonderguard held_item=cobblemon:air_balloon moves=icebeam,surf,thunderbolt,flashcannon"
+    },
+    {
+      "rcon": "healpokemon {player}",
+      "comment_": "cross-scenario attrition guard (live-caught 2026-07-18: fights entered with fainted leads make autobattle pass turns forever = endless slow loss). The manager door-heal covers the chain; this covers the walk TO the door."
+    },
+    {
+      "comment": "-- frontier residue strip (2026-07-18): failed runs skip cleanup, so cleared/defeat tags leak across attempts and reroute gated entries (the 'open Warden door' false alarm) --"
+    },
+    {
+      "comment": "-- brain latch re-arm (2026-07-19): a consumed fight leaves the brain BODY gone with #amb=1 — every later run finds nothing (all 7 brains were bodiless by round 4; three scenarios then false-matched STALE buffer win lines). Kill any stale body + reset the latch; the 40b approach respawns him fresh. --"
+    },
+    {
+      "rcon": "execute as {player} at @s run kill @e[name=\"frontier_brain_pyramid\",type=!minecraft:player,distance=..64]"
+    },
+    {
+      "rcon": "scoreboard players set #amb_frontier_brain_pyramid ci_ambient 0"
+    },
+    {
+      "rcon": "tag {player} remove frontier_arcade_cleared"
+    },
+    {
+      "rcon": "tag {player} remove defeated_arcade_challenger_1"
+    },
+    {
+      "rcon": "tag {player} remove defeated_arcade_challenger_2"
+    },
+    {
+      "rcon": "tag {player} remove defeated_frontier_brain_arcade"
+    },
+    {
+      "rcon": "tag {player} remove frontier_castle_cleared"
+    },
+    {
+      "rcon": "tag {player} remove defeated_castle_challenger_1"
+    },
+    {
+      "rcon": "tag {player} remove defeated_castle_challenger_2"
+    },
+    {
+      "rcon": "tag {player} remove defeated_frontier_brain_castle"
+    },
+    {
+      "rcon": "tag {player} remove frontier_factory_cleared"
+    },
+    {
+      "rcon": "tag {player} remove defeated_factory_challenger_1"
+    },
+    {
+      "rcon": "tag {player} remove defeated_factory_challenger_2"
+    },
+    {
+      "rcon": "tag {player} remove defeated_frontier_brain_factory"
+    },
+    {
+      "rcon": "tag {player} remove frontier_market_cleared"
+    },
+    {
+      "rcon": "tag {player} remove defeated_market_challenger_1"
+    },
+    {
+      "rcon": "tag {player} remove defeated_market_challenger_2"
+    },
+    {
+      "rcon": "tag {player} remove defeated_frontier_brain_market"
+    },
+    {
+      "rcon": "tag {player} remove frontier_port_cleared"
+    },
+    {
+      "rcon": "tag {player} remove defeated_port_challenger_1"
+    },
+    {
+      "rcon": "tag {player} remove defeated_port_challenger_2"
+    },
+    {
+      "rcon": "tag {player} remove defeated_frontier_brain_port"
+    },
+    {
+      "rcon": "tag {player} remove frontier_pyramid_cleared"
+    },
+    {
+      "rcon": "tag {player} remove defeated_pyramid_challenger_1"
+    },
+    {
+      "rcon": "tag {player} remove defeated_pyramid_challenger_2"
+    },
+    {
+      "rcon": "tag {player} remove defeated_frontier_brain_pyramid"
+    },
+    {
+      "rcon": "tag {player} remove frontier_tower_cleared"
+    },
+    {
+      "rcon": "tag {player} remove defeated_tower_challenger_1"
+    },
+    {
+      "rcon": "tag {player} remove defeated_tower_challenger_2"
+    },
+    {
+      "rcon": "tag {player} remove defeated_frontier_brain_tower"
+    },
+    {
+      "rcon": "tag {player} remove frontier_cave_cleared"
+    },
+    {
+      "rcon": "tag {player} remove defeated_cave_challenger_1"
+    },
+    {
+      "rcon": "tag {player} remove defeated_cave_challenger_2"
+    },
+    {
+      "rcon": "tag {player} remove defeated_frontier_brain_cave"
+    },
+    {
+      "rcon": "tag {player} remove frontier_all_cleared"
     },
     {
       "rcon": "execute as {player} run cobblemon-initiative dev bot autobattle on"
@@ -128,82 +259,7 @@
       "expect": "passed"
     },
     {
-      "comment": "-- beat 1: Explorer Marco, first chamber. say[] rotates - assert the stable battle button (its rendering is also the champion-gate assert) --"
-    },
-    {
-      "find_npc": "Explorer Marco",
-      "save": "c1"
-    },
-    {
-      "interact_npc": "{c1.uuid}"
-    },
-    {
-      "wait_screen": "Dialog"
-    },
-    {
-      "expect_screen_text": "Battle Explorer Marco"
-    },
-    {
-      "screenshot": "pyramid_marco"
-    },
-    {
-      "click": "Battle Explorer Marco"
-    },
-    {
-      "comment": "-- battle-start buttons have no close action; the fight runs server-side (autobattle) while the stale dialog stays up - close it, then the win wait anchors here --"
-    },
-    {
-      "client": "screen.close"
-    },
-    {
-      "wait_chat": "First chamber cleared and your torch never went out.",
-      "timeout": 240
-    },
-    {
-      "rcon": "execute if entity @a[name={player},tag=defeated_pyramid_challenger_1]",
-      "expect": "passed"
-    },
-    {
-      "sleep": 1.0
-    },
-    {
-      "comment": "-- beat 2: Archaeologist Priya, deep chamber --"
-    },
-    {
-      "find_npc": "Archaeologist Priya",
-      "save": "c2"
-    },
-    {
-      "interact_npc": "{c2.uuid}"
-    },
-    {
-      "wait_screen": "Dialog"
-    },
-    {
-      "expect_screen_text": "Battle Archaeologist Priya"
-    },
-    {
-      "screenshot": "pyramid_priya"
-    },
-    {
-      "click": "Battle Archaeologist Priya"
-    },
-    {
-      "client": "screen.close"
-    },
-    {
-      "wait_chat": "The deep chamber is yours.",
-      "timeout": 240
-    },
-    {
-      "rcon": "execute if entity @a[name={player},tag=defeated_pyramid_challenger_2]",
-      "expect": "passed"
-    },
-    {
-      "sleep": 1.0
-    },
-    {
-      "comment": "-- beat 3: Pyramid King Brandon - his button gates on BOTH challenger tags; it appearing IS the gate assert --"
+      "comment": "-- beat 1: the door. Brandon's default entry rotates; assert the stable 'Enter the dark' button - its RENDERING is the champion + not-cleared gate assert --"
     },
     {
       "find_npc": "Pyramid King Brandon",
@@ -216,30 +272,78 @@
       "wait_screen": "Dialog"
     },
     {
-      "expect_screen_text": "Battle Pyramid King Brandon"
+      "expect_screen_text": "Enter the dark"
     },
     {
-      "screenshot": "pyramid_brandon_gate_open"
+      "screenshot": "pyramid_door"
     },
     {
-      "click": "Battle Pyramid King Brandon"
+      "comment": "-- beat 2: start the gauntlet. The button closes the dialog itself (command + close actions); the defensive close guards the stale-screen class anyway. The manager heals once, warns, then chains fight 1 after ~2s --"
     },
     {
-      "client": "screen.close"
+      "click": "Enter the dark"
     },
     {
-      "comment": "-- win chain (anchored at the click): defeat tag -> Brandon's win line -> frontier/hall_cleared actionbar + #halls recount --"
+      "client": "screen.close",
+      "comment_": "defensive: a stale screen eats the next interact (live-caught arcade/factory/port)"
+    },
+    {
+      "wait_chat": "No healing between fights",
+      "timeout": 30
+    },
+    {
+      "sleep": 1.0
+    },
+    {
+      "comment": "-- fight 1 (Marco, auto-dispatched, purse-less): battlestate probe = EMITTER (re-opens the chat window past the door line BEFORE the fight can end) + stall evidence in the transcript. 'It kneels.' is the manager's win beat; the defeat tag is the authoritative assert --"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative dev bot battlestate"
+    },
+    {
+      "wait_chat": "It kneels.",
+      "timeout": 600
+    },
+    {
+      "sleep": 2.0
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=defeated_pyramid_challenger_1]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- fight 2 (Priya, chains ~3s after fight 1): the probe emitter moves the window past fight 1's identical 'It kneels.' - without it the duplicate line false-matches instantly --"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative dev bot battlestate"
+    },
+    {
+      "wait_chat": "It kneels.",
+      "timeout": 600
+    },
+    {
+      "sleep": 2.0
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=defeated_pyramid_challenger_2]",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- fight 3 (Brandon, 'The giant wakes.'): completion line is unique; then the manager's tag grants + hall_cleared chain ('A Frontier hall falls.' actionbar + #halls recount) --"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative dev bot battlestate"
     },
     {
       "wait_chat": "The three ancients kneel and the giant with them.",
-      "timeout": 240
+      "timeout": 600
     },
     {
-      "wait_chat": "A Frontier hall falls.",
-      "kinds": [
-        "overlay"
-      ],
-      "timeout": 15
+      "sleep": 2.0
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=defeated_frontier_brain_pyramid]",
+      "expect": "passed"
     },
     {
       "rcon": "execute if entity @a[name={player},tag=frontier_pyramid_cleared]",
@@ -257,7 +361,7 @@
       "screenshot": "pyramid_hall_falls"
     },
     {
-      "comment": "-- beat 4: the beaten lane - re-open shows the priority-20 entry; prose any-of covers all three rotating say lines. Re-find refreshes the approach context (the battle chain pushed the last one out of range) --"
+      "comment": "-- beat 4: the beaten lane - re-open shows the priority-20 entry; prose any-of covers all four rotating say lines (three originals + the folded win_line). Re-find refreshes the approach context (the battle chain pushed the last one out of range) --"
     },
     {
       "sleep": 1.5
@@ -276,7 +380,8 @@
       "expect_screen_text": [
         "You beat the stones and you did it in the dark. Few can. I dug the Regis out of the deep years ago, back when this place still had an owner. It has no owner now, and neither, I think, do you - not anymore.",
         "The bottom of the pyramid is yours. I half-know that face of yours from a long time gone. I will not say from where. Down here the dark does not ask names, and I have learned not to either.",
-        "Champion of the whole climb. The old stones bowed to your torch. Whatever you were before you walked in here stays walled in the dark with them. Go on up to the light."
+        "Champion of the whole climb. The old stones bowed to your torch. Whatever you were before you walked in here stays walled in the dark with them. Go on up to the light.",
+        "You held your light to the very bottom. The Pyramid is yours, Champion - and so is whatever the dark down here was keeping for you."
       ]
     },
     {
@@ -292,7 +397,7 @@
       "wait_no_screen": true
     },
     {
-      "comment": "-- cleanup: autobattle off; strip champion + everything this run earned so later scenarios inherit an early-game player (wheat_war/safari assume non-champion recognition lanes) --"
+      "comment": "-- cleanup: autobattle off; strip champion + everything this run earned (incl. the manager's defeated_frontier_brain_pyramid, new vs the old onwin cut) so later scenarios inherit an early-game player (wheat_war/safari assume non-champion recognition lanes) --"
     },
     {
       "rcon": "execute as {player} run cobblemon-initiative dev bot autobattle off"
@@ -305,6 +410,9 @@
     },
     {
       "rcon": "tag {player} remove defeated_pyramid_challenger_2"
+    },
+    {
+      "rcon": "tag {player} remove defeated_frontier_brain_pyramid"
     },
     {
       "rcon": "tag {player} remove royal_league_champion"

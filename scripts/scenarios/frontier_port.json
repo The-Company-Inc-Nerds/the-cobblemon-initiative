@@ -1,6 +1,6 @@
 {
   "name": "frontier_port",
-  "description": "Battle Port hall clear (q.side_frontier_hall lane): Captain Stern and Sailor Crest (one_time rotating-roster challengers, defeat tags via TBCS onwin), then Port Admiral Horatio (brain, recognition_tier late, battle button 'Challenge Admiral Horatio' gated all_tags on both defeats) whose on_win runs frontier/hall_cleared and tags frontier_port_cleared. Horatio is the ONE GEN_9_DOUBLES brain in this wave - the 2x lv-100 Garchomp party is load-bearing, doubles needs two conscious mons on the player's side. The champion gate is opened by tag surgery (royal_league_champion - gate.champion lowers to that player tag); stripped in cleanup. The Port trio shares the cluster with the co-located market group (~5b apart) - full display-name needles keep matches unique; NEVER shorten 'Captain Stern' (the 'Stern' stem is a substring of 'Market Mogul Sterling'). Site is inside the frontier_active region-tick AABB (Nuzlocke faint paths suspended - 'nothing of yours goes down'); atlas re-survey open, hence _probe_pending. KNOWN CAVEAT: intermittent TBCS battle-init stall / rare showdown wedge - a win-wait timeout is almost certainly that, not a hall regression; re-run before filing.",
+  "description": "Battle Port hall clear (q.side_frontier_hall lane), MANAGER-OWNED CREW RECUT (FrontierManager 2026-07-19): the rival pair (Captain Stern + Sailor Crest) now fights as ONE GEN_9_MULTI 2v2 - player + Deckhand Maru (rctmod:port_deckhand) vs both challengers - dispatched by Stern's 'Muster the crew - 2v2' button (cobblemon-initiative frontier port crew). Crest has NO battle path; his dialog redirects to the muster. The manager owns the win: '[Frontier] Purse paid: 1500 CD' chat + BOTH defeated_port_challenger_* tags in one stroke (no character win_lines - those moved to the beaten entries). The crew fight is UNLOCKED/REAL (no level flatten) - the wonder team carries it. Then Port Admiral Horatio exactly as before: dialog-owned do:battle (button 'Challenge Admiral Horatio' gated all_tags on both defeats, which the manager set), on_win runs frontier/hall_cleared and tags frontier_port_cleared. Horatio is the ONE GEN_9_DOUBLES brain in this wave - two conscious mons on the player's side are load-bearing. The champion gate is opened by tag surgery (royal_league_champion - gate.champion lowers to that player tag); stripped in cleanup. The Port trio shares the cluster with the co-located market group (~5b apart) - full display-name needles keep matches unique; NEVER shorten 'Captain Stern' (the 'Stern' stem is a substring of 'Market Mogul Sterling'). Site is inside the frontier_active region-tick AABB (Nuzlocke faint paths suspended - 'nothing of yours goes down'); atlas re-survey open, hence _probe_pending. KNOWN CAVEAT: intermittent TBCS battle-init stall / rare showdown wedge - a win-wait timeout is almost certainly that, not a hall regression; re-run before filing (the manager's 100-tick capture watchdog prints 'The fight failed to take the floor' on the stall - that line in the log IS the diagnosis).",
   "_probe_pending": [
     "3788.5 159 2988.5"
   ],
@@ -85,16 +85,149 @@
       "rcon": "takepokemon {player} 1"
     },
     {
-      "rcon": "execute as {player} run cobblemon-initiative givemon garchomp level=100"
+      "rcon": "execute as {player} run cobblemon-initiative givemon raikou level=100 ability=wonderguard held_item=cobblemon:air_balloon moves=icebeam,surf,thunderbolt,flashcannon",
+      "comment_": "WONDER TEAM (showrunner idea 2026-07-19, brain-fight solo-verified): pure Electric's only weakness is Ground -> Air Balloon negates it; Wonder Guard blocks everything else and the balloon never pops (nothing lands). Slot-1 Ice Beam: accurate, NO type is immune (an Electric lead vs enemy Ground-types would zero-damage-loop under first-legal-move autobattle)."
     },
     {
-      "rcon": "execute as {player} run cobblemon-initiative givemon garchomp level=100"
+      "rcon": "execute as {player} run cobblemon-initiative givemon raikou level=100 ability=wonderguard held_item=cobblemon:air_balloon moves=icebeam,surf,thunderbolt,flashcannon",
+      "comment_": "WONDER TEAM (showrunner idea 2026-07-19, brain-fight solo-verified): pure Electric's only weakness is Ground -> Air Balloon negates it; Wonder Guard blocks everything else and the balloon never pops (nothing lands). Slot-1 Ice Beam: accurate, NO type is immune (an Electric lead vs enemy Ground-types would zero-damage-loop under first-legal-move autobattle)."
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon raikou level=100 ability=wonderguard held_item=cobblemon:air_balloon moves=icebeam,surf,thunderbolt,flashcannon",
+      "comment_": "WONDER TEAM (showrunner idea 2026-07-19, brain-fight solo-verified): pure Electric's only weakness is Ground -> Air Balloon negates it; Wonder Guard blocks everything else and the balloon never pops (nothing lands). Slot-1 Ice Beam: accurate, NO type is immune (an Electric lead vs enemy Ground-types would zero-damage-loop under first-legal-move autobattle)."
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon raikou level=100 ability=wonderguard held_item=cobblemon:air_balloon moves=icebeam,surf,thunderbolt,flashcannon",
+      "comment_": "WONDER TEAM (showrunner idea 2026-07-19, brain-fight solo-verified): pure Electric's only weakness is Ground -> Air Balloon negates it; Wonder Guard blocks everything else and the balloon never pops (nothing lands). Slot-1 Ice Beam: accurate, NO type is immune (an Electric lead vs enemy Ground-types would zero-damage-loop under first-legal-move autobattle)."
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon raikou level=100 ability=wonderguard held_item=cobblemon:air_balloon moves=icebeam,surf,thunderbolt,flashcannon",
+      "comment_": "WONDER TEAM (showrunner idea 2026-07-19, brain-fight solo-verified): pure Electric's only weakness is Ground -> Air Balloon negates it; Wonder Guard blocks everything else and the balloon never pops (nothing lands). Slot-1 Ice Beam: accurate, NO type is immune (an Electric lead vs enemy Ground-types would zero-damage-loop under first-legal-move autobattle)."
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon raikou level=100 ability=wonderguard held_item=cobblemon:air_balloon moves=icebeam,surf,thunderbolt,flashcannon",
+      "comment_": "WONDER TEAM (showrunner idea 2026-07-19, brain-fight solo-verified): pure Electric's only weakness is Ground -> Air Balloon negates it; Wonder Guard blocks everything else and the balloon never pops (nothing lands). Slot-1 Ice Beam: accurate, NO type is immune (an Electric lead vs enemy Ground-types would zero-damage-loop under first-legal-move autobattle)."
+    },
+    {
+      "rcon": "healpokemon {player}",
+      "comment_": "cross-scenario attrition guard (live-caught 2026-07-18: fights entered with fainted leads make autobattle pass turns forever = endless slow loss)"
+    },
+    {
+      "comment": "-- frontier residue strip (2026-07-18): failed runs skip cleanup, so cleared/defeat tags leak across attempts and reroute gated entries (the 'open Warden door' false alarm) --"
+    },
+    {
+      "comment": "-- brain latch re-arm (2026-07-19): a consumed fight leaves the brain BODY gone with #amb=1 — every later run finds nothing (all 7 brains were bodiless by round 4; three scenarios then false-matched STALE buffer win lines). Kill any stale body + reset the latch; the 40b approach respawns him fresh. --"
+    },
+    {
+      "rcon": "execute as {player} at @s run kill @e[name=\"frontier_brain_port\",type=!minecraft:player,distance=..64]"
+    },
+    {
+      "rcon": "scoreboard players set #amb_frontier_brain_port ci_ambient 0"
+    },
+    {
+      "rcon": "tag {player} remove frontier_arcade_cleared"
+    },
+    {
+      "rcon": "tag {player} remove defeated_arcade_challenger_1"
+    },
+    {
+      "rcon": "tag {player} remove defeated_arcade_challenger_2"
+    },
+    {
+      "rcon": "tag {player} remove defeated_frontier_brain_arcade"
+    },
+    {
+      "rcon": "tag {player} remove frontier_castle_cleared"
+    },
+    {
+      "rcon": "tag {player} remove defeated_castle_challenger_1"
+    },
+    {
+      "rcon": "tag {player} remove defeated_castle_challenger_2"
+    },
+    {
+      "rcon": "tag {player} remove defeated_frontier_brain_castle"
+    },
+    {
+      "rcon": "tag {player} remove frontier_factory_cleared"
+    },
+    {
+      "rcon": "tag {player} remove defeated_factory_challenger_1"
+    },
+    {
+      "rcon": "tag {player} remove defeated_factory_challenger_2"
+    },
+    {
+      "rcon": "tag {player} remove defeated_frontier_brain_factory"
+    },
+    {
+      "rcon": "tag {player} remove frontier_market_cleared"
+    },
+    {
+      "rcon": "tag {player} remove defeated_market_challenger_1"
+    },
+    {
+      "rcon": "tag {player} remove defeated_market_challenger_2"
+    },
+    {
+      "rcon": "tag {player} remove defeated_frontier_brain_market"
+    },
+    {
+      "rcon": "tag {player} remove frontier_port_cleared"
+    },
+    {
+      "rcon": "tag {player} remove defeated_port_challenger_1"
+    },
+    {
+      "rcon": "tag {player} remove defeated_port_challenger_2"
+    },
+    {
+      "rcon": "tag {player} remove defeated_frontier_brain_port"
+    },
+    {
+      "rcon": "tag {player} remove frontier_pyramid_cleared"
+    },
+    {
+      "rcon": "tag {player} remove defeated_pyramid_challenger_1"
+    },
+    {
+      "rcon": "tag {player} remove defeated_pyramid_challenger_2"
+    },
+    {
+      "rcon": "tag {player} remove defeated_frontier_brain_pyramid"
+    },
+    {
+      "rcon": "tag {player} remove frontier_tower_cleared"
+    },
+    {
+      "rcon": "tag {player} remove defeated_tower_challenger_1"
+    },
+    {
+      "rcon": "tag {player} remove defeated_tower_challenger_2"
+    },
+    {
+      "rcon": "tag {player} remove defeated_frontier_brain_tower"
+    },
+    {
+      "rcon": "tag {player} remove frontier_cave_cleared"
+    },
+    {
+      "rcon": "tag {player} remove defeated_cave_challenger_1"
+    },
+    {
+      "rcon": "tag {player} remove defeated_cave_challenger_2"
+    },
+    {
+      "rcon": "tag {player} remove defeated_frontier_brain_cave"
+    },
+    {
+      "rcon": "tag {player} remove frontier_all_cleared"
     },
     {
       "rcon": "execute as {player} run cobblemon-initiative dev bot autobattle on"
     },
     {
-      "comment": "-- beat 1: Captain Stern, the docker on shift. say[] rotates, so the screen assert targets the stable battle-button label (its rendering IS the champion-gate assert) --"
+      "comment": "-- beat 1: the crew muster. Stern's dialog carries the ONE fight button for the pair - 'Muster the crew - 2v2' dispatches cobblemon-initiative frontier port crew (manager-owned GEN_9_MULTI: player + Deckhand Maru vs Stern + Crest). say[] rotates, so the screen assert targets the stable button label (its rendering IS the champion-gate assert) --"
     },
     {
       "find_npc": "Captain Stern",
@@ -107,71 +240,54 @@
       "wait_screen": "Dialog"
     },
     {
-      "expect_screen_text": "Battle Captain Stern"
+      "expect_screen_text": "Muster the crew - 2v2"
     },
     {
-      "screenshot": "port_stern_gate"
+      "screenshot": "port_muster_gate"
     },
     {
-      "click": "Battle Captain Stern"
+      "rcon": "healpokemon {player}",
+      "comment_": "between-fights heal (live-caught: a fainted lead makes autobattle pass-loop to a slow loss in the NEXT fight)"
+    },
+    {
+      "click": "Muster the crew - 2v2"
     },
     {
       "client": "screen.close",
-      "comment_": "battle-start buttons have no close action; the fight runs server-side (autobattle) while the stale dialog stays up"
+      "comment_": "defensive: the muster button DOES carry a do:close, but a lingering screen eats the next interact if the close races the command (live-caught idiom, kept)"
     },
     {
-      "wait_chat": "Clean crossing",
-      "timeout": 240,
-      "comment_": "Stern's onwin win_line say; a timeout here is almost certainly the TBCS stall, not a regression"
+      "wait_chat": "A crew sails together",
+      "timeout": 60,
+      "comment_": "FrontierManager.portCrew dispatch announce (Java chat) - fires synchronously with the muster command, before the MULTI takes the floor"
+    },
+    {
+      "wait_chat": "Purse paid",
+      "timeout": 600,
+      "comment_": "the manager's win signal ('[Frontier] Purse paid: 1500 CD.') - there is NO character win_line on manager fights. The MULTI is unlocked/REAL (four hulls, no flatten) so it runs long; a timeout here is almost certainly the TBCS stall / capture watchdog ('The fight failed to take the floor'), not a hall regression"
+    },
+    {
+      "client": "screen.close",
+      "comment_": "defensive: the battle GUI may still be up when the win line lands — a stale screen eats the next interact (live-caught arcade/factory/port)"
+    },
+    {
+      "sleep": 2.0
     },
     {
       "rcon": "execute if entity @a[name={player},tag=defeated_port_challenger_1]",
       "expect": "passed"
     },
     {
-      "sleep": 2.0,
-      "comment_": "battle teardown settle before the next TBCS dispatch"
-    },
-    {
-      "comment": "-- beat 2: Sailor Crest, the rotating rival --"
-    },
-    {
-      "find_npc": "Sailor Crest",
-      "save": "crest"
-    },
-    {
-      "interact_npc": "{crest.uuid}"
-    },
-    {
-      "wait_screen": "Dialog"
-    },
-    {
-      "expect_screen_text": "Battle Sailor Crest"
-    },
-    {
-      "screenshot": "port_crest_gate"
-    },
-    {
-      "click": "Battle Sailor Crest"
-    },
-    {
-      "client": "screen.close",
-      "comment_": "battle-start buttons have no close action; the fight runs server-side"
-    },
-    {
-      "wait_chat": "strikes his colors",
-      "timeout": 240
-    },
-    {
       "rcon": "execute if entity @a[name={player},tag=defeated_port_challenger_2]",
-      "expect": "passed"
+      "expect": "passed",
+      "comment_": "BOTH tags from the one crew win (onFightWon port_crew special-case) - this pair opening is the whole contract of the manager fight"
     },
     {
       "sleep": 2.0,
       "comment_": "battle teardown settle + band_tags window before the brain's all_tags gate is read"
     },
     {
-      "comment": "-- beat 3: Port Admiral Horatio, the deep berth - DOUBLES. His button gates all_tags on both challenger defeats - it rendering now IS the ladder assert. Win chain: prize -> frontier_port_cleared tag -> win say -> frontier/hall_cleared (actionbar) --"
+      "comment": "-- beat 2: Port Admiral Horatio, the deep berth - dialog-owned DOUBLES, UNCHANGED by the manager recut. His button gates all_tags on both challenger defeats (set by the crew win) - it rendering now IS the ladder assert. Win chain: prize -> frontier_port_cleared tag -> win say -> frontier/hall_cleared (actionbar) --"
     },
     {
       "find_npc": "Port Admiral Horatio",
@@ -190,6 +306,10 @@
       "screenshot": "port_brain_gate"
     },
     {
+      "rcon": "healpokemon {player}",
+      "comment_": "between-fights heal (live-caught: a fainted lead makes autobattle pass-loop to a slow loss in the NEXT fight)"
+    },
+    {
       "click": "Challenge Admiral Horatio"
     },
     {
@@ -198,16 +318,15 @@
     },
     {
       "wait_chat": "The deep water is yours",
-      "timeout": 300,
+      "timeout": 600,
       "comment_": "doubles at the ceiling runs longer than the singles halls - widest win window of the wave"
     },
     {
-      "wait_chat": "A Frontier hall falls",
-      "kinds": [
-        "overlay"
-      ],
-      "timeout": 15,
-      "comment_": "frontier/hall_cleared actionbar - fires from Horatio's on_win right after the win say"
+      "client": "screen.close",
+      "comment_": "defensive: the battle GUI may still be up when the win line lands — a stale screen eats the next interact (live-caught arcade/factory/port)"
+    },
+    {
+      "sleep": 2.0
     },
     {
       "rcon": "execute if entity @a[name={player},tag=frontier_port_cleared]",
@@ -217,7 +336,7 @@
       "screenshot": "port_hall_cleared"
     },
     {
-      "comment": "-- beat 4: cleared-state dialog - Horatio's beaten entry (prio 20, gate frontier_port_cleared) preempts; prose any-of covers both rotating say lines (the late-tier recognition beat included) --"
+      "comment": "-- beat 3: cleared-state dialog - Horatio's beaten entry (prio 20, gate frontier_port_cleared) preempts; prose any-of covers both rotating say lines (the late-tier recognition beat included) --"
     },
     {
       "interact_npc": "{horatio.uuid}"

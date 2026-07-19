@@ -40,6 +40,9 @@
       "rcon": "tag {player} remove paid_handling_fee"
     },
     {
+      "rcon": "tag {player} remove checkpoint_settled"
+    },
+    {
       "rcon": "tag {player} remove paid_checkpoint_fee"
     },
     {
@@ -137,7 +140,7 @@
       "expect": "passed"
     },
     {
-      "comment": "-- beat 2: re-open at 3 badges. Contraband is now gated off (paid_handling_fee), so recognition correctly RESUMES: mid@20 is the designed winner. any-of covers the rotating say pair; the Fight button is render-assert only. --"
+      "comment": "-- beat 2: re-open at 3 badges AFTER paying. SOFTEN RULING 2026-07-18: the handling fee latched checkpoint_settled, which gates mid@20 OFF — the Company honors a receipt until it is certain. contraband off (paid), processed off (no processing fee), so the civil checkpoint_hail@15 wins. LATE recognition would still override (not reachable at 3 badges). --"
     },
     {
       "find_npc": "Haruki",
@@ -151,15 +154,16 @@
     },
     {
       "expect_screen_text": [
-        "Your face is on a memo. The kind with a black bar over the name and the words do not engage, report immediately.",
-        "You are supposed to be a closed file. Closed files do not get to walk away."
+        "Step lively. Voluntary verification — the good kind of voluntary, where everyone volunteers.",
+        "Blossom Path service point. We verify trust and we verify value. You look like you carry at least one of those."
       ]
     },
     {
-      "expect_screen_text": "Fight"
+      "expect_screen_text": "Decline verification and face them",
+      "comment_": "hail-band button (post-soften); the old mid entry had a bare Fight button"
     },
     {
-      "screenshot": "mid_after_handling"
+      "screenshot": "hail_after_handling_softened"
     },
     {
       "client": "screen.close"
@@ -226,6 +230,9 @@
     },
     {
       "rcon": "tag {player} remove paid_handling_fee"
+    },
+    {
+      "rcon": "tag {player} remove checkpoint_settled"
     },
     {
       "rcon": "execute as {player} at @s run kill @e[type=easy_npc:humanoid,name=Haruki,distance=..48]"

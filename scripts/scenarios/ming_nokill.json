@@ -15,10 +15,14 @@
       "rcon": "time set day"
     },
     {
+      "rcon": "healpokemon {player}",
+      "comment_": "cross-scenario attrition guard (live-caught 2026-07-18: fights entered with fainted leads make autobattle pass turns forever = endless slow loss)"
+    },
+    {
       "rcon": "execute as {player} run cobblemon-initiative dev bot autobattle on"
     },
     {
-      "rcon": "tp {player} 1586 90 2487"
+      "rcon": "tp {player} 1588.0 91 2485.0"
     },
     {
       "sleep": 3.0
@@ -47,7 +51,7 @@
     },
     {
       "wait_chat": "Perimeter integrity report",
-      "timeout": 120
+      "timeout": 360
     },
     {
       "rcon": "execute if entity @a[name={player},tag=defeated_villain_yield_officer]",

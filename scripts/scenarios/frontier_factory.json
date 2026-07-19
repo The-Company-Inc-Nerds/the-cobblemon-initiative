@@ -1,6 +1,6 @@
 {
   "name": "frontier_factory",
-  "description": "Battle Factory hall clear (q.side_frontier_hall lane): the champion-gated opt-in ladder - Technician Rex and Engineer Lydia (one_time challengers, defeat tags fire via TBCS onwin, achievementOnDefeat is null by design so the DIALOG gate is the progression), then Factory Head Noland (brain, battle button gated all_tags on both challenger defeats) whose on_win runs frontier/hall_cleared ('A Frontier hall falls.' actionbar + the seven-hall counter) and tags frontier_factory_cleared. The champion gate is opened by tag surgery: gate.champion lowers to the player tag royal_league_champion (content_compile line 205ff) - the test player has NOT cleared the Royal League, so the tag is added in the preamble and stripped in cleanup. Fights run under dev-bot autobattle with 2x lv-100 Garchomp (brains fight at the ceiling; frontier fights are never level-locked). Site is the shipped RCT frontier cluster at y159 - inside the frontier_active region-tick AABB, so NuzlockeInit suspends faint damage/party removal/whiteout (the safe-exhibition promise) - but the atlas-intent [4060 64 2774] re-survey is still open, hence _probe_pending. KNOWN CAVEAT: the intermittent TBCS battle-init stall (and the rarer showdown engine wedge) means a win-wait timeout is almost certainly NOT a hall regression - re-run before filing (wedge recovery: blind rctapi maps then dev showdown revive).",
+  "description": "Battle Factory hall clear (q.side_frontier_hall lane) + the NEW rental-loan mechanic (FrontierManager, showrunner directive 2026-07-19). TWO parts. Part A - the loan cycle, deterministic and fight-free: Noland's dialog gains 'Take the loan - park your team' (frontier factory start: the whole party is serialized into hall custody and three Company-issue loaners are granted - Metagross/Arcanine/Gyarados lv70, FACTORY_LOANERS order) and an ungated 'Close the loan' (frontier factory return: loaners clawed by uuid, parked party restored in slot order). Asserted via the client party op: pre-loan 6-slot echo (KeyError hard-fail), loan roster as literal species+levels, post-return roster against the pre-loan snapshot vars. Loaners are NEVER fought on here - first-legal-move autobattle on lv70 loaners is not deterministic. Part B - the hall fights UNPARKED, exactly the shipped chain: Technician Rex and Engineer Lydia (one_time challengers, defeat tags fire via TBCS onwin, achievementOnDefeat is null by design so the DIALOG gate is the progression), then Factory Head Noland (brain, battle button gated all_tags on both challenger defeats) whose on_win runs frontier/hall_cleared ('A Frontier hall falls.' actionbar + the seven-hall counter) and tags frontier_factory_cleared. Factory fights stay dialog do:battle by design - the manager owns no Factory fight, so win_lines still fire. The champion gate is opened by tag surgery: gate.champion lowers to the player tag royal_league_champion (content_compile line 205ff) - the test player has NOT cleared the Royal League, so the tag is added in the preamble and stripped in cleanup (it also renders the loan button, which carries the same champion gate as a level-cap-leak guard). Fights run under dev-bot autobattle with the wonder team (brains fight at the ceiling; frontier fights are never level-locked). Site is the shipped RCT frontier cluster at y159 - inside the frontier_active region-tick AABB, so NuzlockeInit suspends faint damage/party removal/whiteout (the safe-exhibition promise) - but the atlas-intent [4060 64 2774] re-survey is still open, hence _probe_pending. KNOWN CAVEAT: the intermittent TBCS battle-init stall (and the rarer showdown engine wedge) means a win-wait timeout is almost certainly NOT a hall regression - re-run before filing (wedge recovery: blind rctapi maps then dev showdown revive).",
   "_probe_pending": [
     "3812.5 159 2960.5"
   ],
@@ -31,6 +31,15 @@
     },
     {
       "rcon": "weather clear"
+    },
+    {
+      "comment": "-- loan residue strip (part A idempotency): a failed prior run can leave the party in factory custody with loaners on the belt - factory start would then refuse ('already in custody') and the party reset below would take the WRONG mons while the parked team stays stranded. factory return refuses politely when nothing is parked, so this is safe to run blind --"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative frontier factory return"
+    },
+    {
+      "sleep": 1.0
     },
     {
       "rcon": "kill @e[type=!player,distance=..32,type=!minecraft:armor_stand,type=!easy_npc:humanoid,type=!easy_npc:fairy,type=!cobblemon:pokemon]",
@@ -85,16 +94,263 @@
       "rcon": "takepokemon {player} 1"
     },
     {
-      "rcon": "execute as {player} run cobblemon-initiative givemon garchomp level=100"
+      "rcon": "execute as {player} run cobblemon-initiative givemon raikou level=100 ability=wonderguard held_item=cobblemon:air_balloon moves=icebeam,surf,thunderbolt,flashcannon",
+      "comment_": "WONDER TEAM (showrunner idea 2026-07-19, brain-fight solo-verified): pure Electric's only weakness is Ground -> Air Balloon negates it; Wonder Guard blocks everything else and the balloon never pops (nothing lands). Slot-1 Ice Beam: accurate, NO type is immune (an Electric lead vs enemy Ground-types would zero-damage-loop under first-legal-move autobattle)."
     },
     {
-      "rcon": "execute as {player} run cobblemon-initiative givemon garchomp level=100"
+      "rcon": "execute as {player} run cobblemon-initiative givemon raikou level=100 ability=wonderguard held_item=cobblemon:air_balloon moves=icebeam,surf,thunderbolt,flashcannon",
+      "comment_": "WONDER TEAM (showrunner idea 2026-07-19, brain-fight solo-verified): pure Electric's only weakness is Ground -> Air Balloon negates it; Wonder Guard blocks everything else and the balloon never pops (nothing lands). Slot-1 Ice Beam: accurate, NO type is immune (an Electric lead vs enemy Ground-types would zero-damage-loop under first-legal-move autobattle)."
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon raikou level=100 ability=wonderguard held_item=cobblemon:air_balloon moves=icebeam,surf,thunderbolt,flashcannon",
+      "comment_": "WONDER TEAM (showrunner idea 2026-07-19, brain-fight solo-verified): pure Electric's only weakness is Ground -> Air Balloon negates it; Wonder Guard blocks everything else and the balloon never pops (nothing lands). Slot-1 Ice Beam: accurate, NO type is immune (an Electric lead vs enemy Ground-types would zero-damage-loop under first-legal-move autobattle)."
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon raikou level=100 ability=wonderguard held_item=cobblemon:air_balloon moves=icebeam,surf,thunderbolt,flashcannon",
+      "comment_": "WONDER TEAM (showrunner idea 2026-07-19, brain-fight solo-verified): pure Electric's only weakness is Ground -> Air Balloon negates it; Wonder Guard blocks everything else and the balloon never pops (nothing lands). Slot-1 Ice Beam: accurate, NO type is immune (an Electric lead vs enemy Ground-types would zero-damage-loop under first-legal-move autobattle)."
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon raikou level=100 ability=wonderguard held_item=cobblemon:air_balloon moves=icebeam,surf,thunderbolt,flashcannon",
+      "comment_": "WONDER TEAM (showrunner idea 2026-07-19, brain-fight solo-verified): pure Electric's only weakness is Ground -> Air Balloon negates it; Wonder Guard blocks everything else and the balloon never pops (nothing lands). Slot-1 Ice Beam: accurate, NO type is immune (an Electric lead vs enemy Ground-types would zero-damage-loop under first-legal-move autobattle)."
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon raikou level=100 ability=wonderguard held_item=cobblemon:air_balloon moves=icebeam,surf,thunderbolt,flashcannon",
+      "comment_": "WONDER TEAM (showrunner idea 2026-07-19, brain-fight solo-verified): pure Electric's only weakness is Ground -> Air Balloon negates it; Wonder Guard blocks everything else and the balloon never pops (nothing lands). Slot-1 Ice Beam: accurate, NO type is immune (an Electric lead vs enemy Ground-types would zero-damage-loop under first-legal-move autobattle)."
+    },
+    {
+      "rcon": "healpokemon {player}",
+      "comment_": "cross-scenario attrition guard (live-caught 2026-07-18: fights entered with fainted leads make autobattle pass turns forever = endless slow loss)"
+    },
+    {
+      "comment": "-- frontier residue strip (2026-07-18): failed runs skip cleanup, so cleared/defeat tags leak across attempts and reroute gated entries (the 'open Warden door' false alarm) --"
+    },
+    {
+      "comment": "-- brain latch re-arm (2026-07-19): a consumed fight leaves the brain BODY gone with #amb=1 — every later run finds nothing (all 7 brains were bodiless by round 4; three scenarios then false-matched STALE buffer win lines). Kill any stale body + reset the latch; the 40b approach respawns him fresh. --"
+    },
+    {
+      "rcon": "execute as {player} at @s run kill @e[name=\"frontier_brain_factory\",type=!minecraft:player,distance=..64]"
+    },
+    {
+      "rcon": "scoreboard players set #amb_frontier_brain_factory ci_ambient 0"
+    },
+    {
+      "rcon": "tag {player} remove frontier_arcade_cleared"
+    },
+    {
+      "rcon": "tag {player} remove defeated_arcade_challenger_1"
+    },
+    {
+      "rcon": "tag {player} remove defeated_arcade_challenger_2"
+    },
+    {
+      "rcon": "tag {player} remove defeated_frontier_brain_arcade"
+    },
+    {
+      "rcon": "tag {player} remove frontier_castle_cleared"
+    },
+    {
+      "rcon": "tag {player} remove defeated_castle_challenger_1"
+    },
+    {
+      "rcon": "tag {player} remove defeated_castle_challenger_2"
+    },
+    {
+      "rcon": "tag {player} remove defeated_frontier_brain_castle"
+    },
+    {
+      "rcon": "tag {player} remove frontier_factory_cleared"
+    },
+    {
+      "rcon": "tag {player} remove defeated_factory_challenger_1"
+    },
+    {
+      "rcon": "tag {player} remove defeated_factory_challenger_2"
+    },
+    {
+      "rcon": "tag {player} remove defeated_frontier_brain_factory"
+    },
+    {
+      "rcon": "tag {player} remove frontier_market_cleared"
+    },
+    {
+      "rcon": "tag {player} remove defeated_market_challenger_1"
+    },
+    {
+      "rcon": "tag {player} remove defeated_market_challenger_2"
+    },
+    {
+      "rcon": "tag {player} remove defeated_frontier_brain_market"
+    },
+    {
+      "rcon": "tag {player} remove frontier_port_cleared"
+    },
+    {
+      "rcon": "tag {player} remove defeated_port_challenger_1"
+    },
+    {
+      "rcon": "tag {player} remove defeated_port_challenger_2"
+    },
+    {
+      "rcon": "tag {player} remove defeated_frontier_brain_port"
+    },
+    {
+      "rcon": "tag {player} remove frontier_pyramid_cleared"
+    },
+    {
+      "rcon": "tag {player} remove defeated_pyramid_challenger_1"
+    },
+    {
+      "rcon": "tag {player} remove defeated_pyramid_challenger_2"
+    },
+    {
+      "rcon": "tag {player} remove defeated_frontier_brain_pyramid"
+    },
+    {
+      "rcon": "tag {player} remove frontier_tower_cleared"
+    },
+    {
+      "rcon": "tag {player} remove defeated_tower_challenger_1"
+    },
+    {
+      "rcon": "tag {player} remove defeated_tower_challenger_2"
+    },
+    {
+      "rcon": "tag {player} remove defeated_frontier_brain_tower"
+    },
+    {
+      "rcon": "tag {player} remove frontier_cave_cleared"
+    },
+    {
+      "rcon": "tag {player} remove defeated_cave_challenger_1"
+    },
+    {
+      "rcon": "tag {player} remove defeated_cave_challenger_2"
+    },
+    {
+      "rcon": "tag {player} remove defeated_frontier_brain_cave"
+    },
+    {
+      "rcon": "tag {player} remove frontier_all_cleared"
     },
     {
       "rcon": "execute as {player} run cobblemon-initiative dev bot autobattle on"
     },
     {
-      "comment": "-- beat 1: Technician Rex, the first rental bench. say[] rotates, so the screen assert targets the stable battle-button label (its rendering IS the champion-gate assert) --"
+      "comment": "-- PART A: the loan cycle (frontier factory start/return - deterministic, no fights). The wonder team is parked as-is; the loaners are never battled (first-legal-move autobattle on lv70 loaners is not deterministic). Noland body: the latch was re-armed above and placements run every tick with the player 8b away, so he respawns within moments of the tp --"
+    },
+    {
+      "sleep": 2.0,
+      "comment_": "party-sync settle after the givemon wave + latch respawn window for the fresh Noland body"
+    },
+    {
+      "client": "party",
+      "save": "preA"
+    },
+    {
+      "rcon": "say [e2e frontier_factory] pre-loan party: {preA.party.0.species} {preA.party.1.species} {preA.party.2.species} {preA.party.3.species} {preA.party.4.species} {preA.party.5.species}",
+      "comment_": "transcript evidence + hard count assert: KeyError (step FAIL) if fewer than 6 mons synced - custody must park the FULL wonder team for the restore assert to mean anything"
+    },
+    {
+      "find_npc": "Factory Head Noland",
+      "save": "nolandA"
+    },
+    {
+      "interact_npc": "{nolandA.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "Take the loan - park your team",
+      "comment_": "loan button renders = champion gate + command wiring assert (button labels are stable across say[] rotation)"
+    },
+    {
+      "expect_screen_text": "Close the loan",
+      "comment_": "the ungated close button is always available - the command itself refuses politely when nothing is parked"
+    },
+    {
+      "screenshot": "factory_loan_offer"
+    },
+    {
+      "click": "Take the loan - park your team"
+    },
+    {
+      "client": "screen.close",
+      "comment_": "command buttons have no close action; the swap runs server-side while the dialog stays up"
+    },
+    {
+      "wait_chat": "Your team is logged into custody",
+      "timeout": 20,
+      "comment_": "FrontierManager.factoryStart custody line (Java-emitted; lint sees the string literal)"
+    },
+    {
+      "sleep": 2.0,
+      "comment_": "server->client party sync after the 6-out/3-in swap before the client party op reads it"
+    },
+    {
+      "client": "party",
+      "save": "loanA"
+    },
+    {
+      "rcon": "say [e2e frontier_factory] loan party: {loanA.party.0.species} lv{loanA.party.0.level} / {loanA.party.1.species} lv{loanA.party.1.level} / {loanA.party.2.species} lv{loanA.party.2.level}",
+      "comment_": "KeyError (step FAIL) if fewer than 3 loaners synced; the wait below then asserts EXACT species/order/levels"
+    },
+    {
+      "wait_chat": "(?i)loan party: metagross lv70 / arcanine lv70 / gyarados lv70",
+      "timeout": 15,
+      "comment_": "FACTORY_LOANERS order is deterministic (party emptied first, loaners added in array order); (?i) shields against species-name casing"
+    },
+    {
+      "screenshot": "factory_loaners"
+    },
+    {
+      "find_npc": "Factory Head Noland",
+      "save": "nolandA2",
+      "comment_": "re-find before the close leg (approach context; the body can drift a step on its look objective)"
+    },
+    {
+      "interact_npc": "{nolandA2.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "click": "Close the loan"
+    },
+    {
+      "client": "screen.close"
+    },
+    {
+      "wait_chat": "Loan closed. 6 of your own returned",
+      "timeout": 20,
+      "comment_": "factoryReturn restore line - count 6 is deterministic (preA echo above hard-failed unless 6 were parked)"
+    },
+    {
+      "sleep": 2.0,
+      "comment_": "sync settle before the post-restore party read"
+    },
+    {
+      "client": "party",
+      "save": "postA"
+    },
+    {
+      "rcon": "say [e2e frontier_factory] post-loan party: {postA.party.0.species} {postA.party.1.species} {postA.party.2.species} {postA.party.3.species} {postA.party.4.species} {postA.party.5.species}",
+      "comment_": "KeyError (step FAIL) unless all 6 slots are back"
+    },
+    {
+      "wait_chat": "post-loan party: {preA.party.0.species} {preA.party.1.species} {preA.party.2.species} {preA.party.3.species} {preA.party.4.species} {preA.party.5.species}",
+      "timeout": 15,
+      "comment_": "restore fidelity: post roster must equal the pre-loan snapshot in slot order (loaners removed first leaves the party empty, PartyStore.add refills in parked order)"
+    },
+    {
+      "screenshot": "factory_loan_closed"
+    },
+    {
+      "rcon": "healpokemon {player}",
+      "comment_": "cheap guard before part B: restored mons carry pre-park HP (already healed, but the fainted-lead pass-loop failure mode is too expensive to risk)"
+    },
+    {
+      "comment": "-- PART B: the hall fights, fought UNPARKED on the wonder team. beat 1: Technician Rex, the first rental bench. say[] rotates, so the screen assert targets the stable battle-button label (its rendering IS the champion-gate assert) --"
     },
     {
       "find_npc": "Technician Rex",
@@ -113,6 +369,10 @@
       "screenshot": "factory_rex_gate"
     },
     {
+      "rcon": "healpokemon {player}",
+      "comment_": "between-fights heal (live-caught: a fainted lead makes autobattle pass-loop to a slow loss in the NEXT fight)"
+    },
+    {
       "click": "Battle Technician Rex"
     },
     {
@@ -121,8 +381,15 @@
     },
     {
       "wait_chat": "The rental held and so did you",
-      "timeout": 240,
+      "timeout": 600,
       "comment_": "Rex's onwin win_line say; a timeout here is almost certainly the TBCS stall, not a regression"
+    },
+    {
+      "client": "screen.close",
+      "comment_": "defensive: the battle GUI may still be up when the win line lands — a stale screen eats the next interact (live-caught arcade/factory/port)"
+    },
+    {
+      "sleep": 2.0
     },
     {
       "rcon": "execute if entity @a[name={player},tag=defeated_factory_challenger_1]",
@@ -152,6 +419,10 @@
       "screenshot": "factory_lydia_gate"
     },
     {
+      "rcon": "healpokemon {player}",
+      "comment_": "between-fights heal (live-caught: a fainted lead makes autobattle pass-loop to a slow loss in the NEXT fight)"
+    },
+    {
       "click": "Battle Engineer Lydia"
     },
     {
@@ -160,7 +431,14 @@
     },
     {
       "wait_chat": "Swap logged, bench beaten",
-      "timeout": 240
+      "timeout": 600
+    },
+    {
+      "client": "screen.close",
+      "comment_": "defensive: the battle GUI may still be up when the win line lands — a stale screen eats the next interact (live-caught arcade/factory/port)"
+    },
+    {
+      "sleep": 2.0
     },
     {
       "rcon": "execute if entity @a[name={player},tag=defeated_factory_challenger_2]",
@@ -190,6 +468,10 @@
       "screenshot": "factory_brain_gate"
     },
     {
+      "rcon": "healpokemon {player}",
+      "comment_": "between-fights heal (live-caught: a fainted lead makes autobattle pass-loop to a slow loss in the NEXT fight)"
+    },
+    {
       "click": "Battle Factory Head Noland"
     },
     {
@@ -198,15 +480,14 @@
     },
     {
       "wait_chat": "cleared on borrowed steel",
-      "timeout": 240
+      "timeout": 600
     },
     {
-      "wait_chat": "A Frontier hall falls",
-      "kinds": [
-        "overlay"
-      ],
-      "timeout": 15,
-      "comment_": "frontier/hall_cleared actionbar - fires from Noland's on_win right after the win say"
+      "client": "screen.close",
+      "comment_": "defensive: the battle GUI may still be up when the win line lands — a stale screen eats the next interact (live-caught arcade/factory/port)"
+    },
+    {
+      "sleep": 2.0
     },
     {
       "rcon": "execute if entity @a[name={player},tag=frontier_factory_cleared]",

@@ -46,6 +46,17 @@
                     Priority: 20,
                     Buttons: [
                         {
+                            Name: "Settle the ledger",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative frontier castle claim"
+                                }
+                            ],
+                            Label: "claim_button"
+                        },
+                        {
                             Name: "Take your leave",
                             Actions: [
                                 {
@@ -64,6 +75,9 @@
                         },
                         {
                             Text: "The Castle stands defeated and stands grateful. Wonder built these halls once; you reminded me why."
+                        },
+                        {
+                            Text: "The keep is yours and the ledger still stands open. Settle it with the house, Champion - what you did not spend on comfort is yours in coin."
                         }
                     ],
                     Name: "Percival - the Lord bows to the better duel",
@@ -113,7 +127,7 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_DOUBLES @s vs rctmod:frontier_brain_castle onwin {1: ['cobbledollars give @1 3000', 'tag @1 add frontier_castle_cleared', '@2 say The wall of the keep breaks at last, and it breaks to a worthy hand. The forms are yours to keep now, Champion.', 'execute as @1 run function cobblemon_initiative:frontier/hall_cleared'], 2: ['@1 say Patience outlasted patience, and mine held. Recover the old composure and return to the board.']}"
+                                    Cmd: "tbcs battle GEN_9_DOUBLES @s vs rctmod:frontier_brain_castle onwin {1: ['cobbledollars give @1 3000', 'tag @1 add frontier_castle_cleared', '@2 say The wall of the keep breaks at last, and it breaks to a worthy hand. The forms are yours to keep now, Champion.', 'tag @1 add defeated_frontier_brain_castle', 'execute as @1 run function cobblemon_initiative:frontier/hall_cleared'], 2: ['@1 say Patience outlasted patience, and mine held. Recover the old composure and return to the board.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -144,6 +158,39 @@
                             Label: "battle_button"
                         },
                         {
+                            Name: "Open the house ledger",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative frontier castle enter"
+                                }
+                            ],
+                            Label: "ledger_button"
+                        },
+                        {
+                            Name: "Buy the physician - 20 points",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative frontier castle heal"
+                                }
+                            ],
+                            Label: "physician_button"
+                        },
+                        {
+                            Name: "Buy intel - 15 points",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative frontier castle scout"
+                                }
+                            ],
+                            Label: "intel_button"
+                        },
+                        {
                             Name: "Not yet",
                             Actions: [
                                 {
@@ -162,6 +209,9 @@
                         },
                         {
                             Text: "You have the bearing of someone this hall was built to honour. Strange. Sit at the board and we shall see if the forms still favour the patient."
+                        },
+                        {
+                            Text: "Every guest is issued the house ledger - sixty points of hospitality. The physician costs twenty, a discreet word on your next opponent fifteen, and whatever remains when I yield settles in coin. The house sells comfort, Champion. It does not give it."
                         }
                     ],
                     Name: "Castle Lord Percival - lord of the old rules",

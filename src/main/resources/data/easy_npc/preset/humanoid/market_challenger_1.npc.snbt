@@ -61,6 +61,9 @@
                         },
                         {
                             Text: "No hard feelings - a duel-for-hire loses sometimes. The Port turns over daily, so I will have a new pitch by morning."
+                        },
+                        {
+                            Text: "Clean transaction. You took the stall apart piece by piece. The Port respects a buyer who pays in full."
                         }
                     ],
                     Name: "Vance - stall closed",
@@ -69,67 +72,6 @@
                 {
                     Priority: 10,
                     Buttons: [
-                        {
-                            Name: "Battle Merchant Vance",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "defeated_market_challenger_1"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "say You already emptied my stall. Come back at first light and the Port will have someone new for you to haggle with."
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_defeated_market_challenger_1"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tbcs attach rctmod:market_challenger_1 @s"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_defeated_market_challenger_1"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:market_challenger_1 onwin {1: ['cobbledollars give @1 800', 'tag @1 add defeated_market_challenger_1', '@2 say Clean transaction. You took the stall apart piece by piece. The Port respects a buyer who pays in full.'], 2: ['@1 say The tide comes in and so does my Alakazam. You came up short - reboard when you are ready to close the deal.']}"
-                                },
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Conditions: [
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "royal_league_champion"
-                                },
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "no_defeated_market_challenger_1"
-                                }
-                            ],
-                            Label: "battle_button"
-                        },
                         {
                             Name: "Maybe later",
                             Actions: [
@@ -145,10 +87,10 @@
                             Text: "Merchant Vance, and today my only merchandise is a battle. Battle Port restocks its challengers with the tide - I am this morning fresh catch."
                         },
                         {
-                            Text: "You cleared the League and came slumming on the docks? Suits me. I trade in psychic and muscle, and I am not giving you a discount."
+                            Text: "You want my fight, you buy it - Sterling lists me on his stall and the stall does my haggling for me. Put your coin down over there and the manifest serves me up first."
                         },
                         {
-                            Text: "Every dawn the Port lists a new roster and every dawn I sign up. Beat me while the ink is wet."
+                            Text: "Every dawn the Port lists a new roster and every dawn I sign up. Top of the manifest today - pay the Mogul for a listing and beat me while the ink is wet."
                         }
                     ],
                     Name: "Vance - fresh off the boat",

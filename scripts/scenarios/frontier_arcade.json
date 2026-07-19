@@ -1,6 +1,6 @@
 {
   "name": "frontier_arcade",
-  "description": "Battle Arcade hall clear (q.side_frontier_hall lane): the champion-gated opt-in ladder - Gambler Fritz and Player Suki (one_time challengers, defeat tags fire via TBCS onwin, achievementOnDefeat is null by design so the DIALOG gate is the progression), then Arcade Star Dahlia (brain, battle button gated all_tags on both challenger defeats) whose on_win runs frontier/hall_cleared ('A Frontier hall falls.' actionbar + the seven-hall counter) and tags frontier_arcade_cleared. The champion gate is opened by tag surgery: gate.champion lowers to the player tag royal_league_champion (content_compile line 205ff) - the test player has NOT cleared the Royal League, so the tag is added in the preamble and stripped in cleanup. Fights run under dev-bot autobattle with 2x lv-100 Garchomp (brains fight at the ceiling; frontier fights are never level-locked). Site is the shipped RCT frontier cluster at y159 - the preamble asserts frontier_active (region_tick AABB), the trigger NuzlockeInit reads to suspend faint damage/party removal/whiteout: the no-death safe-exhibition promise, though the Java suppression itself needs a real faint and is not asserted here (smoke_frontier precedent). The atlas [4096 2965] cluster re-survey (15 Open Q1) is still open - hence _probe_pending. KNOWN CAVEAT: the intermittent TBCS battle-init stall (and the rarer showdown engine wedge) means a win-wait timeout is almost certainly NOT a hall regression - re-run before filing (wedge recovery: blind rctapi maps then dev showdown revive).",
+  "description": "Battle Arcade hall clear (q.side_frontier_hall lane) on the REAL wheel mechanic (FrontierManager, 2026-07-19): all three fights are MANAGER-OWNED - the dialog battle buttons are gone, replaced by 'Spin the wheel' (cobblemon-initiative frontier arcade spin, arms a WheelSlice condition: LEVEL 50/75/100 flatten, DOUBLES flip, PURSE x2/x3) and a take-the-fight button (frontier arcade fight 1|2|brain) that REFUSES without a spun stake ('No stake on the table'). The house spins once per fight: each beat spins (expect the [The Wheel] header + one of the six slice lines + the condition-armed rule line), re-opens the dialog, takes the fight. Win signal is the manager's '[Frontier] Purse paid: N CD' chat + the Java-granted defeat tag (trainers say NO win_line on manager fights; the old win-line prose now lives in their beaten entries) - the brain win additionally fires defeated_frontier_brain_arcade + frontier_arcade_cleared + the shipped frontier/hall_cleared chain ('A Frontier hall falls.' actionbar + seven-hall counter). Level-locked slices ride Cobblemon's clone-and-flatten (attrition-free) and DOUBLES needs two able mons - the 6x lv-100 wonder-Raikou team wins under every slice. The champion gate is opened by tag surgery: gate.champion lowers to royal_league_champion (content_compile line 205ff) - added in the preamble, stripped in cleanup. Site is the shipped RCT frontier cluster at y159 - the preamble asserts frontier_active (region_tick AABB) for the no-death safe-exhibition promise. A stale armed slice from an aborted prior run is harmless: every beat spins first, which overwrites it. KNOWN CAVEAT: the intermittent TBCS battle-init stall (and the rarer showdown engine wedge) means a win-wait timeout is almost certainly NOT a hall regression - the manager also prints 'The fight failed to take the floor' on a 100-tick capture timeout; re-run before filing (wedge recovery: blind rctapi maps then dev showdown revive).",
   "_probe_pending": [
     "3785.5 159 2974.5"
   ],
@@ -34,10 +34,10 @@
     },
     {
       "rcon": "execute as {player} at @s run kill @e[type=!player,distance=..24,type=!minecraft:armor_stand,type=!easy_npc:humanoid,type=!easy_npc:fairy,type=!cobblemon:pokemon]",
-      "comment_": "plateau is outside any safe zone; frontier_active only suspends Nuzlocke faint paths, not real mob damage. Armor stands excluded (TBCS anchors), NPC bodies + pokemon excluded"
+      "comment_": "plateau is outside any safe zone; frontier_active only suspends Nuzlocke faint paths, not real mob damage. Armor stands excluded (TBCS + FrontierManager anchors), NPC bodies + pokemon excluded"
     },
     {
-      "comment": "-- reset (idempotent re-runs): every tag this scenario or its battles set, plus the champion gate surgery. No latch resets - the three bodies persist (one_time challengers and gym_leader brains never despawn on win) --"
+      "comment": "-- reset (idempotent re-runs): every tag this scenario or the manager sets, plus the champion gate surgery. No latch resets - the three bodies persist (one_time challengers and gym_leader brains never despawn on win) --"
     },
     {
       "rcon": "tag {player} remove defeated_arcade_challenger_1"
@@ -69,7 +69,7 @@
       "comment_": "frontier/region_tick AABB - the trigger NuzlockeInit reads for the no-death exhibition"
     },
     {
-      "comment": "-- party reset: junk lv-5 parties from earlier scenarios stall TBCS battle init (verified live in wheat_war). Empty all six slots, then 2x lv-100 Garchomp - attrition headroom for three straight ceiling fights (the doubles brain needs two able mons anyway) --"
+      "comment": "-- party reset: junk lv-5 parties from earlier scenarios stall TBCS battle init (verified live in wheat_war). Empty all six slots, then 6x lv-100 Raikou - a DOUBLES slice needs two able mons and level-locked slices are clone-and-flatten (attrition-free), so six covers every wheel outcome --"
     },
     {
       "rcon": "takepokemon {player} 1"
@@ -90,16 +90,144 @@
       "rcon": "takepokemon {player} 1"
     },
     {
-      "rcon": "execute as {player} run cobblemon-initiative givemon garchomp level=100"
+      "rcon": "execute as {player} run cobblemon-initiative givemon raikou level=100 ability=wonderguard held_item=cobblemon:air_balloon moves=icebeam,surf,thunderbolt,flashcannon",
+      "comment_": "WONDER TEAM (showrunner idea 2026-07-19, brain-fight solo-verified): pure Electric's only weakness is Ground -> Air Balloon negates it; Wonder Guard blocks everything else and the balloon never pops (nothing lands). Slot-1 Ice Beam: accurate, NO type is immune (an Electric lead vs enemy Ground-types would zero-damage-loop under first-legal-move autobattle). Holds under the wheel too: flattened to 50/75/100 the ability and item still carry."
     },
     {
-      "rcon": "execute as {player} run cobblemon-initiative givemon garchomp level=100"
+      "rcon": "execute as {player} run cobblemon-initiative givemon raikou level=100 ability=wonderguard held_item=cobblemon:air_balloon moves=icebeam,surf,thunderbolt,flashcannon"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon raikou level=100 ability=wonderguard held_item=cobblemon:air_balloon moves=icebeam,surf,thunderbolt,flashcannon"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon raikou level=100 ability=wonderguard held_item=cobblemon:air_balloon moves=icebeam,surf,thunderbolt,flashcannon"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon raikou level=100 ability=wonderguard held_item=cobblemon:air_balloon moves=icebeam,surf,thunderbolt,flashcannon"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon raikou level=100 ability=wonderguard held_item=cobblemon:air_balloon moves=icebeam,surf,thunderbolt,flashcannon"
+    },
+    {
+      "rcon": "healpokemon {player}",
+      "comment_": "cross-scenario attrition guard (live-caught 2026-07-18: fights entered with fainted leads make autobattle pass turns forever = endless slow loss)"
+    },
+    {
+      "comment": "-- frontier residue strip (2026-07-18): failed runs skip cleanup, so cleared/defeat tags leak across attempts and reroute gated entries (the 'open Warden door' false alarm) --"
+    },
+    {
+      "comment": "-- brain latch re-arm (2026-07-19): a consumed fight leaves the brain BODY gone with #amb=1 — every later run finds nothing (all 7 brains were bodiless by round 4; three scenarios then false-matched STALE buffer win lines). Kill any stale body + reset the latch; the 40b approach respawns him fresh. --"
+    },
+    {
+      "rcon": "execute as {player} at @s run kill @e[name=\"frontier_brain_arcade\",type=!minecraft:player,distance=..64]"
+    },
+    {
+      "rcon": "scoreboard players set #amb_frontier_brain_arcade ci_ambient 0"
+    },
+    {
+      "rcon": "tag {player} remove frontier_arcade_cleared"
+    },
+    {
+      "rcon": "tag {player} remove defeated_arcade_challenger_1"
+    },
+    {
+      "rcon": "tag {player} remove defeated_arcade_challenger_2"
+    },
+    {
+      "rcon": "tag {player} remove defeated_frontier_brain_arcade"
+    },
+    {
+      "rcon": "tag {player} remove frontier_castle_cleared"
+    },
+    {
+      "rcon": "tag {player} remove defeated_castle_challenger_1"
+    },
+    {
+      "rcon": "tag {player} remove defeated_castle_challenger_2"
+    },
+    {
+      "rcon": "tag {player} remove defeated_frontier_brain_castle"
+    },
+    {
+      "rcon": "tag {player} remove frontier_factory_cleared"
+    },
+    {
+      "rcon": "tag {player} remove defeated_factory_challenger_1"
+    },
+    {
+      "rcon": "tag {player} remove defeated_factory_challenger_2"
+    },
+    {
+      "rcon": "tag {player} remove defeated_frontier_brain_factory"
+    },
+    {
+      "rcon": "tag {player} remove frontier_market_cleared"
+    },
+    {
+      "rcon": "tag {player} remove defeated_market_challenger_1"
+    },
+    {
+      "rcon": "tag {player} remove defeated_market_challenger_2"
+    },
+    {
+      "rcon": "tag {player} remove defeated_frontier_brain_market"
+    },
+    {
+      "rcon": "tag {player} remove frontier_port_cleared"
+    },
+    {
+      "rcon": "tag {player} remove defeated_port_challenger_1"
+    },
+    {
+      "rcon": "tag {player} remove defeated_port_challenger_2"
+    },
+    {
+      "rcon": "tag {player} remove defeated_frontier_brain_port"
+    },
+    {
+      "rcon": "tag {player} remove frontier_pyramid_cleared"
+    },
+    {
+      "rcon": "tag {player} remove defeated_pyramid_challenger_1"
+    },
+    {
+      "rcon": "tag {player} remove defeated_pyramid_challenger_2"
+    },
+    {
+      "rcon": "tag {player} remove defeated_frontier_brain_pyramid"
+    },
+    {
+      "rcon": "tag {player} remove frontier_tower_cleared"
+    },
+    {
+      "rcon": "tag {player} remove defeated_tower_challenger_1"
+    },
+    {
+      "rcon": "tag {player} remove defeated_tower_challenger_2"
+    },
+    {
+      "rcon": "tag {player} remove defeated_frontier_brain_tower"
+    },
+    {
+      "rcon": "tag {player} remove frontier_cave_cleared"
+    },
+    {
+      "rcon": "tag {player} remove defeated_cave_challenger_1"
+    },
+    {
+      "rcon": "tag {player} remove defeated_cave_challenger_2"
+    },
+    {
+      "rcon": "tag {player} remove defeated_frontier_brain_cave"
+    },
+    {
+      "rcon": "tag {player} remove frontier_all_cleared"
     },
     {
       "rcon": "execute as {player} run cobblemon-initiative dev bot autobattle on"
     },
     {
-      "comment": "-- beat 1: Gambler Fritz, the first table. say[] rotates, so the screen assert targets the stable battle-button label (its rendering IS the champion-gate assert) --"
+      "comment": "-- beat 1: Gambler Fritz, the first table. Both manager buttons must render (their rendering IS the champion-gate assert; say[] rotates so buttons are the stable target). Spin first - the house spins once per fight --"
     },
     {
       "find_npc": "Gambler Fritz",
@@ -112,33 +240,75 @@
       "wait_screen": "Dialog"
     },
     {
+      "expect_screen_text": "Spin the wheel"
+    },
+    {
       "expect_screen_text": "Battle Gambler Fritz"
     },
     {
       "screenshot": "arcade_fritz_gate"
     },
     {
-      "click": "Battle Gambler Fritz"
+      "click": "Spin the wheel",
+      "comment_": "frontier arcade spin (as_player) + close - the wheel result lands in chat, so the button closes the dialog to let the player read it"
+    },
+    {
+      "wait_chat": "lands on",
+      "comment_": "the [The Wheel] header (Java FrontierManager.arcadeSpin: 'clatters... slows... lands on:')"
+    },
+    {
+      "wait_chat": "LEVEL 50|LEVEL 75|LEVEL 100|DOUBLES|PURSE",
+      "comment_": "one of the six WheelSlice announce lines - the slice is random, so this is an alternation over all of them"
+    },
+    {
+      "wait_chat": "The condition rides your NEXT arcade fight",
+      "comment_": "the armed-condition rule line - proves wheelArmed is set before the fight click"
+    },
+    {
+      "rcon": "healpokemon {player}",
+      "comment_": "between-fights heal (live-caught: a fainted lead makes autobattle pass-loop to a slow loss in the NEXT fight); also the emitter boundary - the win window opens here, before the fight dispatch"
+    },
+    {
+      "find_npc": "Gambler Fritz",
+      "save": "fritz"
+    },
+    {
+      "interact_npc": "{fritz.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "click": "Battle Gambler Fritz",
+      "comment_": "frontier arcade fight 1 (as_player) + close - the manager consumes the armed slice, attaches the trainer, dispatches tbcs under the slice's format/lock"
+    },
+    {
+      "wait_no_screen": true,
+      "comment_": "the fight button carries a close action now (unlike the old do:battle buttons) - assert it lands"
+    },
+    {
+      "wait_chat": "Purse paid",
+      "timeout": 600,
+      "comment_": "the manager's win signal ('[Frontier] Purse paid: N CD' - N varies with PURSE x2/x3 slices, so no amount in the needle); trainers say NO win_line on manager fights. A timeout here is almost certainly the TBCS stall, not a regression"
     },
     {
       "client": "screen.close",
-      "comment_": "battle-start buttons have no close action; the fight runs server-side (autobattle) while the stale dialog stays up"
+      "comment_": "defensive: the battle GUI may still be up when the purse line lands — a stale screen eats the next interact (live-caught arcade/factory/port)"
     },
     {
-      "wait_chat": "Your number came up",
-      "timeout": 240,
-      "comment_": "Fritz's onwin win_line say; a timeout here is almost certainly the TBCS stall, not a regression"
+      "sleep": 2.0
     },
     {
       "rcon": "execute if entity @a[name={player},tag=defeated_arcade_challenger_1]",
-      "expect": "passed"
+      "expect": "passed",
+      "comment_": "Java-granted defeat tag (FrontierManager.onFightWon) - same tag the dialog gates always keyed on"
     },
     {
       "sleep": 2.0,
-      "comment_": "battle teardown settle before the next TBCS dispatch"
+      "comment_": "battle teardown settle before the next dispatch"
     },
     {
-      "comment": "-- beat 2: Player Suki, the high-roller table --"
+      "comment": "-- beat 2: Player Suki, the high-roller table. Fresh spin - the wheel spins once per fight --"
     },
     {
       "find_npc": "Player Suki",
@@ -151,21 +321,57 @@
       "wait_screen": "Dialog"
     },
     {
+      "expect_screen_text": "Spin the wheel"
+    },
+    {
       "expect_screen_text": "Battle Player Suki"
     },
     {
       "screenshot": "arcade_suki_gate"
     },
     {
-      "click": "Battle Player Suki"
+      "click": "Spin the wheel"
+    },
+    {
+      "wait_chat": "lands on"
+    },
+    {
+      "wait_chat": "LEVEL 50|LEVEL 75|LEVEL 100|DOUBLES|PURSE"
+    },
+    {
+      "wait_chat": "The condition rides your NEXT arcade fight"
+    },
+    {
+      "rcon": "healpokemon {player}",
+      "comment_": "between-fights heal + emitter boundary for the win window"
+    },
+    {
+      "find_npc": "Player Suki",
+      "save": "suki"
+    },
+    {
+      "interact_npc": "{suki.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "click": "Battle Player Suki",
+      "comment_": "frontier arcade fight 2 (as_player) + close"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "Purse paid",
+      "timeout": 600
     },
     {
       "client": "screen.close",
-      "comment_": "battle-start buttons have no close action; the fight runs server-side"
+      "comment_": "defensive: the battle GUI may still be up when the purse line lands"
     },
     {
-      "wait_chat": "You beat the odds and the regular who set them",
-      "timeout": 240
+      "sleep": 2.0
     },
     {
       "rcon": "execute if entity @a[name={player},tag=defeated_arcade_challenger_2]",
@@ -176,7 +382,7 @@
       "comment_": "battle teardown settle + band_tags window before the brain's all_tags gate is read"
     },
     {
-      "comment": "-- beat 3: Arcade Star Dahlia. Her battle button gates all_tags on both challenger defeats - it rendering now IS the ladder assert. Win chain: prize -> frontier_arcade_cleared tag -> win say -> frontier/hall_cleared (actionbar) --"
+      "comment": "-- beat 3: Arcade Star Dahlia. Her buttons gate all_tags on both challenger defeats - their rendering IS the ladder assert. Spin, then take the last table. Win chain (Java): defeated_frontier_brain_arcade + frontier_arcade_cleared tags -> frontier/hall_cleared ('A Frontier hall falls.' actionbar + counter) -> purse chat --"
     },
     {
       "find_npc": "Arcade Star Dahlia",
@@ -189,39 +395,80 @@
       "wait_screen": "Dialog"
     },
     {
+      "expect_screen_text": "Spin the wheel"
+    },
+    {
       "expect_screen_text": "Challenge Arcade Star Dahlia"
     },
     {
       "screenshot": "arcade_brain_gate"
     },
     {
-      "click": "Challenge Arcade Star Dahlia"
+      "click": "Spin the wheel"
     },
     {
-      "client": "screen.close",
-      "comment_": "battle-start buttons have no close action; the fight runs server-side"
+      "wait_chat": "lands on"
     },
     {
-      "wait_chat": "The wheel stops on you",
-      "timeout": 240
+      "wait_chat": "LEVEL 50|LEVEL 75|LEVEL 100|DOUBLES|PURSE"
+    },
+    {
+      "wait_chat": "The condition rides your NEXT arcade fight"
+    },
+    {
+      "rcon": "healpokemon {player}",
+      "comment_": "between-fights heal + emitter boundary for the win window"
+    },
+    {
+      "find_npc": "Arcade Star Dahlia",
+      "save": "dahlia"
+    },
+    {
+      "interact_npc": "{dahlia.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "click": "Challenge Arcade Star Dahlia",
+      "comment_": "frontier arcade fight brain (as_player) + close - the brain purse is 1500 base before any PURSE multiplier"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "Purse paid",
+      "timeout": 600
     },
     {
       "wait_chat": "A Frontier hall falls",
-      "kinds": [
-        "overlay"
-      ],
-      "timeout": 15,
-      "comment_": "frontier/hall_cleared actionbar - fires from Dahlia's on_win right after the win say"
+      "comment_": "the shipped frontier/hall_cleared actionbar - the manager fires the exact same chain the old on_win did (same window as the purse wait; consecutive wait_chats share the cursor)"
+    },
+    {
+      "client": "screen.close",
+      "comment_": "defensive: the battle GUI may still be up when the win chain lands"
+    },
+    {
+      "sleep": 2.0
     },
     {
       "rcon": "execute if entity @a[name={player},tag=frontier_arcade_cleared]",
       "expect": "passed"
     },
     {
+      "rcon": "execute if entity @a[name={player},tag=defeated_frontier_brain_arcade]",
+      "expect": "passed",
+      "comment_": "new with the manager: the brain also gets a plain defeated_* tag alongside the cleared tag"
+    },
+    {
       "screenshot": "arcade_hall_cleared"
     },
     {
-      "comment": "-- beat 4: cleared-state dialog - Dahlia's beaten entry (prio 20, gate frontier_arcade_cleared) preempts; prose any-of covers both rotating say lines --"
+      "comment": "-- beat 4: cleared-state dialog - Dahlia's beaten entry (prio 20, gate frontier_arcade_cleared) preempts; prose any-of covers all three rotating say lines (the third is her folded ex-win_line) --"
+    },
+    {
+      "find_npc": "Arcade Star Dahlia",
+      "save": "dahlia"
     },
     {
       "interact_npc": "{dahlia.uuid}"
@@ -232,7 +479,8 @@
     {
       "expect_screen_text": [
         "The house paid out. It almost never does - so wear it. The Arcade Star bows to exactly one player, and today that is you.",
-        "You broke the wheel and did not even flinch. I half-know that steadiness. I dealt cards to someone who moved like that, a long time ago, before the fall. I will keep my thoughts to myself - but well played."
+        "You broke the wheel and did not even flinch. I half-know that steadiness. I dealt cards to someone who moved like that, a long time ago, before the fall. I will keep my thoughts to myself - but well played.",
+        "The wheel stops on you. The house is out of spins - this hall is yours, Champion. There is no bigger jackpot on this floor."
       ]
     },
     {
@@ -245,7 +493,7 @@
       "wait_no_screen": true
     },
     {
-      "comment": "-- cleanup: strip everything this scenario set (champion surgery + defeat ladder + hall clear) so no other scenario inherits the lane; CD prizes ride (the prize rail has no reset, miller_walk precedent) --"
+      "comment": "-- cleanup: strip everything this scenario or the manager set (champion surgery + defeat ladder + hall clear + brain defeat) so no other scenario inherits the lane; CD purses ride (the prize rail has no reset, miller_walk precedent) --"
     },
     {
       "rcon": "execute as {player} run cobblemon-initiative dev bot autobattle off"
@@ -255,6 +503,9 @@
     },
     {
       "rcon": "tag {player} remove defeated_arcade_challenger_2"
+    },
+    {
+      "rcon": "tag {player} remove defeated_frontier_brain_arcade"
     },
     {
       "rcon": "tag {player} remove frontier_arcade_cleared"

@@ -1,15 +1,15 @@
 {
   "name": "frontier_tower",
-  "description": "Battle Tower hall end-to-end (q.side_frontier_hall stage 1): Climber Jasper -> Contender Mira -> Tower Tycoon Palmer under dev-bot autobattle, then the beaten lane. Same shape as frontier_pyramid: champion arm (royal_league_champion, stripped at cleanup), Palmer's button gating on both challenger tags is the gate assert, on_win fires frontier/hall_cleared ('A Frontier hall falls.' + #halls recount), and the preamble strips the OTHER six hall tags + frontier_warden_stirred so '#halls==1 / warden not stirred' holds. Neither the one_time challengers nor the gym_leader brain despawn on win - re-runs are tag surgery only. NOTE Palmer's win_line is verbatim the first sentence of his beaten say[0]; the chat wait and the screen assert are different channels, so no collision. Win waits ride the KNOWN TBCS stall / showdown wedge - a timeout there is almost certainly the stall, re-run before filing.",
+  "description": "Battle Tower hall end-to-end, MANAGER-OWNED (FrontierManager tower climb): the streak climb is nine floors incl. the lobby - eight fights, floors 2-8 level-locked 40->88 alternating Jasper/Mira re-manned per floor (locked fights flatten CLONES, attrition-free), floor 9 is Tower Tycoon Palmer at full authored strength (REAL fight). Dialog do:battle buttons are GONE - Jasper's lobby desk carries 'Take the lift' (frontier tower climb, as_player); floors 4-9 climb via rcon execute-as (same command surface). WIN SIGNAL is the manager, not trainer win_lines: per floor expect the climb banner ('Floor N of 9 ... flattened to <lock> ... Purse <purse> CD'), then '[Frontier] Purse paid: <purse> CD', then 'The lift hums. Floor N+1 is open' (NOTE: the Java line has no 'of 9'); progression asserted via the frontier_tower_floor score. Palmer's win sets defeated_frontier_brain_tower + frontier_tower_cleared and fires frontier/hall_cleared ('A Frontier hall falls.' + #halls recount) - his old win_line tail lives in beaten say[2] now. NEEDLE RULE (safari_yards precedent): manager lines are Component.literal with embedded section-sign codes and HudLog stores getString() RAW, so every wait_chat needle either sits inside ONE color run or embeds the codes verbatim with an escaped dot to ride the regex path. Champion arm (royal_league_champion) still gates the lift button; preamble strips the OTHER six hall tags + frontier_warden_stirred so '#halls==1 / warden not stirred' holds, and resets frontier_tower_floor to 0 (a failed run parks a mid-climb score). Win waits ride the KNOWN TBCS stall / showdown wedge - a timeout there is almost certainly the stall, re-run before filing.",
   "_probe_pending": [
     "3800.5 159 2959.5"
   ],
   "steps": [
     {
-      "comment": "-- SITE NOTES: latch-placed bodies on the shipped RCT anchors - Jasper [3797.5 159 2959.5], Mira [3803.5 159 2959.5], Palmer [3800.5 159 2962.5]. ALL THREE tower character files carry a PLACEHOLDER-placement warning (atlas-intent facility Battle Tower [4026 64 3068] vs the shipped y=159 plateau anchor, never live-verified) - hence _probe_pending on the tp; do NOT guess a corrected Y. frontier_active region tick suspends Nuzlocke here, but it is NOT a SafeZone - day + regen below for the hardcore player. --"
+      "comment": "-- SITE NOTES: latch-placed bodies on the shipped RCT anchors - Jasper [3797.5 159 2959.5], Mira [3803.5 159 2959.5], Palmer [3800.5 159 2962.5]. ALL THREE tower character files carry a PLACEHOLDER-placement warning (atlas-intent facility Battle Tower [4026 64 3068] vs the shipped y=159 plateau anchor, never live-verified) - hence _probe_pending on the tp; do NOT guess a corrected Y. The manager anchors each fight's trainer to an armor stand it summons at the PLAYER, so all eight fights run at the lobby - no vertical movement despite the floor fiction. frontier_active region tick suspends Nuzlocke here, but it is NOT a SafeZone - day + regen below for the hardcore player. --"
     },
     {
-      "comment": "-- reset (idempotent re-runs): this hall's three defeat tags, PLUS the other six hall tags + the warden latch so the aggregate asserts stay exact --"
+      "comment": "-- reset (idempotent re-runs): this hall's defeat tags + the climb score, PLUS the other six hall tags + the warden latch so the aggregate asserts stay exact --"
     },
     {
       "rcon": "tag {player} remove defeated_tower_challenger_1"
@@ -18,7 +18,17 @@
       "rcon": "tag {player} remove defeated_tower_challenger_2"
     },
     {
+      "rcon": "tag {player} remove defeated_frontier_brain_tower"
+    },
+    {
       "rcon": "tag {player} remove frontier_tower_cleared"
+    },
+    {
+      "rcon": "scoreboard objectives add frontier_tower_floor dummy",
+      "comment_": "lazy-created by the Java on first climb; add-first so the reset set below can never hit an unknown objective on a fresh world (duplicate add fails harmlessly)"
+    },
+    {
+      "rcon": "scoreboard players set {player} frontier_tower_floor 0"
     },
     {
       "rcon": "tag {player} remove frontier_factory_cleared"
@@ -81,7 +91,7 @@
       "rcon": "effect give {player} minecraft:regeneration 480 2"
     },
     {
-      "comment": "-- party reset: six empties then two lv-100 Garchomp (ceiling fights; junk parties stall TBCS init; two mons = attrition headroom) --"
+      "comment": "-- party reset: six empties then six lv-100 wonder Raikou (locked floors flatten clones so any team wins; Palmer is REAL - the wonder team handles him too; junk parties stall TBCS init) --"
     },
     {
       "rcon": "takepokemon {player} 1"
@@ -102,16 +112,144 @@
       "rcon": "takepokemon {player} 1"
     },
     {
-      "rcon": "execute as {player} run cobblemon-initiative givemon garchomp level=100"
+      "rcon": "execute as {player} run cobblemon-initiative givemon raikou level=100 ability=wonderguard held_item=cobblemon:air_balloon moves=icebeam,surf,thunderbolt,flashcannon",
+      "comment_": "WONDER TEAM (showrunner idea 2026-07-19, brain-fight solo-verified): pure Electric's only weakness is Ground -> Air Balloon negates it; Wonder Guard blocks everything else and the balloon never pops (nothing lands). Slot-1 Ice Beam: accurate, NO type is immune (an Electric lead vs enemy Ground-types would zero-damage-loop under first-legal-move autobattle)."
     },
     {
-      "rcon": "execute as {player} run cobblemon-initiative givemon garchomp level=100"
+      "rcon": "execute as {player} run cobblemon-initiative givemon raikou level=100 ability=wonderguard held_item=cobblemon:air_balloon moves=icebeam,surf,thunderbolt,flashcannon"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon raikou level=100 ability=wonderguard held_item=cobblemon:air_balloon moves=icebeam,surf,thunderbolt,flashcannon"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon raikou level=100 ability=wonderguard held_item=cobblemon:air_balloon moves=icebeam,surf,thunderbolt,flashcannon"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon raikou level=100 ability=wonderguard held_item=cobblemon:air_balloon moves=icebeam,surf,thunderbolt,flashcannon"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon raikou level=100 ability=wonderguard held_item=cobblemon:air_balloon moves=icebeam,surf,thunderbolt,flashcannon"
+    },
+    {
+      "rcon": "healpokemon {player}",
+      "comment_": "cross-scenario attrition guard (live-caught 2026-07-18: fights entered with fainted leads make autobattle pass turns forever = endless slow loss)"
+    },
+    {
+      "comment": "-- frontier residue strip (2026-07-18): failed runs skip cleanup, so cleared/defeat tags leak across attempts and reroute gated entries (the 'open Warden door' false alarm) --"
+    },
+    {
+      "comment": "-- brain latch re-arm (2026-07-19): a consumed fight leaves the brain BODY gone with #amb=1 - every later run finds nothing (all 7 brains were bodiless by round 4; three scenarios then false-matched STALE buffer win lines). Kill any stale body + reset the latch; the 40b approach respawns him fresh. --"
+    },
+    {
+      "rcon": "execute as {player} at @s run kill @e[name=\"frontier_brain_tower\",type=!minecraft:player,distance=..64]"
+    },
+    {
+      "rcon": "scoreboard players set #amb_frontier_brain_tower ci_ambient 0"
+    },
+    {
+      "rcon": "tag {player} remove frontier_arcade_cleared"
+    },
+    {
+      "rcon": "tag {player} remove defeated_arcade_challenger_1"
+    },
+    {
+      "rcon": "tag {player} remove defeated_arcade_challenger_2"
+    },
+    {
+      "rcon": "tag {player} remove defeated_frontier_brain_arcade"
+    },
+    {
+      "rcon": "tag {player} remove frontier_castle_cleared"
+    },
+    {
+      "rcon": "tag {player} remove defeated_castle_challenger_1"
+    },
+    {
+      "rcon": "tag {player} remove defeated_castle_challenger_2"
+    },
+    {
+      "rcon": "tag {player} remove defeated_frontier_brain_castle"
+    },
+    {
+      "rcon": "tag {player} remove frontier_factory_cleared"
+    },
+    {
+      "rcon": "tag {player} remove defeated_factory_challenger_1"
+    },
+    {
+      "rcon": "tag {player} remove defeated_factory_challenger_2"
+    },
+    {
+      "rcon": "tag {player} remove defeated_frontier_brain_factory"
+    },
+    {
+      "rcon": "tag {player} remove frontier_market_cleared"
+    },
+    {
+      "rcon": "tag {player} remove defeated_market_challenger_1"
+    },
+    {
+      "rcon": "tag {player} remove defeated_market_challenger_2"
+    },
+    {
+      "rcon": "tag {player} remove defeated_frontier_brain_market"
+    },
+    {
+      "rcon": "tag {player} remove frontier_port_cleared"
+    },
+    {
+      "rcon": "tag {player} remove defeated_port_challenger_1"
+    },
+    {
+      "rcon": "tag {player} remove defeated_port_challenger_2"
+    },
+    {
+      "rcon": "tag {player} remove defeated_frontier_brain_port"
+    },
+    {
+      "rcon": "tag {player} remove frontier_pyramid_cleared"
+    },
+    {
+      "rcon": "tag {player} remove defeated_pyramid_challenger_1"
+    },
+    {
+      "rcon": "tag {player} remove defeated_pyramid_challenger_2"
+    },
+    {
+      "rcon": "tag {player} remove defeated_frontier_brain_pyramid"
+    },
+    {
+      "rcon": "tag {player} remove frontier_tower_cleared"
+    },
+    {
+      "rcon": "tag {player} remove defeated_tower_challenger_1"
+    },
+    {
+      "rcon": "tag {player} remove defeated_tower_challenger_2"
+    },
+    {
+      "rcon": "tag {player} remove defeated_frontier_brain_tower"
+    },
+    {
+      "rcon": "tag {player} remove frontier_cave_cleared"
+    },
+    {
+      "rcon": "tag {player} remove defeated_cave_challenger_1"
+    },
+    {
+      "rcon": "tag {player} remove defeated_cave_challenger_2"
+    },
+    {
+      "rcon": "tag {player} remove defeated_frontier_brain_cave"
+    },
+    {
+      "rcon": "tag {player} remove frontier_all_cleared"
     },
     {
       "rcon": "execute as {player} run cobblemon-initiative dev bot autobattle on"
     },
     {
-      "comment": "-- settle + lane sanity: band tick re-derives the no_* inverses dropped-side --"
+      "comment": "-- settle + lane sanity: band tick re-derives the no_* inverses dropped-side; climb score must read 0 --"
     },
     {
       "sleep": 2.0
@@ -125,7 +263,11 @@
       "expect": "passed"
     },
     {
-      "comment": "-- beat 1: Climber Jasper, ground floor - stable battle-button assert (say[] rotates) --"
+      "rcon": "execute if score {player} frontier_tower_floor matches 0",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 1: lobby desk - Jasper's DEFAULT entry pitches the climb and carries the lift button (do:battle is gone). Any-of covers the rotating say[]; the button label is the stable assert --"
     },
     {
       "find_npc": "Climber Jasper",
@@ -138,33 +280,114 @@
       "wait_screen": "Dialog"
     },
     {
-      "expect_screen_text": "Battle Climber Jasper"
+      "expect_screen_text": [
+        "Welcome to the ground floor. Nine floors, one lift, and every floor above is a promotion review. House teams both sides, flattened to the floor level - nothing you love is at stake on the way up.",
+        "The tower does not care who you toppled at the League. The lift opens one floor at a time, the roster re-mans every landing, and a loss resets the climb to this desk. So - climb.",
+        "House rules: floor two starts flattened at forty and the lock rises every landing to eighty-eight. The Tycoon holds floor nine and he does not flatten anything. Take the lift when you are ready."
+      ]
     },
     {
-      "screenshot": "tower_jasper"
+      "expect_screen_text": "Take the lift"
     },
     {
-      "click": "Battle Climber Jasper"
+      "screenshot": "tower_lobby_lift"
     },
     {
-      "comment": "-- battle buttons have no close action - close the stale dialog; win wait anchors here --"
+      "rcon": "healpokemon {player}",
+      "comment_": "between-fights heal (live-caught: a fainted lead makes autobattle pass-loop to a slow loss in the NEXT fight)"
     },
     {
-      "client": "screen.close"
+      "click": "Take the lift"
     },
     {
-      "wait_chat": "Floor cleared. You move up.",
-      "timeout": 240
+      "comment": "-- floor 2 (fight 1/8): Jasper clone at lock 40. Banner -> fight -> purse -> lift line, all in one wait window (the lift button closes the dialog itself) --"
+    },
+    {
+      "wait_chat": "Floor §e2§7 of 9 — both sides flattened to §e40§7\\. Purse §e300 CD§7"
+    },
+    {
+      "wait_chat": "Purse paid: §e300 CD§7\\.",
+      "timeout": 600
+    },
+    {
+      "wait_chat": "The lift hums\\. Floor §e3§7 is open"
+    },
+    {
+      "client": "screen.close",
+      "comment_": "defensive: the battle GUI may still be up when the win line lands - a stale screen eats the next interact (live-caught arcade/factory/port)"
+    },
+    {
+      "sleep": 2.0
     },
     {
       "rcon": "execute if entity @a[name={player},tag=defeated_tower_challenger_1]",
       "expect": "passed"
     },
     {
-      "sleep": 1.0
+      "rcon": "execute if score {player} frontier_tower_floor matches 1",
+      "expect": "passed"
     },
     {
-      "comment": "-- beat 2: Contender Mira, floor two --"
+      "comment": "-- beat 2: Jasper BEATEN entry (re-manned voice, priority 20) still carries the lift - click it for floor 3. Re-find refreshes the approach context --"
+    },
+    {
+      "find_npc": "Climber Jasper",
+      "save": "c1b"
+    },
+    {
+      "interact_npc": "{c1b.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": [
+        "Floor cleared. You move up - and so do I. The roster re-mans every landing, so the lift will find me again on a higher floor at a higher lock. That is how this tower works.",
+        "You beat me down here and I signed the promotion myself. Do not get comfortable - I am already re-manned upstairs, and the ceiling only rises. The lift is waiting.",
+        "Cleared. The Company built these floors to sort people into ranks - climb high enough and you were somebody. Nobody sorts you now. Mind the one rule that survived: a loss resets the climb."
+      ]
+    },
+    {
+      "expect_screen_text": "Take the lift"
+    },
+    {
+      "screenshot": "tower_jasper_remanned"
+    },
+    {
+      "rcon": "healpokemon {player}"
+    },
+    {
+      "click": "Take the lift"
+    },
+    {
+      "comment": "-- floor 3 (fight 2/8): Mira clone at lock 48 --"
+    },
+    {
+      "wait_chat": "Floor §e3§7 of 9 — both sides flattened to §e48§7\\. Purse §e400 CD§7"
+    },
+    {
+      "wait_chat": "Purse paid: §e400 CD§7\\.",
+      "timeout": 600
+    },
+    {
+      "wait_chat": "The lift hums\\. Floor §e4§7 is open"
+    },
+    {
+      "client": "screen.close"
+    },
+    {
+      "sleep": 2.0
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=defeated_tower_challenger_2]",
+      "expect": "passed"
+    },
+    {
+      "rcon": "execute if score {player} frontier_tower_floor matches 2",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 3 (no fight): Mira's beaten lane - re-manned voice, no battle button anymore; her leave button is the assert --"
     },
     {
       "find_npc": "Contender Mira",
@@ -177,30 +400,156 @@
       "wait_screen": "Dialog"
     },
     {
-      "expect_screen_text": "Battle Contender Mira"
+      "expect_screen_text": [
+        "Floor three is yours - so I moved up. Re-manned and re-locked, the higher odd floors are still mine to hold. The lift to the Tycoon knows the way. Do not keep the top waiting.",
+        "Cleared. I used to think the corner office meant something. Now the office is empty and the only rank left is how high you climb before a loss resets it. You climb well.",
+        "You move up, I re-man higher. That is the arrangement - the roster rides the lift same as you. Save something for floor nine; Palmer does not flatten his team for anyone."
+      ]
     },
     {
-      "screenshot": "tower_mira"
+      "screenshot": "tower_mira_remanned"
     },
     {
-      "click": "Battle Contender Mira"
+      "click": "Back to the climb"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "comment": "-- floors 4-8 (fights 3-7/8): same command surface via rcon execute-as (the lift button just runs this). Locks 56/64/72/80/88, purses 500-900, roster alternating Jasper/Mira clones --"
+    },
+    {
+      "rcon": "healpokemon {player}"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative frontier tower climb"
+    },
+    {
+      "wait_chat": "Floor §e4§7 of 9 — both sides flattened to §e56§7\\. Purse §e500 CD§7"
+    },
+    {
+      "wait_chat": "Purse paid: §e500 CD§7\\.",
+      "timeout": 600
+    },
+    {
+      "wait_chat": "The lift hums\\. Floor §e5§7 is open"
     },
     {
       "client": "screen.close"
     },
     {
-      "wait_chat": "Two floors up. The lift to the Tycoon is open.",
-      "timeout": 240
+      "sleep": 2.0
     },
     {
-      "rcon": "execute if entity @a[name={player},tag=defeated_tower_challenger_2]",
+      "rcon": "execute if score {player} frontier_tower_floor matches 3",
       "expect": "passed"
     },
     {
-      "sleep": 1.0
+      "rcon": "healpokemon {player}"
     },
     {
-      "comment": "-- beat 3: Tower Tycoon Palmer - button gates on both challenger tags; it appearing IS the gate assert --"
+      "rcon": "execute as {player} run cobblemon-initiative frontier tower climb"
+    },
+    {
+      "wait_chat": "Floor §e5§7 of 9 — both sides flattened to §e64§7\\. Purse §e600 CD§7"
+    },
+    {
+      "wait_chat": "Purse paid: §e600 CD§7\\.",
+      "timeout": 600
+    },
+    {
+      "wait_chat": "The lift hums\\. Floor §e6§7 is open"
+    },
+    {
+      "client": "screen.close"
+    },
+    {
+      "sleep": 2.0
+    },
+    {
+      "rcon": "execute if score {player} frontier_tower_floor matches 4",
+      "expect": "passed"
+    },
+    {
+      "rcon": "healpokemon {player}"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative frontier tower climb"
+    },
+    {
+      "wait_chat": "Floor §e6§7 of 9 — both sides flattened to §e72§7\\. Purse §e700 CD§7"
+    },
+    {
+      "wait_chat": "Purse paid: §e700 CD§7\\.",
+      "timeout": 600
+    },
+    {
+      "wait_chat": "The lift hums\\. Floor §e7§7 is open"
+    },
+    {
+      "client": "screen.close"
+    },
+    {
+      "sleep": 2.0
+    },
+    {
+      "rcon": "execute if score {player} frontier_tower_floor matches 5",
+      "expect": "passed"
+    },
+    {
+      "rcon": "healpokemon {player}"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative frontier tower climb"
+    },
+    {
+      "wait_chat": "Floor §e7§7 of 9 — both sides flattened to §e80§7\\. Purse §e800 CD§7"
+    },
+    {
+      "wait_chat": "Purse paid: §e800 CD§7\\.",
+      "timeout": 600
+    },
+    {
+      "wait_chat": "The lift hums\\. Floor §e8§7 is open"
+    },
+    {
+      "client": "screen.close"
+    },
+    {
+      "sleep": 2.0
+    },
+    {
+      "rcon": "execute if score {player} frontier_tower_floor matches 6",
+      "expect": "passed"
+    },
+    {
+      "rcon": "healpokemon {player}"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative frontier tower climb"
+    },
+    {
+      "wait_chat": "Floor §e8§7 of 9 — both sides flattened to §e88§7\\. Purse §e900 CD§7"
+    },
+    {
+      "wait_chat": "Purse paid: §e900 CD§7\\.",
+      "timeout": 600
+    },
+    {
+      "wait_chat": "The lift hums\\. Floor §e9§7 is open"
+    },
+    {
+      "client": "screen.close"
+    },
+    {
+      "sleep": 2.0
+    },
+    {
+      "rcon": "execute if score {player} frontier_tower_floor matches 7",
+      "expect": "passed"
+    },
+    {
+      "comment": "-- beat 4 (no fight): Palmer pre-fight lane before the summit ride - re-voiced default entry, battle button gone, leave button is the stable assert --"
     },
     {
       "find_npc": "Tower Tycoon Palmer",
@@ -213,33 +562,59 @@
       "wait_screen": "Dialog"
     },
     {
-      "expect_screen_text": "Challenge Tower Tycoon Palmer"
+      "expect_screen_text": [
+        "I am the top of the ladder. Eight floors of house teams stand between us, each flattened to its landing - then floor nine, where nothing is flattened and I fight at full strength. Earn the lift, one review at a time.",
+        "The Company that built this tower is gone; the climb is not. The lift opens one floor at a time and a loss resets the whole ladder. When it finally opens on nine, we settle who owns the top floor.",
+        "The floors below run handicapped - house teams, house locks. My floor does not. Whatever the lift delivers to the summit meets my real team, and most rides end back at the desk."
+      ]
     },
     {
-      "screenshot": "tower_palmer_gate_open"
+      "expect_screen_text": "Ride the lift back down"
     },
     {
-      "click": "Challenge Tower Tycoon Palmer"
+      "screenshot": "tower_palmer_prefight"
+    },
+    {
+      "click": "Ride the lift back down"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "comment": "-- floor 9 (fight 8/8): the Tycoon at full authored strength - REAL fight, wonder team earns it. Win chain: defeat tags -> hall_cleared function -> purse -> top-floor line; score resets to 0 --"
+    },
+    {
+      "rcon": "healpokemon {player}"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative frontier tower climb"
+    },
+    {
+      "wait_chat": "Floor §e9§7 of 9 — §cthe Tycoon fights at full strength§7\\. Purse §e1200 CD§7"
+    },
+    {
+      "wait_chat": "Purse paid: §e1200 CD§7\\.",
+      "timeout": 600
+    },
+    {
+      "wait_chat": "Top floor\\. There is no promotion above this one\\."
     },
     {
       "client": "screen.close"
     },
     {
-      "comment": "-- win chain: defeat tag -> Palmer's win line -> frontier/hall_cleared actionbar + #halls recount --"
-    },
-    {
-      "wait_chat": "Top floor. There is no promotion above this one",
-      "timeout": 240
-    },
-    {
-      "wait_chat": "A Frontier hall falls.",
-      "kinds": [
-        "overlay"
-      ],
-      "timeout": 15
+      "sleep": 2.0
     },
     {
       "rcon": "execute if entity @a[name={player},tag=frontier_tower_cleared]",
+      "expect": "passed"
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=defeated_frontier_brain_tower]",
+      "expect": "passed"
+    },
+    {
+      "rcon": "execute if score {player} frontier_tower_floor matches 0",
       "expect": "passed"
     },
     {
@@ -254,17 +629,17 @@
       "screenshot": "tower_hall_falls"
     },
     {
-      "comment": "-- beat 4: the beaten lane - priority-20 entry; prose any-of covers all three rotating say lines. Re-find refreshes the approach context (the battle chain pushed the last one out of range) --"
+      "comment": "-- beat 5: Palmer's beaten lane - priority-20 entry gated on frontier_tower_cleared (manager sets the same tag the old onwin did); prose any-of covers all three rotating say lines incl. the folded win_line tail --"
     },
     {
       "sleep": 1.5
     },
     {
       "find_npc": "Tower Tycoon Palmer",
-      "save": "brain"
+      "save": "brain2"
     },
     {
-      "interact_npc": "{brain.uuid}"
+      "interact_npc": "{brain2.uuid}"
     },
     {
       "wait_screen": "Dialog"
@@ -273,7 +648,7 @@
       "expect_screen_text": [
         "The chair behind the desk stays mine, but the floor is yours. Take the view in - most people never see the tower from this side.",
         "You reached the summit and held it. I ran this tower back when the Company still built things for people to enjoy instead of things to squeeze them with. Good to see it still means the climb.",
-        "The office at the top is yours whenever you want it. Nobody hands out the corner anymore - people just take the stairs. You took them all."
+        "The office at the top is yours whenever you want it. Nobody hands out the corner anymore - people just take the stairs. You took them all. There is no promotion above this one - only the next hall."
       ]
     },
     {
@@ -289,13 +664,16 @@
       "wait_no_screen": true
     },
     {
-      "comment": "-- cleanup: autobattle off; strip champion + everything this run earned --"
+      "comment": "-- cleanup: autobattle off; strip champion + everything this run earned; park the climb score at 0 --"
     },
     {
       "rcon": "execute as {player} run cobblemon-initiative dev bot autobattle off"
     },
     {
       "rcon": "tag {player} remove frontier_tower_cleared"
+    },
+    {
+      "rcon": "tag {player} remove defeated_frontier_brain_tower"
     },
     {
       "rcon": "tag {player} remove defeated_tower_challenger_1"
@@ -305,6 +683,9 @@
     },
     {
       "rcon": "tag {player} remove royal_league_champion"
+    },
+    {
+      "rcon": "scoreboard players set {player} frontier_tower_floor 0"
     },
     {
       "screenshot": "frontier_tower_done"

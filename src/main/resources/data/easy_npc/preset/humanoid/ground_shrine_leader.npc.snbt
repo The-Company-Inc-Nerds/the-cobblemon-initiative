@@ -40,6 +40,58 @@
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
+                            Name: "ground_shrine_trial_clear"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "no_ground_crystal_claimed"
+                        }
+                    ],
+                    Priority: 30,
+                    Buttons: [
+                        {
+                            Name: "Receive the Ground Shrine Crystal",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "give @s cobblemon_initiative:ground_shrine_crystal"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add ground_crystal_claimed"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "claim_button"
+                        },
+                        {
+                            Name: "Not yet",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The earth took your measure in the dark and held. This crystal is the weight of that bargain. Lay it on any soil — what the deep sends up will test whether the soil is yours or you are the soil's."
+                        }
+                    ],
+                    Name: "Terran — the crystal",
+                    Label: "cleared"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
                             Name: "defeated_ground_shrine_leader"
                         }
                     ],
@@ -214,7 +266,7 @@
                     ],
                     Texts: [
                         {
-                            Text: "Be still. You tread upon the Ground Shrine, where the patient earth holds every weight ever set upon it. I am Terran, and I keep its long memory. You passed my acolytes; the deep itself is not so easily flattered."
+                            Text: "Be still. You tread upon the Ground Shrine, where the patient earth holds every weight ever set upon it. I am Terran, and I keep its long memory. The deep itself is not easily flattered."
                         },
                         {
                             Text: "We fight blind here, as the order does - the light put out, the earth heaving under us both, and my strength halved so the stones may judge you fairly. What is buried is not given to those who need to see. Where did the earth set you down before, that the floor should hum at your tread."

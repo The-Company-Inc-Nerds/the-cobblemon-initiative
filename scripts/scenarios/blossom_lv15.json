@@ -39,6 +39,10 @@
       "rcon": "execute as {player} run cobblemon-initiative givemon magikarp level=3"
     },
     {
+      "rcon": "healpokemon {player}",
+      "comment_": "cross-scenario attrition guard (live-caught 2026-07-18: fights entered with fainted leads make autobattle pass turns forever = endless slow loss)"
+    },
+    {
       "rcon": "execute as {player} run cobblemon-initiative dev bot autobattle on"
     },
     {
@@ -68,7 +72,7 @@
     },
     {
       "wait_chat": "The meadow looks after its own",
-      "timeout": 120
+      "timeout": 360
     },
     {
       "rcon": "execute if entity @a[name={player},tag=defeated_sq_regular_meadow]",

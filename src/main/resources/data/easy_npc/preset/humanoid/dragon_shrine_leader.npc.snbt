@@ -40,7 +40,59 @@
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
-                            Name: "defeated_dragon_shrine_leader"
+                            Name: "dragon_shrine_trial_clear"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "no_dragon_crystal_claimed"
+                        }
+                    ],
+                    Priority: 30,
+                    Buttons: [
+                        {
+                            Name: "Receive the Dragon Shrine Crystal",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "give @s cobblemon_initiative:dragon_shrine_crystal"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add dragon_crystal_claimed"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "claim_button"
+                        },
+                        {
+                            Name: "Not yet",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Three heads bowed. The shrine counts that as a word given. Take the crystal — the old scale-and-storm sleeps in it, and it wakes wherever you set it down. Choose that ground with more care than the Company ever chose theirs."
+                        }
+                    ],
+                    Name: "Draconis — the crystal",
+                    Label: "cleared"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "dragon_crystal_claimed"
                         }
                     ],
                     Priority: 20,
@@ -81,7 +133,7 @@
                             Label: "gaze_button"
                         },
                         {
-                            Name: "Wake the hydra and face Draconis",
+                            Name: "Wake the hydra",
                             Actions: [
                                 {
                                     Type: "COMMAND",
@@ -107,62 +159,6 @@
                             Label: "begin_trial_button"
                         },
                         {
-                            Name: "Face the wyrm",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "defeated_dragon_shrine_leader"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "say The wyrm remembers your weight. There is nothing left for you to prove here."
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_defeated_dragon_shrine_leader"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tbcs attach rctmod:dragon_shrine_leader @s"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_defeated_dragon_shrine_leader"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:dragon_shrine_leader onwin {1: ['cobbledollars give @1 2500', 'tag @1 add defeated_dragon_shrine_leader', '@2 say The wyrm has weighed you and found you whole. Go, bearer of the old fire.', 'execute as @1 unless entity @1[tag=shrine_frag_seen] run function cobblemon_initiative:memory/shrine/first_keeper'], 2: ['@1 say The shrine has not finished with you. Return when your scales have hardened.']}"
-                                },
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Conditions: [
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "dragon_shrine_trial_clear"
-                                }
-                            ],
-                            Label: "yes_button"
-                        },
-                        {
                             Name: "I am not ready",
                             Actions: [
                                 {
@@ -174,7 +170,7 @@
                     ],
                     Texts: [
                         {
-                            Text: "Halt. You stand in the breath of the Dragon Shrine, where the oldest fire still coils and waits. I am Draconis, and I keep its hunger. You passed my tenders; the wyrm itself is not so easily flattered."
+                            Text: "Halt. You stand in the breath of the Dragon Shrine, where the oldest fire still coils and waits. I am Draconis, and I keep its hunger. The wyrm itself is not easily flattered."
                         },
                         {
                             Text: "Rouse the hydra first - three heads, one hunger, and it heals between each fall so a single answer will not do. Field a party built for two-on-two; the wyrm does not fight one at a time, and neither do I. The old fire stirs for you the way it stirs for things it has tasted before."

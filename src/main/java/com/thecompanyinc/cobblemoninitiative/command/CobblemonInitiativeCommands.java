@@ -145,6 +145,36 @@ public class CobblemonInitiativeCommands {
                 .executes(ctx -> givemon(ctx, StringArgumentType.getString(ctx, "properties")))
             )
         )
+        // Battle Frontier hall mechanics (FrontierManager) — player-facing like `track`
+        // (runtime player resolution, no parse-time requires: kiosk dialog buttons and
+        // the harness both dispatch these as the player).
+        .then(
+          Commands.literal("frontier")
+            .then(Commands.literal("arcade")
+              .then(Commands.literal("spin").executes(ctx -> frontier(ctx, m -> m::arcadeSpin)))
+              .then(Commands.literal("fight")
+                .then(Commands.argument("slot", StringArgumentType.word())
+                  .executes(ctx -> frontierArg(ctx, StringArgumentType.getString(ctx, "slot"),
+                    (m, p, a) -> m.arcadeFight(p, a))))))
+            .then(Commands.literal("castle")
+              .then(Commands.argument("action", StringArgumentType.word())
+                .executes(ctx -> frontierArg(ctx, StringArgumentType.getString(ctx, "action"),
+                  (m, p, a) -> m.castle(p, a)))))
+            .then(Commands.literal("market")
+              .then(Commands.literal("buy")
+                .then(Commands.argument("listing", StringArgumentType.word())
+                  .executes(ctx -> frontierArg(ctx, StringArgumentType.getString(ctx, "listing"),
+                    (m, p, a) -> m.marketBuy(p, a))))))
+            .then(Commands.literal("port")
+              .then(Commands.literal("crew").executes(ctx -> frontier(ctx, m -> m::portCrew))))
+            .then(Commands.literal("pyramid")
+              .then(Commands.literal("start").executes(ctx -> frontier(ctx, m -> m::pyramidStart))))
+            .then(Commands.literal("tower")
+              .then(Commands.literal("climb").executes(ctx -> frontier(ctx, m -> m::towerClimb))))
+            .then(Commands.literal("factory")
+              .then(Commands.literal("start").executes(ctx -> frontier(ctx, m -> m::factoryStart)))
+              .then(Commands.literal("return").executes(ctx -> frontier(ctx, m -> m::factoryReturn))))
+        )
         // Founder party-mirror refresh: rebuilds villain_final_boss from the live party
         // (registry swap, no reload — see FounderMirrorManager). Fired by the Founder's
         // "Face myself" dialog button right before the battle, and available to admins.
@@ -570,6 +600,39 @@ public class CobblemonInitiativeCommands {
       return 0;
     }
     return InitiativeInit.getSafariManager().buyBait(player, type, count) ? 1 : 0;
+  }
+
+  // ── Frontier hall handlers (runtime player resolution) ────────────────────────
+
+  @FunctionalInterface
+  private interface FrontierArgAction {
+    int run(com.thecompanyinc.cobblemoninitiative.frontier.FrontierManager m,
+            ServerPlayer p, String arg);
+  }
+
+  private static int frontier(
+    CommandContext<CommandSourceStack> ctx,
+    java.util.function.Function<com.thecompanyinc.cobblemoninitiative.frontier.FrontierManager,
+      java.util.function.ToIntFunction<ServerPlayer>> action
+  ) {
+    ServerPlayer player = ctx.getSource().getPlayer();
+    if (player == null) {
+      ctx.getSource().sendFailure(Component.literal("Must be run by a player."));
+      return 0;
+    }
+    var manager = InitiativeInit.getFrontierManager();
+    return action.apply(manager).applyAsInt(player);
+  }
+
+  private static int frontierArg(
+    CommandContext<CommandSourceStack> ctx, String arg, FrontierArgAction action
+  ) {
+    ServerPlayer player = ctx.getSource().getPlayer();
+    if (player == null) {
+      ctx.getSource().sendFailure(Component.literal("Must be run by a player."));
+      return 0;
+    }
+    return action.run(InitiativeInit.getFrontierManager(), player, arg);
   }
 
   /** /cobblemon-initiative mirror refresh — rebuild the Founder from the live party. */

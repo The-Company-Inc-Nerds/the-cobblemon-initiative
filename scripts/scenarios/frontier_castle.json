@@ -1,6 +1,6 @@
 {
   "name": "frontier_castle",
-  "description": "Battle Castle hall clear (q.side_frontier_hall lane): the champion-gated opt-in ladder - Knight Aldric and Guard Captain Elara (one_time challengers, defeat tags fire via TBCS onwin, achievementOnDefeat is null by design so the DIALOG gate is the progression), then Castle Lord Percival (brain, battle button gated all_tags on both challenger defeats) whose on_win runs frontier/hall_cleared ('A Frontier hall falls.' actionbar + the seven-hall counter) and tags frontier_castle_cleared. The champion gate is opened by tag surgery: gate.champion lowers to the player tag royal_league_champion (content_compile line 205ff) - the test player has NOT cleared the Royal League, so the tag is added in the preamble and stripped in cleanup. Fights run under dev-bot autobattle with 2x lv-100 Garchomp (brains fight at the ceiling; frontier fights are never level-locked). Site is the shipped RCT frontier cluster at y159 - the preamble asserts frontier_active (region_tick AABB), the trigger NuzlockeInit reads to suspend faint damage/party removal/whiteout: the no-death safe-exhibition promise, though the Java suppression itself needs a real faint and is not asserted here (smoke_frontier precedent). The atlas [4096 2965] cluster re-survey (15 Open Q1) is still open - hence _probe_pending. KNOWN CAVEAT: the intermittent TBCS battle-init stall (and the rarer showdown engine wedge) means a win-wait timeout is almost certainly NOT a hall regression - re-run before filing (wedge recovery: blind rctapi maps then dev showdown revive).",
+  "description": "Battle Castle hall clear (q.side_frontier_hall lane), re-cut for the FrontierManager castle-points economy: the fights STAY dialog do:battle (Knight Aldric and Guard Captain Elara one_time challengers, then Castle Lord Percival the brain, all TBCS onwin), but the run now rides the points ledger - 'Open the house ledger' (frontier castle enter, 60-point budget), 'Buy intel - 15 points' (castle scout reads the next un-defeated gate's bundled rctmod team), 'Buy the physician - 20 points' (castle heal between fights, the mechanic replacing the old rcon heal there), and after the Lord falls 'Settle the ledger' (castle claim pays leftover points x15 CD). Claim gates on defeated_frontier_brain_castle - Percival's dialog battle defeat_tag is frontier_castle_cleared, so his on_win now ALSO grants the brain tag to align with the manager's tag surface (asserted here); a pre-defeat claim via rcon asserts the refusal line. Point rail asserted at every spend: 60 -> 45 (scout) -> 25 (physician) -> 25 (refusal untouched) -> 0 (claim). Exact CD read: wallet zeroed AFTER the brain's 3000 dialog prize, so the claim's 25x15=375 sits under the 1000 query abbreviation. The champion gate is opened by tag surgery (gate.champion lowers to royal_league_champion); fights run under dev-bot autobattle with the wonder team (locked fights do not exist here - castle fights are never level-locked, the wonder team just wins). Site is the shipped RCT frontier cluster at y159; the preamble asserts frontier_active (region_tick AABB) for the no-death exhibition promise. KNOWN CAVEAT: the intermittent TBCS battle-init stall (and the rarer showdown engine wedge) means a win-wait timeout is almost certainly NOT a hall regression - re-run before filing (wedge recovery: blind rctapi maps then dev showdown revive).",
   "_probe_pending": [
     "3788.5 159 2960.5"
   ],
@@ -34,10 +34,10 @@
     },
     {
       "rcon": "execute as {player} at @s run kill @e[type=!player,distance=..24,type=!minecraft:armor_stand,type=!easy_npc:humanoid,type=!easy_npc:fairy,type=!cobblemon:pokemon]",
-      "comment_": "plateau is outside any safe zone; frontier_active only suspends Nuzlocke faint paths, not real mob damage. Armor stands excluded (TBCS anchors), NPC bodies + pokemon excluded"
+      "comment_": "plateau is outside any safe zone; frontier_active only suspends Nuzlocke faint paths, not real mob damage. Armor stands excluded (TBCS anchors + FrontierManager anchor stands), NPC bodies + pokemon excluded"
     },
     {
-      "comment": "-- reset (idempotent re-runs): every tag this scenario or its battles set, plus the champion gate surgery. No latch resets - the three bodies persist (one_time challengers and gym_leader brains never despawn on win) --"
+      "comment": "-- reset (idempotent re-runs): every tag this scenario or its battles set, the champion gate surgery, and the castle-points objective. No latch resets - the three bodies persist (one_time challengers and gym_leader brains never despawn on win) --"
     },
     {
       "rcon": "tag {player} remove defeated_castle_challenger_1"
@@ -51,6 +51,14 @@
     {
       "rcon": "tag {player} add royal_league_champion",
       "comment_": "gate.champion lowers to this player tag; stripped in cleanup - later scenarios assume a fresh low-badge player"
+    },
+    {
+      "rcon": "scoreboard objectives add frontier_castle_pts dummy",
+      "comment_": "ensure-create: FrontierManager makes the objective lazily on the first castle command - on a fresh world the reset below would error without this (fails harmlessly if it already exists)"
+    },
+    {
+      "rcon": "scoreboard players set {player} frontier_castle_pts 0",
+      "comment_": "points residue from a failed run would skew every spend assert below"
     },
     {
       "sleep": 1.5,
@@ -69,7 +77,7 @@
       "comment_": "frontier/region_tick AABB - the trigger NuzlockeInit reads for the no-death exhibition"
     },
     {
-      "comment": "-- party reset: junk lv-5 parties from earlier scenarios stall TBCS battle init (verified live in wheat_war). Empty all six slots, then 2x lv-100 Garchomp - attrition headroom for three straight ceiling fights (the doubles brain needs two able mons anyway) --"
+      "comment": "-- party reset: junk lv-5 parties from earlier scenarios stall TBCS battle init (verified live in wheat_war). Empty all six slots, then the wonder team - attrition headroom for three straight ceiling fights (the doubles brain needs two able mons anyway) --"
     },
     {
       "rcon": "takepokemon {player} 1"
@@ -90,16 +98,204 @@
       "rcon": "takepokemon {player} 1"
     },
     {
-      "rcon": "execute as {player} run cobblemon-initiative givemon garchomp level=100"
+      "rcon": "execute as {player} run cobblemon-initiative givemon raikou level=100 ability=wonderguard held_item=cobblemon:air_balloon moves=icebeam,surf,thunderbolt,flashcannon",
+      "comment_": "WONDER TEAM (showrunner idea 2026-07-19, brain-fight solo-verified): pure Electric's only weakness is Ground -> Air Balloon negates it; Wonder Guard blocks everything else and the balloon never pops (nothing lands). Slot-1 Ice Beam: accurate, NO type is immune (an Electric lead vs enemy Ground-types would zero-damage-loop under first-legal-move autobattle)."
     },
     {
-      "rcon": "execute as {player} run cobblemon-initiative givemon garchomp level=100"
+      "rcon": "execute as {player} run cobblemon-initiative givemon raikou level=100 ability=wonderguard held_item=cobblemon:air_balloon moves=icebeam,surf,thunderbolt,flashcannon"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon raikou level=100 ability=wonderguard held_item=cobblemon:air_balloon moves=icebeam,surf,thunderbolt,flashcannon"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon raikou level=100 ability=wonderguard held_item=cobblemon:air_balloon moves=icebeam,surf,thunderbolt,flashcannon"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon raikou level=100 ability=wonderguard held_item=cobblemon:air_balloon moves=icebeam,surf,thunderbolt,flashcannon"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon raikou level=100 ability=wonderguard held_item=cobblemon:air_balloon moves=icebeam,surf,thunderbolt,flashcannon"
+    },
+    {
+      "rcon": "healpokemon {player}",
+      "comment_": "cross-scenario attrition guard (live-caught 2026-07-18: fights entered with fainted leads make autobattle pass turns forever = endless slow loss)"
+    },
+    {
+      "comment": "-- frontier residue strip (2026-07-18): failed runs skip cleanup, so cleared/defeat tags leak across attempts and reroute gated entries (the 'open Warden door' false alarm) --"
+    },
+    {
+      "comment": "-- brain latch re-arm (2026-07-19): a consumed fight leaves the brain BODY gone with #amb=1 — every later run finds nothing (all 7 brains were bodiless by round 4; three scenarios then false-matched STALE buffer win lines). Kill any stale body + reset the latch; the 40b approach respawns him fresh. --"
+    },
+    {
+      "rcon": "execute as {player} at @s run kill @e[name=\"frontier_brain_castle\",type=!minecraft:player,distance=..64]"
+    },
+    {
+      "rcon": "scoreboard players set #amb_frontier_brain_castle ci_ambient 0"
+    },
+    {
+      "rcon": "tag {player} remove frontier_arcade_cleared"
+    },
+    {
+      "rcon": "tag {player} remove defeated_arcade_challenger_1"
+    },
+    {
+      "rcon": "tag {player} remove defeated_arcade_challenger_2"
+    },
+    {
+      "rcon": "tag {player} remove defeated_frontier_brain_arcade"
+    },
+    {
+      "rcon": "tag {player} remove frontier_castle_cleared"
+    },
+    {
+      "rcon": "tag {player} remove defeated_castle_challenger_1"
+    },
+    {
+      "rcon": "tag {player} remove defeated_castle_challenger_2"
+    },
+    {
+      "rcon": "tag {player} remove defeated_frontier_brain_castle"
+    },
+    {
+      "rcon": "tag {player} remove frontier_factory_cleared"
+    },
+    {
+      "rcon": "tag {player} remove defeated_factory_challenger_1"
+    },
+    {
+      "rcon": "tag {player} remove defeated_factory_challenger_2"
+    },
+    {
+      "rcon": "tag {player} remove defeated_frontier_brain_factory"
+    },
+    {
+      "rcon": "tag {player} remove frontier_market_cleared"
+    },
+    {
+      "rcon": "tag {player} remove defeated_market_challenger_1"
+    },
+    {
+      "rcon": "tag {player} remove defeated_market_challenger_2"
+    },
+    {
+      "rcon": "tag {player} remove defeated_frontier_brain_market"
+    },
+    {
+      "rcon": "tag {player} remove frontier_port_cleared"
+    },
+    {
+      "rcon": "tag {player} remove defeated_port_challenger_1"
+    },
+    {
+      "rcon": "tag {player} remove defeated_port_challenger_2"
+    },
+    {
+      "rcon": "tag {player} remove defeated_frontier_brain_port"
+    },
+    {
+      "rcon": "tag {player} remove frontier_pyramid_cleared"
+    },
+    {
+      "rcon": "tag {player} remove defeated_pyramid_challenger_1"
+    },
+    {
+      "rcon": "tag {player} remove defeated_pyramid_challenger_2"
+    },
+    {
+      "rcon": "tag {player} remove defeated_frontier_brain_pyramid"
+    },
+    {
+      "rcon": "tag {player} remove frontier_tower_cleared"
+    },
+    {
+      "rcon": "tag {player} remove defeated_tower_challenger_1"
+    },
+    {
+      "rcon": "tag {player} remove defeated_tower_challenger_2"
+    },
+    {
+      "rcon": "tag {player} remove defeated_frontier_brain_tower"
+    },
+    {
+      "rcon": "tag {player} remove frontier_cave_cleared"
+    },
+    {
+      "rcon": "tag {player} remove defeated_cave_challenger_1"
+    },
+    {
+      "rcon": "tag {player} remove defeated_cave_challenger_2"
+    },
+    {
+      "rcon": "tag {player} remove defeated_frontier_brain_cave"
+    },
+    {
+      "rcon": "tag {player} remove frontier_all_cleared"
     },
     {
       "rcon": "execute as {player} run cobblemon-initiative dev bot autobattle on"
     },
     {
-      "comment": "-- beat 1: Knight Aldric, the gate. say[] rotates, so the screen assert targets the stable battle-button label (its rendering IS the champion-gate assert) --"
+      "comment": "-- beat 0: the house ledger opens. Percival's default entry carries the services buttons (stable asserts regardless of say rotation); enter sets the 60-point budget and prints the house terms --"
+    },
+    {
+      "find_npc": "Castle Lord Percival",
+      "save": "percival"
+    },
+    {
+      "interact_npc": "{percival.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "Open the house ledger"
+    },
+    {
+      "screenshot": "castle_ledger_menu"
+    },
+    {
+      "click": "Open the house ledger"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "Your ledger opens at",
+      "timeout": 30,
+      "comment_": "FrontierManager castle enter announce - the 60-point terms line (budget/heal/scout/rate)"
+    },
+    {
+      "rcon": "scoreboard players get {player} frontier_castle_pts",
+      "expect": "has 60"
+    },
+    {
+      "comment": "-- beat 0b: intel, discreetly. Scout reads the NEXT un-defeated gate (Aldric, nothing beaten yet) from the bundled rctmod team JSON and bills 15 points --"
+    },
+    {
+      "interact_npc": "{percival.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "Buy intel - 15 points"
+    },
+    {
+      "click": "Buy intel - 15 points"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "Intel, discreetly:",
+      "timeout": 30
+    },
+    {
+      "rcon": "scoreboard players get {player} frontier_castle_pts",
+      "expect": "has 45"
+    },
+    {
+      "comment": "-- beat 1: Knight Aldric, the gate (dialog do:battle, untouched by the manager). say[] rotates, so the screen assert targets the stable battle-button label (its rendering IS the champion-gate assert) --"
     },
     {
       "find_npc": "Knight Aldric",
@@ -118,6 +314,10 @@
       "screenshot": "castle_aldric_gate"
     },
     {
+      "rcon": "healpokemon {player}",
+      "comment_": "pre-ladder heal (live-caught: a fainted lead makes autobattle pass-loop to a slow loss); between-fights healing below goes through the POINTS physician instead"
+    },
+    {
       "click": "Battle Knight Aldric"
     },
     {
@@ -126,8 +326,15 @@
     },
     {
       "wait_chat": "The forms are satisfied",
-      "timeout": 240,
+      "timeout": 600,
       "comment_": "Aldric's onwin win_line say; a timeout here is almost certainly the TBCS stall, not a regression"
+    },
+    {
+      "client": "screen.close",
+      "comment_": "defensive: the battle GUI may still be up when the win line lands — a stale screen eats the next interact (live-caught arcade/factory/port)"
+    },
+    {
+      "sleep": 2.0
     },
     {
       "rcon": "execute if entity @a[name={player},tag=defeated_castle_challenger_1]",
@@ -138,7 +345,37 @@
       "comment_": "battle teardown settle before the next TBCS dispatch"
     },
     {
-      "comment": "-- beat 2: Guard Captain Elara, the wall --"
+      "comment": "-- beat 2: the physician between fights, bought with POINTS (the mechanic replaces the old rcon heal here): -20, full heal via console healpokemon --"
+    },
+    {
+      "find_npc": "Castle Lord Percival",
+      "save": "percival"
+    },
+    {
+      "interact_npc": "{percival.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
+    },
+    {
+      "expect_screen_text": "Buy the physician - 20 points"
+    },
+    {
+      "click": "Buy the physician - 20 points"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "The house physician attends",
+      "timeout": 30
+    },
+    {
+      "rcon": "scoreboard players get {player} frontier_castle_pts",
+      "expect": "has 25"
+    },
+    {
+      "comment": "-- beat 3: Guard Captain Elara, the wall (dialog do:battle) - entered on the physician's heal, no rcon heal --"
     },
     {
       "find_npc": "Guard Captain Elara",
@@ -165,7 +402,14 @@
     },
     {
       "wait_chat": "The wall yields to the steadier hand",
-      "timeout": 240
+      "timeout": 600
+    },
+    {
+      "client": "screen.close",
+      "comment_": "defensive: the battle GUI may still be up when the win line lands — a stale screen eats the next interact (live-caught arcade/factory/port)"
+    },
+    {
+      "sleep": 2.0
     },
     {
       "rcon": "execute if entity @a[name={player},tag=defeated_castle_challenger_2]",
@@ -176,7 +420,22 @@
       "comment_": "battle teardown settle + band_tags window before the brain's all_tags gate is read"
     },
     {
-      "comment": "-- beat 3: Castle Lord Percival. His battle button gates all_tags on both challenger defeats - it rendering now IS the ladder assert. Win chain: prize -> frontier_castle_cleared tag -> win say -> frontier/hall_cleared (actionbar) --"
+      "comment": "-- beat 4: the ledger refuses to settle before the Lord falls (castle claim gates on defeated_frontier_brain_castle) - rail assert via rcon, points untouched --"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative frontier castle claim"
+    },
+    {
+      "wait_chat": "The ledger settles when the Castle Lord has yielded",
+      "timeout": 30
+    },
+    {
+      "rcon": "scoreboard players get {player} frontier_castle_pts",
+      "expect": "has 25",
+      "comment_": "the refusal must not touch the balance"
+    },
+    {
+      "comment": "-- beat 5: Castle Lord Percival (dialog do:battle). His battle button gates all_tags on both challenger defeats - it rendering now IS the ladder assert. Win chain: prize -> frontier_castle_cleared tag -> win say -> on_win defeated_frontier_brain_castle (the manager-aligned brain tag that unlocks claim) -> frontier/hall_cleared (actionbar) --"
     },
     {
       "find_npc": "Castle Lord Percival",
@@ -195,6 +454,10 @@
       "screenshot": "castle_brain_gate"
     },
     {
+      "rcon": "healpokemon {player}",
+      "comment_": "between-fights heal (live-caught: a fainted lead makes autobattle pass-loop to a slow loss in the NEXT fight)"
+    },
+    {
       "click": "Battle Castle Lord Percival"
     },
     {
@@ -203,25 +466,36 @@
     },
     {
       "wait_chat": "The wall of the keep breaks at last",
-      "timeout": 240
+      "timeout": 600
     },
     {
-      "wait_chat": "A Frontier hall falls",
-      "kinds": [
-        "overlay"
-      ],
-      "timeout": 15,
-      "comment_": "frontier/hall_cleared actionbar - fires from Percival's on_win right after the win say"
+      "client": "screen.close",
+      "comment_": "defensive: the battle GUI may still be up when the win line lands — a stale screen eats the next interact (live-caught arcade/factory/port)"
+    },
+    {
+      "sleep": 2.0
     },
     {
       "rcon": "execute if entity @a[name={player},tag=frontier_castle_cleared]",
       "expect": "passed"
     },
     {
+      "rcon": "execute if entity @a[name={player},tag=defeated_frontier_brain_castle]",
+      "expect": "passed",
+      "comment_": "Percival's on_win grants the manager-aligned brain tag - without it castle claim refuses forever"
+    },
+    {
       "screenshot": "castle_hall_cleared"
     },
     {
-      "comment": "-- beat 4: cleared-state dialog - Percival's beaten entry (prio 20, gate frontier_castle_cleared) preempts; prose any-of covers all three rotating say lines --"
+      "comment": "-- beat 6: settle the ledger. Beaten entry (prio 20, gate frontier_castle_cleared) preempts with the Settle button; wallet zeroed AFTER the 3000 dialog prize so the claim read is exact (query abbreviates >=1000): 25 points x 15 = 375 CD --"
+    },
+    {
+      "rcon": "cobbledollars set {player} 0"
+    },
+    {
+      "find_npc": "Castle Lord Percival",
+      "save": "percival"
     },
     {
       "interact_npc": "{percival.uuid}"
@@ -233,11 +507,48 @@
       "expect_screen_text": [
         "The keep is yours. Old money, older rules, and you honoured every one - I could not ask for a cleaner victor.",
         "I keep saying I know that face from somewhere. No matter. A caretaker of old forms keeps such thoughts to himself. Well fought, Champion.",
-        "The Castle stands defeated and stands grateful. Wonder built these halls once; you reminded me why."
+        "The Castle stands defeated and stands grateful. Wonder built these halls once; you reminded me why.",
+        "The keep is yours and the ledger still stands open. Settle it with the house, Champion - what you did not spend on comfort is yours in coin."
       ]
     },
     {
+      "expect_screen_text": "Settle the ledger"
+    },
+    {
       "screenshot": "castle_beaten"
+    },
+    {
+      "click": "Settle the ledger"
+    },
+    {
+      "wait_no_screen": true
+    },
+    {
+      "wait_chat": "Ledger closed",
+      "timeout": 30
+    },
+    {
+      "sleep": 1.5,
+      "comment_": "the claim's cobbledollars give runs console-side; settle before the exact read"
+    },
+    {
+      "rcon": "cobbledollars query {player}",
+      "expect": "$ 375",
+      "comment_": "25 leftover points x 15 CD rate"
+    },
+    {
+      "rcon": "scoreboard players get {player} frontier_castle_pts",
+      "expect": "has 0",
+      "comment_": "claim banks the ledger to zero"
+    },
+    {
+      "comment": "-- beat 7: the settled keep - beaten entry re-opens, take your leave --"
+    },
+    {
+      "interact_npc": "{percival.uuid}"
+    },
+    {
+      "wait_screen": "Dialog"
     },
     {
       "click": "Take your leave"
@@ -246,7 +557,7 @@
       "wait_no_screen": true
     },
     {
-      "comment": "-- cleanup: strip everything this scenario set (champion surgery + defeat ladder + hall clear) so no other scenario inherits the lane; CD prizes ride (the prize rail has no reset, miller_walk precedent) --"
+      "comment": "-- cleanup: strip everything this scenario set (champion surgery + defeat ladder + hall clear + brain tag + points) so no other scenario inherits the lane; CD rides at the 375 claim (the prize rail has no reset, miller_walk precedent) --"
     },
     {
       "rcon": "execute as {player} run cobblemon-initiative dev bot autobattle off"
@@ -261,7 +572,13 @@
       "rcon": "tag {player} remove frontier_castle_cleared"
     },
     {
+      "rcon": "tag {player} remove defeated_frontier_brain_castle"
+    },
+    {
       "rcon": "tag {player} remove royal_league_champion"
+    },
+    {
+      "rcon": "scoreboard players set {player} frontier_castle_pts 0"
     },
     {
       "screenshot": "frontier_castle_done"

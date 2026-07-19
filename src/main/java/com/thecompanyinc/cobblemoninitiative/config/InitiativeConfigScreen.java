@@ -535,6 +535,54 @@ public class InitiativeConfigScreen {
     );
 
     // -------------------------------------------------------------------------
+    // Trial Timers (fire + ice parkour) — live calibration sliders
+    // -------------------------------------------------------------------------
+    ConfigCategory trialTimers = builder.getOrCreateCategory(
+      Component.literal("Trial Timers")
+    );
+
+    trialTimers.addEntry(
+      entryBuilder
+        .startIntSlider(
+          Component.literal("Fire Trial Time Limit (seconds)"),
+          shrineConfig.getFireTimeLimitSeconds(),
+          10,
+          200
+        )
+        .setDefaultValue(shrineDefaults.getFireTimeLimitSeconds())
+        .setTooltip(
+          Component.literal(
+            "Trial by Flame clock. Overrides the baked value LIVE — save, then run "
+            + "the course again; the finish line prints your raw elapsed time for "
+            + "calibration. Design intent: the timer IS this trial (no floor hazard) — "
+            + "aim for a clean run × 2."
+          )
+        )
+        .setSaveConsumer(shrineConfig::setFireTimeLimitSeconds)
+        .build()
+    );
+
+    trialTimers.addEntry(
+      entryBuilder
+        .startIntSlider(
+          Component.literal("Ice Trial Time Limit (seconds)"),
+          shrineConfig.getIceTimeLimitSeconds(),
+          10,
+          200
+        )
+        .setDefaultValue(shrineDefaults.getIceTimeLimitSeconds())
+        .setTooltip(
+          Component.literal(
+            "The Frozen Path clock. Overrides the baked value LIVE. Design intent: "
+            + "the hazard floor is the real challenge here — the timer is a backstop; "
+            + "aim for a careful clean run × 2.5."
+          )
+        )
+        .setSaveConsumer(shrineConfig::setIceTimeLimitSeconds)
+        .build()
+    );
+
+    // -------------------------------------------------------------------------
     // Unplaced Chests (loot dispensers)
     // -------------------------------------------------------------------------
     LootChestConfig lootChestConfig = LootChestConfig.load();

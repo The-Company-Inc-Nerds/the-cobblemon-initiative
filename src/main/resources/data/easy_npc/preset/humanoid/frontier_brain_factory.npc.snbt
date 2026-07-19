@@ -46,6 +46,17 @@
                     Priority: 20,
                     Buttons: [
                         {
+                            Name: "Close the loan",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative frontier factory return"
+                                }
+                            ],
+                            Label: "loan_close_button"
+                        },
+                        {
                             Name: "Onward",
                             Actions: [
                                 {
@@ -69,6 +80,24 @@
                 {
                     Priority: 10,
                     Buttons: [
+                        {
+                            Name: "Take the loan - park your team",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative frontier factory start"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "royal_league_champion"
+                                }
+                            ],
+                            Label: "loan_button"
+                        },
                         {
                             Name: "Battle Factory Head Noland",
                             Actions: [
@@ -141,6 +170,17 @@
                             Label: "battle_button"
                         },
                         {
+                            Name: "Close the loan",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative frontier factory return"
+                                }
+                            ],
+                            Label: "loan_close_button"
+                        },
+                        {
                             Name: "Not yet",
                             Actions: [
                                 {
@@ -152,13 +192,13 @@
                     ],
                     Texts: [
                         {
-                            Text: "I drew up the rental scheme myself - back when the Company still built wings for people to enjoy, not to bleed. My bench is all borrowed steel too. Take the top floor if you can."
+                            Text: "I drew up the rental scheme myself - back when the Company still built wings for people to enjoy, not to bleed. Take the loan and the terms are plain: your own mons are logged into custody, three Company-issue units ride your belt. My bench is all borrowed steel too. Take the top floor if you can."
                         },
                         {
-                            Text: "House rules stand at my bench same as the others: nothing here is yours, nothing of yours is at risk. But I lend the sharpest loadout in the Factory. Opt in when you are ready."
+                            Text: "House rules stand at my bench same as the others: nothing here is yours, nothing of yours is at risk. Park your team with me and I lend the sharpest loadout in the Factory - custody keeps yours safe until you close the loan. Opt in when you are ready."
                         },
                         {
-                            Text: "Everyone downstairs runs my benches. This is the one I keep. All rental, all steel, and none of it forgives a mistake. Draw and challenge, or come back later."
+                            Text: "Everyone downstairs runs my benches. This is the one I keep. All rental, all steel, and none of it forgives a mistake. Sign the loan and borrowed steel does the bleeding - close it and your own walk back to your belt. Draw and challenge, or come back later."
                         }
                     ],
                     Name: "Factory Head Noland",

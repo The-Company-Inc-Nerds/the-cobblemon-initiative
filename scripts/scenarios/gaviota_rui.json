@@ -21,7 +21,7 @@
       "comment": "-- tp FIRST (loaded chunks; the 40b latch spawns Rui on a fresh world). Coordinate is gaviota_fisher's authored placement - PLACEHOLDER y64, _probe_pending until the first live run confirms the pier deck --"
     },
     {
-      "rcon": "tp {player} 605.5 93 3660.5"
+      "rcon": "tp {player} 603.5 92 3662.5"
     },
     {
       "sleep": 2.0
@@ -88,6 +88,10 @@
     },
     {
       "rcon": "execute as {player} run cobblemon-initiative givemon garchomp level=100"
+    },
+    {
+      "rcon": "healpokemon {player}",
+      "comment_": "cross-scenario attrition guard (live-caught 2026-07-18: fights entered with fainted leads make autobattle pass turns forever = endless slow loss)"
     },
     {
       "rcon": "execute as {player} run cobblemon-initiative dev bot autobattle on"
@@ -267,12 +271,12 @@
       "click": "Take the wager"
     },
     {
-      "wait_no_screen": true,
-      "comment_": "the wager button carries CLOSE_DIALOG after the tbcs dispatch"
+      "client": "screen.close",
+      "comment_": "battle GUI replaces the dialog now that the dispatch is ANCHORED (2026-07-18) — close it and let the win-line wait pace the fight (wisps idiom)"
     },
     {
       "wait_chat": "you read the tide, not the wave",
-      "timeout": 240,
+      "timeout": 360,
       "comment_": "Rui's onwin win_line say; a timeout here is almost certainly the TBCS stall / showdown wedge, not a regression"
     },
     {

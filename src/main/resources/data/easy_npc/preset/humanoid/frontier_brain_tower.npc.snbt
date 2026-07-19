@@ -63,7 +63,7 @@
                             Text: "You reached the summit and held it. I ran this tower back when the Company still built things for people to enjoy instead of things to squeeze them with. Good to see it still means the climb."
                         },
                         {
-                            Text: "The office at the top is yours whenever you want it. Nobody hands out the corner anymore - people just take the stairs. You took them all."
+                            Text: "The office at the top is yours whenever you want it. Nobody hands out the corner anymore - people just take the stairs. You took them all. There is no promotion above this one - only the next hall."
                         }
                     ],
                     Name: "Tower Tycoon Palmer - top floor held",
@@ -72,77 +72,6 @@
                 {
                     Priority: 10,
                     Buttons: [
-                        {
-                            Name: "Challenge Tower Tycoon Palmer",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "frontier_tower_cleared"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "say You own this tower already. Spend your climb on another hall."
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_frontier_tower_cleared"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tbcs attach rctmod:frontier_brain_tower @s"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_frontier_tower_cleared"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:frontier_brain_tower onwin {1: ['cobbledollars give @1 3000', 'tag @1 add frontier_tower_cleared', '@2 say Top floor. There is no promotion above this one - only the next hall.', 'execute as @1 run function cobblemon_initiative:frontier/hall_cleared'], 2: ['@1 say The summit holds. Take the lift down and try the climb again.']}"
-                                },
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Conditions: [
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "royal_league_champion"
-                                },
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "defeated_tower_challenger_1"
-                                },
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "defeated_tower_challenger_2"
-                                },
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "no_frontier_tower_cleared"
-                                }
-                            ],
-                            Label: "battle_button"
-                        },
                         {
                             Name: "Ride the lift back down",
                             Actions: [
@@ -155,13 +84,13 @@
                     ],
                     Texts: [
                         {
-                            Text: "You cleared every floor beneath me to stand here. Good. The top floor is the last promotion - one team, no ceiling, house rules."
+                            Text: "I am the top of the ladder. Eight floors of house teams stand between us, each flattened to its landing - then floor nine, where nothing is flattened and I fight at full strength. Earn the lift, one review at a time."
                         },
                         {
-                            Text: "I am the top of the ladder. The Company that built this tower is gone; the climb is not. Earn the summit or ride the lift back down - your call."
+                            Text: "The Company that built this tower is gone; the climb is not. The lift opens one floor at a time and a loss resets the whole ladder. When it finally opens on nine, we settle who owns the top floor."
                         },
                         {
-                            Text: "The team is provided and your own stay in the box, safe as they came. When you are ready, we settle who owns the top floor."
+                            Text: "The floors below run handicapped - house teams, house locks. My floor does not. Whatever the lift delivers to the summit meets my real team, and most rides end back at the desk."
                         }
                     ],
                     Name: "Tower Tycoon Palmer",

@@ -2083,7 +2083,7 @@
           ],
           "label": "Five Keepers - claim the crystals from the Last Pilgrim",
           "x": 945.5,
-          "y": -7.0,
+          "y": 9.0,
           "z": 2712.5
         },
         {
@@ -2108,30 +2108,29 @@
       "stages": [
         {
           "if_tags": [
-            "defeated_fairy_shrine_leader"
+            "fairy_crystal_claimed"
           ],
           "label": "Fairy Shrine cleared - the crystal raises Xerneas"
         },
         {
           "if_tags": [
-            "defeated_mystic_leader",
-            "defeated_fairy_shrine_cultist_2"
+            "fairy_shrine_trial_clear"
           ],
           "not_tags": [
-            "defeated_fairy_shrine_leader"
+            "fairy_crystal_claimed"
           ],
-          "label": "Face High Priestess Aurora"
+          "label": "Claim the crystal from Keeper Aurora",
+          "x": 951.5,
+          "y": 3.0,
+          "z": 2715.5
         },
         {
-          "if_tags": [
-            "defeated_mystic_leader"
-          ],
           "not_tags": [
-            "defeated_fairy_shrine_leader"
+            "fairy_shrine_trial_clear"
           ],
-          "label": "Climb the Fairy Shrine cultist ladder",
-          "x": 947.5,
-          "y": -7.0,
+          "label": "Prove the bond - pass the Trial of Resolve and face Aurora",
+          "x": 951.5,
+          "y": 3.0,
           "z": 2715.5
         }
       ]
@@ -2142,30 +2141,29 @@
       "stages": [
         {
           "if_tags": [
-            "defeated_ground_shrine_leader"
+            "ground_crystal_claimed"
           ],
-          "label": "Ground Shrine cleared - the crystal raises Groudon"
+          "label": "Ground Shrine cleared - the crystal raises Landorus"
         },
         {
           "if_tags": [
-            "defeated_kalahar_leader",
-            "defeated_ground_shrine_cultist_2"
+            "ground_shrine_trial_clear"
           ],
           "not_tags": [
-            "defeated_ground_shrine_leader"
+            "ground_crystal_claimed"
           ],
-          "label": "Face High Priest Terran - fights in pairs"
+          "label": "Claim the crystal from Keeper Terran",
+          "x": 1910.5,
+          "y": 89.0,
+          "z": 4049.5
         },
         {
-          "if_tags": [
-            "defeated_kalahar_leader"
-          ],
           "not_tags": [
-            "defeated_ground_shrine_leader"
+            "ground_shrine_trial_clear"
           ],
-          "label": "Descend the Ground Shrine cultist ladder",
-          "x": 1899.5,
-          "y": 83.0,
+          "label": "Wake the dark and stand against Terran",
+          "x": 1910.5,
+          "y": 89.0,
           "z": 4049.5
         }
       ]
@@ -2176,31 +2174,30 @@
       "stages": [
         {
           "if_tags": [
-            "defeated_dragon_shrine_leader"
+            "dragon_crystal_claimed"
           ],
-          "label": "Dragon Shrine cleared - the crystal raises Rayquaza"
+          "label": "Dragon Shrine cleared - the crystal raises Kyurem"
         },
         {
           "if_tags": [
-            "defeated_ryujin_leader",
-            "defeated_dragon_shrine_cultist_2"
+            "dragon_shrine_trial_clear"
           ],
           "not_tags": [
-            "defeated_dragon_shrine_leader"
+            "dragon_crystal_claimed"
           ],
-          "label": "Face High Priest Draconis - fights in pairs"
+          "label": "Claim the crystal from Keeper Draconis",
+          "x": 2004.5,
+          "y": 71.0,
+          "z": 919.5
         },
         {
-          "if_tags": [
-            "defeated_ryujin_leader"
-          ],
           "not_tags": [
-            "defeated_dragon_shrine_leader"
+            "dragon_shrine_trial_clear"
           ],
-          "label": "Climb the Dragon Shrine cultist ladder",
-          "x": 1998.5,
-          "y": 66.0,
-          "z": 921.5
+          "label": "Face the hydra at the Dragon Shrine",
+          "x": 2004.5,
+          "y": 71.0,
+          "z": 919.5
         }
       ]
     },
@@ -2210,41 +2207,29 @@
       "stages": [
         {
           "if_tags": [
-            "defeated_ice_shrine_leader"
+            "ice_crystal_claimed"
           ],
-          "label": "Ice Shrine cleared - the crystal raises Articuno"
+          "label": "Ice Shrine cleared - the crystal raises Glastrier"
         },
         {
           "if_tags": [
-            "defeated_nifl_leader",
             "ice_shrine_trial_clear"
           ],
           "not_tags": [
-            "defeated_ice_shrine_leader"
+            "ice_crystal_claimed"
           ],
-          "label": "Face High Priest Glacius"
+          "label": "Claim the crystal from Keeper Glacius",
+          "x": 3644.5,
+          "y": 81.0,
+          "z": 1960.5
         },
         {
-          "if_tags": [
-            "defeated_nifl_leader",
-            "defeated_ice_shrine_cultist_2"
-          ],
           "not_tags": [
-            "defeated_ice_shrine_leader",
             "ice_shrine_trial_clear"
           ],
-          "label": "Cross the frozen path, then face Glacius"
-        },
-        {
-          "if_tags": [
-            "defeated_nifl_leader"
-          ],
-          "not_tags": [
-            "defeated_ice_shrine_leader"
-          ],
-          "label": "Cross the Ice Shrine cultist ladder",
-          "x": 3634.5,
-          "y": 68.0,
+          "label": "Cross the frozen path",
+          "x": 3644.5,
+          "y": 81.0,
           "z": 1960.5
         }
       ]
@@ -2255,40 +2240,28 @@
       "stages": [
         {
           "if_tags": [
-            "defeated_fire_shrine_leader"
+            "fire_crystal_claimed"
           ],
-          "label": "Fire Shrine cleared - the crystal raises Moltres"
+          "label": "Fire Shrine cleared - the crystal raises Ho-Oh"
         },
         {
           "if_tags": [
-            "royal_league_champion",
             "fire_shrine_trial_clear"
           ],
           "not_tags": [
-            "defeated_fire_shrine_leader"
+            "fire_crystal_claimed"
           ],
-          "label": "Face High Priest Ignis"
+          "label": "Claim the crystal from Keeper Ignis",
+          "x": 3510.5,
+          "y": 51.0,
+          "z": 4702.5
         },
         {
-          "if_tags": [
-            "royal_league_champion",
-            "defeated_fire_shrine_cultist_2"
-          ],
           "not_tags": [
-            "defeated_fire_shrine_leader",
             "fire_shrine_trial_clear"
           ],
-          "label": "Run the burning path, then face Ignis"
-        },
-        {
-          "if_tags": [
-            "royal_league_champion"
-          ],
-          "not_tags": [
-            "defeated_fire_shrine_leader"
-          ],
-          "label": "Climb the Fire Shrine cultist ladder",
-          "x": 3500.5,
+          "label": "Run the burning path",
+          "x": 3510.5,
           "y": 51.0,
           "z": 4702.5
         }
@@ -2359,7 +2332,7 @@
           ],
           "label": "Help Grid Warden Cass hold the grid",
           "x": 1393.5,
-          "y": 66.0,
+          "y": 77.0,
           "z": 1065.5
         }
       ]
@@ -2405,7 +2378,10 @@
               "value": 0
             }
           ],
-          "label": "Clear the Dragon Shrine to unseal the sky-altar"
+          "label": "Clear the Dragon Shrine to unseal the sky-altar",
+          "x": 2004.5,
+          "y": 71.0,
+          "z": 919.5
         }
       ]
     },
@@ -2424,7 +2400,10 @@
               "value": 0
             }
           ],
-          "label": "Call the frozen gale at the Ice Shrine"
+          "label": "Call the frozen gale at the Ice Shrine",
+          "x": 3644.5,
+          "y": 81.0,
+          "z": 1960.5
         }
       ]
     },
@@ -2465,7 +2444,10 @@
               "value": 0
             }
           ],
-          "label": "Call the reborn flame at the Fire Shrine"
+          "label": "Call the reborn flame at the Fire Shrine",
+          "x": 3510.5,
+          "y": 51.0,
+          "z": 4702.5
         }
       ]
     }

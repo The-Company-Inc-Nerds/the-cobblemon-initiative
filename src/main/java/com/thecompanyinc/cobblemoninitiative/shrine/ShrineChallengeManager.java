@@ -203,7 +203,7 @@ public class ShrineChallengeManager {
             "§e§l[" +
               config.getDisplayName() +
               "] §r§7Timer started — §e" +
-              config.getTimeLimitSeconds() +
+              effectiveTimeLimit(shrineId, config) +
               " seconds. §7Reach the finish!"
           )
         );
@@ -435,12 +435,15 @@ public class ShrineChallengeManager {
 
     long elapsedSec =
       (System.currentTimeMillis() - state.getStartTimeMs()) / 1000L;
-    long remaining = config.getTimeLimitSeconds() - elapsedSec;
+    long remaining = effectiveTimeLimit(shrineId, config) - elapsedSec;
 
     if (remaining < 0) {
+      // Elapsed prints even on a bust so a calibration walk that outruns the
+      // provisional limit still yields the measurement.
       player.sendSystemMessage(
         Component.literal(
-          "§c§lTime expired! §r§7The challenge has been reset."
+          "§c§lTime expired! §r§7(" + elapsedSec + "s elapsed, limit "
+            + effectiveTimeLimit(shrineId, config) + "s.) The challenge has been reset."
         )
       );
       stopChallenge(player);
@@ -452,12 +455,20 @@ public class ShrineChallengeManager {
     String timeStr = minutes > 0
       ? minutes + "m " + seconds + "s"
       : seconds + "s";
+    // Raw elapsed alongside remaining — this is the CALIBRATION readout: the
+    // showrunner runs the course once, reads "in Xs", and sets timeLimitSeconds
+    // ≈ elapsed × 2.2 (first-try player + hardcore caution), rounded to 15s.
+    String elapsedStr = elapsedSec >= 60
+      ? (elapsedSec / 60) + "m " + (elapsedSec % 60) + "s"
+      : elapsedSec + "s";
 
     player.sendSystemMessage(
       Component.literal(
         "§a§l[" +
           config.getDisplayName() +
-          " Complete!] §r§7Finished with §a" +
+          " Complete!] §r§7Finished in §e" +
+          elapsedStr +
+          "§7 — with §a" +
           timeStr +
           " §7to spare."
       )
@@ -769,7 +780,7 @@ public class ShrineChallengeManager {
   ) {
     long elapsedSec =
       (System.currentTimeMillis() - state.getStartTimeMs()) / 1000L;
-    long remaining = config.getTimeLimitSeconds() - elapsedSec;
+    long remaining = effectiveTimeLimit(state.getShrineId(), config) - elapsedSec;
 
     if (remaining <= 0) {
       player.sendSystemMessage(
@@ -904,6 +915,18 @@ public class ShrineChallengeManager {
       triggerEarthquake(player, config.getEarthquakeRadius());
       state.setEarthquakeTickCounter(0);
     }
+  }
+
+
+  /** Effective parkour clock: the ModMenu sliders (ShrineConfig, 10-200s) override the
+   *  jar-baked JSON for the two timed trials so the showrunner can calibrate live —
+   *  change, save, run again; the finish/timeout lines print raw elapsed. */
+  private int effectiveTimeLimit(String shrineId, ShrineChallengeConfig config) {
+    return switch (shrineId) {
+      case "fire" -> ShrineConfig.get().getFireTimeLimitSeconds();
+      case "ice" -> ShrineConfig.get().getIceTimeLimitSeconds();
+      default -> config.getTimeLimitSeconds();
+    };
   }
 
   // ── Private helpers ───────────────────────────────────────────────────────────

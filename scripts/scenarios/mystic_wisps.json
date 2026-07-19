@@ -9,7 +9,7 @@
       "comment": "-- preamble: tp FIRST (kill/latch-reset no-op in unloaded chunks, then dupe on respawn). Site = the charm stall latch at 1076.5 64 2452.5 - AUTHORED y=64 PLACEHOLDER, not yet ground-probed (see _probe_pending): confirm the real surface Y before the first live run --"
     },
     {
-      "rcon": "tp {player} 1076.5 66 2452.5"
+      "rcon": "tp {player} 1074.5 66 2450.5"
     },
     {
       "sleep": 2.0
@@ -97,13 +97,18 @@
       "rcon": "execute as {player} run cobblemon-initiative givemon garchomp level=100"
     },
     {
+      "rcon": "healpokemon {player}",
+      "comment_": "cross-scenario attrition guard (live-caught 2026-07-18: fights entered with fainted leads make autobattle pass turns forever = endless slow loss)"
+    },
+    {
       "rcon": "execute as {player} run cobblemon-initiative dev bot autobattle on"
     },
     {
       "comment": "-- settle: latch respawns the body (player already inside the 40b radius), band_tags re-derives the no_* inverses --"
     },
     {
-      "sleep": 2.0
+      "sleep": 6.0,
+      "comment_": "latch re-poll + import settle (2s raced the placement cycle — live-caught)"
     },
     {
       "rcon": "execute if entity @a[name={player},tag=no_mm_charms_done]",
@@ -260,7 +265,7 @@
     },
     {
       "wait_chat": "the cards said you would win",
-      "timeout": 180
+      "timeout": 360
     },
     {
       "sleep": 1.5
@@ -271,7 +276,7 @@
     },
     {
       "rcon": "cobbledollars query {player}",
-      "expect": "$ 500"
+      "comment_": "ledger RECEIPT only, no assert: post-win balance = quest payouts + prize 200 + a ROLLED sweetener (observed 989/1120/1240 across three live wins) — the defeat tag at the previous step is the win proof (re-based 2026-07-18)"
     },
     {
       "comment": "-- beat 4: the free reading (prio 40, gated on the defeat) - the Deepcore forward-nudge tombstone --"
