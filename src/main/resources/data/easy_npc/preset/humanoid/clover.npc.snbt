@@ -39,13 +39,51 @@
                     Priority: 10,
                     Buttons: [
                         {
-                            Name: "Goodbye",
+                            Name: "Hand over 3 redstone",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative turnin minecraft:redstone 3 ci_clover_lamp_done"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_ci_clover_lamp_done"
+                                }
+                            ],
+                            Label: "lamp_button"
+                        },
+                        {
+                            Name: "How is the lamp?",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "title @initiator actionbar [{\"text\":\"Clover taps her lamp - a proud red glow. Fastest light on the strip, and it is sponsored by you.\",\"color\":\"gray\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "ci_clover_lamp_done"
+                                }
+                            ],
+                            Label: "lamp_thanks_button"
+                        },
+                        {
+                            Name: "Keep running",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "goodbye_button"
+                            Label: "leave_button"
                         }
                     ],
                     Texts: [
@@ -57,6 +95,12 @@
                         },
                         {
                             Text: "You want a shortcut through the market? Costs a data-chip. Everything costs a data-chip up here. My mum says that is the future and the future is annoying."
+                        },
+                        {
+                            Text: "My runner lamp died mid-job and I did the last block from memory. Three redstone gets it glowing again, if anybody rich happens to be standing right here."
+                        },
+                        {
+                            Text: "My mate says Gym Leader Volt sleeps in the generator room to charge up. Her cousin says he IS a generator. One of those has to be true."
                         }
                     ],
                     Name: "Clover",

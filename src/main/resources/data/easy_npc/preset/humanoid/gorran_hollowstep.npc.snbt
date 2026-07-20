@@ -39,6 +39,16 @@
                     Priority: 10,
                     Buttons: [
                         {
+                            Name: "Put your ear to the wall with him",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "listening"
+                                }
+                            ],
+                            Label: "listen_button"
+                        },
+                        {
                             Name: "Goodbye",
                             Actions: [
                                 {
@@ -61,6 +71,30 @@
                     ],
                     Name: "Gorran Hollowstep",
                     Label: "default"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "(You press your ear to the stone. A long mineral quiet — then, far beneath it, one thin note, like a bell heard through a wall of years.) There. One voice left down there. When I was a boy it was a choir."
+                        },
+                        {
+                            Text: "(Gorran raps the wall twice with one knuckle and waits. Nothing comes back.) Sixty years, that tap got an answer. You listen for what answers, friend. Nothing answers a form."
+                        }
+                    ],
+                    Name: "Gorran — what the wall says",
+                    Label: "listening"
                 }
             ]
         },

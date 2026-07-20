@@ -39,13 +39,31 @@
                     Priority: 10,
                     Buttons: [
                         {
-                            Name: "Goodbye",
+                            Name: "Hand over 3 Cheri Berries for the pot",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative turnin cobblemon:cheri_berry 3 sven_brew_done"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_sven_brew_done"
+                                }
+                            ],
+                            Label: "brew_turnin_button"
+                        },
+                        {
+                            Name: "Just passing the stand",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "goodbye_button"
+                            Label: "leave_button"
                         }
                     ],
                     Texts: [
@@ -57,10 +75,44 @@
                         },
                         {
                             Text: "Drink up. You have a mountain to climb and a very cold gym leader waiting at the top of it. A little fire in the belly never hurt a challenger."
+                        },
+                        {
+                            Text: "The winter batch wants Cheri Berries and my supplier is currently a Sneasel with opinions. Bring me three and the pot will remember you fondly. So will I, which is worth more."
                         }
                     ],
                     Name: "Sven Glacierbeard",
                     Label: "default"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "sven_brew_done"
+                        }
+                    ],
+                    Priority: 12,
+                    Buttons: [
+                        {
+                            Name: "Enjoy the batch",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "(A ladle hangs apart from the others now, polished, with your name burned into the handle.) The winter batch is called The Challenger. It has always been called that. Do not check with anyone."
+                        },
+                        {
+                            Text: "Best batch in years, thanks to your berries — I tell everyone this, loudly, while they are mid-sip, so they cannot argue. Warmth AND credit given freely. That is the Nifl way."
+                        }
+                    ],
+                    Name: "Sven — the named batch",
+                    Label: "brew_thanks"
                 }
             ]
         },

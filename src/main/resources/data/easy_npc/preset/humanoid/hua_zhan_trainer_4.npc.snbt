@@ -40,13 +40,83 @@
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
+                            Name: "seal_pond"
+                        }
+                    ],
+                    Priority: 30,
+                    Buttons: [
+                        {
+                            Name: "Study the old botany",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "lore"
+                                }
+                            ],
+                            Label: "study_button"
+                        },
+                        {
+                            Name: "Leave the water",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The pond seal shows twice — once in the stone, once in the water. The old botany counts that as two witnesses."
+                        },
+                        {
+                            Text: "The surface has gone perfectly still around the reflection of the mark. The pond does not do that for tourists."
+                        }
+                    ],
+                    Name: "Ranger Xiu — the seal holds",
+                    Label: "sealed"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
                             Name: "defeated_hua_zhan_trainer_4"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "no_seal_pond"
                         }
                     ],
                     Priority: 20,
                     Buttons: [
                         {
-                            Name: "Go to the plaque",
+                            Name: "Press your hand to the seal",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add seal_pond"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:sidequest/pilgrimage/update"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "title @initiator actionbar [{\"text\":\"The pond seal takes.\",\"color\":\"green\"}]"
+                                },
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "lore"
+                                }
+                            ],
+                            Label: "press_button"
+                        },
+                        {
+                            Name: "Step back",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -60,17 +130,24 @@
                             Text: "The pond is satisfied, and a still pond is the oldest judge in town."
                         },
                         {
-                            Text: "The pond plaque sits in the stones at the waterline. Press your hand to the seal — and if the reflection beside yours looks familiar, the old botany says not to worry about it."
+                            Text: "The pond seal sits in my pedestal at the waterline. Press your hand — and if the reflection beside yours looks familiar, the old botany says not to worry."
                         }
                     ],
-                    Name: "Xiu — after the match",
+                    Name: "Ranger Xiu — after the match",
                     Label: "seal"
                 },
                 {
-                    Priority: 10,
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "pilgrimage_started"
+                        }
+                    ],
+                    Priority: 15,
                     Buttons: [
                         {
-                            Name: "Wake the statue of the water",
+                            Name: "Ready a Pokéball — wake the statue of the water",
                             Actions: [
                                 {
                                     Type: "COMMAND",
@@ -126,6 +203,16 @@
                             Label: "battle_button"
                         },
                         {
+                            Name: "Read the station plaque",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "lore"
+                                }
+                            ],
+                            Label: "plaque_button"
+                        },
+                        {
                             Name: "Leave the water",
                             Actions: [
                                 {
@@ -144,7 +231,74 @@
                         }
                     ],
                     Name: "Xiu — warden of the water",
+                    Label: "challenge"
+                },
+                {
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "Read the station plaque",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "lore"
+                                }
+                            ],
+                            Label: "plaque_button"
+                        },
+                        {
+                            Name: "Leave the water",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "STATION OF THE POND — last of the four gardens. An etching beneath the crest reads: the pond pair drinks sun and water both, and answers to neither. Birds and bugs read this water better than boots ever will."
+                        },
+                        {
+                            Text: "The statue kneels at the waterline, reading the pond, and does not look up. The gate keeper at the gym entrance keeps the rites of the four gardens."
+                        }
+                    ],
+                    Name: "Station Of The Pond Station",
                     Label: "default"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Back to the statue",
+                            Actions: [
+                                {
+                                    Type: "OPEN_DEFAULT_DIALOG"
+                                }
+                            ],
+                            Label: "back_button"
+                        },
+                        {
+                            Name: "Done reading",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "OLD BOTANY, PAGE OF THE POND. The pond is the oldest mirror in town. The first gardeners ended every pilgrimage here because a still pond shows a trainer exactly what they brought to it — no more, no less, and no refunds."
+                        },
+                        {
+                            Text: "Some mornings the pond shows a face a heartbeat before its owner arrives. The old botany never explained this page. It only says: whatever the water shows you, it was already yours."
+                        }
+                    ],
+                    Name: "Old Botany — The Mirror",
+                    Label: "lore"
                 }
             ]
         },
@@ -247,20 +401,9 @@
             HasTravelTarget: 0b,
             ObjectiveDataSet: [
                 {
-                    Type: "LOOK_AT_PLAYER",
-                    Prio: 9,
-                    Id: "ambient_look_player",
-                    LookDistance: 8.0f
-                },
-                {
-                    Type: "LOOK_RANDOM_AROUND",
-                    Prio: 10,
-                    Id: "ambient_look_random"
-                },
-                {
                     Type: "LOOK_AT_RESET",
                     Prio: 9,
-                    Id: "ambient_look_reset"
+                    Id: "ambient_static_reset"
                 }
             ]
         },

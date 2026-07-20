@@ -46,6 +46,40 @@
                     Priority: 20,
                     Buttons: [
                         {
+                            Name: "Take something off the wagon",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_gift_aurelia_wagon_stock_claimed"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "loot give @s loot cobblemon_initiative:npc_gift/uncommon"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_gift_aurelia_wagon_stock_claimed"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tag @s add gift_aurelia_wagon_stock_claimed"
+                                }
+                            ],
+                            Label: "wagon_button"
+                        },
+                        {
                             Name: "Safe travels",
                             Actions: [
                                 {
@@ -70,6 +104,40 @@
                     Priority: 10,
                     Buttons: [
                         {
+                            Name: "Take something off the wagon",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_gift_aurelia_wagon_stock_claimed"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "loot give @s loot cobblemon_initiative:npc_gift/uncommon"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_gift_aurelia_wagon_stock_claimed"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tag @s add gift_aurelia_wagon_stock_claimed"
+                                }
+                            ],
+                            Label: "wagon_button"
+                        },
+                        {
                             Name: "Best of luck",
                             Actions: [
                                 {
@@ -85,6 +153,12 @@
                         },
                         {
                             Text: "Do not pity me, buy something. No? Then at least tell me the towns ahead are honester than the ones behind. Lie if you must. A stranded merchant runs on hope and bad wheels."
+                        },
+                        {
+                            Text: "The coin died, so I have gone back to the oldest economy there is: barter, favours, and spite. Take something off the wagon — call it an investment in word of mouth."
+                        },
+                        {
+                            Text: "(She recounts the coin chest as though the total might have improved since the last count. It has not. She logs it anyway, with dignity.)"
                         }
                     ],
                     Name: "Aurelia Chestwarden — the stranded trader",

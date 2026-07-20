@@ -39,13 +39,47 @@
                     Priority: 10,
                     Buttons: [
                         {
-                            Name: "Goodbye",
+                            Name: "Take a spare field kit",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_gift_mira_field_kit_claimed"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "loot give @s loot cobblemon_initiative:npc_gift/common"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_gift_mira_field_kit_claimed"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tag @s add gift_mira_field_kit_claimed"
+                                }
+                            ],
+                            Label: "field_kit_button"
+                        },
+                        {
+                            Name: "Keep moving",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "goodbye_button"
+                            Label: "leave_button"
                         }
                     ],
                     Texts: [
@@ -54,6 +88,9 @@
                         },
                         {
                             Text: "Paralysis is the whole story of this town. Everything Volt runs will lock you up before you move. I keep cheri berries in that jar. Take one. Pay me later or do not."
+                        },
+                        {
+                            Text: "If one more trainer tells me rubber soles stop paralysis I will scream into this tent. It is berries. It has always been berries."
                         }
                     ],
                     Name: "Mira Patch",

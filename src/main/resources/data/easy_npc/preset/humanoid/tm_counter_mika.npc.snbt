@@ -168,6 +168,16 @@
                             Label: "rack_button"
                         },
                         {
+                            Name: "Ask why the discs burn out",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "burnout_lore"
+                                }
+                            ],
+                            Label: "burnout_button"
+                        },
+                        {
                             Name: "Just looking",
                             Actions: [
                                 {
@@ -183,6 +193,9 @@
                         },
                         {
                             Text: "Take a look at the rack. A Thunder Wave off a disc has saved more runs than most of what I keep behind glass."
+                        },
+                        {
+                            Text: "The rack is sorted by how many runs each disc has saved. It is not alphabetical. It is better than alphabetical."
                         }
                     ],
                     Name: "Machine Counter Mika",
@@ -191,6 +204,16 @@
                 {
                     Priority: 10,
                     Buttons: [
+                        {
+                            Name: "Ask why the discs burn out",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "burnout_lore"
+                                }
+                            ],
+                            Label: "burnout_button"
+                        },
                         {
                             Name: "Just looking",
                             Actions: [
@@ -207,6 +230,9 @@
                         },
                         {
                             Text: "Come back with a badge on your bag and we will talk records and machines. Until then all I can offer is directions to the gym: up the tower, mind the wardens."
+                        },
+                        {
+                            Text: "People ask about under-the-counter stock. There is no under-the-counter. It is a solid counter. I checked when they installed it."
                         }
                     ],
                     Name: "Machine Counter Mika",
@@ -444,6 +470,39 @@
                     ],
                     Name: "Mika — the glass cabinet",
                     Label: "tm_master"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Back to the counter",
+                            Actions: [
+                                {
+                                    Type: "OPEN_DEFAULT_DIALOG"
+                                }
+                            ],
+                            Label: "back_button"
+                        },
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The League says coil fatigue — eight castings and the lattice gives. I say the disc finishes saying what it knows. Kenji at the museum calls that romanticizing a capacitor. Kenji dusts bones for a living."
+                        },
+                        {
+                            Text: "I have seen a disc give its eighth teaching in the middle of a losing streak and land like a first. Whatever is in there spends itself all the way down. Respect the last use. Plan for it."
+                        }
+                    ],
+                    Name: "Mika — why discs die",
+                    Label: "burnout_lore"
                 }
             ]
         },
@@ -569,9 +628,9 @@
             DisableLayers: 0b,
             Name: "",
             Timestamp: 0L,
-            Type: "DEFAULT",
+            Type: "CUSTOM",
             URL: "",
-            UUID: [I; 0, 0, 0, 0]
+            UUID: [I; 2059541792, -780641235, -2075565011, 1832357418]
         },
         SoundData: {
             SoundDataSet: [

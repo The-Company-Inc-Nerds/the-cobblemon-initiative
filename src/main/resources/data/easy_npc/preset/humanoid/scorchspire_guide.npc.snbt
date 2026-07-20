@@ -56,14 +56,30 @@
                                 }
                             ],
                             Label: "leave_button"
+                        },
+                        {
+                            Name: "Heard anything interesting?",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "guide_gossip"
+                                }
+                            ],
+                            Label: "gossip_button"
                         }
                     ],
                     Texts: [
                         {
-                            Text: "Welcome, challenger. I am the gym guide. Every trainer who walks through that door comes to me first, and the smart ones listen."
+                            Text: "Welcome, challenger. I am the gym guide — every trainer who walks through that door comes to me first, and the smart ones listen. The rest I meet again at the healing machine."
                         },
                         {
                             Text: "Looks like you mean business. Want the lay of the land before you face the leader?"
+                        },
+                        {
+                            Text: "Have we met? You have the posture of somebody who used to be announced into rooms. Anyway — questions about the gym, or are you here to loom impressively?"
+                        },
+                        {
+                            Text: "Free advice on the gym, no charge. The League classifies me as signage."
                         }
                     ],
                     Name: "Gym Guide Greeting",
@@ -105,6 +121,50 @@
                     ],
                     Name: "How Gyms Work",
                     Label: "explain"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Good to know",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "default"
+                                }
+                            ],
+                            Label: "gossip_back_button"
+                        },
+                        {
+                            Name: "My lips are sealed",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "title @initiator actionbar [{\"text\":\"The guide mouths silently — you did not hear it from me.\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "gossip_leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "There are ten of us guides, one per gym, and we share a newsletter. This month it is mostly a dispute over who invented saying — you got this."
+                        },
+                        {
+                            Text: "One of the other guides swears the healing machine runs on a Chansey in the back room. I have seen the back room. I am not saying anything about the back room."
+                        },
+                        {
+                            Text: "Prize money used to come straight from the League. Now every payout routes through one office. I asked which office. I was told that was a good question, in the tone that means stop asking."
+                        },
+                        {
+                            Text: "A guide remembers every challenger. Even the ones whose parties walk out smaller than they walked in. Especially those."
+                        }
+                    ],
+                    Name: "Guide Gossip",
+                    Label: "guide_gossip"
                 }
             ]
         },

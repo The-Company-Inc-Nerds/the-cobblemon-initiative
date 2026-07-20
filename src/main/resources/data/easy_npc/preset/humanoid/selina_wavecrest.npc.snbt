@@ -39,13 +39,54 @@
                     Priority: 10,
                     Buttons: [
                         {
-                            Name: "Goodbye",
+                            Name: "Take some of the haul",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_gift_selina_tide_haul_claimed"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "loot give @s loot cobblemon_initiative:npc_gift/common"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_gift_selina_tide_haul_claimed"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tag @s add gift_selina_tide_haul_claimed"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "title @initiator actionbar [{\"text\":\"(Tucked in among the shells: things the tide did not need.)\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "haul_button"
+                        },
+                        {
+                            Name: "Keep beachcombing",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "goodbye_button"
+                            Label: "leave_button"
                         }
                     ],
                     Texts: [
@@ -57,6 +98,12 @@
                         },
                         {
                             Text: "You look road-worn. Take this smooth stone, it is nothing, it is lucky, it is yours. The sea has plenty and I like your face."
+                        },
+                        {
+                            Text: "Low tide left me more than I can carry today — spare balls, berries the gulls missed. Take some off my hands, the sea restocks me."
+                        },
+                        {
+                            Text: "A Company clipboard washed up last spring, all stamps and signatures. The sea had corrected most of it. I trade better with the sea."
                         }
                     ],
                     Name: "Selina Wavecrest",

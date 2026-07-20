@@ -1,5 +1,15 @@
 # 15 — Battle Frontier
 
+> **✅ STATUS 2026-07-20 — SHIPPED + live-verified (all 9 hall scenarios green).** The real
+> per-hall mechanics landed in `frontier/FrontierManager` (alpha.7 + alpha.8 friction wave):
+> Factory custody loans · Arcade wheel (level-lock / doubles / purse-mult) · Castle 60-point
+> budget (heal −20 / scout −15 / leftover ×15 CD) · Market bargain/fair/premium listings ·
+> Port `GEN_9_MULTI` crew · Pyramid no-heal gauntlet + `pyramid abandon` · Tower 9-floor
+> level-locked climb · Deep Dark capstone (Selene/Darkrai, `frontier_all_cleared` = 20k CD).
+> As-shipped detail: [`docs/FRONTIER_CONCEPTS.md`](../FRONTIER_CONCEPTS.md) shipped table +
+> [`wiki/Guidebook-Battle-Frontier.md`](../../wiki/Guidebook-Battle-Frontier.md). The design
+> prose below is the original plan; trust `FrontierManager` where they differ.
+
 > **SLUG** `15_battle_frontier` · **SET-PIECE** (post-Royal-League proving ground) ·
 > **Band:** cap **85→100**, `memory_fragment` 10, `cd_instability` **25 (stabilised)**,
 > recognition **late**, `company_overthrown` **may or may not be set** (see §Overview).

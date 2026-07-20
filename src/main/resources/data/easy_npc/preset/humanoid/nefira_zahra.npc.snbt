@@ -39,13 +39,54 @@
                     Priority: 10,
                     Buttons: [
                         {
-                            Name: "Goodbye",
+                            Name: "Accept the cactus strip",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_gift_nefira_cactus_strip_claimed"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "loot give @s loot cobblemon_initiative:npc_gift/common"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_gift_nefira_cactus_strip_claimed"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tag @s add gift_nefira_cactus_strip_claimed"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "title @initiator actionbar [{\"text\":\"(Bitter, green, and somehow wetter than anything the Company sells.)\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "cactus_button"
+                        },
+                        {
+                            Name: "Keep it for the next traveller",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "goodbye_button"
+                            Label: "leave_button"
                         }
                     ],
                     Texts: [

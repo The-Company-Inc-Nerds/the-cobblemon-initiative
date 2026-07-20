@@ -39,13 +39,31 @@
                     Priority: 10,
                     Buttons: [
                         {
-                            Name: "Goodbye",
+                            Name: "Barter: offer 3 Oran Berries",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative turnin cobblemon:oran_berry 3 ilyana_barter_done"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_ilyana_barter_done"
+                                }
+                            ],
+                            Label: "barter_button"
+                        },
+                        {
+                            Name: "Keep your coin, then",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "goodbye_button"
+                            Label: "leave_button"
                         }
                     ],
                     Texts: [
@@ -57,10 +75,47 @@
                         },
                         {
                             Text: "The pink light off the water is stronger this season. My gran would say something is coming to a head. My gran said that about most things, mind. But she was right about the important ones."
+                        },
+                        {
+                            Text: "Elowen keeps telling travellers the fog is Cottonee fluff. It is fog, love. Though I notice Spindle has stopped correcting her, which I believe means it enjoys the credit."
                         }
                     ],
                     Name: "Ilyana Mossveil",
                     Label: "default"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "ilyana_barter_done"
+                        }
+                    ],
+                    Priority: 12,
+                    Buttons: [
+                        {
+                            Name: "A pleasure doing barter",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "(A length of lily-dyed thread is knotted to your bag strap now — her mark. Weavers in three towns will assume you are somebody.) Fair trade, fairly closed."
+                        },
+                        {
+                            Text: "Berries for thread, thread for berries. That is a marsh ledger — short, honest, and nobody prints more of it overnight."
+                        },
+                        {
+                            Text: "My gran always said you can trust anyone whose pockets smell of Oran. I used to think it was a proverb. No. She just liked the berries."
+                        }
+                    ],
+                    Name: "Ilyana — square accounts",
+                    Label: "barter_thanks"
                 }
             ]
         },

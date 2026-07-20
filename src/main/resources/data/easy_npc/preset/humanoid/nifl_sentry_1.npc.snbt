@@ -39,13 +39,23 @@
                     Priority: 10,
                     Buttons: [
                         {
-                            Name: "Goodbye",
+                            Name: "Brush the snow from the plaque at its feet",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "plaque"
+                                }
+                            ],
+                            Label: "plaque_button"
+                        },
+                        {
+                            Name: "Step back into the wind",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "goodbye_button"
+                            Label: "leave_button"
                         }
                     ],
                     Texts: [
@@ -54,10 +64,46 @@
                         },
                         {
                             Text: "Snow has drifted to its knees. Whatever it watches, it has watched for a long time."
+                        },
+                        {
+                            Text: "Up close, the ice over its eyes is thinner than the ice over everything else. As if something keeps it clear."
                         }
                     ],
                     Name: "Frost Sentinel — the first watcher",
                     Label: "default"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Look up at the sentinel",
+                            Actions: [
+                                {
+                                    Type: "OPEN_DEFAULT_DIALOG"
+                                }
+                            ],
+                            Label: "back_button"
+                        },
+                        {
+                            Name: "Step back into the wind",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "THE WHITEOUT WATCH. Three keepers stood this crossing through the storm year and would not come in. The town still argues whether they froze, or simply stopped agreeing to move."
+                        },
+                        {
+                            Text: "A second line, half scoured by wind: their eyes were never ice. When the watch marks a crosser, the cold leans on that crosser the rest of the way. Pass where the watch is not looking, and the leader will know your patience before you speak."
+                        }
+                    ],
+                    Name: "The Whiteout Watch",
+                    Label: "plaque"
                 }
             ]
         },

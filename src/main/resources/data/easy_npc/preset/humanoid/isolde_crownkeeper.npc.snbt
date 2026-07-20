@@ -101,6 +101,16 @@
                     Priority: 10,
                     Buttons: [
                         {
+                            Name: "Ask about the ceremony",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "the_ceremony"
+                                }
+                            ],
+                            Label: "ceremony_button"
+                        },
+                        {
                             Name: "Understood",
                             Actions: [
                                 {
@@ -120,6 +130,39 @@
                     ],
                     Name: "Isolde Crownkeeper — the antechamber",
                     Label: "default"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Ask something else",
+                            Actions: [
+                                {
+                                    Type: "OPEN_DEFAULT_DIALOG"
+                                }
+                            ],
+                            Label: "back_button"
+                        },
+                        {
+                            Name: "Leave her to the protocols",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Seventeen steps, since you ask. Step nine is a trumpet. Step ten is a pause I added myself, so the hall can finish echoing the trumpet. Protocol grows the way coral does — one apology at a time."
+                        },
+                        {
+                            Text: "The oath is older than the tower. The new champion swears to hold the seat, and the seat swears nothing back. I have always felt it should. It has seen more champions than any of us."
+                        }
+                    ],
+                    Name: "Isolde Crownkeeper — the coronation protocol",
+                    Label: "the_ceremony"
                 }
             ]
         },

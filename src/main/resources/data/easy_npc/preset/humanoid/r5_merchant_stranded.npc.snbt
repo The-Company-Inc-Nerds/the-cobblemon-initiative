@@ -55,6 +55,40 @@
                                 }
                             ],
                             Label: "leave_button"
+                        },
+                        {
+                            Name: "Ask about the wheel",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "wheel"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_poe_wheel_splinted"
+                                }
+                            ],
+                            Label: "wheel_button"
+                        },
+                        {
+                            Name: "How is the wheel holding?",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "wheel_fixed"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "poe_wheel_splinted"
+                                }
+                            ],
+                            Label: "wheel_after_button"
                         }
                     ],
                     Texts: [
@@ -66,10 +100,94 @@
                         },
                         {
                             Text: "The prices I paid for this stock keep changing under me. Same crate, new number every week. So I sell at what I paid and eat the difference. Somebody has to hold a line."
+                        },
+                        {
+                            Text: "Rest insured, friend - every price on this cart is what I paid for it. My wife says the word is assured. My wife has never been stranded."
+                        },
+                        {
+                            Text: "The rockbreaker at the lower bench will tell you Geodude float by clenching. Twenty years hauling ore says they climb in the cart and eat the profit. Nothing about that floats."
                         }
                     ],
                     Name: "Stranded Hauler Poe",
                     Label: "default"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Hand over 4 sticks",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative turnin minecraft:stick 4 poe_wheel_splinted"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_poe_wheel_splinted"
+                                }
+                            ],
+                            Label: "splint_button"
+                        },
+                        {
+                            Name: "Back to the cart",
+                            Actions: [
+                                {
+                                    Type: "OPEN_DEFAULT_DIALOG"
+                                }
+                            ],
+                            Label: "back_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Cracked the felloe clean through on a quarry stone. The Deepcore wheelwright quotes me a week. A week! (he kicks the wheel, gently, like it might apologize)"
+                        },
+                        {
+                            Text: "Between you and me, four stout sticks would splint it enough to lean the cart level. I have asked three towns for a wheelwright and not one person for sticks. Pride is a heavy cargo."
+                        }
+                    ],
+                    Name: "Poe - the wheel",
+                    Label: "wheel"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Back to the cart",
+                            Actions: [
+                                {
+                                    Type: "OPEN_DEFAULT_DIALOG"
+                                }
+                            ],
+                            Label: "back_button"
+                        },
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Holding! Four sticks and a prayer. I asked three towns for a wheelwright when what I needed was a hedge. Do not tell the wheelwright."
+                        },
+                        {
+                            Text: "Rest insured, you are in my ledger as preferred cargo now. The wheel wobbles with dignity, which is all any of us can ask."
+                        }
+                    ],
+                    Name: "Poe - the splint holds",
+                    Label: "wheel_fixed"
                 }
             ]
         },

@@ -55,6 +55,43 @@
                                 }
                             ],
                             Label: "leave_button"
+                        },
+                        {
+                            Name: "Take a field kit",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_gift_liora_route_kit_claimed"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "loot give @s loot cobblemon_initiative:npc_gift/common"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_gift_liora_route_kit_claimed"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tag @s add gift_liora_route_kit_claimed"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "kit_button"
                         }
                     ],
                     Texts: [
@@ -66,6 +103,9 @@
                         },
                         {
                             Text: "You are pushing hard on these routes. There is no medal for arriving broken. Rest here a beat — the road will still be there, and so will I."
+                        },
+                        {
+                            Text: "I make up little field kits from what the road donates — spare balls, berries, the odd potion. Take one when you go. Refusing help on a cliff is how people become cautionary tales."
                         }
                     ],
                     Name: "Liora Heroheart — the route medic",

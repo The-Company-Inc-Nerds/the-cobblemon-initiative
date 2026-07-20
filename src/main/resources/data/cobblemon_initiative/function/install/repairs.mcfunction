@@ -24,3 +24,12 @@ execute unless score #repair_a7 ci_ambient matches 1 run function cobblemon_init
 
 # ── wave a8 (0.6.0-alpha.7): shrine cultists retired (structure ruling) ──
 execute unless score #repair_a8 ci_ambient matches 1 run function cobblemon_initiative:install/repairs_a8_arm
+
+# ── wave a9 (0.6.0-alpha.9): skin dress pass repaint — 99 latch-placed civilians/props
+#    gained authored skins (12 new trainer_textures); stale undressed bodies killed +
+#    latches re-armed so they re-spawn dressed (coords unchanged) ──
+execute unless score #repair_a9 ci_ambient matches 1 run function cobblemon_initiative:install/repairs_a9_arm
+
+# ── wave a10 (0.6.0-alpha.10): dialog cohesion pass — latch-placed cast re-latched so
+#    punched-up dialog reaches already-spawned bodies (uuid'd NPCs refresh via preset hash) ──
+execute unless score #repair_a10 ci_ambient matches 1 run function cobblemon_initiative:install/repairs_a10_arm

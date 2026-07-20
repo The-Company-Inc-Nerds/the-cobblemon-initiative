@@ -92,6 +92,16 @@
                                 }
                             ],
                             Label: "plaque_pointer_button"
+                        },
+                        {
+                            Name: "What are the Brains actually like?",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "hall_gossip"
+                                }
+                            ],
+                            Label: "gossip_button"
                         }
                     ],
                     Texts: [
@@ -103,10 +113,49 @@
                         },
                         {
                             Text: "Seven halls and a sealed cave. Your name is on the ledger, so the floors are yours. The window is open."
+                        },
+                        {
+                            Text: "Rule of the window: no refunds, no rain checks, no exceptions - except the ones I feel like making. It is my window."
                         }
                     ],
                     Name: "Registrar Odette - the ledger keeper",
                     Label: "signed"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Noted - and unheard",
+                            Actions: [
+                                {
+                                    Type: "OPEN_DEFAULT_DIALOG"
+                                }
+                            ],
+                            Label: "back_button"
+                        },
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Off the ledger? The Lord sells comfort, the Mogul sells the fight, and the King sells you nothing and somehow you pay anyway. The Star is the only honest one here, and she gambles."
+                        },
+                        {
+                            Text: "The Tycoon still irons his own shirts and calls it discipline. The Admiral talks to the rain. The Warden I do not gossip about - some doors you do not knock on for fun."
+                        },
+                        {
+                            Text: "They are all old Company, every Brain. The coup never bothered coming for them. You do not fire the people who run the toy - you forget them, and forgetting was the mistake."
+                        }
+                    ],
+                    Name: "Odette - strictly off the ledger",
+                    Label: "hall_gossip"
                 },
                 {
                     Priority: -1,
@@ -202,6 +251,9 @@
                         },
                         {
                             Text: "The passes are cheap now - the money finally holds still. First one is on the house. Just put your name down."
+                        },
+                        {
+                            Text: "Sign at the bottom, initial the middle. The top line signs itself - old Company paper. Do not ask, I stopped asking in my first week."
                         }
                     ],
                     Name: "Frontier Registrar Odette",

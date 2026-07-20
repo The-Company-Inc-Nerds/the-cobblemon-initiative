@@ -75,6 +75,10 @@
       "sleep": 1.5
     },
     {
+      "rcon": "execute as {player} run cobblemon-initiative frontier pyramid abandon",
+      "comment_": "gauntlet-state reset (round-4 live-caught): the in-memory stage map survives across runs in one server session - a stalled giant leaves stage 2 held, and the next start RESUMES ('the dark takes you back') instead of the fresh door the scenario asserts. Abandon clears it; clean-state runs print 'Nothing holds you here' (no-op)."
+    },
+    {
       "comment": "-- hardcore protection: outside any SafeZone; day + regen keeps the plateau survivable while three battles play out --"
     },
     {
@@ -240,6 +244,15 @@
     },
     {
       "rcon": "tag {player} remove frontier_all_cleared"
+    },
+    {
+      "comment": "-- leaked-battle sweep (2026-07-19): an aborted prior scenario can leave a live battle + a dead manager dispatch entry; stopbattle ends the battle (harmless no-op when clean) and the sleep lets the Java self-heal clear the dead dispatch (~2s) before the first hall command --"
+    },
+    {
+      "rcon": "stopbattle {player}"
+    },
+    {
+      "sleep": 3.0
     },
     {
       "rcon": "execute as {player} run cobblemon-initiative dev bot autobattle on"

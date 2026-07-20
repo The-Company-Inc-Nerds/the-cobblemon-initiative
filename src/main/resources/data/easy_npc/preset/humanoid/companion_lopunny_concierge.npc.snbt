@@ -3,11 +3,11 @@
         author: "TheCompanyInc",
         category: "Civilian",
         created: 0L,
-        description: "civilian at Hua Zhan Gym — Lobby (act 1). Compiled from dialog-src.",
-        entityTypeId: "easy_npc:humanoid",
+        description: "civilian at Company HQ Penthouse (act 2). Compiled from dialog-src.",
+        entityTypeId: "easy_npc:cobblemon_npc",
         modified: 0L,
-        name: "A Clean Square of Wall",
-        variantType: "STEVE",
+        name: "Agenda",
+        variantType: "COBBLEMON_NPC",
         version: "1.0.0"
     },
     data: {
@@ -33,55 +33,39 @@
         CanPickUpLoot: 0b,
         CustomNameVisible: 1b,
         DialogData: {
-            Type: "STANDARD",
+            Type: "BASIC",
             DialogDataSet: [
                 {
                     Priority: 10,
                     Buttons: [
                         {
-                            Name: "Run a hand over the clean square",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "tag @s add seen_clean_square"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    Cmd: "tellraw @initiator [{\"text\":\"Every scrubbed surface in the region was scrubbed by the Company. This one Blossom scrubbed herself. It is the only clean square in Hua Zhan that feels like a window.\",\"color\":\"gold\"}]"
-                                },
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Conditions: [
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "no_seen_clean_square"
-                                }
-                            ],
-                            Label: "touch_button"
-                        },
-                        {
-                            Name: "Leave the wall to its silence",
+                            Name: "Goodbye",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "leave_button"
+                            Label: "goodbye_button"
                         }
                     ],
                     Texts: [
                         {
-                            Text: "A bright square on the sun-faded lobby wall, cleaner than everything around it. Four screw holes, one for each corner of whatever hung here for years."
+                            Text: "Lopunny! Lop."
                         },
                         {
-                            Text: "A small handwritten card is pinned inside the clean square: the charter hung here while it behaved. It stopped behaving. — B."
+                            Text: "(She stands at a lectern with the appointment book open. Every page is dated yesterday. Every yesterday is years old.)"
+                        },
+                        {
+                            Text: "(She runs a paw down the page and taps an empty line, as if you had a standing nine o'clock and simply stepped out for a very long lunch.)"
+                        },
+                        {
+                            Text: "(She checks you against the book, then against something older than the book. Whatever she finds there, you are down as EXPECTED.)"
+                        },
+                        {
+                            Text: "(One page is marked private appointment in careful claw. She turns past it quickly, with the smallest cough a Lopunny can produce.)"
                         }
                     ],
-                    Name: "A Clean Square of Wall",
+                    Name: "Agenda",
                     Label: "default"
                 }
             ]
@@ -120,11 +104,15 @@
                 Type: "VISIBLE_TO_TEAM"
             },
             {
+                Bool: 1b,
+                Type: "INTERACTION_WHEN_INVISIBLE"
+            },
+            {
                 Int: 7,
                 Type: "LIGHT_LEVEL"
             },
             {
-                Text: "ALWAYS",
+                Text: "MOUSE_OVER",
                 Type: "NAME_VISIBILITY"
             }
         ],
@@ -142,7 +130,9 @@
             HealthRegeneration: 0.0d,
             IsAttackableByMonsters: 0b,
             IsAttackableByPlayers: 0b,
+            IsExplosionResistant: 0b,
             IsInvulnerable: 1b,
+            IsKnockbackResistant: 0b,
             IsPushable: 0b,
             NoGravity: 0b,
             PushEntities: 0b
@@ -156,13 +146,7 @@
         LeftHanded: 0b,
         ModelData: {
             DefaultPose: "STANDING",
-            Pose: "VANILLA",
-            Position: {},
-            Rotation: {},
-            Scale: {},
-            Visible: {
-                Boots: 1b
-            }
+            Pose: "VANILLA"
         },
         Navigation: {
             Home: {
@@ -202,7 +186,10 @@
             EntityExperience: 1,
             EntityExperienceLevel: 1
         },
-        RenderData: {},
+        RenderData: {
+            EntityModel: "cobblemon:lopunny",
+            Type: "COBBLEMON_ENTITY"
+        },
         SkinData: {
             Content: "",
             DisableLayers: 0b,
@@ -213,34 +200,25 @@
             UUID: [I; 0, 0, 0, 0]
         },
         SoundData: {
-            SoundDataSet: [
-                {
-                    Name: "minecraft:entity.player.death",
-                    Type: "DEATH"
-                },
-                {
-                    Name: "minecraft:entity.player.hurt",
-                    Type: "HURT"
-                }
-            ]
+            SoundDataSet: []
         },
         Status: {
             finalized: 0b,
             npc_data_last_saved: 0L,
             npc_data_last_update: 0L
         },
-        VariantType: "STEVE",
+        VariantType: "COBBLEMON_NPC",
         attributes: [
             {
-                base: 20.0d,
-                id: "minecraft:generic.max_health"
+                base: 0.6d,
+                id: "minecraft:generic.movement_speed"
             },
             {
-                base: 0.5d,
-                id: "minecraft:generic.movement_speed"
+                base: 32.0d,
+                id: "minecraft:generic.follow_range"
             }
         ],
-        id: "easy_npc:humanoid",
-        CustomName: '{"text": "A Clean Square of Wall", "color": "#FFFFFF"}'
+        id: "easy_npc:cobblemon_npc",
+        CustomName: '{"text": "Agenda", "color": "#FFFFFF"}'
     }
 }

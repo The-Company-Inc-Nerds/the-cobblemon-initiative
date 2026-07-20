@@ -125,6 +125,19 @@
                             Label: "fight_button"
                         },
                         {
+                            Name: "Ask for the house odds",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "title @initiator actionbar [{\"text\":\"House odds, freshly calculated this morning: yes.\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "odds_button"
+                        },
+                        {
                             Name: "Not this spin",
                             Actions: [
                                 {
@@ -143,6 +156,12 @@
                         },
                         {
                             Text: "Fast teams, glass jaws, no second chances - my kind of game. House rules: the wheel spins once per fight, and no fight starts without a stake on the table. Spin first, then sit."
+                        },
+                        {
+                            Text: "(he taps the table twice before speaking) Not superstition. Risk management. I have a system - six systems, technically. They take turns failing."
+                        },
+                        {
+                            Text: "The wheel lands doubles more often when the floor is freshly swept. I keep records. Suki calls my records one napkin. It is a very thorough napkin."
                         }
                     ],
                     Name: "Gambler Fritz",

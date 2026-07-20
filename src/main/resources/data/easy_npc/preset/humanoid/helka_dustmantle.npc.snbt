@@ -36,7 +36,14 @@
             Type: "BASIC",
             DialogDataSet: [
                 {
-                    Priority: 10,
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "helka_poultice_done"
+                        }
+                    ],
+                    Priority: 20,
                     Buttons: [
                         {
                             Name: "Goodbye",
@@ -50,6 +57,45 @@
                     ],
                     Texts: [
                         {
+                            Text: "Cough into your elbow, same as ever. The oran batch is holding — your three berries have gone further than the commissary has all quarter."
+                        },
+                        {
+                            Text: "The ward smells like a hedge in spring now, which beats what it smelled like before. The deep crews thank you. Or they would, if thanking were a thing miners did out loud."
+                        },
+                        {
+                            Text: "You did more for this ward with three berries than the field office has with three memos. Do not tell them I said that. They would bill me for the comparison."
+                        }
+                    ],
+                    Name: "Helka Dustmantle",
+                    Label: "thanks"
+                },
+                {
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "Hand over 3 oran berries",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative turnin cobblemon:oran_berry 3 helka_poultice_done"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_helka_poultice_done"
+                                }
+                            ],
+                            Label: "berry_button"
+                        }
+                    ],
+                    Texts: [
+                        {
                             Text: "Cough into your elbow near my ward, not the open air, there is enough rock in these lungs already. I mix the poultices that keep the deep crews breathing. It is honest work in a town where that is getting rare."
                         },
                         {
@@ -57,6 +103,9 @@
                         },
                         {
                             Text: "If a grey suit tells you the pit is safer than ever, ask him to spend one shift in the deep gallery and come cough on my table after. I have never once treated a man in a clean shirt."
+                        },
+                        {
+                            Text: "I am short on oran berries for the poultice base — the commissary re-verified my order into next month, whatever that means. If three of them ever find their way into your bag, my door is open."
                         }
                     ],
                     Name: "Helka Dustmantle",

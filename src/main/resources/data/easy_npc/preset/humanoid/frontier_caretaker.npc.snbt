@@ -70,6 +70,54 @@
                     Label: "cleared_echo"
                 },
                 {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "anselm_brass_waxed"
+                        }
+                    ],
+                    Priority: 12,
+                    Buttons: [
+                        {
+                            Name: "Read the plaque",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:frontier/read_plaque"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "read_button"
+                        },
+                        {
+                            Name: "Enjoy the shine",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "One honeycomb and the brass reads like the day it was hung. Come see it in the morning light sometime. It earns the walk."
+                        },
+                        {
+                            Text: "(he keeps finding excuses to walk past the plaque) Forty years of asking the commissary, and a passing Champion simply had one in a pocket. The Frontier provides. It always did."
+                        },
+                        {
+                            Text: "The wax is holding beautifully. I have started nodding at the plaque when I pass. The plaque does not mind."
+                        }
+                    ],
+                    Name: "Anselm - the brass approves",
+                    Label: "brass_thanks"
+                },
+                {
                     Priority: 10,
                     Buttons: [
                         {
@@ -85,6 +133,24 @@
                                 }
                             ],
                             Label: "read_button"
+                        },
+                        {
+                            Name: "Offer a honeycomb for the brass",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative turnin minecraft:honeycomb 1 anselm_brass_waxed"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_anselm_brass_waxed"
+                                }
+                            ],
+                            Label: "wax_button"
                         }
                     ],
                     Texts: [
@@ -96,6 +162,9 @@
                         },
                         {
                             Text: "I shook a hand once, when this place opened. Long time ago. I would know the face anywhere - and a caretaker keeps his opinions to himself and his rag on the brass."
+                        },
+                        {
+                            Text: "The brass wants waxing and the commissary stopped stocking honeycomb the day the Company stopped paying for it. A caretaker makes do. A caretaker has been making do for years."
                         }
                     ],
                     Name: "Caretaker Anselm",

@@ -80,6 +80,40 @@
                                 }
                             ],
                             Label: "leave_button"
+                        },
+                        {
+                            Name: "Ask about the waystone custom",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "custom"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_waystone_stone_left"
+                                }
+                            ],
+                            Label: "custom_button"
+                        },
+                        {
+                            Name: "Visit your stone",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "custom_done"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "waystone_stone_left"
+                                }
+                            ],
+                            Label: "custom_after_button"
                         }
                     ],
                     Texts: [
@@ -95,6 +129,84 @@
                     ],
                     Name: "Waystone Keeper Idi",
                     Label: "default"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Leave a stone on the line",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative turnin minecraft:cobblestone 1 waystone_stone_left"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_waystone_stone_left"
+                                }
+                            ],
+                            Label: "stone_button"
+                        },
+                        {
+                            Name: "Back to the stones",
+                            Actions: [
+                                {
+                                    Type: "OPEN_DEFAULT_DIALOG"
+                                }
+                            ],
+                            Label: "back_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Old custom of the line: a traveler leaves one stone from their own road, and the desert counts them a neighbor. Any honest cobble will do. The desert is not fussy. I am, slightly."
+                        },
+                        {
+                            Text: "Every stone in this line was carried by somebody once. Leave one and the flats will remember your feet. That is not superstition. That is maintenance."
+                        }
+                    ],
+                    Name: "Idi - the custom",
+                    Label: "custom"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Back to the stones",
+                            Actions: [
+                                {
+                                    Type: "OPEN_DEFAULT_DIALOG"
+                                }
+                            ],
+                            Label: "back_button"
+                        },
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Your stone sits third from the marker post. Low, out of the wind. In a hundred years somebody will lean on it and make it home because of you."
+                        },
+                        {
+                            Text: "The desert counts you a neighbor now. It has a long memory and no paperwork, which is the correct ratio."
+                        }
+                    ],
+                    Name: "Idi - a neighbor now",
+                    Label: "custom_done"
                 }
             ]
         },

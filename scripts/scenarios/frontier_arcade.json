@@ -224,6 +224,15 @@
       "rcon": "tag {player} remove frontier_all_cleared"
     },
     {
+      "comment": "-- leaked-battle sweep (2026-07-19): an aborted prior scenario can leave a live battle + a dead manager dispatch entry; stopbattle ends the battle (harmless no-op when clean) and the sleep lets the Java self-heal clear the dead dispatch (~2s) before the first hall command --"
+    },
+    {
+      "rcon": "stopbattle {player}"
+    },
+    {
+      "sleep": 3.0
+    },
+    {
       "rcon": "execute as {player} run cobblemon-initiative dev bot autobattle on"
     },
     {
@@ -283,8 +292,8 @@
       "comment_": "frontier arcade fight 1 (as_player) + close - the manager consumes the armed slice, attaches the trainer, dispatches tbcs under the slice's format/lock"
     },
     {
-      "wait_no_screen": true,
-      "comment_": "the fight button carries a close action now (unlike the old do:battle buttons) - assert it lands"
+      "client": "screen.close",
+      "comment_": "battle GUI replaces the dialog now that the dispatch is ANCHORED (2026-07-18) — close it and let the win-line wait pace the fight (wisps idiom); a wait_no_screen here RACES the Cobblemon battle GUI (live-caught 2026-07-19)"
     },
     {
       "wait_chat": "Purse paid",
@@ -360,7 +369,8 @@
       "comment_": "frontier arcade fight 2 (as_player) + close"
     },
     {
-      "wait_no_screen": true
+      "client": "screen.close",
+      "comment_": "battle GUI replaces the dialog now that the dispatch is ANCHORED (2026-07-18) — close it and let the win-line wait pace the fight (wisps idiom)"
     },
     {
       "wait_chat": "Purse paid",
@@ -434,7 +444,8 @@
       "comment_": "frontier arcade fight brain (as_player) + close - the brain purse is 1500 base before any PURSE multiplier"
     },
     {
-      "wait_no_screen": true
+      "client": "screen.close",
+      "comment_": "battle GUI replaces the dialog now that the dispatch is ANCHORED (2026-07-18) — close it and let the win-line wait pace the fight (wisps idiom)"
     },
     {
       "wait_chat": "Purse paid",

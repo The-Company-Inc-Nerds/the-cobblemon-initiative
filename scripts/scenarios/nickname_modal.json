@@ -1,0 +1,34 @@
+{
+  "name": "nickname_modal",
+  "description": "Nickname ritual e2e (0.6.0-alpha.8 feature): after any acquisition the server sends nickname_prompt S2C and the client opens NicknamePromptScreen (queued behind other screens; ESC = keep species name). This scenario STRIPS the ci_harness suppress tag (e2e_run adds it per-scenario so givemon preambles elsewhere never see the modal), then drives the REAL flow twice: (1) givemon eevee -> modal opens -> type 'Scrambles' via screen.key charTyped into the focused EditBox -> click 'Name it' -> C2S nickname_set -> server confirm line 'Scrambles it is. The registry remembers.' (the wait_chat assert; setNickname syncs to the client on its own); (2) givemon magikarp -> modal opens -> ESC (key 256) -> screen closes, no rename, species name stands. Postamble re-arms ci_harness (e2e_run would anyway on the next scenario). Residue: the eevee/magikarp stay in party/PC like every other givemon preamble mon (house precedent: wonder-team raikou). No battles, no movement - modal-only, so none of the Walker/stall caveats apply.",
+  "steps": [
+    {
+      "comment": "-- PREAMBLE: this scenario is the ONE place the suppress tag comes OFF. promptFor checks the tag at SEND time inside the givemon command dispatch, so the strip must precede the give. --"
+    },
+    { "rcon": "tag {player} remove ci_harness" },
+    { "rcon": "execute as {player} run cobblemon-initiative givemon eevee level=5" },
+    {
+      "comment": "-- Beat 1: name it. wait_screen matches class-name substring; NicknamePromptScreen deliberately avoids 'Dialog'. The EditBox takes initial focus, so charTyped lands in it directly. --"
+    },
+    { "wait_screen": "NicknamePrompt", "timeout": 15 },
+    { "client": "screen.key", "args": { "char": "Scrambles" } },
+    { "client": "screen.click", "args": { "text": "Name it" } },
+    { "wait_no_screen": true, "timeout": 10 },
+    {
+      "comment": "-- The '.*' is LOAD-BEARING: the raw hud line is '§dScrambles§7 it is. ...' (HudLog stores getString() which PRESERVES § codes) — do not tighten to a literal space. --"
+    },
+    { "wait_chat": "Scrambles.*it is", "timeout": 15 },
+    {
+      "comment": "-- Beat 2: walk away. ESC (GLFW 256) closes via shouldCloseOnEsc; nothing is sent, nothing server-side waits (fire-and-forget contract), species name stands. --"
+    },
+    { "rcon": "execute as {player} run cobblemon-initiative givemon magikarp level=5" },
+    { "wait_screen": "NicknamePrompt", "timeout": 15 },
+    { "client": "screen.key", "args": { "key": 256 } },
+    { "wait_no_screen": true, "timeout": 10 },
+    {
+      "comment": "-- POSTAMBLE: re-arm suppression so a manual re-run of any OTHER scenario from this session stays modal-free. --"
+    },
+    { "rcon": "tag {player} add ci_harness" },
+    { "screenshot": "nickname_modal_done" }
+  ]
+}

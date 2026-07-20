@@ -39,13 +39,23 @@
                     Priority: 10,
                     Buttons: [
                         {
-                            Name: "Goodbye",
+                            Name: "Ask about the basement",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "basement_page"
+                                }
+                            ],
+                            Label: "basement_button"
+                        },
+                        {
+                            Name: "Leave him to his bolts",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "goodbye_button"
+                            Label: "leave_button"
                         }
                     ],
                     Texts: [
@@ -58,6 +68,40 @@
                     ],
                     Name: "Vonn Steelbyte",
                     Label: "default"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Ask something else",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "default"
+                                }
+                            ],
+                            Label: "back_button"
+                        },
+                        {
+                            Name: "Let it stay buried",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "We poured the deep floor around a vault door that arrived before the walls did. Fully assembled, already locked. You do not deliver the door first unless the door is the point."
+                        },
+                        {
+                            Text: "Last month of the job they rotated in crews from out of town, so nobody worked the bottom level twice. I did the math on my badge stamps once. I have never done it again."
+                        }
+                    ],
+                    Name: "Vonn Steelbyte — the deep floor",
+                    Label: "basement_page"
                 }
             ]
         },

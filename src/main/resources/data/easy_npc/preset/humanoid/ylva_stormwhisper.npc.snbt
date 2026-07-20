@@ -36,16 +36,71 @@
             Type: "BASIC",
             DialogDataSet: [
                 {
-                    Priority: 10,
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "ci_ylva_nets_done"
+                        }
+                    ],
+                    Priority: 20,
                     Buttons: [
                         {
-                            Name: "Goodbye",
+                            Name: "Keep an ear out for me",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "goodbye_button"
+                            Label: "thanks_leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Good string, this. The nets will outlive the storm now, and so will my opinion of you. I talk, you know — lately I talk about you kindly."
+                        },
+                        {
+                            Text: "Mended and hung before the rain came in, thanks to you. Sit on my dock any time. The gossip is free and the fish are none of my business."
+                        },
+                        {
+                            Text: "A deckhand swore to me the first of the Elite Four trains blindfolded, so the dark holds nothing over her. He was crying into my nets at the time, and a seasick man does not waste effort lying."
+                        }
+                    ],
+                    Name: "Ylva Stormwhisper",
+                    Label: "nets_thanks"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "no_ci_ylva_nets_done"
+                        }
+                    ],
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "Hand over three string",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative turnin minecraft:string 3 ci_ylva_nets_done"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "nets_turnin_button"
+                        },
+                        {
+                            Name: "The nets can wait",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "nets_leave_button"
                         }
                     ],
                     Texts: [
@@ -57,6 +112,12 @@
                         },
                         {
                             Text: "A courier dropped a memo off the ferry last week. I fished it out. Half a sentence about the founder and a whole lot of black ink. I dried it, I read it, and then I very quietly put it back in the sea where memos belong."
+                        },
+                        {
+                            Text: "Storm coming, and half my nets are more hole than net. Bring me three string — off a market shelf or a spider, I am not proud — and I will owe you a kindness."
+                        },
+                        {
+                            Text: "The chandler wants a formal requisition before he parts with string now. A requisition. For string. Bring me three and spare us both the paperwork."
                         }
                     ],
                     Name: "Ylva Stormwhisper",

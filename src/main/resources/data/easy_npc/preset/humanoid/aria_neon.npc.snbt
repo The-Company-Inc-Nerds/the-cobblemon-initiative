@@ -39,13 +39,26 @@
                     Priority: 10,
                     Buttons: [
                         {
-                            Name: "Goodbye",
+                            Name: "What is wrong with the Company boards?",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "tellraw @initiator [{\"text\":\"Aria Neon: It is not a power fault - the garbage is in the feed. Somebody upstream is broadcasting their own mess, and my poor tubes are just repeating it.\",\"color\":\"gray\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "flicker_button"
+                        },
+                        {
+                            Name: "Mind the wet paint",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "goodbye_button"
+                            Label: "leave_button"
                         }
                     ],
                     Texts: [
@@ -54,6 +67,9 @@
                         },
                         {
                             Text: "Rain on hot neon smells like copper and burnt sugar. Best time to be up here. Worst time for the wiring."
+                        },
+                        {
+                            Text: "They say Volt rewired his whole gym barefoot so he could feel the current. I painted his marquee. He paid extra to make the lettering buzz, so I believe every word."
                         }
                     ],
                     Name: "Aria Neon",

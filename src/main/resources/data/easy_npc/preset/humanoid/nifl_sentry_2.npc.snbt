@@ -39,6 +39,16 @@
                     Priority: 10,
                     Buttons: [
                         {
+                            Name: "Look closer",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "look_closer"
+                                }
+                            ],
+                            Label: "look_button"
+                        },
+                        {
                             Name: "Goodbye",
                             Actions: [
                                 {
@@ -54,10 +64,37 @@
                         },
                         {
                             Text: "The eyes are the one part the ice never fully takes."
+                        },
+                        {
+                            Text: "Below the frost line, the shape of a scarf. Gym colors, maybe. The ice keeps its opinion."
                         }
                     ],
                     Name: "Frost Sentinel — the second watcher",
                     Label: "default"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Step back",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "back_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "(Under the ice the mouth is open. Not screaming — mid-sentence. Whatever it was saying, only the crossing heard the end of it.)"
+                        },
+                        {
+                            Text: "(Deep in the frost, one hand is raised, palm out. A greeting, or a warning, or a goodbye. The ice is not saying which.)"
+                        }
+                    ],
+                    Name: "Frost Sentinel — too close",
+                    Label: "look_closer"
                 }
             ]
         },

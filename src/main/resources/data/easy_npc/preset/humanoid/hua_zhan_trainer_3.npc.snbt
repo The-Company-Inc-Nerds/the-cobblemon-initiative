@@ -40,13 +40,83 @@
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
+                            Name: "seal_terrace"
+                        }
+                    ],
+                    Priority: 30,
+                    Buttons: [
+                        {
+                            Name: "Study the old botany",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "lore"
+                                }
+                            ],
+                            Label: "study_button"
+                        },
+                        {
+                            Name: "Leave the terrace",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The terrace seal glistens under a thin film of channel water. It will not wash out. Nothing pressed honestly ever does."
+                        },
+                        {
+                            Text: "Below the mark, the vines have turned one leaf each toward the plaque, which the old botany says is how a terrace applauds."
+                        }
+                    ],
+                    Name: "Horticulturist Fang — the seal holds",
+                    Label: "sealed"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
                             Name: "defeated_hua_zhan_trainer_3"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "no_seal_terrace"
                         }
                     ],
                     Priority: 20,
                     Buttons: [
                         {
-                            Name: "Go to the plaque",
+                            Name: "Press your hand to the seal",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add seal_terrace"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:sidequest/pilgrimage/update"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "title @initiator actionbar [{\"text\":\"The terrace seal takes.\",\"color\":\"green\"}]"
+                                },
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "lore"
+                                }
+                            ],
+                            Label: "press_button"
+                        },
+                        {
+                            Name: "Step back",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -60,17 +130,24 @@
                             Text: "The channels have agreed to you, and I build nothing the hill has not agreed to."
                         },
                         {
-                            Text: "The terrace plaque is set in the retaining wall above the water. Press your hand to the seal — shared water arrives everywhere, and so will word of this match."
+                            Text: "The terrace seal is set in my pedestal above the water. Press your hand — shared water arrives everywhere, and so will word of this match."
                         }
                     ],
-                    Name: "Fang — after the match",
+                    Name: "Horticulturist Fang — after the match",
                     Label: "seal"
                 },
                 {
-                    Priority: 10,
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "pilgrimage_started"
+                        }
+                    ],
+                    Priority: 15,
                     Buttons: [
                         {
-                            Name: "Wake the statue of the channels",
+                            Name: "Ready a Pokéball — wake the statue of the channels",
                             Actions: [
                                 {
                                     Type: "COMMAND",
@@ -126,6 +203,16 @@
                             Label: "battle_button"
                         },
                         {
+                            Name: "Read the station plaque",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "lore"
+                                }
+                            ],
+                            Label: "plaque_button"
+                        },
+                        {
                             Name: "Leave the terrace",
                             Actions: [
                                 {
@@ -144,7 +231,74 @@
                         }
                     ],
                     Name: "Fang — warden of the channels",
+                    Label: "challenge"
+                },
+                {
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "Read the station plaque",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "lore"
+                                }
+                            ],
+                            Label: "plaque_button"
+                        },
+                        {
+                            Name: "Leave the terrace",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "STATION OF THE TERRACE — third of the four gardens. A waterline note beneath the crest reads: the terrace vines climb on poison and patience. Clear air and a sharp beak cut them down to size — the warden knows this and hopes you do not."
+                        },
+                        {
+                            Text: "The statue stands in the channel spray, unmoving. The gate keeper at the gym entrance keeps the rites of the four gardens."
+                        }
+                    ],
+                    Name: "Station Of The Terrace Station",
                     Label: "default"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Back to the statue",
+                            Actions: [
+                                {
+                                    Type: "OPEN_DEFAULT_DIALOG"
+                                }
+                            ],
+                            Label: "back_button"
+                        },
+                        {
+                            Name: "Done reading",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "OLD BOTANY, PAGE OF THE TERRACE. The terrace was cut by hand, one step a season, because water cannot be argued with — only invited. The first gardeners built nothing the hill had not already agreed to. That is the whole engineering manual of the old botany."
+                        },
+                        {
+                            Text: "Water that is shared arrives everywhere. Water that is owned arrives with a fee. The channels have run free since the first step was cut, and the terrace intends to keep it that way."
+                        }
+                    ],
+                    Name: "Old Botany — The Channel",
+                    Label: "lore"
                 }
             ]
         },
@@ -239,20 +393,9 @@
             HasTravelTarget: 0b,
             ObjectiveDataSet: [
                 {
-                    Type: "LOOK_AT_PLAYER",
-                    Prio: 9,
-                    Id: "ambient_look_player",
-                    LookDistance: 8.0f
-                },
-                {
-                    Type: "LOOK_RANDOM_AROUND",
-                    Prio: 10,
-                    Id: "ambient_look_random"
-                },
-                {
                     Type: "LOOK_AT_RESET",
                     Prio: 9,
-                    Id: "ambient_look_reset"
+                    Id: "ambient_static_reset"
                 }
             ]
         },

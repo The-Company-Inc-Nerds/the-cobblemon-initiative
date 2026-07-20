@@ -286,14 +286,39 @@ def run_scenario(path, rcon, drv):
 
     state = drv.op('state')
     vars_ = {'player': (state.get('player') or {}).get('name', '')}
-    # Scenario isolation: a previous (failed) scenario can abort with a dialog still
-    # open — the Walker pauses under any screen, so a leftover dialog turns the next
-    # scenario's first walk into a timeout (verified live). Start from a clean screen.
-    if state.get('screen'):
+    # Nickname-modal suppression: the server skips the S2C nickname offer for players
+    # carrying ci_harness, so givemon-heavy preambles (up to 30 in one scenario) never
+    # stack modals on the driver. The dedicated nickname_modal scenario strips the tag
+    # itself to exercise the real flow. Suite teardown removes the tag (see main).
+    if vars_['player']:
         try:
-            drv.op('screen.close')
+            rcon.cmd(f'tag {vars_["player"]} add ci_harness')
         except Exception:
             pass
+    # Scenario isolation: a previous (failed) scenario can abort with a dialog still
+    # open — the Walker pauses under any screen, so a leftover dialog turns the next
+    # scenario's first walk into a timeout (verified live). DRAIN, don't single-close:
+    # closing one screen can reveal another one tick later (the client-side nickname
+    # queue opens its next offer on the first screen-free tick — ci_harness stops new
+    # SENDS, not offers already delivered before an abort). Exit after two consecutive
+    # screen-free polls.
+    clear_polls = 0
+    for _ in range(8):
+        if state.get('screen'):
+            clear_polls = 0
+            try:
+                drv.op('screen.close')
+            except Exception:
+                pass
+        else:
+            clear_polls += 1
+            if clear_polls >= 2:
+                break
+        time.sleep(0.2)
+        try:
+            state = drv.op('state')
+        except Exception:
+            break
     print(f'== {name}: {scenario.get("description", "")}')
     print(f'   player={vars_["player"] or "(not in world!)"} evidence={evidence_dir}')
 
@@ -354,10 +379,22 @@ def main():
     total_pass = total_fail = 0
     with Rcon(retries=1, retry_delay=0, timeout=120) as rcon, \
          Driver(retries=1, retry_delay=0) as drv:
-        for path in args:
-            p, f = run_scenario(path, rcon, drv)
-            total_pass += p
-            total_fail += f
+        try:
+            for path in args:
+                p, f = run_scenario(path, rcon, drv)
+                total_pass += p
+                total_fail += f
+        finally:
+            # Residue-tag law: ci_harness must not outlive the suite — a stale tag
+            # silently disables the nickname prompt for manual in-world verification
+            # (and for record_clip/evidence_tour captures) in this save forever.
+            try:
+                state = drv.op('state')
+                player = (state.get('player') or {}).get('name', '')
+                if player:
+                    rcon.cmd(f'tag {player} remove ci_harness')
+            except Exception:
+                pass
     print(f'[TEST] SUMMARY category=e2e pass={total_pass} fail={total_fail}')
     return 1 if total_fail else 0
 

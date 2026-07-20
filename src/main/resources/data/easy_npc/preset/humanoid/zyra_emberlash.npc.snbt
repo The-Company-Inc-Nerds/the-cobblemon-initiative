@@ -36,16 +36,74 @@
             Type: "BASIC",
             DialogDataSet: [
                 {
-                    Priority: 10,
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "zyra_flint_done"
+                        }
+                    ],
+                    Priority: 12,
                     Buttons: [
                         {
-                            Name: "Goodbye",
+                            Name: "Guard that pouch",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "goodbye_button"
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The flint sits in the pouch of honor now, next to the swirliest slag. When I am famous and my blade hangs in the archive, I will tell Orvak you helped fund my early work."
+                        },
+                        {
+                            Text: "Look look look — slag marble, all swirly inside, still a little warm. I got a whole pouch. The best ones come off Sena forge because she pours the hottest. Do not tell her I take the scraps. She knows. Do not tell her anyway."
+                        },
+                        {
+                            Text: "When I grow up I am going to sign a blade so famous they hang it in Orvak dusty archive up the spire. He said I have to learn to write my name first. Rude. I can write MOST of my name."
+                        },
+                        {
+                            Text: "Are you fighting the forge-lord? Are you? Everybody who fights the forge-lord looks scared and pretends they are not. You are doing the pretend face right now. It is okay. Vulcan is scary. He looks INTO you."
+                        }
+                    ],
+                    Name: "Zyra Emberlash",
+                    Label: "flint_done"
+                },
+                {
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "Give her two flint",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative turnin minecraft:flint 2 zyra_flint_done"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_zyra_flint_done"
+                                }
+                            ],
+                            Label: "flint_button"
+                        },
+                        {
+                            Name: "Happy collecting",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
                         }
                     ],
                     Texts: [
@@ -57,6 +115,9 @@
                         },
                         {
                             Text: "Are you fighting the forge-lord? Are you? Everybody who fights the forge-lord looks scared and pretends they are not. You are doing the pretend face right now. It is okay. Vulcan is scary. He looks INTO you."
+                        },
+                        {
+                            Text: "My collection is missing the spark kind — flint, the black chips that bite. Two would make it a COLLECTION collection. The traders want coin for them. I have slag. Nobody wants slag. It is a hard economy."
                         }
                     ],
                     Name: "Zyra Emberlash",

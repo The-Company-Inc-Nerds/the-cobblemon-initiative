@@ -39,6 +39,16 @@
                     Priority: 10,
                     Buttons: [
                         {
+                            Name: "Look closer",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "look_closer"
+                                }
+                            ],
+                            Label: "look_button"
+                        },
+                        {
                             Name: "Goodbye",
                             Actions: [
                                 {
@@ -54,10 +64,41 @@
                         },
                         {
                             Text: "It faces the crossing, not the town. Somebody set it here to watch."
+                        },
+                        {
+                            Text: "The frost on it grows in layers, like rings in a tree. Nobody in town will say how many winters that makes."
                         }
                     ],
                     Name: "Frost Sentinel — the third watcher",
                     Label: "default"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Step back",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "title @initiator actionbar [{\"text\":\"Behind you, the ice creaks. Just the cold. Probably.\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "back_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "(You brush frost from the boots. There is no plinth under them. The boots stand laced on the bare ice, as if someone stopped walking here and never chose to start again.)"
+                        },
+                        {
+                            Text: "(A badge case hangs frozen at the belt. When the wind crosses the ice, something inside it shifts. Just once. Just slightly.)"
+                        }
+                    ],
+                    Name: "Frost Sentinel — too close",
+                    Label: "look_closer"
                 }
             ]
         },

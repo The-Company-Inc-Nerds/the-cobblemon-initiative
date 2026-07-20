@@ -36,16 +36,71 @@
             Type: "BASIC",
             DialogDataSet: [
                 {
-                    Priority: 10,
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "ci_juno_tokens_done"
+                        }
+                    ],
+                    Priority: 20,
                     Buttons: [
                         {
-                            Name: "Goodbye",
+                            Name: "Good luck on the boards",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "goodbye_button"
+                            Label: "thanks_leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The change machine took your nuggets like it was starving. Full afternoon of credit — if the racing cabinet gives you trouble, tell it Juno sent you. It will not understand. Machines."
+                        },
+                        {
+                            Text: "Still riding the tokens you brought me. Your initials would look good on a leaderboard, you know. Steady hands — like somebody who used to sign things for a living."
+                        },
+                        {
+                            Text: "Gym leading is a calling, not a job — Volt has never had a job in his life. That is why the tower cannot buy him. You cannot fire a man who was never hired."
+                        }
+                    ],
+                    Name: "Juno Pixel",
+                    Label: "tokens_thanks"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "no_ci_juno_tokens_done"
+                        }
+                    ],
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "Hand over three gold nuggets",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative turnin minecraft:gold_nugget 3 ci_juno_tokens_done"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "tokens_turnin_button"
+                        },
+                        {
+                            Name: "Maybe later",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "tokens_leave_button"
                         }
                     ],
                     Texts: [
@@ -54,6 +109,12 @@
                         },
                         {
                             Text: "Tokens are cheaper than CobbleDollars and they hold their value better. Think about that too long and you get sad, so I mostly just play."
+                        },
+                        {
+                            Text: "Change machine is out and the Company kiosk wants a service window to refill it. A service window. For a coin box. Dig up three gold nuggets and the machine takes those straight — do not ask me why."
+                        },
+                        {
+                            Text: "High score on every cabinet on this strip and I cannot play a single one today. No tokens. Three gold nuggets feeds the change machine for an afternoon. This is a real offer. This is commerce."
                         }
                     ],
                     Name: "Juno Pixel",

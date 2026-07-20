@@ -233,6 +233,15 @@
       "rcon": "tag {player} remove frontier_all_cleared"
     },
     {
+      "comment": "-- leaked-battle sweep (2026-07-19): an aborted prior scenario can leave a live battle + a dead manager dispatch entry; stopbattle ends the battle (harmless no-op when clean) and the sleep lets the Java self-heal clear the dead dispatch (~2s) before the first hall command --"
+    },
+    {
+      "rcon": "stopbattle {player}"
+    },
+    {
+      "sleep": 3.0
+    },
+    {
       "rcon": "execute as {player} run cobblemon-initiative dev bot autobattle on"
     },
     {
@@ -321,9 +330,9 @@
       "client": "screen.close"
     },
     {
-      "wait_chat": "Loan closed. 6 of your own returned",
+      "wait_chat": "Loan closed\\. §e6§7 of your own returned",
       "timeout": 20,
-      "comment_": "factoryReturn restore line - count 6 is deterministic (preA echo above hard-failed unless 6 were parked)"
+      "comment_": "factoryReturn restore line - count 6 is deterministic (preA echo above hard-failed unless 6 were parked). NEEDLE LAW: the Java literal is 'Loan closed. §e6§7 of your own returned to your belt.' and HudLog stores getString() RAW, so the count's color codes are embedded verbatim (escaped dot rides the regex path)"
     },
     {
       "sleep": 2.0,

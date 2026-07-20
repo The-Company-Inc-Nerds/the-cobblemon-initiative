@@ -61,6 +61,9 @@
                         },
                         {
                             Text: "Cicada through Vulcan, every one of them. You have earned the stairs. Aria is waiting at the top of the first hall — go when you are ready."
+                        },
+                        {
+                            Text: "Ten for ten. Do you know how rarely I get to say that aloud? I have kept this gate through nine champions and my hands still shake a little on the tenth count. Go up, and let them shake."
                         }
                     ],
                     Name: "Badgekeeper — all ten badges",
@@ -101,6 +104,16 @@
                     Priority: 10,
                     Buttons: [
                         {
+                            Name: "Ask about the fakes he has caught",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "fakes"
+                                }
+                            ],
+                            Label: "fakes_button"
+                        },
+                        {
                             Name: "Understood",
                             Actions: [
                                 {
@@ -119,10 +132,46 @@
                         },
                         {
                             Text: "Rules are rules, and the League does not make exceptions. Not for nobles, not for legends, not for whoever the grey suits keep asking after. Earn the badges."
+                        },
+                        {
+                            Text: "I have counted more badges through this gate than I have had hot dinners, and exactly one chocolate coin in gold foil. I kept the coin. It keeps me humble."
                         }
                     ],
                     Name: "Badgekeeper — gatekeeping",
                     Label: "default"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Ask something else",
+                            Actions: [
+                                {
+                                    Type: "OPEN_DEFAULT_DIALOG"
+                                }
+                            ],
+                            Label: "back_button"
+                        },
+                        {
+                            Name: "Back to the climb",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Painted bottle caps. A wax Scorchspire badge that melted in the queue. Once, nine true badges and one biscuit — a fine likeness. I gave it back. He ate it on the stairs, watching me."
+                        },
+                        {
+                            Text: "You would think forgers go for the rare badges. No. It is always Cicada's — first badge, plainest press. Nobody respects the bug gym until they try to counterfeit it."
+                        }
+                    ],
+                    Name: "Badgekeeper — a study in forgery",
+                    Label: "fakes"
                 }
             ]
         },

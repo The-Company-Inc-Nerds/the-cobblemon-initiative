@@ -101,6 +101,40 @@
                     Priority: 10,
                     Buttons: [
                         {
+                            Name: "Sit with him a while",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_gift_elder_sefu_overlook_keepsake_claimed"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "loot give @s loot cobblemon_initiative:npc_gift/common"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_gift_elder_sefu_overlook_keepsake_claimed"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tag @s add gift_elder_sefu_overlook_keepsake_claimed"
+                                }
+                            ],
+                            Label: "keepsake_button"
+                        },
+                        {
                             Name: "Thank you, Elder",
                             Actions: [
                                 {
@@ -116,6 +150,9 @@
                         },
                         {
                             Text: "Strange. When you crested the last stair I felt I had met you before, and could not place where. An old man mislays faces the way a river mislays leaves. It will come to me, or it will not. Mind the wet stone on the way down."
+                        },
+                        {
+                            Text: "Sit, sit. The stone is warmer where I have been keeping it. An old man has little to offer but a view and whatever is in his pockets — and the view is free."
                         }
                     ],
                     Name: "Elder Sefu — the upper overlook",

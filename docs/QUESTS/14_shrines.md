@@ -1,5 +1,9 @@
 # 14 — The Five Elemental Shrines: connective quests + cultist gauntlets
 
+> **⚠ STATUS 2026-07-20 (as-shipped supersedes this plan on two points):**
+> 1. **Cultists were REMOVED pack-wide** (showrunner structure ruling 2026-07-19, repair wave a8). Every "cultist ladder / Acolyte / Zealot" beat below is **cut** — the shipped shape is two beats: the keeper's trial, then a crystal claim gated on `<el>_shrine_trial_clear + not <el>_crystal_claimed`. For Fairy and Ground the keeper *is* the trial's final fight; for Dragon (hydra gauntlet: heads Alpha/Beta doubles, Omega singles), Ice and Fire (parkour) the keeper never battles.
+> 2. **Shrine crystal ≠ noble launcher.** The crystal is now its own item (`ShrineCrystalItem`, `ModItems`) that spawns a **distinct wild lv70 guardian** — Fire→Ho-Oh, Ground→Landorus, Ice→Glastrier, Dragon→Kyurem, Fairy→Xerneas — deliberately non-overlapping with the noble roster. Articuno/Moltres still launch, but from a **separate dialog button** on the Ice/Fire keepers (`noble start articuno|moltres`), not from the crystal. The "crystal-launch contract" the §Overview marks RESOLVED is **dead**. Player-facing truth: [`wiki/Guidebook-Shrines.md`](../../wiki/Guidebook-Shrines.md).
+
 > **Unit slug:** `14_shrines` · **Type:** SET-PIECE (5 sub-locations, cross-act) ·
 > **Depends on:** `13_nobles_gating` (crystal-launch contract — see §Overview, RESOLVED), the
 > five adjacent gym units (`mystic`, `kalahar`, `ryujin`, `nifl`, `scorchspire`), `royal_league`

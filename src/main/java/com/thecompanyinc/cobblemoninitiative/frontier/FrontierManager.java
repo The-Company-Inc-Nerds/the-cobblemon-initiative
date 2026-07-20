@@ -157,6 +157,7 @@ public class FrontierManager {
     UUID battleId;
     int captureTicks;
     boolean captured;
+    int goneTicks;
 
     Dispatch(UUID playerId, String hall, String trainerId, String format, int lock, int purse) {
       this.playerId = playerId;
@@ -169,6 +170,8 @@ public class FrontierManager {
   }
 
   private static final int CAPTURE_TIMEOUT_TICKS = 100;
+  /** Captured dispatch whose battle has been GONE this long = dead entry (see tick). */
+  private static final int BATTLE_GONE_TICKS = 40;
 
   /** Per-player live dispatch (one fight at a time per player). */
   private final Map<UUID, Dispatch> dispatches = new ConcurrentHashMap<>();
@@ -278,20 +281,37 @@ public class FrontierManager {
 
     // Capture watchdogs — same contract as Stadium's AWAITING_BATTLE.
     for (Dispatch d : dispatches.values()) {
-      if (d.captured) continue;
       ServerPlayer player = server.getPlayerList().getPlayer(d.playerId);
       if (player == null) { dispatches.remove(d.playerId); resetLock(d.format); continue; }
       var battle = BattleRegistry.getBattleByParticipatingPlayer(player);
-      if (battle != null) {
-        d.battleId = battle.getBattleId();
-        d.captured = true;
-        resetLock(d.format); // deferred reset — the battle has read adjustLevel now
-      } else if (++d.captureTicks > CAPTURE_TIMEOUT_TICKS) {
+      if (!d.captured) {
+        if (battle != null) {
+          d.battleId = battle.getBattleId();
+          d.captured = true;
+          resetLock(d.format); // deferred reset — the battle has read adjustLevel now
+        } else if (++d.captureTicks > CAPTURE_TIMEOUT_TICKS) {
+          dispatches.remove(d.playerId);
+          resetLock(d.format);
+          sweepAnchors(d.playerId);
+          player.sendSystemMessage(Component.literal(
+            "§c[Frontier] §7The fight failed to take the floor. Try again."));
+        }
+        continue;
+      }
+      // Self-heal (live-caught 2026-07-19): a battle that vanishes WITHOUT a victory/
+      // flee event — stopbattle fires no event (jar-traced), showdown wedge, harness
+      // abort — left the captured dispatch behind forever, and the one-fight guards
+      // then locked the player out of every hall. Two seconds with no matching live
+      // battle means the entry is dead; a pyramid mid-gauntlet keeps its stage and
+      // resumes via pyramid start.
+      if (battle != null && battle.getBattleId().equals(d.battleId)) {
+        d.goneTicks = 0;
+      } else if (++d.goneTicks > BATTLE_GONE_TICKS) {
         dispatches.remove(d.playerId);
-        resetLock(d.format);
         sweepAnchors(d.playerId);
-        player.sendSystemMessage(Component.literal(
-          "§c[Frontier] §7The fight failed to take the floor. Try again."));
+        InitiativeInit.LOGGER.info(
+          "[Frontier] Cleared a dead dispatch ({} vs {}) — battle ended without an event.",
+          player.getGameProfile().getName(), d.trainerId);
       }
     }
   }
@@ -508,6 +528,26 @@ public class FrontierManager {
       "§6§l[Pyramid] §r§7Three ancients, then the giant. §cNo healing between fights§7 — "
         + "what you carry out of each is what you carry into the next."));
     scheduleChain(player, 40);
+    return 1;
+  }
+
+  /** frontier pyramid abandon — walk out of a held gauntlet (next start is fresh).
+   *  Production: relog/wedge recovery without waiting on the resume path. Harness:
+   *  the ONLY way to reset a held stage between runs (the stage map is in-memory,
+   *  keyed by uuid — it survives everything short of a server restart). */
+  public int pyramidAbandon(ServerPlayer player) {
+    if (dispatches.containsKey(player.getUUID())) {
+      player.sendSystemMessage(Component.literal(
+        "§c[Pyramid] §7The dark does not release mid-fight. Finish or fall."));
+      return 0;
+    }
+    pendingChain.remove(player.getUUID());
+    if (pyramidStage.remove(player.getUUID()) != null) {
+      player.sendSystemMessage(Component.literal(
+        "§6[Pyramid] §7You walk back into the light. The gauntlet forgets you — start again at the door."));
+    } else {
+      player.sendSystemMessage(Component.literal("§7[Pyramid] §7Nothing holds you here."));
+    }
     return 1;
   }
 

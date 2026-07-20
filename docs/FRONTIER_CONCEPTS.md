@@ -5,6 +5,27 @@ Design notes for turning the shipped-but-flat Battle Frontier (8 facilities, all
 The teams + placements are already shipped and champion-gated; this is the **gimmick +
 stakes layer** on top.
 
+> **SHIPPED 2026-07-19/20 (alpha.7 mechanics + alpha.8 friction wave, live-verified — all
+> nine Frontier scenarios green):** this layer is now real. `frontier/FrontierManager`
+> runs mechanics in all seven battle halls, and the Deep Dark cave is the capstone gated
+> behind them. Several halls diverged from these concepts in implementation. The
+> **as-shipped mechanics** (authoritative — read from `FrontierManager` constants) are the
+> table just below; the concept prose in §2 is preserved as the original design intent, not
+> the current build. The detailed design-vs-shipped record lives in the per-hall banners of
+> [`FRONTIER_DESIGN.md`](FRONTIER_DESIGN.md), and the player-facing version is
+> [`wiki/Guidebook-Battle-Frontier.md`](../wiki/Guidebook-Battle-Frontier.md).
+>
+> | Hall | As shipped (`FrontierManager`) |
+> |------|--------------------------------|
+> | **Tower** | 9-floor climb; floors 2–8 level-locked (40→88, clone-and-flatten), summit (Palmer) at full strength; per-floor purses 300→1200. |
+> | **Factory** | Party parked in custody; 3 fixed loaners (Metagross / Arcanine / Gyarados, lv70); `factory return` restores the party. |
+> | **Castle** | 60-point budget/run; heal −20, scout next team −15; leftover points pay ×15 CD on clear. |
+> | **Arcade** | `arcade spin` rolls a battle condition (level-lock / doubles-flip / purse-multiplier — conditions only, never the wallet). |
+> | **Market** | 3 listing tiers — bargain (200 CD fee / lock 40 / 400) · fair (500 / 70 / 1200) · premium (1000 / authored / 3000); fee via deferred pay-probe. |
+> | **Port** | `GEN_9_MULTI` 2-v-2, player + AI deckhand (`port_deckhand`) vs a two-trainer crew; 1500 CD purse. |
+> | **Pyramid** | No-heal gauntlet (ancients → giant, purses 800/800/3000); `frontier pyramid abandon` walks out with stage progress preserved. |
+> | **Deep Dark** | Capstone; gated on all 7 Brains + both cave challengers; Selene closes with Darkrai; clear fires `frontier_all_cleared` (20,000 CD grand purse). |
+
 ---
 
 ## 1. The stakes model — "keep the danger, drop the attrition"

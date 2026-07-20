@@ -95,6 +95,16 @@
                             Label: "read_button"
                         },
                         {
+                            Name: "Read the public comments",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "comments_page"
+                                }
+                            ],
+                            Label: "comments_button"
+                        },
+                        {
                             Name: "Step away from the board",
                             Actions: [
                                 {
@@ -114,6 +124,30 @@
                     ],
                     Name: "Notice of Preliminary Rezoning",
                     Label: "default"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Step away from the board",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "PUBLIC COMMENT RECORD, one page provided. Comment: this garden buried three generations of our partners. Response: noted, weight zero. Comment: you cannot zero grief. Response: noted, weight zero."
+                        },
+                        {
+                            Text: "(Across the bottom, in wax crayon, someone has written WE ARE THE VALUATION. The response line beneath it has been left blank.)"
+                        }
+                    ],
+                    Name: "Public Comment Record",
+                    Label: "comments_page"
                 }
             ]
         },
@@ -207,20 +241,9 @@
             HasTravelTarget: 0b,
             ObjectiveDataSet: [
                 {
-                    Type: "LOOK_AT_PLAYER",
-                    Prio: 9,
-                    Id: "ambient_look_player",
-                    LookDistance: 8.0f
-                },
-                {
-                    Type: "LOOK_RANDOM_AROUND",
-                    Prio: 10,
-                    Id: "ambient_look_random"
-                },
-                {
                     Type: "LOOK_AT_RESET",
                     Prio: 9,
-                    Id: "ambient_look_reset"
+                    Id: "ambient_static_reset"
                 }
             ]
         },
@@ -239,9 +262,9 @@
             DisableLayers: 0b,
             Name: "",
             Timestamp: 0L,
-            Type: "DEFAULT",
+            Type: "CUSTOM",
             URL: "",
-            UUID: [I; 0, 0, 0, 0]
+            UUID: [I; 60153176, 1541428406, -1121197047, 104445877]
         },
         SoundData: {
             SoundDataSet: [

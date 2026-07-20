@@ -246,6 +246,15 @@
       "rcon": "tag {player} remove frontier_all_cleared"
     },
     {
+      "comment": "-- leaked-battle sweep (2026-07-19): an aborted prior scenario can leave a live battle + a dead manager dispatch entry; stopbattle ends the battle (harmless no-op when clean) and the sleep lets the Java self-heal clear the dead dispatch (~2s) before the first hall command --"
+    },
+    {
+      "rcon": "stopbattle {player}"
+    },
+    {
+      "sleep": 3.0
+    },
+    {
       "rcon": "execute as {player} run cobblemon-initiative dev bot autobattle on"
     },
     {

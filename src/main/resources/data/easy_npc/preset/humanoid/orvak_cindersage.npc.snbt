@@ -53,6 +53,16 @@
                                 }
                             ],
                             Label: "leave_button"
+                        },
+                        {
+                            Name: "Show me the erasure shelf",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "erasure_shelf"
+                                }
+                            ],
+                            Label: "shelf_button"
                         }
                     ],
                     Texts: [
@@ -84,6 +94,16 @@
                                 }
                             ],
                             Label: "leave_button"
+                        },
+                        {
+                            Name: "Show me the erasure shelf",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "erasure_shelf"
+                                }
+                            ],
+                            Label: "shelf_button"
                         }
                     ],
                     Texts: [
@@ -120,6 +140,34 @@
                     ],
                     Name: "Orvak Cindersage — the spire archive",
                     Label: "default"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Back down the stair",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "title @initiator actionbar [{\"text\":\"(Far below, the forge rings on. In the case behind you, a blank page keeps its silence.)\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Deeds with the grantee cut out. A graduation roll with one line inked black. A portrait frame I bought empty — the picture was already gone. An erasure is still a record, traveller. It records that someone was afraid."
+                        },
+                        {
+                            Text: "Scholars pay fortunes for complete documents. Fools. A complete document only tells you what happened. A hole tells you what mattered."
+                        }
+                    ],
+                    Name: "Orvak Cindersage — the erasure shelf",
+                    Label: "erasure_shelf"
                 }
             ]
         },

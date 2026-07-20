@@ -12,8 +12,8 @@
       "comment": "-- preamble: tp FIRST (kills/latches need loaded chunks; the shrine tp Y is the authored placement Y and is UNPROBED - see _probe_pending, do not trust 66 until a live ground-probe) --"
     },
     {
-      "rcon": "tp {player} 2000 69 921",
-      "comment_": "probed feet y69 (shrine floor was solid through 68 — the cast was buried 3-4 blocks pre-a7)"
+      "rcon": "tp {player} 2003.5 71 919.5",
+      "comment_": "GROUND-PROBED 2026-07-19 (round-4 live): the old [2000 69 921] approach drops the player to y64 below the trial floor - the interact chase can never climb back to Draconis at [2004.5 71 919.5] (found the driver at y64 twice). Valid pockets: the z919 row + [2005, 917-918]. One block west of the NPC, no import-shove risk (body already latched)."
     },
     {
       "sleep": 2.0
@@ -129,7 +129,7 @@
       "rcon": "tag {player} remove dragon_crystal_claimed"
     },
     {
-      "rcon": "clear {player} cobblemon_initiative:dragon_shrine_crystal"
+      "rcon": "clear {player} cobblemon-initiative:dragon_shrine_crystal"
     },
     {
       "comment": "-- (STRUCTURE RULING 2026-07-19: cultist beats removed — no trial calls for them; the hydra IS the dragon trial and Draconis is its dialog-only keeper.) --"
@@ -159,7 +159,9 @@
     },
     {
       "expect_screen_text": [
-        "Halt. You stand in the breath of the Dragon Shrine, where the oldest fire still coils and waits. I am Draconis, and I keep its hunger. The wyrm itself is not easily flattered."
+        "Halt. You stand in the breath of the Dragon Shrine, where the oldest fire still coils and waits. I am Draconis, and I keep its hunger. The wyrm itself is not easily flattered.",
+        "Rouse the hydra first - three heads, one hunger",
+        "Power is not given at this gate. It is taken, scale by scale"
       ]
     },
     {
@@ -265,7 +267,7 @@
       "expect": "passed"
     },
     {
-      "rcon": "clear {player} cobblemon_initiative:dragon_shrine_crystal 0",
+      "rcon": "clear {player} cobblemon-initiative:dragon_shrine_crystal 0",
       "expect": "Found 1"
     },
     {
@@ -303,7 +305,7 @@
       "rcon": "tag {player} remove dragon_crystal_claimed"
     },
     {
-      "rcon": "clear {player} cobblemon_initiative:dragon_shrine_crystal"
+      "rcon": "clear {player} cobblemon-initiative:dragon_shrine_crystal"
     }
   ]
 }

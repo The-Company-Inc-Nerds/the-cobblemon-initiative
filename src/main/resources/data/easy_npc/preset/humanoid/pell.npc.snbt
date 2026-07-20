@@ -36,16 +36,66 @@
             Type: "BASIC",
             DialogDataSet: [
                 {
-                    Priority: 10,
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "pell_tokens_done"
+                        }
+                    ],
+                    Priority: 20,
                     Buttons: [
                         {
-                            Name: "Goodbye",
+                            Name: "Shake on it",
                             Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "title @initiator actionbar [{\"text\":\"Pell shakes your hand with the full gravity of a merger.\"}]"
+                                },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "goodbye_button"
+                            Label: "shake_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "(He counts the three nuggets twice, then once more, like a professional.) The claw machine is going to take all of these off me and I regret nothing in advance."
+                        },
+                        {
+                            Text: "My best investor. That is you. The sticker lady only ever gave me a sticker, and the sticker was of her."
+                        },
+                        {
+                            Text: "Business is good since the nuggets. Do not tell the change machine. The change machine and I have an understanding, and the understanding is that it cannot see."
+                        }
+                    ],
+                    Name: "Pell",
+                    Label: "thanks"
+                },
+                {
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "Hand over 3 iron nuggets",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative turnin minecraft:iron_nugget 3 pell_tokens_done"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_pell_tokens_done"
+                                }
+                            ],
+                            Label: "nuggets_button"
                         }
                     ],
                     Texts: [
@@ -54,6 +104,9 @@
                         },
                         {
                             Text: "You are new. Everybody new stares up at the tower. Do not. Staring up is how you step in something. I have made that mistake for you already."
+                        },
+                        {
+                            Text: "Iron nuggets. If you ever find any, I want three. They pass for arcade tokens if you have confidence and small hands, and I have both."
                         }
                     ],
                     Name: "Pell",

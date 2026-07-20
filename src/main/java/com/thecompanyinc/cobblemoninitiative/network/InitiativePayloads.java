@@ -71,12 +71,53 @@ public final class InitiativePayloads {
     }
   }
 
+  /** S2C: offer the nickname prompt for a freshly-gained mon. Fire-and-forget —
+   *  nothing server-side waits, so a bot/crashed client is a silent no-op. */
+  public record NicknamePromptPayload(UUID monUuid, String speciesName)
+    implements CustomPacketPayload {
+
+    public static final Type<NicknamePromptPayload> TYPE = new Type<>(
+      ResourceLocation.fromNamespaceAndPath(InitiativeInit.MOD_ID, "nickname_prompt"));
+
+    public static final StreamCodec<FriendlyByteBuf, NicknamePromptPayload> CODEC =
+      StreamCodec.composite(
+        UUIDUtil.STREAM_CODEC, NicknamePromptPayload::monUuid,
+        ByteBufCodecs.STRING_UTF8, NicknamePromptPayload::speciesName,
+        NicknamePromptPayload::new);
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+      return TYPE;
+    }
+  }
+
+  /** C2S: the chosen nickname (blank = keep the species name). */
+  public record NicknameSetPayload(UUID monUuid, String nickname)
+    implements CustomPacketPayload {
+
+    public static final Type<NicknameSetPayload> TYPE = new Type<>(
+      ResourceLocation.fromNamespaceAndPath(InitiativeInit.MOD_ID, "nickname_set"));
+
+    public static final StreamCodec<FriendlyByteBuf, NicknameSetPayload> CODEC =
+      StreamCodec.composite(
+        UUIDUtil.STREAM_CODEC, NicknameSetPayload::monUuid,
+        ByteBufCodecs.STRING_UTF8, NicknameSetPayload::nickname,
+        NicknameSetPayload::new);
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+      return TYPE;
+    }
+  }
+
   private InitiativePayloads() {}
 
   /** Common init: register payload types + the server-side deposit receiver. */
   public static void register() {
     PayloadTypeRegistry.playS2C().register(PickerOpenPayload.TYPE, PickerOpenPayload.CODEC);
     PayloadTypeRegistry.playC2S().register(PickerDepositPayload.TYPE, PickerDepositPayload.CODEC);
+    PayloadTypeRegistry.playS2C().register(NicknamePromptPayload.TYPE, NicknamePromptPayload.CODEC);
+    PayloadTypeRegistry.playC2S().register(NicknameSetPayload.TYPE, NicknameSetPayload.CODEC);
 
     // Fabric 1.21 play receivers run on the server thread; the managers re-validate the
     // whole request, so a stale/forged payload degrades to a polite refusal.
@@ -92,10 +133,19 @@ public final class InitiativePayloads {
           payload.facility(), player.getName().getString());
       }
     });
+
+    ServerPlayNetworking.registerGlobalReceiver(NicknameSetPayload.TYPE, (payload, context) ->
+      com.thecompanyinc.cobblemoninitiative.nickname.NicknameManager.applyNickname(
+        context.player(), payload.monUuid(), payload.nickname()));
   }
 
   /** Server→client: open the picker (replaces the static-flag bridge). */
   public static void sendPickerOpen(ServerPlayer player, String facility, int freeSlots) {
     ServerPlayNetworking.send(player, new PickerOpenPayload(facility, freeSlots));
+  }
+
+  /** Server→client: offer the nickname prompt for a new acquisition. */
+  public static void sendNicknamePrompt(ServerPlayer player, UUID monUuid, String speciesName) {
+    ServerPlayNetworking.send(player, new NicknamePromptPayload(monUuid, speciesName));
   }
 }

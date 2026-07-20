@@ -80,6 +80,24 @@
                                 }
                             ],
                             Label: "leave_button"
+                        },
+                        {
+                            Name: "Hand Bran an apple",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative turnin minecraft:apple 1 bran_apple_done"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_bran_apple_done"
+                                }
+                            ],
+                            Label: "apple_turnin_button"
                         }
                     ],
                     Texts: [
@@ -90,11 +108,48 @@
                             Text: "I keep to the snowline where nobody files paperwork. Best decision I ever made."
                         },
                         {
-                            Text: "Past the pass lies Nifl Town, and past the town, Boreas and the Ice gym. Dress warm and think colder."
+                            Text: "Travelers tell me Boreas sleeps inside a glacier to keep her heart cold for the arena. The story gets grander every winter. I have stopped correcting it - the winters are long."
+                        },
+                        {
+                            Text: "If you ever pass an orchard below the snowline, an old man up here would trade a winter of gratitude for one apple. I have not tasted one in years."
                         }
                     ],
                     Name: "Snowline Hermit Bran",
                     Label: "default"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "bran_apple_done"
+                        }
+                    ],
+                    Priority: 12,
+                    Buttons: [
+                        {
+                            Name: "Leave him to his seeds",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "(He turns the apple over twice, like it is made of summer.) I had forgotten they were heavy. You have upset the balance of the snowline and I am delighted."
+                        },
+                        {
+                            Text: "I ate half and planted the seeds where the drifts thin out. Foolish, starting an orchard at my age. I am doing it anyway."
+                        },
+                        {
+                            Text: "Frostveil takes the unprepared and Boreas takes the overconfident - but you already move like neither. Nifl is past the pass. Go on, orchard-bringer."
+                        }
+                    ],
+                    Name: "Bran - the apple",
+                    Label: "apple_thanks"
                 }
             ]
         },
@@ -220,9 +275,9 @@
             DisableLayers: 0b,
             Name: "",
             Timestamp: 0L,
-            Type: "DEFAULT",
+            Type: "CUSTOM",
             URL: "",
-            UUID: [I; 0, 0, 0, 0]
+            UUID: [I; 423573827, -1632675004, -2010895123, 415374926]
         },
         SoundData: {
             SoundDataSet: [

@@ -39,6 +39,17 @@
                     Priority: 10,
                     Buttons: [
                         {
+                            Name: "Hand over 2 apples for the bait crates",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative turnin minecraft:apple 2 darik_apples_done"
+                                }
+                            ],
+                            Label: "apples_button"
+                        },
+                        {
                             Name: "Goodbye",
                             Actions: [
                                 {
@@ -57,10 +68,47 @@
                         },
                         {
                             Text: "Watch your step past the third stake. Not for a trap of mine. That is a Company marker, and I do not know what they are marking, and that is exactly why I watch it."
+                        },
+                        {
+                            Text: "Courier lads will tell you Joltik hatch out of dead batteries. They hatch from eggs, son, same as anything else. They just like a dead battery the way I like a hot dinner."
+                        },
+                        {
+                            Text: "I keep apples for baiting the relocation crates. Keep is a strong word — a certain Rattata holds opinions about my stock levels. A couple of spares would not go amiss."
                         }
                     ],
                     Name: "Darik Trapmaster",
                     Label: "default"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "darik_apples_done"
+                        }
+                    ],
+                    Priority: 15,
+                    Buttons: [
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Bait crates are stocked, and the freeloader has been informed the apples are for work purposes. She has filed no objection she is willing to repeat."
+                        },
+                        {
+                            Text: "Good bait, those apples of yours. The Rattata ride to the treeline like it is a coach service, and one of them always walks straight back. I respect it."
+                        }
+                    ],
+                    Name: "Darik Trapmaster",
+                    Label: "thanks"
                 }
             ]
         },

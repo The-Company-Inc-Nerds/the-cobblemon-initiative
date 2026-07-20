@@ -74,8 +74,10 @@ Enter at the **first-floor lobby** at street level (~y64), on the Cyber City sea
 | U | Flavor floors (y ~70–90) | Scrubbing artifacts + desk dressing (props) | — | per floor | re-signed ledgers, brighter rectangles, an org chart with a sanded-off top box |
 | U | Flavor floors | Lopunny floor assistant (optional) | `companion_lopunny_desk` *(new, optional)* | mid floor, PROPOSED | on-shift décor/loyalty gag; cry + flavor, no battle |
 | P | Penthouse (y ~95, top) | Memory-trigger volume | `hq/penthouse_watch` fn | bbox around `[1590 95 1028]` | fires the penthouse fragment |
-| P | Penthouse | Lopunny assistant | `companion_lopunny_left` *(new)* | `[1588 95 1030]` | décor/loyalty gag, cry+flavor, no battle |
-| P | Penthouse | Lopunny assistant | `companion_lopunny_right` *(new)* | `[1592 95 1030]` | décor/loyalty gag |
+| P | Penthouse | Lopunny assistant (left) | `companion_lopunny_left` **✅ authored 2026-07-20** | `[1588 95 1030]` PROPOSED | décor/loyalty dread-comedy gag; cry+flavor, no battle. File: `dialog-src/characters/villain/`. Unplaced — add `placement` when the tower interior exists. |
+| P | Penthouse | Lopunny assistant (right) | `companion_lopunny_right` **✅ authored 2026-07-20** | `[1592 95 1030]` PROPOSED | takes a coat you are not wearing; slippers from nowhere |
+| P | Penthouse | Lopunny concierge | `companion_lopunny_concierge` **✅ authored 2026-07-20** | penthouse, PROPOSED | guards the appointment book (yesterday-dated pages); strong opinions about who has been sitting in the chair |
+| P | Penthouse | Incineroar (bedside) | `companion_incineroar_bed` **✅ authored 2026-07-20** | by the bed, PROPOSED | the founder's old partner that never left; one sniff, tail curls toward you, goes back to sleep. Heel; the gut-punch of the set. |
 | P | Penthouse | Your old nameplate (prop) | — | desk | `§k`-obfuscated nameplate (matches Founder canon); scrubbing rectangle behind it |
 
 All battle bodies are **builder-placed** (add `uuid` after export) or **placement-latched** (add `placement:{x,y,z}`, no uuid → generated proximity spawn, per ENGINE_FINDINGS placement-latch rule). Lopunnys + lobby guard are latch-spawnable. Sight-registered pursue grunts need a manual `npcsight add <uuid>` pass after first spawn (known gap).

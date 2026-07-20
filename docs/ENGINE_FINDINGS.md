@@ -638,36 +638,42 @@ nix develop -c javap -p -c <extracted>.class
   rooted-ExecAsUser in presets+snippets; lose lists contain no `remove @1`/`@2 say`;
   world-bundle NPC nbt scan (`mrpack/maps/*/easy_npc/npcs/`) for stale patterns.
 
-## 5. Current progress & blockers (as of 2026-07-04, v0.4.3-alpha.2 unreleased)
+## 5. Current progress & blockers (as of 2026-07-20, v0.6.0-alpha.10 — the alpha.9/.10 round is uncommitted, see GIT_COMMIT_MSG)
 
-**Working (code-complete, runtime-verified through round 6):** preset import + refresh
-pipeline, dialog buttons (allowlist + bare commands), payouts (`give`), battle button
-gating, pokedex/opening chain logic, install flow + branded disconnect, chest-announce
-toggle, sidebar HUD wiring for ~22 quests (needs the Round 8 visual check).
+**Working (authored + compiled + live-verified): the full story spine through the
+Battle Frontier.** All ten towns/gyms ship complete rosters, interior casts, gimmicks
+and quest packs; the five shrines run their real trials (timed parkour / dark gauntlet /
+dragon HYDRA gauntlet) with placed keeper bodies and working crystal claims (guardians
+Ho-Oh/Glastrier/Landorus/Kyurem/Xerneas — a crystal is a place-anywhere wild-guardian
+spawn item); nobles are live (weather trio verified 18/18 + 8 wandering mini-nobles);
+the wheat war is fully wired (all 10 farm guards fire `liberation/free_field`; HQ-raid
+gate = 6 fields); the Royal League chain + cap-100 chain are wired (Champion → 85,
+`board_cleared` → 100); the Battle Frontier runs REAL mechanics in `FrontierManager`
+(factory custody loans, arcade wheel, castle points, market listings, port MULTI crew,
+pyramid no-heal gauntlet + `abandon`, 9-floor tower) — all 9 hall scenarios live-green
+(frontier_complete 148/148). This round's player-facing polish: nickname ritual
+(live 13/13), skin dress pass (99 placed NPCs dressed + 33 static props + the merged
+Hua Zhan garden wardens), dialog cohesion pass (357 files punched up, zero mechanical
+drift, compile 746 chars → 750 presets errors:0), streamsync OBS overlay push.
+Harness: 57 e2e scenarios; the alpha.6/7 verification loop closed 31/33.
 
-**Content frontier: authored + compiled through Hua Zhan City (gym 2 — Act 1 beats
-1–2, first three towns).** Everything past that (Mystic Marsh onward, wheat war
-escalation, HQ raid, Royal League, shrines, Board/Founder) has code plumbing but no
-authored content yet — the items below are staged by WHEN their act arrives, not
-today's to-do list:
+**Blockers on the 1.0.0 path (the full ledger is TODO.md):**
 
-1. Near-term (in-scope now): Round 8 runtime verify of towns 1–3; place the three
-   compiled-but-unplaced NPCs (dead-letter checkpoint agent, memo courier, census
-   wagon); then beat-3 quest design (next towns per TODO §0 Phase 1).
-2. Badge-7 era: **field guards** — only farm_1 wired → `fields_liberated` maxes at 1;
-   HQ-raid gate (4), trader escalation (2/4), relief tiers (2/4), granary ambush (4)
-   all unreachable until placed + wired. **villain_boss (Acting CEO DJ) trainer JSON**
-   + admins/grunts 3-11 (18 missing files).
-3. Post-league era: **20 empty `{}` trainer teams** (royal_champion, royal_elite_1..4,
-   5 shrine leaders, 10 shrine cultists) + board_×4 files.
-   `content_compile` warns on all 28 battle references to missing/empty teams — those
-   warnings are EARLY flags on pre-wired future-act presets, not current breakage.
-4. Gyms 3–10 rosters (audited round 10b): each ships only 4/7 roles — **24 team files
-   missing** ({town}_{trainer_3,trainer_4,jr_apprentice} × 8), all referenced by their
-   gym configs + npc_map_template, and each gym's apprentice prereq chain runs through
-   the missing jr_apprentice. Towns 1–2 are 7/7 complete. Bodies:
-   gym-2..10 LEADERS and every gym's trainer_1–4 have no uuid/placement yet
-   (takehara jr/apprentice/leader are the only fully-bodied gym battles).
+1. 🧱 **HQ tower interior** (basement DJ arena + penthouse floors) unbuilt — blocks the
+   act-2 raid finale and act-3 Board/Founder staging, the Master Ball chest + Founder
+   mirror-arena wiring (gym-mark slots reserved: `hq_basement_dj`, `hq_penthouse_*`),
+   and the penthouse companions (3 Lopunny assistants + the bedside Incineroar —
+   authored alpha.10, unplaced).
+2. 🧱💻 **Endgame cast placement**: ~32 authored-but-unplaced characters
+   (royal_champion + elite_1–4, acting_ceo_dj, board_×4, villain_final_boss, daycare
+   keeper, 8 gym guides, misc). Teams + dialogs already ship; the bodies still render
+   Steve — dress on placement.
+3. 💻 **bank.json capture** (TODO §1.B): the CobbleDollars nether-star bank re-theme
+   exists only in the live instance's `config/cobbledollars/bank.json` — export it into
+   the mod and seed it at install like the shop tiers (the §3 standalone rule).
+4. 💻 **Dev-tool strip** (TODO §2): `devtools/` + the npcmap dev classes + the cutscene
+   recorder — wait-gated on the gym-mark export, the placement walk, and the remaining
+   smoke rounds (the smoke checklist IS the release-verify loop; strip it last).
 
 - **GYM BALANCE RULE (showrunner 2026-07-05, "brutal" hardcore Nuzlocke): leader
   ace = entry-cap + 2** (fight every leader UNDERLEVELED — entry cap is our enforced

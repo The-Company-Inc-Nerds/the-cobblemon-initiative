@@ -53,6 +53,47 @@
                                 }
                             ],
                             Label: "leave_button"
+                        },
+                        {
+                            Name: "Accept what he presses into your hand",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_gift_uzo_pilgrim_cord_claimed"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "loot give @s loot cobblemon_initiative:npc_gift/common"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_gift_uzo_pilgrim_cord_claimed"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tag @s add gift_uzo_pilgrim_cord_claimed"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "title @initiator actionbar [{\"text\":\"(The cord is knotted once for every road he has walked. He starts a new one before you have gone ten paces.)\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "gift_button"
                         }
                     ],
                     Texts: [
@@ -64,6 +105,9 @@
                         },
                         {
                             Text: "I walk to Ryujin Keep to ask the dragons an old question. Ryujin holds the gym there. The dragons keep better counsel than the ledgers ever did."
+                        },
+                        {
+                            Text: "(He unknots a worn cord from his wrist and holds it out.) I have carried thanks a long way looking for somewhere to set it down. Here is fine."
                         }
                     ],
                     Name: "Uzo - the money steadied",
@@ -90,7 +134,10 @@
                             Text: "Ryujin Keep is at the end of the spine. Ryujin holds the Dragon gym. A hard climb and a harder leader - fitting, at this height."
                         },
                         {
-                            Text: "Follow the ridge to Ryujin Keep. Ryujin and the Dragon gym wait at the top, past the road no one names."
+                            Text: "I carry a stone for every partner I have buried on this road. The bag grows heavier every year and I would not have it one stone lighter."
+                        },
+                        {
+                            Text: "A rider up the ridge swears the Keep dragons hatch only in thunder. The old scriptures say only in perfect silence. I have decided both are true, which is the pilgrim way."
                         }
                     ],
                     Name: "Ashen Pilgrim Uzo",
@@ -220,9 +267,9 @@
             DisableLayers: 0b,
             Name: "",
             Timestamp: 0L,
-            Type: "DEFAULT",
+            Type: "CUSTOM",
             URL: "",
-            UUID: [I; 0, 0, 0, 0]
+            UUID: [I; 235685703, 1690720150, -1911190245, 1981299279]
         },
         SoundData: {
             SoundDataSet: [

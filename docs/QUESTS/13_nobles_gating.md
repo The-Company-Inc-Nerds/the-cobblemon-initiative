@@ -1,5 +1,15 @@
 # 13 — Noble Encounters: The Gating Quests
 
+> **⚠ STATUS 2026-07-20:** the noble roster shipped as **Groudon / Kyogre / Rayquaza**,
+> **Articuno / Zapdos / Moltres**, **Mew** (tag), plus **Manaphy** and the wandering
+> pseudo mini-nobles (`AmbientNobleManager` daily rolls + the three birds as post-HQ-raid
+> proximity ambushes, gate `defeated_villain_boss`). **The old "crystal launches the
+> shrine's noble" contract is DEAD** — shrine crystals now summon a *separate* guardian set
+> (Ho-Oh / Landorus / Glastrier / Kyurem / Xerneas via `ShrineCrystalItem`); Articuno and
+> Moltres launch from a dedicated **Ice/Fire keeper dialog button** (`noble start …`), which
+> is independent of the crystal. Givers with dialog: Mew/Kyogre/Groudon/Rayquaza/Zapdos.
+> Player-facing truth: [`wiki/Guidebook-Nobles.md`](../../wiki/Guidebook-Nobles.md).
+
 > **UNIT SLUG:** `13_nobles_gating`. This is the **quest / gate / giver layer** that leads a
 > player to each Legends-Arceus-style **noble** encounter. The `noble/` combat engine is
 > **already shipped** (`docs/NOBLE_ENCOUNTERS.md`): body → attacks → stagger → catchable wild

@@ -39,6 +39,16 @@
                     Priority: 10,
                     Buttons: [
                         {
+                            Name: "Ask her to sing the unplaced verse",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "the_verse"
+                                }
+                            ],
+                            Label: "verse_button"
+                        },
+                        {
                             Name: "Goodbye",
                             Actions: [
                                 {
@@ -61,6 +71,30 @@
                     ],
                     Name: "Svala Frostsong",
                     Label: "default"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "(She closes her eyes; the lantern flame steadies.) The one who built was then unbuilt, the name sung off the beam — the cold will hold what the warm let go, till the thaw returns the theme. (She opens her eyes.) Whose grief am I keeping warm?"
+                        },
+                        {
+                            Text: "(She hums it first, then gives it words.) A chair too wide, a coat too proud, a title where a name should be. (She stops.) It always stops there. Nobody ever taught me the ending. Or the ending has not happened yet."
+                        }
+                    ],
+                    Name: "Svala — the unplaced verse",
+                    Label: "the_verse"
                 }
             ]
         },

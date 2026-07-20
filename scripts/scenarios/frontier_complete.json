@@ -244,6 +244,15 @@
       "comment_": "cross-scenario attrition guard (live-caught 2026-07-18: fights entered with fainted leads make autobattle pass turns forever = endless slow loss)"
     },
     {
+      "comment": "-- leaked-battle sweep (2026-07-19): an aborted prior scenario can leave a live battle + a dead manager dispatch entry; stopbattle ends the battle (harmless no-op when clean) and the sleep lets the Java self-heal clear the dead dispatch (~2s) before the first hall command --"
+    },
+    {
+      "rcon": "stopbattle {player}"
+    },
+    {
+      "sleep": 3.0
+    },
+    {
       "rcon": "execute as {player} run cobblemon-initiative dev bot autobattle on"
     },
     {
@@ -338,23 +347,12 @@
       "comment": "-- win signal = manager rail (manager fights have no onwin; the old win_line lives in the beaten SAY, never chat). Aggregate chain anchors here: Purse paid -> #halls==7 -> WARDEN STIRS title pair + frontier_warden_stirred --"
     },
     {
-      "wait_chat": "Purse paid",
-      "timeout": 600,
-      "comment_": "manager win rail; a timeout here is almost certainly the TBCS stall, not a regression"
-    },
-    {
-      "client": "screen.close",
-      "comment_": "defensive: the battle GUI may still be up when the win chat lands — a stale screen eats the next interact (live-caught arcade/factory/port)"
-    },
-    {
-      "sleep": 2.0
-    },
-    {
       "wait_chat": "THE WARDEN STIRS",
       "kinds": [
         "title"
       ],
-      "timeout": 15
+      "timeout": 600,
+      "comment_": "WIN RAIL (reordered 2026-07-19 round 4): the Java emits hall_cleared (actionbar+title+subtitle) BEFORE the 'Purse paid' line, and a wait_chat window cursor sits past its previous match - waiting purse first made this title unreachable (deterministic 2x). Stall caveat rides here now."
     },
     {
       "wait_chat": "The Deep Dark door is open.",
@@ -362,6 +360,18 @@
         "subtitle"
       ],
       "timeout": 15
+    },
+    {
+      "wait_chat": "Purse paid",
+      "timeout": 15,
+      "comment_": "same burst, after the subtitle in stream order"
+    },
+    {
+      "client": "screen.close",
+      "comment_": "moved AFTER the burst waits (round-5 live-caught): a client op is NON-PASSIVE to the runner - it re-snapshots the wait window PAST lines already in the ring, which ate the subtitle (and round-3's title). All three same-burst waits must chain first."
+    },
+    {
+      "sleep": 2.0
     },
     {
       "rcon": "execute if entity @a[name={player},tag=frontier_market_cleared,tag=frontier_warden_stirred]",
@@ -411,13 +421,6 @@
       "timeout": 600
     },
     {
-      "client": "screen.close",
-      "comment_": "defensive: the battle GUI may still be up when the win line lands — a stale screen eats the next interact (live-caught arcade/factory/port)"
-    },
-    {
-      "sleep": 2.0
-    },
-    {
       "wait_chat": "FRONTIER CLEARED",
       "kinds": [
         "title"
@@ -444,6 +447,13 @@
         "overlay"
       ],
       "timeout": 15
+    },
+    {
+      "client": "screen.close",
+      "comment_": "moved AFTER the capstone burst waits (round-6: same client-op-is-non-passive cursor law as the warden burst - the close re-snapshots the window past lines already in the ring)"
+    },
+    {
+      "sleep": 2.0
     },
     {
       "rcon": "execute if entity @a[name={player},tag=frontier_all_cleared,tag=frontier_purse_paid,tag=frontier_sendoff_seen]",

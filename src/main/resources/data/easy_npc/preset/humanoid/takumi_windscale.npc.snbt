@@ -36,16 +36,71 @@
             Type: "BASIC",
             DialogDataSet: [
                 {
-                    Priority: 10,
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "takumi_grit_stocked"
+                        }
+                    ],
+                    Priority: 12,
                     Buttons: [
                         {
-                            Name: "Goodbye",
+                            Name: "Clean ledges, Takumi",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "goodbye_button"
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "That gravel went straight down on the third ledge and not one challenger has slid off since. The leader asked where the good footing came from. I told him a true climber does not need to know."
+                        },
+                        {
+                            Text: "Somebody has to sweep the ramp, and up here that somebody is me. Shed scales, spent cinders, the occasional dropped badge from a challenger who fainted on the climb. You would not believe what I find on these ledges."
+                        },
+                        {
+                            Text: "The wind does half my job and undoes the other half. I sweep the scales west, the storm sweeps them back east. Been doing this dance with the sky for twenty years and neither of us is winning."
+                        }
+                    ],
+                    Name: "Takumi Windscale",
+                    Label: "grit_stocked"
+                },
+                {
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "Spare him some gravel (2 gravel)",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative turnin minecraft:gravel 2 takumi_grit_stocked"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_takumi_grit_stocked"
+                                }
+                            ],
+                            Label: "gravel_button"
+                        },
+                        {
+                            Name: "Keep sweeping",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
                         }
                     ],
                     Texts: [
@@ -57,6 +112,9 @@
                         },
                         {
                             Text: "Watch your footing on the third ledge, it stays slick after the dragons drink. I put down grit but the leader keeps telling me a true climber does not need grit. Easy for him to say, he has wings on his team."
+                        },
+                        {
+                            Text: "Ran out of ledge grit this morning. The fresh gravel comes up the mountain by mule, and the mule has opinions. If you happen to be carrying a couple of handfuls, the whole climb would owe you."
                         }
                     ],
                     Name: "Takumi Windscale",

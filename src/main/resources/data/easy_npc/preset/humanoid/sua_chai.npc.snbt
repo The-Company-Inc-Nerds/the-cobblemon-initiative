@@ -46,6 +46,47 @@
                     Priority: 25,
                     Buttons: [
                         {
+                            Name: "Take the pantry bundle",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_gift_sua_chai_paint_day_claimed"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "loot give @s loot cobblemon_initiative:npc_gift/common"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_gift_sua_chai_paint_day_claimed"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tag @s add gift_sua_chai_paint_day_claimed"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "title @initiator actionbar [{\"text\":\"(Wrapped in a feed sack, knotted the way farmers knot things — permanently.)\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "bundle_button"
+                        },
+                        {
                             Name: "Suits the line",
                             Actions: [
                                 {
@@ -58,6 +99,9 @@
                     Texts: [
                         {
                             Text: "We painted the posts white this morning, Feng and I. Every one of them, on the true line, where the stones say it goes. Let them measure THAT twice. Let them re-verify a fresh coat of paint."
+                        },
+                        {
+                            Text: "Feng and I put a bundle together from the pantry — for whoever moved that line back where it belongs. That is you. Take it, and do not make it a thing. We are not used to winning."
                         }
                     ],
                     Name: "Sua Chai - the fence repainted",

@@ -46,6 +46,16 @@
                     Priority: 20,
                     Buttons: [
                         {
+                            Name: "Ask what the readings say",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "rift_notes"
+                                }
+                            ],
+                            Label: "notes_button"
+                        },
+                        {
                             Name: "I could not say",
                             Actions: [
                                 {
@@ -70,6 +80,16 @@
                     Priority: 10,
                     Buttons: [
                         {
+                            Name: "Ask what the readings say",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "rift_notes"
+                                }
+                            ],
+                            Label: "notes_button"
+                        },
+                        {
                             Name: "Mind the tape",
                             Actions: [
                                 {
@@ -85,10 +105,37 @@
                         },
                         {
                             Text: "The Company sent their own doctor to sit on my findings. We do not speak. He measures, I measure, and we get different numbers, and only one of us reports his honestly."
+                        },
+                        {
+                            Text: "Dr. Maltheus pitches his instruments upwind of mine on purpose. It is in my field notes under interference, atmospheric — and again under interference, personal."
                         }
                     ],
                     Name: "Dr. Vex Labforge — field researcher",
                     Label: "default"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "That is enough science",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "back_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Day thirty-one: the crack hums when the tide turns. Day thirty-two: it hums regardless of the tide and I had been holding the tuning fork wrong. Science is mostly this, if we are honest."
+                        },
+                        {
+                            Text: "The readings say the rift is older than the coastline it is sitting in. That is a sentence I have elected not to think about after dark."
+                        }
+                    ],
+                    Name: "Dr. Vex Labforge — the field notes",
+                    Label: "rift_notes"
                 }
             ]
         },

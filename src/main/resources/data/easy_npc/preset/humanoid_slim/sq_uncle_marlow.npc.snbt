@@ -46,6 +46,16 @@
                     Priority: 25,
                     Buttons: [
                         {
+                            Name: "Tell me about the route",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "the_route"
+                                }
+                            ],
+                            Label: "route_button"
+                        },
+                        {
                             Name: "Goodbye",
                             Actions: [
                                 {
@@ -304,15 +314,55 @@
                                 }
                             ],
                             Label: "not_today_button"
+                        },
+                        {
+                            Name: "Thirty one years?",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "the_route"
+                                }
+                            ],
+                            Label: "route_button"
                         }
                     ],
                     Texts: [
                         {
                             Text: "Uncle Marlow. Thirty one years on the Sango route — rain, Beedrill, and every door on this lane. Then Company Courier Services optimized me. Verified delivery, guaranteed yesterday. Their words. One letter left in the bag, and no such recipient on any list they keep."
+                        },
+                        {
+                            Text: "Thirty one years of rain, Beedrill, and loose dogs, and what finally stopped me was a memo. Route consolidated. They spelled my name wrong on it. Still one letter in the bag, mind."
                         }
                     ],
                     Name: "Marlow — the mothballed courier",
                     Label: "default"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "A good route, Marlow",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Every door on this lane had a rhythm. Two knocks for Oma, one for Kele — he startles. You learn a street like a song, and then some spreadsheet tells you the song was inefficient."
+                        },
+                        {
+                            Text: "Worst day? Swarm season, nineteen years back. Beedrill in the bag, letters everywhere. Delivered every one, stung eleven times. The Company logged it as a single incident. I count it as eleven."
+                        },
+                        {
+                            Text: "The trick to a loose Growlithe is you deliver the mail to the Growlithe first. Nobody official ever asked how I knew that, which tells you everything about who writes the manuals."
+                        }
+                    ],
+                    Name: "Marlow — the route, since you ask",
+                    Label: "the_route"
                 }
             ]
         },

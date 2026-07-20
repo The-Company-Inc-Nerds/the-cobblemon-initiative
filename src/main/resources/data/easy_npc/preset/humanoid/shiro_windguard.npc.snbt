@@ -39,13 +39,23 @@
                     Priority: 10,
                     Buttons: [
                         {
-                            Name: "Goodbye",
+                            Name: "Ask to see the flight log",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "flight_log"
+                                }
+                            ],
+                            Label: "flight_log_button"
+                        },
+                        {
+                            Name: "Hold the wind, Shiro",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "goodbye_button"
+                            Label: "leave_button"
                         }
                     ],
                     Texts: [
@@ -61,6 +71,30 @@
                     ],
                     Name: "Shiro Windguard",
                     Label: "default"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Hand the log back",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "(A weathered notebook, one entry per day. Ran at the parapet. Remembered mid-leap that he cannot fly. Committed anyway. Caught him. Morale: soaring. Every single entry ends with morale: soaring.)"
+                        },
+                        {
+                            Text: "(The last page is different. If he ever does fly, I will say I always knew. The handwriting there is very small, like a man embarrassed to hope. Shiro is watching you read it.)"
+                        }
+                    ],
+                    Name: "The Flight Log of Ash",
+                    Label: "flight_log"
                 }
             ]
         },

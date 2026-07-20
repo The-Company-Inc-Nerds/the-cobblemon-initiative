@@ -59,6 +59,16 @@
                             Label: "greenhouse_button"
                         },
                         {
+                            Name: "Heard anything interesting?",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "guide_gossip"
+                                }
+                            ],
+                            Label: "gossip_button"
+                        },
+                        {
                             Name: "I know what I am doing",
                             Actions: [
                                 {
@@ -74,6 +84,9 @@
                         },
                         {
                             Text: "Looks like you mean business. Want the lay of the land before you face the leader?"
+                        },
+                        {
+                            Text: "In Hua Zhan even the gym is half garden. Mind where you step and be polite to the flowerbeds - some of them outrank me."
                         }
                     ],
                     Name: "Gym Guide Greeting",
@@ -164,6 +177,11 @@
                             Name: "Explain the gym",
                             Actions: [
                                 {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add pilgrimage_started"
+                                },
+                                {
                                     Type: "OPEN_NAMED_DIALOG",
                                     Cmd: "explain"
                                 }
@@ -173,6 +191,11 @@
                         {
                             Name: "I will find the hill",
                             Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add pilgrimage_started"
+                                },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
@@ -190,6 +213,45 @@
                     ],
                     Name: "Guide — the old way",
                     Label: "pilgrim_hint"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Back",
+                            Actions: [
+                                {
+                                    Type: "OPEN_DEFAULT_DIALOG"
+                                }
+                            ],
+                            Label: "gossip_back_button"
+                        },
+                        {
+                            Name: "Leave",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "gossip_leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "There are ten of us guides, one per gym, and we share a newsletter. This month it is mostly the other nine arguing over who invented saying — you got this. For the record, I invented it."
+                        },
+                        {
+                            Text: "One of the other guides swears the healing machine runs on a Chansey in the back room. Ours runs on compost heat. That part is true, which is somehow worse."
+                        },
+                        {
+                            Text: "Prize money used to come straight from the League. Now it routes through one office in Cyber City. I asked which office. The reply was a pamphlet about wheat."
+                        },
+                        {
+                            Text: "A guide remembers every challenger. Even the ones whose parties walk out smaller than they walked in. Blossom plants something for each of those. She thinks nobody has noticed the row."
+                        }
+                    ],
+                    Name: "Guide Gossip",
+                    Label: "guide_gossip"
                 }
             ]
         },

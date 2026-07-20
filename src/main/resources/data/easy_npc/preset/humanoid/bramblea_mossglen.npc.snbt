@@ -39,13 +39,47 @@
                     Priority: 10,
                     Buttons: [
                         {
-                            Name: "Goodbye",
+                            Name: "Accept the charm — no arguing with an auntie",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_gift_bramblea_dusk_charm_claimed"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "loot give @s loot cobblemon_initiative:npc_gift/common"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_gift_bramblea_dusk_charm_claimed"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tag @s add gift_bramblea_dusk_charm_claimed"
+                                }
+                            ],
+                            Label: "charm_button"
+                        },
+                        {
+                            Name: "Keep your knees dry",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "goodbye_button"
+                            Label: "leave_button"
                         }
                     ],
                     Texts: [
@@ -57,6 +91,9 @@
                         },
                         {
                             Text: "Rain by moonrise, mark me. My knees know it and my knees have never once been wrong about weather or in-laws."
+                        },
+                        {
+                            Text: "They say Titania trains blindfolded, so her own charm cannot catch her eyes. I had it from Maren, who had it from the reeds, so it is as good as sworn."
                         }
                     ],
                     Name: "Bramblea Mossglen",

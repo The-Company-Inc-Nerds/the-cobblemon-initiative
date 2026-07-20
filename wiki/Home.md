@@ -55,6 +55,11 @@ makes eyes matter: spotters hail you, checkpoints stop you, some agents pursue y
 and stealth quests are actually stealthy. When someone catches you, the camera turns to meet
 them — smoothly.
 
+**Naming the fallen — and the found.** Because this is a Nuzlocke, a name is a promise. Every
+time a Pokémon joins you — caught, gifted, traded, or your very first partner — the game
+pauses to let you **nickname** it on the spot (keep the species name with a keystroke if you'd
+rather). A toggle in ModMenu turns the prompt off if you prefer to name them your own way.
+
 **Quality of life.** One-command world install (zones, gamerules, map frontiers pre-baked),
 milestone loot caches scaled to your badge count, custom advancements for every arc, ModMenu
 config for the flavor systems, and a post-game that simply hands you Minecraft back: walk

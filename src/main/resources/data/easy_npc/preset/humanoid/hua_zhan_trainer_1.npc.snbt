@@ -40,13 +40,83 @@
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
+                            Name: "seal_moss"
+                        }
+                    ],
+                    Priority: 30,
+                    Buttons: [
+                        {
+                            Name: "Study the old botany",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "lore"
+                                }
+                            ],
+                            Label: "study_button"
+                        },
+                        {
+                            Name: "Leave the court",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The seal of the moss court sits warm in the stone. One hand-print, older than the badge."
+                        },
+                        {
+                            Text: "The moss has already closed over the edge of the mark, as if the plaque had been pressed a hundred years ago."
+                        }
+                    ],
+                    Name: "Gardener Lin — the seal holds",
+                    Label: "sealed"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
                             Name: "defeated_hua_zhan_trainer_1"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "no_seal_moss"
                         }
                     ],
                     Priority: 20,
                     Buttons: [
                         {
-                            Name: "Go to the plaque",
+                            Name: "Press your hand to the seal",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add seal_moss"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:sidequest/pilgrimage/update"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "title @initiator actionbar [{\"text\":\"The moss court seal takes.\",\"color\":\"green\"}]"
+                                },
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "lore"
+                                }
+                            ],
+                            Label: "press_button"
+                        },
+                        {
+                            Name: "Step back",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -60,17 +130,24 @@
                             Text: "Fairly grown, fairly cut. The court has no further argument with you — feel how warm the stone still is."
                         },
                         {
-                            Text: "The plaque in the stone beside me carries the first seal. Press your hand to the seal, and the moss will remember you as one of the patient."
+                            Text: "The first seal is set in my pedestal. Press your hand to it, and the moss will remember you as one of the patient."
                         }
                     ],
-                    Name: "Lin — after the match",
+                    Name: "Gardener Lin — after the match",
                     Label: "seal"
                 },
                 {
-                    Priority: 10,
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "pilgrimage_started"
+                        }
+                    ],
+                    Priority: 15,
                     Buttons: [
                         {
-                            Name: "Wake the statue of the moss court",
+                            Name: "Ready a Pokéball — wake the statue of the moss court",
                             Actions: [
                                 {
                                     Type: "COMMAND",
@@ -126,6 +203,16 @@
                             Label: "battle_button"
                         },
                         {
+                            Name: "Read the station plaque",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "lore"
+                                }
+                            ],
+                            Label: "plaque_button"
+                        },
+                        {
                             Name: "Leave the court",
                             Actions: [
                                 {
@@ -144,7 +231,74 @@
                         }
                     ],
                     Name: "Lin — warden of the moss court",
+                    Label: "challenge"
+                },
+                {
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "Read the station plaque",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "lore"
+                                }
+                            ],
+                            Label: "plaque_button"
+                        },
+                        {
+                            Name: "Leave the court",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "STATION OF THE MOSS COURT — first of the four gardens. A worn line beneath the crest reads: moss holds water and hates the torch. So does everything the court grows. Fire and wings have always been the fast way through — the court respects a trainer who knows it."
+                        },
+                        {
+                            Text: "The statue's arms stay folded; the stone does not stir for passers-by. The gate keeper at the gym entrance keeps the rites of the four gardens."
+                        }
+                    ],
+                    Name: "Station of the Moss Court",
                     Label: "default"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Back to the statue",
+                            Actions: [
+                                {
+                                    Type: "OPEN_DEFAULT_DIALOG"
+                                }
+                            ],
+                            Label: "back_button"
+                        },
+                        {
+                            Name: "Done reading",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "OLD BOTANY, PAGE OF THE MOSS COURT. Before the town had a name it had this court. The first gardeners judged a trainer the way they judged a cutting — not by how fast it grew but by how well it waited. The moss remembers every foot that rushed."
+                        },
+                        {
+                            Text: "The hill gardens grew here first. Everything that grows under glass in the valley came after, and it knows it."
+                        }
+                    ],
+                    Name: "Old Botany — First Leaf",
+                    Label: "lore"
                 }
             ]
         },
@@ -243,20 +397,9 @@
             HasTravelTarget: 0b,
             ObjectiveDataSet: [
                 {
-                    Type: "LOOK_AT_PLAYER",
-                    Prio: 9,
-                    Id: "ambient_look_player",
-                    LookDistance: 8.0f
-                },
-                {
-                    Type: "LOOK_RANDOM_AROUND",
-                    Prio: 10,
-                    Id: "ambient_look_random"
-                },
-                {
                     Type: "LOOK_AT_RESET",
                     Prio: 9,
-                    Id: "ambient_look_reset"
+                    Id: "ambient_static_reset"
                 }
             ]
         },

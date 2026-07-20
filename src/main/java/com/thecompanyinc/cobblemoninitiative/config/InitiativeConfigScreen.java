@@ -195,6 +195,23 @@ public class InitiativeConfigScreen {
 
     capture.addEntry(
       entryBuilder
+        .startBooleanToggle(
+          Component.literal("Nickname Prompt"),
+          config.isNicknamePromptEnabled()
+        )
+        .setDefaultValue(defaults.isNicknamePromptEnabled())
+        .setTooltip(
+          Component.literal(
+            "Offer a nickname prompt after every new acquisition\n"
+            + "(capture, gift, trade, starter). ESC keeps the species name."
+          )
+        )
+        .setSaveConsumer(config::setNicknamePromptEnabled)
+        .build()
+    );
+
+    capture.addEntry(
+      entryBuilder
         .startEnumSelector(
           Component.literal("Duplicate Handling"),
           NuzlockeConfig.DuplicateHandling.class,

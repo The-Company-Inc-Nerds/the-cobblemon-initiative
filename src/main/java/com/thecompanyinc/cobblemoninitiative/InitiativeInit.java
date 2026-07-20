@@ -255,6 +255,10 @@ public class InitiativeInit implements ModInitializer {
     // S2C/C2S payloads (party-picker flow) — types must register before any join.
     com.thecompanyinc.cobblemoninitiative.network.InitiativePayloads.register();
 
+    // Nickname ritual: capture-side hook (LOWEST — after the dupes clause settles).
+    // The gift/trade side rides the giveProperties choke point in the command class.
+    com.thecompanyinc.cobblemoninitiative.nickname.NicknameManager.registerEvents();
+
     // Migrate players saved under the wrong/empty rctmod series (new players are placed by
     // the healed initialSeries; this only fixes pre-existing stat.dat).
     net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents.JOIN.register(
@@ -352,6 +356,10 @@ public class InitiativeInit implements ModInitializer {
       ServerPlayer starterPlayer = event.getPlayer();
       if (starterPlayer != null) {
         starterPlayer.addTag("chose_starter");
+        // Fires before Cobblemon's party add, but the prompt only sends a uuid —
+        // the C2S reply resolves against the store later, by which time it's in.
+        com.thecompanyinc.cobblemoninitiative.nickname.NicknameManager.promptFor(
+          starterPlayer, event.getPokemon());
       }
       return Unit.INSTANCE;
     });

@@ -27,7 +27,7 @@ Sign the Frontier ledger at **Registrar Odette** on the concourse and your **fir
 
 ## The eight halls at a glance
 
-Every hall is a self-contained ladder — **two challengers, then the Brain** — themed around a piece of the old Company's showpiece. The gimmicks are **flavor and identity**, not separate minigames: mechanically each is a set of clean, high-level RCT battles inside the no-death zone. What differs is the team you face and the fiction you fight it in.
+Every hall is a self-contained ladder — **two challengers, then the Brain** — themed around a piece of the old Company's showpiece. Each hall now runs a **real mechanic** on top of its battles, not just flavor: the Factory parks your party and lends you a team, the Arcade spins a wheel that rewrites the next fight's rules, the Castle spends a points budget on heals and scouting, the Market charges a listing fee, the Port fields a 2-v-2 crew battle, the Pyramid is a no-heal gauntlet, and the Tower is a floor-by-floor climb. All of it plays inside the no-death zone, so a mechanic can cost you CobbleDollars or a hall run — never a Pokémon. The per-hall sections below spell each one out.
 
 | Hall | Frontier Brain | Signature team | Theme |
 |------|----------------|----------------|-------|
@@ -46,42 +46,48 @@ Every Brain fields a top-of-band team, and several carry a signature legendary �
 
 ## 🗼 Battle Tower — "The Climb" (Palmer)
 
-The **one honest hall.** Palmer ran it back "when the Company still built things for people to enjoy instead of things to squeeze them with," and it plays straight: clear **Climber Jasper** and **Contender Mira** — every floor a promotion — then take the top-floor seat against the Tycoon himself.
+The **honest hall** — the closest thing the Frontier has to a straight fight, dressed as a corporate promotion ladder. Palmer ran it back "when the Company still built things for people to enjoy instead of things to squeeze them with."
 
-- **Palmer:** Dragonite / Milotic / Rhyperior — **no gimmick, the pure skill check.** The honest man in a building the coup left behind. Beat him and the tower's summit office is yours.
+- **The mechanic:** the Tower is a **nine-floor climb.** Each floor below the summit is its own battle with its **own level lock** — both sides flattened to that floor's level (climbing 40 → 88 as you rise), so it stays a test of skill, not raw levels — and its **own purse** paid on the win (rising floor by floor). The **summit floor is not flattened**: Palmer fights at his full authored strength, the one honest fight at the top. Clear a floor and the next opens.
+- **Palmer:** Dragonite / Milotic / Rhyperior — the summit fight and the pure skill check. The honest man in a building the coup left behind. Beat him and the tower's summit office is yours.
 
 ## 🏭 Battle Factory — "Borrowed Steel" (Noland)
 
-The hall built on the **rental** conceit — Noland "drew up the rental scheme myself." Diegetically nothing here is yours and nothing of yours is at risk; that's the Factory's whole voice, and under the frontier's no-death rule it's literally true.
+The hall built on the **rental** conceit — Noland "drew up the rental scheme myself." Here the fiction is literal: **your own party is parked in hall custody** and you fight with **three Company-issue loaner Pokémon** instead.
 
+- **The mechanic:** on entry the Factory takes your team into safekeeping and issues you a fixed loaner squad; you run the ladder with the borrowed steel. `factory return` (a dialog button) claws the loaners back and restores your real party exactly as it was. Your Pokémon are never at risk — they're literally in a box the whole time.
 - Clear **Technician Rex** and **Engineer Lydia**, then Noland at his own bench.
 - **Noland:** Magnezone / Scizor / Metagross / Porygon-Z — a tech/steel specialist and the engineer who kept the one lending hall he actually enjoys.
 
 ## 🏰 Battle Castle — "The Old Forms" (Percival)
 
-The keep of **manners.** Percival holds "the last of the old forms" — a formal-duel wing with a gatekeeper and a wall to pass before the board.
+The keep of **manners.** Percival holds "the last of the old forms" — a formal-duel wing where you spend a **points budget** on courtesies before the board.
 
+- **The mechanic:** each Castle run gives you a **60-point budget.** Between fights you may spend it on services at the Castle desk — **healing your team costs 20 points**, **scouting the next opponent's team costs 15**. Whatever points you *don't* spend pay out at **×15 CobbleDollars** when you clear the hall, so frugality is the prize. It's the one hall where playing carefully literally banks money.
 - Clear **Knight Aldric** and **Guard Captain Elara** (who enforce the house forms), then sit at Percival's board.
 - **Percival:** Empoleon / Slowbro / Dusknoir / Steelix — a deliberate **stall wall** that drags the fight long. Old money, older rules. He fights **doubles.**
 
 ## 🎰 Battle Arcade — "The House Spins" (Dahlia)
 
-The Company's **entertainment wing** — "one floor built for wonder instead of the ledger." Dahlia *is* the house, and the wheel is her fiction: expect a fast, aggressive, unpredictable team rather than a literal random-rule roulette.
+The Company's **entertainment wing** — "one floor built for wonder instead of the ledger." Dahlia *is* the house, and the wheel is real: before a fight you spin it and live with what it rolls.
 
+- **The mechanic:** `arcade spin` (a dialog button) rolls a **battle condition** for the next fight — a **level lock** (both sides flattened to a set level), a **Doubles flip** (the fight becomes a 2-v-2), or a **purse multiplier** (a bigger CobbleDollars payout on the win). The wheel only ever changes the *rules and the reward* — never your Pokémon's safety, so a bad spin costs a harder fight, not a partner. Spin, then hail the challenger.
 - Clear **Gambler Fritz** and **Player Suki**, then take the last table against the Star.
 - **Dahlia:** Blaziken / Togekiss / Garchomp / Zoroark — offense and misdirection, her Zoroark keeping you unsure what's real. She fights **doubles.**
 
 ## ⚓ Battle Port — "Deep Water" (Horatio)
 
-The frontier's **open water** and its **daily gauntlet.** Horatio is the harbormaster of the deep berth — "the daily challengers are the shallows; I am the deep water."
+The frontier's **open water** and its **crew gauntlet.** Horatio is the harbormaster of the deep berth — "the daily challengers are the shallows; I am the deep water."
 
+- **The mechanic:** the Port fights are **crew battles** — `GEN_9_MULTI` **2-v-2**, you plus an **AI deckhand partner** against a two-trainer opposing crew. You captain one half of the deck; the deckhand fights the other. Build for a partner you don't control.
 - Clear **Captain Stern** and **Sailor Crest** (today's rotating dockers), then reach the deep berth.
-- **Horatio:** Pelipper / Gyarados / Kingdra / **Lugia** — a rain-abusing crew with a legendary flagship, fought **doubles** on the heaving deck.
+- **Horatio:** Pelipper / Gyarados / Kingdra / **Lugia** — a rain-abusing crew with a legendary flagship, fought as a **crew battle** on the heaving deck.
 
 ## 🔺 Battle Pyramid — "The Dark Climb" (Brandon)
 
 The last wing the Company built **for wonder instead of the ledger** — a dark descent where the fiction is *bring your own light.* Brandon "woke the three ancient Regis" and remembers the day the pyramid opened.
 
+- **The mechanic:** the Pyramid is a **no-heal gauntlet.** You fight its staged battles — the ancients, then a **giant** at the bottom — **back to back with no healing between stages.** Whatever HP and PP you carry out of one fight is what you start the next with; the climb is an attrition puzzle, not a series of fresh duels. Each stage pays an authored purse. If it turns against you, `frontier pyramid abandon` (a dialog button) lets you **walk out of a held gauntlet** — and the stage map you'd reached is preserved, so you resume where you left off rather than restarting cold.
 - Clear **Explorer Marco** (the torch-run guide) and **Archaeologist Priya** (the deeper chamber), then Brandon at the bottom.
 - **Brandon:** Regirock / Registeel / Regice / **Regigigas** — the golem-king and his ancient trio, "older than the Company, older than the coup." The Regis are **his team**, not maze guardians.
 
@@ -89,6 +95,7 @@ The last wing the Company built **for wonder instead of the ledger** — a dark 
 
 The frontier's **entry hub** — the concourse where the ledger, the pass window, and the founding plaque all live, presided over by Market Mogul Sterling, who "kept the Port trading long after the Company forgot this wing existed."
 
+- **The mechanic:** the Market runs on **listings.** You pick a listing tier — **bargain**, **fair**, or **premium** — and pay its **CobbleDollars fee** before the fight; the pricier the listing, the richer the purse on the win (the cheaper listings also cap the opponent's level, the premium one runs at full authored strength). The fee is charged up front, with an affordability check that fails soft if you're short, so you're never trapped mid-transaction. It's a wager on your own confidence: pay more to win more.
 - Clear the two duel-for-hire regulars, **Merchant Vance** and **Trader Fiona**, then face Sterling.
 - **Sterling:** Zoroark / Chansey / Alakazam / Porygon-Z — Chansey stalls to buy time, Zoroark keeps you unsure what's real. He fights at the ceiling, and this is the hall the concourse counts as its seventh clear.
 

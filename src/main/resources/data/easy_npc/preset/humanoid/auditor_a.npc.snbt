@@ -138,13 +138,23 @@
                     Priority: 10,
                     Buttons: [
                         {
-                            Name: "Goodbye",
+                            Name: "What exactly are you auditing?",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "audit_scope_page"
+                                }
+                            ],
+                            Label: "scope_button"
+                        },
+                        {
+                            Name: "Carry on",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "goodbye_button"
+                            Label: "leave_button"
                         }
                     ],
                     Texts: [
@@ -155,6 +165,12 @@
                             Text: "Behave normally. Normal is whatever the form says it is."
                         },
                         {
+                            Text: "I have filed one incident report today. It concerned my pen. The pen has been escalated."
+                        },
+                        {
+                            Text: "Do not ask what the sweep is for. That is need-to-know, and head office has determined that I do not need to know."
+                        },
+                        {
                             Text: "The Company, Inc. reminds you: verified trust, verified value."
                         },
                         {
@@ -162,6 +178,12 @@
                         },
                         {
                             Text: "Ten years of stability and counting. The Company keeps the ledgers honest so you do not have to."
+                        },
+                        {
+                            Text: "The Company, Inc. — audited annually by The Company, Inc. Nobody knows our books like we do."
+                        },
+                        {
+                            Text: "Your savings are watched day and night by professionals who are contractually forbidden to blink."
                         }
                     ],
                     Name: "Auditor — routine sweep",
@@ -187,6 +209,30 @@
                     ],
                     Name: "Auditor — noticed",
                     Label: "sighted"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Leave them to it",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Officially, we are auditing observance. Not observance of anything in particular. General observance. The bulletin was very clear about being unclear."
+                        },
+                        {
+                            Text: "My colleague believes we are auditing the tide tables. I believe it is the census. Payroll believes we are two entirely different people. None of us has asked. Asking gets noticed."
+                        }
+                    ],
+                    Name: "Auditor — the scope of the audit",
+                    Label: "audit_scope_page"
                 }
             ]
         },

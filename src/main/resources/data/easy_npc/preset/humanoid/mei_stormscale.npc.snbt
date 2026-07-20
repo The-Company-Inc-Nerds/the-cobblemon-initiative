@@ -39,13 +39,47 @@
                     Priority: 10,
                     Buttons: [
                         {
-                            Name: "Goodbye",
+                            Name: "Accept the hearth tin",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_gift_mei_hearth_tin_claimed"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "loot give @s loot cobblemon_initiative:npc_gift/common"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_gift_mei_hearth_tin_claimed"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tag @s add gift_mei_hearth_tin_claimed"
+                                }
+                            ],
+                            Label: "tin_button"
+                        },
+                        {
+                            Name: "Warm thanks, Mei",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "goodbye_button"
+                            Label: "leave_button"
                         }
                     ],
                     Texts: [
@@ -57,6 +91,12 @@
                         },
                         {
                             Text: "You want to know why the Keep never took a Company coin? Sit here long enough and you will hear it. Everyone who limps in from the lowlands says the same thing — that up here is the only place the money forgot to reach. They rest easier for it."
+                        },
+                        {
+                            Text: "That is Dewdrop keeping my doorway damp. The boy pacing the lower terrace tells people a Goomy is not a real dragon. It is the humblest dragon there is, and humble outlasts proud on this mountain every winter."
+                        },
+                        {
+                            Text: "Take a tin of my hearth ginger for the climb — I keep a few packed for the ones I like the look of. No charge. The tower will invoice you in other ways."
                         }
                     ],
                     Name: "Mei Stormscale",

@@ -40,13 +40,83 @@
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
+                            Name: "seal_orchard"
+                        }
+                    ],
+                    Priority: 30,
+                    Buttons: [
+                        {
+                            Name: "Study the old botany",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "lore"
+                                }
+                            ],
+                            Label: "study_button"
+                        },
+                        {
+                            Name: "Leave the rows",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The orchard seal has taken to the wood like a graft to old stock. Two of the four gardens keep this mark at most — count yourself among the patient."
+                        },
+                        {
+                            Text: "Sap has already beaded along the seal line. The orchard accepts you."
+                        }
+                    ],
+                    Name: "Botanist Mei — the seal holds",
+                    Label: "sealed"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
                             Name: "defeated_hua_zhan_trainer_2"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "no_seal_orchard"
                         }
                     ],
                     Priority: 20,
                     Buttons: [
                         {
-                            Name: "Go to the plaque",
+                            Name: "Press your hand to the seal",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add seal_orchard"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:sidequest/pilgrimage/update"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "title @initiator actionbar [{\"text\":\"The orchard seal takes.\",\"color\":\"green\"}]"
+                                },
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "lore"
+                                }
+                            ],
+                            Label: "press_button"
+                        },
+                        {
+                            Name: "Step back",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -60,17 +130,24 @@
                             Text: "The rows have accepted you — and the stone does not hum for tourists."
                         },
                         {
-                            Text: "The orchard plaque hangs among the trunks beside me. Press your hand to the seal while the wood is still warm from the match."
+                            Text: "The orchard seal is grafted into my pedestal. Press your hand while the wood is still warm from the match."
                         }
                     ],
-                    Name: "Mei — after the match",
+                    Name: "Botanist Mei — after the match",
                     Label: "seal"
                 },
                 {
-                    Priority: 10,
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "pilgrimage_started"
+                        }
+                    ],
+                    Priority: 15,
                     Buttons: [
                         {
-                            Name: "Wake the statue of the rows",
+                            Name: "Ready a Pokéball — wake the statue of the rows",
                             Actions: [
                                 {
                                     Type: "COMMAND",
@@ -126,6 +203,16 @@
                             Label: "battle_button"
                         },
                         {
+                            Name: "Read the station plaque",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "lore"
+                                }
+                            ],
+                            Label: "plaque_button"
+                        },
+                        {
                             Name: "Leave the rows",
                             Actions: [
                                 {
@@ -144,7 +231,74 @@
                         }
                     ],
                     Name: "Mei — warden of the orchard rows",
+                    Label: "challenge"
+                },
+                {
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "Read the station plaque",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "lore"
+                                }
+                            ],
+                            Label: "plaque_button"
+                        },
+                        {
+                            Name: "Leave the rows",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "STATION OF THE ORCHARD — second of the four gardens. A carving beneath the crest reads: graft wood takes years to set and one frost night to end. The orchard fears ice above all things, and what a garden fears, a clever challenger brings."
+                        },
+                        {
+                            Text: "The statue keeps its vigil over the rows, stone-still. The gate keeper at the gym entrance keeps the rites of the four gardens."
+                        }
+                    ],
+                    Name: "Station Of The Orchard Station",
                     Label: "default"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Back to the statue",
+                            Actions: [
+                                {
+                                    Type: "OPEN_DEFAULT_DIALOG"
+                                }
+                            ],
+                            Label: "back_button"
+                        },
+                        {
+                            Name: "Done reading",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "OLD BOTANY, PAGE OF THE ORCHARD. A graft is a promise between two trees: the rootstock gives patience, the scion gives fruit, and neither gets to take the credit alone. The first gardeners said a trainer and a partner are the same promise, made twice a day."
+                        },
+                        {
+                            Text: "Every tree in these rows carries wood from a tree that no longer stands. Nothing in the old botany is ever really gone — it is grafted forward."
+                        }
+                    ],
+                    Name: "Old Botany — The Graft",
+                    Label: "lore"
                 }
             ]
         },
@@ -239,20 +393,9 @@
             HasTravelTarget: 0b,
             ObjectiveDataSet: [
                 {
-                    Type: "LOOK_AT_PLAYER",
-                    Prio: 9,
-                    Id: "ambient_look_player",
-                    LookDistance: 8.0f
-                },
-                {
-                    Type: "LOOK_RANDOM_AROUND",
-                    Prio: 10,
-                    Id: "ambient_look_random"
-                },
-                {
                     Type: "LOOK_AT_RESET",
                     Prio: 9,
-                    Id: "ambient_look_reset"
+                    Id: "ambient_static_reset"
                 }
             ]
         },

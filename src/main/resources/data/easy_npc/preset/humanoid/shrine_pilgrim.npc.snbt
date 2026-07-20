@@ -266,6 +266,16 @@
                     Priority: 10,
                     Buttons: [
                         {
+                            Name: "Ask about the five keepers",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "keepers_lore"
+                                }
+                            ],
+                            Label: "keepers_button"
+                        },
+                        {
                             Name: "I will walk them",
                             Actions: [
                                 {
@@ -281,10 +291,49 @@
                         },
                         {
                             Text: "Five elements, five keepers, five crystals. Clear them and you will hold something no living trainer has held. Whether that is a gift is not for me to say."
+                        },
+                        {
+                            Text: "My knees gave notice years ago. I walk the circuit anyway. Devotion, my mother called it. Stubbornness, said everyone else. They were describing the same thing."
+                        },
+                        {
+                            Text: "The keepers turn me away so kindly now that I have come to look forward to it. Rejection, done properly, is very nearly a blessing. Aurora does it best."
                         }
                     ],
                     Name: "The Last Pilgrim",
                     Label: "default"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Walk on",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Aurora keeps the light in the marsh deep. She once held her lantern to my face and told me my heart was smudged. I have been trying to polish it ever since."
+                        },
+                        {
+                            Text: "Terran fights in the dark under Kalahar with his strength halved, so the stones may judge fairly. He halves his suppers too. I asked him why once. He pointed at the floor."
+                        },
+                        {
+                            Text: "Draconis tends the wyrm-fire near the keep. He speaks to the hydra like an old colleague he does not entirely trust. The hydra, I have noticed, speaks back the same way."
+                        },
+                        {
+                            Text: "Glacius stands past Nifl and has not raised his voice in living memory. He says the cold carries it for him. I once heard his whisper from clean across the ice."
+                        },
+                        {
+                            Text: "Ignis argues with his flame like a married man. The flame sputters back. Of the two of them, the fire apologises first. You will find him out beyond the last flame."
+                        }
+                    ],
+                    Name: "The Last Pilgrim - the keepers",
+                    Label: "keepers_lore"
                 }
             ]
         },
@@ -410,9 +459,9 @@
             DisableLayers: 0b,
             Name: "",
             Timestamp: 0L,
-            Type: "DEFAULT",
+            Type: "CUSTOM",
             URL: "",
-            UUID: [I; 0, 0, 0, 0]
+            UUID: [I; -1184443571, -370648612, -1266381165, 858627754]
         },
         SoundData: {
             SoundDataSet: [

@@ -232,6 +232,15 @@
       "rcon": "tag {player} remove frontier_all_cleared"
     },
     {
+      "comment": "-- leaked-battle sweep (2026-07-19): an aborted prior scenario can leave a live battle + a dead manager dispatch entry; stopbattle ends the battle (harmless no-op when clean) and the sleep lets the Java self-heal clear the dead dispatch (~2s) before the first hall command --"
+    },
+    {
+      "rcon": "stopbattle {player}"
+    },
+    {
+      "sleep": 3.0
+    },
+    {
       "rcon": "execute as {player} run cobblemon-initiative dev bot autobattle on"
     },
     {
@@ -257,7 +266,8 @@
       "click": "Open the house ledger"
     },
     {
-      "wait_no_screen": true
+      "client": "screen.close",
+      "comment_": "a leaked battle GUI can sit UNDER the dialog and surface when the button closes it — close whatever tops the stack and let the chat wait pace the beat (wisps idiom); a wait_no_screen here raced exactly that (live-caught 2026-07-19)"
     },
     {
       "wait_chat": "Your ledger opens at",
@@ -284,7 +294,8 @@
       "click": "Buy intel - 15 points"
     },
     {
-      "wait_no_screen": true
+      "client": "screen.close",
+      "comment_": "service buttons are command-only (no close — the ledger menu stays open by design); close it ourselves (live-caught round 3)"
     },
     {
       "wait_chat": "Intel, discreetly:",
@@ -364,7 +375,8 @@
       "click": "Buy the physician - 20 points"
     },
     {
-      "wait_no_screen": true
+      "client": "screen.close",
+      "comment_": "service buttons are command-only (no close — the ledger menu stays open by design); close it ourselves (live-caught round 3)"
     },
     {
       "wait_chat": "The house physician attends",
@@ -521,7 +533,8 @@
       "click": "Settle the ledger"
     },
     {
-      "wait_no_screen": true
+      "client": "screen.close",
+      "comment_": "service buttons are command-only (no close — the ledger menu stays open by design); close it ourselves (live-caught round 3)"
     },
     {
       "wait_chat": "Ledger closed",

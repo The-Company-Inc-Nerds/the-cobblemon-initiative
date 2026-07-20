@@ -45,7 +45,7 @@
 | **Repeatable** | One-time |
 | **Tracker** | Yes — *Garden seals n/4* |
 
-Blossom keeps her gym the old way: her four wardens hold four living gardens scattered through the city. Beat a warden, press the station plaque beside them, earn the seal — **any order**.
+Blossom keeps her gym the old way: her four wardens hold four living gardens scattered through the city. Each warden is a **living statue** that reads as a garden plaque until you rouse it — talk to it, wake it into a battle, beat it, and press the seal on the statue itself, **any order** across the four.
 
 | Station | Warden | Team | Coordinates |
 |---------|--------|------|-------------|

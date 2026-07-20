@@ -8,6 +8,124 @@ done, Claude removes it **and** any release-removal it unblocks.
 
 ---
 
+## 2026-07-20 — Dialog cohesion pass (alpha.10): all-cast punch-up
+
+**357 files punched / 444 already strong / 57 new interactive touches** (one-time gifts,
+turn-in gags, lore pages, announce beats — no new battles/payouts/economy). Mr. Mime is
+now deniably More Than Just A Friend to Nalia; penthouse cast authored (3 Lopunny
+assistants + bedside Incineroar, `characters/villain/companion_*`). Compile 746→750
+errors:0; mech-diff zero drift; all 315 e2e-matched strings intact; lint at the
+pre-existing 81-error baseline. **repairs_a10** (171 latch bodies, 6 batches, typed
+kills) wired — existing worlds refresh on install run.
+- [ ] 🧱 Penthouse cast placement — blocked on the HQ tower interior build; proposed
+      coords in the four `companion_lopunny_*`/`companion_incineroar_bed` `_comment`s
+      (roadmap 09: ~[1588/1592 95 1030], volume [1590 95 1028]). Add `placement` when built.
+- [ ] 🔍 Walk-up spot-check after install run: Mr. Mime / a gym trainer / a turnin gag
+      (e.g. Juno Pixel, Cyber) / a rumor pair (Volt generator chain).
+- [ ] 💻 Showrunner rulings queued: 4 remaining "trains blindfolded" regional rumor seeds
+      (kept as a traveling archetype — thin them?); Tayo Harbourmaster-vs-Pondwarden title
+      split (pre-existing — texture or stale copy?); Scorch's badge-crate line undercuts
+      Vulcan's forge mystique (kept deniable, as his claim).
+- [ ] 💻 `royal_scrollkeeper.json` is dead content (unreferenced) — cleanup-pass candidate.
+- [ ] 💻 Lint baseline: 81 pre-existing errors (43→41 DEAD_ENTRY, 40 ORPHAN_TAG) predate
+      this pass; auditor_a/b MANUAL_ONLY errors are a lint blind spot (opener lives in
+      npcsight_profiles.json, which dialog_lint does not trace) — teach lint the profile file.
+- [x] 💻 Wiki + docs re-audited against alpha.3–.10 shipped reality (2026-07-20):
+      Shrines page (cultists removed, keeper/trial/crystal two-beat, crystal→own guardian
+      roster Ho-Oh/Landorus/Glastrier/Kyurem/Xerneas, hydra Alpha/Beta doubles + Omega
+      singles), Battle Frontier page (real per-hall mechanics: custody/wheel/points/
+      listings/crew/no-heal/climb), Nobles page (crystal≠bird-launcher fix), Home
+      (nickname ritual), Hua Zhan garden-statue merge (Act-I + Quests-Hua-Zhan),
+      ENGINE_FINDINGS §5, FRONTIER_CONCEPTS shipped table, roadmap/09 penthouse cast
+      (3 Lopunny + Incineroar), QUESTS 13/14/15 status banners. Confirmed no stale dialog
+      quotes, 0 broken [[links]], guardian roster consistent across pages.
+- [ ] 🧱 **Re-run `publish-wiki`** to push the 2026-07-20 wiki edits live (last synced
+      2026-07-18; local `wiki/` is now ahead by the pages above).
+
+## 2026-07-19 — Skin dress pass (alpha.9): 99 placed Steve-default NPCs dressed
+
+**Audit (3-agent sweep): of 747 chars, only 99 PLACED latch NPCs still rendered literal
+Steve** (187 explicit skins / 330 world-body builder looks / 96 cobblemon_model / 6
+visuals covered the rest; 0 dangling textures, 0 unprovisioned uuid5 PNGs — the
+"groups/frontier missing blocks compile" memory was stale, resolved since alpha.14).
+- **12 new textures** fetched via skin_scout/MineSkin (contact-sheet-reviewed; sheets +
+  credit manifests in `dev/skins/<target>/` for sign-off): `nurse_center` (all 6
+  nurses — one clinic look), `wheat_factor` (EVERY wheat trader shares the silhouette —
+  viewers learn to spot the conspiracy), `town_shopkeeper`, prop kit
+  `prop_stone_marker`/`prop_wood_post`/`prop_crate`/`prop_screen` (~21 object NPCs:
+  survey stones, noble monuments, notice boards/lecterns, manifests/wagon, Cyber
+  billboards/archives), and 5 shrine keepers (Draconis=samurai, Aurora=druid,
+  Ignis=fire monk, Glacius=ice mage, Terran=desert nomad).
+- **Existing assets reused:** villain grunts→thecompany_grunt_1..4 +
+  admin (management), station_*→their purpose-built hz_statue_* 1:1 (finally wired!),
+  town extras→groups/* (hua_zhan.png referenced at last), deepcore/kalahar/mystic
+  named NPCs→town trainer singles.
+- content_compile 747/751 errors:0; **repairs_a9** (99 kill+re-arm) chained after a8 —
+  existing worlds repaint on install run. Any pick is a one-line dialog-src swap if it
+  reads wrong on stream (sheets in dev/skins/).
+- [x] **RULED 2026-07-19 — props are STATIC**: new `ambient_static` movement objective
+  (LOOK_AT_RESET only; objective container stays non-empty per the NpcSight invariant)
+  on all 33 prop-skinned chars incl. the 4 Hua Zhan living-statue gym trainers (frozen
+  until they wake). Statues no longer track the player. Production repaints via a9.
+- [ ] 🔍 Dev world only: a9's repair flag is already consumed there — re-arm the 33
+  prop latches at the next stack session so the dev bodies pick up the static presets
+  (production/user worlds unaffected; a9 ships with the final presets).
+- [ ] 🧱 Review the 12 contact sheets when convenient (`dev/skins/<target>/sheet.png`) —
+  esp. prop_wood_post (slim-arm scarecrow) and the unnamed fire-keeper pick.
+- [ ] 🧱 **IN-GAME PROP REVIEW (showrunner walk, 2026-07-19)** — eyeball all 33 prop
+  bodies in-world (skin + the new frozen pose + facing). Any bad pick = one-line
+  dialog-src skin swap; a bad facing = placement yaw. Tour by area:
+  - **Hua Zhan** (densest stop): gym gate Notice of Preliminary Rezoning [1503 86 2041]
+    (scarecrow), then the four garden statues — Moss [1450 93 2052], Orchard
+    [1432 85 1964], Terrace [1478 87 2098], Pond [1484 87 2160] — REWORKED 2026-07-19
+    per ruling: plaques MERGED into the living-statue wardens (one NPC per garden;
+    dormant plaque-read → guide/Wei hint sets `pilgrimage_started` → "Ready a
+    Pokéball" challenge → seal press on the statue → sealed epilogue). Walk the whole
+    staged flow. "A Clean Square of Wall" DELETED per ruling.
+  - **Cyber City**: Archive Drops ×3 (Records Annex [1518 89 1096] area), Glitching
+    Billboards + Reserve Tags ×6 (Downtown [1490-1610, 1090-1132]) — all screen-bots.
+  - **Gaviota Port**: Tally Clerks Pell [566 85 3564], Odile [588 86 3600], Bram
+    [605 87 3650] — now PEOPLE (groups/gaviota) per the crate-retirement ruling.
+  - **Harvest Road**: The Gate Lantern [1550 88 2470] (scarecrow), Survey Wagon
+    [1560 88 2380] (now wood-post — was crate).
+  - **Kalahar**: Basalt Survey Stones [1980 120 3960] + [2140 132 3900], Guarded
+    Survey Stone [2318 83 3542], Pump Manifold [1740 116 4190] (now screen-bot —
+    Company machinery read; was crate).
+  - **Deepcore**: Re-Verified Reserve Ledger [1152 146 3284] (scarecrow-as-ledger — judge).
+  - **Ryujin**: The Sovereign Charter lectern [2145 64 901].
+  - **Noble monuments**: Warning Buoy (Mystic shore [234 65 2347]), Sky-Altar (Sky Ring
+    [744 77 4589]), Crater Warding Stone (Volcano south rim [3805 302 3806] — the 🧱
+    set-dressing stop you already owe the rim).
+  NOTE: in the DEV world these still show old look-tracking presets until its 33
+  latches are re-armed (a9 flag consumed there); your real world repaints on install
+  run, so review AFTER updating the pack.
+- [ ] 💻 **Still Steve but UNPLACED (32, blocked on casting):** royal_champion +
+  elite_1-4, acting_ceo_dj, board_×4, villain_final_boss (check the player_double
+  SkinData-patch mechanism first), daycare keeper, 8 gym guides, misc. Dress when placed.
+
+## 2026-07-19 — The nickname ritual (alpha.9)
+
+**Every new acquisition — capture, gift, trade, starter — prompts the player to name
+the teammate** (`nickname/` + `NicknamePromptScreen`; ModMenu → Capture Rules toggle;
+ESC keeps the species name; offers queue client-side and HOLD during live battles).
+Coverage: POKEMON_CAPTURED@LOWEST + the giveProperties choke point (givemon is the only
+live gift mechanism — zero `givepokemonother` call sites). Loaners/custody returns/
+mirror deliberately excluded. Fire-and-forget contract: the server never waits.
+- [x] **PRE-EXISTING DUPES-CLAUSE BUG fixed** (surfaced by the adversarial review):
+  full-party catches overflow to the PC, where the PC dupe scan matched the mon against
+  ITSELF (no self-exclusion → every full-party capture read as duplicate) and
+  `party.remove()` no-opped — chat announced a release that never happened. Release now
+  removes via StoreCoordinates; send-to-PC only re-files when the mon left the party.
+- [x] entei_return givemon moved to the end of entei_show (prompt vs ASSET REASSIGNED
+  title collision — the naming ritual now closes the reunion beat).
+- [x] Harness: `ci_harness` send-time suppression tagged per scenario in e2e_run +
+  removed at suite teardown; isolation close → drain loop; `nickname_modal.json`
+  scenario drives the real flow (types via screen.key — first use of that op).
+- [x] 🔍 **LIVE-VERIFIED 2026-07-19: nickname_modal 13/13 first try** — modal opened,
+  driver typed "Scrambles" into the focused EditBox (first live use of screen.key char),
+  C2S set the name, server confirm line matched; ESC beat walked away clean. A human
+  capture/gift feel-check on stream remains nice-to-have, not blocking.
+
 ## 2026-07-19 — Frontier REAL mechanics (alpha.7 build + alpha.8 friction wave)
 
 **Showrunner directive "I want this stuff to actual gameplay mechanics" — all seven
@@ -45,13 +163,26 @@ Port crew MULTI / Arcade conditions-only / Tower nine floors incl. the main floo
   muster gate not_tag challenger_2 (was _1 — a legacy half-pair save lost the button);
   factory return-command copy; dead local. Champion gate on the raw command surface left
   OPEN per the post-game-gating-waived ruling.
-- [ ] 🔍 **LIVE-VERIFY the frontier mechanics** — the re-cut hall scenarios (frontier_*
-  ×7 + frontier_complete) have NOT run against the new manager yet (the alpha.7 "halls
-  green" runs were the OLD dialog-battle cuts). Needs a stack session: install run, then
-  the 8 scenarios + shrine_dragon re-cut + keeper crystal-claim beats.
-- [ ] Open ruling: the Arcade brain's authored DOUBLES block is retired under the wheel
-  (Dahlia fights the rolled condition's format instead) — flag if her doubles identity
-  should override a singles roll. Optional dev nicety: `frontier arcade clear` wheel reset.
+- [x] 🔍 **LIVE-VERIFIED 2026-07-19 (three-round stack session):** arcade (wheel spins +
+  locked fights + ×2 brain purse), factory (loan round-trip, custody file empty after),
+  market (fee ladder), port (MULTI crew), tower (8-floor climb + Tycoon), castle (points
+  economy after the service-close scenario fix) ALL GREEN vs the real manager — round 3
+  scored 1037/1041 steps. Pyramid chained both ancients green (giant hit the TBCS stall
+  window; final re-run rides the new `pyramid abandon` reset). Fixes the sweep forced:
+  **FrontierManager dispatch SELF-HEAL** (a battle that vanishes without an event —
+  stopbattle/wedge/abort — cleared its dispatch in ~2s instead of wedging the player out
+  of every hall), **`frontier pyramid abandon`** (walk out of a held gauntlet; the
+  in-memory stage map survives across runs), and the **LATCH LAW extension: a
+  dialog-recut wave needs kill+re-arm for EVERY hall body, not just brains** (round 1
+  ran entirely against stale-preset bodies). Scenario-side: battle-GUI close idiom
+  restored, castle service buttons are command-only (menu stays open — close
+  explicitly), warden title waits must PRECEDE the purse wait (Java emits
+  hall_cleared before the purse line; the wait-window cursor made title-after-purse
+  unreachable), Draconis tp ground-probed (old approach dropped the driver to y64
+  under the trial floor — plus a stale y63 manual-placement body deleted).
+- [x] **RULED 2026-07-19 — Dahlia fights under the wheel's roll** (doubles only on a
+  DOUBLES slice; the wheel IS the Arcade's identity). Current Java already does this —
+  no change. Optional dev nicety someday: `frontier arcade clear` wheel reset.
 
 **Shrine structure rework (same session, ruled):** cultists exist ONLY where a trial
 calls for them; the leader is the end-of-trial dialog + ALWAYS the crystal giver
@@ -948,6 +1079,40 @@ deletable.
 ---
 
 ## 3. FUTURE / SHOWRUNNER DESIGN IDEAS (not on the 1.0 critical path)
+
+- [ ] 💻 **More achievements + "global achievements" (stream-aware, backfill-silent)** (showrunner
+  2026-07-20). Two linked pieces:
+  - **More achievements.** Grow the set well past the current ~49 `advancement/*.json`. Fill the
+    thin arcs — more per-town/gym beats, per-shrine + all-shrines already exist so extend to
+    Frontier halls (per-Brain + all-halls), nobles (have per-noble; add roster milestones),
+    Wheat War (fields-liberated tiers), the Minecraft-flavor/mirror set, quest-count and
+    dex-count milestones, Nuzlocke "survived N gyms deathless" style beats. Each is a normal
+    vanilla advancement JSON (icon = hyphen-namespace `cobblemon-initiative:<item>`, wired via
+    `grantAdvancementForTrainer` / the criteria in `advancement/CobblemonInitiativeCriteria` +
+    `TrainerDefeatedCriterion`, granted state mirrored in `PlayerProgress.earnedAchievements`).
+  - **Global achievements = auto-grant + display split.** The problem this solves: when a new
+    achievement batch ships **mid-run** (a live streamed hardcore save is always already deep in),
+    the client would toast-spam every achievement the player *retroactively* qualifies for. Design:
+    - **Backfill silently.** On join / content-version bump, run a backfill pass that auto-grants
+      every "global" achievement the player's **existing** `PlayerProgress` already satisfies —
+      with the client toast + chat **suppressed** (advancement `display.show_toast:false` +
+      `announce_to_chat:false`, matching how `root.json` already ships, OR grant via
+      `AdvancementProgress` without the visual). These are the "non-new" ones: earned by past
+      progress, so no toast. (Reuse the `modVersion` latch pattern from AutoInstall / the repairs
+      waves so a given batch backfills exactly once per world.)
+    - **Auto-grant global ones.** "Global" = achievements keyed on global/derived state (badge
+      count, dex count, fields liberated, board cleared, …) rather than a single live event — the
+      backfill grants them automatically the moment the state qualifies, no player action needed.
+    - **Stream toast for genuinely NEW unlocks.** When an achievement is earned **live** (during
+      play, not a backfill), fire a dedicated **stream-facing alert toast** — route it through the
+      existing `streamsync/StreamSyncManager` overlay bus (it already ships a "toast + snapshot"
+      event pair to the OBS overlay via `markDirty`), so the OBS overlay shows a New-Achievement
+      alert on stream. Optionally still show the normal client toast for live earns; the key
+      distinction is **backfill = silent, live-earn = stream alert.**
+  - Open questions for the showrunner: (a) do live earns ALSO show the vanilla client toast, or
+    stream-overlay-only? (b) is "global" a per-advancement flag (e.g. a custom tag/field) or a
+    naming convention/folder? (c) should the backfill announce a single summary line in chat
+    ("Caught up N achievements") or be fully silent?
 
 - [x] 💻 **Safari Zone BUILT (0.5.0-alpha.14) — "The Baiting Yards"** (concept menu in
   docs/SAFARI_ZONE_CONCEPTS.md; showrunner selected the lure-game direction, badge-3

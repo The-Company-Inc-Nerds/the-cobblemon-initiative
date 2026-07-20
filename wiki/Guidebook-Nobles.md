@@ -29,7 +29,7 @@ Nobles aren't wandering — each is launched from a specific **giver** the momen
   | **Groudon** | Crater Warding Stone | Volcano Peak crater rim |
   | **Rayquaza** | Sky-Altar | atop the Ryujin spire |
   | **Zapdos** | Grid Warden Cass | Cyber City grid edge |
-- **Articuno and Moltres** have **no separate giver** — they launch from the **Ice** and **Fire shrine leaders'** after-battle dialog, once you've cleared that shrine (see [[Guidebook Shrines]]). Each shrine's crystal doubles as a portable launcher for the same bird.
+- **Articuno and Moltres** have **no separate field giver** — they launch from a button in the **Ice** and **Fire shrine keepers'** after-battle dialog, once you've cleared that shrine (see [[Guidebook Shrines]]). Note this is **not** the shrine crystal: the crystal is a separate reward that summons that shrine's *own* guardian (Ice → **Glastrier**, Fire → **Ho-Oh**), while the keeper's dialog button is what starts the noble **bird** fight — the same keeper hands you both. Both birds *also* begin **ambushing on their own** once you've broken the Company's HQ raid, so a shrine you skip won't cost you the catch.
 
 Each giver's button only appears once you've earned the gate — a badge count, a shrine cleared, or (for Rayquaza) both. Town rumor hubs point you toward the nearby ones.
 

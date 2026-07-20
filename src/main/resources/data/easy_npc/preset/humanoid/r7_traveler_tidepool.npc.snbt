@@ -80,6 +80,40 @@
                                 }
                             ],
                             Label: "leave_button"
+                        },
+                        {
+                            Name: "See what the pools gave up",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_gift_sena_tidepool_find_claimed"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "loot give @s loot cobblemon_initiative:npc_gift/common"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_gift_sena_tidepool_find_claimed"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tag @s add gift_sena_tidepool_find_claimed"
+                                }
+                            ],
+                            Label: "find_button"
                         }
                     ],
                     Texts: [
@@ -91,6 +125,9 @@
                         },
                         {
                             Text: "Around the headland lies Gaviota and Neptune of the Water gym. Walk the pools first if you have the hour."
+                        },
+                        {
+                            Text: "Hano up the cliff swears Neptune rode a Wailord through the harbor mouth. Neptune walks to work along the seawall like everybody else. I wave every morning."
                         }
                     ],
                     Name: "Tidepool Walker Sena",

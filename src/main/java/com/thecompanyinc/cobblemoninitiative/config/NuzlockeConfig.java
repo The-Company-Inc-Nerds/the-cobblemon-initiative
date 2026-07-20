@@ -32,6 +32,8 @@ public class NuzlockeConfig {
   private boolean mysterySacrifice = false;
   private boolean sendCaughtToPC = true;
   private boolean setCaughtToZeroHP = true;
+  /** Offer the nickname prompt on every new acquisition (capture/gift/trade/starter). */
+  private boolean nicknamePromptEnabled = true;
   /**
    * On a hardcore whiteout, offer the "Dishonorable Respawn" button on the death screen (revive
    * in survival, stay hardcore-armed, permanent {@code dishonored} mark). Off = only the honorable
@@ -264,6 +266,7 @@ public class NuzlockeConfig {
   public boolean isMysterySacrifice() { return mysterySacrifice; }
   public boolean isSendCaughtToPC() { return sendCaughtToPC; }
   public boolean isSetCaughtToZeroHP() { return setCaughtToZeroHP; }
+  public boolean isNicknamePromptEnabled() { return nicknamePromptEnabled; }
   public boolean isDishonorableRespawnEnabled() { return dishonorableRespawnEnabled; }
   public DuplicateHandling getDuplicateHandling() { return duplicateHandling; }
   public Set<String> getCaughtSpecies() { return caughtSpecies; }
@@ -307,6 +310,7 @@ public class NuzlockeConfig {
   public void setMysterySacrifice(boolean v) { this.mysterySacrifice = v; }
   public void setSendCaughtToPC(boolean v) { this.sendCaughtToPC = v; }
   public void setSetCaughtToZeroHP(boolean v) { this.setCaughtToZeroHP = v; }
+  public void setNicknamePromptEnabled(boolean v) { this.nicknamePromptEnabled = v; }
   public void setDishonorableRespawnEnabled(boolean v) { this.dishonorableRespawnEnabled = v; }
   public void setDuplicateHandling(DuplicateHandling v) { this.duplicateHandling = v; }
   public void setEnableSafeZones(boolean v) { this.enableSafeZones = v; }

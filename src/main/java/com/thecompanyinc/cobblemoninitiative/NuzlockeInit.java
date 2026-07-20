@@ -260,7 +260,14 @@ public class NuzlockeInit implements ModInitializer {
         if (!shouldRelease) {
           PCStore pc = Cobblemon.INSTANCE.getStorage().getPC(player);
           for (Pokemon pcPokemon : pc) {
-            if (pcPokemon != null && pcPokemon.getSpecies().getName().equalsIgnoreCase(speciesName)) {
+            // Self-exclusion matters here too: a catch with a FULL party overflows
+            // straight into the PC before this event fires, so without it the mon
+            // matches itself and every full-party capture reads as a duplicate.
+            if (
+              pcPokemon != null &&
+              pcPokemon.getSpecies().getName().equalsIgnoreCase(speciesName) &&
+              pcPokemon != pokemon
+            ) {
               shouldRelease = true;
               break;
             }
@@ -273,8 +280,13 @@ public class NuzlockeInit implements ModInitializer {
       }
 
       if (shouldRelease) {
-        PlayerPartyStore party = Cobblemon.INSTANCE.getStorage().getParty(player);
-        party.remove(pokemon);
+        // Release from whichever store actually holds the mon — a full-party catch
+        // lives in the overflow PC, where party.remove() silently no-ops (wrong
+        // store) and the mon would stay owned while chat announces the release.
+        // Removing via the coordinates also nulls them, which is the exact premise
+        // the nickname prompt's released-dupe guard reads.
+        var coords = pokemon.getStoreCoordinates().get();
+        if (coords != null) coords.remove();
         StreamSyncEvents.pokemonLost(player, pokemon, StreamSyncEvents.CAUSE_DUPLICATE_RELEASE);
         player.sendSystemMessage(
           Component.literal("§e" + speciesName + " was automatically released (duplicate species).")
@@ -294,17 +306,22 @@ public class NuzlockeInit implements ModInitializer {
     if (config.isSendCaughtToPC()) {
       PlayerPartyStore party = Cobblemon.INSTANCE.getStorage().getParty(player);
       PCStore pc = Cobblemon.INSTANCE.getStorage().getPC(player);
-      party.remove(pokemon);
 
-      var pcPosition = pc.getFirstAvailablePosition();
-      if (pcPosition != null) {
-        pc.set(pcPosition, pokemon);
-        player.sendSystemMessage(Component.literal("§a" + speciesName + " was sent to your PC."));
+      if (party.remove(pokemon)) {
+        var pcPosition = pc.getFirstAvailablePosition();
+        if (pcPosition != null) {
+          pc.set(pcPosition, pokemon);
+          player.sendSystemMessage(Component.literal("§a" + speciesName + " was sent to your PC."));
+        } else {
+          party.add(pokemon);
+          player.sendSystemMessage(
+            Component.literal("§cPC is full! " + speciesName + " was added to your party.")
+          );
+        }
       } else {
-        party.add(pokemon);
-        player.sendSystemMessage(
-          Component.literal("§cPC is full! " + speciesName + " was added to your party.")
-        );
+        // A full-party catch never entered the party — Cobblemon overflowed it to
+        // the PC already, so there is nothing to re-file, only to announce.
+        player.sendSystemMessage(Component.literal("§a" + speciesName + " was sent to your PC."));
       }
     }
 

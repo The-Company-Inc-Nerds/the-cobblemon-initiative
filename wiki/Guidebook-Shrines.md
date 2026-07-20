@@ -1,12 +1,12 @@
 _Optional side-content for the brave. Five elemental shrines, five trials, five crystals — and one wandering pilgrim who pays out if you clear them all. Not one of them is required to beat the campaign._
 
-> **Part of the campaign guide.** See [[Guidebook Overview]] for the full route, [[Guidebook Nobles]] for the other optional trial system (two of the birds hatch straight out of these shrines), and [Architecture Overview](https://github.com/The-Company-Inc-Nerds/the-cobblemon-initiative/blob/main/docs/ARCHITECTURE_OVERVIEW.md) for how the shrine engine fits the rest of the mod.
+> **Part of the campaign guide.** See [[Guidebook Overview]] for the full route, [[Guidebook Nobles]] for the other optional legendary system (a separate roster — the shrine crystals summon their *own* guardians, no overlap with the nobles), and [Architecture Overview](https://github.com/The-Company-Inc-Nerds/the-cobblemon-initiative/blob/main/docs/ARCHITECTURE_OVERVIEW.md) for how the shrine engine fits the rest of the mod.
 
 ---
 
 ## What the shrines are
 
-Scattered across the UPM 2 map are **five elemental shrines** — Fairy, Ground, Dragon, Ice, and Fire. Each is a self-contained optional trial: a short **cultist ladder** guarding a robed **Shrine Leader**, wrapped around a **signature elemental challenge**. They are **pure side-content** — nothing in the main story gates on them, and the gym route never demands you clear one.
+Scattered across the UPM 2 map are **five elemental shrines** — Fairy, Ground, Dragon, Ice, and Fire. Each is a self-contained optional trial: a robed **Shrine Keeper** and a **signature elemental challenge**, rewarded with an **elemental crystal**. They are **pure side-content** — nothing in the main story gates on them, and the gym route never demands you clear one.
 
 Each shrine **opens once you beat the adjacent gym leader**:
 
@@ -22,8 +22,8 @@ Fire is the exception: its ash-priests *"only open to a champion,"* so the calde
 
 Why bother?
 
-- **An elemental shrine crystal** — one per shrine, granted once when you beat its leader. (The crystal is also the alternate launcher for that shrine's noble — see [[Guidebook Nobles]].)
-- **A one-time "memory fragment"** on your *first* shrine leader defeated — the keepers half-remember something older than your badges.
+- **An elemental shrine crystal** — one per shrine, claimed from the keeper once you clear its trial. Place it anywhere in the world and it summons a **wild level-70 legendary guardian** for you to battle and catch: Fire → **Ho-Oh**, Ground → **Landorus**, Ice → **Glastrier**, Dragon → **Kyurem**, Fairy → **Xerneas**. These are the shrines' *own* roster — entirely separate from the [[nobles|Guidebook Nobles]], no overlap. (One-shot item, EPIC rarity — see the tooltip's *"use with caution."*)
+- **A one-time "memory fragment"** on your *first* shrine cleared — the keepers half-remember something older than your badges.
 - **A per-shrine completion** and a golden **title splash**: _"Challenge Complete!"_
 - **The Five Keepers capstone** — clear all five and a wandering pilgrim pays out **5,000 CobbleDollars, a Master Ball, and a stack of Rare Candy**.
 
@@ -34,11 +34,10 @@ Why bother?
 
 ## The shape of a shrine
 
-Every shrine follows the same three-beat structure:
+Every shrine follows the same two-beat structure — **no cultists, no ladder of grunts to grind through** (an older design that was cut). Just the keeper and the trial:
 
-1. **The cultist ladder.** Two acolytes stand between you and the leader — an **Acolyte** (rung 1) and a **Zealot** (rung 2). You must beat the first before the second will fight, and both before the leader will face you. Each cultist pays a small purse plus **3× Ultra Ball** on defeat.
-2. **The leader's trial.** The Shrine Leader has a **Begin-Trial** button that starts the shrine's elemental challenge — parkour, gauntlet, or bond-test depending on the element. Clear the trial and the leader's battle unlocks.
-3. **The keeper battle.** Beat the Shrine Leader to complete the shrine: you're granted the **crystal** (once), the shrine registers as cleared, and — if it's your first — a one-time recognition sting fires. The keepers speak to you as an *old presence*, something the land half-remembers; none of them ever names a name.
+1. **The keeper's trial.** A single **Shrine Keeper** tends each shrine. Speak to them and a **Begin-Trial** button starts the shrine's elemental challenge — parkour, dark gauntlet, hydra gauntlet, or bond-test depending on the element. For **two** of the five (Fairy and Ground) the keeper *is* the trial's final obstacle: the challenge ends in a solo/hidden battle against them. For the **other three** (Dragon, Ice, Fire) the trial is the gauntlet or the course itself, and the keeper never draws a Pokémon — they are the trial's voice, not a fight.
+2. **The crystal.** Clear the trial and the keeper hands you that shrine's **crystal** (once), the shrine registers as cleared, and — if it's your first — a one-time recognition sting fires. The keepers speak to you as an *old presence*, something the land half-remembers; none of them ever names a name.
 
 > **Bail out any time:** `/shrine-abort` (no OP needed) clears the active trial and all its effects with **zero penalty**. You can walk back in and restart whenever you like. Starting a trial while one is already active simply resets the old one. See [[Commands]] for the full shrine command tree.
 
@@ -54,7 +53,7 @@ There are **four trial styles** across the five shrines:
 |------|---------|----------------------|
 | Fairy tests | Fairy | A bonded-lead gauntlet — friendship, fullness, nickname, shiny, then a solo battle |
 | Blind gauntlet | Ground | Half health + perpetual blindness + periodic earthquake teleports, then the keeper in the dark |
-| Hydra gauntlet | Dragon | A staged three-heads battle gauntlet, healed between stages, capped by the keeper |
+| Hydra gauntlet | Dragon | Three sequential head-battles (two Doubles, one Singles), fully healed between stages; the keeper never fights |
 | Timed parkour | Ice, Fire | A wall-clock countdown — cross the frozen / burning path before it claims you |
 
 Whichever way it ends, completion pays the same: crystal, memory sting (first clear only), the *"Challenge Complete!"* splash, and a step toward the Five Keepers capstone.
@@ -67,7 +66,6 @@ Whichever way it ends, completion pays the same: crystal, memory sting (first cl
 |---|---|
 | **Opens after** | Mystic Marsh (Gym 3) |
 | **Leader** | High Priestess Aurora |
-| **Ladder** | Fae Acolyte Pixie → Fae Zealot |
 | **Trial** | Fairy tests — bonded, shiny, solo lead |
 
 **The trial:** the only non-combat-first shrine. You bring your **lead Pokémon** to Aurora's altar and prove your bond through a series of tests — friendship, fullness, a nickname, shininess — before the final check: your candidate must be your **only** party member. Pass it and the shrine registers that exact Pokémon, then sends you to battle Aurora **alone, with the bond as your only weapon.**
@@ -83,7 +81,6 @@ Whichever way it ends, completion pays the same: crystal, memory sting (first cl
 |---|---|
 | **Opens after** | Kalahar Reach (Gym 6) |
 | **Leader** | High Priest Terran |
-| **Ladder** | Earth Acolyte Clay → Earth Zealot |
 | **Trial** | Dark gauntlet |
 
 **The trial — the most physically dangerous shrine.** On start the engine halves your health, **blinds you** (re-applied so it never fades), and runs an **earthquake** that periodically teleports you a random distance across the horizontal plane. You win by finding and defeating **High Priest Terran** somewhere in the dark. `/shrine-abort` removes the blindness instantly.
@@ -102,15 +99,14 @@ Whichever way it ends, completion pays the same: crystal, memory sting (first cl
 |---|---|
 | **Opens after** | Ryujin Keep (Gym 8) |
 | **Leader** | High Priest Draconis |
-| **Ladder** | Dragon Acolyte Wyrm → Dragon Zealot Scale |
 | **Trial** | Hydra gauntlet |
 
-**The trial:** the three heads of the hydra — sequential staged battles you must clear in order, with your **entire party fully healed between heads**. The hydra and Draconis both fight in **pairs (Doubles)**, so field a party built for two-on-two before you begin.
+**The trial:** the three heads of the hydra — **Alpha, Beta, then Omega** — sequential staged battles you must clear in order, with your **entire party fully healed between heads**. Draconis himself never fights; he starts the gauntlet and hands over the crystal at the end. The first two heads (Alpha, Beta) are **Doubles**; the final head (Omega) is a **Singles** duel — so bring a bench that can switch between both.
 
 **Tips**
-- This is the most *battle-pure* shrine — no environmental tricks, just a triple gauntlet and the keeper. The danger is purely Nuzlocke risk on the battles themselves.
+- This is the most *battle-pure* shrine — no environmental tricks, just the triple gauntlet. The danger is purely Nuzlocke risk on the battles themselves.
 - Healing between stages means you can afford chip damage on the early heads; what matters is winning, not winning clean.
-- Bring a deep, type-prepared, doubles-legal bench. The shrine keeps the mobs and whispers out, but a faint still deals its Nuzlocke damage.
+- Bring a deep, type-prepared bench that is legal for **both** doubles (Alpha/Beta) and singles (Omega). The shrine keeps the mobs and whispers out, but a faint still deals its Nuzlocke damage.
 
 ### Ice Shrine — "The Frozen Path" ❄️
 
@@ -118,7 +114,6 @@ Whichever way it ends, completion pays the same: crystal, memory sting (first cl
 |---|---|
 | **Opens after** | Nifl Town (Gym 9) |
 | **Leader** | High Priest Glacius |
-| **Ladder** | Frost Acolyte Neve → Frost Zealot |
 | **Trial** | Timed parkour (hazard ice) |
 
 **The trial:** reach the summit before the cold claims you — a parkour race against a **wall-clock timer**, with a twist: **the ice itself is a hazard.** Only the recorded safe path across the frozen floor is honest ground; step onto ice *off* that path and the shrine punishes you — freezing damage, a glass-crack, and an instant teleport back to the start. Tag the finish before the clock runs out.
@@ -134,7 +129,6 @@ Whichever way it ends, completion pays the same: crystal, memory sting (first cl
 |---|---|
 | **Opens after** | **the Royal League** (Champion required) |
 | **Leader** | High Priest Ignis |
-| **Ladder** | Flame Acolyte Pyra → Flame Zealot Cinder |
 | **Trial** | Timed parkour (speed) |
 
 **The trial:** same parkour engine as the Ice shrine, but tighter — a straight race to the summit *before the fire consumes you.* This is the endgame shrine: the ash-priests won't even look at you until you wear the League crown.
@@ -155,10 +149,10 @@ Each of the five host towns has a **rumor hub** (its arrival nurse or guide) tha
 flowchart LR
   G["Adjacent gym badge<br/>(Fairy / Ground / Dragon / Ice)"] --> S["Shrine opens"]
   RC["Royal League Champion"] --> SF["Fire shrine opens"]
-  S --> L["Cultist ladder<br/>Acolyte → Zealot"]
-  SF --> L
-  L --> T["Leader's trial<br/>(parkour / gauntlet / fairy tests)"]
-  T --> K["Beat the Shrine Leader<br/>→ crystal + memory sting"]
+  S --> T["The keeper's trial<br/>(parkour / gauntlet / fairy tests)"]
+  SF --> T
+  T --> K["Clear the trial<br/>→ crystal claim + memory sting"]
+  K --> X["Place the crystal anywhere<br/>→ wild lv70 guardian to catch"]
   K --> C{"All five cleared?"}
   C -->|yes| P["The Last Pilgrim pays<br/>5,000 CD + Master Ball + candy"]
 ```
@@ -178,7 +172,7 @@ flowchart LR
 - **`/shrine-abort` is your panic button.** No permission, no penalty, instant effect-cleanup. Use it the moment a trial turns against you.
 - **Parkour (Ice/Fire):** the timer never kills you — the fall does, and on the Frozen Path so does the **off-path ice** (freeze damage + a punishment teleport back to the start). Walk the route first; reset for free. Never take the "tight" jump when the safe jump still beats the clock.
 - **Dark gauntlet (Ground):** you start at **half HP**, **blind**, and get **teleported** at intervals. If there's any drop near the maze, that teleport can throw you into it. This trial is genuinely run-ending — skip it if a death here would hurt.
-- **Hydra gauntlet (Dragon):** the hydra and Draconis fight in **pairs** — field a doubles-legal party. You heal between heads, but a lost Pokémon is a lost Pokémon.
+- **Hydra gauntlet (Dragon):** three heads — Alpha and Beta are **Doubles**, Omega is **Singles**; the keeper never fights. Bring a bench legal for both. You heal between heads, but a lost Pokémon is a lost Pokémon.
 - **Fairy tests:** the final fight is **solo**. On a Nuzlocke, the candidate Pokémon is alone and irreplaceable. Don't commit until it can clearly win.
 - **The grounds quiet the world, not the rules.** Standing at the shrine suppresses hostile spawns and the whispers — Nuzlocke faint damage still applies everywhere.
 
@@ -187,7 +181,7 @@ flowchart LR
 ## Related pages
 
 - [[Guidebook Overview]] — the full campaign route and how shrines slot in
-- [[Guidebook Nobles]] — the other optional trial system; Articuno and Moltres launch straight from the Ice and Fire shrine keepers
+- [[Guidebook Nobles]] — the other optional legendary system; a completely separate roster (Groudon/Kyogre/Rayquaza and the three birds) from the shrine crystals' guardians (Ho-Oh/Landorus/Glastrier/Kyurem/Xerneas)
 - [[Commands]] — `/cobblemon-initiative shrine` and `/shrine-abort`
 - [Architecture Overview](https://github.com/The-Company-Inc-Nerds/the-cobblemon-initiative/blob/main/docs/ARCHITECTURE_OVERVIEW.md) · [Architecture Data Flows](https://github.com/The-Company-Inc-Nerds/the-cobblemon-initiative/blob/main/docs/ARCHITECTURE_DATA_FLOWS.md) — the shrine engine, the subsystem map, and the challenge flow
 - [[Guidebook Act II]] · [[Guidebook Act III]] — the main-story beats the shrines sit beside

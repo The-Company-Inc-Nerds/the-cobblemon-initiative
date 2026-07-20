@@ -168,7 +168,8 @@ public class CobblemonInitiativeCommands {
             .then(Commands.literal("port")
               .then(Commands.literal("crew").executes(ctx -> frontier(ctx, m -> m::portCrew))))
             .then(Commands.literal("pyramid")
-              .then(Commands.literal("start").executes(ctx -> frontier(ctx, m -> m::pyramidStart))))
+              .then(Commands.literal("start").executes(ctx -> frontier(ctx, m -> m::pyramidStart)))
+              .then(Commands.literal("abandon").executes(ctx -> frontier(ctx, m -> m::pyramidAbandon))))
             .then(Commands.literal("tower")
               .then(Commands.literal("climb").executes(ctx -> frontier(ctx, m -> m::towerClimb))))
             .then(Commands.literal("factory")
@@ -1112,6 +1113,10 @@ public class CobblemonInitiativeCommands {
     try {
       Pokemon mon = PokemonProperties.Companion.parse(properties).create();
       Cobblemon.INSTANCE.getStorage().getParty(player).add(mon);
+      // Single gift choke point: every scripted gift + the trade helper lands here,
+      // so this one call offers the nickname ritual for all of them. (Pre-named
+      // gifts — properties carrying nickname= — are skipped inside promptFor.)
+      com.thecompanyinc.cobblemoninitiative.nickname.NicknameManager.promptFor(player, mon);
       return mon;
     } catch (Exception e) {
       return null;
