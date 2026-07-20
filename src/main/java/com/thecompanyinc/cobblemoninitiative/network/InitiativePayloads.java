@@ -110,6 +110,31 @@ public final class InitiativePayloads {
     }
   }
 
+  /**
+   * S2C: pop a client-side achievement toast for a LIVE earn. Carries the advancement id
+   * (the client resolves its display for the vanilla AdvancementToast) plus a title
+   * fallback used if the advancement is not synced client-side. Sent ONLY on live earns —
+   * silent mid-run backfills never send this, which is what keeps them toast-free while the
+   * advancement JSONs stay {@code show_toast:false}.
+   */
+  public record AchievementToastPayload(String advancement, String title)
+    implements CustomPacketPayload {
+
+    public static final Type<AchievementToastPayload> TYPE = new Type<>(
+      ResourceLocation.fromNamespaceAndPath(InitiativeInit.MOD_ID, "achievement_toast"));
+
+    public static final StreamCodec<FriendlyByteBuf, AchievementToastPayload> CODEC =
+      StreamCodec.composite(
+        ByteBufCodecs.STRING_UTF8, AchievementToastPayload::advancement,
+        ByteBufCodecs.STRING_UTF8, AchievementToastPayload::title,
+        AchievementToastPayload::new);
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+      return TYPE;
+    }
+  }
+
   private InitiativePayloads() {}
 
   /** Common init: register payload types + the server-side deposit receiver. */
@@ -118,6 +143,7 @@ public final class InitiativePayloads {
     PayloadTypeRegistry.playC2S().register(PickerDepositPayload.TYPE, PickerDepositPayload.CODEC);
     PayloadTypeRegistry.playS2C().register(NicknamePromptPayload.TYPE, NicknamePromptPayload.CODEC);
     PayloadTypeRegistry.playC2S().register(NicknameSetPayload.TYPE, NicknameSetPayload.CODEC);
+    PayloadTypeRegistry.playS2C().register(AchievementToastPayload.TYPE, AchievementToastPayload.CODEC);
 
     // Fabric 1.21 play receivers run on the server thread; the managers re-validate the
     // whole request, so a stale/forged payload degrades to a polite refusal.
@@ -147,5 +173,10 @@ public final class InitiativePayloads {
   /** Server→client: offer the nickname prompt for a new acquisition. */
   public static void sendNicknamePrompt(ServerPlayer player, UUID monUuid, String speciesName) {
     ServerPlayNetworking.send(player, new NicknamePromptPayload(monUuid, speciesName));
+  }
+
+  /** Server→client: pop a live-earn achievement toast (fire-and-forget). */
+  public static void sendAchievementToast(ServerPlayer player, String advancement, String title) {
+    ServerPlayNetworking.send(player, new AchievementToastPayload(advancement, title));
   }
 }

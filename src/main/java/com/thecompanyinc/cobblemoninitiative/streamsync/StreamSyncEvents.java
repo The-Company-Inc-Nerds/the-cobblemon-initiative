@@ -35,6 +35,17 @@ public final class StreamSyncEvents {
 
   /** A Pokémon permanently left the run (faint removal, sacrifice, duplicate release). */
   public static void pokemonLost(ServerPlayer player, Pokemon pokemon, String cause) {
+    // Count the loss FIRST, before the overlay gate — this is the single choke point every
+    // permanent loss funnels through, so it is the always-tracked run death count the
+    // "deathless / flawless" achievements read (they must stay truthful even with the
+    // stream overlay switched off). The sacrifice path posts this from the CLIENT thread, so
+    // marshal the progress mutation onto the server thread — getProgress()/incrementPokemonLost
+    // touch an unsynchronized map + int that the server thread also reads/writes.
+    if (InitiativeInit.getProgressManager() != null && player.getServer() != null) {
+      player.getServer().execute(() ->
+        InitiativeInit.getProgressManager().getProgress(player).incrementPokemonLost());
+    }
+
     StreamSyncPusher pusher = StreamSyncInit.getPusher();
     if (pusher == null) return;
     long deathsTotal = StreamSyncInit.getStats().recordLoss(cause);
@@ -102,6 +113,25 @@ public final class StreamSyncEvents {
     if (pusher == null) return;
     JsonObject json = eventEnvelope("level_cap");
     json.addProperty("cap", cap);
+    pusher.enqueueEvent(json);
+    StreamSyncInit.getManager().invalidate();
+  }
+
+  /**
+   * A NEW achievement was earned LIVE (during play — never a silent backfill), so the OBS
+   * overlay can pop a New-Achievement alert. {@code id} is the short id (e.g. "all_halls"),
+   * {@code title}/{@code description} are the human strings, {@code icon} the display item id.
+   */
+  public static void achievementEarned(
+    ServerPlayer player, String id, String title, String description, String icon
+  ) {
+    StreamSyncPusher pusher = StreamSyncInit.getPusher();
+    if (pusher == null) return;
+    JsonObject json = eventEnvelope("achievement");
+    json.addProperty("id", id);
+    json.addProperty("title", title);
+    json.addProperty("description", description);
+    if (icon != null) json.addProperty("icon", icon);
     pusher.enqueueEvent(json);
     StreamSyncInit.getManager().invalidate();
   }

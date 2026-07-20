@@ -1080,7 +1080,7 @@ deletable.
 
 ## 3. FUTURE / SHOWRUNNER DESIGN IDEAS (not on the 1.0 critical path)
 
-- [ ] 💻 **More achievements + "global achievements" (stream-aware, backfill-silent)** (showrunner
+- [x] 💻 **More achievements + "global achievements" (stream-aware, backfill-silent)** (showrunner
   2026-07-20). Two linked pieces:
   - **More achievements.** Grow the set well past the current ~49 `advancement/*.json`. Fill the
     thin arcs — more per-town/gym beats, per-shrine + all-shrines already exist so extend to
@@ -1113,6 +1113,38 @@ deletable.
     stream-overlay-only? (b) is "global" a per-advancement flag (e.g. a custom tag/field) or a
     naming convention/folder? (c) should the backfill announce a single summary line in chat
     ("Caught up N achievements") or be fully silent?
+  - **SHIPPED (2026-07-20).** New `achievement/` package: `AchievementManager` holds a code
+    manifest of 25 derived-state ("global") achievements, each an `(id, advancementPath, title,
+    icon, Predicate<AchievementContext>)`. `buildContext()` snapshots the derived reads once per
+    pass (badges, shrines, frontier halls, noble roster, fields liberated, dex-caught, run
+    deaths, quests done). **Silent backfill on join** (grant-once, mirrored into
+    `PlayerProgress.earnedAchievements`, per-world `modVersion` batch latch at
+    `data/cobblemon_initiative_achievements.json`); **live re-eval** every 40 ticks + right after
+    a trainer defeat + on quest completion, gated on a per-player `liveReady` set so a backfill
+    can never toast. New advancement JSONs (all `show_toast:false` + `announce_to_chat:false`, so
+    the grant itself is silent and the live/silent split lives entirely in Java): `frontier/`
+    (8 halls + `all_halls`), `nobles/roster_{5,10,15}`, `wheat/fields_{1,3,6}`,
+    `dex/caught_{25,50,100,151}`, `nuzlocke/{flawless_5,flawless_10,deathless_champion}`,
+    `quests/quests_{10,30,60}`.
+  - **Showrunner rulings resolving the open questions:** (a) live earns pop the **vanilla client
+    toast** (new S2C `AchievementToastPayload` → client builds the real `AdvancementToast` from
+    the synced display, so `show_toast:false` never blocks it) **plus** the streamsync overlay
+    alert (`StreamSyncEvents.achievementEarned`) **plus** the `§6[Achievement Unlocked]` chat
+    line. (b) "global" = the **code manifest** (a predicate is required for auto-grant anyway),
+    folders are display-only. (c) backfill emits **one** "the ledger has been reconciled — N …"
+    line, but ONLY on a genuine batch-version bump — silent on ordinary rejoins.
+  - **Supporting infra:** `PlayerProgress` gained a persisted `pokemonLost` counter (incremented
+    at the single loss choke point `StreamSyncEvents.pokemonLost`, so it is tracked even with the
+    overlay off — the "deathless" tiers need a truthful zero; on a deep save it is **seeded up to
+    the streamsync stats total on join** so flawless never false-positives) and a persisted
+    `completedQuests` set (fed by a completion-transition detector in `QuestTrackManager` — a
+    `ci_quest` holder that drops out of the active set = one completion, idempotent + first-pass
+    seeded). `compileJava` green.
+  - REMAINING (optional polish): the OBS overlay's New-Achievement alert widget lives in the
+    antlers `cobblemon-overlay` service (separate repo) — the mod now emits the `achievement`
+    event on the streamsync bus; the overlay UI to render it is not in this repo. MC-flavor /
+    mirror advancement set (self-triggering `inventory_changed` + reward functions) not extended
+    here — the derived-state arcs were the meat.
 
 - [x] 💻 **Safari Zone BUILT (0.5.0-alpha.14) — "The Baiting Yards"** (concept menu in
   docs/SAFARI_ZONE_CONCEPTS.md; showrunner selected the lure-game direction, badge-3

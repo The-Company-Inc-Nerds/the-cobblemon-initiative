@@ -47,6 +47,14 @@ public class NuzlockeClientInit implements ClientModInitializer {
       InitiativePayloads.NicknamePromptPayload.TYPE,
       (payload, context) -> pendingNicknames.add(payload));
 
+    // Live-earn achievement toast (backfills never send this — see AchievementToasts).
+    // Popped straight away; no screen sequencing needed, a toast overlays whatever's up.
+    ClientPlayNetworking.registerGlobalReceiver(
+      InitiativePayloads.AchievementToastPayload.TYPE,
+      (payload, context) ->
+        com.thecompanyinc.cobblemoninitiative.achievement.client.AchievementToasts.show(
+          payload.advancement(), payload.title()));
+
     // Undelivered requests die with the session — a queued nickname offer (or an
     // unconsumed picker-open) from a previous world would reference state this
     // server never owned, popping a ghost screen on the next join.

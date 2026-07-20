@@ -118,6 +118,12 @@ public class StreamSyncStats {
     data.captures++;
   }
 
+  /** All-cause permanent-loss total for this save — the seed the achievement deaths counter
+   *  reconciles against when it is introduced mid-run onto an already-deep save. */
+  public synchronized long getPokemonLost() {
+    return data.pokemonLost;
+  }
+
   /** The snapshot's {@code deaths} block, built under the same lock the increments use. */
   public synchronized JsonObject toDeathsJson() {
     JsonObject json = new JsonObject();

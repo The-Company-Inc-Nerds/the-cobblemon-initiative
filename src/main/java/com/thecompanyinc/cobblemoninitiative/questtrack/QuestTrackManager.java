@@ -62,6 +62,19 @@ public class QuestTrackManager {
 
   private final List<QuestDef> quests = new ArrayList<>();
   private final Map<UUID, String> trackedHolders = new HashMap<>();
+  /** Quest holders that had a ci_quest score on the previous refresh — a durable holder that
+   *  drops out of this set has been completed (the score's removal is the completion signal).
+   *  Seeds itself on the first pass so pre-loaded active quests are never miscounted. */
+  private Set<String> lastActiveHolders = new HashSet<>();
+  private boolean questLedgerSeeded = false;
+  /** Holders whose ci_quest score can vanish WITHOUT the quest being completed, so a
+   *  disappearance here is NOT a completion: the free-retry timed mini-games (their run tag is
+   *  cleared on fail/expire exactly as on a win — cascade/sprint/derby) and the display-only
+   *  Verified-Growth line (rides a fluctuating instability threshold, no completion latch). The
+   *  count means "durable quests resolved", so these are excluded rather than over-counted. */
+  private static final Set<String> VOLATILE_QUEST_HOLDERS = Set.of(
+    "q.side_ascent", "q.side_sprint", "q.side_classic", "q.side_verified"
+  );
   /** Sidebar lines currently carrying the ▶ highlight: holder → pre/post components. */
   private final Map<String, HighlightState> highlights = new HashMap<>();
   /** The beam fallback only runs when JourneyMap is absent (waypoints cover it else). */
@@ -140,6 +153,12 @@ public class QuestTrackManager {
     highlights.clear();
     published.clear();
     tickCounter = 0;
+    // This manager is a process-lifetime singleton; load() runs on every SERVER_STARTED,
+    // including a single-player quit-to-title into a DIFFERENT save. Reset the completion
+    // ledger's session state too, or world B's first pass would diff world A's stale holder
+    // set (and, because ci_quest scores populate lazily, mass-credit phantom completions).
+    lastActiveHolders = new HashSet<>();
+    questLedgerSeeded = false;
 
     if (Files.exists(savePath)) {
       try (
@@ -200,6 +219,7 @@ public class QuestTrackManager {
   /** The 5-tick pass: validate tracked quests, publish waypoints, paint the sidebar. */
   private void refresh(MinecraftServer server) {
     List<QuestDef> active = activeQuests(server);
+    detectQuestCompletions(server, active);
     Set<String> wantHighlighted = new HashSet<>();
     Set<UUID> online = new HashSet<>();
 
@@ -228,6 +248,49 @@ public class QuestTrackManager {
 
     published.keySet().retainAll(online);
     applyHighlights(server, wantHighlighted);
+  }
+
+  /**
+   * A holder that had a ci_quest score last pass but not this one was completed. Records it
+   * in {@link com.thecompanyinc.cobblemoninitiative.data.PlayerProgress#markQuestCompleted}
+   * (idempotent — a re-added score can never double-count) and pokes the achievement engine so
+   * a quest-count tier can toast live. Seeds silently on the first pass so the quests already
+   * active at world load are not mistaken for completions.
+   */
+  private void detectQuestCompletions(MinecraftServer server, List<QuestDef> active) {
+    Set<String> activeHolders = new HashSet<>();
+    for (QuestDef quest : active) {
+      activeHolders.add(quest.holder);
+    }
+
+    if (questLedgerSeeded) {
+      List<String> completed = new ArrayList<>();
+      for (String holder : lastActiveHolders) {
+        if (!activeHolders.contains(holder) && !VOLATILE_QUEST_HOLDERS.contains(holder)) {
+          completed.add(holder);
+        }
+      }
+      if (!completed.isEmpty()) {
+        List<ServerPlayer> players = server.getPlayerList().getPlayers();
+        boolean recorded = false;
+        for (ServerPlayer player : players) {
+          var progress = InitiativeInit.getProgressManager().getProgress(player);
+          for (String holder : completed) {
+            if (progress.markQuestCompleted(holder)) recorded = true;
+          }
+          if (InitiativeInit.getAchievementManager() != null) {
+            InitiativeInit.getAchievementManager().evaluateLive(player);
+          }
+        }
+        if (recorded) {
+          InitiativeInit.getProgressManager().saveProgress(server);
+        }
+      }
+    } else {
+      questLedgerSeeded = true;
+    }
+
+    lastActiveHolders = activeHolders;
   }
 
   // ---------------------------------------------------------------------------

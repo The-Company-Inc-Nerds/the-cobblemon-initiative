@@ -5,6 +5,7 @@ import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 import com.cobblemon.mod.common.api.battles.model.actor.BattleActor;
 import com.cobblemon.mod.common.api.events.CobblemonEvents;
 import com.cobblemon.mod.common.battles.actor.PlayerBattleActor;
+import com.thecompanyinc.cobblemoninitiative.achievement.AchievementManager;
 import com.thecompanyinc.cobblemoninitiative.command.CobblemonInitiativeCommands;
 import com.thecompanyinc.cobblemoninitiative.compat.EasyNpcSecurityConfig;
 import com.thecompanyinc.cobblemoninitiative.dex.DexScoreManager;
@@ -60,6 +61,7 @@ public class InitiativeInit implements ModInitializer {
   private static MinecraftFlavorConfig flavorConfig;
   private static HomesteadManager homesteadManager;
   private static MomCareManager momCareManager;
+  private static AchievementManager achievementManager;
 
   @Override
   public void onInitialize() {
@@ -112,6 +114,11 @@ public class InitiativeInit implements ModInitializer {
     flavorConfig = MinecraftFlavorConfig.load();
     homesteadManager = new HomesteadManager();
     momCareManager = new MomCareManager();
+
+    // Global/derived-state achievements: silent mid-run backfill on join + live toasts during
+    // play (see AchievementManager). No world data of its own beyond a per-world batch latch;
+    // the earned state is mirrored into PlayerProgress, which loads/saves with the rest.
+    achievementManager = new AchievementManager();
 
     // Safari Zone — the Baiting Yards (badge-3 paid catch-only preserve). Owns its own
     // Cobblemon subscriptions (battle-cancel guard + session-gated capture ledger).
@@ -184,6 +191,12 @@ public class InitiativeInit implements ModInitializer {
     // Frontier hall mechanics — fee resolution, chain delays, capture watchdogs.
     ServerTickEvents.END_SERVER_TICK.register(server ->
       frontierManager.tick(server)
+    );
+
+    // Achievements — periodic live re-evaluation (every 2s) catches scoreboard/Pokédex-derived
+    // milestone crossings (dex count, fields liberated, frontier halls) that have no event site.
+    ServerTickEvents.END_SERVER_TICK.register(server ->
+      achievementManager.tick(server)
     );
 
     // THE INCOMPLETE FILE props: click the ledger barrel / portrait chest to "find" the
@@ -272,7 +285,15 @@ public class InitiativeInit implements ModInitializer {
           com.thecompanyinc.cobblemoninitiative.founder.FounderMirrorManager.refresh(handler.player);
         }
         frontierManager.onPlayerJoin(handler.player); // parked-party reminder
+        // Silently backfill every achievement this (possibly deep) save already qualifies for,
+        // then arm the live-toast path. Runs after progress is loaded (SERVER_STARTED precedes
+        // any join) and before the player acts, so nothing retroactive toasts.
+        achievementManager.onPlayerJoin(handler.player, server);
       });
+
+    net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents.DISCONNECT.register(
+      (handler, server) ->
+        achievementManager.onPlayerDisconnect(handler.player.getUUID()));
 
     ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
       progressManager.saveProgress(server);
@@ -543,5 +564,9 @@ public class InitiativeInit implements ModInitializer {
 
   public static MomCareManager getMomCareManager() {
     return momCareManager;
+  }
+
+  public static AchievementManager getAchievementManager() {
+    return achievementManager;
   }
 }

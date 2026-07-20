@@ -69,6 +69,16 @@ public class PlayerProgressManager {
             progress
               .getEarnedAchievements()
               .addAll(entry.getValue().earnedAchievements);
+            if (entry.getValue().completedQuests != null) {
+              progress
+                .getCompletedQuests()
+                .addAll(entry.getValue().completedQuests);
+            }
+            progress.setPokemonLost(entry.getValue().pokemonLost);
+            // A record written before this feature has no deathsKnown field → Gson leaves it
+            // null → the count is unverified (we cannot know if losses happened pre-counter).
+            // A record this version wrote carries the real flag.
+            progress.setDeathsKnown(Boolean.TRUE.equals(entry.getValue().deathsKnown));
             progress.setCurrentLevelCap(entry.getValue().currentLevelCap);
             playerProgress.put(uuid, progress);
           }
@@ -97,6 +107,11 @@ public class PlayerProgressManager {
         progressData.earnedAchievements = new ArrayList<>(
           entry.getValue().getEarnedAchievements()
         );
+        progressData.completedQuests = new ArrayList<>(
+          entry.getValue().getCompletedQuests()
+        );
+        progressData.pokemonLost = entry.getValue().getPokemonLost();
+        progressData.deathsKnown = entry.getValue().isDeathsKnown();
         progressData.currentLevelCap = entry.getValue().getCurrentLevelCap();
         data.put(entry.getKey().toString(), progressData);
       }
@@ -221,6 +236,13 @@ public class PlayerProgressManager {
     checkMultiTrainerAchievements(player);
 
     InitiativeInit.getLevelCapManager().updateLevelCap(player);
+
+    // Derived-state achievement milestones that a defeat can newly satisfy — badge/shrine
+    // roster tiers, "flawless N badges deathless", the frontier all-halls beat. Live path
+    // (toast + overlay + chat); no-op until the player's join backfill has run.
+    if (InitiativeInit.getAchievementManager() != null) {
+      InitiativeInit.getAchievementManager().evaluateLive(player);
+    }
 
     // (Shrine notification moved ABOVE the already-defeated dedup — see method top.)
 
@@ -566,6 +588,10 @@ public class PlayerProgressManager {
 
     List<String> defeatedTrainers = new ArrayList<>();
     List<String> earnedAchievements = new ArrayList<>();
+    List<String> completedQuests = new ArrayList<>();
+    int pokemonLost = 0;
+    // Nullable on purpose: absent (null) in a pre-feature save = "count unverified".
+    Boolean deathsKnown;
     int currentLevelCap = 20;
   }
 }
