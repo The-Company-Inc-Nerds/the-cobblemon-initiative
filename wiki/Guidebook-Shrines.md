@@ -20,11 +20,11 @@ Each shrine **opens once you beat the adjacent gym leader**:
 | **Ice** ❄️ | Nifl Town (Gym 9) | High Priest Glacius |
 | **Fire** 🔥 | **the Royal League** (you must be Champion) | High Priest Ignis |
 
-Fire is the exception: its ash-priests *"only open to a champion,"* so the caldera stays sealed until you clear the [[Royal League|Guidebook Route Map]]. Every other shrine answers to the badge next door.
+Fire is the exception: its ash-priests *"only open to a champion,"* so the caldera stays sealed until you clear the [[Guidebook Route Map|Royal League]]. Every other shrine answers to the badge next door.
 
 Why bother?
 
-- **An elemental shrine crystal** — one per shrine, claimed from the keeper once you clear its trial. Place it anywhere in the world and it summons a **wild level-70 legendary guardian** for you to battle and catch: Fire → **Ho-Oh**, Ground → **Landorus**, Ice → **Glastrier**, Dragon → **Kyurem**, Fairy → **Xerneas**. These are the shrines' *own* roster — entirely separate from the [[nobles|Guidebook Nobles]], no overlap. (One-shot item, EPIC rarity — see the tooltip's *"use with caution."*)
+- **An elemental shrine crystal** — one per shrine, claimed from the keeper once you clear its trial. Place it anywhere in the world and it summons a **wild level-70 legendary guardian** for you to battle and catch: Fire → **Ho-Oh**, Ground → **Landorus**, Ice → **Glastrier**, Dragon → **Kyurem**, Fairy → **Xerneas**. These are the shrines' *own* roster — entirely separate from the [[Guidebook Nobles|nobles]], no overlap. (One-shot item, EPIC rarity — see the tooltip's *"use with caution."*)
 - **A one-time "memory fragment"** on your *first* shrine cleared — the keepers half-remember something older than your badges.
 - **A per-shrine completion** and a golden **title splash**: _"Challenge Complete!"_
 - **The Five Keepers capstone** — clear all five and a wandering pilgrim pays out **5,000 CobbleDollars, a Master Ball, and a stack of Rare Candy**.
