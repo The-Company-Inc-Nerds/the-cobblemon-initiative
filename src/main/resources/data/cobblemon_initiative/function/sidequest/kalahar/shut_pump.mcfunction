@@ -6,5 +6,5 @@
 execute unless entity @s[tag=oasis_pump_off] run scoreboard players remove #idx cd_instability 3
 execute if score #idx cd_instability matches ..-1 run scoreboard players set #idx cd_instability 0
 tag @s add oasis_pump_off
-title @s title [{"text":"THE REACH DRINKS","color":"aqua"}]
-title @s subtitle [{"text":"The line empties. The aquifer finds the town again.","color":"gray"}]
+title @s title [{"text":"SAMPLES SPIKED","color":"aqua"}]
+title @s subtitle [{"text":"The Company numbers come back worthless. The Oasis is not worth their while.","color":"gray"}]

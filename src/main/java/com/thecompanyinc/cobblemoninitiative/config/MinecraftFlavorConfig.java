@@ -36,10 +36,9 @@ public class MinecraftFlavorConfig {
   public static final String OBJECTIVE = "ci_flavor";
 
   // ── PokéPhone (PHONE_AND_CARE §4) ──────────────────────────────────────────────
-  /** Master switch for the PokéPhone remote-call system. */
-  private boolean phoneEnabled = true;
-  /** true = the ring auto-opens the call dialog; false = it persists (answer-by-sneak, v2). */
-  private boolean phoneAutoOpen = true;
+  // The PokéPhone is CORE (showrunner 2026-07-20): its calls carry onboarding beats (Mom's
+  // friendship care, the homestead beacon nudge), so there is no enable/auto-open toggle — the
+  // driver (phone/tick) always runs. Left here as a marker in case a future opt-out is wanted.
 
   // ── Per-gym Minecraft requirements (MINECRAFT_FLAVOR §6) ─────────────────────────
   /**
@@ -115,8 +114,6 @@ public class MinecraftFlavorConfig {
         true,
         null);
     }
-    set(sb, obj, "#phone", phoneEnabled);
-    set(sb, obj, "#phone_auto_open", phoneAutoOpen);
     // The per-gym mirror advancements gate on #gym_mc_req — they fire (and can be earned) only
     // when the requirement is on. When off, the tags are irrelevant (the gate is opened by tag).
     set(sb, obj, "#gym_mc_req", gymMcAchievementsRequired);
@@ -149,15 +146,11 @@ public class MinecraftFlavorConfig {
   }
 
   // ── Getters ──────────────────────────────────────────────────────────────────
-  public boolean isPhoneEnabled() { return phoneEnabled; }
-  public boolean isPhoneAutoOpen() { return phoneAutoOpen; }
   public boolean isGymMcAchievementsRequired() { return gymMcAchievementsRequired; }
   public boolean isMilestoneLootEnabled() { return milestoneLootEnabled; }
   public boolean isDaycareIndependentFlavor() { return daycareIndependentFlavor; }
 
   // ── Setters (ModMenu screen writes these, then save() + pushToScoreboard()) ──────
-  public void setPhoneEnabled(boolean v) { this.phoneEnabled = v; }
-  public void setPhoneAutoOpen(boolean v) { this.phoneAutoOpen = v; }
   public void setGymMcAchievementsRequired(boolean v) { this.gymMcAchievementsRequired = v; }
   public void setMilestoneLootEnabled(boolean v) { this.milestoneLootEnabled = v; }
   public void setDaycareIndependentFlavor(boolean v) { this.daycareIndependentFlavor = v; }

@@ -49,6 +49,11 @@ public class CutsceneState {
   /** True until the runtime player-skin patch has been applied to the discovered double. */
   private boolean doubleSkinPending = false;
 
+  /** Chunk + block anchor of the entity-ticking ticket that pins the scene subject (the leader
+   * the end-command battles) loaded through the pan. Null when no ticket was added. */
+  private net.minecraft.world.level.ChunkPos subjectChunk;
+  private net.minecraft.core.BlockPos subjectPos;
+
   public CutsceneState(UUID playerId, String scriptId, String dimension, boolean skippable,
                        boolean hasDouble, double rx, double ry, double rz, float ryaw,
                        float rpitch, GameType restoreMode, double px, double py, double pz,
@@ -121,4 +126,10 @@ public class CutsceneState {
 
   public boolean isDoubleSkinPending() { return doubleSkinPending; }
   public void setDoubleSkinPending(boolean v) { this.doubleSkinPending = v; }
+
+  public void setSubjectAnchor(net.minecraft.world.level.ChunkPos c, net.minecraft.core.BlockPos p) {
+    this.subjectChunk = c; this.subjectPos = p;
+  }
+  public net.minecraft.world.level.ChunkPos getSubjectChunk() { return subjectChunk; }
+  public net.minecraft.core.BlockPos getSubjectPos() { return subjectPos; }
 }

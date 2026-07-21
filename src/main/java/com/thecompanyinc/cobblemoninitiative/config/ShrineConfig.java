@@ -56,9 +56,9 @@ public class ShrineConfig {
    * calibrate by feel from ModMenu (change → save → run again; no rebuild). Once a
    * value settles, bake it back into the challenge JSON so fresh installs ship it.
    */
-  private int fireTimeLimitSeconds = 120;
+  private int fireTimeLimitSeconds = 17;
 
-  private int iceTimeLimitSeconds = 180;
+  private int iceTimeLimitSeconds = 25;
 
   // ── ground shrine — the buried maze (dark_gauntlet) ───────────────────────────
   /** Fraction of max health the player starts the ground shrine at. */

@@ -187,7 +187,35 @@
                                     Cmd: "title @initiator actionbar [{\"text\":\"This ground is yours now. Build on it — raise a beacon and it will pay you the harvest.\",\"color\":\"green\"}]"
                                 }
                             ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "first_beacon_given"
+                                }
+                            ],
                             Label: "claim_ground_button"
+                        },
+                        {
+                            Name: "Claim this ground as a homestead",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:homestead/need_beacon"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_first_beacon_given"
+                                }
+                            ],
+                            Label: "need_beacon_button"
                         },
                         {
                             Name: "Leave him to the rows",

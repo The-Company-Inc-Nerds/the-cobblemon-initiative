@@ -61,3 +61,10 @@ tmp/
 
 # Download-once mod/pack cache for build-mrpack --cache (content-addressed; never tracked)
 /mrpack/cache/
+
+# StreamSync secrets — the real endpoint/token live in an untracked .env the mod reads at
+# runtime (config/streamsync.env or an instance-root .env), never in a committed file.
+# Only the .example template is tracked.
+.env
+**/streamsync.env
+!mrpack/overrides/config/streamsync.env.example

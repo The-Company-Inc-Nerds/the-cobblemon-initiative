@@ -8,6 +8,6 @@ execute if entity @s[tag=oasis_pump_off,tag=!dry_season_done] run function cobbl
 execute if entity @s[tag=oasis_pump_off,tag=!dry_season_done] run give @s cobblemon:mystic_water 2
 execute if entity @s[tag=oasis_pump_off,tag=!dry_season_done] run give @s cobblemon:super_potion 2
 execute if entity @s[tag=oasis_pump_off,tag=!dry_season_done] run title @s subtitle [{"text":"ADJUSTMENT: rounding, in the Company favor","color":"gray"}]
-execute if entity @s[tag=oasis_pump_off,tag=!dry_season_done] run title @s title [{"text":"THE REACH DRINKS","color":"aqua"}]
+execute if entity @s[tag=oasis_pump_off,tag=!dry_season_done] run title @s title [{"text":"THE OASIS HOLDS","color":"aqua"}]
 execute if entity @s[tag=oasis_pump_off] run tag @s add oasis_restored
 execute if entity @s[tag=oasis_pump_off] run tag @s add dry_season_done

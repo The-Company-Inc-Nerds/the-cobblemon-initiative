@@ -154,6 +154,25 @@ _MF_FLAGS_OFF = (
 )
 
 
+def _split_frontier_name(name: str):
+    """Split a frontier name across MapFrontiers' two stacked label lines (name1 over name2),
+    balanced by character length. Mirrors MapFrontiersIntegration.splitName in Java: MapFrontiers
+    hides a label whose widest line is wider than the on-screen polygon, so a long single-line
+    name over a narrow ROUTE polygon reads as cut off. Single-word names stay wholly on line 1."""
+    trimmed = (name or "").strip()
+    words = trimmed.split()
+    if len(words) < 2:
+        return trimmed, ""
+    best_k, best_diff = 1, None
+    for k in range(1, len(words)):
+        l1 = sum(len(w) + 1 for w in words[:k])
+        l2 = sum(len(w) + 1 for w in words[k:])
+        diff = abs(l1 - l2)
+        if best_diff is None or diff < best_diff:
+            best_diff, best_k = diff, k
+    return " ".join(words[:best_k]), " ".join(words[best_k:])
+
+
 def bake_mapfrontiers_frontiers(world_dst: str) -> None:
     """Pre-bake install.json's zones as Map Frontiers GLOBAL frontiers into the bundled
     world COPY (mapfrontiers/frontiers.dat — gzip NBT, Version 10, empty root name).
@@ -204,8 +223,8 @@ def bake_mapfrontiers_frontiers(world_dst: str) -> None:
                 "id": (TAG_STRING, str(_uuid.uuid5(ns, f"{i}:{name}"))),
                 "color": (TAG_INT, color),
                 "dimension": (TAG_STRING, z.get("dimension", "minecraft:overworld")),
-                "name1": (TAG_STRING, name),
-                "name2": (TAG_STRING, ""),
+                "name1": (TAG_STRING, _split_frontier_name(name)[0]),
+                "name2": (TAG_STRING, _split_frontier_name(name)[1]),
                 "personal": (TAG_BYTE, 0),
                 "owner": (TAG_COMPOUND, {
                     "username": (TAG_STRING, _MF_OWNER_NAME),

@@ -17,6 +17,64 @@
                     {
                         Type: "OPEN_DEFAULT_DIALOG"
                     }
+                ],
+                ON_DISTANCE_VERY_CLOSE: [
+                    {
+                        Type: "COMMAND",
+                        ConditionDataSet: {
+                            ConditionDataSet: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "dex_gte_2"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_deepcore_trainer_4"
+                                }
+                            ]
+                        },
+                        Cmd: "tbcs attach rctmod:deepcore_trainer_4 @s"
+                    },
+                    {
+                        Type: "COMMAND",
+                        ExecAsUser: 1b,
+                        ConditionDataSet: {
+                            ConditionDataSet: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "dex_gte_2"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_deepcore_trainer_4"
+                                }
+                            ]
+                        },
+                        Cmd: "tag @s add in_trainer_battle"
+                    },
+                    {
+                        Type: "COMMAND",
+                        ExecAsUser: 1b,
+                        ConditionDataSet: {
+                            ConditionDataSet: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "dex_gte_2"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_deepcore_trainer_4"
+                                }
+                            ]
+                        },
+                        Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:deepcore_trainer_4 onwin {1: ['tag @1 add defeated_deepcore_trainer_4', '@2 say You kept the rhythm. The floor is all yours now.', 'tag @1 remove in_trainer_battle'], 2: ['@1 say You lost the beat. Find it again and come back.', 'tag @2 remove in_trainer_battle']}"
+                    }
                 ]
             }
         },
@@ -107,7 +165,7 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:deepcore_trainer_4 onwin {1: ['tag @1 add defeated_deepcore_trainer_4', '@2 say You kept the rhythm. The floor is all yours now.'], 2: ['@1 say You lost the beat. Find it again and come back.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:deepcore_trainer_4 onwin {1: ['tag @1 add defeated_deepcore_trainer_4', '@2 say You kept the rhythm. The floor is all yours now.', 'tag @1 remove in_trainer_battle'], 2: ['@1 say You lost the beat. Find it again and come back.', 'tag @2 remove in_trainer_battle']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -241,6 +299,18 @@
             HasTravelTarget: 0b,
             ObjectiveDataSet: [
                 {
+                    Type: "RANDOM_STROLL_AROUND_HOME",
+                    Prio: 2,
+                    Id: "ambient_stroll_home",
+                    SpeedModifier: 0.8d
+                },
+                {
+                    Type: "MOVE_BACK_TO_HOME",
+                    Prio: 3,
+                    Id: "ambient_back_home",
+                    SpeedModifier: 1.0d
+                },
+                {
                     Type: "LOOK_AT_PLAYER",
                     Prio: 9,
                     Id: "ambient_look_player",
@@ -306,6 +376,7 @@
             }
         ],
         id: "easy_npc:humanoid",
-        CustomName: '{"text": "Capoeira Rio", "color": "#FFFFFF"}'
+        CustomName: '{"text": "Capoeira Rio", "color": "#FFFFFF"}',
+        Tags: ["dc_floor_4_body"]
     }
 }

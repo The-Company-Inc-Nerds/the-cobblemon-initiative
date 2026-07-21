@@ -403,9 +403,9 @@ execute if entity @s[tag=seal_stone_1,tag=seal_stone_2,tag=seal_stone_3,tag=!bou
 # pump crew -> the manifold once both are down -> back to Marisol to report; off when restored.
 scoreboard players reset q.side_kalahar_water ci_quest
 execute if entity @s[tag=dry_season_active,tag=!dry_season_done] run scoreboard players set q.side_kalahar_water ci_quest 42
-execute if entity @s[tag=dry_season_active,tag=!dry_season_done] run scoreboard players display name q.side_kalahar_water ci_quest [{"text":"• Drive off the Company pump crew at the Oasis","color":"gray"}]
-execute if entity @s[tag=dry_season_active,tag=defeated_sq_pump_officer,tag=defeated_sq_pump_foreman,tag=!oasis_pump_off,tag=!dry_season_done] run scoreboard players display name q.side_kalahar_water ci_quest [{"text":"• Shut the pump manifold at the Oasis","color":"gray"}]
-execute if entity @s[tag=oasis_pump_off,tag=!dry_season_done] run scoreboard players display name q.side_kalahar_water ci_quest [{"text":"• Report the shut pump to Well-Keeper Marisol","color":"gray"}]
+execute if entity @s[tag=dry_season_active,tag=!dry_season_done] run scoreboard players display name q.side_kalahar_water ci_quest [{"text":"• Drive off the Company survey crew at the Oasis","color":"gray"}]
+execute if entity @s[tag=dry_season_active,tag=defeated_sq_pump_officer,tag=defeated_sq_pump_foreman,tag=!oasis_pump_off,tag=!dry_season_done] run scoreboard players display name q.side_kalahar_water ci_quest [{"text":"• Spike the Survey Bot samples at the Oasis","color":"gray"}]
+execute if entity @s[tag=oasis_pump_off,tag=!dry_season_done] run scoreboard players display name q.side_kalahar_water ci_quest [{"text":"• Report to Well-Keeper Marisol","color":"gray"}]
 
 # ===== Cyber City (gym 7, Electric) =====
 # ── Cyber City (gym 7) side quests (slots 34-37) ──
@@ -575,7 +575,7 @@ execute unless score @s defeated_noble_moltres matches 0.. run scoreboard player
 # A Giggle in the Grass (Mew chase, 86): mid band (badges 3-6), off once subdued.
 scoreboard players reset q.side_wisp ci_quest
 execute if score @s memory_fragment matches 3.. unless score @s defeated_noble_mew matches 1.. run scoreboard players set q.side_wisp ci_quest 86
-execute if score @s memory_fragment matches 3.. unless score @s defeated_noble_mew matches 1.. run scoreboard players display name q.side_wisp ci_quest [{"text":"• Chase the wisp in the Safari Zone","color":"light_purple"}]
+execute if score @s memory_fragment matches 3.. unless score @s defeated_noble_mew matches 1.. run scoreboard players display name q.side_wisp ci_quest [{"text":"• Chase the wisp at the Kalahar Oasis","color":"light_purple"}]
 # Under the Storm (Kyogre buoy, 87): post-gym-5, off once subdued.
 scoreboard players reset q.side_deep ci_quest
 execute if score @s memory_fragment matches 5.. unless score @s defeated_noble_kyogre matches 1.. run scoreboard players set q.side_deep ci_quest 87

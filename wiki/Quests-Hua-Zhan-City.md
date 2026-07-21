@@ -5,7 +5,7 @@
 **Hua Zhan City** is the second gym town — the last living garden on the circuit, ringed by the Company's fields. You arrive with the Falls Badge (cap **22**); the **Bloom Badge** raises the cap to **30**. It is also the city where the villain plot finally gets its name said out loud.
 
 > [!IMPORTANT]
-> **This district is under active revision.** This page documents **what ships today.** Known-open items in the current build: the **gym leader has no in-world body yet** (an open casting decision may put the West Hill groundskeeper in the role), the gym's **Jr. Apprentice and Apprentice are not yet placed**, the **greenhouse docent is not yet placed** (the tour's visitor kit can't currently be collected), and the **nurse casting may change**. Expect this page to move.
+> **This district is under active revision.** This page documents **what ships today.** The **gym leader is now live and fully fightable** — the casting decision resolved in favour of **Groundskeeper Aya at the West Hill stair**, who reveals herself as **Leader Blossom** once you clear all four garden wardens (see the pilgrimage and gym sections). Remaining known-open items in the current build: the gym's **Jr. Apprentice and Apprentice are not yet placed** (their teams gate badge credit in the authored ladder but have no in-world bodies), the **greenhouse docent Wen is not yet placed** (the tour's visitor kit can't currently be collected), and the **nurse casting may change**. Expect this page to move.
 
 > [!CAUTION]
 > **Spoilers — Act I, major plot.** Hua Zhan is where the Company's plan is named on camera, and one quest here steals a document carrying the run's first hard Act II hook. Read no further if you want the reveal clean.
@@ -13,6 +13,8 @@
 > [!NOTE]
 > **How rewards are listed.** Battle prize money is paid **flat**. Quest payouts print a receipt and pay the **Verified Rate** — 75–100% of face value depending on the CobbleDollar instability index. Most receipts are unbranded; a few arrive on **Company letterhead**, and those are flagged below. Amounts are face value.
 > **Training packs:** *minor* = 3× Exp. Candy XS + 1× Exp. Candy S · *standard* = 2× Exp. Candy S + 1× Exp. Candy M · *major* = 1× Exp. Candy L + 1 random vitamin.
+
+**Status:** ✅ Done · 🚧 WIP (partial) · ❌ Not yet implemented — as of the 2026-07-21 audit.
 
 ---
 
@@ -39,7 +41,8 @@
 
 |  |  |
 |---|---|
-| **Giver** | **Garden Master Wei** — the old-botany master, Blossom's teacher — at the West Hill Garden [1404 105 2054] |
+| **Status** | ✅ Done |
+| **Giver** | **Garden Master Wei** — the old-botany master, Blossom's teacher — at the West Hill Garden **@ 1404 105 2054** |
 | **Location** | Four living garden stations across the city (below) |
 | **Start** | Talk to Wei: *walk the four gardens... warden first, plaque second.* The tracker lights at your first seal |
 | **Repeatable** | One-time |
@@ -58,7 +61,7 @@ Blossom keeps her gym the old way: her four wardens hold four living gardens sca
 
 1. Beat each warden, then press the plaque beside them — the seal only presses once its warden is beaten. A toast counts your seals; at 4/4 it points you home.
 2. Return to Wei → *Receive the blessing of the four gardens.* His handoff sends you to Blossom: *"tell her the hill sent you."*
-3. *(Optional)* **Groundskeeper Aya** at the west stair [1382 93 2060] offers an exhibition match — the Sudowoodo gag (Sudowoodo 22 / Tangela 21). One-time, prize **300 CD** flat + 1× Super Potion.
+3. *(Optional)* **Groundskeeper Aya** at the west stair [1382 93 2060] offers an exhibition match — the Sudowoodo gag (Sudowoodo 22 / Tangela 21). One-time, prize **300 CD** flat + 1× Super Potion. *(This is the same Aya who is Blossom in disguise — the exhibition is available before you finish the pilgrimage; once you clear all four wardens and speak to her again, she drops the broom and reveals herself as the gym leader.)*
 
 > Ranger Xiu's Still Pond carries the run's quietest line — she asks what you see in the pond mirror, and waits longer than is comfortable for the answer.
 
@@ -69,7 +72,7 @@ Blossom keeps her gym the old way: her four wardens hold four living gardens sca
 - Completing the pilgrimage earns you Blossom's respect — she greets a pilgrim differently before the fight.
 
 > [!NOTE]
-> **As shipped:** the pending casting decision (Aya as gym leader) would change her exhibition role here. Documented as authored today: Aya is the optional exhibition, Blossom is the leader.
+> **As shipped:** the casting decision has been made and built — **Aya *is* Blossom.** She runs the optional Sudowoodo exhibition as the groundskeeper, and after you clear all four wardens and speak to her again she reveals herself and spawns as **Leader Blossom** at the same west-stair spot for the badge fight.
 
 ---
 
@@ -77,9 +80,10 @@ Blossom keeps her gym the old way: her four wardens hold four living gardens sca
 
 |  |  |
 |---|---|
-| **Giver** | **Leader Blossom**; the Hua Zhan Gym Guide [1492 86 2050] explains the rules and points at both the greenhouse tour and the pilgrimage |
-| **Location** | The gym hall at ~[1501 86 2054] (waypoint [1504 86 2042]); the gate audit and rezoning notice board stand just outside |
-| **Start** | Talk to Blossom — the challenge is offered directly; her pre-battle line changes with what you've seen in her city |
+| **Status** | 🚧 WIP |
+| **Giver** | **Leader Blossom** (revealed from **Groundskeeper Aya** at the West Hill stair **@ 1382 93 2060**); the Hua Zhan Gym Guide [1492 86 2050] explains the rules and points at both the greenhouse tour and the pilgrimage |
+| **Location** | Blossom spawns at the West Hill stair [1382 93 2060] on the reveal; the gym hall (~[1501 86 2054], waypoint [1504 86 2042]), the gate audit, and the rezoning notice board stand across the city |
+| **Start** | Clear all four garden wardens, then speak to Aya again — she reveals herself as Blossom and the challenge opens. Her pre-battle line changes with what you've seen in her city |
 | **Repeatable** | One-time |
 | **Tracker** | Main quest line — *Defeat the Hua Zhan City Gym* |
 
@@ -113,7 +117,7 @@ All flavor, one battle: she greets you differently if you've **heard the pitch o
 - Beat Blossom **and** the gym-gate analyst (either order) and you compose the *Greenspace 7 — retained* ending: the garden is saved from rezoning, and Blossom has an epilogue for you.
 
 > [!NOTE]
-> **As shipped:** Lian, Sakura, and **Leader Blossom herself have no in-world bodies yet** — their teams and dialogue are authored, but the gym interior cannot currently be fought end-to-end. The wardens, the guide, the gate audit, and the pilgrimage are all live. This is the top item on the district's revision list.
+> **As shipped:** **Leader Blossom is now live and fully fightable** — she spawns from the Aya reveal at the West Hill stair after the four wardens, and the badge fight pays **1800 CD** + the Bloom Badge. Still open: **Jr. Apprentice Lian and Apprentice Sakura have no in-world bodies yet** — their teams and dialogue are authored as the formal badge prerequisites, but their bodies are not placed, so the interior apprentice ladder can't currently be fought. The wardens, the guide, the gate audit, the pilgrimage, and Blossom herself are all live.
 
 ---
 
@@ -121,7 +125,8 @@ All flavor, one battle: she greets you differently if you've **heard the pitch o
 
 |  |  |
 |---|---|
-| **Giver** | **Yan**, Yield Analyst — grey suit, clipboard, dispatch tray — at the gym gate [1505 86 2043], beside the rezoning notice board |
+| **Status** | ✅ Done |
+| **Giver** | **Yan**, Yield Analyst — grey suit, clipboard, dispatch tray — at the gym gate **@ 1505 86 2043**, beside the rezoning notice board |
 | **Location** | The Hua Zhan gym gate; the report files with **Lucian the archivist** in Sango [2626 118 2776] |
 | **Start** | Auto — approaching the gate fires a one-shot note and lights the tracker: *The gym gate audit — get the draft* |
 | **Repeatable** | One-time |
@@ -155,7 +160,8 @@ The Company is valuing Blossom's garden as an under-performing asset — *"the r
 
 |  |  |
 |---|---|
-| **Giver** | **Bo**, the south-gate greeter (Company PR) → **Wen**, the greenhouse docent |
+| **Status** | ❌ Not yet |
+| **Giver** | **Bo**, the south-gate greeter (Company PR) **@ VERIFY** (south gate, off Harvest Road) → **Wen**, the greenhouse docent (the lobby, greenhouse **@ 1482 87 2166**) |
 | **Location** | The Company greenhouse — the glass tower (waypoint [1482 87 2166]); the catwalk at the top |
 | **Start** | Bo hails arrivals off Harvest Road; the tracker line *Tour the Verified Growth greenhouse* lights when you enter the city |
 | **Repeatable** | One-time |
@@ -197,7 +203,8 @@ flowchart LR
 
 |  |  |
 |---|---|
-| **Giver** | **Ping** (wheat trader, market row) and **Feng** (the Granary keeper); a second trader, **Tau**, works Kalahar Reach far up the route |
+| **Status** | 🚧 WIP |
+| **Giver** | **Ping** (wheat trader, market row **@ VERIFY**) and **Feng** (the Granary keeper, silo district **@ VERIFY**); a second trader, **Tau**, works Kalahar Reach far up the route |
 | **Location** | Hua Zhan market row + the silo district |
 | **Start** | Walk-up merchants, always open |
 | **Repeatable** | Trading is the ongoing loop; the late-game ambushes are one-time |
@@ -227,7 +234,8 @@ The traders keep books on faces. As fields are liberated across the region:
 
 |  |  |
 |---|---|
-| **Giver** | **Guo the Miller** — the last independent mill in wheat country |
+| **Status** | ✅ Done |
+| **Giver** | **Guo the Miller** — the last independent mill in wheat country — at the Mill **@ 1538 86 2001** |
 | **Location** | The Mill (waypoint [1538 86 2001]); the survey stops are the market row and the Granary |
 | **Start** | Talk to Guo → *I will run your survey* |
 | **Repeatable** | One-time |
@@ -255,7 +263,8 @@ Guo doesn't need convincing — he needs a witness. He pays you to hear the open
 
 |  |  |
 |---|---|
-| **Giver** | **Kaito Zhang** — the east-market Poké Mart keeper (waypoint [1544 86 2059]) |
+| **Status** | ✅ Done |
+| **Giver** | **Kaito Zhang** — the east-market Poké Mart keeper **@ 1544 86 2059** |
 | **Location** | Three market stalls (below) |
 | **Start** | Talk to Kaito **twice** — the offer opens after your first badge, once the index has moved and the tickets have been re-stickered → *Take the price check* |
 | **Repeatable** | One-time |
@@ -283,8 +292,9 @@ Kaito's shelf prices ride the index and he knows it. He wants the drift document
 
 |  |  |
 |---|---|
-| **Giver** | Nobody — the Company's Eastern District **branch office** itself. Staff: receptionist **Ning** (ground floor), analyst **Lan** (mezzanine), Branch Manager **Chen Bao** (top floor) |
-| **Location** | The branch office tower, eastern district (~[1536 99 1996] at the top); the minutes file with **Lucian** in Sango |
+| **Status** | ✅ Done |
+| **Giver** | Nobody — the Company's Eastern District **branch office** itself. Staff: receptionist **Ning** (ground floor **@ 1540 86 2001**), analyst **Lan** (mezzanine **@ 1532 93 2005**), Branch Manager **Chen Bao** (top floor **@ 1536 99 1996**) |
+| **Location** | The branch office tower, eastern district (~[1536 99 1996] at the top); the minutes file with **Lucian** in Sango [2626 119 2777] |
 | **Start** | Auto — your first approach earns the warning: *"Floor privileges are assigned, not assumed."* No sign-up; reaching the top-floor landing starts the clock |
 | **Repeatable** | One-time |
 | **Tracker** | Yes |
@@ -312,7 +322,7 @@ The quarterly review is being read aloud behind the top-floor door. You are not 
 > This is the first hard **Act II** hook in the run — a name above yours on the org chart. What Shade manages, and from where, is Act II's problem.
 
 > [!NOTE]
-> **As shipped:** the receptionist and analyst are new bodies pending placement — until the office is fully staffed in a world, the sightline game is thinner than authored.
+> **As shipped:** the office is staffed — receptionist **Ning** [1540 86 2001] and analyst **Lan** [1532 93 2005] are both placed, and Branch Manager Chen Bao holds the top floor. The sightline game runs as authored.
 
 ---
 
@@ -320,7 +330,8 @@ The quarterly review is being read aloud behind the top-floor door. You are not 
 
 |  |  |
 |---|---|
-| **Giver** | **Nurse Anong** — the Pokémon Center nurse who turned down the Company sponsorship folder |
+| **Status** | ✅ Done |
+| **Giver** | **Nurse Anong** — the Pokémon Center nurse who turned down the Company sponsorship folder — at the Center counter **@ 1534 93 2006** |
 | **Location** | Hua Zhan Pokémon Center [1534 93 2006] (Mei Lin in the southwest lane points walk-ins here) |
 | **Start** | Talk twice — introduce yourself, then the restock ask opens |
 | **Repeatable** | Restock one-time; healing always |

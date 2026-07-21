@@ -122,29 +122,8 @@
                     Priority: 10,
                     Buttons: [
                         {
-                            Name: "Take in the shrine",
+                            Name: "Stand against Terran in the dark",
                             Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "cutscene play ground_shrine_reveal"
-                                }
-                            ],
-                            Label: "gaze_button"
-                        },
-                        {
-                            Name: "Wake the dark and stand against Terran",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "function cobblemon_initiative:sidequest/shrine/ground_trial_help"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "cobblemon-initiative shrine ground start"
-                                },
                                 {
                                     Type: "COMMAND",
                                     ConditionDataSet: {
@@ -190,66 +169,15 @@
                                 }
                             ],
                             Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "ground_shrine_trial_active"
+                                },
                                 {
                                     Type: "PLAYER_TAG",
                                     Operation: "EQUALS",
                                     Name: "no_ground_shrine_trial_clear"
-                                }
-                            ],
-                            Label: "begin_trial_button"
-                        },
-                        {
-                            Name: "Stand upon the stone",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "defeated_ground_shrine_leader"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "say The earth already knows your weight. It will not be moved to test you again."
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_defeated_ground_shrine_leader"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tbcs attach rctmod:ground_shrine_leader @s"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_defeated_ground_shrine_leader"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:ground_shrine_leader onwin {1: ['cobbledollars give @1 2500', 'tag @1 add defeated_ground_shrine_leader', '@2 say The earth has taken your measure and held firm. Walk on, and let it remember your tread.', 'execute as @1 unless entity @1[tag=shrine_frag_seen] run function cobblemon_initiative:memory/shrine/first_keeper'], 2: ['@1 say The ground gives way beneath you yet. Root yourself deeper and return.']}"
-                                },
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Conditions: [
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "ground_shrine_trial_clear"
                                 }
                             ],
                             Label: "yes_button"
@@ -269,10 +197,10 @@
                             Text: "Be still. You tread upon the Ground Shrine, where the patient earth holds every weight ever set upon it. I am Terran, and I keep its long memory. The deep itself is not easily flattered."
                         },
                         {
-                            Text: "We fight blind here, as the order does - the light put out, the earth heaving under us both, and my strength halved so the stones may judge you fairly. What is buried is not given to those who need to see. Where did the earth set you down before, that the floor should hum at your tread."
+                            Text: "We fight blind here, as the order does - the light put out, the earth heaving under us both, and my strength halved so the stones may judge you fairly. But the dark is not yet woken. Go to the acolyte at the gate; it is her word that puts out the light. Then find me here, and stand."
                         },
                         {
-                            Text: "I do not hand out the strength of the deep. It is earned by those who will not be buried. Wake the dark and stand against me, and the stones will judge what you truly are."
+                            Text: "Once the acolyte wakes the dark, come to me and we begin. The stones will judge what you truly are - and where the earth set you down before, that the floor should hum so at your tread."
                         }
                     ],
                     Name: "Terran — challenge",

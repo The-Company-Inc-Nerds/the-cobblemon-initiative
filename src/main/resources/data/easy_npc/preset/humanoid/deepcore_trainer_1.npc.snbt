@@ -17,6 +17,102 @@
                     {
                         Type: "OPEN_DEFAULT_DIALOG"
                     }
+                ],
+                ON_DISTANCE_VERY_CLOSE: [
+                    {
+                        Type: "COMMAND",
+                        ConditionDataSet: {
+                            ConditionDataSet: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "dex_gte_2"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_deepcore_trainer_1"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_deepcore_trainer_2"
+                                }
+                            ]
+                        },
+                        Cmd: "tbcs attach rctmod:deepcore_trainer_1 @s"
+                    },
+                    {
+                        Type: "COMMAND",
+                        ConditionDataSet: {
+                            ConditionDataSet: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "dex_gte_2"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_deepcore_trainer_1"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_deepcore_trainer_2"
+                                }
+                            ]
+                        },
+                        Cmd: "tbcs attach rctmod:deepcore_trainer_2 @e[tag=dc_floor_2_body,limit=1]"
+                    },
+                    {
+                        Type: "COMMAND",
+                        ExecAsUser: 1b,
+                        ConditionDataSet: {
+                            ConditionDataSet: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "dex_gte_2"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_deepcore_trainer_1"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_deepcore_trainer_2"
+                                }
+                            ]
+                        },
+                        Cmd: "tag @s add in_trainer_battle"
+                    },
+                    {
+                        Type: "COMMAND",
+                        ExecAsUser: 1b,
+                        ConditionDataSet: {
+                            ConditionDataSet: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "dex_gte_2"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_deepcore_trainer_1"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_deepcore_trainer_2"
+                                }
+                            ]
+                        },
+                        Cmd: "tbcs battle GEN_9_MULTI @s rctmod:deepcore_second vs rctmod:deepcore_trainer_1 rctmod:deepcore_trainer_2 onwin {1: ['tag @1 add defeated_deepcore_trainer_1', 'tag @1 add defeated_deepcore_trainer_2', '@3 say Clean strike. The floor is yours to pass.', 'tag @1 remove in_trainer_battle'], 2: ['@1 say Get your stance right and come back. The floor is patient.', 'tag @3 remove in_trainer_battle']}"
+                    }
                 ]
             }
         },
@@ -90,10 +186,33 @@
                                                 Type: "PLAYER_TAG",
                                                 Operation: "EQUALS",
                                                 Name: "no_defeated_deepcore_trainer_1"
+                                            },
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_deepcore_trainer_2"
                                             }
                                         ]
                                     },
                                     Cmd: "tbcs attach rctmod:deepcore_trainer_1 @s"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_deepcore_trainer_1"
+                                            },
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_deepcore_trainer_2"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:deepcore_trainer_2 @e[tag=dc_floor_2_body,limit=1]"
                                 },
                                 {
                                     Type: "COMMAND",
@@ -104,10 +223,15 @@
                                                 Type: "PLAYER_TAG",
                                                 Operation: "EQUALS",
                                                 Name: "no_defeated_deepcore_trainer_1"
+                                            },
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_deepcore_trainer_2"
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:deepcore_trainer_1 onwin {1: ['tag @1 add defeated_deepcore_trainer_1', '@2 say Clean strike. The floor is yours to pass.'], 2: ['@1 say Get your stance right and come back. The floor is patient.']}"
+                                    Cmd: "tbcs battle GEN_9_MULTI @s rctmod:deepcore_second vs rctmod:deepcore_trainer_1 rctmod:deepcore_trainer_2 onwin {1: ['tag @1 add defeated_deepcore_trainer_1', 'tag @1 add defeated_deepcore_trainer_2', '@3 say Clean strike. The floor is yours to pass.', 'tag @1 remove in_trainer_battle'], 2: ['@1 say Get your stance right and come back. The floor is patient.', 'tag @3 remove in_trainer_battle']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -241,6 +365,18 @@
             HasTravelTarget: 0b,
             ObjectiveDataSet: [
                 {
+                    Type: "RANDOM_STROLL_AROUND_HOME",
+                    Prio: 2,
+                    Id: "ambient_stroll_home",
+                    SpeedModifier: 0.8d
+                },
+                {
+                    Type: "MOVE_BACK_TO_HOME",
+                    Prio: 3,
+                    Id: "ambient_back_home",
+                    SpeedModifier: 1.0d
+                },
+                {
                     Type: "LOOK_AT_PLAYER",
                     Prio: 9,
                     Id: "ambient_look_player",
@@ -306,6 +442,7 @@
             }
         ],
         id: "easy_npc:humanoid",
-        CustomName: '{"text": "Black Belt Ryu", "color": "#FFFFFF"}'
+        CustomName: '{"text": "Black Belt Ryu", "color": "#FFFFFF"}',
+        Tags: ["dc_floor_1_body"]
     }
 }

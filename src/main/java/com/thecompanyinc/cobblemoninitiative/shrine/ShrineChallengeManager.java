@@ -146,6 +146,12 @@ public class ShrineChallengeManager {
     );
     activeStates.put(player.getUUID(), state);
 
+    // Dialog-readable "the trial is running" signal, so the trial-END keeper can offer a
+    // talk-to-finish for the timed_parkour shrines (fire/ice): an entry gated on
+    // `<id>_shrine_trial_active` runs `cobblemon-initiative shrine <id> complete`. Cleared on
+    // any teardown (stop / complete / restart) in clearChallengeEffects. Persists in player NBT.
+    player.addTag(shrineId + "_shrine_trial_active");
+
     // Ice floor: capture the point we yank the player back to on a misstep.
     // Use the pinned start if the config provides one, else where they began.
     if (config.isIceFloorEnabled()) {
@@ -972,6 +978,9 @@ public class ShrineChallengeManager {
     UUID uuid = player.getUUID();
     ShrineChallengeState state = activeStates.get(uuid);
     if (state == null) return;
+
+    // Drop the dialog "trial running" signal on any teardown (stop / complete / restart).
+    player.removeTag(state.getShrineId() + "_shrine_trial_active");
 
     ShrineChallengeConfig config = challenges.get(state.getShrineId());
     if (config == null) return;

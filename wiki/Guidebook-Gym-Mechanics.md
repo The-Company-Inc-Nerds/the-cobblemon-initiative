@@ -22,7 +22,7 @@ that changes how you approach the leader — layered on top of two rules that ho
 | # | Town (type) | Signature gimmick |
 |---|-------------|-------------------|
 | 1 | **Takehara Falls** (Bug 🐞) | **Floating leader.** Cicada perches high and glides down into click range when you approach — beat the tower trainers first to soften the ace. |
-| 2 | **Hua Zhan City** (Grass 🌿) | **Living-statue wardens + vine walls.** Four garden wardens gate the path; each you beat drops a vine wall opening the way inward to Leader Blossom. |
+| 2 | **Hua Zhan City** (Grass 🌿) | **Living-statue wardens + seal pilgrimage.** Four stone garden wardens stand watch over the gardens; wake and beat each one to set its seal in your hand. Complete the four-warden pilgrimage and the groundskeeper by the west stair sets down her broom and reveals herself as Leader Blossom. |
 | 3 | **Mystic Marsh** (Fairy ✨) | **Mirror Match.** Declare your lead, and the leader answers with one of several illusion-variant teams built to counter it. Choose your opener carefully. |
 | 4 | **Deepcore City** (Fighting 🥋) | **The Gauntlet.** A marshal-run pit that ends in a **2-vs-1 double** — you fight the leader's pair with an AI sparring partner at your side. |
 | 5 | **Gaviota Port** (Water 🌊) | **Tide Clock.** The arena cycles high/low tide on a ~4-minute timer; the leader fields a different rain-variant team depending on the tide when the battle opens. |
@@ -40,6 +40,6 @@ The rank-and-file trainers (`trainer_1..4`, plus `jr_apprentice` / `apprentice` 
 in a default cluster around the leader. To spread them through the actual gym layout, use the dev
 wand: `/cobblemon-initiative gym-mark wand` (or `set gym_<town>_<slot>`) — each slot's item name
 calls out **which trainer** and that gym's **gimmick**, so you place with the mechanic in mind.
-Boxes (vine walls, the whiteout corridor, the heat volume) and points (rift crystals, mirages,
+Boxes (the whiteout corridor, the heat volume) and points (rift crystals, mirages, garden wardens,
 sentinels, the leader stage-back spot) are all in the same registry. `gym-mark export` hands the
 coordinates back for wiring into each character's placement.

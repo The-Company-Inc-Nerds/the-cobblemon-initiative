@@ -4,6 +4,8 @@
 
 **Sango Town** is where you wake up, and it is the densest quest hub in the game — a whole neighborhood of jobs, favors, wagers, and paperwork before you ever see a gym. This page covers every quest that **starts inside Sango Town**. The road west is covered in **[[Quests Blossom Path]]**; the first gym town in **[[Quests Takehara Falls]]**. For the act-level overview, see **[[Guidebook Act I]]**.
 
+**Status:** ✅ Done · 🚧 WIP (partial) · ❌ Not yet implemented — as of the 2026-07-21 audit.
+
 > [!WARNING]
 > **Spoilers — Act I Company presence, and one Act II gate.** Most Sango quests only show The Company's polite face. Two sections go further: **The Incomplete File** describes a stage that only unlocks in **Act II** (and a choice that can permanently lock you out of it), and **No Such Recipient** / **Per My Last Memo** brush the Act I erasure mystery. Those sections carry their own callouts.
 
@@ -29,7 +31,7 @@ Several quests pay a training pack on top of cash. The tiers:
 |-------|-------|:--------:|:----------:|:----------------:|
 | The Opening Chain | Nalia (Mom) + Prof. Acacia | no | one-time | yes (main line) |
 | Dex-Unlock Partners | Prof. Acacia | no | one-time | yes |
-| The Lane Looks After Its Own | Oma | no | one-time | no |
+| The Lane Looks After Its Own | Oma | no | one-time | yes |
 | Pending Review | Imani (census desk) | no | one-time | no |
 | Off the Record | Lucian Scrollkeeper | no | one-time | yes |
 | The Incomplete File | Lucian Scrollkeeper | no | one-time | yes |
@@ -98,7 +100,7 @@ Several quests pay a training pack on top of cash. The tiers:
 
 ## The Lane Looks After Its Own — Oma's bread round
 
-> **Giver:** Oma, the widow at her fence on Nalia's lane (west gate) · **No battles, no fail state** · **One-time** · Not HUD-tracked
+> ✅ **Done** · **Giver:** Oma, the widow at her fence on Nalia's lane (west gate) @ VERIFY · **No battles, no fail state** · **One-time** · HUD-tracked
 
 **How it starts:** Talk to Oma and press **"Take the basket."**
 
@@ -224,7 +226,7 @@ flowchart TD
 
 ## The Sango Classic — the fishing derby
 
-> **Giver:** Deka, the derby keeper at the Sango fishing pond [2570.5 111 2856.5] · **No battles** · **First win one-time, re-enterable after** · HUD-tracked
+> ✅ **Done** · **Giver:** Deka, the derby keeper at the Sango fishing pond [2570.5 111 2856.5] · **No battles** · **First win one-time, re-enterable after** · HUD-tracked
 
 **How it starts:** Talk to Deka. Take his **free spare fishing rod** first (one-time offer — this also lights the HUD hint), then press **"Enter the Classic — 150 CD."**
 

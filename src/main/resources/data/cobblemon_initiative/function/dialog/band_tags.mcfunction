@@ -25,9 +25,6 @@ execute as @a unless score @s memory_fragment matches 4.. run tag @s remove badg
 execute as @a if score @s memory_fragment matches 7.. run tag @s add badges_gte_7
 execute as @a unless score @s memory_fragment matches 7.. run tag @s remove badges_gte_7
 
-execute as @a if score @s memory_fragment matches 8.. run tag @s add badges_gte_8
-execute as @a unless score @s memory_fragment matches 8.. run tag @s remove badges_gte_8
-
 execute as @a if score @s memory_fragment matches ..2 run tag @s add badges_lt_3
 execute as @a unless score @s memory_fragment matches ..2 run tag @s remove badges_lt_3
 
@@ -315,8 +312,6 @@ tag @a[tag=!declined_r8_typetip_dune] add no_declined_r8_typetip_dune
 tag @a[tag=declined_r8_typetip_dune] remove no_declined_r8_typetip_dune
 tag @a[tag=!declined_ryujin_heritage_envoy] add no_declined_ryujin_heritage_envoy
 tag @a[tag=declined_ryujin_heritage_envoy] remove no_declined_ryujin_heritage_envoy
-tag @a[tag=!declined_sq_canvasser] add no_declined_sq_canvasser
-tag @a[tag=declined_sq_canvasser] remove no_declined_sq_canvasser
 tag @a[tag=!declined_sq_deepcore_assessor] add no_declined_sq_deepcore_assessor
 tag @a[tag=declined_sq_deepcore_assessor] remove no_declined_sq_deepcore_assessor
 tag @a[tag=!declined_sq_genji_wager] add no_declined_sq_genji_wager

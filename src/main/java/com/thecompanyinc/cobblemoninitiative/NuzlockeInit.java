@@ -478,6 +478,8 @@ public class NuzlockeInit implements ModInitializer {
     }
 
     applyDamageToPlayer(player, damageAmount, pokemonName, remainingAfterThis == 0);
+    // Signal a real Nuzlocke loss for the PokéPhone — Mom's worried call fires once on the first one.
+    player.addTag("nuzlocke_lost_one");
     maybeFireDarkUrgeWhisper(player);
     return Unit.INSTANCE;
   }
@@ -703,6 +705,7 @@ public class NuzlockeInit implements ModInitializer {
     if (zoneName != null) {
       playerZones.put(player.getUUID(), zoneName);
       sendZoneEntry(player, zone);
+      maybePlayShrineReveal(player, zoneName);
     } else {
       playerZones.remove(player.getUUID());
       // Only meaningful as a transition *out of* a named zone; prevName == null means the
@@ -715,6 +718,30 @@ public class NuzlockeInit implements ModInitializer {
         }
       }
     }
+  }
+
+  /** Shrine zone name (install.json) → its reveal cutscene id. Playing the reveal on first entry
+   * into the shrine area (rather than only via a keeper dialog button most players never click)
+   * is the 2026-07-20 showrunner call. Fires exactly once ever, latched by a persistent player tag. */
+  private static final Map<String, String> SHRINE_REVEAL_SCENES = Map.of(
+    "Fire Shrine", "fire_shrine_reveal",
+    "Ice Shrine", "ice_shrine_reveal",
+    "Ground Shrine", "ground_shrine_reveal",
+    "Fairy Shrine", "fairy_shrine_reveal",
+    "Dragon Shrine", "dragon_shrine_reveal");
+
+  /** Play a shrine's reveal cutscene the first time the player crosses into its zone. */
+  private static void maybePlayShrineReveal(ServerPlayer player, String zoneName) {
+    String scene = SHRINE_REVEAL_SCENES.get(zoneName);
+    if (scene == null) return;
+    String seenTag = "ci_seen_" + scene; // player tags persist across relog → true one-shot
+    if (player.getTags().contains(seenTag)) return;
+    net.minecraft.server.MinecraftServer server = player.getServer();
+    if (server == null) return;
+    player.addTag(seenTag); // latch BEFORE dispatch so a mid-scene relog can't replay it
+    net.minecraft.commands.CommandSourceStack src =
+      player.createCommandSourceStack().withPermission(4).withSuppressedOutput();
+    server.getCommands().performPrefixedCommand(src, "cutscene play " + scene);
   }
 
   private static void sendZoneEntry(ServerPlayer player, NuzlockeConfig.SafeZone zone) {

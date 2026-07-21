@@ -4,10 +4,12 @@ The Company's showroom city — neon, exchange boards, and a currency that has n
 Cyber City is the **Act II pivot**: beat the gym, free your sixth field, and the tower downtown
 opens. It's also home to the Stadium.
 
+**Status:** ✅ Done · 🚧 WIP (partial) · ❌ Not yet implemented — as of the 2026-07-21 audit.
+
 > [!NOTE]
-> **Content status (0.5.0):** the **gym** (Leader Volt) and the [[Guidebook Facilities]]
-> are shipped. Cyber's **town side-quests** — the ones that point you at the HQ raid — are designed
-> but not yet compiled; this page will grow as they land.
+> **Content status:** the **gym** (Leader Volt), the [[Guidebook Facilities]] Stadium, and
+> Cyber's four **town side-quests** — the HQ on-ramp chain — are all shipped and trackable
+> (press `]` to track). Every giver is placed downtown.
 
 ---
 
@@ -17,7 +19,7 @@ opens. It's also home to the Stadium.
 |-------|------|--------------|:------:|
 | **Gym 7 — Volt (Electric Badge)** | Gym | Downtown arena | ✅ shipped |
 | **Stadium — Exhibition Circuits** | Facility | Exhibition Registrar | ✅ shipped |
-| Town side-quests (HQ on-ramp) | Side | see **Side Quests** below | 🔧 designed |
+| Town side-quests (HQ on-ramp) | Side | see **Side Quests** below | ✅ shipped |
 
 ---
 
@@ -57,37 +59,37 @@ starts being an accusation.
 ## Side Quests
 
 > [!NOTE]
-> **Designed and in authoring** — not all are playable yet. The gym (Leader Volt) and the Stadium are what ship today. Every side battle here is tuned to the **cap-62** window.
+> **Shipped and trackable.** All four side-quests below are wired end-to-end (givers placed, reward functions live). Every side battle here is tuned to the **cap-62** window.
 
 Cyber City is the Company's neon capital and its home turf — and it's where the mask slips. The propaganda boards downtown are glitching, the exchange rate is openly broken, and the grey suits are visibly packing the tower down rather than trading. Company staff around town react to you as if they half-know you — you don't know why yet. Every side quest here leans toward the same place: the tower on the north plaza, and the raid that resolves Act II ([[Quests Company HQ]], [[Guidebook Act II]]).
 
-| Quest | Giver | What you do | Reward |
-|-------|-------|-------------|--------|
-| Rumor Hub | Nurse Ampere | Heal, and get pointed at every open town quest | Full-party heal |
-| **Exchange Rate** | Verified Value Teller | Re-verify 3 nether-star reserve tags downtown | 900 CD + training pack |
-| **Signal Integrity** | Signal Tech Rell | Scrub 3 glitching propaganda billboards | 700 CD + training pack |
-| **Off the Records** | Off-Records Clerk Maren | Recover 3 file pages before they're burned | 1200 CD + training pack |
-| **The Door Downtown** | Grid Broker Ohmond | Learn the raid gate; get pointed at the last fields | The door math (free) + optional 1500 CD wager |
+| Quest | Status | Giver | What you do | Reward |
+|-------|:------:|-------|-------------|--------|
+| Rumor Hub | ✅ Done | Nurse Ampere | Heal, and get pointed at every open town quest | Full-party heal |
+| **Exchange Rate** | ✅ Done | Verified Value Teller | Re-verify 3 nether-star reserve tags downtown | 900 CD + training pack |
+| **Signal Integrity** | ✅ Done | Signal Tech Rell | Scrub 3 glitching propaganda billboards | 700 CD + training pack |
+| **Off the Records** | ✅ Done | Off-Records Clerk Maren | Recover 3 file pages before they're burned | 1200 CD + training pack |
+| **The Door Downtown** | ✅ Done | Grid Broker Ohmond | Learn the raid gate; get pointed at the last fields | The door math (free) + optional 1500 CD wager |
 
 ### Rumor Hub — Nurse Ampere
 
 The Center nurse heals your team and, from a menu, points you at every open quest in town. She's a civilian: she never recognizes anyone, she only feels the money breaking and the boards glitching. Her running commentary — *the grey suits are packing the tower down on the north plaza, not trading* — is your first nudge toward HQ, and she notices the exchange board twitch down every time a wheat field is freed.
 
-### Exchange Rate
+### Exchange Rate — ✅ Done
 
-At the downtown exchange kiosk, the **Verified Value Teller** is unravelling: the Company is supposed to verify the nether-star reserves that back every coin, and it stopped. He asks you to re-verify **three reserve tags** posted downtown — each one re-signed under a fresh name over a sanded-off older signature. Count them, report back, and he pays **900 CD** on a branded Company receipt (the shortfall is the point) plus a training pack. No fight, available before the gym.
+At the downtown exchange kiosk, the **Verified Value Teller** (`@ 1500 91 1120`) is unravelling: the Company is supposed to verify the nether-star reserves that back every coin, and it stopped. He asks you to re-verify **three reserve tags** posted downtown — each one re-signed under a fresh name over a sanded-off older signature. Count them, report back, and he pays **900 CD** on a branded Company receipt (the shortfall is the point) plus a training pack. No fight, available before the gym.
 
-### Signal Integrity
+### Signal Integrity — ✅ Done
 
-**Signal Tech Rell**, a municipal comms tech (not Company staff), finds three downtown billboards glitching and broadcasting scrubbed internal memos in the clear — the cover-up leaking through the Company's own feed. Scrub all **three** before management notices they're readable. Rell pays **700 CD** and a training pack, and tips you that the clean feed all routes through the north tower — one more finger pointed at HQ.
+**Signal Tech Rell** (`@ 1470 89 1140`), a municipal comms tech (not Company staff), finds three downtown billboards glitching and broadcasting scrubbed internal memos in the clear — the cover-up leaking through the Company's own feed. Scrub all **three** before management notices they're readable. Rell pays **700 CD** and a training pack, and tips you that the clean feed all routes through the north tower — one more finger pointed at HQ.
 
-### Off the Records
+### Off the Records — ✅ Done
 
-**Off-Records Clerk Maren** is a burned-out access-control clerk who recognizes your face — not your name — and won't say why beyond that she once carried a portrait to the incinerator and hasn't slept right since. She asks you to recover **three file pages** from archive boxes flagged for the furnace tonight. No fight: this is a Company person who simply won't raise a hand against you. Pays **1200 CD** and a training pack. **Gate:** after you beat Leader Volt — it's the town's heaviest recognition beat, circling the memory the badge just handed you.
+**Off-Records Clerk Maren** (`@ 1520 89 1100`) is a burned-out access-control clerk who recognizes your face — not your name — and won't say why beyond that she once carried a portrait to the incinerator and hasn't slept right since. She asks you to recover **three file pages** from archive boxes flagged for the furnace tonight. No fight: this is a Company person who simply won't raise a hand against you. Pays **1200 CD** and a training pack. **Gate:** after you beat Leader Volt — it's the town's heaviest recognition beat, circling the memory the badge just handed you.
 
-### The Door Downtown
+### The Door Downtown — ✅ Done
 
-**Grid Broker Ohmond** is a downtown fixer near the tower who reads the field ledgers for sport. He spells out the raid gate aloud — **seven badges and six freed fields** — points you toward the nearest fields still feeding the Company's desk, and marks the tower lobby door. The pointer is free and always delivered. He also offers an **opt-in wager** on his hoarded electric team (above your cap by design — a real risk): **1500 CD** win or loss, or **300 CD** to walk away and just hear the math. Fully decline-able; it can't white you out. **Gate:** post-Volt. From here the mainline picks up at [[Quests Company HQ]].
+**Grid Broker Ohmond** (`@ 1555 92 1108`) is a downtown fixer near the tower who reads the field ledgers for sport. He spells out the raid gate aloud — **seven badges and six freed fields** — points you toward the nearest fields still feeding the Company's desk, and marks the tower lobby door. The pointer is free and always delivered. He also offers an **opt-in wager** on his hoarded electric team (above your cap by design — a real risk): **1500 CD** win or loss, or **300 CD** to walk away and just hear the math. Fully decline-able; it can't white you out. **Gate:** post-Volt. From here the mainline picks up at [[Quests Company HQ]].
 
 ---
 

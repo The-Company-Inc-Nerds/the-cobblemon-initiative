@@ -5,6 +5,8 @@
 tag @s remove ci_watching
 tag @s add first_watch_done
 scoreboard players set @s nw_grace 0
+# Clear any scripted watch-mobs still standing so the dawn field is clean.
+kill @e[tag=nw_mob,distance=..128]
 bossbar set cobblemon_initiative:night_watch visible false
 title @s title [{"text":"FIRST LIGHT","color":"gold","bold":true}]
 title @s subtitle [{"text":"The field held — the family brings it in","color":"yellow"}]

@@ -4,10 +4,12 @@ A cliff-top dragon keep above the clouds — and the first gym whose *gimmick is
 own*. If you cleared the HQ raid, the town wears the aftermath: the money has gone quiet. The Dragon
 Shrine is in the valley below.
 
+**Status:** ✅ Done · 🚧 WIP (partial) · ❌ Not yet implemented — as of the 2026-07-21 audit.
+
 > [!NOTE]
-> **Content status (0.5.0):** the **gym** (Leader Ryujin + the Rift) is shipped. Ryujin's **town
-> side-quests** — most of which react to the post-HQ world — are designed but not yet compiled;
-> this page will grow as they land.
+> **Content status:** the **gym** (Leader Ryujin + the Rift) is shipped, and all four of Ryujin's
+> **town side-quests** — which react to the post-HQ world — are now compiled and placed. Every
+> pointer gates on the HQ raid (`defeated_villain_boss`), so the town stays quiet until DJ falls.
 
 ---
 
@@ -17,7 +19,7 @@ Shrine is in the valley below.
 |-------|------|--------------|:------:|
 | **Gym 8 — Ryujin (Dragon Badge)** | Gym | Keep summit | ✅ shipped |
 | **Dragon Shrine** | Shrine (optional) | `[2008 66 921]` | ✅ trial shipped |
-| Town side-quests | Side | (various, post-HQ tone) | 🔧 in authoring |
+| Town side-quests | Side | (four, post-HQ tone) | ✅ shipped |
 
 ---
 
@@ -58,32 +60,40 @@ Standard badge packet: flat prize, **cap → 68**, **memory fragment 8**, next P
 ## Side Quests
 
 > [!NOTE]
-> **Designed and in authoring** — the walkthroughs below preview what's coming; not all of it is playable yet. Everything here wakes up *after* the HQ raid: Ryujin is the first town where the world reacts to the money going quiet.
+> Everything here wakes up *after* the HQ raid: Ryujin is the first town where the world reacts to the money going quiet. All four side-quests are shipped — Keepwarden Hana at the gate points you at whichever is open.
 
 The keep is the one door the Company never got through — a sovereign, dragon-honor institution older than any charter. So it's also where the strangest thing about your run runs hottest: whatever erasure reached the lowlands never reached this high, and old-timers here look at you like they've seen your face before and can't say why. You don't have an answer for them yet either.
 
-| Quest | Giver | What you do | Reward |
-|-------|-------|-------------|--------|
-| **The Nervous Clerk** | A Nervous Clerk (east alcove) | Take a leaked ledger page off a Company defector who won't fight you | 400 CD + training pack + keepsake page |
-| **Heritage Acquisitions** | Heritage Acquisitions Envoy | Read the keep's charter, then send the buyer packing — fight, talk, or pay | up to 1200 CD |
-| **The Broken Mail** | Dragonsmith Tetsu | Bring 8 dragon scales to mend the smith's mail, then an optional above-cap wager | 500 CD + mended mail; +700 CD wager |
-| **The First Oath** | Skywatcher Rei | Hear the keep's founding oath and the road north | 300 CD + 2× Rare Candy |
+| Quest | Status | Giver | What you do | Reward |
+|-------|:------:|-------|-------------|--------|
+| **The Nervous Clerk** | ✅ Done | A Nervous Clerk (east alcove) @ 2160 64 890 | Take a leaked ledger page off a Company defector who won't fight you | 400 CD + training pack + keepsake page |
+| **Heritage Acquisitions** | ✅ Done | Heritage Acquisitions Envoy @ 2143 64 902 | Read the keep's charter, then send the buyer packing — fight, talk, or pay | up to 1200 CD |
+| **The Broken Mail** | ✅ Done | Dragonsmith Tetsu @ 2148 64 897 | Bring 8 dragon scales to mend the smith's mail, then an optional above-cap wager | 500 CD + mended mail; +700 CD wager |
+| **The First Oath** | ✅ Done | Skywatcher Rei @ 2120 66 900 | Hear the keep's founding oath and the road north | 300 CD + 2× Rare Candy |
 
 > **Rumor hub — Keepwarden Hana** stands at the gate and points you at whichever of the four is open, then names the road out (Frostveil Pass, and past it Nifl Town) once you've earned the badge. She measures visitors "by bearing, not the paper they carry" — and notes you didn't feel like a stranger to Leader Ryujin, either.
 
-### The Nervous Clerk
+### The Nervous Clerk — ✅ Done
+
+> **A Nervous Clerk** @ `2160 64 890` (east alcove).
 
 An ex-Company records officer fled up to the keep the night the lowland office fell and has hidden in the east alcove since. He recognizes your face — flinches, insists he won't fight you, *"would sooner file my own resignation with my teeth"* — and instead hands you a re-verified ledger page as a peace offering. Read it: the cover-up glitching in real time, one official stamp scratched out and pasted over by another. No battle. Pays **400 CD** at full face, a training pack, and the keepsake page.
 
-### Heritage Acquisitions
+### Heritage Acquisitions — ✅ Done
+
+> **Heritage Acquisitions Envoy** @ `2143 64 902` (charter lectern).
 
 A Company "Heritage Acquisitions" **Envoy** works the keep's charter lectern with a padded offer to *buy* the founding document — "to preserve it," which here means to keep rewriting history. **Read the Sovereign Charter first** (its oldest signatures refuse to scrub off, no matter how many newer hands re-verify the rest), then confront him. He recognizes you mid-pitch, panics, and you settle it three ways: **cite the charter back at him** (peaceful, **800 CD**), **battle him** (ace Lv **72**, above your cap of 68 — opt-in, decline-able; winning pays **1200 CD**), or **pay 400 CD** to make him leave. All three send him off muttering that HQ is "reassessing the northern assets."
 
-### The Broken Mail
+### The Broken Mail — ✅ Done
+
+> **Dragonsmith Tetsu** @ `2148 64 897` (forge).
 
 **Dragonsmith Tetsu**'s dragon-scale mail came apart on the spire years back and he won't climb without it. Bring **8 dragon scales** — shed by the keep's wyrms on the high ledges, and by the Dragon Shrine's hydra — and he mends two suits, keeping one and handing you the other with **500 CD** and a training pack. Then, smith to challenger, he offers an **optional wager**: **700 CD** against his two old dragons, which run **above your cap**. Opt-in and decline-able (tip the forge 200 CD to part friends). He stopped taking Company coin when the lowland money went strange, and only fired the forge back up once he heard it had steadied.
 
-### The First Oath
+### The First Oath — ✅ Done
+
+> **Skywatcher Rei** @ `2120 66 900` (west parapet).
 
 **Skywatcher Rei** keeps the west parapet and the oldest story in the keep — the First Oath that explains why this place never sold to the Company: *it was raised, not bought, and answers to the one who built it.* Hear the full oath and she points you north to Frostveil Pass and Nifl Town, "where the ice keeps its own oaths and forgets nothing." She notices you flinch at the word *built* and doesn't press it. A free story; no battle. Pays **300 CD** and **2× Rare Candy**.
 

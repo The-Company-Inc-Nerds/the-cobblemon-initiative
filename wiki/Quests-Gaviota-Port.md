@@ -4,10 +4,14 @@ A working harbor where the Company runs the docks and the tariffs. The CobbleDol
 slipping now — grain is pushed hardest here, and the port's wheat-handlers have stopped being
 polite. Home of the Daycare and the Water Gym.
 
+**Status:** ✅ Done · 🚧 WIP (partial) · ❌ Not yet implemented — as of the 2026-07-21 audit.
+
 > [!NOTE]
-> **Content status (0.5.0):** the **gym** (Leader Neptune + the Tide Clock) and the
-> [[Guidebook Facilities]] are shipped. Gaviota's **town side-quests** are designed but not
-> yet compiled; this page will grow as they land.
+> **Content status:** the **gym** (Leader Neptune + the Tide Clock), the
+> [[Guidebook Facilities]], and Gaviota's three tracked **town side-quests** (Mending the
+> Deep Nets, The Tide Market, Adjusted Freight) are shipped and on the quest tracker
+> (slots 44–46). The non-tracked port beats (Wheat by Sea, the rumor hub, dock flavour) run
+> alongside them.
 
 ---
 
@@ -17,7 +21,7 @@ polite. Home of the Daycare and the Water Gym.
 |-------|------|--------------|:------:|
 | **Gym 5 — Neptune (Water Badge)** | Gym | Tide arena | ✅ shipped |
 | **Daycare** | Facility | Daycare Keeper | ✅ shipped |
-| Town side-quests | Side | see **Side Quests** below | 🔧 designed |
+| Town side-quests | Side | see **Side Quests** below | ✅ shipped |
 
 ---
 
@@ -57,18 +61,21 @@ Standard badge packet: flat prize, **cap → 50**, **memory fragment 5**, next P
 ## Side Quests
 
 > [!NOTE]
-> **Designed and in authoring.** Gaviota's town side-quests are written but not all playable yet — this previews the beats as designed; the page will grow as they land.
+> The three tracked side-quests below — **Mending the Deep Nets**, **The Tide Market**, and
+> **Adjusted Freight** — are shipped and appear on the quest tracker once the rumor hub
+> (Nurse Coralie) has introduced the town. The rest of the table is non-tracked port texture:
+> the paid heal / rumor board, the Wheat-War ambush at Westwind, and pure flavour.
 
 The Company runs Gaviota's docks and its tariffs, and by gym 5 the CobbleDollar is openly slipping — dock pays come up light, sea-freight tariffs adjust in the harbour's favour, and grain has started moving by hull. A few port veterans place your face (the Company has you filed); the union rep half-remembers a name on the port's founding charter, not the person; ordinary dockhands just feel the money getting shorter.
 
-| Quest | Giver | What you do | Reward |
-|-------|-------|-------------|--------|
-| **What's the Word on the Docks** | Nurse Coralie | Paid full-party heal + a rumor board pointing at the port's open work | Paid heal (rides the index); no cash |
-| **Mending the Deep Nets** | Netmender Bosun Rui | Bring 8 string to restring the deep-sea nets, then an optional friendly wager | 300 CD + fishing loot; 200 CD wager |
-| **The Tide Market** | Fence Odessa | Recover a seized crate off the customs float to unlock her black-market stock | Black-market shop access + ~150 CD |
-| **Adjusted Freight** | Dockmaster Kaito | Cross-check three freight manifests against the real barrel counts | 400 CD union honorarium |
-| **Wheat by Sea (Westwind)** | Tidewatch Sable | Cut the grain barges at Westwind — trade turns to an ambush; the win frees the field | 500 CD + Westwind Fields liberated |
-| Dock Hand Mattias | *(flavour)* | Talk to a restructured-pay dockhand — the human face of the tariff | None (flavour) |
+| Status | Quest | Giver | What you do | Reward |
+|:------:|-------|-------|-------------|--------|
+| ✅ Done | **What's the Word on the Docks** | Nurse Coralie | Paid full-party heal + a rumor board pointing at the port's open work | Paid heal (rides the index); no cash |
+| ✅ Done | **Mending the Deep Nets** | Netmender Bosun Rui **@ 605 93 3660** | Bring 8 string to restring the deep-sea nets, then an optional friendly wager | 300 CD + a training gift (exp candy); 200 CD wager |
+| ✅ Done | **The Tide Market** | Fence Odessa **@ 552 81 3552** | Recover a seized crate off the customs float to unlock her black-market stock | Black-market shop access + 150 CD |
+| ✅ Done | **Adjusted Freight** (The Manifest Audit) | Dockmaster Kaito **@ 566 84 3560** | Cross-check three freight manifests against the real barrel counts | 400 CD union honorarium |
+| ✅ Done | **Wheat by Sea (Westwind)** | Tidewatch Sable **@ 700 103 3255** | Cut the grain barges at Westwind — trade turns to an ambush; the win frees the field | 500 CD + Westwind Fields liberated |
+| ✅ Done | Dock Hand Mattias | *(flavour)* | Talk to a restructured-pay dockhand — the human face of the tariff | None (flavour) |
 
 ### What's the Word on the Docks
 
@@ -76,7 +83,7 @@ The Company runs Gaviota's docks and its tariffs, and by gym 5 the CobbleDollar 
 
 ### Mending the Deep Nets
 
-**Netmender Bosun Rui** is the retired boatswain of Gaviota's deep-sea fleet; his big nets rotted and he won't fish until they're restrung. Bring **8× string** and he restrings two nets — keeps one, hands you **300 CD** and a fishing reward. Then, one boatswain to a promising deckhand, he offers a **friendly 200 CD wager** against two Water types at Lv 52 (two over your cap). Entirely opt-in — take it, or wave it off for a small non-engagement fee.
+**Netmender Bosun Rui** is the retired boatswain of Gaviota's deep-sea fleet; his big nets rotted and he won't fish until they're restrung. Bring **8× string** (dropped by wharf/boardwalk spiders after dark) and he restrings two nets — keeps one, hands you **300 CD** and a standard training gift (exp candy, scaled to your badge count). Then, one boatswain to a promising deckhand, he offers a **friendly 200 CD wager** against two Water types at Lv 52 (two over your cap). Entirely opt-in — take it, or wave it off for a **100 CD** non-engagement fee (a loss costs the 200 stake, fail-soft).
 
 ### The Tide Market
 

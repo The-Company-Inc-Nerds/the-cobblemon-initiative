@@ -6,6 +6,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,6 +59,19 @@ public class StreamSyncConfig {
   /** Include the announced zone name (Nuzlocke install.json zones) in snapshots. */
   private boolean includeLocation = true;
 
+  // ── Untracked .env overrides (transient — never serialized back) ──────────────
+  /**
+   * The endpoint / token / enable flag are secrets the pack must NOT commit to the tracked
+   * config JSON. They can instead be supplied by an untracked env file dropped in the instance
+   * ("mrpack") folder — {@code .env} at the game root or {@code config/streamsync.env} — or by a
+   * real process env var. These are applied on top of the JSON on {@link #load()} and held in
+   * {@code transient} fields so {@link #save()} (Gson skips transient) never writes them back.
+   * Precedence: JSON default &lt; config/streamsync.env &lt; .env &lt; process env.
+   */
+  private transient String envEndpointUrl;
+  private transient String envAuthToken;
+  private transient Boolean envEnabled;
+
   // ── Singleton / lifecycle ─────────────────────────────────────────────────────
 
   public static StreamSyncConfig get() {
@@ -69,19 +84,72 @@ public class StreamSyncConfig {
   }
 
   public static StreamSyncConfig load() {
+    StreamSyncConfig cfg = null;
     try {
       if (CONFIG_FILE.exists()) {
         try (FileReader reader = new FileReader(CONFIG_FILE)) {
-          StreamSyncConfig cfg = GSON.fromJson(reader, StreamSyncConfig.class);
-          if (cfg != null) return cfg;
+          cfg = GSON.fromJson(reader, StreamSyncConfig.class);
         }
       }
     } catch (IOException e) {
       LOGGER.warn("[StreamSync] Error loading config, using defaults: {}", e.getMessage());
     }
-    StreamSyncConfig cfg = new StreamSyncConfig();
-    cfg.save();
+    if (cfg == null) {
+      cfg = new StreamSyncConfig();
+      cfg.save(); // writes DEFAULTS only — env overrides are applied AFTER, into transient fields
+    }
+    cfg.applyEnvOverrides();
     return cfg;
+  }
+
+  // ── .env override layering ────────────────────────────────────────────────────
+
+  /** Layer untracked env sources over the JSON (lowest→highest precedence), into transient fields. */
+  private void applyEnvOverrides() {
+    applyEnvFile(new File("config/streamsync.env"));
+    applyEnvFile(new File(".env")); // the instance ("mrpack") root drop the broadcaster asked for
+    applyKV("STREAMSYNC_ENDPOINT_URL", System.getenv("STREAMSYNC_ENDPOINT_URL"));
+    applyKV("STREAMSYNC_AUTH_TOKEN", System.getenv("STREAMSYNC_AUTH_TOKEN"));
+    applyKV("STREAMSYNC_ENABLED", System.getenv("STREAMSYNC_ENABLED"));
+    if (envEndpointUrl != null || envAuthToken != null || envEnabled != null) {
+      LOGGER.info("[StreamSync] Applied .env override(s): endpoint={} token={} enabled={}",
+        envEndpointUrl != null, envAuthToken != null, envEnabled);
+    }
+  }
+
+  private void applyEnvFile(File f) {
+    if (f == null || !f.isFile()) return;
+    try {
+      for (String raw : Files.readAllLines(f.toPath(), StandardCharsets.UTF_8)) {
+        String line = raw.trim();
+        if (line.isEmpty() || line.startsWith("#")) continue;
+        int eq = line.indexOf('=');
+        if (eq <= 0) continue;
+        applyKV(line.substring(0, eq).trim(), stripQuotes(line.substring(eq + 1).trim()));
+      }
+    } catch (IOException e) {
+      LOGGER.warn("[StreamSync] Could not read env override {}: {}", f, e.getMessage());
+    }
+  }
+
+  private void applyKV(String key, String val) {
+    if (key == null || val == null) return;
+    val = val.trim();
+    if (val.isEmpty()) return;
+    switch (key) {
+      case "STREAMSYNC_ENDPOINT_URL" -> this.envEndpointUrl = val;
+      case "STREAMSYNC_AUTH_TOKEN" -> this.envAuthToken = val;
+      case "STREAMSYNC_ENABLED" -> this.envEnabled = Boolean.parseBoolean(val);
+      default -> { /* not an override key */ }
+    }
+  }
+
+  private static String stripQuotes(String s) {
+    if (s.length() >= 2
+        && ((s.startsWith("\"") && s.endsWith("\"")) || (s.startsWith("'") && s.endsWith("'")))) {
+      return s.substring(1, s.length() - 1);
+    }
+    return s;
   }
 
   public void save() {
@@ -97,9 +165,11 @@ public class StreamSyncConfig {
 
   // ── Getters / setters ───────────────────────────────────────────────────────
 
-  public boolean isEnabled() { return enabled; }
-  public String getEndpointUrl() { return endpointUrl; }
-  public String getAuthToken() { return authToken; }
+  // Env overrides win at read time (StreamSyncPusher reads these at construction; /streamsync
+  // reload re-runs load() so a changed .env is re-layered).
+  public boolean isEnabled() { return envEnabled != null ? envEnabled : enabled; }
+  public String getEndpointUrl() { return envEndpointUrl != null ? envEndpointUrl : endpointUrl; }
+  public String getAuthToken() { return envAuthToken != null ? envAuthToken : authToken; }
   public int getSnapshotIntervalTicks() { return snapshotIntervalTicks; }
   public int getHeartbeatSeconds() { return heartbeatSeconds; }
   public int getRequestTimeoutMs() { return requestTimeoutMs; }

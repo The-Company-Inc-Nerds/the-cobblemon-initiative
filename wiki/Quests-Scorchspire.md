@@ -5,8 +5,10 @@ road is done; the Royal League is all that stands between you and the answer. Th
 richest prize on the map) is on the far slope.
 
 > [!NOTE]
-> **Content status (0.5.0):** the **gym** (Leader Vulcan + the heat gauge) is shipped. Scorchspire's
-> **town side-quests** are designed but not yet compiled; this page will grow as they land.
+> **Content status:** the **gym** (Leader Vulcan + the heat gauge) is shipped, and all four
+> **town side-quests** are now compiled and playable (givers placed, turn-in functions wired).
+
+**Status:** ✅ Done · 🚧 WIP (partial) · ❌ Not yet implemented — as of the 2026-07-21 audit.
 
 ---
 
@@ -16,7 +18,7 @@ richest prize on the map) is on the far slope.
 |-------|------|--------------|:------:|
 | **Gym 10 — Vulcan (Fire Badge)** | Gym | Forge arena | ✅ shipped |
 | **Fire Shrine** | Shrine (optional) | `[3510 51 4702]` | ✅ trial shipped |
-| Town side-quests | Side | see **Side Quests** below | 🔧 designed |
+| Town side-quests | Side | see **Side Quests** below | ✅ shipped |
 
 ---
 
@@ -57,34 +59,34 @@ signature."** The last badge, and the last flicker before the League gives you t
 ## Side Quests
 
 > [!NOTE]
-> **Designed and in authoring** — teams, dialogue, and rewards are written, but not all playable yet. Amounts are face value; by now the Verified Rate is near its floor — the last echo of an instability the region has already turned back.
+> **Shipped and playable** — all four are compiled: givers are placed, dialogue and turn-in functions are wired, teams are set. Amounts are face value; by now the Verified Rate is near its floor — the last echo of an instability the region has already turned back, so the CobbleDollar payout you actually pocket runs a haircut below the listed number.
 
 Scorchspire is the last town before the Royal League, and it plays like an aftermath. The wheat war is effectively over, the currency is steady, and the Company here is a **skeleton crew** — agents who can't cancel their own dead orders and mostly just want to be somewhere else. Every quest in the forge town rhymes on one word: **signature**. Signed steel, scrubbed paperwork, a hand somebody remembers off an old door plate.
 
-| Quest | Giver | What you do | Reward |
-|-------|-------|-------------|--------|
-| **The Last Forge Order** | Forgemaster Sena | Burn three dead Company requisition ledgers; settle a collector who won't start the fight | 600 CD + major training pack + keepsake |
-| **The Tempering** | Bladesmith Hollis | Bring 8 iron ingots for a tempered keepsake; take an optional wager | 400 CD + keepsake; wager pays 500 CD |
-| **The Hand That Signed It** | Old Marren | Dig a half-slagged door plate from the slag heap and bring it to the old smith | 500 CD + major training pack + the plate |
-| **Retirement Package** | Clerk Severance | Protect a defecting clerk from a two-agent ambush on the shrine road | 700 CD + major training pack + the memo |
+| Quest | Status | Giver | What you do | Reward |
+|-------|:------:|-------|-------------|--------|
+| **The Last Forge Order** | ✅ Done | Forgemaster Sena `@ 3670 68 4560` | Burn three dead Company requisition ledgers; settle a collector who won't start the fight | 600 CD + major training pack + keepsake |
+| **The Tempering** | ✅ Done | Bladesmith Hollis `@ 3684 68 4588` | Bring 8 iron ingots for a tempered keepsake; take an optional wager | 400 CD + keepsake; wager pays 500 CD |
+| **The Hand That Signed It** | ✅ Done | Old Marren `@ 3660 68 4600` | Dig a half-slagged door plate from the slag heap and bring it to the old smith | 500 CD + major training pack + the plate |
+| **Retirement Package** | ✅ Done | Clerk Severance `@ 3620 66 4660` | Protect a defecting clerk from a two-agent ambush on the shrine road | 700 CD + major training pack + the memo |
 
 *(Nurse Ember at the clinic doubles as the rumor hub — she heals your team, points you at whichever quest is open, and marks the road down toward the League.)*
 
-### The Last Forge Order
+### The Last Forge Order — ✅ Done
 
-**Forgemaster Sena** keeps Vulcan's forge fed — and it's still churning out steel against a Company contract that went dead when the org's own chain of command collapsed. Nobody dared cancel a Company seal, so you and Sena **burn the requisition ledgers** one by one (the last is an ugly piece — a charter page with the signature scrubbed to a clean blank). An Asset Recovery agent posted by the quench is there to collect the final shipment; he won't throw the first punch, so **fight him (opt-in, no fee)** or **pay 250 CD to walk**. Finish the burn for **600 CD**, a major training pack, and a keepsake ingot Sena reforges from the blank.
+**Forgemaster Sena** (`@ 3670 68 4560`) keeps Vulcan's forge fed — and it's still churning out steel against a Company contract that went dead when the org's own chain of command collapsed. Nobody dared cancel a Company seal, so you and Sena **burn the requisition ledgers** one by one (the last is an ugly piece — a charter page with the signature scrubbed to a clean blank). **Recovery Agent Kessler**, posted by the quench, is there to collect the final shipment; he won't throw the first punch, so **fight him (opt-in, no fee — his own prize pays 600 CD)** or **pay 250 CD to walk**. Finish the burn for **600 CD**, a major training pack, and a keepsake (8 charcoal) Sena forges from the scrubbed blank.
 
-### The Tempering
+### The Tempering — ✅ Done
 
-**Bladesmith Hollis** runs the town's tempering trial — heat is easy, timing is the craft, and he teaches it as a metaphor for the climb ahead. Bring **8 iron ingots** and he quenches you a keepsake to carry into the League, paying **400 CD** and a training pack. Then he offers a **friendly, cap-legal wager** on his own edge — his two fire-hearts against your line, **500 CD** on the table, **free to decline**. A lighter beat than most of the town.
+**Bladesmith Hollis** (`@ 3684 68 4588`) runs the town's tempering trial — heat is easy, timing is the craft, and he teaches it as a metaphor for the climb ahead. Bring **8 iron ingots** and he quenches you a keepsake (an Expert Belt) to carry into the League, paying **400 CD** and a training pack. Then he offers a **friendly, cap-legal wager** on his own edge — his two fire-hearts against your line, **500 CD** on the table, **free to decline** (lose and the 500 stake stays with the forge). A lighter beat than most of the town.
 
-### The Hand That Signed It
+### The Hand That Signed It — ✅ Done
 
-**Old Marren** is the oldest bellows in Scorchspire — sixty years forging branch-office door plates, each stamped with a countersignature he says he'd know anywhere. The Company's crew melted the plates down to erase the mark, but one landed in his **slag heap** half-slagged, still legible. Dig it out, set it on his anvil, and he goes quiet: **he recognizes something and won't say what.** He all but names it — and then, deliberately, doesn't. No battle; the reward is **500 CD**, a major training pack, and the plate itself, a keepsake that raises more questions than it answers. *(A pure lore beat — read it slowly.)*
+**Old Marren** (`@ 3660 68 4600`) is the oldest bellows in Scorchspire — sixty years forging branch-office door plates, each stamped with a countersignature he says he'd know anywhere. The Company's crew melted the plates down to erase the mark, but one landed in his **slag heap** half-slagged, still legible. Dig it out, set it on his anvil, and he goes quiet: **he recognizes something and won't say what.** He all but names it — and then, deliberately, doesn't. No battle; the reward is **500 CD**, a major training pack, and the plate itself, a keepsake that raises more questions than it answers. *(A pure lore beat — read it slowly.)*
 
-### Retirement Package
+### Retirement Package — ✅ Done
 
-**Clerk Severance** fled to the last town before the League after the Company's HQ fell, carrying an internal paper trail she wants out of Company hands before she disappears. Take the job and **Asset Recovery catches up** on the shrine road — a **two-agent doubles ambush** you opt into by stepping between them and her. One of the two won't even raise a hand; beat the pair and Severance hands over the whole trail and vanishes. Pays **700 CD**, a major training pack, and the memo — a document that circles the run's biggest open question without closing it. *(Gate: find and talk to Severance first — the ambush only arms once you've taken the job.)*
+**Clerk Severance** (`@ 3620 66 4660`) fled to the last town before the League after the Company's HQ fell, carrying an internal paper trail she wants out of Company hands before she disappears. Take the job and **Asset Recovery catches up** on the shrine road — **Recovery Lead Vance** and Agent Doss, a **doubles ambush** you opt into by stepping between them and her. Doss won't even raise a hand; beat the pair and Severance hands over the whole trail and vanishes. Pays **700 CD**, a major training pack, and the memo — a document that circles the run's biggest open question without closing it. *(Gate: find and talk to Severance first — the ambush only arms once you've taken the job.)*
 
 ---
 

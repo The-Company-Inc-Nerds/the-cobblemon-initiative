@@ -21,14 +21,17 @@ import net.minecraft.network.protocol.game.ClientboundSetTitleTextPacket;
 import net.minecraft.network.protocol.game.ClientboundSetTitlesAnimationPacket;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.level.TicketType;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.phys.Vec3;
 
@@ -54,6 +57,15 @@ public class CutsceneManager {
 
   /** Hard safety cap: no scene runs longer than this many ticks regardless of the script. */
   private static final int MAX_SCENE_TICKS = 20 * 60 * 5; // 5 minutes
+
+  /** Radius (in chunks) of the entity-ticking ticket that pins the scene's SUBJECT (the gym /
+   * shrine leader the end-command battles) loaded for the whole scene. The spectator camera drags
+   * the player's own chunk ticket onto the flying rig, and {@code endBack} restores the player
+   * AWAY from the leader — so a leader a couple of chunks off can unload before {@code end()} runs
+   * its {@code tbcs attach} / {@code tbcs battle}, which then throws "…is not attached to an
+   * entity". Radius 4 → ticket level 29 (≤31 = entity-ticking), covering ~72 blocks around the
+   * click position; the leader is always within a few blocks of it. Released in {@code end()}. */
+  private static final int SUBJECT_TICKET_RADIUS = 4;
 
   private final Map<UUID, CutsceneState> active = new HashMap<>();
   private final Map<String, CutsceneScript> scripts = new HashMap<>();
@@ -192,6 +204,15 @@ public class CutsceneManager {
     if (endCommand != null && !endCommand.isBlank()) state.setEndCommand(endCommand);
     if (hasDouble) state.setDoubleSkinPending(true);
     active.put(player.getUUID(), state);
+
+    // Keep the scene subject (the leader the end-command battles) entity-loaded for the whole
+    // scene, so the engage function's `execute if entity <leader>` still resolves at end() even
+    // after the camera pan + endBack restore drifted the player's own ticket off it. Anchored on
+    // the click position (the leader is within dialog range of it); released in end().
+    BlockPos subjectPos = BlockPos.containing(eyeX, eyeY, eyeZ);
+    ChunkPos subjectChunk = new ChunkPos(subjectPos);
+    level.getChunkSource().addRegionTicket(TicketType.PORTAL, subjectChunk, SUBJECT_TICKET_RADIUS, subjectPos);
+    state.setSubjectAnchor(subjectChunk, subjectPos);
 
     // Spectator FIRST, then attach the camera (the vanilla /spectate order; a live swap is
     // hardcore-safe — no guard on changeGameModeForPlayer).
@@ -385,6 +406,16 @@ public class CutsceneManager {
       // leaving the body to spawn AFTER this immediate sweep found nothing.
       if (server != null) {
         pendingSweeps.add(new Object[] { server.overworld().getGameTime() + 20L, state.getDimension() });
+      }
+    }
+    // Release the subject forceload (added in play(), after the end command has already dispatched
+    // and resolved the leader): the player is now back in survival beside the leader, so their own
+    // ticket keeps it loaded — ours would only pin extra chunks. Self-times-out anyway if missed.
+    if (state.getSubjectChunk() != null && server != null) {
+      ServerLevel sub = resolveLevel(server, state.getDimension());
+      if (sub != null) {
+        sub.getChunkSource().removeRegionTicket(
+          TicketType.PORTAL, state.getSubjectChunk(), SUBJECT_TICKET_RADIUS, state.getSubjectPos());
       }
     }
     active.remove(state.getPlayerId());

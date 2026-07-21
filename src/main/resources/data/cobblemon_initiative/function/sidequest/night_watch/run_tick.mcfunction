@@ -1,15 +1,25 @@
 # First Night Watch — one tick of an active watch. Run as/at the watching player.
+# Fixed-length watch (~2 min / 2400 ticks) — tighter than the old dusk→dawn hold, and busier
+# (scripted hostile pulses below). Natural dawn still wins early as a safety.
+scoreboard players add @s nw_ticks 1
 execute store result score #t ci_watch run time query daytime
-# DAWN: daytime wrapped past 23999 into the morning band with the watcher still tagged.
+execute if score @s nw_ticks matches 2400.. run function cobblemon_initiative:sidequest/night_watch/win
+execute if score @s nw_ticks matches 2400.. run return 0
+# DAWN safety: daytime wrapped into the morning band before the cap.
 execute if score #t ci_watch matches 0..11999 run function cobblemon_initiative:sidequest/night_watch/win
 execute if score #t ci_watch matches 0..11999 run return 0
-# Bossbar = remaining night ticks. Re-show + re-attach every tick (idempotent) so a
-# mid-watch relog self-heals without load-order tricks.
-scoreboard players set #rem ci_watch 24000
-scoreboard players operation #rem ci_watch -= #t ci_watch
+# Bossbar = watch ticks remaining. Re-show + re-attach every tick (idempotent) so a mid-watch
+# relog self-heals without load-order tricks.
+scoreboard players set #rem ci_watch 2400
+scoreboard players operation #rem ci_watch -= @s nw_ticks
 execute store result bossbar cobblemon_initiative:night_watch value run scoreboard players get #rem ci_watch
 bossbar set cobblemon_initiative:night_watch players @s
 bossbar set cobblemon_initiative:night_watch visible true
+# MORE SPAWNS: a scripted hostile pulse every 40 ticks on the Firstfurrow field, so the watch is
+# a real defense event and not sparse vanilla spawns on a lit, walled farm. The wave self-caps.
+scoreboard players add @s nw_spawn 1
+execute if score @s nw_spawn matches 40.. run scoreboard players set @s nw_spawn 0
+execute if score @s nw_spawn matches 0 run function cobblemon_initiative:sidequest/night_watch/spawn_wave
 # Cull ledger: sum the four kill-criteria counters into nw_total.
 scoreboard players operation @s nw_total = @s nw_z
 scoreboard players operation @s nw_total += @s nw_k

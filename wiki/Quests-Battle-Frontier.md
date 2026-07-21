@@ -1,5 +1,7 @@
 # Quests: Battle Frontier
 
+**Status:** ✅ Done · 🚧 WIP (partial) · ❌ Not yet implemented — as of the 2026-07-21 audit.
+
 The post-Champion sandbox: eight facilities, each with two challengers and a **Frontier Brain** at
 the top, running level ~90–100. It's the mastery grind of the level-85→100 window — decompression
 after the story climax, and where you sharpen a team for the last fight. And unlike everywhere else
@@ -77,15 +79,19 @@ CLEARED** title, and pays a one-time **20,000 CD** grand purse. It's the frontie
 
 ## The quest line
 
-The Frontier ships as one tracked sidebar line (press `]` to track — see **[[Commands]]**):
+The Frontier ships as a set of tracked sidebar lines that hand off to one another (press `]` to
+track — see **[[Commands]]**):
 
-1. **Sign the Frontier ledger** — points at Registrar Odette until you sign.
-2. **Clear the seven halls** — a live **N/7** counter that retargets to the next uncleared Brain as
-   each hall falls.
-3. **Face the Warden** — once all seven halls (and both cave challengers) are down, the Deep Dark door
-   opens and the line points at Selene.
-4. **Read the founding plaque** *(lore side-beat)* — visit Caretaker Anselm and read the frontier's
-   dedication plaque. Optional, no battle.
+1. **✅ Done — The Battle Frontier** — "Sign the Frontier ledger." Points at **Registrar Odette
+   @ 3800 159 2997** until you sign, then hides.
+2. **✅ Done — The Seven Halls** — "Clear the Frontier halls **$(halls)/7**," a live counter that
+   retargets to the next uncleared Brain as each hall falls (all seven Brains cast on the concourse —
+   see the table above). Hides once all seven are down.
+3. **✅ Done — The Warden** — "The Deep Dark door is open — face the Warden." Fires only in the
+   door-open window (all seven halls *and* both cave challengers cleared, Selene still standing) and
+   points at **Cave Warden Selene @ 3812 159 2996**.
+4. **✅ Done — The Last Honest Signature** *(lore side-beat)* — "Read the founding plaque." Visit
+   **Caretaker Anselm @ 3806 159 2999** and read the frontier's dedication plaque. Optional, no battle.
 
 ### The plaque
 

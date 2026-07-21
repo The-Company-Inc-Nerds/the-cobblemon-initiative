@@ -65,6 +65,24 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
+                                    Cmd: "title @initiator title [{\"text\":\"The Gardens Stand Open\",\"color\":\"green\"}]"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "title @initiator subtitle [{\"text\":\"Four wardens woken — every garden stands open.\",\"color\":\"gray\"}]"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "playsound minecraft:ui.toast.challenge_complete master @s ~ ~ ~ 0.7 1"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "playsound minecraft:block.beacon.power_select master @s ~ ~ ~ 1 0.8"
+                                },
+                                {
+                                    Type: "COMMAND",
                                     ExecAsUser: 1b,
                                     Cmd: "tag @s add aya_transformed"
                                 },

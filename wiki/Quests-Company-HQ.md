@@ -7,35 +7,48 @@ the single biggest economy payoff in the run.
 > [!CAUTION]
 > **Act II spoilers**, plus a pointer to the endgame. The narrative walkthrough is on **[[Guidebook Act II]]**; this page is the quest reference (gate, geometry, reward).
 
+**Status:** ✅ Done · 🚧 WIP (partial) · ❌ Not yet implemented — as of the 2026-07-21 audit.
+
 ---
 
-## The gate
+## ❌ Not yet — The gate
 
-> **Location:** `[1590 51 1028]` · **Gates:** **7 badges** *and* **6 of the 10 wheat fields
-> liberated** · **Boss:** Acting CEO DJ.
+> **Boss:** Acting CEO DJ **@ 1590 51 1028** · **Gates:** **7 badges** *and* **6 of the 10 wheat
+> fields liberated** · **Location:** `[1590 51 1028]`.
 
 DJ **will not take the meeting** while the fields still feed the Company — the raid is hard-gated on
 starving the monopoly first. The quest HUD reads *"Liberate wheat fields, then raid HQ"* until you
 hold six freed fields, then flips to *"Raid Company HQ."* How the field campaign works — ten fields,
 any six, the relief it buys — is on **[[Guidebook Wheat War]]**.
 
-## The geometry — down, not up
+## ❌ Not yet — The geometry — down, not up
 
 The Company building is vertical, and the raid **descends**. You enter at the lobby and go **down
-through the basement** to **Acting CEO DJ** at the bottom (`[1590 51 1028]`). Fight down the org, and
-DJ's defeat fires the beat the whole first two acts have been building to:
+through the basement** to **Acting CEO DJ @ 1590 51 1028** at the bottom (`[1590 51 1028]`). Fight
+down the org, and DJ's defeat fires the beat the whole first two acts have been building to:
 
 > **"CURRENCY STABILIZED."** The instability index snaps to **25** and holds. Prices steady; the
 > propaganda changes register from glossy to quietly corrupted.
 
-DJ does **not** raise your level cap — the reward is the currency and the story turn. (There's a
-signature reward on his defeat, too; kept unspoiled here.)
+DJ does **not** raise your level cap — the reward is the currency and the story turn. His defeat
+runs the `hq_stabilize` beat (clamps the instability index down to **25**) and pays the standard
+**boss prize money** (8,000 CD); there is no separate item or Pokémon gift on his defeat.
 
-## The penthouse — the top floor
+## ❌ Not yet — The penthouse — the top floor
 
-The building's **top floor** is a penthouse. It's reachable for **lore and a Master Ball pickup** —
-and it has a larger role in the finale that is covered, spoiler-and-all, on **[[Guidebook Act III]]**.
-For now: it's worth the climb, and there's a Master Ball in it.
+The building's **top floor** is a penthouse **@ VERIFY** (design intent `~[1590 95 1028]`; lopunny
+pair proposed at `[1588 95 1030]` / `[1592 95 1030]` — coords unconfirmed until the tower interior
+is built) — the founder's old quarters, with a lore-only companion cast (the Lopunny valets and the
+Incineroar by the bed) that greets the boss home without naming them. It has a larger role in the
+finale that is covered, spoiler-and-all, on **[[Guidebook Act III]]**.
+
+> [!NOTE]
+> **Build status (2026-07-20):** the HQ tower interior is still a builder dependency. Acting CEO
+> DJ, the penthouse companions, and any penthouse pickup are **written but not yet placed in the
+> world** (no NPC bodies, no interior geometry) — so the raid can't be fought end-to-end yet. The
+> only Master Ball currently obtainable in-game is the **[[Guidebook Shrines|Five Keepers]]** shrine
+> capstone reward, not a penthouse pickup. Treat the descent/penthouse below as design intent
+> until the tower is built.
 
 ---
 

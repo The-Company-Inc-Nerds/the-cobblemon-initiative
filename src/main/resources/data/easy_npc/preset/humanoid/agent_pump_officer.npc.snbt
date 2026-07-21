@@ -6,7 +6,7 @@
         description: "villain_grunt at Kalahar Reach - The Oasis (act 1). Compiled from dialog-src.",
         entityTypeId: "easy_npc:humanoid",
         modified: 0L,
-        name: "Yield Officer",
+        name: "Survey Officer",
         variantType: "STEVE",
         version: "1.0.0"
     },
@@ -59,7 +59,7 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "say I already filed the incident. The foreman runs the valve, not me."
+                                    Cmd: "say I already filed the incident. The foreman runs the sampling bot, not me."
                                 },
                                 {
                                     Type: "COMMAND",
@@ -86,7 +86,7 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:sq_pump_officer onwin {1: ['cobbledollars give @1 300', 'tag @1 add defeated_sq_pump_officer', '@2 say Yield disruption logged. Escalating to the site foreman - talk to him, if you can get past him.'], 2: ['@1 say Optimization proceeds on schedule. The Reach is a rounding error.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:sq_pump_officer onwin {1: ['cobbledollars give @1 300', 'tag @1 add defeated_sq_pump_officer', '@2 say Survey disruption logged. Escalating to the site foreman - talk to him, if you can get past him.'], 2: ['@1 say The assessment proceeds on schedule. The Reach is a rounding error.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -116,10 +116,10 @@
                             Text: "We had orders about you. Reroute around, do not engage, do not confirm the face. The face from the memo with the black bar over the name."
                         },
                         {
-                            Text: "You keep drying up our fields and now you are at our pump. I am paid to move water, not to be right about who you are. State your business."
+                            Text: "You keep undoing our sites and now you are at our survey. I am paid to log samples, not to be right about who you are. State your business."
                         }
                     ],
-                    Name: "Pump Crew - stand down",
+                    Name: "Survey Crew - stand down",
                     Label: "recognized_late"
                 },
                 {
@@ -138,7 +138,7 @@
                     Priority: 25,
                     Buttons: [
                         {
-                            Name: "Make them stop pumping",
+                            Name: "Wreck the survey",
                             Actions: [
                                 {
                                     Type: "COMMAND",
@@ -151,7 +151,7 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "say I already filed the incident. The foreman runs the valve, not me."
+                                    Cmd: "say I already filed the incident. The foreman runs the sampling bot, not me."
                                 },
                                 {
                                     Type: "COMMAND",
@@ -178,7 +178,7 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:sq_pump_officer onwin {1: ['cobbledollars give @1 300', 'tag @1 add defeated_sq_pump_officer', '@2 say Yield disruption logged. Escalating to the site foreman - talk to him, if you can get past him.'], 2: ['@1 say Optimization proceeds on schedule. The Reach is a rounding error.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:sq_pump_officer onwin {1: ['cobbledollars give @1 300', 'tag @1 add defeated_sq_pump_officer', '@2 say Survey disruption logged. Escalating to the site foreman - talk to him, if you can get past him.'], 2: ['@1 say The assessment proceeds on schedule. The Reach is a rounding error.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -198,20 +198,20 @@
                     ],
                     Texts: [
                         {
-                            Text: "The officer logged you and ran. I hold the valve. Line pressure is my job and my job is filed, verified, and none of your concern."
+                            Text: "The officer logged you and ran. I run the sampling bot. The assessment is my job and my job is filed, verified, and none of your concern."
                         },
                         {
-                            Text: "You came all the way out here to argue with a wheel. Make them stop pumping, then - if you can get past me."
+                            Text: "You came all the way out here to argue with a sample drum. Ruin the numbers, then - if you can get past me."
                         }
                     ],
-                    Name: "Pump Crew - the valve run",
+                    Name: "Survey Crew - the sample run",
                     Label: "foreman_ready"
                 },
                 {
                     Priority: 10,
                     Buttons: [
                         {
-                            Name: "Make them stop pumping",
+                            Name: "Wreck the survey",
                             Actions: [
                                 {
                                     Type: "COMMAND",
@@ -224,7 +224,7 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "say I already filed the incident. The foreman runs the valve, not me."
+                                    Cmd: "say I already filed the incident. The foreman runs the sampling bot, not me."
                                 },
                                 {
                                     Type: "COMMAND",
@@ -251,7 +251,7 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:sq_pump_officer onwin {1: ['cobbledollars give @1 300', 'tag @1 add defeated_sq_pump_officer', '@2 say Yield disruption logged. Escalating to the site foreman - talk to him, if you can get past him.'], 2: ['@1 say Optimization proceeds on schedule. The Reach is a rounding error.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:sq_pump_officer onwin {1: ['cobbledollars give @1 300', 'tag @1 add defeated_sq_pump_officer', '@2 say Survey disruption logged. Escalating to the site foreman - talk to him, if you can get past him.'], 2: ['@1 say The assessment proceeds on schedule. The Reach is a rounding error.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -271,16 +271,16 @@
                     ],
                     Texts: [
                         {
-                            Text: "This is a licensed extraction site. Agricultural yield optimization, filed and verified. The water goes where the Company needs it."
+                            Text: "This is a licensed survey site. Site assessment for agricultural conversion, filed and verified. We sample, we score, and the Company decides what the sand is worth."
                         },
                         {
-                            Text: "The town wells are a legacy allocation under review. Your concern is noted and will be processed. Now step back from the manifold."
+                            Text: "The town wells are a legacy allocation under review. Your concern is noted and will be processed. Now step back from the sampling bot."
                         },
                         {
-                            Text: "Step away from the valve. If I have to file a second incident report this quarter I lose my hydration bonus. The bonus is water. Do not make me explain that twice."
+                            Text: "Step away from the sample drum. If I have to file a second incident report this quarter I lose my hydration bonus. The bonus is water. Do not make me explain that twice."
                         }
                     ],
-                    Name: "Pump Crew",
+                    Name: "Survey Crew",
                     Label: "default"
                 }
             ]
@@ -440,6 +440,6 @@
             }
         ],
         id: "easy_npc:humanoid",
-        CustomName: '{"text": "Yield Officer", "color": "#FFFFFF"}'
+        CustomName: '{"text": "Survey Officer", "color": "#FFFFFF"}'
     }
 }

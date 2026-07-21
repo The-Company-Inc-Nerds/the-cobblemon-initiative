@@ -40,6 +40,39 @@
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
+                            Name: "ice_shrine_trial_active"
+                        }
+                    ],
+                    Priority: 40,
+                    Buttons: [
+                        {
+                            Name: "I have crossed the path — finish the trial",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative shrine ice complete"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "finish_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "You reached the far end without the frost sending you back. Few keep their footing that long. The ice does not measure the crossing — it measures the one who stands at the end of it, still. Say the word, and I will seal that measure now."
+                        }
+                    ],
+                    Name: "Glacius — the far end",
+                    Label: "summit"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
                             Name: "ice_shrine_trial_clear"
                         },
                         {
@@ -143,43 +176,6 @@
                     Priority: 10,
                     Buttons: [
                         {
-                            Name: "Take in the shrine",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "cutscene play ice_shrine_reveal"
-                                }
-                            ],
-                            Label: "gaze_button"
-                        },
-                        {
-                            Name: "Begin the frozen path",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "function cobblemon_initiative:sidequest/shrine/ice_trial_help"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "cobblemon-initiative shrine ice start"
-                                },
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Conditions: [
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "no_ice_shrine_trial_clear"
-                                }
-                            ],
-                            Label: "begin_trial_button"
-                        },
-                        {
                             Name: "I am not ready",
                             Actions: [
                                 {
@@ -194,10 +190,10 @@
                             Text: "Do not move so quickly. This is the Ice Shrine, where everything is kept exactly as it was, untouched by time or mercy. I am Glacius, its still keeper. The shrine itself is not easily flattered."
                         },
                         {
-                            Text: "There is a path of ice below. Cross it before the frost takes you back to the start. What is frozen does not hurry, and neither may you afford to. Clear the frozen path and the frost will seal you - and what it seals, you may carry."
+                            Text: "You have not begun the crossing — the frozen path starts back at the trailhead, and it is the acolyte there who opens it. Speak to her. My place is the far end, where the ice decides what to make of whoever crosses to reach me."
                         },
                         {
-                            Text: "The frost is not given to the warm of heart. It is earned by those who can be still in the face of their own reflection. Cross the path, then face me, and let the ice decide."
+                            Text: "Go back, cross the path, and stand before me when it is done. What the ice will show you of yourself, I will let it show you in its own time, not mine."
                         }
                     ],
                     Name: "Glacius — challenge",

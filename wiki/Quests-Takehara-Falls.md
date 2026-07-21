@@ -6,6 +6,8 @@
 
 This page lists every quest and paid encounter in and around Takehara Falls. For where the town sits in the campaign, see **[[Guidebook Act I]]**. Coming from Sango? The road quests are on **[[Quests Blossom Path]]**; the road *out* of town is **[[Quests Harvest Road]]**.
 
+**Status:** ✅ Done · 🚧 WIP (partial) · ❌ Not yet implemented — as of the 2026-07-21 audit.
+
 > [!WARNING]
 > **Spoilers — Act I.** This page documents The Company's presence around Takehara Falls — field agents, a canvasser, and an audit or two. Nothing beyond Act I is spoiled.
 
@@ -109,13 +111,13 @@ Beat **all four** tower trainers (Koji, Yuki, Shin, Taro) and the Gym Guide pays
 
 ---
 
-## Cascade Ascent
+## Cascade Ascent — ✅ Done
 
 |  |  |
 |---|---|
 | **Giver** | Falls Warden Shou |
 | **Location** | The Plunge Pool at the base of the falls; the finish is a marker at the crest |
-| **Start** | Talk to Shou → *Attempt the Ascent — ninety seconds* |
+| **Start** | Talk to Shou **@ VERIFY** (plunge pool base beside the sign-up board) → *Attempt the Ascent — ninety seconds* |
 | **Repeatable** | First clear one-time; a 60-second **gold run** repeats after it |
 | **Tracker** | Yes — *Base to crest before the clock dies* |
 
@@ -164,13 +166,13 @@ Beat **all four** tower trainers (Koji, Yuki, Shin, Taro) and the Gym Guide pays
 
 ---
 
-## Sting Operation (Asset Under Valuation)
+## Sting Operation (Asset Under Valuation) — ✅ Done
 
 |  |  |
 |---|---|
 | **Giver** | Beekeeper Tomo |
 | **Location** | The hive trees at the Blossom Arch — Takehara end of Blossom Path [~1920 105 2570] |
-| **Start** | Talk to Tomo → *Walk the hive line* |
+| **Start** | Talk to Tomo **@ 1920 105 2570** → *Walk the hive line* |
 | **Repeatable** | One-time (plus a one-time post-badge follow-up) |
 | **Tracker** | Yes — *Walk the four seals with Tomo* |
 
@@ -199,13 +201,13 @@ The Company stapled **"asset under valuation"** seals to Tomo's hive trees. He'd
 
 ---
 
-## Notice of Non-Compliance
+## Notice of Non-Compliance — ✅ Done
 
 |  |  |
 |---|---|
 | **Giver** | Printmaker Mei |
 | **Location** | Print stall by the gym entrance, in eyeshot of the canvasser's patrol loop |
-| **Start** | Talk to Mei → *Take the three moth prints* |
+| **Start** | Talk to Mei **@ VERIFY** (print stall by the gym entrance — persisted body, no coords in JSON) → *Take the three moth prints* |
 | **Repeatable** | One-time |
 | **Tracker** | Yes — *Paste three moth prints unseen* |
 
@@ -231,13 +233,13 @@ The Company glued **"Verified Trust, Verified Value"** notices over Mei's moth-w
 
 ---
 
-## Natural History (museum bones + fossil revival)
+## Natural History (museum bones + fossil revival) — ✅ Done
 
 |  |  |
 |---|---|
 | **Giver** | Curator Kenji (brush, directions, revival bench); **Sayuri** takes the donation by the bone statue [~1870 114 2330] |
 | **Location** | Takehara Museum of Natural History [1902 114 2337]; dig site on the strata shelf below the falls |
-| **Start** | Talk to Kenji → *Take the field brush* |
+| **Start** | Talk to Kenji **@ 1902 114 2337** → *Take the field brush* (donate six bones to Sayuri **@ 1870 114 2330**) |
 | **Repeatable** | One-time (donation and revival each) |
 | **Tracker** | Yes — *Six bones complete the exhibit* |
 

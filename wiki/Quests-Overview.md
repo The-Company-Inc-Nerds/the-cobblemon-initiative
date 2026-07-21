@@ -2,7 +2,7 @@
 
 > *Work is never hard to find here. Somebody always needs a letter carried, a fence watched, a price checked twice. Just read the receipt before you pocket it — the rate line is the only sentence in this region that never lies.*
 
-The region runs on paperwork, and so does your journey: **26 tracked quests with 57 tracked objectives**, from the main badge road down to a bread round on your mother's lane. This page explains the quest *system* — the sidebar, the tracker, how you get paid, and the rules every quest plays by — and ends with an **index of every quest** pointing to its area page.
+The region runs on paperwork, and so does your journey: **72 quests with 159 tracked objectives**, from the main badge road down to a bread round on your mother's lane. This page explains the quest *system* — the sidebar, the tracker, how you get paid, and the rules every quest plays by — and ends with an **index of every quest** pointing to its area page.
 
 For the story walkthrough, see **[[Quests Main Story]]**. For the areas: **[[Quests-Sango Town]]** · **[[Quests Blossom Path]] · [[Quests Harvest Road]]** · **[[Quests-Takehara Falls]]** · **[[Quests-Hua Zhan City]]**.
 

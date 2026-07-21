@@ -16,14 +16,16 @@
 
 ---
 
+**Status:** ✅ Done · 🚧 WIP (partial) · ❌ Not yet implemented — as of the 2026-07-21 audit.
+
 ## Quest index
 
 | Quest | Giver | Kind | Tracked on HUD | Headline reward |
 |-------|-------|------|:--:|-----------------|
 | [Right of Way](#right-of-way) | *(auto — the survey detail)* | two battles + paper trail | yes | 600 CD in prizes + 250 CD filing |
 | [Unauthorized Harvest](#unauthorized-harvest-the-firstfurrow-liberation) | *(auto — the occupied farm)* | two battles, the liberation | yes (arc line) | 800 CD in prizes + a free field |
-| [First Night Watch](#first-night-watch) | The gate lantern | all-night defense | yes | 500 CD + major pack |
-| [Tenants of Record](#tenants-of-record) | Old Deng | errand + homecoming | yes | 380 CD + hamper |
+| [First Night Watch](#first-night-watch) ✅ Done | The gate lantern @ 1601.6 90 2480.8 | timed night defense | yes | 500 CD + major pack |
+| [Tenants of Record](#tenants-of-record) ✅ Done | Old Deng @ 1478 90 2440 | errand + homecoming | yes | 380 CD + hamper |
 | [Harvest Road Regulars](#harvest-road-regulars-route-battles) | Mirek · Xu Jianyu | route battles | no | 230 / 300 CD |
 | [Luo Shiming's Wager](#luo-shimings-wager) | Harvest Hand Luo Shiming | wager battle | no | 380 CD (120 at risk) |
 
@@ -123,12 +125,12 @@ The road's backbone. A family used to farm this field; Ming's phrasing is that t
 
 ---
 
-## First Night Watch
+## First Night Watch — ✅ Done
 
 |  |  |
 |---|---|
-| **Giver** | The **gate lantern** on the Firstfurrow gate post [1550 88 2470], just inside the west fence — with a note in Old Deng's handwriting |
-| **Location** | Firstfurrow Farm (you must stay inside the fence line all night) |
+| **Giver** | The **gate lantern** on the Firstfurrow gate post @ 1601.6 90 2480.8, just inside the west fence — with a note in Old Deng's handwriting |
+| **Location** | Firstfurrow Farm (you must stay inside the fence line for the whole watch) |
 | **Start** | Requires a **liberated Firstfurrow**. Interact with the lantern — *Light the lantern* only works at **dusk**; by day it politely refuses |
 | **Repeatable** | One-time (retry any dusk until won) |
 | **Tracker** | Yes |
@@ -137,10 +139,10 @@ The first free harvest needs one night of standing guard.
 
 ### Walkthrough
 
-1. Light the lantern at dusk: **STAND THE WATCH — hold the field until first light.** A red bar sized to the remaining night counts down.
-2. Stay inside the farm fence all night. Zombies, skeletons, spiders, and creepers you cull inside the envelope go on the ledger.
+1. Light the lantern at dusk: **STAND THE WATCH — hold the field until first light.** A red bossbar counts down a **fixed ~2-minute watch** (2400 ticks); scripted hostile pulses hit the field every couple of seconds so it's a real defense, not a sparse walled-farm trickle. (Natural dawn also ends the watch early as a safety.)
+2. Stay inside the farm fence for the whole watch. Zombies, skeletons, spiders, and creepers you cull inside the envelope go on the ledger.
 3. Step outside the fence and a **10-second grace warning** starts — get back in or the watch fails *soft*: no damage, no cost, the lantern simply relights next dusk.
-4. Hold until dawn → **FIRST LIGHT.** The Dengs bring in the first free yield.
+4. Hold to the end → **FIRST LIGHT.** The Dengs bring in the first free yield.
 
 ### Forks
 
@@ -157,11 +159,11 @@ The first free harvest needs one night of standing guard.
 
 ---
 
-## Tenants of Record
+## Tenants of Record — ✅ Done
 
 |  |  |
 |---|---|
-| **Giver** | **Old Deng**, displaced Firstfurrow patriarch — with **Granny Yun** and **Deng Haoran** |
+| **Giver** | **Old Deng** @ 1478 90 2440, displaced Firstfurrow patriarch — with **Granny Yun** and **Deng Haoran** |
 | **Location** | Roadside camp west of Firstfurrow: Old Deng [1478 90 2440], Granny Yun [1476 90 2437]; Haoran fifty paces east at the fence [1496 88 2454] |
 | **Start** | Auto — Old Deng flags you down as you pass the camp |
 | **Repeatable** | One-time |

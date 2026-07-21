@@ -2,6 +2,8 @@ _Seven legends walk the map in a frenzy. Dodge them, wear them down with your ow
 
 > **Part of the campaign guide.** See [[Guidebook Overview]] for the full route, [[Guidebook Shrines]] for the other optional trial system (two of these birds hatch straight out of the shrines), and [Architecture Overview](https://github.com/The-Company-Inc-Nerds/the-cobblemon-initiative/blob/main/docs/ARCHITECTURE_OVERVIEW.md) for how the noble engine fits the rest of the mod.
 
+**Status:** ✅ Done · 🚧 WIP (partial) · ❌ Not yet implemented — as of the 2026-07-21 audit.
+
 ---
 
 ## What the nobles are
@@ -22,14 +24,14 @@ Each noble has a **fixed arena site** on the map and a **giver** that launches i
 Nobles aren't wandering — each is launched from a specific **giver** the moment you're gated in.
 
 - **Mew, Kyogre, Groudon, Rayquaza, Zapdos** each have a field giver whose dialog opens the encounter:
-  | Noble | Giver | Where |
-  |---|---|---|
-  | **Mew** | A Giggle in the Grass (a hidden wisp) | Safari Zone |
-  | **Kyogre** | Warning Buoy | offshore, Gullwing Coast |
-  | **Groudon** | Crater Warding Stone | Volcano Peak crater rim |
-  | **Rayquaza** | Sky-Altar | atop the Ryujin spire |
-  | **Zapdos** | Grid Warden Cass | Cyber City grid edge |
-- **Articuno and Moltres** have **no separate field giver** — they launch from a button in the **Ice** and **Fire shrine keepers'** after-battle dialog, once you've cleared that shrine (see [[Guidebook Shrines]]). Note this is **not** the shrine crystal: the crystal is a separate reward that summons that shrine's *own* guardian (Ice → **Glastrier**, Fire → **Ho-Oh**), while the keeper's dialog button is what starts the noble **bird** fight — the same keeper hands you both. Both birds *also* begin **ambushing on their own** once you've broken the Company's HQ raid, so a shrine you skip won't cost you the catch.
+  | Noble | Giver | Where | Status |
+  |---|---|---|---|
+  | **Mew** | A Giggle in the Grass (a hidden wisp) @ 1788.5 114 4212.5 | the tall grass at the Kalahar oasis | ✅ Done |
+  | **Kyogre** | Warning Buoy @ 234 65 2347 | offshore, the Mystic Island shore off Gaviota | ✅ Done |
+  | **Groudon** | Crater Warding Stone @ 3793.6 299 3789.1 | Volcano Peak crater rim | ✅ Done |
+  | **Rayquaza** | Sky-Altar @ 744 77 4589 | atop the Ryujin spire | ✅ Done |
+  | **Zapdos** | Grid Warden Cass @ 1393 77 1065 | Cyber City grid edge | ✅ Done |
+- **Articuno and Moltres** have **no separate field giver** — they launch from a button in the **Ice** (High Priest Glacius @ 3618.6 65 1937.3, ✅ Done) and **Fire shrine keepers'** (High Priest Ignis @ 3498.6 51 4702.5, ✅ Done) after-battle dialog, once you've cleared that shrine (see [[Guidebook Shrines]]). Note this is **not** the shrine crystal: the crystal is a separate reward that summons that shrine's *own* guardian (Ice → **Glastrier**, Fire → **Ho-Oh**), while the keeper's dialog button is what starts the noble **bird** fight — the same keeper hands you both. Both birds *also* begin **ambushing on their own** once you've broken the Company's HQ raid, so a shrine you skip won't cost you the catch.
 
 Each giver's button only appears once you've earned the gate — a badge count, a shrine cleared, or (for Rayquaza) both. Town rumor hubs point you toward the nearby ones.
 
@@ -75,8 +77,8 @@ Levels below are the **cap-under** tuning — each is set to be winnable underle
 
 | Noble | Element | Level | Gate (when it opens) | Arena / launch |
 |---|---|---|---|---|
-| **Mew** | Psychic | ~35 | mid-game (post-Gym-3 band) | Safari Zone — the wisp |
-| **Kyogre** | Water | ~50 | post-Gym-5 | offshore, Gullwing Coast — the buoy |
+| **Mew** | Psychic | ~35 | mid-game (post-Gym-3 band) | Kalahar oasis — the wisp |
+| **Kyogre** | Water | ~50 | post-Gym-5 | Mystic Island shore off Gaviota — the buoy |
 | **Zapdos** | Electric | ~60 | post-Gym-7 | Cyber City grid edge — Grid Warden Cass |
 | **Rayquaza** | Dragon | ~66 | Gym 8 **and** Dragon Shrine cleared | Ryujin spire top — the Sky-Altar |
 | **Articuno** | Ice | ~72 | Ice Shrine cleared | Ice Shrine — Glacius' after-battle |

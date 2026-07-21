@@ -40,6 +40,39 @@
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
+                            Name: "fire_shrine_trial_active"
+                        }
+                    ],
+                    Priority: 40,
+                    Buttons: [
+                        {
+                            Name: "I have reached the summit — finish the trial",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative shrine fire complete"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "finish_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "You have climbed out of the heat and stand before me still burning. Good. The flame does not measure the run — it measures the one who finishes it. Say the word, and I will take that measure now."
+                        }
+                    ],
+                    Name: "Ignis — the summit",
+                    Label: "summit"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
                             Name: "fire_shrine_trial_clear"
                         },
                         {
@@ -143,43 +176,6 @@
                     Priority: 10,
                     Buttons: [
                         {
-                            Name: "Take in the shrine",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "cutscene play fire_shrine_reveal"
-                                }
-                            ],
-                            Label: "gaze_button"
-                        },
-                        {
-                            Name: "Run the burning path",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "function cobblemon_initiative:sidequest/shrine/fire_trial_help"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "cobblemon-initiative shrine fire start"
-                                },
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Conditions: [
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "no_fire_shrine_trial_clear"
-                                }
-                            ],
-                            Label: "begin_trial_button"
-                        },
-                        {
                             Name: "I must prepare",
                             Actions: [
                                 {
@@ -191,13 +187,13 @@
                     ],
                     Texts: [
                         {
-                            Text: "Stand and be seen, champion. This is the Fire Shrine, and the flame within has burned since before the first ledger was ever signed. I am Ignis, its keeper. The flame itself is not easily flattered."
+                            Text: "Stand and be seen, champion. This is the summit of the Fire Shrine, and the flame here has burned since before the first ledger was ever signed. I am Ignis, its keeper. The flame itself is not easily flattered."
                         },
                         {
-                            Text: "There is a path up the caldera, and the heat at your heels. Run it to the summit before the fire runs you back down. Clear the burning path and the ember will take its measure of you - and what it measures, you may carry."
+                            Text: "You did not begin your climb here — the path starts far below, at the base of the caldera. Speak to the acolyte at the trailhead. It is she who wakes the coals; my place is the summit, where the fire takes its measure of whoever reaches me."
                         },
                         {
-                            Text: "I do not bestow the flame. I guard it from the unworthy. Run the path, then prove you will not be consumed by it, and we shall see what the embers already whisper of you."
+                            Text: "Go down, run the burning path, and return to me with the heat still in you. What the embers already whisper of you, I will not spoil by saying it early."
                         }
                     ],
                     Name: "Ignis — challenge",

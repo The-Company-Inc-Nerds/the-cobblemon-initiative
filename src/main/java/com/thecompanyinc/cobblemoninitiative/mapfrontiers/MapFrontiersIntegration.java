@@ -127,11 +127,15 @@ public final class MapFrontiersIntegration {
           continue;
         }
 
-        setName1.invoke(frontier, zone.name);
-        // Second label line is intentionally left blank: the map shows the zone NAME only
-        // (routes read as e.g. "Blossom Path", not "Route 1"). Subtitles are reserved for
-        // in-game area announcements, which are off by default (Map Frontiers is the map).
-        setName2.invoke(frontier, "");
+        // MapFrontiers hides a label when its widest line is wider than the on-screen polygon
+        // (Config.hideNamesThatDontFit + textSize=2) — so a long single-line name over a narrow
+        // ROUTE polygon (e.g. "Cinderfall Descent", "Road to Royal League") reads as cut off /
+        // missing. Split multi-word names across the two stacked label lines (name1 over name2),
+        // roughly balanced by length: this halves the measured width and matches MapFrontiers'
+        // intended two-line design, with no data churn. Single-word names stay on line 1.
+        String[] label = splitName(zone.name);
+        setName1.invoke(frontier, label[0]);
+        setName2.invoke(frontier, label[1]);
         setColor.invoke(frontier, parseHexColor(zone.color));
         for (String flag : VISIBILITY_ON) {
           try {
@@ -153,6 +157,30 @@ public final class MapFrontiersIntegration {
 
     LOGGER.info("[CobblemonInitiative] Created {}/{} Map Frontiers frontier(s).", created, zones.size());
     return created;
+  }
+
+  /**
+   * Splits a frontier name across the two MapFrontiers label lines (name1 over name2), choosing
+   * the word boundary that most evenly balances the two lines by character length. A single-word
+   * name stays wholly on line 1 with a blank line 2. Keeps the full authored place-name while
+   * halving the widest measured line so narrow route polygons pass the fit-test.
+   */
+  static String[] splitName(String name) {
+    String trimmed = name == null ? "" : name.trim();
+    if (trimmed.isEmpty()) return new String[] { "", "" };
+    String[] w = trimmed.split("\\s+");
+    if (w.length < 2) return new String[] { trimmed, "" };
+    int best = 1, bestDiff = Integer.MAX_VALUE;
+    for (int k = 1; k < w.length; k++) {
+      int l1 = 0; for (int i = 0; i < k; i++) l1 += w[i].length() + 1;
+      int l2 = 0; for (int i = k; i < w.length; i++) l2 += w[i].length() + 1;
+      int diff = Math.abs(l1 - l2);
+      if (diff < bestDiff) { bestDiff = diff; best = k; }
+    }
+    return new String[] {
+      String.join(" ", java.util.Arrays.copyOfRange(w, 0, best)),
+      String.join(" ", java.util.Arrays.copyOfRange(w, best, w.length)),
+    };
   }
 
   @SuppressWarnings({ "unchecked", "rawtypes" })

@@ -14,10 +14,12 @@ scoreboard players set @s nw_c 0
 scoreboard players set @s nw_total 0
 scoreboard players set @s nw_grace 0
 tag @s add ci_watching
-scoreboard players set #rem ci_watch 24000
-scoreboard players operation #rem ci_watch -= #t ci_watch
-execute store result bossbar cobblemon_initiative:night_watch max run scoreboard players get #rem ci_watch
-execute store result bossbar cobblemon_initiative:night_watch value run scoreboard players get #rem ci_watch
+# Fixed watch length (2400 ticks ≈ 2 min) — shorter than the old dusk→dawn hold, and paired
+# with scripted spawn pulses in run_tick so the field stays busy. nw_ticks counts up to the cap.
+scoreboard players set @s nw_ticks 0
+scoreboard players set @s nw_spawn 0
+bossbar set cobblemon_initiative:night_watch max 2400
+bossbar set cobblemon_initiative:night_watch value 2400
 bossbar set cobblemon_initiative:night_watch players @s
 bossbar set cobblemon_initiative:night_watch visible true
 title @s title [{"text":"STAND THE WATCH","color":"red","bold":true}]

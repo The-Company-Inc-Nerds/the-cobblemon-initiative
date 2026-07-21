@@ -9,6 +9,8 @@ This is the complete walkthrough of the **main quest line** — the pinned `▶`
 
 For how the sidebar and tracker work, see **[[Quests Overview]]**. Side quests live on the area pages: [[Quests-Sango Town]] · [[Quests Blossom Path]] · [[Quests Harvest Road]] · [[Quests-Takehara Falls]] · [[Quests-Hua Zhan City]].
 
+**Status:** ✅ Done · 🚧 WIP (partial) · ❌ Not yet implemented — as of the 2026-07-21 audit.
+
 ---
 
 ## The Shape of the Line
@@ -59,9 +61,9 @@ Each gym leader's defeat grants, in one packet:
 
 # ACT I
 
-## Waking in Sango Town — the Opening Chain
+## Waking in Sango Town — the Opening Chain ✅ Done
 
-> **Givers:** Nalia (Mom) at [2607.5 109 2847.5] and Professor Acacia at the Sango lab [2674.5 128 2901.5] · **No battles. No money.** Just the three things every trainer leaves home with.
+> **Givers:** Nalia (Mom) @ 2607.5 109 2847.5 and Professor Acacia at the Sango lab @ 2674.5 128 2901.5 · **No battles. No money.** Just the three things every trainer leaves home with.
 
 Mom finds *you* — she walks up the first time she spots you after you wake. She is warm, worried, and lying to somebody on your behalf: **grey-suited strangers have been asking after you by name.** Tell her *"I am ready to do something"* and the chain begins.
 
@@ -79,7 +81,9 @@ Mom finds *you* — she walks up the first time she spots you after you wake. Sh
 > [!TIP]
 > **Rewards recap:** starter at Lv 5, the Pokédex, and the Running Shoes. Wear the shoes forever — walking in them is roughly vanilla sprinting, and they're the only speed source in the run. Every "Not just yet" button in the chain is a harmless close; you can't lock yourself out of anything.
 
-### Dex-Unlock Partners — the other two starters
+### Dex-Unlock Partners — the other two starters ✅ Done
+
+> **Giver:** Professor Acacia at the Sango lab @ 2674.5 128 2901.5 — return to her when a Pokédex threshold trips.
 
 The two partners you passed over wait at the lab, and your Pokédex is the key:
 
@@ -92,9 +96,9 @@ Which of the two you claim second versus third is a free choice. The sidebar lig
 
 ---
 
-## Gym 1 — Takehara Falls (Bug 🐞)
+## Gym 1 — Takehara Falls (Bug 🐞) ✅ Done
 
-> **Leader Cicada** · flowerbed arena at [1910 109 2524] · prize **1200 CD** · cap → **22** · memory fragment 1
+> **Leader Cicada** · flowerbed arena @ 1910 109 2524 · prize **1200 CD** · cap → **22** · memory fragment 1
 
 The only gym whose ladder is spelled out to your face — Cicada's greeting *is* the walkthrough: *the tower, then Sora, then Aiko, then me.*
 
@@ -109,11 +113,11 @@ The only gym whose ladder is spelled out to your face — Cicada's greeting *is*
 - Ace Lv 17 against your cap of 15: the underleveled-leader rule, introduced immediately.
 - **On the badge:** cap 22, the first memory fragment (*"...have we met before?"*), Pokémart tier 1 — and the CobbleDollar takes its first +8 hit. The Company noticed.
 
-## Gym 2 — Hua Zhan City (Grass 🌿)
+## Gym 2 — Hua Zhan City (Grass 🌿) ✅ Done
 
-> **Leader Blossom** · gym at ~[1501 86 2054] · prize **1800 CD** · cap → **30** · memory fragment 2
+> **Leader Blossom** · gym @ ~1501 86 2054 · prize **1800 CD** · cap → **30** · memory fragment 2
 
-The gym *is* the town: Blossom's four wardens hold four living garden stations scattered through the city, and each doubles as a station of the **Four Gardens Pilgrimage** (worth doing — a Leaf Stone; see [[Quests-Hua Zhan City]]).
+The gym *is* the town: Blossom's four **living-statue** wardens hold four living garden stations scattered through the city, and each doubles as a station of the **Four Gardens Pilgrimage** (worth doing — a Leaf Stone; see [[Quests-Hua Zhan City]]).
 
 | Gate | Who | Teams |
 |------|-----|-------|
@@ -126,12 +130,11 @@ The gym *is* the town: Blossom's four wardens hold four living garden stations s
 - **Post-badge:** beat the Yield Analyst auditing her garden (the *Greenspace 7* side quest) and return for the epilogue — the garden gets refiled *"retained."* One garden, saved from a spreadsheet.
 - **On the badge:** cap 30, fragment 2, mart tier 2, +8 to the index.
 
-> [!WARNING]
-> **Build status (0.5.0-alpha.1):** the four wardens are placed in the world; Lian, Sakura, and Leader Blossom herself do not have bodies placed yet. Their battles are configured but not yet standing in the gym.
+The Hua Zhan gym runs end-to-end: the four **living-statue** wardens hold their stations (joined by four purely decorative statues in the plaza — no battle), and **Leader Blossom is fightable to completion** for badge 2 and the cap-30 raise. The old vine-wall puzzle that once gated her chamber has been removed — reach her directly.
 
-## Gym 3 — Mystic Marsh (Fairy ✨)
+## Gym 3 — Mystic Marsh (Fairy ✨) ✅ Done
 
-> **Leader Titania** · [1073 65 2441] · prize **2400 CD** · cap → **37** · memory fragment 3
+> **Leader Titania** · @ 1073 65 2441 · prize **2400 CD** · cap → **37** · memory fragment 3
 
 - **Gates:** Fairy Tale Girl Luna (~24–25) and Hex Maniac Stella (~25), then Apprentice Faye (27–28), then Titania.
 - **Titania:** Clefable 30, Mawile 31, **Gardevoir 32 (ace)**.
@@ -144,36 +147,38 @@ The gym *is* the town: Blossom's four wardens hold four living garden stations s
 
 # ACT II
 
-## Gym 4 — Deepcore City (Fighting 🥋)
+## Gym 4 — Deepcore City (Fighting 🥋) ✅ Done
 
-> **Leader Bruno** · [1045 129 3186] · prize **2800 CD** · cap → **44** · memory fragment 4
+> **Leader Bruno** · @ 1045 129 3186 · prize **2800 CD** · cap → **44** · memory fragment 4
 
 - Black Belt Ryu (~31–32) and Battle Girl Mika (~32) → Apprentice Ken (34–35) → Bruno: Lucario/Medicham/Machamp, Lv 37–39 (**ace 39**).
 
-## Gym 5 — Gaviota Port (Water 🌊)
+## Gym 5 — Gaviota Port (Water 🌊) ✅ Done
 
-> **Leader Neptune** · [624 82 3536] · prize **3200 CD** · cap → **50** · memory fragment 5
+> **Leader Neptune** · @ 624 82 3536 · prize **3200 CD** · cap → **50** · memory fragment 5
 
 - Sailor Marco (~38–39) and Swimmer Coral (~39) → Apprentice Marina (41–42) → Neptune: Cloyster/Lapras/Gyarados, Lv 44–46 (**ace 46**).
 
-## Gym 6 — Kalahar Reach (Ground 🏜️)
+## Gym 6 — Kalahar Reach (Ground 🏜️) ✅ Done
 
-> **Leader Gaia** · [2085 126 4050] · prize **3700 CD** · cap → **56** · memory fragment 6
+> **Leader Gaia** · @ 2085 126 4050 · prize **3700 CD** · cap → **56** · memory fragment 6
 
 - Ruin Maniac Dustin (~45) and Hiker Boulder (~44–45) → Apprentice Terra (47–48) → Gaia: Flygon/Hippowdon/Garchomp, Lv 50–52 (**ace 52**).
 
-## Gym 7 — Cyber City (Electric ⚡) — the pivot
+## Gym 7 — Cyber City (Electric ⚡) — the pivot ✅ Done
 
-> **Leader Volt** · [1462 89 1185] · prize **4300 CD** · cap → **62** · memory fragment 7
+> **Leader Volt** · @ 1462 89 1185 · prize **4300 CD** · cap → **62** · memory fragment 7
 
 - Guitarist Amp (~50–51) and Engineer Watt (~51) → Apprentice Surge (53–54) → Volt: Magnezone/Luxray/Electivire, Lv 56–58 (**ace 58**).
 - **Badge 7 is the story's hinge.** The moment it lands, the top line of the sidebar stops pointing at gyms and starts pointing at **the wheat fields and Company HQ**. This is also the instability peak (~56 on the index — quest payouts around 86% of face value). It gets better the old-fashioned way: by taking things back.
 
 ---
 
-## The Wheat War — Liberate the Occupied Fields
+## The Wheat War — Liberate the Occupied Fields ✅ Done
 
 > **Starts:** the moment someone finally says the word to you *and* you've freed your first field. The sidebar line reads **"Liberate the occupied fields n/6."**
+>
+> **First givers:** Yield Officer **Ming** @ 1586 90 2487 (north fence) and Acting Site Manager **Jun** @ 1603 90 2488 (mid-field barn), Firstfurrow Farm on Harvest Road.
 
 The Company's plan, in one sentence: crash the CobbleDollar and replace it with a wheat monopoly. For the entire early game, no Company employee will say the word — it's *the asset, the yield, the crop*. Two places break the silence:
 
@@ -184,8 +189,8 @@ The Company's plan, in one sentence: crash the CobbleDollar and replace it with 
 
 The first liberation is a taught, complete loop on Harvest Road (walked in full on [[Quests Harvest Road]] as *Unauthorized Harvest*):
 
-1. **Clear the perimeter** — beat the Yield Officer, **Ming**, at the north fence gap [1586 90 2487] (Herdier/Koffing ~19; 280 CD). The manager takes no unscheduled meetings until the fence is quiet.
-2. **Take the field back** — beat Acting Site Manager **Jun** mid-field by the barn [1603 90 2488] (Mightyena/Watchog ~20–21; **520 CD**, and he drops **Transition Order 7-A**, a document the Sango archivist will pay to file).
+1. **Clear the perimeter** — beat the Yield Officer, **Ming**, at the north fence gap @ 1586 90 2487 (Herdier/Koffing ~19; 280 CD). The manager takes no unscheduled meetings until the fence is quiet.
+2. **Take the field back** — beat Acting Site Manager **Jun** mid-field by the barn @ 1603 90 2488 (Mightyena/Watchog ~20–21; **520 CD**, and he drops **Transition Order 7-A**, a document the Sango archivist will pay to file).
 3. **The field flips.** The zone banner reads *Liberated*, the family camped up the road walks home, and two follow-up side stories open on the spot (*First Night Watch*, *Tenants of Record*).
 
 ### What each liberation does
@@ -195,14 +200,13 @@ The first liberation is a taught, complete loop on Harvest Road (walked in full 
 - **The traders notice:** at **2–3 fields** the wheat traders turn suspicious — *"you keep matching the descriptions a little more each week."* At **4+** they turn hostile: the Grain Buyer stops selling and starts an ambush (~Lv 38–39), and trading at the Granary at all becomes a trap worth springing exactly once.
 - **The door opens:** **6 liberated fields** is the hard gate on the HQ raid.
 
-> [!WARNING]
-> **Build status:** of the six fields on the counter, **only Firstfurrow can currently be liberated** — the remaining field garrisons are not yet placed. Until they are, the 4-field HQ gate cannot be satisfied in normal play. This is the single biggest known gap between Act I and Act II in the current build.
+Every field garrison is now standing: each occupied field has its own Yield Officer (perimeter) and Acting Site Manager (mid-field) placed on the routes and wired to flip that field, so the full **6/6** counter can be filled in normal play. Firstfurrow is only the *taught* first loop, not the only liberatable field.
 
 ---
 
-## The HQ Raid — Acting CEO DJ
+## The HQ Raid — Acting CEO DJ ❌ Not yet
 
-> **Company HQ [1590 51 1028]** · Gates: **7 badges** and **6 liberated fields** · prize **8000 CD**
+> **Company HQ** — Acting CEO DJ (boss) @ 1590 51 1028 · Gates: **7 badges** and **6 liberated fields** · prize **8000 CD**
 
 The sidebar walks you there: *"Liberate wheat fields, then raid HQ"* becomes *"Raid Company HQ [1590 51 1028]"* once the sixth field is free. Below six fields, DJ's only line is a refusal: *"Come back when the fields stop answering our memos."*
 
@@ -219,8 +223,8 @@ The sidebar walks you there: *"Liberate wheat fields, then raid HQ"* becomes *"R
 DJ recognizes you. Not as a threat — as the rightful owner. His parting line on defeat: *"Keeping it warm... It was always going to be yours again."*
 
 **On victory:**
-- **8000 CD** prize, plus a **Master Ball**, **64 wheat** (petty, perfect), and a new post-raid Pokémart tier.
-- **The CobbleDollar stabilizes** — the instability index is clamped down to 25 and stays there (it never rises again; if your liberations already pushed it lower, it keeps your better number).
+- **8000 CD** prize (verified in DJ's battle data). The design also calls for a **Master Ball**, **64 wheat** (petty, perfect), and a new post-raid Pokémart tier — *these item rewards are not yet wired into DJ's on-win in the current build; treat as design intent pending the HQ turn-in.*
+- **The CobbleDollar stabilizes** — the instability index is clamped down to 25 and stays there (verified: DJ's on-win runs the HQ stabilize routine; it never rises again, and if your liberations already pushed it lower it keeps your better number).
 - The top line hands you back to the remaining gyms — badges 8–10 no longer shake the currency. The Company has bigger problems now.
 - The Sango archivist's file — the run-spine side quest — can finally be closed (see *The Incomplete File* on [[Quests-Sango Town]]).
 
@@ -231,7 +235,9 @@ DJ recognizes you. Not as a threat — as the rightful owner. His parting line o
 
 # ACT III
 
-## Gyms 8–10 — Finishing the Road
+## Gyms 8–10 — Finishing the Road ✅ Done
+
+> **Givers:** Leader Ryujin @ 2156 201 884 · Leader Boreas @ 3608 112 2031 · Leader Vulcan @ 3700 100 4511 (also in the table below).
 
 | # | Gym | Leader | Gates | Leader team | Prize | Cap |
 |:-:|-----|--------|-------|-------------|:-----:|:---:|
@@ -241,9 +247,9 @@ DJ recognizes you. Not as a threat — as the rightful owner. His parting line o
 
 Memory fragments 8–10 land here — the last one points *inward*. With **ten badges and DJ down**, the top line flips: **"Challenge the Royal League."**
 
-## The Royal League — Elite Four & Champion
+## The Royal League — Elite Four & Champion 🚧 WIP
 
-> **[3528 166 2773]** — five halls in a row. Roland Badgekeeper checks all ten badges at the door. Entry cap: **80**.
+> **Royal League** @ 3528 166 2773 — five halls in a row. Roland Badgekeeper checks all ten badges at the door. Entry cap: **80**.
 
 A strict sequential gauntlet — each door opens only when the last one falls:
 
@@ -260,9 +266,9 @@ A strict sequential gauntlet — each door opens only when the last one falls:
 > [!WARNING]
 > **Build status:** the five League combatants are configured (teams, prizes, gates) but not yet placed or battle-wired; the support NPCs at the League (gatewarden, badgekeeper, archivist, physician) are already standing.
 
-## Hunt the Board of Directors
+## Hunt the Board of Directors ❌ Not yet
 
-> **The Boardroom, Company HQ [1590 51 1028]** · Gate: **you must be Champion** · four battles, any order
+> **The Boardroom, Company HQ** @ 1590 51 1028 · Gate: **you must be Champion** · four battles, any order
 
 Return to the boardroom as Champion. Four Board members still hold the table — their nameplates are static, each name collapsed to a single letter and a smear of interference. At the far end sits a fifth figure who is *all* static, and it will not take a meeting until the table is empty. Each of these four was part of the vote that erased you.
 
@@ -270,9 +276,9 @@ Return to the boardroom as Champion. Four Board members still hold the table —
 - **Each victory pays:** **9000 CD**, 5× Rare Candy, 3× Diamond — and one more chair goes quiet. The room narrates the countdown: *"A seat empties..."* → *"Half the table is silent..."* → *"One chair left between you and the name..."* → *"The room is cleared. The static holds one name, and it is waiting for you."*
 - **All four down:** the final **level cap 100** unlocks — your training window before the mirror. The top line flips one last time: **"Face The Founder."**
 
-## Face The Founder — the Mirror
+## Face The Founder — the Mirror ❌ Not yet
 
-> **The last chair in the Boardroom** · Gate: all four Board members defeated · prize: **0 CD**
+> **The last chair in the Boardroom** @ 1590 51 1028 · Gate: all four Board members defeated · prize: **0 CD**
 
 Approach the end chair. The figure's nameplate is pure static, and the monologue lands the run's thesis:
 

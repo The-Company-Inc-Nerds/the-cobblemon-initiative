@@ -1424,22 +1424,13 @@ public class InitiativeConfigScreen {
         .setSaveConsumer(momConfig::setFee).build());
 
     // -------------------------------------------------------------------------
-    // Minecraft Flavor (phone + gym-MC + milestone toggles — §8 / PHONE §4)
+    // Minecraft Flavor (gym-MC + milestone toggles — §8). The PokéPhone is CORE (always on):
+    // its calls carry onboarding beats (Mom's care, the beacon nudge), so it has no toggle here.
     // -------------------------------------------------------------------------
     MinecraftFlavorConfig flavorScreenConfig = MinecraftFlavorConfig.load();
     MinecraftFlavorConfig flavorDefaults = new MinecraftFlavorConfig();
 
     ConfigCategory flavor = builder.getOrCreateCategory(Component.literal("Minecraft Flavor"));
-    flavor.addEntry(
-      entryBuilder.startBooleanToggle(Component.literal("PokéPhone enabled"), flavorScreenConfig.isPhoneEnabled())
-        .setDefaultValue(flavorDefaults.isPhoneEnabled())
-        .setTooltip(Component.literal("Remote story-beat calls (Mom, Mayor Suzune, …)."))
-        .setSaveConsumer(flavorScreenConfig::setPhoneEnabled).build());
-    flavor.addEntry(
-      entryBuilder.startBooleanToggle(Component.literal("PokéPhone auto-open"), flavorScreenConfig.isPhoneAutoOpen())
-        .setDefaultValue(flavorDefaults.isPhoneAutoOpen())
-        .setTooltip(Component.literal("Ring auto-opens the call (off = ring persists, answer later)."))
-        .setSaveConsumer(flavorScreenConfig::setPhoneAutoOpen).build());
     flavor.addEntry(
       entryBuilder.startBooleanToggle(Component.literal("Minecraft achievements required for gyms"), flavorScreenConfig.isGymMcAchievementsRequired())
         .setDefaultValue(flavorDefaults.isGymMcAchievementsRequired())

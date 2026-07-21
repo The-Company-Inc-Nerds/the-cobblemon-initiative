@@ -4,6 +4,8 @@
 
 **Blossom Path** is the meadow road between **Sango Town** and **Takehara Falls** — roughly the band from x 1923–2530, z 2564–2925. It is your first route, your first wild catches, your first trainer ambushes, and the Company's politest outpost. This page covers every quest that lives **on the path itself**. The town at either end has its own page: **[[Quests Sango Town]]** and **[[Quests Takehara Falls]]**. The road beyond Takehara (Harvest Road) is covered in **[[Quests Harvest Road]]**.
 
+**Status:** ✅ Done · 🚧 WIP (partial) · ❌ Not yet implemented — as of the 2026-07-21 audit.
+
 > [!WARNING]
 > **Spoilers — Act I.** One quest here, **Per My Last Memo**, delivers an Act I story revelation about The Company's history (and yours). That section carries its own callout — skip it if you want the tent to surprise you.
 
@@ -17,25 +19,25 @@
 
 ## Blossom Path at a Glance
 
-| Quest | Giver | Battles? | Repeatable | On the quest HUD |
-|-------|-------|:--------:|:----------:|:----------------:|
-| Quarterly Sprint | Petal Courier Mio | no | first win one-time, daily rematch | yes — *"Ring the bell at the Takehara arch"* [1924 110 2584] |
-| Head Count | Field Researcher Ume | optional wager | one-time | yes — *"Log a verified capture for Ume"* |
-| Blossom Path Regulars | Jabari / Ayo / Zola / Kwame | 4 battles | one-time each | no |
-| Per My Last Memo | auto — the checkpoint tent | optional | one-time | yes — *"Ears on the checkpoint tent"* |
-| Know Your Customer | Femi (after badge 1) | optional | one-time | no |
-| Roadside Work Orders | Forewoman Tetsu (+ Apiarist Sumi) | no | one-time each | Night Shift only |
+| Quest | Status | Giver | Battles? | Repeatable | On the quest HUD |
+|-------|:------:|-------|:--------:|:----------:|:----------------:|
+| Quarterly Sprint | 🚧 WIP | Petal Courier Mio | no | first win one-time, daily rematch | yes — *"Ring the bell at the Takehara arch"* [1924 110 2584] |
+| Head Count | 🚧 WIP | Field Researcher Ume | optional wager | one-time | yes — *"Log a verified capture for Ume"* |
+| Blossom Path Regulars | — | Jabari / Ayo / Zola / Kwame | 4 battles | one-time each | no |
+| Per My Last Memo | — | auto — the checkpoint tent | optional | one-time | yes — *"Ears on the checkpoint tent"* |
+| Know Your Customer | — | Femi (after badge 1) | optional | one-time | no |
+| Roadside Work Orders | 🚧 WIP | Forewoman Tetsu (+ Apiarist Sumi) | no | one-time each | Night Shift only |
 
 ---
 
 ## Quarterly Sprint — Mio's race to the bell
 
-> **Giver:** Petal Courier Mio at the painted start line, Sango-side mouth of the path [~2505 71 2850] · **No battles, no entry fee — ever** · **First win one-time; paid rematch daily** · HUD waypoint: the delivery bell at the Takehara arch [1924 110 2584]
+> 🚧 WIP · **Giver:** Petal Courier Mio at the painted start line, Sango-side mouth of the path @ ~2505 71 2850 · **No battles, no entry fee — ever** · **First win one-time; paid rematch daily** · HUD waypoint: the delivery bell at the Takehara arch [1924 110 2584]
 
 **How it starts:** Talk to Mio and press **"Race the bell."** Free.
 
 ### Walkthrough
-1. A **180-second** notched bossbar starts (audio pings at 60/30/10/5/3/2/1 s) for the roughly **580-block** run.
+1. A **120-second** notched bossbar starts (audio pings at 60/30/10/5/3/2/1 s) for the roughly **580-block** run. *(The paid daily rematch runs a tighter **100-second** bar.)*
 2. Run Blossom Path west and **enter the bell zone at the Takehara arch** — a 12×12 area around [1924 110 2584], any height — before the bar drains.
 3. **Win:** *DELIVERED* fanfare and pay. **Timeout:** *MISSED THE BELL* — you are returned to the start line, nothing lost, free retry (a daily claim is never consumed by failing).
 4. After the first win, Mio offers **"Run the morning route — 150 CD purse"** once per Minecraft day (resets at dawn). Press the button *before* racing to arm the paid run.
@@ -54,7 +56,7 @@
 
 ## Head Count — the Blossom Path census
 
-> **Giver:** Field Researcher Ume at a folding table mid-meadow (she's Company-*contracted*, cheerful, and not a villain — look for the table, there's no waypoint to it) · **One optional wager battle** · **One-time** · HUD line: *"Log a verified capture for Ume"*
+> 🚧 WIP · **Giver:** Field Researcher Ume at a folding table mid-meadow @ VERIFY (she's Company-*contracted*, cheerful, and not a villain — look for the table, there's no waypoint to it) · **One optional wager battle** · **One-time** · HUD line: *"Log a verified capture for Ume"*
 
 **How it starts:** Talk to Ume and press **"Join the census"** (the Verified Biomass Census). She fronts your supplies immediately.
 
@@ -169,7 +171,7 @@ flowchart TD
 
 ## Roadside Work Orders — Night Shift, Inventory, The Cutting
 
-> **Giver:** Forewoman Tetsu at the Blossom Path Waystation work board, mid-route (Inventory is subcontracted to **Apiarist Sumi**, whose emptied apiary is the meadow just east) · **No battles** · **One-time each** · HUD tracks the Night Shift only (waypoint [2185 64 2786])
+> 🚧 WIP · **Giver:** Forewoman Tetsu at the Blossom Path Waystation work board, mid-route @ 2185 64 2786 (Inventory is subcontracted to **Apiarist Sumi**, whose emptied apiary is the meadow just east) · **No battles** · **One-time each** · HUD tracks the Night Shift only (waypoint [2185 64 2786])
 
 **How it starts:** Talk to Tetsu at the posted work-order board — her road crew was decommissioned, but the work orders still stand. Three contracts; take any or all, in any order.
 
