@@ -46,7 +46,7 @@ finale that is covered, spoiler-and-all, on **[[Guidebook Act III]]**.
 > **Build status (2026-07-20):** the HQ tower interior is still a builder dependency. Acting CEO
 > DJ, the penthouse companions, and any penthouse pickup are **written but not yet placed in the
 > world** (no NPC bodies, no interior geometry) — so the raid can't be fought end-to-end yet. The
-> only Master Ball currently obtainable in-game is the **[[Guidebook Shrines|Five Keepers]]** shrine
+> only Master Ball currently obtainable in-game is the **[[Five Keepers|Guidebook Shrines]]** shrine
 > capstone reward, not a penthouse pickup. Treat the descent/penthouse below as design intent
 > until the tower is built.
 
