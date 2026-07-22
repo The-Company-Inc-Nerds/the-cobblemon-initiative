@@ -195,7 +195,7 @@ The pinned top line of the sidebar, from waking up in Sango Town to the end of t
 
 | Quest | Giver | Hook | Rewards |
 |-------|-------|------|---------|
-| Cascade Ascent | Falls Warden Shou | Five marker rings up the falls in fifty seconds, in Cascade Boots | 500 CD + major pack; gold-time repeats |
+| Cascade Ascent | Falls Warden Shou | Five marker rings up the falls in sixty seconds, in Cascade Boots | 500 CD + major pack; gold-time repeats |
 | Notice of Non-Compliance | Printmaker Mei | Kill the sabotage bee-swarm before it wrecks Mei's stall | 400 CD + standard pack |
 | Natural History | Curator Kenji & Sayuri | Six bones for the plinth — and one de-extinction per fiscal era | 400 CD + standard pack; Kabuto *or* Anorith Lv 10 |
 | Stakeholder Alignment | Two suits on the gym roof | Step between the Site Assessors and the mayor | 460 CD prize + 600 CD thanks + major pack |

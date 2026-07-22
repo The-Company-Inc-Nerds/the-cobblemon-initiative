@@ -101,10 +101,6 @@ execute unless score #amb_hua_zhan_trainer_1 ci_ambient matches 0.. run scoreboa
 execute unless score #amb_hua_zhan_trainer_2 ci_ambient matches 0.. run scoreboard players set #amb_hua_zhan_trainer_2 ci_ambient 0
 execute unless score #amb_hua_zhan_trainer_3 ci_ambient matches 0.. run scoreboard players set #amb_hua_zhan_trainer_3 ci_ambient 0
 execute unless score #amb_hua_zhan_trainer_4 ci_ambient matches 0.. run scoreboard players set #amb_hua_zhan_trainer_4 ci_ambient 0
-execute unless score #amb_hz_statue_bough ci_ambient matches 0.. run scoreboard players set #amb_hz_statue_bough ci_ambient 0
-execute unless score #amb_hz_statue_garden ci_ambient matches 0.. run scoreboard players set #amb_hz_statue_garden ci_ambient 0
-execute unless score #amb_hz_statue_gatepost ci_ambient matches 0.. run scoreboard players set #amb_hz_statue_gatepost ci_ambient 0
-execute unless score #amb_hz_statue_knight ci_ambient matches 0.. run scoreboard players set #amb_hz_statue_knight ci_ambient 0
 execute unless score #amb_kalahar_apprentice ci_ambient matches 0.. run scoreboard players set #amb_kalahar_apprentice ci_ambient 0
 execute unless score #amb_kalahar_jr_apprentice ci_ambient matches 0.. run scoreboard players set #amb_kalahar_jr_apprentice ci_ambient 0
 execute unless score #amb_kalahar_mirage_1 ci_ambient matches 0.. run scoreboard players set #amb_kalahar_mirage_1 ci_ambient 0

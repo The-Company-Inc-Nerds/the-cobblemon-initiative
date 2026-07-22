@@ -20,6 +20,7 @@ import com.thecompanyinc.cobblemoninitiative.homestead.HomesteadManager;
 import com.thecompanyinc.cobblemoninitiative.momcare.MomCareManager;
 import com.thecompanyinc.cobblemoninitiative.items.ModItems;
 import com.thecompanyinc.cobblemoninitiative.levelcap.LevelCapManager;
+import com.thecompanyinc.cobblemoninitiative.noble.NobleEncounterManager;
 import com.thecompanyinc.cobblemoninitiative.docprop.DocPropManager;
 import com.thecompanyinc.cobblemoninitiative.lootchest.LootChestManager;
 import com.thecompanyinc.cobblemoninitiative.questtrack.QuestTrackManager;
@@ -441,6 +442,34 @@ public class InitiativeInit implements ModInitializer {
         int cap = levelCapManager.getLevelCap(sp);
         if (ev.getNewLevel() > cap) {
           ev.setNewLevel(cap);
+        }
+      }
+      return Unit.INSTANCE;
+    });
+
+    // Capture clamp: a caught Pokemon that comes in ABOVE the current level cap is lowered to
+    // the cap; a below-cap catch is left as-is (the cap is a CEILING, not a floor). Nobles are
+    // EXEMPT — a boss catch (e.g. a lv70 Ho-Oh) keeps its own level (flagged in
+    // NobleEncounterManager.swapBody). Gifts never reach here: givemon/giveProperties does not
+    // fire POKEMON_CAPTURED. LOWEST so Nuzlocke's NORMAL handler (duplicate release / send-to-PC)
+    // has already settled the outcome before we touch the level.
+    CobblemonEvents.POKEMON_CAPTURED.subscribe(Priority.LOWEST, event -> {
+      var mon = event.getPokemon();
+      // Null store coordinates ⇒ Nuzlocke's NORMAL handler already RELEASED this catch as a
+      // duplicate this tick — do not touch a released mon (mirrors NicknameManager's guard).
+      if (mon.getStoreCoordinates().get() == null) {
+        return Unit.INSTANCE;
+      }
+      if (NobleEncounterManager.isNoblePokemon(mon.getUuid())) {
+        return Unit.INSTANCE;
+      }
+      ServerPlayer sp = event.getPlayer();
+      if (sp != null && levelCapManager != null) {
+        int cap = levelCapManager.getLevelCap(sp);
+        if (mon.getLevel() > cap) {
+          mon.setLevel(cap);
+          sp.displayClientMessage(
+            Component.literal("§6Your catch settled to the level cap §e" + cap + "§6."), true);
         }
       }
       return Unit.INSTANCE;

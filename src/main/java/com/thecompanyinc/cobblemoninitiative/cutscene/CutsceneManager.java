@@ -227,7 +227,10 @@ public class CutsceneManager {
 
     applyWeather(player, script.ambientWeather);
     if (script.startTitle != null || script.startSubtitle != null) {
-      sendTitle(player, orEmpty(script.startTitle), orEmpty(script.startSubtitle), 10, 70, 20);
+      int fadeIn = script.startTitleFadeIn != null ? script.startTitleFadeIn : 10;
+      int stay = script.startTitleStay != null ? script.startTitleStay : 70;
+      int fadeOut = script.startTitleFadeOut != null ? script.startTitleFadeOut : 20;
+      sendTitle(player, orEmpty(script.startTitle), orEmpty(script.startSubtitle), fadeIn, stay, fadeOut);
     }
     InitiativeInit.LOGGER.info("Player {} started cutscene {}", player.getName().getString(), scriptId);
     return true;

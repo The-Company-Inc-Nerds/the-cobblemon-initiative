@@ -117,7 +117,7 @@ Beat **all four** tower trainers (Koji, Yuki, Shin, Taro) and the Gym Guide pays
 |---|---|
 | **Giver** | Falls Warden Shou |
 | **Location** | The Plunge Pool at the base of the falls; five marker rings run up to the crest |
-| **Start** | Talk to Shou **@ VERIFY** (plunge pool base beside the sign-up board) → *Attempt the Ascent — fifty seconds* |
+| **Start** | Talk to Shou **@ VERIFY** (plunge pool base beside the sign-up board) → *Attempt the Ascent — sixty seconds* |
 | **Repeatable** | First clear one-time; a **gold run** repeats after it |
 | **Tracker** | Yes — *Pass the five rings before the clock dies* |
 

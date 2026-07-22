@@ -1,5 +1,5 @@
 # Cascade Ascent — start an attempt. Run AS the player (dialog button, as_player):
-#   function cobblemon_initiative:sidequest/cascade/start {ticks:1000}   (50 s, default clock)
+#   function cobblemon_initiative:sidequest/cascade/start {ticks:1200}   (60 s, default clock)
 # Guard: ignore re-clicks while a run is live (no timer-reset exploit).
 execute if entity @s[tag=ci_ascending] run return 0
 # Grant the keepsake Cascade Boots (Depth Strider I, blue) and arm the checkpoint counter.

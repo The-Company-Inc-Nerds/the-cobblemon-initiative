@@ -57,6 +57,13 @@ public class CutsceneScript {
   public String startTitle;
   public String startSubtitle;
 
+  /** Optional per-scene title-card timing in ticks (fade-in / stay / fade-out). Any null field
+   * falls back to the engine default 10 / 70 / 20. Lets a scene hold its title longer than a
+   * leader-name flash — e.g. the opening title card sitting over the install hold. */
+  public Integer startTitleFadeIn;
+  public Integer startTitleStay;
+  public Integer startTitleFadeOut;
+
   /** The camera path. Each keyframe is a target the rig eases TO from the previous point
    * (the first eases from the player's eye) over {@code ticks} server ticks. */
   public List<Keyframe> keyframes;

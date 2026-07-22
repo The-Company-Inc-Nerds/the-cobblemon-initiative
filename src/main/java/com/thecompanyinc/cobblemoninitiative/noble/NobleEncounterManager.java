@@ -92,6 +92,20 @@ public class NobleEncounterManager {
   private final Map<UUID, NobleEncounterState> activeStates = new HashMap<>();
   private final Map<String, NobleEncounterConfig> nobles = new HashMap<>();
 
+  /** Pokemon-UUIDs of noble CATCHABLE forms (set at body-swap). Read by InitiativeInit's
+   * capture handler to EXEMPT a caught noble from the level-cap clamp — nobles keep their
+   * own boss level (a lv70 Ho-Oh must not be lowered to the gym cap). The Pokemon UUID is
+   * stable across capture, so a set-membership check survives the ball catch. Never emptied
+   * on a missed catch (a handful of stale UUIDs is harmless; they can never match a real
+   * future catch's random UUID). */
+  private static final java.util.Set<UUID> NOBLE_POKEMON =
+      java.util.concurrent.ConcurrentHashMap.newKeySet();
+
+  /** True if {@code pokemonUuid} is a noble's catchable form (exempt from the capture clamp). */
+  public static boolean isNoblePokemon(UUID pokemonUuid) {
+    return pokemonUuid != null && NOBLE_POKEMON.contains(pokemonUuid);
+  }
+
   // ── Loading ─────────────────────────────────────────────────────────────────
 
   public void loadNobles() {
@@ -788,6 +802,8 @@ public class NobleEncounterManager {
       gr.cry();
       state.setBattleEntityUuid(gr.getUUID());
       state.setBattlePokemonUuid(gr.getPokemon().getUuid());
+      // Exempt this catchable from the capture level-cap clamp (nobles keep their boss level).
+      NOBLE_POKEMON.add(gr.getPokemon().getUuid());
     } catch (Exception e) {
       InitiativeInit.LOGGER.error("Failed to spawn noble Phase-2 body for {}", state.getNobleId(), e);
       fail(server, player, state, "§cThe noble could not be engaged.");

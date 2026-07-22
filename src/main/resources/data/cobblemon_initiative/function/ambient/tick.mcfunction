@@ -7,11 +7,24 @@ function cobblemon_initiative:ambient/placements
 execute if entity @a[tag=claimed_starter_skiddo] run kill @e[type=easy_npc:cobblemon_npc,tag=ci_standin_skiddo]
 execute if entity @a[tag=claimed_starter_totodile] run kill @e[type=easy_npc:cobblemon_npc,tag=ci_standin_totodile]
 execute if entity @a[tag=claimed_starter_hisuian_growlithe] run kill @e[type=easy_npc:cobblemon_npc,tag=ci_standin_growlithe]
-# Victor's reveal — the tower-top apprentice was Victini. A qualified player (heard of him
-# from Kesi + refused to sell the founder's papers) tags themselves victor_transformed via
-# his dialog; next tick, positioned at the humanoid, spawn the Victini form + despawn him.
-# Guard: skip once the Victini form already exists, so it happens exactly once.
-execute as @a[tag=victor_transformed] at @e[tag=victor_apprentice,type=!minecraft:player,limit=1] unless entity @e[tag=victor_victini,type=!minecraft:player] run function cobblemon_initiative:sango/victor_transform
+# Victor's reveal — the apprentice at his reveal spot was Victini. A qualified player (heard
+# of him from Kesi + refused to sell the founder's papers, &c.) tags themselves
+# victor_transformed via his dialog; next tick this plays the reveal cutscene IN PLACE.
+# Guard: a DEDICATED one-shot player tag (victor_transform_fired, set on victor_transform's
+# first line). The old guard `unless entity victor_victini` looped forever — victor_victini
+# only spawns at cutscene tick 60, but this line re-ran victor_transform EVERY tick, and
+# CutsceneManager.play() restarts an already-active scene, so the scene reset each tick and
+# never reached tick 60. The player was trapped in a scene that never revealed (game-break).
+execute as @a[tag=victor_transformed,tag=!victor_transform_fired] run function cobblemon_initiative:sango/victor_transform
+# Soft-lock recovery: if the scene ended BEFORE its tick-60 swap (mid-scene logout or a
+# hardcore death — CutsceneManager.end() fires without spawning Victini), the player keeps
+# victor_transform_fired forever and can never re-trigger. Strip it so the one-shot above
+# re-dispatches a fresh scene. Guards: gamemode=!spectator (the player is a SPECTATOR for the
+# whole live scene, so this NEVER fires mid-scene, which would restart the loop) AND the
+# apprentice body must STILL EXIST — i.e. the scene aborted BEFORE the tick-60 swap killed him.
+# If the swap already ran (apprentice gone) but Victini never materialised, re-dispatching
+# would just replay the scene forever, so we don't: recover only the genuine pre-swap abort.
+execute as @a[tag=victor_transformed,tag=victor_transform_fired,tag=!victini_joined,gamemode=!spectator] unless entity @e[tag=victor_victini,type=!minecraft:player] if entity @e[tag=victor_apprentice,type=!minecraft:player] run tag @s remove victor_transform_fired
 # Once Victini has joined the player's party, remove the tower-top Victini NPC.
 execute if entity @a[tag=victini_joined] run kill @e[type=easy_npc:cobblemon_npc,tag=victor_victini]
 # Kalahar mirage sweep — the gym 6 hunt scatters heat-shimmer doubles of the gym cast

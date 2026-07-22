@@ -6,6 +6,8 @@ particle minecraft:end_rod 2536.5 106.9 2900.5 0.3 0.7 0.3 0.04 80 force
 particle minecraft:flame 2536.5 106.5 2900.5 0.4 0.4 0.4 0.02 40 force
 playsound minecraft:block.beacon.activate master @a[distance=..40] 2536.5 106.6 2900.5 1 1.4
 playsound minecraft:entity.player.levelup master @a[distance=..40] 2536.5 106.6 2900.5 1 1.6
-# Remove the humanoid apprentice (transported here by victor_transform) and reveal Victini.
+# Remove the humanoid apprentice (stands here — his placement) and reveal Victini at the SAME
+# floated spot he occupied (2536.5/106/2900.5, from place/victor's +0.5 integer float), so the
+# Victini body lands exactly under the FX and where the apprentice stood — no 0.5-block jump.
 kill @e[tag=victor_apprentice,type=!minecraft:player]
-easy_npc preset import_new data easy_npc:preset/humanoid/victor_victini.npc.snbt 2536 106 2900
+easy_npc preset import_new data easy_npc:preset/humanoid/victor_victini.npc.snbt 2536.5 106 2900.5

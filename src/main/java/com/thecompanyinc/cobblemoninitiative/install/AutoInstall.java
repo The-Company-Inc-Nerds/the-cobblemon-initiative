@@ -54,8 +54,13 @@ public final class AutoInstall {
   private static final String MARKER_FILE = "cobblemon-initiative-autoinstall.json";
   private static final String LATCH_FILE = "data/cobblemon_initiative_autoinstall.json";
 
-  /** Ticks to wait after the first player joins before dispatching (~2s). */
-  private static final int SETTLE_TICKS = 40;
+  /** Ticks to wait after the first player joins before dispatching the install + opening
+   * cutscene (~7s). Longer than a bare settle ON PURPOSE (bumped from 40/2s 2026-07-22): on a
+   * fresh Sango spawn MapFrontiers fires its "Sango Town" region-enter TITLE, which was landing
+   * ON TOP OF the opening cutscene's title card and overriding it. Holding the cutscene until
+   * the region title has shown and faded lets the cutscene's title render last and stay. FLAG:
+   * this races MapFrontiers' (configurable) title duration — tune up if it still gets clobbered. */
+  private static final int SETTLE_TICKS = 140;
 
   /** A never-installed world → dispatch the full install. */
   private static boolean armed;

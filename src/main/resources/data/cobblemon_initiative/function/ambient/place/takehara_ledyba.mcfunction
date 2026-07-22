@@ -1,3 +1,8 @@
-# companion_takehara_ledyba — latch FIRST; reset #amb_takehara_ledyba to 0 (+ kill the body) to respawn.
+# companion_takehara_ledyba — cobblemon-model latch NPC. Kill any pre-existing body carrying THIS
+# NPC's unique dedup tag FIRST (ci_amb_companion_takehara_ledyba — never a co-located neighbour),
+# THEN latch + import exactly one. Runs only with a player within 40 (chunk
+# live) so the kill never no-ops. reset #amb_takehara_ledyba to 0 (+ kill the body) to
+# respawn. (Legacy pre-tag dupes are cleared once by install/repairs_a15.)
+kill @e[tag=ci_amb_companion_takehara_ledyba]
 scoreboard players set #amb_takehara_ledyba ci_ambient 1
 easy_npc preset import_new data easy_npc:preset/humanoid/companion_takehara_ledyba.npc.snbt 2023.5 151 2468.5

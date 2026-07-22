@@ -1,9 +1,11 @@
 # Cascade Ascent — active-run tick: countdown, bossbar, warning pings, ORDERED checkpoints, expiry.
-# 50 s clock (1000 ticks). Warning thresholds: 30/20/10/5/3/2/1 s = 600/400/200/100/60/40/20 ticks.
+# 60 s clock (1200 ticks). Warning thresholds: 45/30/20/10/5/3/2/1 s = 900/600/400/200/100/60/40/20 ticks.
 scoreboard players remove #time ci_cascade 1
 scoreboard players operation #secs ci_cascade = #time ci_cascade
 scoreboard players operation #secs ci_cascade /= #twenty ci_cascade
 execute store result bossbar cobblemon_initiative:cascade value run scoreboard players get #secs ci_cascade
+execute if score #time ci_cascade matches 900 run title @a[tag=ci_ascending] actionbar [{"text":"45 seconds","color":"yellow"}]
+execute if score #time ci_cascade matches 900 as @a[tag=ci_ascending] at @s run playsound minecraft:block.note_block.hat player @s ~ ~ ~ 1 0.9
 execute if score #time ci_cascade matches 600 run title @a[tag=ci_ascending] actionbar [{"text":"30 seconds","color":"yellow"}]
 execute if score #time ci_cascade matches 600 as @a[tag=ci_ascending] at @s run playsound minecraft:block.note_block.hat player @s ~ ~ ~ 1 1
 execute if score #time ci_cascade matches 400 run title @a[tag=ci_ascending] actionbar [{"text":"20 seconds","color":"yellow"}]

@@ -78,7 +78,12 @@ NPC_PRESETS  = PROJECT_ROOT / "npc_presets.json"
 TRAINER_TEX_DIR = (PROJECT_ROOT
                    / "src/main/resources/resourcepacks/trainer_textures"
                    / "assets/rctmod/textures/trainers")
-SKIN_OVERRIDE_DIR = PROJECT_ROOT / "mrpack/overrides/config/easy_npc/skin/humanoid"
+# Easy NPC's Custom Texture Manager loads a CUSTOM skin from
+# config/easy_npc/skin/<MODEL_TYPE>/<uuid>.png where MODEL_TYPE is the body's data.id
+# suffix (humanoid | humanoid_slim). The override dir is therefore PER model type — a
+# slim body (e.g. Nalia/Mom) whose PNG only sits in humanoid/ can't find it and falls
+# back to Steve. skin_node() joins the right subdir; this is the base.
+SKIN_OVERRIDE_BASE = PROJECT_ROOT / "mrpack/overrides/config/easy_npc/skin"
 FUNCTION_DIR = PROJECT_ROOT / "src/main/resources/data/cobblemon_initiative/function"
 BAND_TAGS_FN = FUNCTION_DIR / "dialog" / "band_tags.mcfunction"
 SIGHT_FN     = FUNCTION_DIR / "dialog" / "register_sight.mcfunction"
@@ -986,19 +991,25 @@ def _uuid_int_array(u) -> tuple:
     return tuple(p - 0x100000000 if p >= 0x80000000 else p for p in parts)
 
 
-def skin_node(skin: dict):
+def skin_node(skin: dict, etype: str = "humanoid"):
     """Build an Easy NPC SkinData node from a character 'skin' field, baked into the preset so
     `easy_npc preset import` applies the intended skin instead of resetting the NPC to Steve.
       {"type":"url","url":"https://..."}  -> portable remote-URL skin (recommended; ships anywhere)
       {"type":"custom","uuid":[a,b,c,d]}  -> instance-local custom skin
-                                             (config/easy_npc/skin/humanoid/<uuid>.png)
+                                             (config/easy_npc/skin/<etype>/<uuid>.png)
       {"type":"rctmod","texture":"single/takehara_leader"}
                                           -> CUSTOM skin auto-provisioned from the
                                              trainer_textures resource pack: deterministic
                                              uuid5 name, PNG copied into
-                                             mrpack/overrides/config/easy_npc/skin/humanoid/.
+                                             mrpack/overrides/config/easy_npc/skin/<etype>/.
                                              mrpack-only (bare-mod worlds fall back to Steve).
+    `etype` is the entity model type (humanoid | humanoid_slim) — it selects the skin
+    override subdir so the runtime Custom Texture Manager finds the PNG (a slim body reads
+    from humanoid_slim/, not humanoid/). Only the rctmod branch writes a file. Callers that
+    don't yet know the type pass the humanoid default; the main loop re-provisions rctmod
+    skins once merge_world has resolved the real type (see _reprovision_skin_for_etype).
     """
+    skin_override_dir = SKIN_OVERRIDE_BASE / etype
     t = skin.get("type")
     if t == "url":
         url = str(skin["url"]).replace('"', "").strip()
@@ -1018,7 +1029,7 @@ def skin_node(skin: dict):
             raise CompileError(f"skin: rctmod texture not found: {src}")
         u = _uuid.uuid5(_uuid.NAMESPACE_URL,
                         "cobblemon-initiative:rctmod-skin:" + tex)
-        dest = SKIN_OVERRIDE_DIR / f"{u}.png"
+        dest = skin_override_dir / f"{u}.png"
         data = src.read_bytes()
         if not dest.is_file() or dest.read_bytes() != data:
             dest.parent.mkdir(parents=True, exist_ok=True)
@@ -1028,6 +1039,18 @@ def skin_node(skin: dict):
             '{Content:"",DisableLayers:0b,Name:"",Timestamp:0L,Type:"CUSTOM",URL:"",UUID:[I;%d,%d,%d,%d]}'
             % (a, b, c, d))
     raise CompileError(f"skin: unknown type {t!r} (use 'url', 'custom' or 'rctmod')")
+
+
+def _reprovision_skin_for_etype(tree, ch: dict, etype: str):
+    """Re-run rctmod skin provisioning now that merge_world/visual_entity_type has resolved
+    the entity model type, so the PNG lands in config/easy_npc/skin/<etype>/ (Easy NPC's
+    Custom Texture Manager loads a CUSTOM skin from the folder matching the BODY's model
+    type). compile_character provisioned into humanoid/ before etype was known — a
+    humanoid_slim body (e.g. Nalia/Mom) otherwise can't find its PNG and renders as Steve.
+    No-op for humanoid NPCs and for url/custom skins (neither writes a file)."""
+    if etype != "humanoid" and (ch.get("skin") or {}).get("type") == "rctmod":
+        tree = sm.set_path(tree, ["data", "SkinData"], skin_node(ch["skin"], etype))
+    return tree
 
 
 def compile_character(ch: dict, dialogs: dict, registers: dict, lore: dict):
@@ -1072,15 +1095,19 @@ def compile_character(ch: dict, dialogs: dict, registers: dict, lore: dict):
     # bodies carry them from import_new; refreshed uuid'd bodies pick them up on the next
     # NpcPresetRefreshManager import. Replaces the manual tag-at-placement protocols
     # (checkpoint_agent, deng_camp, audit_listener...).
-    if ch.get("entity_tags"):
-        tag_list = "[" + ",".join('"%s"' % tg for tg in ch["entity_tags"]) + "]"
-        out = sm.set_path(out, ["data", "Tags"], _snbt_value(tag_list))
-        out = sm.set_path(out, ["data", "CustomNameVisible"], sm.parse_snbt("{K:1b}")["K"])
-    # Persistent scoreboard/selector tags baked onto the entity (data.Tags). Used to
-    # target spawned NPCs by tag from datapack (e.g. despawn the chosen starter stand-in).
-    if ch.get("entity_tags"):
-        lst = ",".join('"%s"' % t for t in ch["entity_tags"])
+    tags = list(ch.get("entity_tags") or [])
+    # Cobblemon-model LATCH NPCs also carry a synthetic unique dedup tag (ci_amb_<id>) so the
+    # placement guard can detect/clear exactly THIS body — never a co-located neighbour.
+    # Decorative Cobblemon sit as close as 1-2 blocks apart, so a proximity-radius guard
+    # would cross-suppress them (kill/skip the wrong one); a per-NPC tag is collision-free.
+    if ch.get("cobblemon_model") and ch.get("placement") and not (ch.get("uuid") or "").strip():
+        dedup = f"ci_amb_{cid}"
+        if dedup not in tags:
+            tags.append(dedup)
+    if tags:
+        lst = ",".join('"%s"' % t for t in tags)
         out = sm.set_path(out, ["data", "Tags"], sm.parse_snbt("{K:[%s]}" % lst)["K"])
+        out = sm.set_path(out, ["data", "CustomNameVisible"], sm.parse_snbt("{K:1b}")["K"])
     return out
 
 
@@ -1332,7 +1359,7 @@ def write_placements(chars: list, etypes: dict) -> int:
         fx = x + 0.5 if float(x).is_integer() else x
         fz = z + 0.5 if float(z).is_integer() else z
         entries.append((cid, key, fx, y, fz, etypes.get(cid, "humanoid"),
-                        bool(ch.get("spawn_variants"))))
+                        bool(ch.get("spawn_variants")), bool(ch.get("cobblemon_model"))))
 
     PLACE_DIR.mkdir(parents=True, exist_ok=True)
     for old in PLACE_DIR.glob("*.mcfunction"):
@@ -1340,9 +1367,21 @@ def write_placements(chars: list, etypes: dict) -> int:
     head = "# AUTO-GENERATED by scripts/content_compile from character `placement` fields — do not edit.\n"
     init = [head + "scoreboard objectives add ci_ambient dummy"]
     tick = [head.rstrip()]
-    for cid, key, fx, y, fz, etype, variants in entries:
+    for cid, key, fx, y, fz, etype, variants, cobblemon in entries:
         init.append(f"execute unless score #amb_{key} ci_ambient matches 0.. run scoreboard players set #amb_{key} ci_ambient 0")
-        tick.append(f"execute if score #amb_{key} ci_ambient matches 0 if entity @a[x={fx},y={y},z={fz},distance=..40] run function {NS}:ambient/place/{key}")
+        if cobblemon:
+            # Cobblemon-model latch NPC dedup guard. The latch stays the primary spawn-once
+            # gate; the added `unless entity @e[tag=ci_amb_<id>]` stops the historical
+            # double-spawn (a10-a14): a stale body survives a repair kill in an unloaded
+            # chunk, the latch re-arms to 0, and the tick imports a SECOND. The tag is UNIQUE
+            # to this NPC (baked in compile_character), so the check never sees a co-located
+            # neighbour — decorative Cobblemon sit as close as 1-2 blocks apart, where a
+            # proximity guard would cross-suppress them — and it catches the body wherever it
+            # wandered. Only evaluated while the latch is 0 (execute short-circuits on the
+            # score check), so it costs nothing for the NPCs already placed.
+            tick.append(f"execute if score #amb_{key} ci_ambient matches 0 unless entity @e[tag=ci_amb_{cid}] if entity @a[x={fx},y={y},z={fz},distance=..40] run function {NS}:ambient/place/{key}")
+        else:
+            tick.append(f"execute if score #amb_{key} ci_ambient matches 0 if entity @a[x={fx},y={y},z={fz},distance=..40] run function {NS}:ambient/place/{key}")
         if variants:
             (PLACE_DIR / f"{key}.mcfunction").write_text(
                 f"# {cid} — latch FIRST; reset #amb_{key} to 0 (+ kill the body) to respawn (re-rolls).\n"
@@ -1352,6 +1391,16 @@ def write_placements(chars: list, etypes: dict) -> int:
                 f"execute store result score #var_{key} ci_ambient run random value 1..2\n"
                 f"execute if score #var_{key} ci_ambient matches 1 run easy_npc preset import_new data easy_npc:preset/{etype}/{cid}.npc.snbt {fx} {y} {fz}\n"
                 f"execute if score #var_{key} ci_ambient matches 2 run easy_npc preset import_new data easy_npc:preset/{etype}/{cid}_b.npc.snbt {fx} {y} {fz}\n")
+        elif cobblemon:
+            (PLACE_DIR / f"{key}.mcfunction").write_text(
+                f"# {cid} — cobblemon-model latch NPC. Kill any pre-existing body carrying THIS\n"
+                f"# NPC's unique dedup tag FIRST (ci_amb_{cid} — never a co-located neighbour),\n"
+                f"# THEN latch + import exactly one. Runs only with a player within 40 (chunk\n"
+                f"# live) so the kill never no-ops. reset #amb_{key} to 0 (+ kill the body) to\n"
+                f"# respawn. (Legacy pre-tag dupes are cleared once by install/repairs_a15.)\n"
+                f"kill @e[tag=ci_amb_{cid}]\n"
+                f"scoreboard players set #amb_{key} ci_ambient 1\n"
+                f"easy_npc preset import_new data easy_npc:preset/{etype}/{cid}.npc.snbt {fx} {y} {fz}\n")
         else:
             (PLACE_DIR / f"{key}.mcfunction").write_text(
                 f"# {cid} — latch FIRST; reset #amb_{key} to 0 (+ kill the body) to respawn.\n"
@@ -1721,6 +1770,7 @@ def main() -> None:
             # placement import path (a uuid'd body keeps its builder-declared type).
             if not (ch.get("uuid") or "").strip():
                 etype = visual_entity_type(ch) or etype
+            tree = _reprovision_skin_for_etype(tree, ch, etype)
             tree = apply_float(tree, ch)
             text = sm.serialize(tree, indent_size=4)
             sm.parse_snbt(text)                # round-trip safety check
@@ -1731,6 +1781,7 @@ def main() -> None:
                 vch = spawn_variant_character(ch)
                 vtree = compile_character(vch, dialogs, registers, lore)
                 vtree, vetype = merge_world(vtree, vch)
+                vtree = _reprovision_skin_for_etype(vtree, vch, vetype)
                 vtree = apply_float(vtree, vch)
                 vtext = sm.serialize(vtree, indent_size=4)
                 sm.parse_snbt(vtext)

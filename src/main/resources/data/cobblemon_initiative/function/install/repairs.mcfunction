@@ -40,3 +40,16 @@ execute unless score #repair_a10 ci_ambient matches 1 run function cobblemon_ini
 #    reset → a second body spawned. Re-kill by the correct type (name + entity-tag) and
 #    re-latch so each respawns as a single body ──
 execute unless score #repair_a13 ci_ambient matches 1 run function cobblemon_initiative:install/repairs_a13_arm
+
+# ── wave a14 (0.6.0-alpha.14): companion dupes STILL live — a13's `name="Mimi"` kills
+#    no-opped (Easy NPC names are JSON components, not bare strings), so stale bodies
+#    survived and a13's re-arm added another. Re-clear by PROXIMITY + type (name-agnostic,
+#    catches 1/2/3 copies) and re-latch to a single body ──
+execute unless score #repair_a14 ci_ambient matches 1 run function cobblemon_initiative:install/repairs_a14_arm
+
+# ── wave a15 (0.6.0-alpha.15): companion dupes, FINAL sweep — a14 was one-shot and its
+#    3s-scheduled kill no-opped in saves where the home chunk was still unloaded, so two
+#    Mimis / two Jackpots persist. Re-sweep by proximity+type under a fresh guard; ships
+#    with the recompiled placement latches whose new `unless entity` tick guard +
+#    kill-before-import place fn make a re-dupe impossible (the last companion repair) ──
+execute unless score #repair_a15 ci_ambient matches 1 run function cobblemon_initiative:install/repairs_a15_arm

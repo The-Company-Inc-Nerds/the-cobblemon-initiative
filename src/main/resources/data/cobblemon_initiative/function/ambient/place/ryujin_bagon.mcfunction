@@ -1,3 +1,8 @@
-# companion_ryujin_bagon — latch FIRST; reset #amb_ryujin_bagon to 0 (+ kill the body) to respawn.
+# companion_ryujin_bagon — cobblemon-model latch NPC. Kill any pre-existing body carrying THIS
+# NPC's unique dedup tag FIRST (ci_amb_companion_ryujin_bagon — never a co-located neighbour),
+# THEN latch + import exactly one. Runs only with a player within 40 (chunk
+# live) so the kill never no-ops. reset #amb_ryujin_bagon to 0 (+ kill the body) to
+# respawn. (Legacy pre-tag dupes are cleared once by install/repairs_a15.)
+kill @e[tag=ci_amb_companion_ryujin_bagon]
 scoreboard players set #amb_ryujin_bagon ci_ambient 1
 easy_npc preset import_new data easy_npc:preset/humanoid/companion_ryujin_bagon.npc.snbt 2329.5 200 896.5

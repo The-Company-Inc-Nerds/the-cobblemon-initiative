@@ -1,7 +1,11 @@
 package com.thecompanyinc.cobblemoninitiative.command;
 
 import com.cobblemon.mod.common.Cobblemon;
+import com.cobblemon.mod.common.CobblemonNetwork;
 import com.cobblemon.mod.common.api.pokemon.PokemonProperties;
+import com.cobblemon.mod.common.api.storage.pc.PCStore;
+import com.cobblemon.mod.common.api.storage.pc.link.PCLinkManager;
+import com.cobblemon.mod.common.net.messages.client.storage.pc.OpenPCPacket;
 import com.cobblemon.mod.common.api.storage.party.PlayerPartyStore;
 import com.cobblemon.mod.common.api.types.ElementalType;
 import com.cobblemon.mod.common.pokemon.Pokemon;
@@ -144,6 +148,15 @@ public class CobblemonInitiativeCommands {
               Commands.argument("properties", StringArgumentType.greedyString())
                 .executes(ctx -> givemon(ctx, StringArgumentType.getString(ctx, "properties")))
             )
+        )
+        // Open the player's Cobblemon PC (nurse / Professor Acacia "Use the PC" option).
+        // Player-facing (runtime resolution, no parse-time requires) like `track`/`frontier`;
+        // the dialog buttons reach it through a DEFERRED datapack function (pc/open_now) a few
+        // ticks after the dialog closes, so Easy NPC's auto CLOSE_DIALOG can't setScreen(null)
+        // over the PC GUI the same tick (ENGINE_FINDINGS §2).
+        .then(
+          Commands.literal("pc")
+            .executes(CobblemonInitiativeCommands::openPc)
         )
         // Battle Frontier hall mechanics (FrontierManager) — player-facing like `track`
         // (runtime player resolution, no parse-time requires: kiosk dialog buttons and
@@ -1105,6 +1118,32 @@ public class CobblemonInitiativeCommands {
     player.sendSystemMessage(
       Component.literal("§a" + given.getSpecies().getName() + " joined your team.")
     );
+    return 1;
+  }
+
+  /**
+   * Open the player's Cobblemon PC storage GUI — the nurse / Professor Acacia "Use the PC"
+   * option. Mirrors what a PC block does on use: link the player's PC store so the client's
+   * box actions route back to the server, then send the client the open packet. (API verified
+   * against Cobblemon 1.7.x + the cobblemon_smartphone mod's OpenPCHandler.) Dispatched from a
+   * DEFERRED datapack function so the dialog's auto CLOSE_DIALOG doesn't destroy the screen.
+   */
+  private static int openPc(CommandContext<CommandSourceStack> context) {
+    ServerPlayer player;
+    try {
+      player = context.getSource().getPlayerOrException();
+    } catch (Exception e) {
+      return 0;
+    }
+    PCStore pc = Cobblemon.INSTANCE.getStorage().getPC(player);
+    if (pc == null) return 0;
+    // addLink(uuid, pcStore, condition): the condition keeps the link live; always-true here.
+    // PCLinkManager is a Kotlin `object`, so it's reached via INSTANCE from Java.
+    PCLinkManager.INSTANCE.addLink(player.getUUID(), pc,
+      new kotlin.jvm.functions.Function1<ServerPlayer, Boolean>() {
+        @Override public Boolean invoke(ServerPlayer p) { return Boolean.TRUE; }
+      });
+    CobblemonNetwork.INSTANCE.sendPacketToPlayer(player, new OpenPCPacket(pc, 0));
     return 1;
   }
 
