@@ -23,4 +23,4 @@ forceload remove 2141 869 2171 899
 forceload remove 3790 3731 3820 3761
 forceload remove 231 2332 261 2362
 forceload remove 717 4574 747 4604
-tellraw @a [{"text":"[Initiative] ","color":"gold"},{"text":"World repairs applied — the noble monuments now stand at their arenas.","color":"gray"}]
+execute if score #debug ci_ambient matches 1 run tellraw @a [{"text":"[Initiative] ","color":"gold"},{"text":"World repairs applied — the noble monuments now stand at their arenas.","color":"gray"}]

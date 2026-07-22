@@ -61,6 +61,10 @@ public class NuzlockeInit implements ModInitializer {
   private static NuzlockeConfig config;
   private static boolean pendingWhiteoutDeath = false;
   private static boolean pendingSacrifice = false;
+  /** Per-player post-revive grace: while the player's world gameTime is below the stored value,
+   *  a Nuzlocke whiteout will not fire {@code player.kill()} on them. Opened by the Dishonorable
+   *  Respawn path so a queued same-battle re-entry can't re-kill the revived player. */
+  private static final Map<UUID, Long> whiteoutGraceUntil = new ConcurrentHashMap<>();
   private static final Map<UUID, String> playerZones = new ConcurrentHashMap<>();
   private static int announceTick = 0;
   private static final Random URGE_RANDOM = new Random();
@@ -352,9 +356,7 @@ public class NuzlockeInit implements ModInitializer {
       player.sendSystemMessage(
         Component.literal("§4You fled with only one Pokémon! There is no escape...")
       );
-      pendingWhiteoutDeath = true;
-      StreamSyncEvents.whiteout(player, StreamSyncEvents.REASON_FLEE);
-      player.kill();
+      whiteoutKill(player, StreamSyncEvents.REASON_FLEE);
       LOGGER.info("Player {} fled with only one Pokemon - killed", player.getName().getString());
       return Unit.INSTANCE;
     }
@@ -410,9 +412,7 @@ public class NuzlockeInit implements ModInitializer {
           player.sendSystemMessage(
             Component.literal("§4You forfeited with only one Pokémon! There is no escape...")
           );
-          pendingWhiteoutDeath = true;
-          StreamSyncEvents.whiteout(player, StreamSyncEvents.REASON_FORFEIT);
-          player.kill();
+          whiteoutKill(player, StreamSyncEvents.REASON_FORFEIT);
         } else {
           player.sendSystemMessage(
             Component.literal("§cYou forfeited the battle! You must sacrifice a Pokémon...")
@@ -627,8 +627,6 @@ public class NuzlockeInit implements ModInitializer {
     if (isWhiteOut) {
       String releaseText = config.isRemoveFaintedPokemon() ? " and was released" : "";
       message = "§4" + pokemonName + " fainted" + releaseText + "! You have no Pokémon left!";
-      pendingWhiteoutDeath = true;
-      StreamSyncEvents.whiteout(player, StreamSyncEvents.REASON_FAINT);
       // Layer the shadow's ledger voice over the mechanical line — the whiteout is the
       // run's most-replayed moment and should sound like the Company, not vanilla.
       String[] whiteoutVoice = {
@@ -648,11 +646,54 @@ public class NuzlockeInit implements ModInitializer {
     }
     player.sendSystemMessage(Component.literal(message));
     if (isWhiteOut) {
-      // Guaranteed, unblockable death — bypasses armor / absorption / Resistance.
-      player.kill();
+      // Guaranteed, unblockable death — bypasses armor / absorption / Resistance. Routed through
+      // whiteoutKill so a post-Dishonorable-Respawn grace can suppress a same-battle re-entry: a
+      // same-turn multi-KO queues more than one whiteout kill, the first pops the death screen,
+      // and the rest would land on the revived player a few seconds after they claw back.
+      whiteoutKill(player, StreamSyncEvents.REASON_FAINT);
     } else {
       player.hurt(player.damageSources().generic(), damage);
     }
+  }
+
+  // ---------------------------------------------------------------------------
+  // Whiteout kill + post-revive grace
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Fire the Nuzlocke run-ender on {@code player}, unless they are inside a post-revive grace
+   * window (see {@link #grantWhiteoutGrace}). The death-screen flag and the StreamSync whiteout
+   * event are set only when the kill actually goes through, so a suppressed re-entry leaves no
+   * ghost death screen or double-counted whiteout behind.
+   */
+  private static void whiteoutKill(ServerPlayer player, String reason) {
+    if (inWhiteoutGrace(player)) {
+      LOGGER.info(
+        "Whiteout kill for {} suppressed — inside post-revive grace",
+        player.getName().getString());
+      return;
+    }
+    pendingWhiteoutDeath = true;
+    StreamSyncEvents.whiteout(player, reason);
+    player.kill();
+  }
+
+  /**
+   * Open a brief window during which a Nuzlocke whiteout will NOT {@code player.kill()} this
+   * player. Called from the Dishonorable Respawn command: when the run-ending faint is a
+   * same-turn multi-KO, the battle queues more than one whiteout kill — the first pops the death
+   * screen (which pauses the single-player server), and the rest, frozen behind that screen,
+   * fire on the freshly-revived player a few seconds after they claw back. The grace only gates
+   * the Nuzlocke run-ender: environmental damage still kills, and a fresh battle cannot be
+   * started AND lost inside the window, so a legitimate whiteout is never eaten.
+   */
+  public static void grantWhiteoutGrace(ServerPlayer player, int ticks) {
+    whiteoutGraceUntil.put(player.getUUID(), player.level().getGameTime() + ticks);
+  }
+
+  private static boolean inWhiteoutGrace(ServerPlayer player) {
+    Long until = whiteoutGraceUntil.get(player.getUUID());
+    return until != null && player.level().getGameTime() < until;
   }
 
   // ---------------------------------------------------------------------------

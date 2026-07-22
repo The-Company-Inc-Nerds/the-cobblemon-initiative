@@ -305,6 +305,9 @@ WORLD_USERDATA_STRIP = (
     "session.lock", "playerdata", "stats", "advancements",
     "cobblemonplayerdata", "cobbledollarsplayerdata", "pokedex",
     "pokemon",  # Cobblemon per-player PC + party storage (pcstore / playerpartystore)
+    "journeymap",  # data/journeymap/*.dat — JourneyMap waypoints incl. auto-created
+                   # Deathpoints. A builder/dev's personal + death markers must never ship;
+                   # players start fresh and JourneyMap re-creates the folder on first load.
 )
 
 # Resource packs and shaders are client-side only; declaring it keeps dedicated-server
@@ -496,10 +499,13 @@ def write_autoinstall_marker(config_dir):
     with open(marker, "w") as fh:
         json.dump({
             "enabled": True,
+            "debug": False,
             "_comment": "Shipped by build_mrpack. The Cobblemon Initiative auto-runs "
                         "'/cobblemon-initiative install run' once per fresh world when this "
                         "file exists (world latch: data/cobblemon_initiative_autoinstall.json). "
-                        "Delete this file or set enabled=false to go back to manual installs.",
+                        "The fresh-world run plays behind a black loading bar → the opening "
+                        "cutscene; set debug=true to also print the [Initiative] install/repair "
+                        "chat. Delete this file or set enabled=false for manual installs.",
         }, fh, indent=2)
     return marker
 

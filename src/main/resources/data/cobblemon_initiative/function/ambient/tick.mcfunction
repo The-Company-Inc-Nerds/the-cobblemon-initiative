@@ -7,14 +7,29 @@ function cobblemon_initiative:ambient/placements
 execute if entity @a[tag=claimed_starter_skiddo] run kill @e[type=easy_npc:cobblemon_npc,tag=ci_standin_skiddo]
 execute if entity @a[tag=claimed_starter_totodile] run kill @e[type=easy_npc:cobblemon_npc,tag=ci_standin_totodile]
 execute if entity @a[tag=claimed_starter_hisuian_growlithe] run kill @e[type=easy_npc:cobblemon_npc,tag=ci_standin_growlithe]
-# Victor's reveal — the apprentice at his reveal spot was Victini. A qualified player (heard
-# of him from Kesi + refused to sell the founder's papers, &c.) tags themselves
-# victor_transformed via his dialog; next tick this plays the reveal cutscene IN PLACE.
-# Guard: a DEDICATED one-shot player tag (victor_transform_fired, set on victor_transform's
-# first line). The old guard `unless entity victor_victini` looped forever — victor_victini
-# only spawns at cutscene tick 60, but this line re-ran victor_transform EVERY tick, and
-# CutsceneManager.play() restarts an already-active scene, so the scene reset each tick and
-# never reached tick 60. The player was trapped in a scene that never revealed (game-break).
+# ── Victor's descent + reveal (Sango) ──
+# Victor waits UP on the grain tower (his placement) until the player earns the transform: the
+# five anti-Company completions. On qualifying he comes DOWN to the reveal path — the player
+# notices him where he wasn't before (the "something special" signal) — and the reveal then plays
+# IN PLACE at the path (a15-safe: no mid-scene camera teleport, the bug that broke the game).
+# 1) DESCEND: fire once per qualified player (gate tag=!victor_descended); consume the tower
+#    latch, arm the path latch, mark the player, best-effort kill the tower body.
+execute as @a[tag=victor_hint,tag=docs_filed,tag=lane_done,tag=census_refused,tag=bought_magikarp,tag=!victor_descended,tag=!victini_joined] unless entity @e[tag=victor_victini,type=!minecraft:player] run function cobblemon_initiative:sango/victor_descend
+# 2) SELF-HEAL: if the descent's kill no-opped because the tower chunk was unloaded, clear the
+#    stray tower body whenever it next loads. Position-scoped so it never touches the path body
+#    (85 blocks away). tag=!victini_joined latches it OFF once the reveal is complete (else the
+#    victini_joined kill of victor_victini would re-open the `unless entity` guard and this would
+#    scan forever).
+execute if entity @a[tag=victor_descended,tag=!victini_joined] unless entity @e[tag=victor_victini,type=!minecraft:player] positioned 2522.5 131 2815.5 run kill @e[type=easy_npc:humanoid,tag=victor_apprentice,distance=..8]
+# 3) ARRIVE: spawn Victor's body at the reveal path the first time the descended player comes
+#    within 40 of it (chunk guaranteed loaded), exactly once (#amb_victor_path 0 -> 1).
+execute if score #amb_victor_path ci_ambient matches 0 as @a[tag=victor_descended,x=2536.5,y=106,z=2900.5,distance=..40] unless entity @e[tag=victor_victini,type=!minecraft:player] run function cobblemon_initiative:sango/victor_arrive_path
+# 4) TRANSFORM: the path-Victor's dialog tags the player victor_transformed; next tick this plays
+#    the reveal cutscene IN PLACE. Guard: a DEDICATED one-shot player tag (victor_transform_fired,
+#    set on victor_transform's first line) — the old `unless entity victor_victini` guard looped
+#    forever (victor_victini only spawns at cutscene tick 60, but this line re-ran victor_transform
+#    EVERY tick and CutsceneManager.play() restarts an active scene, so it reset each tick and
+#    never reached tick 60 — the player was trapped in a scene that never revealed, a game-break).
 execute as @a[tag=victor_transformed,tag=!victor_transform_fired] run function cobblemon_initiative:sango/victor_transform
 # Soft-lock recovery: if the scene ended BEFORE its tick-60 swap (mid-scene logout or a
 # hardcore death — CutsceneManager.end() fires without spawning Victini), the player keeps
@@ -25,7 +40,7 @@ execute as @a[tag=victor_transformed,tag=!victor_transform_fired] run function c
 # If the swap already ran (apprentice gone) but Victini never materialised, re-dispatching
 # would just replay the scene forever, so we don't: recover only the genuine pre-swap abort.
 execute as @a[tag=victor_transformed,tag=victor_transform_fired,tag=!victini_joined,gamemode=!spectator] unless entity @e[tag=victor_victini,type=!minecraft:player] if entity @e[tag=victor_apprentice,type=!minecraft:player] run tag @s remove victor_transform_fired
-# Once Victini has joined the player's party, remove the tower-top Victini NPC.
+# Once Victini has joined the player's party, remove the reveal-site Victini NPC.
 execute if entity @a[tag=victini_joined] run kill @e[type=easy_npc:cobblemon_npc,tag=victor_victini]
 # Kalahar mirage sweep — the gym 6 hunt scatters heat-shimmer doubles of the gym cast
 # across the Reach (tag ci_mirage, baked into their presets via entity_tags). The

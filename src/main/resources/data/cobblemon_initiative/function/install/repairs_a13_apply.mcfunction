@@ -94,4 +94,4 @@ forceload remove 1936 2560
 forceload remove 1904 2576
 forceload remove 1920 2576
 forceload remove 1936 2576
-tellraw @a [{"text":"[Initiative] ","color":"gold"},{"text":"Repair a13: cobblemon-model companion dupes cleared — Mimi/Jackpot & co. re-latch as singles.","color":"gray"}]
+execute if score #debug ci_ambient matches 1 run tellraw @a [{"text":"[Initiative] ","color":"gold"},{"text":"Repair a13: cobblemon-model companion dupes cleared — Mimi/Jackpot & co. re-latch as singles.","color":"gray"}]

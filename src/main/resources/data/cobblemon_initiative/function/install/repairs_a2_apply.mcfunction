@@ -34,4 +34,4 @@ forceload remove 2600 2780 2620 2800
 forceload remove 2570 2930 2590 2950
 forceload remove 1290 1440 1310 1460
 forceload remove 1720 4255 1740 4275
-tellraw @a [{"text":"[Initiative] ","color":"gold"},{"text":"World repairs applied — relocated NPCs will reappear at their new posts as you travel.","color":"gray"}]
+execute if score #debug ci_ambient matches 1 run tellraw @a [{"text":"[Initiative] ","color":"gold"},{"text":"World repairs applied — relocated NPCs will reappear at their new posts as you travel.","color":"gray"}]

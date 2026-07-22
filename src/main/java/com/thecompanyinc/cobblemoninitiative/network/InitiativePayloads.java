@@ -135,6 +135,35 @@ public final class InitiativePayloads {
     }
   }
 
+  /**
+   * S2C: drive the first-join install loading overlay (black screen + progress bar) shown
+   * while the pack auto-installs, BEFORE the opening cutscene. Fire-and-forget; a bare-mod or
+   * bot client simply never receives it. {@code phase}: {@code "open"} shows the overlay and
+   * lets it animate toward {@code progress}; {@code "done"} fills it to 1.0 and holds; {@code
+   * "close"} dismisses it (AutoInstall closes it the same tick it plays the opening cutscene).
+   */
+  public record InstallOverlayPayload(String phase, float progress)
+    implements CustomPacketPayload {
+
+    public static final String PHASE_OPEN = "open";
+    public static final String PHASE_DONE = "done";
+    public static final String PHASE_CLOSE = "close";
+
+    public static final Type<InstallOverlayPayload> TYPE = new Type<>(
+      ResourceLocation.fromNamespaceAndPath(InitiativeInit.MOD_ID, "install_overlay"));
+
+    public static final StreamCodec<FriendlyByteBuf, InstallOverlayPayload> CODEC =
+      StreamCodec.composite(
+        ByteBufCodecs.STRING_UTF8, InstallOverlayPayload::phase,
+        ByteBufCodecs.FLOAT, InstallOverlayPayload::progress,
+        InstallOverlayPayload::new);
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+      return TYPE;
+    }
+  }
+
   private InitiativePayloads() {}
 
   /** Common init: register payload types + the server-side deposit receiver. */
@@ -144,6 +173,7 @@ public final class InitiativePayloads {
     PayloadTypeRegistry.playS2C().register(NicknamePromptPayload.TYPE, NicknamePromptPayload.CODEC);
     PayloadTypeRegistry.playC2S().register(NicknameSetPayload.TYPE, NicknameSetPayload.CODEC);
     PayloadTypeRegistry.playS2C().register(AchievementToastPayload.TYPE, AchievementToastPayload.CODEC);
+    PayloadTypeRegistry.playS2C().register(InstallOverlayPayload.TYPE, InstallOverlayPayload.CODEC);
 
     // Fabric 1.21 play receivers run on the server thread; the managers re-validate the
     // whole request, so a stale/forged payload degrades to a polite refusal.
@@ -178,5 +208,10 @@ public final class InitiativePayloads {
   /** Server→client: pop a live-earn achievement toast (fire-and-forget). */
   public static void sendAchievementToast(ServerPlayer player, String advancement, String title) {
     ServerPlayNetworking.send(player, new AchievementToastPayload(advancement, title));
+  }
+
+  /** Server→client: drive the first-join install loading overlay (fire-and-forget). */
+  public static void sendInstallOverlay(ServerPlayer player, String phase, float progress) {
+    ServerPlayNetworking.send(player, new InstallOverlayPayload(phase, progress));
   }
 }

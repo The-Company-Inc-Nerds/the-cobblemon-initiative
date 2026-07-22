@@ -123,4 +123,4 @@ forceload remove 2032 4096
 forceload remove 2048 4080
 forceload remove 2128 3888
 forceload remove 2304 3536
-tellraw @a [{"text":"[Initiative] ","color":"gold"},{"text":"Repair a6: town-pack cast re-grounded (44 NPCs re-latch at probed surface).","color":"gray"}]
+execute if score #debug ci_ambient matches 1 run tellraw @a [{"text":"[Initiative] ","color":"gold"},{"text":"Repair a6: town-pack cast re-grounded (44 NPCs re-latch at probed surface).","color":"gray"}]

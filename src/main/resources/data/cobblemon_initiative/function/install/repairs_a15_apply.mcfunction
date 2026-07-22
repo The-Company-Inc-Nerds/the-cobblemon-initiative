@@ -75,4 +75,4 @@ forceload remove 2528 2816
 # Clean up any reveal-site forceload leaked by the OLD victor_transform — it added
 # `forceload add 2536 2900` on every tick of the infinite-restart and may never have cleared.
 forceload remove 2536 2900
-tellraw @a [{"text":"[Initiative] ","color":"gold"},{"text":"Repair a15: companion dupes swept for good, Victor moved to his reveal site — Mimi/Jackpot re-latch as singles, Victor transforms in place.","color":"gray"}]
+execute if score #debug ci_ambient matches 1 run tellraw @a [{"text":"[Initiative] ","color":"gold"},{"text":"Repair a15: companion dupes swept for good, Victor moved to his reveal site — Mimi/Jackpot re-latch as singles, Victor transforms in place.","color":"gray"}]

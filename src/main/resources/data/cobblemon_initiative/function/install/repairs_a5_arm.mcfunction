@@ -19,4 +19,4 @@ forceload add 231 2332 261 2362
 forceload add 717 4574 747 4604
 
 schedule function cobblemon_initiative:install/repairs_a5_apply 60t
-tellraw @a [{"text":"[Initiative] ","color":"gold"},{"text":"Applying one-time world repairs (noble monuments)…","color":"gray"}]
+execute if score #debug ci_ambient matches 1 run tellraw @a [{"text":"[Initiative] ","color":"gold"},{"text":"Applying one-time world repairs (noble monuments)…","color":"gray"}]

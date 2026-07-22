@@ -3,6 +3,8 @@ package com.thecompanyinc.cobblemoninitiative.install;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+import com.thecompanyinc.cobblemoninitiative.network.InitiativePayloads;
+import com.thecompanyinc.cobblemoninitiative.network.InitiativePayloads.InstallOverlayPayload;
 import com.thecompanyinc.cobblemoninitiative.npcmap.NpcPresetRefreshManager;
 import java.io.Reader;
 import java.io.Writer;
@@ -62,11 +64,25 @@ public final class AutoInstall {
    * this races MapFrontiers' (configurable) title duration — tune up if it still gets clobbered. */
   private static final int SETTLE_TICKS = 140;
 
+  /** Ticks the completed bar holds at 100% before the opening cutscene takes over — a beat so
+   * the fill reads as "done", and a moment for install-spawned bodies to settle off-camera. */
+  private static final int POST_INSTALL_HOLD = 16;
+
   /** A never-installed world → dispatch the full install. */
   private static boolean armed;
   /** An installed world at an older content version → dispatch the content-only refresh. */
   private static boolean refreshArmed;
+  /** Marker {@code debug} flag: when false (the default) the install runs silently behind the
+   * loading overlay — no [Initiative] repair chat, no "provisioned" line — so the cold open is
+   * purely overlay → title → cutscene. Flip to true to surface the install log in chat. */
+  private static boolean debug;
   private static int ticksWithPlayer;
+
+  /** Fresh-install hand-off stage: after the silent provisioning we hold the full bar for a beat
+   * ({@link #POST_INSTALL_HOLD}) before closing the overlay and playing the opening cutscene. */
+  private enum Stage { IDLE, POST_INSTALL }
+  private static Stage stage = Stage.IDLE;
+  private static int postInstallTicks;
 
   private AutoInstall() {}
 
@@ -78,7 +94,10 @@ public final class AutoInstall {
   private static void onServerStarted(MinecraftServer server) {
     armed = false;
     refreshArmed = false;
+    debug = false;
     ticksWithPlayer = 0;
+    stage = Stage.IDLE;
+    postInstallTicks = 0;
 
     Path marker = FabricLoader.getInstance().getConfigDir().resolve(MARKER_FILE);
     if (!Files.exists(marker)) {
@@ -89,6 +108,8 @@ public final class AutoInstall {
       if (json == null || !json.has("enabled") || !json.get("enabled").getAsBoolean()) {
         return;
       }
+      // Opt-in verbose install: surfaces the [Initiative] repair chat + provisioned line.
+      debug = json.has("debug") && json.get("debug").getAsBoolean();
     } catch (Exception e) {
       LOGGER.warn("[Auto-Install] Unreadable marker {} — skipping auto-install.", marker, e);
       return;
@@ -112,48 +133,91 @@ public final class AutoInstall {
   }
 
   private static void onTick(MinecraftServer server) {
+    // Fresh-install hand-off: bar has filled, hold a beat, then reveal.
+    if (stage == Stage.POST_INSTALL) {
+      if (++postInstallTicks >= POST_INSTALL_HOLD) {
+        stage = Stage.IDLE;
+        closeOverlayAndReveal(server);
+      }
+      return;
+    }
+
     if (!armed && !refreshArmed) return;
     if (server.getPlayerList().getPlayers().isEmpty()) {
       ticksWithPlayer = 0;
       return;
     }
-    if (++ticksWithPlayer < SETTLE_TICKS) return;
-
-    // Latch FIRST (records the current version) — even a partial run must never loop on every
-    // boot; both paths are idempotent and can always be re-run manually.
-    writeLatch(server);
+    ticksWithPlayer++;
 
     if (armed) {
+      // Fresh world: black the screen the instant the player is in, then provision behind it.
+      if (ticksWithPlayer == 1) {
+        ensureDebugScore(server);
+        broadcastOverlay(server, InstallOverlayPayload.PHASE_OPEN, 0f);
+        return;
+      }
+      if (ticksWithPlayer < SETTLE_TICKS) return; // let the bar animate + chunks stream
+      // Latch FIRST (records the version) — even a partial run must never loop on every boot.
+      writeLatch(server);
       armed = false;
-      dispatchFullInstall(server);
-    } else {
-      refreshArmed = false;
-      dispatchContentRefresh(server);
+      dispatchFullInstall(server); // silent unless debug; fills the bar via the "done" packet
+      stage = Stage.POST_INSTALL;
+      postInstallTicks = 0;
+      return;
     }
+
+    // Version-bump content refresh: idempotent repaint, no overlay/cutscene.
+    if (ticksWithPlayer < SETTLE_TICKS) return;
+    writeLatch(server);
+    refreshArmed = false;
+    ensureDebugScore(server);
+    dispatchContentRefresh(server);
   }
 
-  /** Fresh world: the full one-time provisioning. */
+  /** Fresh world: the full one-time provisioning, run silently behind the loading overlay. */
   private static void dispatchFullInstall(MinecraftServer server) {
     CommandSourceStack src = server.createCommandSourceStack().withPermission(4).withSuppressedOutput();
     try {
       server.getCommands().performPrefixedCommand(src, "cobblemon-initiative install run");
       LOGGER.info("[Auto-Install] Dispatched 'cobblemon-initiative install run' on first join.");
-      for (ServerPlayer p : server.getPlayerList().getPlayers()) {
-        // Unattributed on purpose (tone rule 2026-07-06): the brand must not be the first
-        // line of the run — the chill lands harder without a letterhead at minute zero.
-        p.sendSystemMessage(Component.literal(
-          "§7This world has been provisioned. Welcome back to the ledger."
-        ));
-      }
-      // The opening flyover — the run's first frame. Skippable; suppressed output so a
-      // missing scene (bare-mod worlds never reach this path) stays silent.
-      ServerPlayer first = server.getPlayerList().getPlayers().stream().findFirst().orElse(null);
-      if (first != null) {
-        CommandSourceStack psrc = first.createCommandSourceStack().withPermission(4).withSuppressedOutput();
-        server.getCommands().performPrefixedCommand(psrc, "cutscene play opening");
+      if (debug) {
+        for (ServerPlayer p : server.getPlayerList().getPlayers()) {
+          // Unattributed on purpose (tone rule 2026-07-06): the brand must not be the first
+          // line of the run — the chill lands harder without a letterhead at minute zero.
+          p.sendSystemMessage(Component.literal(
+            "§7This world has been provisioned. Welcome back to the ledger."
+          ));
+        }
       }
     } catch (Exception e) {
       LOGGER.error("[Auto-Install] install run dispatch failed", e);
+    } finally {
+      // Always fill the bar — even a failed/partial install must not strand the overlay.
+      broadcastOverlay(server, InstallOverlayPayload.PHASE_DONE, 1f);
+    }
+  }
+
+  /** Dismiss the overlay and play the opening flyover (its startTitle is the intended title
+   * beat). Suppressed output so a missing scene (bare-mod worlds never reach here) stays silent. */
+  private static void closeOverlayAndReveal(MinecraftServer server) {
+    broadcastOverlay(server, InstallOverlayPayload.PHASE_CLOSE, 1f);
+    ServerPlayer first = server.getPlayerList().getPlayers().stream().findFirst().orElse(null);
+    if (first == null) return; // player left during the hold — nothing to reveal
+    CommandSourceStack psrc = first.createCommandSourceStack().withPermission(4).withSuppressedOutput();
+    server.getCommands().performPrefixedCommand(psrc, "cutscene play opening");
+  }
+
+  /** Ensure the ci_ambient objective exists and publish the debug flag onto {@code #debug} so
+   * the install/repair mcfunctions can gate their {@code tellraw @a} flavor lines on it. */
+  private static void ensureDebugScore(MinecraftServer server) {
+    CommandSourceStack src = server.createCommandSourceStack().withPermission(4).withSuppressedOutput();
+    server.getCommands().performPrefixedCommand(src, "scoreboard objectives add ci_ambient dummy");
+    server.getCommands().performPrefixedCommand(src, "scoreboard players set #debug ci_ambient " + (debug ? 1 : 0));
+  }
+
+  private static void broadcastOverlay(MinecraftServer server, String phase, float progress) {
+    for (ServerPlayer p : server.getPlayerList().getPlayers()) {
+      InitiativePayloads.sendInstallOverlay(p, phase, progress);
     }
   }
 

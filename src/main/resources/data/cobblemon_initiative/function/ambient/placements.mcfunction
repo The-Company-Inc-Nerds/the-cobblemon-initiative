@@ -299,7 +299,7 @@ execute if score #amb_sango_wooper ci_ambient matches 0 unless entity @e[tag=ci_
 execute if score #amb_sentret ci_ambient matches 0 unless entity @e[tag=ci_amb_companion_sentret] if entity @a[x=2588.5,y=107,z=2957.5,distance=..40] run function cobblemon_initiative:ambient/place/sentret
 execute if score #amb_company_courier ci_ambient matches 0 if entity @a[x=2592.5,y=111,z=2815.5,distance=..40] run function cobblemon_initiative:ambient/place/company_courier
 execute if score #amb_sango_company_liaison ci_ambient matches 0 if entity @a[x=2581.5,y=111,z=2822.5,distance=..40] run function cobblemon_initiative:ambient/place/sango_company_liaison
-execute if score #amb_victor ci_ambient matches 0 if entity @a[x=2536.5,y=106,z=2900.5,distance=..40] run function cobblemon_initiative:ambient/place/victor
+execute if score #amb_victor ci_ambient matches 0 if entity @a[x=2522.5,y=131,z=2815.5,distance=..40] run function cobblemon_initiative:ambient/place/victor
 execute if score #amb_scorchspire_charmander ci_ambient matches 0 unless entity @e[tag=ci_amb_companion_scorchspire_charmander] if entity @a[x=3661.5,y=101,z=4634.5,distance=..40] run function cobblemon_initiative:ambient/place/scorchspire_charmander
 execute if score #amb_scorchspire_houndour ci_ambient matches 0 unless entity @e[tag=ci_amb_companion_scorchspire_houndour] if entity @a[x=3751.5,y=101,z=4576.5,distance=..40] run function cobblemon_initiative:ambient/place/scorchspire_houndour
 execute if score #amb_scorchspire_litwick ci_ambient matches 0 unless entity @e[tag=ci_amb_companion_scorchspire_litwick] if entity @a[x=3717.5,y=109,z=4520.5,distance=..40] run function cobblemon_initiative:ambient/place/scorchspire_litwick

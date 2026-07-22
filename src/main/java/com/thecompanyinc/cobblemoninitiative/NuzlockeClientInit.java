@@ -3,6 +3,7 @@ package com.thecompanyinc.cobblemoninitiative;
 import com.thecompanyinc.cobblemoninitiative.network.InitiativePayloads;
 import com.thecompanyinc.cobblemoninitiative.questtrack.QuestTrackClient;
 import com.thecompanyinc.cobblemoninitiative.screen.DaycareSelectionScreen;
+import com.thecompanyinc.cobblemoninitiative.screen.LoadingOverlayScreen;
 import com.thecompanyinc.cobblemoninitiative.screen.NicknamePromptScreen;
 import com.thecompanyinc.cobblemoninitiative.screen.SacrificeSelectionScreen;
 import java.util.Queue;
@@ -55,6 +56,36 @@ public class NuzlockeClientInit implements ClientModInitializer {
         com.thecompanyinc.cobblemoninitiative.achievement.client.AchievementToasts.show(
           payload.advancement(), payload.title()));
 
+    // First-join install loading overlay (black screen + bar) shown while the pack
+    // auto-installs, then dismissed as the opening cutscene starts. setScreen must run on
+    // the client thread, so marshal off the network thread with mc.execute.
+    ClientPlayNetworking.registerGlobalReceiver(
+      InitiativePayloads.InstallOverlayPayload.TYPE,
+      (payload, context) -> {
+        Minecraft mc = Minecraft.getInstance();
+        mc.execute(() -> {
+          switch (payload.phase()) {
+            case InitiativePayloads.InstallOverlayPayload.PHASE_OPEN -> {
+              if (!(mc.screen instanceof LoadingOverlayScreen)) {
+                mc.setScreen(new LoadingOverlayScreen());
+              }
+            }
+            case InitiativePayloads.InstallOverlayPayload.PHASE_DONE -> {
+              // Open-then-mark if a lost/raced "open" (vs the vanilla level-load screen) meant
+              // the overlay never appeared — better a brief filled bar than no overlay at all.
+              if (!(mc.screen instanceof LoadingOverlayScreen)) {
+                mc.setScreen(new LoadingOverlayScreen());
+              }
+              if (mc.screen instanceof LoadingOverlayScreen los) los.markDone();
+            }
+            case InitiativePayloads.InstallOverlayPayload.PHASE_CLOSE -> {
+              if (mc.screen instanceof LoadingOverlayScreen) mc.setScreen(null);
+            }
+            default -> {}
+          }
+        });
+      });
+
     // Undelivered requests die with the session — a queued nickname offer (or an
     // unconsumed picker-open) from a previous world would reference state this
     // server never owned, popping a ghost screen on the next join.
@@ -62,6 +93,8 @@ public class NuzlockeClientInit implements ClientModInitializer {
       .register((handler, client) -> {
         pendingNicknames.clear();
         pendingPicker = null;
+        // A mid-install disconnect must never strand the player on the black overlay.
+        if (client.screen instanceof LoadingOverlayScreen) client.setScreen(null);
       });
 
     ClientTickEvents.END_CLIENT_TICK.register(client -> {

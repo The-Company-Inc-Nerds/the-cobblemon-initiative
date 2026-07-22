@@ -27,4 +27,4 @@ forceload remove 2000 912
 forceload remove 3488 4688
 forceload remove 3488 4704
 forceload remove 3632 1952
-tellraw @a [{"text":"[Initiative] ","color":"gold"},{"text":"Repair a8: shrine cultists retired — the keepers hold the trials now.","color":"gray"}]
+execute if score #debug ci_ambient matches 1 run tellraw @a [{"text":"[Initiative] ","color":"gold"},{"text":"Repair a8: shrine cultists retired — the keepers hold the trials now.","color":"gray"}]

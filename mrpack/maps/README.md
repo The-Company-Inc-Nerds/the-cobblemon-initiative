@@ -26,7 +26,8 @@ Used by:
 | `easy_npc/` (411 `*.npc.nbt`) | **Easy NPC's own NPC persistence** — dialog, skin, and `Pos` per NPC | travels with the export |
 | `level.dat` | World metadata + **host Player** (builders play on the save → their inventory/pos/party) | **rebaked; `Data.Player` REMOVED** (fresh host at world spawn) |
 | `serverconfig/` | Per-world mod configs (rctmod cap/series) | keep / rebaked by the mod at runtime |
-| `data/` | World saved data (scoreboard, mod persistence, rctmod stat.dat, map frontiers) | keep (mostly keyed by player identity → harmless; mod re-inits) |
+| `data/` | World saved data (scoreboard, mod persistence, rctmod stat.dat, map frontiers) | keep (mostly keyed by player identity → harmless; mod re-inits) — **except `data/journeymap/`, stripped** |
+| `data/journeymap/` | JourneyMap waypoints incl. auto-created **Deathpoints** (per-player + global `.dat`) | **stripped at build** (a builder/dev's personal + death markers must not ship; JM re-creates it) |
 | `playerdata/ stats/ advancements/ cobblemon*playerdata/ pokedex/ pokemon/ session.lock` | **Per-player state incl. Cobblemon PC/party captures** | **stripped at build** (players start fresh) |
 
 ## Updating the bundled map (builders send a new full export)

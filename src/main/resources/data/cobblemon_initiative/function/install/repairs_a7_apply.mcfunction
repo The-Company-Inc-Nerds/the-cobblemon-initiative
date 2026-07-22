@@ -32,4 +32,4 @@ forceload remove 2000 912
 forceload remove 2752 3488
 forceload remove 3488 4704
 forceload remove 3632 1952
-tellraw @a [{"text":"[Initiative] ","color":"gold"},{"text":"Repair a7: shrine + noble-giver casts re-grounded (12 NPCs re-latch at probed surface).","color":"gray"}]
+execute if score #debug ci_ambient matches 1 run tellraw @a [{"text":"[Initiative] ","color":"gold"},{"text":"Repair a7: shrine + noble-giver casts re-grounded (12 NPCs re-latch at probed surface).","color":"gray"}]

@@ -53,3 +53,9 @@ execute unless score #repair_a14 ci_ambient matches 1 run function cobblemon_ini
 #    with the recompiled placement latches whose new `unless entity` tick guard +
 #    kill-before-import place fn make a re-dupe impossible (the last companion repair) ──
 execute unless score #repair_a15 ci_ambient matches 1 run function cobblemon_initiative:install/repairs_a15_arm
+
+# ── wave a16 (0.6.0-alpha.16): Victor descent rework — alpha.15 parked him permanently at the
+#    reveal path; he now waits UP on the grain tower until the player earns his transform, then
+#    descends to the path (the "something special" signal). Reconcile existing saves: qualified →
+#    adopt the a15 path body as descended; not-yet-qualified → move him back up to the tower ──
+execute unless score #repair_a16 ci_ambient matches 1 run function cobblemon_initiative:install/repairs_a16_arm

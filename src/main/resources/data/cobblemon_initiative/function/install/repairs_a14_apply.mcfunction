@@ -73,4 +73,4 @@ forceload remove 1472 2112
 forceload remove 1440 2016
 forceload remove 1456 2096
 forceload remove 1536 2016
-tellraw @a [{"text":"[Initiative] ","color":"gold"},{"text":"Repair a14: cobblemon-model companion dupes swept by proximity — Mimi/Jackpot & co. re-latch as singles.","color":"gray"}]
+execute if score #debug ci_ambient matches 1 run tellraw @a [{"text":"[Initiative] ","color":"gold"},{"text":"Repair a14: cobblemon-model companion dupes swept by proximity — Mimi/Jackpot & co. re-latch as singles.","color":"gray"}]

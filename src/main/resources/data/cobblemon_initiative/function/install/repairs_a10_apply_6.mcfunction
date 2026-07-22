@@ -11,4 +11,4 @@ forceload remove 1168 3264
 forceload remove 1184 3232
 forceload remove 1184 3248
 forceload remove 1184 3264
-tellraw @a [{"text":"[Initiative] ","color":"gold"},{"text":"Repair a10: dialog pass — 171 locals re-latch with fresher things to say.","color":"gray"}]
+execute if score #debug ci_ambient matches 1 run tellraw @a [{"text":"[Initiative] ","color":"gold"},{"text":"Repair a10: dialog pass — 171 locals re-latch with fresher things to say.","color":"gray"}]

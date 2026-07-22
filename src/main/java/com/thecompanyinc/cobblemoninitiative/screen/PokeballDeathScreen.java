@@ -89,6 +89,7 @@ public class PokeballDeathScreen extends Screen {
             this.minecraft.player.connection.send(
               new ServerboundClientCommandPacket(
                 ServerboundClientCommandPacket.Action.PERFORM_RESPAWN));
+            this.minecraft.setScreen(null);
           }
         })
       .bounds(honorX, top, 150, 20)
@@ -102,6 +103,7 @@ public class PokeballDeathScreen extends Screen {
             if (this.minecraft != null && this.minecraft.player != null) {
               this.minecraft.player.connection.sendCommand(
                 "cobblemon-initiative dishonored-respawn");
+              this.minecraft.setScreen(null);
             }
           })
         .bounds(cx + 4, top, 150, 20)

@@ -14,4 +14,4 @@ forceload add 1290 1440 1310 1460
 forceload add 1720 4255 1740 4275
 
 schedule function cobblemon_initiative:install/repairs_a2_apply 60t
-tellraw @a [{"text":"[Initiative] ","color":"gold"},{"text":"Applying one-time world repairs (relocated NPCs)…","color":"gray"}]
+execute if score #debug ci_ambient matches 1 run tellraw @a [{"text":"[Initiative] ","color":"gold"},{"text":"Applying one-time world repairs (relocated NPCs)…","color":"gray"}]

@@ -281,4 +281,4 @@ forceload remove 3664 4560
 forceload remove 3664 4576
 forceload remove 3680 4576
 forceload remove 3792 3792
-tellraw @a [{"text":"[Initiative] ","color":"gold"},{"text":"Repair a9: dress pass — 99 locals re-latch in their proper outfits.","color":"gray"}]
+execute if score #debug ci_ambient matches 1 run tellraw @a [{"text":"[Initiative] ","color":"gold"},{"text":"Repair a9: dress pass — 99 locals re-latch in their proper outfits.","color":"gray"}]

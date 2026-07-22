@@ -1641,6 +1641,13 @@ public class CobblemonInitiativeCommands {
     revived.setHealth(revived.getMaxHealth());
     revived.getFoodData().setFoodLevel(20);
     revived.addTag("dishonored");
+
+    // A same-turn multi-KO whiteout queues more than one player.kill(): the first popped this
+    // death screen (pausing the single-player server), and the rest are frozen behind it and
+    // would fire on the revived player a few seconds from now. Open a short grace so the
+    // Nuzlocke run-ender can't immediately re-kill the clawed-back player (~5s — you cannot
+    // start and lose a fresh battle that fast, so a real whiteout is never suppressed).
+    com.thecompanyinc.cobblemoninitiative.NuzlockeInit.grantWhiteoutGrace(revived, 100);
     net.minecraft.world.scores.Scoreboard board = server.getScoreboard();
     net.minecraft.world.scores.Objective obj =
       board.getObjective("dishonorable_respawns");
