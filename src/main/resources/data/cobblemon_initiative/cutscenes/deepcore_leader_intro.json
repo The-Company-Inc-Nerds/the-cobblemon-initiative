@@ -1,0 +1,27 @@
+{
+  "_comment": "BRUNO — Deepcore City (gym 4, Fighting) leader intro. A per-leader copy of leader_intro.json (the shared scene cannot carry a name title), reusing Cicada's SAME relative+facingFrame+endBack:7 camera geometry VERBATIM so gym/engage_deepcore_leader still opens the battle from the endBack stage. Structure mirrors leader_intro: pull up over the challenger's shoulder framing Bruno, TIGHT ZOOM-IN dolly to his face (the two z:-8.5 -> z:-6.8 close holds mirror starter_reveal's push-in), cross high for a side profile, then drop home. startTitle names him; a Fighting-type effect cue (crit + sweep_attack particles anchored ON the leader via `execute at <uuid>`, so they land on Bruno regardless of camera) plus anvil/knockback/strike sounds sell the Ironbreaker reveal. IN-WORLD TUNING MAY BE NEEDED: air-verify the zoom-keyframe framing and the particle ~1 height at the real Deepcore arena and nudge as needed. endBack 7 MUST match leader_intro so the post-scene battle opens correctly.",
+  "relative": true,
+  "facingFrame": true,
+  "skippable": true,
+  "endBack": 7.0,
+  "startTitle": "§cLeader Bruno",
+  "startSubtitle": "§4Ironbreaker of the Deepcore §8— §cFighting",
+  "keyframes": [
+    { "x": 0.0, "y": 2.5, "z": -4.0, "yaw": 0.0, "pitch": 12.0, "ticks": 30 },
+    { "x": -1.2, "y": 2.2, "z": -8.5, "yaw": 0.0, "pitch": 6.0, "ticks": 45 },
+    { "x": -1.2, "y": 2.2, "z": -8.5, "yaw": 0.0, "pitch": 6.0, "ticks": 20 },
+    { "x": -0.4, "y": 2.6, "z": -6.8, "yaw": 0.0, "pitch": 8.0, "ticks": 18 },
+    { "x": -0.4, "y": 2.6, "z": -6.8, "yaw": 0.0, "pitch": 8.0, "ticks": 30 },
+    { "x": 6.5, "y": 4.5, "z": 1.5, "yaw": -55.0, "pitch": 22.0, "ticks": 50 },
+    { "x": 0.0, "y": 1.0, "z": -6.5, "yaw": 0.0, "pitch": 4.0, "ticks": 40 }
+  ],
+  "cues": [
+    { "tick": 8, "sound": "minecraft:block.anvil.land", "volume": 0.8, "pitch": 0.6 },
+    { "tick": 10, "sound": "minecraft:entity.player.attack.knockback", "volume": 0.5, "pitch": 0.8 },
+    { "tick": 70, "sound": "minecraft:entity.player.attack.strong", "volume": 0.9, "pitch": 0.8 },
+    { "tick": 78, "command": "execute at 4f016bc8-7b9f-4624-819d-149d93c688d3 run particle minecraft:crit ~ ~1 ~ 0.6 0.8 0.6 0.02 32 force" },
+    { "tick": 96, "command": "execute at 4f016bc8-7b9f-4624-819d-149d93c688d3 run particle minecraft:sweep_attack ~ ~1 ~ 0.6 0.8 0.6 0.02 32 force" },
+    { "tick": 100, "sound": "minecraft:entity.player.attack.sweep", "volume": 0.6, "pitch": 1.0 },
+    { "tick": 190, "sound": "minecraft:entity.player.levelup", "volume": 0.6, "pitch": 0.5 }
+  ]
+}

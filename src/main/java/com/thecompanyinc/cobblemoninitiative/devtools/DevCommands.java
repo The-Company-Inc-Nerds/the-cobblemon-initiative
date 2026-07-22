@@ -79,6 +79,30 @@ public final class DevCommands {
           .then(
             Commands.literal("kit").executes(DevCommands::devKit)
           )
+          // Full-heal the party + self, in or out of battle (playtest convenience).
+          .then(
+            Commands.literal("heal").executes(ctx -> withPlayer(ctx, DevCommands::devHeal))
+          )
+          // Outline every Easy NPC so the producer can find placed bodies at a glance.
+          .then(
+            Commands.literal("glow")
+              .executes(ctx -> devGlow(ctx, true))
+              .then(
+                Commands.argument("state", StringArgumentType.word())
+                  .suggests((c, b) -> SharedSuggestionProvider.suggest(new String[] {"on", "off"}, b))
+                  .executes(ctx ->
+                    devGlow(ctx, !"off".equalsIgnoreCase(StringArgumentType.getString(ctx, "state"))))
+              )
+          )
+          // Preview any PokéPhone call on demand (non-consuming — leaves the real story trigger intact).
+          .then(
+            Commands.literal("phone").then(
+              Commands.argument("call", StringArgumentType.word())
+                .suggests((c, b) -> SharedSuggestionProvider.suggest(PHONE_DONE_TAG.keySet(), b))
+                .executes(ctx ->
+                  withPlayer(ctx, p -> devPhone(p, StringArgumentType.getString(ctx, "call"))))
+            )
+          )
           // Vanilla-A* route probe for the client driver (see PathProbe).
           .then(
             Commands.literal("path").then(
@@ -219,8 +243,18 @@ public final class DevCommands {
     for (TrainerConfig t : configLoader.getAllTrainers()) {
       String a = t.getAchievementOnDefeat();
       if (a == null || !a.startsWith("badge_")) continue;
-      if (grant.contains(a)) progress.addDefeatedTrainer(t.getId());
-      else progress.getDefeatedTrainers().remove(t.getId());
+      // Also toggle the defeated_<leader> PLAYER TAG that the real TBCS onwin sets. Dialog
+      // and quest gates lower to this tag (content_compile: defeated → player_tag
+      // defeated_<id>), NOT to the progress Set — so without this, dev-badged players fail
+      // every gym-progression dialog/quest stage and late-game content isn't testable.
+      // PlayerProgressManager treats the tag and the Set as equivalent, so no double-count.
+      if (grant.contains(a)) {
+        progress.addDefeatedTrainer(t.getId());
+        player.addTag("defeated_" + t.getId());
+      } else {
+        progress.getDefeatedTrainers().remove(t.getId());
+        player.removeTag("defeated_" + t.getId());
+      }
     }
     for (String a : grant) progress.addAchievement(a);
 
@@ -244,7 +278,8 @@ public final class DevCommands {
     context.getSource().sendSuccess(
       () ->
         Component.literal(
-          "§aSet progression to §e" + n + "§a badge(s); level cap now §e" + cap + "§a."
+          "§aSet progression to §e" + n + "§a badge(s) + defeated tags; level cap now §e"
+            + cap + "§a. §7(endgame story flags: /ca dev stage <era>)"
         ),
       true
     );
@@ -300,6 +335,108 @@ public final class DevCommands {
       () -> Component.literal("§aDev kit granted: 5 shrine crystals + rare candy + potions."),
       true
     );
+    return 1;
+  }
+
+  /**
+   * /cobblemon-initiative dev heal — fully heal the player's whole party AND the player
+   * (health, hunger, fire, effects), usable mid-battle. Party uses the shipped healParty
+   * idiom; the {@code healpokemon} console command resyncs a currently sent-out mon into
+   * the running showdown side (the FrontierManager pattern), avoiding fragile BattlePokemon
+   * surgery. Player self-heal is plain vanilla.
+   */
+  private static int devHeal(ServerPlayer player) {
+    var server = player.getServer();
+    try {
+      var party = com.cobblemon.mod.common.Cobblemon.INSTANCE.getStorage().getParty(player);
+      for (int i = 0; i < party.size(); i++) {
+        var mon = party.get(i);
+        if (mon != null) mon.heal();
+      }
+    } catch (Exception ignored) {
+      // storage lookup can throw for a party-less player; the party heal is best-effort.
+    }
+    if (server != null) {
+      server.getCommands().performPrefixedCommand(
+        server.createCommandSourceStack().withPermission(4).withSuppressedOutput(),
+        "healpokemon " + player.getGameProfile().getName());
+    }
+    player.setHealth(player.getMaxHealth());
+    player.getFoodData().setFoodLevel(20);
+    player.getFoodData().setSaturation(20.0f);
+    player.clearFire();
+    player.setAirSupply(player.getMaxAirSupply());
+    player.removeAllEffects();
+    player.sendSystemMessage(Component.literal("§a✚ Party and self fully healed."));
+    return 1;
+  }
+
+  /**
+   * /cobblemon-initiative dev glow [on|off] — toggle the vanilla GLOWING outline on every
+   * Easy NPC entity across all levels (namespace {@code easy_npc}: humanoid + cobblemon_npc
+   * + fairy). One-shot sweep — re-run after chunks load elsewhere. Defaults to on.
+   */
+  private static int devGlow(CommandContext<CommandSourceStack> context, boolean on) {
+    var server = context.getSource().getServer();
+    int count = 0;
+    for (net.minecraft.server.level.ServerLevel level : server.getAllLevels()) {
+      for (net.minecraft.world.entity.Entity e : level.getAllEntities()) {
+        if (e instanceof ServerPlayer) continue;
+        var key = net.minecraft.core.registries.BuiltInRegistries.ENTITY_TYPE.getKey(e.getType());
+        if (!"easy_npc".equals(key.getNamespace())) continue;
+        e.setGlowingTag(on);
+        count++;
+      }
+    }
+    final int n = count;
+    context.getSource().sendSuccess(
+      () -> Component.literal(
+        "§a" + (on ? "Glowing " : "Cleared glow on ") + "§e" + n + "§a Easy NPC entities."),
+      true
+    );
+    return count;
+  }
+
+  /**
+   * PokéPhone dev preview map: call id -> the {@code call_<id>_done} tag its {@code ring_<id>}
+   * function stamps (one-shot guard). Note the tag doesn't always mirror the id (mom ->
+   * call_mom_watch_done, beacon -> call_beacon_stock_done), so this is an explicit table.
+   */
+  private static final java.util.Map<String, String> PHONE_DONE_TAG = java.util.Map.ofEntries(
+    java.util.Map.entry("mom", "call_mom_watch_done"),
+    java.util.Map.entry("mom_proud", "call_mom_proud_done"),
+    java.util.Map.entry("mom_worry", "call_mom_worry_done"),
+    java.util.Map.entry("company_watch", "call_company_watch_done"),
+    java.util.Map.entry("dj_threat", "call_dj_threat_done"),
+    java.util.Map.entry("board_gloat", "call_board_gloat_done"),
+    java.util.Map.entry("acacia_second", "call_acacia_second_done"),
+    java.util.Map.entry("acacia_third", "call_acacia_third_done"),
+    java.util.Map.entry("acacia_dex", "call_acacia_dex_done"),
+    java.util.Map.entry("beacon", "call_beacon_stock_done"),
+    java.util.Map.entry("first_beacon", "call_first_beacon_done"),
+    java.util.Map.entry("founder", "call_founder_done"));
+
+  /**
+   * /cobblemon-initiative dev phone &lt;call&gt; — preview a PokéPhone call (the datapack
+   * {@code phone/ring_<call>} function: ☎ actionbar + chime + tellraw lines) on demand.
+   * NON-CONSUMING: clears the call's done tag, fires it, then clears the tag again so the real
+   * condition-driven call still rings later in normal play.
+   */
+  private static int devPhone(ServerPlayer player, String call) {
+    String doneTag = PHONE_DONE_TAG.get(call);
+    if (doneTag == null) {
+      player.sendSystemMessage(Component.literal(
+        "§cUnknown call '" + call + "'. Options: " + String.join(", ", PHONE_DONE_TAG.keySet())));
+      return 0;
+    }
+    var server = player.getServer();
+    if (server == null) return 0;
+    var src = player.createCommandSourceStack().withPermission(4).withSuppressedOutput();
+    player.removeTag(doneTag);
+    server.getCommands().performPrefixedCommand(
+      src, "function cobblemon_initiative:phone/ring_" + call);
+    player.removeTag(doneTag);
+    player.sendSystemMessage(Component.literal("§a☎ Previewed call §e" + call + "§a (non-consuming)."));
     return 1;
   }
 

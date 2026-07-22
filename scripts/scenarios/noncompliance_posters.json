@@ -1,24 +1,18 @@
 {
   "name": "noncompliance_posters",
-  "description": "Notice of Non-Compliance (q.side_posters, Takehara Falls) end-to-end on Printmaker Mei: take the three moth prints, run the three gated paste buttons (attempt_one/two/three - the canvasser Kazuo stands ~127b away at 1940,105,2470 with sight range 10, so every attempt deterministically takes the unseen branch), then the clean turn-in (400 CD + 3x potion + 1x heal_ball + sq_posters_done). No prerequisite tags are assumed or faked; the preamble resets every chain tag and clears the reward items (including reward/standard exp candies).",
+  "description": "Bee-Swarm Wave Defense (q.side_posters, Takehara Falls) end-to-end on Printmaker Mei: accept the defense (sq_posters_started), press 'Defend the stall' to release the 5-bee swarm (bee_watch/start summons a ring of angry bees tagged bw_mob and snapshots a kill baseline), cull the wave, verify the win latch bee_watch_cleared, then the turn-in collect (400 CD + 3x potion + 1x net_ball + sq_posters_done). No prerequisite tags are assumed or faked; the preamble resets every chain tag and clears the reward items (including reward/standard exp candies). HEADLESS NOTE: bw_kills is a player-kill criterion (killed:bee), which a headless rcon 'kill @e' does NOT increment (deaths are unattributed). So the cull is simulated by advancing the player's bw_kills score to baseline+5 (baseline snapshot is taken by bee_watch/start), which run_tick reads as 'wave cleared' on the next tick and fires win. The bw_mob bees are then despawned so the field is clean.",
   "steps": [
     {
-      "comment": "-- reset (idempotent re-runs): chain tags + reward items + canvasser sight score --"
+      "comment": "-- reset (idempotent re-runs): chain tags + reward items + wave state --"
     },
     {
       "rcon": "tag {player} remove sq_posters_started"
     },
     {
-      "rcon": "tag {player} remove sq_poster_one"
+      "rcon": "tag {player} remove bw_active"
     },
     {
-      "rcon": "tag {player} remove sq_poster_two"
-    },
-    {
-      "rcon": "tag {player} remove sq_poster_three"
-    },
-    {
-      "rcon": "tag {player} remove sq_poster_scolded"
+      "rcon": "tag {player} remove bee_watch_cleared"
     },
     {
       "rcon": "tag {player} remove sq_posters_done"
@@ -27,7 +21,7 @@
       "rcon": "clear {player} cobblemon:potion"
     },
     {
-      "rcon": "clear {player} cobblemon:heal_ball"
+      "rcon": "clear {player} cobblemon:net_ball"
     },
     {
       "rcon": "clear {player} cobblemon:exp_candy_s"
@@ -39,10 +33,16 @@
       "rcon": "clear {player} cobblemon:exp_candy_l"
     },
     {
-      "comment": "defensive: zero any stale sight score so a frozen 1 can never fake a scold (errors if unloaded/unset - tolerated like the tag removes)"
+      "comment": "defensive: despawn any stale swarm from an aborted run and zero the wave scores"
     },
     {
-      "rcon": "scoreboard players set @e[tag=ci_canvasser] can_see_player 0"
+      "rcon": "kill @e[tag=bw_mob]"
+    },
+    {
+      "rcon": "scoreboard players set {player} bw_spawned 0"
+    },
+    {
+      "rcon": "scoreboard players set {player} bw_baseline 0"
     },
     {
       "comment": "-- anchor: Printmaker Mei's stall (persisted body 59463ac9 @ 1818 109 2506) --"
@@ -54,7 +54,7 @@
       "sleep": 1.5
     },
     {
-      "comment": "-- beat 1: the glue objection - take the three moth prints (sets sq_posters_started) --"
+      "comment": "-- beat 1: the swarm objection - stand the swarm off her stall (sets sq_posters_started) --"
     },
     {
       "find_npc": "Printmaker Mei",
@@ -68,15 +68,15 @@
     },
     {
       "expect_screen_text": [
-        "Before the glue complaint — a civic observation. Two grey suits took the gym stairs this morning, briefcases matching, smiles matching. The mayor went up to meet them. He has not come down. Somebody with steadier nerves than a printmaker should go see about that.",
-        "Meanwhile, down here: Verified Trust, Verified Value, glued straight over my moth-wing prints. Bad glue. Three notices — gym entrance, falls overlook, bridge mural. I want my prints back on top, and I want the canvasser to never see it happen."
+        "Before the swarm complaint — a civic observation. Two grey suits took the gym stairs this morning, briefcases matching, smiles matching. The mayor went up to meet them. He has not come down. Somebody with steadier nerves than a printmaker should go see about that.",
+        "Meanwhile, down here: the Company smoked a hive out of the falls and tipped it onto my stall. A whole angry swarm, all over my moth-wing prints. Verified Trust, Verified Value, delivered by stinger. I need them dead before they ruin the whole run."
       ]
     },
     {
-      "screenshot": "mei_glue_objection"
+      "screenshot": "mei_swarm_objection"
     },
     {
-      "click": "Take the three moth prints"
+      "click": "Stand the swarm off her stall"
     },
     {
       "wait_no_screen": true
@@ -86,14 +86,14 @@
       "expect": "passed"
     },
     {
-      "wait_chat": "Re-post the moth prints over three notices",
+      "wait_chat": "Cull the swarm off Mei's stall",
       "kinds": [
         "overlay"
       ],
       "timeout": 10
     },
     {
-      "comment": "-- beat 2: paste print one - gym entrance (attempt_one, unseen branch -> sq_poster_one) --"
+      "comment": "-- beat 2: release the swarm - 'Defend the stall' calls bee_watch/start (tags bw_active, summons 5 bw_mob bees, snapshots baseline) --"
     },
     {
       "interact_npc": "{g.uuid}"
@@ -102,42 +102,13 @@
       "wait_screen": "Dialog"
     },
     {
-      "expect_screen_text": "Watch his loop from my counter"
+      "expect_screen_text": "get between them and me"
     },
     {
-      "screenshot": "mei_posting_run"
+      "screenshot": "mei_defend_prompt"
     },
     {
-      "click": "Slip out and paste print one"
-    },
-    {
-      "wait_no_screen": true
-    },
-    {
-      "sleep": 0.5
-    },
-    {
-      "rcon": "execute if entity @a[name={player},tag=sq_poster_one]",
-      "expect": "passed"
-    },
-    {
-      "wait_chat": "Print one is up",
-      "kinds": [
-        "overlay"
-      ],
-      "timeout": 10
-    },
-    {
-      "comment": "-- beat 3: paste print two - falls overlook (attempt_two -> sq_poster_two) --"
-    },
-    {
-      "interact_npc": "{g.uuid}"
-    },
-    {
-      "wait_screen": "Dialog"
-    },
-    {
-      "click": "Paste print two"
+      "click": "Defend the stall"
     },
     {
       "wait_no_screen": true
@@ -146,51 +117,55 @@
       "sleep": 0.5
     },
     {
-      "rcon": "execute if entity @a[name={player},tag=sq_poster_two]",
+      "rcon": "execute if entity @a[name={player},tag=bw_active]",
       "expect": "passed"
     },
     {
-      "wait_chat": "Print two is up",
-      "kinds": [
-        "overlay"
-      ],
-      "timeout": 10
+      "comment": "-- the swarm is up: confirm 5 angry bees stand at the stall --"
     },
     {
-      "comment": "-- beat 4: paste print three - the bridge mural (attempt_three -> sq_poster_three) --"
+      "rcon": "execute if entity @e[tag=bw_mob,distance=..16]",
+      "expect": "passed"
     },
     {
-      "interact_npc": "{g.uuid}"
+      "screenshot": "bee_swarm_up"
     },
     {
-      "wait_screen": "Dialog"
+      "comment": "-- cull the wave: bw_kills is a player-kill criterion an unattributed rcon kill cannot bump, so advance it to baseline+5 (= bw_spawned reached) and let run_tick fire win --"
     },
     {
-      "click": "Paste print three"
+      "rcon": "scoreboard players operation {player} bw_kills = {player} bw_baseline"
     },
     {
-      "wait_no_screen": true
+      "rcon": "scoreboard players add {player} bw_kills 5"
+    },
+    {
+      "rcon": "kill @e[tag=bw_mob]"
     },
     {
       "sleep": 0.5
     },
     {
-      "rcon": "execute if entity @a[name={player},tag=sq_poster_three]",
+      "comment": "-- run_tick reads kills-since-baseline >= bw_spawned -> win: bw_active removed, bee_watch_cleared set, bossbar hidden --"
+    },
+    {
+      "rcon": "execute if entity @a[name={player},tag=bee_watch_cleared]",
       "expect": "passed"
     },
     {
-      "wait_chat": "Print three is up",
+      "rcon": "execute unless entity @a[name={player},tag=bw_active]",
+      "expect": "passed"
+    },
+    {
+      "wait_chat": "Every bee culled off the stall",
       "kinds": [
-        "overlay"
+        "system",
+        "chat"
       ],
       "timeout": 10
     },
     {
-      "comment": "-- beat 5: clean turn-in (never scolded -> turn_in_clean entry, priority 32) --"
-    },
-    {
-      "rcon": "execute unless entity @a[name={player},tag=sq_poster_scolded]",
-      "expect": "passed"
+      "comment": "-- beat 3: turn-in (bee_watch_cleared -> turn_in entry, priority 31) --"
     },
     {
       "interact_npc": "{g.uuid}"
@@ -200,12 +175,12 @@
     },
     {
       "expect_screen_text": [
-        "Three prints up and he never saw a thing. Not once. You move like ink in water. The pulped slogans read verified trust, verified value — in a voice as flat as the paper deserved.",
+        "Every last one of them, off my prints and out of my hair. You did not flinch — I flinched, and it was not even my swarm. That was a Company hive, smoked out and dumped to teach me a lesson about verified trust and verified value. Lesson declined.",
         "And under board three — you saw it. The old mural. The center figure painted out years ago. Nobody in town remembers commissioning either version. I checked the guild ledger. That page is missing."
       ]
     },
     {
-      "screenshot": "mei_clean_run"
+      "screenshot": "mei_turn_in"
     },
     {
       "click": "Collect your pay"
@@ -221,7 +196,7 @@
       "expect": "passed"
     },
     {
-      "wait_chat": "Never seen once",
+      "wait_chat": "Mei's stall stands over Takehara again",
       "kinds": [
         "overlay"
       ],
@@ -232,7 +207,7 @@
       "expect": "Found"
     },
     {
-      "rcon": "clear {player} cobblemon:heal_ball 0",
+      "rcon": "clear {player} cobblemon:net_ball 0",
       "expect": "Found"
     },
     {

@@ -1,0 +1,27 @@
+{
+  "_comment": "VULCAN — Scorchspire (gym 10, Fire) leader intro. A per-leader copy of leader_intro.json (the shared scene cannot carry a name title), reusing Cicada's relative+facingFrame+endBack:7 camera path VERBATIM so the leader-agnostic dolly still opens the battle from the endBack:7 stage-back via gym/engage_scorchspire_leader. Theme is Fire/forge: blaze + fire ambient into the over-shoulder pull, a lava-pop at the tight zoom-in on Vulcan's face, blaze-burn at the side profile, and the universal levelup swell to close. Particles are anchored ON the leader (uuid b935a014-b7ed-4879-b6cb-f76c2a064a28) via `execute at <uuid>` so flame/lava land on the Forgemaster instead of a challenger-facing guess — flame at the zoom (tick 78), lava at the side-profile cross (tick 96). IN-WORLD TUNING NEEDED: air-verify the flame/lava height (~1 block over the leader) and the zoom-keyframe framing at the real Scorchspire arena; nudge the ~1 particle offset if the leader model floats. endBack 7 MUST match leader_intro so the post-scene battle opens correctly.",
+  "relative": true,
+  "facingFrame": true,
+  "skippable": true,
+  "endBack": 7.0,
+  "startTitle": "§cLeader Vulcan",
+  "startSubtitle": "§4Forgemaster of the Spire §8— §cFire",
+  "keyframes": [
+    { "x": 0.0, "y": 2.5, "z": -4.0, "yaw": 0.0, "pitch": 12.0, "ticks": 30 },
+    { "x": -1.2, "y": 2.2, "z": -8.5, "yaw": 0.0, "pitch": 6.0, "ticks": 45 },
+    { "x": -1.2, "y": 2.2, "z": -8.5, "yaw": 0.0, "pitch": 6.0, "ticks": 20 },
+    { "x": -0.4, "y": 2.6, "z": -6.8, "yaw": 0.0, "pitch": 8.0, "ticks": 18 },
+    { "x": -0.4, "y": 2.6, "z": -6.8, "yaw": 0.0, "pitch": 8.0, "ticks": 30 },
+    { "x": 6.5, "y": 4.5, "z": 1.5, "yaw": -55.0, "pitch": 22.0, "ticks": 50 },
+    { "x": 0.0, "y": 1.0, "z": -6.5, "yaw": 0.0, "pitch": 4.0, "ticks": 40 }
+  ],
+  "cues": [
+    { "tick": 8, "sound": "minecraft:entity.blaze.ambient", "volume": 0.9, "pitch": 0.8 },
+    { "tick": 10, "sound": "minecraft:block.fire.ambient", "volume": 0.5, "pitch": 1.0 },
+    { "tick": 70, "sound": "minecraft:block.lava.pop", "volume": 0.8, "pitch": 0.8 },
+    { "tick": 78, "command": "execute at b935a014-b7ed-4879-b6cb-f76c2a064a28 run particle minecraft:flame ~ ~1 ~ 0.6 0.8 0.6 0.02 32 force" },
+    { "tick": 96, "command": "execute at b935a014-b7ed-4879-b6cb-f76c2a064a28 run particle minecraft:lava ~ ~1 ~ 0.6 0.8 0.6 0.02 32 force" },
+    { "tick": 100, "sound": "minecraft:entity.blaze.burn", "volume": 0.6, "pitch": 1.0 },
+    { "tick": 190, "sound": "minecraft:entity.player.levelup", "volume": 0.6, "pitch": 0.5 }
+  ]
+}

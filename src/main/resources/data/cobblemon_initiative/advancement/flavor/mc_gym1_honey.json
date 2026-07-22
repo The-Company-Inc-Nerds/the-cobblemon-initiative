@@ -1,14 +1,18 @@
 {
   "display": {
-    "icon": { "id": "minecraft:string" },
+    "icon": { "id": "minecraft:glow_berries" },
     "title": { "text": "Takehara Requirement", "color": "gold" },
-    "description": { "text": "Cut String from a cobweb in the falls woods." },
+    "description": { "text": "Gather a Glow Berry and a Spore Blossom from the falls cave." },
     "frame": "task",
     "show_toast": false,
     "announce_to_chat": false,
     "hidden": true
   },
   "parent": "cobblemon_initiative:root",
-  "criteria": { "requirement": { "trigger": "minecraft:inventory_changed", "conditions": { "items": [ { "items": [ "minecraft:string" ] } ] } } },
+  "criteria": {
+    "glow": { "trigger": "minecraft:inventory_changed", "conditions": { "items": [ { "items": [ "minecraft:glow_berries" ] } ] } },
+    "spore": { "trigger": "minecraft:inventory_changed", "conditions": { "items": [ { "items": [ "minecraft:spore_blossom" ] } ] } }
+  },
+  "requirements": [ [ "glow" ], [ "spore" ] ],
   "rewards": { "function": "cobblemon_initiative:flavor/mc/mc_gym1_honey" }
 }

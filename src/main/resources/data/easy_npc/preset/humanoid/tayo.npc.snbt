@@ -46,6 +46,56 @@
                     Priority: 40,
                     Buttons: [
                         {
+                            Name: "Collect the purse",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:sidequest/invitational/disburse"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/reward/major"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/payout_company {amount:600}"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "give @s cobblemon:net_ball 1"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "give @s cobblemon:exp_candy_xs 2"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add invit_podium_done"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "tellraw @initiator [{\"text\":\"Champion purse, counted in the open — and still a little light. Tayo did not say by whom.\",\"color\":\"gray\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_invit_podium_done"
+                                }
+                            ],
+                            Label: "collect_button"
+                        },
+                        {
                             Name: "Run the final back",
                             Actions: [
                                 {
@@ -92,10 +142,17 @@
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "invit_podium_done"
+                                }
+                            ],
                             Label: "rematch_button"
                         },
                         {
-                            Name: "To the podium",
+                            Name: "Thanks, Warden",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -106,10 +163,10 @@
                     ],
                     Texts: [
                         {
-                            Text: "Champion of the Waterside. The liaison at the podium has your envelope — counted, sealed, and smiling about it. The ladder resets weekly if the title needs defending."
+                            Text: "Champion of the Waterside. No podium, no envelope from a man who never showed — the purse is right here, and I count it out where you can see it. The ladder resets weekly if the title needs defending."
                         },
                         {
-                            Text: "The waterside has a new name on the board. Collect your purse at the podium, and mind the smile that hands it to you."
+                            Text: "The waterside has a new name on the board. Take your winnings from my own hand, and a Net Ball for the next one worth landing."
                         }
                     ],
                     Name: "Tayo — the champion",
@@ -194,7 +251,7 @@
                             Text: "Reedhand down, net-mender down. That leaves the desk. Chewtle bites and Krabby has never once let go of anything — the final is the waterside itself, more or less."
                         },
                         {
-                            Text: "Final round, challenger. Win this and the podium is yours, envelope and all."
+                            Text: "Final round, challenger. Win this and the purse is yours — I'll count it out myself, no envelope, no middleman."
                         }
                     ],
                     Name: "Tayo — the final",

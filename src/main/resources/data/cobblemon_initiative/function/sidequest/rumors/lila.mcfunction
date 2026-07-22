@@ -20,9 +20,9 @@ execute if score #rumor quest_hud matches 3 if entity @s[tag=!genji_rod_done] ru
 execute if score #rumor quest_hud matches 4 if entity @s[tag=!defeated_sq_mayor_suits] run tellraw @s [{"text":"Lila, quietly: ","color":"aqua"},{"text":"Two grey suits took the gym stairs this morning. The mayor went up to meet them. He has not come down.","color":"gray"}]
 execute if score #rumor quest_hud matches 4 if entity @s[tag=!defeated_sq_mayor_suits] run scoreboard players set #rumor_hit quest_hud 1
 
-execute if score #rumor quest_hud matches 5 if entity @s[tag=!sting_reward_paid] run tellraw @s [{"text":"Lila, quietly: ","color":"aqua"},{"text":"Tomo out by the Blossom arch has paperwork stapled to his hive trees now. Asset under valuation, it says. The bees have filed their own opinion.","color":"gray"}]
-execute if score #rumor quest_hud matches 5 if entity @s[tag=!sting_reward_paid] run scoreboard players set #rumor_hit quest_hud 1
+execute if score #rumor quest_hud matches 5 if entity @s[tag=!invit_podium_done] run tellraw @s [{"text":"Lila, quietly: ","color":"aqua"},{"text":"Pondwarden Tayo opened the Waterside bracket again — three rounds down at the pond. The Company sent the prize envelope pre-counted this year. He keeps looking at it like it might bite.","color":"gray"}]
+execute if score #rumor quest_hud matches 5 if entity @s[tag=!invit_podium_done] run scoreboard players set #rumor_hit quest_hud 1
 
 # Fallback: the rolled rumor already resolved — name three standing spots instead.
-execute if score #rumor_hit quest_hud matches 0 run tellraw @s [{"text":"Lila, quietly: ","color":"aqua"},{"text":"Slow week for gossip. The usual three still stand — the record board at the falls, the museum dig, and whatever the printmaker is feuding with the canvasser about this time.","color":"gray"}]
+execute if score #rumor_hit quest_hud matches 0 run tellraw @s [{"text":"Lila, quietly: ","color":"aqua"},{"text":"Slow week for gossip. The usual three still stand — the record board at the falls, the museum dig, and whatever is buzzing around the printmaker's stall this week.","color":"gray"}]
 playsound minecraft:item.book.page_turn player @s ~ ~ ~ 1 0.9

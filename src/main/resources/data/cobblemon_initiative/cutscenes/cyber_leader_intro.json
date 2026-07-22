@@ -1,0 +1,27 @@
+{
+  "_comment": "VOLT — Cyber City (gym 7, Electric) leader intro. A per-leader copy of leader_intro.json (the shared scene cannot carry a name title), keeping the SAME relative+facingFrame+endBack:7 chaining so gym/engage/engage_cyber_leader still opens the battle from the endBack stage. Geometry is reused VERBATIM from Cicada (takehara_leader_intro): pull up over the challenger's shoulder, TIGHT ZOOM-IN dolly to the leader's face (the two z:-8.5 -> z:-6.8 close holds), cross high for a side profile, then drop home. Theme is swapped to Electric: note-block bit/chime arpeggio, a lightning-bolt impact crack, and a beacon power-select hum; electric_spark then crit particles burst ON Volt (anchored to his uuid c839f20b-cffb-4103-87cc-cf57525a5ae7 via `execute at <uuid>`, so placement lands on the leader instead of the challenger-facing guess). startTitle names him. IN-WORLD TUNING MAY BE NEEDED: air-verify the particle burst height (~1 above the leader eye) and the zoom-keyframe framing at the real Cyber City arena and nudge if the grid stage sits high/low. endBack 7 MUST match leader_intro so the post-scene battle opens correctly.",
+  "relative": true,
+  "facingFrame": true,
+  "skippable": true,
+  "endBack": 7.0,
+  "startTitle": "§eLeader Volt",
+  "startSubtitle": "§6Gridmaster of Cyber City §8— §eElectric",
+  "keyframes": [
+    { "x": 0.0, "y": 2.5, "z": -4.0, "yaw": 0.0, "pitch": 12.0, "ticks": 30 },
+    { "x": -1.2, "y": 2.2, "z": -8.5, "yaw": 0.0, "pitch": 6.0, "ticks": 45 },
+    { "x": -1.2, "y": 2.2, "z": -8.5, "yaw": 0.0, "pitch": 6.0, "ticks": 20 },
+    { "x": -0.4, "y": 2.6, "z": -6.8, "yaw": 0.0, "pitch": 8.0, "ticks": 18 },
+    { "x": -0.4, "y": 2.6, "z": -6.8, "yaw": 0.0, "pitch": 8.0, "ticks": 30 },
+    { "x": 6.5, "y": 4.5, "z": 1.5, "yaw": -55.0, "pitch": 22.0, "ticks": 50 },
+    { "x": 0.0, "y": 1.0, "z": -6.5, "yaw": 0.0, "pitch": 4.0, "ticks": 40 }
+  ],
+  "cues": [
+    { "tick": 8, "sound": "minecraft:block.note_block.bit", "volume": 0.9, "pitch": 1.4 },
+    { "tick": 10, "sound": "minecraft:block.note_block.chime", "volume": 0.5, "pitch": 1.6 },
+    { "tick": 70, "sound": "minecraft:entity.lightning_bolt.impact", "volume": 0.7, "pitch": 1.4 },
+    { "tick": 78, "command": "execute at c839f20b-cffb-4103-87cc-cf57525a5ae7 run particle minecraft:electric_spark ~ ~1 ~ 0.6 0.8 0.6 0.02 32 force" },
+    { "tick": 96, "command": "execute at c839f20b-cffb-4103-87cc-cf57525a5ae7 run particle minecraft:crit ~ ~1 ~ 0.6 0.8 0.6 0.02 32 force" },
+    { "tick": 100, "sound": "minecraft:block.beacon.power_select", "volume": 0.6, "pitch": 1.2 },
+    { "tick": 190, "sound": "minecraft:entity.player.levelup", "volume": 0.6, "pitch": 0.5 }
+  ]
+}

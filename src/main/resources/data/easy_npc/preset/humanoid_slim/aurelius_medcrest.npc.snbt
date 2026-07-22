@@ -102,6 +102,9 @@
                                 {
                                     Type: "COMMAND",
                                     Cmd: "loot give @initiator loot cobblemon_initiative:npc_gift/clinic_rx"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
                                 }
                             ],
                             Label: "rx_button"
@@ -158,6 +161,9 @@
                                 {
                                     Type: "COMMAND",
                                     Cmd: "loot give @initiator loot cobblemon_initiative:npc_gift/clinic_rx"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
                                 }
                             ],
                             Label: "rx_button"
@@ -214,94 +220,250 @@
                     Priority: 20,
                     Buttons: [
                         {
-                            Name: "Hand over 8 oran berries",
+                            Name: "Hand over the berries (1 oran, 1 pecha, 1 cheri)",
                             Actions: [
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "cobblemon-initiative turnin cobblemon:oran_berry 8 clinic_oran_in"
-                                }
-                            ],
-                            Conditions: [
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "no_clinic_oran_in"
-                                }
-                            ],
-                            Label: "oran_button"
-                        },
-                        {
-                            Name: "Hand over 4 pecha berries",
-                            Actions: [
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_clinic_oran_in"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "cobblemon-initiative turnin cobblemon:oran_berry 1 clinic_oran_in"
+                                },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "cobblemon-initiative turnin cobblemon:pecha_berry 4 clinic_pecha_in"
-                                }
-                            ],
-                            Conditions: [
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "no_clinic_pecha_in"
-                                }
-                            ],
-                            Label: "pecha_button"
-                        },
-                        {
-                            Name: "Hand over 2 cheri berries",
-                            Actions: [
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_clinic_pecha_in"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "cobblemon-initiative turnin cobblemon:pecha_berry 1 clinic_pecha_in"
+                                },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "cobblemon-initiative turnin cobblemon:cheri_berry 2 clinic_cheri_in"
-                                }
-                            ],
-                            Conditions: [
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "no_clinic_cheri_in"
-                                }
-                            ],
-                            Label: "cheri_button"
-                        },
-                        {
-                            Name: "Take the clinic bundle",
-                            Actions: [
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_clinic_cheri_in"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "cobblemon-initiative turnin cobblemon:cheri_berry 1 clinic_cheri_in"
+                                },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "clinic_oran_in"
+                                            },
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "clinic_pecha_in"
+                                            },
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "clinic_cheri_in"
+                                            },
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_clinic_stocked"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "give @s cobblemon:potion 4"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "clinic_oran_in"
+                                            },
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "clinic_pecha_in"
+                                            },
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "clinic_cheri_in"
+                                            },
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_clinic_stocked"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "give @s cobblemon:antidote 2"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "clinic_oran_in"
+                                            },
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "clinic_pecha_in"
+                                            },
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "clinic_cheri_in"
+                                            },
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_clinic_stocked"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "give @s cobblemon:x_defence 1"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "clinic_oran_in"
+                                            },
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "clinic_pecha_in"
+                                            },
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "clinic_cheri_in"
+                                            },
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_clinic_stocked"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "function cobblemon_initiative:economy/reward/minor"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "clinic_oran_in"
+                                            },
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "clinic_pecha_in"
+                                            },
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "clinic_cheri_in"
+                                            },
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_clinic_stocked"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "function cobblemon_initiative:economy/payout {amount:250}"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "clinic_oran_in"
+                                            },
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "clinic_pecha_in"
+                                            },
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "clinic_cheri_in"
+                                            },
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_clinic_stocked"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "tag @s add clinic_stocked"
                                 },
                                 {
                                     Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "clinic_oran_in"
+                                            },
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "clinic_pecha_in"
+                                            },
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "clinic_cheri_in"
+                                            },
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_clinic_stocked"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "title @initiator actionbar [{\"text\":\"The clinic is stocked. A daily prescription is open in your name.\",\"color\":\"green\"}]"
                                 },
                                 {
@@ -313,25 +475,10 @@
                                 {
                                     Type: "PLAYER_TAG",
                                     Operation: "EQUALS",
-                                    Name: "clinic_oran_in"
-                                },
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "clinic_pecha_in"
-                                },
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "clinic_cheri_in"
-                                },
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
                                     Name: "no_clinic_stocked"
                                 }
                             ],
-                            Label: "bundle_button"
+                            Label: "handin_button"
                         },
                         {
                             Name: "Heal my team - posted rate",
@@ -360,10 +507,10 @@
                     ],
                     Texts: [
                         {
-                            Text: "The list again, so we are exact: eight oran, four pecha, two cheri. The trees stand along Blossom Path — the road decides how easy it makes them. Bring what you have; the shelf takes berries in any order."
+                            Text: "The list again, so we are exact: one oran, one pecha, one cheri. The trees stand along Blossom Path — the road decides how easy it makes them. Bring what you have; the shelf takes berries in any order."
                         },
                         {
-                            Text: "Every bruise on a depot berry costs somebody a battle someday. Yours will be fresher by definition. Eight oran, four pecha, two cheri."
+                            Text: "Every bruise on a depot berry costs somebody a battle someday. Yours will be fresher by definition. One oran, one pecha, one cheri."
                         }
                     ],
                     Name: "Dr. Asha — the supply list",
@@ -434,7 +581,7 @@
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "title @initiator actionbar [{\"text\":\"Forage Blossom Path: 8 oran, 4 pecha, 2 cheri berries for the clinic.\",\"color\":\"yellow\"}]"
+                                    Cmd: "title @initiator actionbar [{\"text\":\"Forage Blossom Path: 1 oran, 1 pecha, 1 cheri berry for the clinic.\",\"color\":\"yellow\"}]"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -454,7 +601,7 @@
                     ],
                     Texts: [
                         {
-                            Text: "My supplier ran this coast for twenty years. Then the contract was consolidated for verification, deliveries route through a regional depot now, and my orans arrive bruised and four percent more expensive. Nothing illegal has occurred — that is the maddening part. If you walk Blossom Path anyway, bring me eight oran berries, four pecha, and two cheri, and I will brew this clinic back onto its feet. The road has teeth after the town gate — go prepared or not at all."
+                            Text: "My supplier ran this coast for twenty years. Then the contract was consolidated for verification, deliveries route through a regional depot now, and my orans arrive bruised and four percent more expensive. Nothing illegal has occurred — that is the maddening part. If you walk Blossom Path anyway, bring me one oran berry, one pecha, and one cheri, and I will brew this clinic back onto its feet. The road has teeth after the town gate — go prepared or not at all."
                         }
                     ],
                     Name: "Dr. Asha — consolidated for verification",

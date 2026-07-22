@@ -131,8 +131,7 @@ execute if entity @s[tag=hz_survey_active,tag=hz_saw_pitch,tag=hz_saw_granary,ta
 # only while the quest is started-and-not-done. All conditions are read-only derivations
 # from tags/scores the quests already latch — no new state.
 # SKIPPED (no accept latch before completion): Out of Office (Genji rod: walk-up string
-# turn-in, only latch is genji_rod_done), Work Orders INVENTORY + THE CUTTING (walk-up
-# turn-ins, only latches are work_fetch_done / work_mine_done). Grain Survey already rides
+# turn-in, only latch is genji_rod_done). Grain Survey already rides
 # q.side_survey at 76 above.  (Performance Review gym-1 stealth meta REMOVED 2026-07-07.)
 
 # Cascade Ascent (Shou's board at the falls): live-run pointer only — free retries mean no
@@ -148,27 +147,11 @@ scoreboard players reset q.side_classic ci_quest
 execute if entity @s[tag=classic_active,tag=!sango_classic_champion] run scoreboard players set q.side_classic ci_quest 72
 execute if score q.side_classic ci_quest matches 72 run scoreboard players display name q.side_classic ci_quest [{"text":"• Three fish before the bar empties","color":"gray"}]
 
-# Roadside Work Orders — NIGHT SHIFT (the one contract with an accept latch). Staged text:
-# cull while on shift, collect once the quota latches; off when Tetsu pays.
-scoreboard players reset q.side_shift ci_quest
-execute if entity @s[tag=work_night_active,tag=!work_night_paid] run scoreboard players set q.side_shift ci_quest 71
-execute if entity @s[tag=work_night_active,tag=!work_night_paid] run scoreboard players display name q.side_shift ci_quest [{"text":"• Cull eight on Blossom Path tonight","color":"gray"}]
-execute if entity @s[tag=work_night_done,tag=!work_night_paid] run scoreboard players set q.side_shift ci_quest 71
-execute if entity @s[tag=work_night_done,tag=!work_night_paid] run scoreboard players display name q.side_shift ci_quest [{"text":"• Collect night pay from Tetsu","color":"gray"}]
-
 # Natural History (Kenji's museum): brush in hand (sq_museum_brush) until the donation
 # case closes (sq_museum_donation_done).
 scoreboard players reset q.side_bones ci_quest
 execute if entity @s[tag=sq_museum_brush,tag=!sq_museum_donation_done] run scoreboard players set q.side_bones ci_quest 70
 execute if entity @s[tag=sq_museum_brush,tag=!sq_museum_donation_done] run scoreboard players display name q.side_bones ci_quest [{"text":"• Six bones complete the exhibit","color":"gray"}]
-
-# Per My Last Memo (Blossom Path checkpoint): eavesdrop leg from the approach warn
-# (ckpt_warned), delivery leg once Memo 44-C is in hand (either path), off when Lucian files it.
-scoreboard players reset q.side_memo ci_quest
-execute if entity @s[tag=ckpt_warned,tag=!memo_heard] run scoreboard players set q.side_memo ci_quest 69
-execute if entity @s[tag=ckpt_warned,tag=!memo_heard] run scoreboard players display name q.side_memo ci_quest [{"text":"• Ears on the checkpoint tent","color":"gray"}]
-execute if entity @s[tag=memo_heard,tag=!memo_delivered] if score @s ci_papers_held matches ..1 run scoreboard players set q.side_memo ci_quest 69
-execute if entity @s[tag=memo_heard,tag=!memo_delivered] if score @s ci_papers_held matches ..1 run scoreboard players display name q.side_memo ci_quest [{"text":"• Bring Memo 44-C to Lucian","color":"gray"}]
 
 # No Such Recipient (Marlow's dead letter): carry leg, then the report-back leg — delivered
 # or surrendered, both end at Marlow (marlow_thanks_done).
@@ -194,22 +177,27 @@ execute if entity @s[tag=sold_docs] run scoreboard players display name q.side_f
 execute if entity @s[tag=notices_filed,tag=defeated_villain_boss,tag=!file_refiled] run scoreboard players set q.side_file ci_quest 67
 execute if entity @s[tag=notices_filed,tag=defeated_villain_boss,tag=!file_refiled] run scoreboard players display name q.side_file ci_quest [{"text":"• The file can close — see Lucian","color":"gray"}]
 
-# Off the Record (Lucian's quiet errands): from the first satchel to the debrief.
+# Off the Record (note 11 rework): after the third badge, clear the four Company agents
+# working the Sango lanes — Tunde (field), Musa (cart), and the two square auditors Bomani +
+# Jelani — each despawns when beaten (defeated_offrec_{tunde,musa,bomani,jelani}). NOT Binta
+# the surveyor. One shared line/label; it lights while ANY of the four still stands and hides
+# once all four defeat tags are set. badges_gte_3 is the band tag maintained by
+# dialog/band_tags from memory_fragment.
 scoreboard players reset q.side_offrec ci_quest
-execute if entity @s[tag=off_record_started,tag=!off_record_complete] run scoreboard players set q.side_offrec ci_quest 66
-execute if entity @s[tag=off_record_started,tag=!off_record_complete] run scoreboard players display name q.side_offrec ci_quest [{"text":"• Quiet errands for Lucian","color":"gray"}]
+execute if entity @s[tag=badges_gte_3,tag=!defeated_offrec_tunde] run scoreboard players set q.side_offrec ci_quest 66
+execute if entity @s[tag=badges_gte_3,tag=!defeated_offrec_tunde] run scoreboard players display name q.side_offrec ci_quest [{"text":"• Clear the four Company agents","color":"gray"}]
+execute if entity @s[tag=badges_gte_3,tag=!defeated_offrec_musa] run scoreboard players set q.side_offrec ci_quest 66
+execute if entity @s[tag=badges_gte_3,tag=!defeated_offrec_musa] run scoreboard players display name q.side_offrec ci_quest [{"text":"• Clear the four Company agents","color":"gray"}]
+execute if entity @s[tag=badges_gte_3,tag=!defeated_offrec_bomani] run scoreboard players set q.side_offrec ci_quest 66
+execute if entity @s[tag=badges_gte_3,tag=!defeated_offrec_bomani] run scoreboard players display name q.side_offrec ci_quest [{"text":"• Clear the four Company agents","color":"gray"}]
+execute if entity @s[tag=badges_gte_3,tag=!defeated_offrec_jelani] run scoreboard players set q.side_offrec ci_quest 66
+execute if entity @s[tag=badges_gte_3,tag=!defeated_offrec_jelani] run scoreboard players display name q.side_offrec ci_quest [{"text":"• Clear the four Company agents","color":"gray"}]
 
 # First Night Watch (Firstfurrow): the lantern note is open from liberation (farm_1_free —
 # set by the night_watch tick bridge) until dawn breaks on a held watch (first_watch_done).
 scoreboard players reset q.side_watch ci_quest
 execute if entity @s[tag=farm_1_free,tag=!first_watch_done] run scoreboard players set q.side_watch ci_quest 65
 execute if entity @s[tag=farm_1_free,tag=!first_watch_done] run scoreboard players display name q.side_watch ci_quest [{"text":"• Light the gate lantern at dusk","color":"gray"}]
-
-# Quarterly Sprint (Courier Mio): live-run pointer only — free retries, no accept latch;
-# rides ci_sprinting until the first bell (race_won).
-scoreboard players reset q.side_sprint ci_quest
-execute if entity @s[tag=ci_sprinting,tag=!race_won] run scoreboard players set q.side_sprint ci_quest 64
-execute if entity @s[tag=ci_sprinting,tag=!race_won] run scoreboard players display name q.side_sprint ci_quest [{"text":"• Ring the bell at the Takehara arch","color":"gray"}]
 
 # Greenspace 7, Under-Performing (Hua Zhan gym gate): draft leg from the approach note —
 # eavesdrop, tray, or post-defeat all land yield_report_taken — then the Lucian filing leg.
@@ -219,23 +207,30 @@ execute if entity @s[tag=audit_warned,tag=!yield_report_taken] run scoreboard pl
 execute if entity @s[tag=yield_report_taken,tag=!scrub_report_filed] if score @s ci_papers_held matches ..1 run scoreboard players set q.side_audit ci_quest 63
 execute if entity @s[tag=yield_report_taken,tag=!scrub_report_filed] if score @s ci_papers_held matches ..1 run scoreboard players display name q.side_audit ci_quest [{"text":"• File the yield report with Lucian","color":"gray"}]
 
-# Sting Operation (Beekeeper Tomo): the seal walk, from the first confirm (sting_seal_1)
-# to the payout (sting_reward_paid).
-scoreboard players reset q.side_sting ci_quest
-execute if entity @s[tag=sting_seal_1,tag=!sting_reward_paid] run scoreboard players set q.side_sting ci_quest 62
-execute if entity @s[tag=sting_seal_1,tag=!sting_reward_paid] run scoreboard players display name q.side_sting ci_quest [{"text":"• Walk the four seals with Tomo","color":"gray"}]
+# The Falls Cave (Cicada's gym-1 gate, note 14): logged when the player accepts the errand
+# (takehara_cave_started), clears when both items land (mc_gym1_done).
+scoreboard players reset q.side_takehara_cave ci_quest
+execute if entity @s[tag=takehara_cave_started,tag=!mc_gym1_done] run scoreboard players set q.side_takehara_cave ci_quest 49
+execute if entity @s[tag=takehara_cave_started,tag=!mc_gym1_done] run scoreboard players display name q.side_takehara_cave ci_quest [{"text":"• Gather a Glow Berry and a Spore Blossom","color":"gray"}]
 
-# Notice of Non-Compliance (Mei's moth prints): from the glue objection (sq_posters_started)
-# to the pasted-up payout (sq_posters_done).
+# Waterside Invitational (Pondwarden Tayo's bracket, note 7): step the marker up the ladder,
+# lowest progress first so the highest-progress line wins the last write. Ends at the on-the-spot
+# collect from Tayo (note 10 moved the purse off the liaison podium).
+scoreboard players reset q.side_invit ci_quest
+execute if entity @s[tag=invit_entered,tag=!defeated_sq_bracket_1] run scoreboard players set q.side_invit ci_quest 48
+execute if entity @s[tag=invit_entered,tag=!defeated_sq_bracket_1] run scoreboard players display name q.side_invit ci_quest [{"text":"• Round one — beat Reedhand Lumo","color":"gray"}]
+execute if entity @s[tag=defeated_sq_bracket_1,tag=!defeated_sq_bracket_2] run scoreboard players set q.side_invit ci_quest 48
+execute if entity @s[tag=defeated_sq_bracket_1,tag=!defeated_sq_bracket_2] run scoreboard players display name q.side_invit ci_quest [{"text":"• Round two — beat Net-Mender Kima","color":"gray"}]
+execute if entity @s[tag=defeated_sq_bracket_2,tag=!defeated_sq_bracket_3] run scoreboard players set q.side_invit ci_quest 48
+execute if entity @s[tag=defeated_sq_bracket_2,tag=!defeated_sq_bracket_3] run scoreboard players display name q.side_invit ci_quest [{"text":"• Final round — beat Pondwarden Tayo","color":"gray"}]
+execute if entity @s[tag=defeated_sq_bracket_3,tag=!invit_podium_done] run scoreboard players set q.side_invit ci_quest 48
+execute if entity @s[tag=defeated_sq_bracket_3,tag=!invit_podium_done] run scoreboard players display name q.side_invit ci_quest [{"text":"• Collect your purse from Pondwarden Tayo","color":"gray"}]
+
+# Notice of Non-Compliance (Mei's stall, note 25 — now a bee-swarm defense): from accepting
+# the watch (sq_posters_started) to the paid turn-in (sq_posters_done).
 scoreboard players reset q.side_posters ci_quest
 execute if entity @s[tag=sq_posters_started,tag=!sq_posters_done] run scoreboard players set q.side_posters ci_quest 61
-execute if entity @s[tag=sq_posters_started,tag=!sq_posters_done] run scoreboard players display name q.side_posters ci_quest [{"text":"• Paste three moth prints unseen","color":"gray"}]
-
-# Head Count (Ume's census): from the accepted pitch (census_accepted) to the receipt
-# (census_paid — the payee line still reads UNVERIFIED).
-scoreboard players reset q.side_census ci_quest
-execute if entity @s[tag=census_accepted,tag=!census_paid] run scoreboard players set q.side_census ci_quest 60
-execute if entity @s[tag=census_accepted,tag=!census_paid] run scoreboard players display name q.side_census ci_quest [{"text":"• Log a verified capture for Ume","color":"gray"}]
+execute if entity @s[tag=sq_posters_started,tag=!sq_posters_done] run scoreboard players display name q.side_posters ci_quest [{"text":"• Stand off the swarm at Mei's stall","color":"gray"}]
 
 # Tenants of Record (the Deng camp): from farm_1 liberation (farm_1_free bridge latch)
 # until the homecoming pays out at Old Deng (homecoming_paid).
@@ -265,7 +260,7 @@ execute if entity @s[tag=took_route_manifest,tag=!manifest_paid] if score @s ci_
 # until the bundle lands (clinic_stocked). The daily rx that follows is a walk-up, untracked.
 scoreboard players reset q.side_clinic ci_quest
 execute if entity @s[tag=clinic_supply_started,tag=!clinic_stocked] run scoreboard players set q.side_clinic ci_quest 57
-execute if entity @s[tag=clinic_supply_started,tag=!clinic_stocked] run scoreboard players display name q.side_clinic ci_quest [{"text":"• Clinic list: 8 oran, 4 pecha, 2 cheri","color":"gray"}]
+execute if entity @s[tag=clinic_supply_started,tag=!clinic_stocked] run scoreboard players display name q.side_clinic ci_quest [{"text":"• Clinic list: 1 oran, 1 pecha, 1 cheri","color":"gray"}]
 
 # FILING DAY aggregate (slot 75 — the formerly-vacant hole between survey 76 and prices 74):
 # when the player is carrying TWO OR MORE unfiled Company papers (ci_papers_held, recomputed

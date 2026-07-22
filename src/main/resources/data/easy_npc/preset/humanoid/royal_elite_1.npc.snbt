@@ -87,19 +87,6 @@
                                 },
                                 {
                                     Type: "COMMAND",
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_defeated_royal_elite_1"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tbcs attach rctmod:royal_elite_1 @s"
-                                },
-                                {
-                                    Type: "COMMAND",
                                     ExecAsUser: 1b,
                                     ConditionDataSet: {
                                         ConditionDataSet: [
@@ -110,7 +97,7 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:royal_elite_1 onwin {1: ['cobbledollars give @1 5000', 'tag @1 add defeated_royal_elite_1', '@2 say Shadows test the nerve before the mind. Yours did not flinch. Go on to Marcus.'], 2: ['@1 say The dark found the gap in your team. Mend it, and return when your nerve is whole.']}"
+                                    Cmd: "cutscene play royal_elite_1_intro function cobblemon_initiative:gym/engage_royal_elite_1"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

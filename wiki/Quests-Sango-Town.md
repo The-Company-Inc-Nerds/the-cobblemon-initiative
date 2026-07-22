@@ -7,7 +7,7 @@
 **Status:** ✅ Done · 🚧 WIP (partial) · ❌ Not yet implemented — as of the 2026-07-21 audit.
 
 > [!WARNING]
-> **Spoilers — Act I Company presence, and one Act II gate.** Most Sango quests only show The Company's polite face. Two sections go further: **The Incomplete File** describes a stage that only unlocks in **Act II** (and a choice that can permanently lock you out of it), and **No Such Recipient** / **Per My Last Memo** brush the Act I erasure mystery. Those sections carry their own callouts.
+> **Spoilers — Act I Company presence, and one Act II gate.** Most Sango quests only show The Company's polite face. Two sections go further: **The Incomplete File** describes a stage that only unlocks in **Act II** (and a choice that can permanently lock you out of it), and **No Such Recipient** brushes the Act I erasure mystery. Those sections carry their own callouts.
 
 > [!NOTE]
 > **How quest pay works.** Most quest payments print a receipt with a rate line — the **Verified Rate**. As the CobbleDollar index destabilizes (every early gym badge shakes it; every liberated field steadies it), the rate falls as low as **75% of face value**. Battle prize money is always paid **in full**. Rewards below are marked *(Verified Rate)* or *(flat)* accordingly. Most receipts carry no letterhead; when The Company itself pays you, the receipt does — and those are called out.
@@ -33,12 +33,12 @@ Several quests pay a training pack on top of cash. The tiers:
 | Dex-Unlock Partners | Prof. Acacia | no | one-time | yes |
 | The Lane Looks After Its Own | Oma | no | one-time | yes |
 | Pending Review | Imani (census desk) | no | one-time | no |
-| Off the Record | Lucian Scrollkeeper | no | one-time | yes |
+| Off the Record | Lucian Scrollkeeper | 4 battles | one-time | yes |
 | The Incomplete File | Lucian Scrollkeeper | no | one-time | yes |
 | No Such Recipient | Uncle Marlow | optional | one-time | yes |
 | The Sango Classic (derby) | Deka | no | re-enterable | yes |
 | Long-Term Growth Vehicle | Deka | no | one-time | no |
-| The Waterside Invitational | Pondwarden Tayo | 3 rounds | purse one-time | no |
+| The Waterside Invitational | Pondwarden Tayo | 3 rounds | purse one-time | yes |
 | In-Kind Exchange | Old Sefu | no | one-time | no |
 | Adjunct Faculty | Miri & Raan | no | one-time | no |
 | Preferred Provider (clinic) | Dr. Asha | no | mixed | yes |
@@ -105,7 +105,7 @@ Several quests pay a training pack on top of cash. The tiers:
 **How it starts:** Talk to Oma and press **"Take the basket."**
 
 ### Walkthrough
-1. **Deliver bread to Fara** by the noticeboard [2632 112 2806]. She plants a small worry: her change came up one coin short at the market.
+1. **Deliver bread to Fara** at her spot on the lane [2632 112 2806]. She plants a small worry: her change came up one coin short at the money changer.
 2. **Deliver to Kele at the water.** He offers a **free Eevee (Lv 5) with a boosted 1/20 shiny chance** — a foundling kit the lane can't keep, *"a hundred shapes sleeping in one small fox."* Optional; you can take just the bread.
 3. **Deliver to Dakarai at the end house.** He presses **400 CD** (flat) into your hand.
 4. **Return to Oma at the west gate:** *"Accept the care package."*
@@ -143,21 +143,24 @@ Several quests pay a training pack on top of cash. The tiers:
 
 ---
 
-## Off the Record — Lucian's stealth errands
+## Off the Record — clearing the Company's lane crew
 
-> **Giver:** Lucian Scrollkeeper, Sango lane between the lab and the west gate [2626.5 118 2776.5] — a quiet **"A word, off the record?"** button on his menu · **No battles, no damage — ever** · **One-time** · HUD-tracked
+> **Giver:** Lucian Scrollkeeper, Sango lane between the lab and the west gate [2626.5 118 2776.5] — a quiet **"A word, off the record?"** button on his menu · **4 battles** · **One-time** · HUD-tracked
 
-**How it starts:** Take the ledger satchel from Lucian. Two Company **auditors** (**Bomani** and **Jelani**, in Company grunt greys) patrol crossing sight-cones around the census desk — their **sightlines are real**, and being seen only puts an entry "on the record." Break line of sight with buildings and crouch. *(Since 0.5.0-alpha.4 Lucian offers this errand right after you file the Incomplete File, while under three badges — no longer buried.)*
+**How it starts:** After your **third gym badge**, Lucian has had enough of the grey suits working the Sango lanes. He asks you, off the record, to run **four Company agents** out of town. You battle each one; a defeated agent packs up and despawns for good.
 
 ### Walkthrough
-1. **Errand 1:** carry the **ledger satchel to Oma at her fence** without an auditor logging you. Each sighting flashes *OBSERVATION LOGGED* (a few seconds' grace between logs, zero damage). Hand over: **caught 2 times or fewer pays 250 CD** *(Verified Rate)*; **3+ sightings pays 125 CD** — half the quiet money, fail-soft only.
-2. **Errand 2:** Oma immediately hands you the **bread basket** — carry it to **Fara by the noticeboard** [2632 112 2806], same stealth rules. Pays in kind: **3 Bread + 4 Oran Berries**.
-3. **Errand 3 — the inversion:** walk up to an auditor and be logged **on purpose**. The *"Stand and be counted"* button only unlocks while an auditor actually has eyes on you. Result: *"LOGGED AS: local resident. Unremarkable. Cleared."*
-4. **Debrief at Lucian:** *"Collect — off the record."*
+1. **Tunde** — working the wheat field. Beat him and he clears out.
+2. **Musa** — the courier at the cart. Beat him and the cart empties.
+3. **The square auditors — Bomani and Jelani** — the two grey suits who patrol the census desk. Beat each in turn; both leave for good.
+4. **Debrief at Lucian:** with all four gone, press *"Collect — off the record."*
 
 ### Rewards
 - Debrief: **300 CD** *(Verified Rate)* + **standard pack**, always.
-- **Clean-sweep bonus:** if you were **never once seen** across both carries — **1× Heal Ball** and the *OFF THE RECORD* title card. Getting spotted downgrades the praise, never the money.
+- **Clean-sweep bonus:** clear all four and Lucian hands over the *OFF THE RECORD* title card.
+
+> [!NOTE]
+> The surveyor **Binta** is **not** part of this quest — she stays the Company's watcher for [The Incomplete File](#the-incomplete-file--lucians-personnel-file) stealth stage.
 
 ---
 
@@ -232,7 +235,7 @@ flowchart TD
 
 ### Current rules
 - Entry: **150 CD** per attempt.
-- Timer: **120 seconds** (a notched "THE SANGO CLASSIC" bossbar, with warnings at 60/30/10 s).
+- Timer: **95 seconds** — about a minute and a half (a notched "THE SANGO CLASSIC" bossbar, with warnings at 60/30/10 s).
 - Goal: hand in **3 fish** before the bar empties. **Cod, salmon, pufferfish, and tropical fish all count**, in any mix.
 - The count is taken **from your inventory at hand-in**, not at the moment of catch — return to Deka while the timer runs and press *"Hand in the catch."* Fewer than 3 shows your count and lets you keep casting.
 - A win removes **exactly 3 fish** (cod first, then salmon, pufferfish, tropical).
@@ -246,7 +249,7 @@ flowchart TD
 | **Timeout** | Lose only the entry fee; free re-entry, zero damage |
 
 > [!NOTE]
-> The entry fee comes out of whatever you have — your balance stops at zero, it never goes negative. The champion's **Heal Ball** is deliberately *not* here; it sits at the [Invitational](#the-waterside-invitational--the-pondside-tournament) podium.
+> The entry fee comes out of whatever you have — your balance stops at zero, it never goes negative. The champion's bonus ball is deliberately *not* here; the [Invitational](#the-waterside-invitational--the-pondside-tournament) hands out a **Net Ball**.
 
 ---
 
@@ -269,7 +272,7 @@ flowchart TD
 
 ## The Waterside Invitational — the pondside tournament
 
-> **Giver:** Pondwarden Tayo at the waterside signup desk; barked around the pond by **Kofi**, the wandering crier · **3 battle rounds** · **Purse one-time; the final is refightable** · Not HUD-tracked — remember your bracket position yourself
+> **Giver:** Pondwarden Tayo at the waterside signup desk; barked around the pond by **Kofi**, the wandering crier · **3 battle rounds** · **Purse one-time; the final is refightable** · HUD-tracked
 >
 > *Reskinned in 0.5.0-alpha.4: Sango is savanna, so the "shorefront/docks/harbour" dressing became a pondside lakeshow — Harbourmaster Tayo → **Pondwarden Tayo**, Dockhand Lumo → **Reedhand Lumo**. The event stays in Sango (it is level-locked to Act 1); a separate cap-58 Gaviota fishing hub is planned later.*
 
@@ -280,16 +283,16 @@ flowchart TD
 |:-----:|----------|------|:--------------:|
 | 1 | Reedhand **Lumo** — first along the bank [2604 110 2822] | Wingull Lv 8, Magikarp Lv 9 | 100 CD |
 | 2 | Net-Mender **Kima** — mid-bank | Corphish Lv 10, Shellos Lv 11 | 150 CD |
-| Final | Pondwarden **Tayo** | Tentacool Lv 12, Krabby Lv 13 | 0 — the purse is at the podium |
+| Final | Pondwarden **Tayo** | Tentacool Lv 12, Krabby Lv 13 | the champion purse (below) |
 
-### The podium
-Collect the champion purse from **Company Liaison Tunde** — who could not be bothered to attend the podium and stands instead at the field fence at the edge of town [2581 111 2822]. Press **"Accept the envelope"**:
+### The champion purse
+Beat Tayo in the final and he pays out **on the spot** — no envelope to collect, no podium, no liaison to chase across town. Press **"Take the champion purse"** right there at the pondside:
 
-- **Major pack** + **600 CD** paid on **Company letterhead** + **1 Heal Ball** + **2 Exp. Candy XS**.
-- The envelope arrives *"exactly three percent light."* That is not a joke line — it is the Verified Rate landing on a Company payout, visibly.
+- **Major pack** + **600 CD** paid on **Company letterhead** + **1 Net Ball** + **2 Exp. Candy XS**.
+- The purse arrives *"exactly three percent light."* That is not a joke line — it is the Verified Rate landing on a Company payout, visibly.
 
 ### Choices & notes
-- Asking Tunde *"The envelope was light"* earns a perfectly circular non-explanation.
+- Asking Tayo *"The purse was light"* earns a perfectly circular non-explanation.
 - Tayo will *"Run the final back"* any time (weekly-ladder flavor) — refightable, but the purse is claimed once.
 - Walk away whenever you like — *"the water does not hold grudges and neither does the bracket"* — but the entry is not refunded.
 - All three rounds sit at Lv 8–13, comfortably under the starting cap of 15.
@@ -330,14 +333,14 @@ Two independent fetch quests. Their grant *"went in for verification and came ba
 
 ## Preferred Provider — Dr. Asha's clinic
 
-> **Giver:** Dr. Asha, the Sango clinic [2677.5 118 2931.5], up the way from the lab · **No battles** · **Supply run one-time; prescription daily; heals repeatable** · HUD line: *"Clinic list: 8 oran, 4 pecha, 2 cheri"*
+> **Giver:** Dr. Asha, the Sango clinic [2677.5 118 2931.5], up the way from the lab · **No battles** · **Supply run one-time; prescription daily; heals repeatable** · HUD line: *"Clinic list: 1 oran, 1 pecha, 1 cheri"*
 
 **How it starts:** Talk to Dr. Asha, *"Ask about the empty shelf"* (her supplier was "consolidated for verification"), then *"I will gather the berries."* Healing is available from the very first conversation.
 
 ### Walkthrough
 1. **Healing (always):** *"Heal my team — 100 CD."* Full party heal, flat fee. This one **is** balance-checked: an empty wallet gets *"Payment declined. The Center does not extend credit."* and no heal.
-2. **Supply run:** forage **Blossom Path** for **8 Oran + 4 Pecha + 2 Cheri berries**. Hand in each stack at its own button, any order.
-3. **"Take the clinic bundle"** once all three are shelved.
+2. **Supply run:** forage **Blossom Path** for **1 Oran + 1 Pecha + 1 Cheri berry** — one of each. Hand all three in with a single button.
+3. **"Take the clinic bundle"** once the berries are shelved.
 4. **Daily prescription:** stocking the shelf unlocks *"Collect the daily prescription"* — **1 Potion per day**, forever. This is the run's only sanctioned daily item drip.
 
 ### Rewards
@@ -379,14 +382,16 @@ Baseline day-one stock and prices:
 
 | Item | Price (CD) |
 |------|:----------:|
-| Poké Ball (and cosmetic variants — Citrine/Verdant/Azure/Roseate/Slate/Premier/Cherish) | 2,000 |
-| Heal Ball | 3,000 |
+| Poké Ball | 2,000 |
+| Cherish Ball | 2,000 |
+| Premier Ball | 2,000 |
 | Potion | 300 |
 | Super Potion | 700 |
 | Antidote | 250 |
 | Paralyze Heal | 250 |
 
-- **Stock re-tiers on every gym win:** Great/Safari Balls at badge 1 (6,000), Ultra/Dusk/Quick/Timer/Repeat/Dive at badge 2 (8,000–10,000), apricorn balls at badge 3 (6,000), and so on.
+- **The starter mart sells only these three balls** — Poké Ball, Cherish Ball, and Premier Ball. **Heal Balls and Safari Balls are never stocked, at any tier.**
+- **Stock re-tiers on every gym win:** Great Balls at badge 1 (6,000), Ultra/Dusk/Quick/Timer/Repeat/Dive at badge 2 (8,000–10,000), apricorn balls at badge 3 (6,000), and so on.
 - **Prices ride the instability index:** roughly **+0.5% per index point**. The index climbs +8 with each early gym badge — **buying early is literally cheaper** — and liberating fields later claws it back.
 - Planning baselines: heal **100 CD**, Poké Ball **2,000 CD**, Potion **300 CD**.
 

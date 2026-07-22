@@ -1,0 +1,27 @@
+{
+  "_comment": "NEPTUNE — Gaviota Port (gym 5, Water) leader intro. A per-leader copy of leader_intro.json (the shared scene cannot carry a name title), reusing Cicada's takehara_leader_intro geometry VERBATIM: the SAME relative+facingFrame+endBack:7 chaining so gym/engage_gaviota_leader still opens the battle from the endBack stage. Structure mirrors Cicada: pull up over the challenger's shoulder, a TIGHT ZOOM-IN dolly to Neptune's face (the two z:-8.5 -> z:-6.8 close holds mirror the push-in), cross high for a side profile, then drop home. startTitle names him; a WATER-type effect cue (splash + bubble particles anchored ON the leader via `execute at <uuid>`) plus dolphin/underwater sounds sell the Tidemaster reveal. Particles anchor on Neptune's uuid so they land ON him (fixes Cicada's rough challenger-offset placement). IN-WORLD TUNING NEEDED: air-verify + nudge the zoom-keyframe framing and the ~ ~1 ~ particle height at the real Gaviota arena. endBack 7 MUST match leader_intro so the post-scene battle opens correctly.",
+  "relative": true,
+  "facingFrame": true,
+  "skippable": true,
+  "endBack": 7.0,
+  "startTitle": "§bLeader Neptune",
+  "startSubtitle": "§3Tidemaster of Gaviota §8— §bWater",
+  "keyframes": [
+    { "x": 0.0, "y": 2.5, "z": -4.0, "yaw": 0.0, "pitch": 12.0, "ticks": 30 },
+    { "x": -1.2, "y": 2.2, "z": -8.5, "yaw": 0.0, "pitch": 6.0, "ticks": 45 },
+    { "x": -1.2, "y": 2.2, "z": -8.5, "yaw": 0.0, "pitch": 6.0, "ticks": 20 },
+    { "x": -0.4, "y": 2.6, "z": -6.8, "yaw": 0.0, "pitch": 8.0, "ticks": 18 },
+    { "x": -0.4, "y": 2.6, "z": -6.8, "yaw": 0.0, "pitch": 8.0, "ticks": 30 },
+    { "x": 6.5, "y": 4.5, "z": 1.5, "yaw": -55.0, "pitch": 22.0, "ticks": 50 },
+    { "x": 0.0, "y": 1.0, "z": -6.5, "yaw": 0.0, "pitch": 4.0, "ticks": 40 }
+  ],
+  "cues": [
+    { "tick": 8, "sound": "minecraft:entity.dolphin.ambient_water", "volume": 0.9, "pitch": 1.0 },
+    { "tick": 10, "sound": "minecraft:block.bubble_column.bubble_pop", "volume": 0.5, "pitch": 1.0 },
+    { "tick": 70, "sound": "minecraft:block.bubble_column.upwards_ambient", "volume": 0.8, "pitch": 1.0 },
+    { "tick": 78, "command": "execute at 0517452a-51a8-4a51-91e1-364a0c6765b6 run particle minecraft:splash ~ ~1 ~ 0.6 0.8 0.6 0.02 32 force" },
+    { "tick": 96, "command": "execute at 0517452a-51a8-4a51-91e1-364a0c6765b6 run particle minecraft:bubble ~ ~1 ~ 0.6 0.8 0.6 0.02 32 force" },
+    { "tick": 100, "sound": "minecraft:ambient.underwater.loop", "volume": 0.6, "pitch": 1.0 },
+    { "tick": 190, "sound": "minecraft:entity.player.levelup", "volume": 0.6, "pitch": 0.5 }
+  ]
+}

@@ -1,9 +1,8 @@
-# Out of Office - Genji restrings two rods, keeps one, hands the player the other.
-# Run as the player. cobblemon:poke_rod id is UNVERIFIED in 1.7.3 - jar-check before ship
-# (the rod is craftable this era, so it is convenience, not sequence-breaking).
+# Out of Office - Genji trades the player his bait stash for 8x string.
+# Run as the player. cobblemon:poke_bait is jar-verified and currently unused (16x share).
 clear @s minecraft:string 8
-give @s cobblemon:poke_rod 1
+give @s cobblemon:poke_bait 16
 function cobblemon_initiative:economy/payout {amount:300}
 function cobblemon_initiative:economy/reward/standard
 tag @s add genji_rod_done
-title @s actionbar [{"text":"Restrung. ","color":"gold"},{"text":"An old rod, and a whole new way to lose a hardcore run.","color":"gray"}]
+title @s actionbar [{"text":"Stash split. ","color":"gold"},{"text":"His bait, your string. The river never restates its earnings.","color":"gray"}]

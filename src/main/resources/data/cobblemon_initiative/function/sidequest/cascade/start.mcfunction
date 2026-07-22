@@ -1,10 +1,12 @@
 # Cascade Ascent — start an attempt. Run AS the player (dialog button, as_player):
-#   function cobblemon_initiative:sidequest/cascade/start {ticks:1800}   (90 s first run)
-#   function cobblemon_initiative:sidequest/cascade/start {ticks:1200}   (60 s gold rematch)
+#   function cobblemon_initiative:sidequest/cascade/start {ticks:1000}   (50 s, default clock)
 # Guard: ignore re-clicks while a run is live (no timer-reset exploit).
 execute if entity @s[tag=ci_ascending] run return 0
-# Dev safety: warn loudly if the crest marker was never placed (set_crest not yet run).
-execute unless entity @e[type=minecraft:marker,tag=ci_cascade_crest] run tellraw @s [{"text":"WARNING: no crest marker set. Stand at the crest and run function cobblemon_initiative:sidequest/cascade/set_crest first.","color":"red"}]
+# Grant the keepsake Cascade Boots (Depth Strider I, blue) and arm the checkpoint counter.
+loot give @s loot cobblemon_initiative:npc_gift/depth_strider_boots
+scoreboard players set @s ci_cascade_cp 0
+# (Finish is now the fixed FINISH box in tick_run — the old ci_cascade_crest marker/set_crest
+# dev check is retired; the 5 ordered checkpoints replace it.)
 $scoreboard players set #time ci_cascade $(ticks)
 scoreboard players operation #secs ci_cascade = #time ci_cascade
 scoreboard players operation #secs ci_cascade /= #twenty ci_cascade

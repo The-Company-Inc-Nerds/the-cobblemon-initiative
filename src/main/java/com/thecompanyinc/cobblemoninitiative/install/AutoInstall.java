@@ -164,7 +164,12 @@ public final class AutoInstall {
       // and re-register the sight-driven NPCs. Both are idempotent.
       server.getCommands().performPrefixedCommand(src, "function cobblemon_initiative:update_npc_presets");
       server.getCommands().performPrefixedCommand(src, "function cobblemon_initiative:dialog/register_sight");
-      LOGGER.info("[Auto-Install] Content refresh applied (NPC presets + sight) after a content-version change.");
+      // Also land any world-repair wave shipped with this update. Every wave is guarded by
+      // its own #repair_aN flag, so on an already-repaired world only the NEW wave fires —
+      // without this, a version-bump refresh re-imports presets but leaves e.g. the a13
+      // duplicate-companion cleanup unrun until a manual install run.
+      server.getCommands().performPrefixedCommand(src, "function cobblemon_initiative:install/repairs");
+      LOGGER.info("[Auto-Install] Content refresh applied (NPC presets + sight + repairs) after a content-version change.");
     } catch (Exception e) {
       LOGGER.error("[Auto-Install] content refresh failed", e);
     }

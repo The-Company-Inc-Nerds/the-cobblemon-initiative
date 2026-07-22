@@ -1,0 +1,27 @@
+{
+  "_comment": "CICADA — Takehara Falls (gym 1, Bug) leader intro. A per-leader copy of leader_intro.json (the shared scene cannot carry a name title), keeping the SAME relative+facingFrame+endBack:7 chaining so gym/engage/engage_takehara_leader still opens the battle from the endBack stage. Structure mirrors leader_intro: pull up over the challenger's shoulder framing Cicada, then a TIGHT ZOOM-IN dolly to her face (the two z:-8.5 -> z:-6.8 close holds mirror starter_reveal's push-in), cross high for a side profile, then drop home. startTitle names her; a bug-type effect cue (happy_villager + sculk_soul particles) is ANCHORED ON CICADA'S uuid body (execute at c577141c-…) so the burst lands ON her wherever cicada_float has left her, plus insect/beacon sounds sell the Broodmother reveal. endBack 7 MUST match leader_intro so the post-scene battle opens correctly. The camera path is the shared leader_intro geometry (verified via facingFrame); only the zoom-keyframe framing might want an in-world nudge at the real Takehara arena (float leader over the open-top floor-1 arena, floor 2055.5/138/2460.5).",
+  "relative": true,
+  "facingFrame": true,
+  "skippable": true,
+  "endBack": 7.0,
+  "startTitle": "§aLeader Cicada",
+  "startSubtitle": "§2Broodmother of the Falls §8— §aBug",
+  "keyframes": [
+    { "x": 0.0, "y": 2.5, "z": -4.0, "yaw": 0.0, "pitch": 12.0, "ticks": 30 },
+    { "x": -1.2, "y": 2.2, "z": -8.5, "yaw": 0.0, "pitch": 6.0, "ticks": 45 },
+    { "x": -1.2, "y": 2.2, "z": -8.5, "yaw": 0.0, "pitch": 6.0, "ticks": 20 },
+    { "x": -0.4, "y": 2.6, "z": -6.8, "yaw": 0.0, "pitch": 8.0, "ticks": 18 },
+    { "x": -0.4, "y": 2.6, "z": -6.8, "yaw": 0.0, "pitch": 8.0, "ticks": 30 },
+    { "x": 6.5, "y": 4.5, "z": 1.5, "yaw": -55.0, "pitch": 22.0, "ticks": 50 },
+    { "x": 0.0, "y": 1.0, "z": -6.5, "yaw": 0.0, "pitch": 4.0, "ticks": 40 }
+  ],
+  "cues": [
+    { "tick": 8, "sound": "minecraft:block.beehive.enter", "volume": 0.9, "pitch": 0.7 },
+    { "tick": 10, "sound": "minecraft:block.note_block.imitate.ender_dragon", "volume": 0.5, "pitch": 0.6 },
+    { "tick": 70, "sound": "minecraft:block.beacon.power_select", "volume": 0.8, "pitch": 0.8 },
+    { "tick": 78, "command": "execute at c577141c-305f-4c20-a6bb-444d3b4d5ae0 run particle minecraft:happy_villager ~ ~1 ~ 0.7 0.9 0.7 0.02 40 force" },
+    { "tick": 96, "command": "execute at c577141c-305f-4c20-a6bb-444d3b4d5ae0 run particle minecraft:sculk_soul ~ ~1 ~ 0.5 0.8 0.5 0.01 24 force" },
+    { "tick": 100, "sound": "minecraft:entity.silverfish.ambient", "volume": 0.6, "pitch": 0.8 },
+    { "tick": 190, "sound": "minecraft:entity.player.levelup", "volume": 0.6, "pitch": 0.5 }
+  ]
+}

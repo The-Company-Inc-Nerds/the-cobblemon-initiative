@@ -1,0 +1,249 @@
+{
+    PresetMetadata: {
+        author: "TheCompanyInc",
+        category: "Civilian",
+        created: 0L,
+        description: "civilian at PokéPhone (spawned on-call) (act 1). Compiled from dialog-src.",
+        entityTypeId: "easy_npc:humanoid",
+        modified: 0L,
+        name: "Mayor Liang",
+        variantType: "STEVE",
+        version: "1.0.0"
+    },
+    data: {
+        ActionData: {
+            ActionEventSet: {
+                ON_INTERACTION: [
+                    {
+                        Type: "OPEN_DEFAULT_DIALOG"
+                    }
+                ],
+                ON_CLOSE_DIALOG: [
+                    {
+                        Type: "COMMAND",
+                        Cmd: "easy_npc delete @initiator"
+                    }
+                ]
+            }
+        },
+        ArmorDropChances: [0.085f, 0.085f, 0.085f, 0.085f],
+        ArmorItems: [
+            {},
+            {},
+            {},
+            {}
+        ],
+        Brain: {
+            memories: {}
+        },
+        CanPickUpLoot: 0b,
+        CustomNameVisible: 1b,
+        DialogData: {
+            Type: "STANDARD",
+            DialogDataSet: [
+                {
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "Buy the beacon",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative homestead buy"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "buy"
+                        },
+                        {
+                            Name: "Hang up",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "hangup"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Another beacon came in off the coast. If your purse is ready, so is mine — raise it on a field you have freed."
+                        }
+                    ],
+                    Name: "Call Beacon",
+                    Label: "call_beacon"
+                },
+                {
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "Hang up",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "hangup"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "You cleared a field back from them and have nothing to raise on it? The town keeps the first beacon for anyone doing that work. Come by the roof — it is yours, no charge. Then set it on the field you freed."
+                        }
+                    ],
+                    Name: "Call First",
+                    Label: "call_first"
+                }
+            ]
+        },
+        DisplayAttribute: [
+            {
+                Bool: 1b,
+                Type: "VISIBLE"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_AT_DAY"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_AT_NIGHT"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_IN_CREATIVE"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_IN_SPECTATOR"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_IN_STANDARD"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_TO_OWNER"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_TO_TEAM"
+            },
+            {
+                Int: 7,
+                Type: "LIGHT_LEVEL"
+            },
+            {
+                Text: "ALWAYS",
+                Type: "NAME_VISIBILITY"
+            }
+        ],
+        EasyNPCVersion: 3,
+        EntityAttribute: {
+            CanBeHitByProjectile: 0b,
+            CanBeLeashed: 0b,
+            CanBreatheUnderwater: 0b,
+            CanCloseDoor: 0b,
+            CanFloat: 0b,
+            CanOpenDoor: 0b,
+            CanPassDoor: 0b,
+            CanUseNetherPortal: 0b,
+            Freefall: 0b,
+            HealthRegeneration: 0.0d,
+            IsAttackableByMonsters: 0b,
+            IsAttackableByPlayers: 0b,
+            IsInvulnerable: 1b,
+            IsPushable: 0b,
+            NoGravity: 0b,
+            PushEntities: 0b
+        },
+        HandDropChances: [0.085f, 0.085f],
+        HandItems: [
+            {},
+            {}
+        ],
+        Invulnerable: 0b,
+        LeftHanded: 0b,
+        ModelData: {
+            DefaultPose: "STANDING",
+            Pose: "VANILLA",
+            Position: {},
+            Rotation: {},
+            Scale: {},
+            Visible: {
+                Boots: 1b
+            }
+        },
+        Navigation: {
+            Home: {
+                X: 0,
+                Y: 0,
+                Z: 0
+            }
+        },
+        ObjectiveData: {
+            HasObjectives: 1b,
+            HasTravelTarget: 0b,
+            ObjectiveDataSet: [
+                {
+                    Type: "LOOK_AT_RESET",
+                    Prio: 9,
+                    Id: "ambient_static_reset"
+                }
+            ]
+        },
+        OnGround: 1b,
+        PersistenceRequired: 0b,
+        PresetUUID: [I; 0, 0, 0, 0],
+        Profession: "NONE",
+        Progression: {
+            AttributeScalingEnabled: 0b,
+            EntityExperience: 1,
+            EntityExperienceLevel: 1
+        },
+        RenderData: {},
+        SkinData: {
+            Content: "",
+            DisableLayers: 0b,
+            Name: "",
+            Timestamp: 0L,
+            Type: "CUSTOM",
+            URL: "",
+            UUID: [I; -671201064, 936860669, -1135567615, 946054698]
+        },
+        SoundData: {
+            SoundDataSet: [
+                {
+                    Name: "minecraft:entity.player.death",
+                    Type: "DEATH"
+                },
+                {
+                    Name: "minecraft:entity.player.hurt",
+                    Type: "HURT"
+                }
+            ]
+        },
+        Status: {
+            finalized: 0b,
+            npc_data_last_saved: 0L,
+            npc_data_last_update: 0L
+        },
+        VariantType: "STEVE",
+        attributes: [
+            {
+                base: 20.0d,
+                id: "minecraft:generic.max_health"
+            },
+            {
+                base: 0.5d,
+                id: "minecraft:generic.movement_speed"
+            }
+        ],
+        id: "easy_npc:humanoid",
+        CustomName: '{"text": "Mayor Liang", "color": "#FFFFFF"}',
+        Tags: ["ci_phone_caller", "ci_phone_liang"]
+    }
+}

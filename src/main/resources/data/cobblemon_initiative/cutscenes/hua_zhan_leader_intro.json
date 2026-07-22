@@ -1,0 +1,30 @@
+{
+  "_comment": "BLOSSOM — Hua Zhan City (gym 2, Grass) leader intro. A per-leader copy of leader_intro.json (the shared scene cannot carry a name title), reusing Cicada's takehara_leader_intro geometry VERBATIM: the same relative+facingFrame+endBack:7 chaining so gym/engage_hua_zhan_leader still opens the battle from the endBack stage. Grass-type theme: sweet-berry pick / grass break on the pull-up, composter-ready on the zoom hold, then a green happy_villager life-sparkle plus a sustained fall of cherry-blossom PETALS (minecraft:cherry_leaves, four bursts at ticks 40/88/130/165 — from the zoom-in through the farewell) bloom at the push-in, with a lazy bee loop under the side-profile cross. Blossom has NO uuid (she is the disguised groundskeeper transformed in place), so particles fall back to the challenger-facing offset: the happy_villager throw is `^ ^1 ^7`, and the petals are emitted HIGH and WIDE at `^ ^3 ^6-7` (spread ~1.6-1.8, speed 0) so they drift DOWN through the frame around where she stands ~7 blocks ahead. IN-WORLD TUNING NEEDED: air-verify + nudge the ^-offsets and the zoom-keyframe framing at the real Hua Zhan garden arena; the throws are aimed off the challenger's look frame, not the camera rig. endBack 7 MUST match leader_intro so the post-scene battle opens correctly.",
+  "relative": true,
+  "facingFrame": true,
+  "skippable": true,
+  "endBack": 7.0,
+  "startTitle": "§aLeader Blossom",
+  "startSubtitle": "§2Warden of the Grain Terraces §8— §aGrass",
+  "keyframes": [
+    { "x": 0.0, "y": 2.5, "z": -4.0, "yaw": 0.0, "pitch": 12.0, "ticks": 30 },
+    { "x": -1.2, "y": 2.2, "z": -8.5, "yaw": 0.0, "pitch": 6.0, "ticks": 45 },
+    { "x": -1.2, "y": 2.2, "z": -8.5, "yaw": 0.0, "pitch": 6.0, "ticks": 20 },
+    { "x": -0.4, "y": 2.6, "z": -6.8, "yaw": 0.0, "pitch": 8.0, "ticks": 18 },
+    { "x": -0.4, "y": 2.6, "z": -6.8, "yaw": 0.0, "pitch": 8.0, "ticks": 30 },
+    { "x": 6.5, "y": 4.5, "z": 1.5, "yaw": -55.0, "pitch": 22.0, "ticks": 50 },
+    { "x": 0.0, "y": 1.0, "z": -6.5, "yaw": 0.0, "pitch": 4.0, "ticks": 40 }
+  ],
+  "cues": [
+    { "tick": 8, "sound": "minecraft:block.sweet_berry_bush.pick", "volume": 0.9, "pitch": 1.0 },
+    { "tick": 10, "sound": "minecraft:block.grass.break", "volume": 0.5, "pitch": 0.8 },
+    { "tick": 40, "command": "execute at @s positioned ^ ^3 ^6 run particle minecraft:cherry_leaves ~ ~ ~ 1.6 0.6 1.6 0.0 40 force" },
+    { "tick": 70, "sound": "minecraft:block.composter.ready", "volume": 0.8, "pitch": 1.0 },
+    { "tick": 78, "command": "execute at @s positioned ^ ^1 ^7 run particle minecraft:happy_villager ~ ~ ~ 0.6 0.8 0.6 0.02 32 force" },
+    { "tick": 88, "command": "execute at @s positioned ^ ^3 ^7 run particle minecraft:cherry_leaves ~ ~ ~ 1.8 0.8 1.8 0.0 70 force" },
+    { "tick": 100, "sound": "minecraft:entity.bee.loop", "volume": 0.5, "pitch": 1.0 },
+    { "tick": 130, "command": "execute at @s positioned ^ ^3 ^6 run particle minecraft:cherry_leaves ~ ~ ~ 1.6 0.6 1.6 0.0 45 force" },
+    { "tick": 165, "command": "execute at @s positioned ^ ^3 ^6 run particle minecraft:cherry_leaves ~ ~ ~ 1.6 0.5 1.6 0.0 35 force" },
+    { "tick": 190, "sound": "minecraft:entity.player.levelup", "volume": 0.6, "pitch": 0.5 }
+  ]
+}

@@ -1,6 +1,6 @@
-# ☎ Mayor Liang's call — a new homestead beacon is in stock and you can afford it. One-shot. @s.
+# ☎ Mayor Liang — a new homestead beacon is in stock and affordable. Video call; the "Buy the
+# beacon" option is a dialog button now (phone_liang call_beacon). One-shot. @s.
 tag @s add call_beacon_stock_done
-title @s actionbar {"text":"☎ Phone ringing — Mayor Liang","color":"gold"}
+title @s actionbar {"text":"☎ Incoming call — Mayor Liang","color":"gold"}
 playsound minecraft:block.note_block.bell master @s ~ ~ ~ 1 1
-tellraw @s ["",{"text":"☎ ","color":"gold"},{"text":"Mayor Liang: ","color":"gold","bold":true},{"text":"\"Another beacon came in off the coast. If your purse is ready, so is mine — raise it on a field you have freed.\"","color":"white"}]
-tellraw @s [{"text":"   [Buy the beacon now]","color":"aqua","underlined":true,"clickEvent":{"action":"run_command","value":"/cobblemon-initiative homestead buy"},"hoverEvent":{"action":"show_text","contents":[{"text":"Buy Liang's next beacon (price escalates each time)","color":"gray"}]}}]
+function cobblemon_initiative:phone/deliver {caller:"phone_liang",tag:"ci_phone_liang",label:"call_beacon"}

@@ -21,7 +21,7 @@ execute unless score #init ci_classic matches 1 run bossbar add cobblemon_initia
 scoreboard players set #init ci_classic 1
 bossbar set cobblemon_initiative:sango_classic color blue
 bossbar set cobblemon_initiative:sango_classic style notched_10
-bossbar set cobblemon_initiative:sango_classic max 120
+bossbar set cobblemon_initiative:sango_classic max 95
 execute unless score #on ci_classic matches -2147483648..2147483647 run scoreboard players set #on ci_classic 0
 # Resume the countdown if a derby was live when the server stopped.
 execute if score #on ci_classic matches 1 run schedule function cobblemon_initiative:sidequest/derby/second 1s

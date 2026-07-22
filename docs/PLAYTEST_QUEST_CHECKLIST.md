@@ -4,6 +4,34 @@ _Generated from the runtime quest data (`dialog-src/registers/quest_targets.json
 
 Status legend: **OK** verified current · **CHANGED** drifted from the wiki (now fixed) · **VERIFY** confirm in-world · **RUNTIME-ONLY** exists in game, was missing from the wiki · **WIKI-ONLY** on the wiki but gone/misassigned in data.
 
+*Notes*
+
+- Lily the lotad is located in a block, also needs dialog updated there is no notice board. New position at 2633 113 2807
+- Still getting duplicate mr mime, also I think we need a longer pause during the cutscene as the world builds and everything, like some sort of title screen maybe to allow the install to run and chunks to load. Jackpot the fish is duplicated as well
+- Dishonorable respawn, respawns us on the roof, also after some time I just randomly was killed?
+- Victor should transport to 2536 106 2900 once they are ready to transform
+- Sango Classic should say fish in the pond not off the pier, also mentions a harbor after catching a fish.
+- Sango classic should be like 25 seconds shorter
+- Invitational should be tracked on the quest showing where trainers are
+- The berry quest from Dr. Asha should be one of each berry only. Also one button to hand in and a dialog screen accepting the clinic bundle if it worked.
+- Colect daily presecription should close dialog after clicking from dr asha
+- No need for the podium in the invitational, it should just be given after chatting with the pond warden, also the heal ball makes no sense with this hardcore run maybe do a net ball
+- off the record should be changed to just being battle the four company members (after third badge) and they disappear after defeat) 
+- Blossom Path and other routes dont need additional quests right now, so we can remove those WIP ones
+- Beekeeper Tomo is a weird quest, lets remove it and maybe just be turn in honey to them for a pokemon?
+- I think to challenge the leader cicada it should be an achievement to get a glowberry and spore blossom, there is a cave with one of each and the mouth of it is at 2125 136 2703, could log as a mission after beating the apprentice and talking to cicada and maybe some cocoa beans from trees off of Blossom Path (not needed to mark really)
+- The climb the falls should give you blue leather boots with depth strider 1 on it and checkpoints to pass through in 50 seconds. Checkpoints go 1935 106 2419 -> 1942 109 2417 -> 1957 122 2421 -> 1974 135 2429 -> 1982 142 2569 (the finish) we should also have like effects or something to make those parts identifyable like a vertical ring "to go through")
+- Not sure why the wiki mentions sango town having a market, it does not
+- Elder Sefu wait with him for a while should close dialog after gifting
+- Leader Cicada needs some other rotation fix, he is upside down, but for whatever reason faces away from the player always
+- The leader cutscenes should do something like zoom in on them, say their name as a title and play effects.
+- After winning the cutscene should pan up to outside the glass and a all black skin should be standing at 2065 177 2481 looking down at the battle
+- Fisherman Genji should give bait not a poke rod as that can be obtained through the fishing contest in Sango
+- Pokemart tier 0 should be just normal pokeball, cherish ball and premier ball. Shouldnt sell heal balls makes no sesne at any tier, the safari ball shouldnt ever be sold either.
+- Two dev commands, one should be make all npcs glow command, second should be full heal my team and self (in or out of battle)
+- Machine Counter Mika is bugged, clicking on her the dialog gets all messed up and buying something doesnt let me quit.
+- Three moth stamps I think it would be fun instead to have it be, protect her from the bee infestation, spawn angry bees and kill them all to pass.start with 5 and we will see how it is.
+
 ---
 
 ## Main Story
@@ -17,6 +45,9 @@ Status legend: **OK** verified current · **CHANGED** drifted from the wiki (now
   - Verified: same starter dialogs carry the level=25 / level=40 give tiers gated by dex band tags (DexScoreManager). Shares render slot 79 with q.side_green. No drift.
 
 ## Sango Town
+
+
+
 - [ ] **Sango Classic** (`q.side_classic`) — Giver: Deka @ 2570.5 111 2856.5 (wiki coord; VERIFY vs world save) · 1 stage ("Three fish before the bar empties") · Reward: entry 150 CD; first win 500 CD + major pack + Poké Rod + 2 Poké Balls + 5 Oran Berries; repeat win 200 CD flat · Status: OK
   - Genuinely Sango. All wiki figures verified in derby/win_first + win_repeat + begin. Undocumented extra: +75 CD "Record Species" bonus in win_common when the entry-rolled species is among the 3 handed in — showrunner may want to note it, not stale. Entry-fee-with-empty-wallet is flagged UNVERIFIED in begin.mcfunction (no balance pre-check primitive) — test paying with <150 CD.
 - [ ] **The Lane Looks After Its Own** (`q.side_lane`) — Giver: Oma @ VERIFY (west-gate fence; wiki gives no coord, placement null in dialog-src) · 4 stages (Oma return + baskets to Dakarai/Kele/Fara) · Reward: Dakarai 400 CD; Kele Eevee Lv 5 (1/20 shiny); Oma care package 3 Potion + 8 Oran + 2 Poké Ball + 16 Bread + 200 CD · Status: CHANGED

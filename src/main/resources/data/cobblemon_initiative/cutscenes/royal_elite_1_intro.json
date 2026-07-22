@@ -1,0 +1,27 @@
+{
+  "_comment": "ARIA — Royal League Elite Four (elite 1, Dark). A per-leader copy of leader_intro.json / the Cicada scene (the shared scene cannot carry a name title), keeping the SAME relative+facingFrame+endBack:7 chaining so gym/engage_royal_elite_1 still opens the battle from the endBack stage. Geometry is REUSED VERBATIM from Cicada (leader-agnostic camera path): pull up over the challenger's shoulder, TIGHT ZOOM-IN dolly to the leader's face (the two z:-8.5 -> z:-6.8 close holds), cross high for a side profile, then drop home. Re-themed for the Warden of Shadows: soul-sand/cave/warden/soul-soil sounds sell the dark reveal, with soul_fire_flame + sculk_soul particles at the zoom. Aria has NO uuid, so particles fall back to the Cicada-style challenger-facing offset (execute at @s positioned ^ ^1 ^7) aimed toward where the leader stands ~7 blocks ahead. IN-WORLD TUNING NEEDED: the particle `execute` positions off the CHALLENGER'S eye toward the stage, not off the camera rig — air-verify + nudge the ^-offset and the zoom-keyframe framing at the real Royal League Elite Four hall. endBack 7 MUST match leader_intro so the post-scene battle opens correctly.",
+  "relative": true,
+  "facingFrame": true,
+  "skippable": true,
+  "endBack": 7.0,
+  "startTitle": "§8Elite Four Aria",
+  "startSubtitle": "§8Warden of Shadows §8— §8Dark",
+  "keyframes": [
+    { "x": 0.0, "y": 2.5, "z": -4.0, "yaw": 0.0, "pitch": 12.0, "ticks": 30 },
+    { "x": -1.2, "y": 2.2, "z": -8.5, "yaw": 0.0, "pitch": 6.0, "ticks": 45 },
+    { "x": -1.2, "y": 2.2, "z": -8.5, "yaw": 0.0, "pitch": 6.0, "ticks": 20 },
+    { "x": -0.4, "y": 2.6, "z": -6.8, "yaw": 0.0, "pitch": 8.0, "ticks": 18 },
+    { "x": -0.4, "y": 2.6, "z": -6.8, "yaw": 0.0, "pitch": 8.0, "ticks": 30 },
+    { "x": 6.5, "y": 4.5, "z": 1.5, "yaw": -55.0, "pitch": 22.0, "ticks": 50 },
+    { "x": 0.0, "y": 1.0, "z": -6.5, "yaw": 0.0, "pitch": 4.0, "ticks": 40 }
+  ],
+  "cues": [
+    { "tick": 8, "sound": "minecraft:block.soul_sand.break", "volume": 0.9, "pitch": 0.8 },
+    { "tick": 10, "sound": "minecraft:ambient.cave", "volume": 0.5, "pitch": 0.8 },
+    { "tick": 70, "sound": "minecraft:entity.warden.ambient", "volume": 0.6, "pitch": 1.2 },
+    { "tick": 78, "command": "execute at @s positioned ^ ^1 ^7 run particle minecraft:soul_fire_flame ~ ~ ~ 0.6 0.8 0.6 0.02 32 force" },
+    { "tick": 96, "command": "execute at @s positioned ^ ^1 ^7 run particle minecraft:sculk_soul ~ ~ ~ 0.6 0.8 0.6 0.02 32 force" },
+    { "tick": 100, "sound": "minecraft:block.soul_soil.break", "volume": 0.6, "pitch": 1.0 },
+    { "tick": 190, "sound": "minecraft:entity.player.levelup", "volume": 0.6, "pitch": 0.5 }
+  ]
+}

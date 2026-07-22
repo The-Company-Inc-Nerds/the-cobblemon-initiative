@@ -1,0 +1,23 @@
+{
+  "_comment": "TAKEHARA VICTORY WATCHER — plays from the Java win-hook after the Takehara gym battle (hook already wired to `takehara_victory_watcher`). ABSOLUTE keyframes: the camera opens low in the fight pit (~2058/140/2465 eye), then RISES and TILTS UP the open-top shaft to reveal an all-black figure standing OUTSIDE the glass at 2065.5/177/2481.5, looking down at the arena. The figure is spawned for the scene via doublePreset (watcher_shadow_dark) at doublePos and auto-swept afterward (cutscene-only clone, Tag ci_cutscene_double). Rule 7: never named — an ominous subtitle only. KEYFRAME-Y = camera EYE height minus 1.78 (docs/ENGINE_FINDINGS.md): floor-1 arena floor is y138, the figure eye ~y177 outside the glass at the open top. YAW toward the figure from the pit (dx +5.5 / dz +11.5 => yaw ~ -26); PITCH starts negative (looking UP at the high figure) and eases toward level as the camera climbs to the figure's height. FIRST-PASS GEOMETRY — the Takehara arena did not load for offline probing: air-verify the eye path (open-top shaft x2065 z2481, floor 2055.5/138/2460.5, perch y173) + the sight line to the figure in-world and nudge, or re-record with /cutscene record. No endBack/endCommand: the fight is already won, the scene just restores the player in place.",
+  "relative": false,
+  "skippable": true,
+  "doublePreset": "easy_npc:preset/humanoid/watcher_shadow_dark.npc.snbt",
+  "doublePos": [2065.5, 177, 2481.5],
+  "keyframes": [
+    { "x": 2058.5, "y": 138.5, "z": 2465.0, "yaw": -26.0, "pitch": -35.0, "ticks": 20 },
+    { "x": 2058.5, "y": 138.5, "z": 2465.0, "yaw": -26.0, "pitch": -35.0, "ticks": 20 },
+    { "x": 2060.5, "y": 152.0, "z": 2470.0, "yaw": -26.0, "pitch": -22.0, "ticks": 70 },
+    { "x": 2062.5, "y": 168.0, "z": 2475.5, "yaw": -26.0, "pitch": -8.0, "ticks": 60 },
+    { "x": 2063.0, "y": 174.5, "z": 2477.0, "yaw": -26.0, "pitch": 2.0, "ticks": 45 },
+    { "x": 2063.0, "y": 174.5, "z": 2477.0, "yaw": -26.0, "pitch": 2.0, "ticks": 40 }
+  ],
+  "cues": [
+    { "tick": 6, "sound": "minecraft:ambient.cave", "volume": 1.0, "pitch": 0.5 },
+    { "tick": 10, "title": "§fThe Falls Badge is yours.", "subtitle": "§7But the woods have eyes." },
+    { "tick": 150, "sound": "minecraft:entity.warden.heartbeat", "volume": 0.7, "pitch": 0.7 },
+    { "tick": 205, "sound": "minecraft:entity.warden.nearby_close", "volume": 0.6, "pitch": 0.6 },
+    { "tick": 208, "subtitle": "§8Someone was watching." },
+    { "tick": 250, "sound": "minecraft:entity.enderman.teleport", "volume": 0.9, "pitch": 0.6 }
+  ]
+}

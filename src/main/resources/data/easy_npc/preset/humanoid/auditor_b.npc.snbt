@@ -40,6 +40,86 @@
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
+                            Name: "badges_gte_3"
+                        }
+                    ],
+                    Priority: 40,
+                    Buttons: [
+                        {
+                            Name: "Off the record it is",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_offrec_jelani"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "say The sweep is packed. There is nothing left in the square to count — least of all me."
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_offrec_jelani"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:villain_grunt_5 @s"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_offrec_jelani"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:villain_grunt_5 onwin {1: ['cobbledollars give @1 400', 'tag @1 add defeated_offrec_jelani', '@2 say Off the record. My half of the loop is retired, the pen is capped, and the square is short one clipboard.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 150', '@1 say Logged. The Company thanks you for your cooperation. Do not ask what the sweep was for.']}"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "fight_button"
+                        },
+                        {
+                            Name: "Walk away",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "walk_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "You again — and this time you are the one doing the observing. A bulletin says an archivist is sweeping Company staff out of Sango. The bulletin was very clear about being unclear, but it had your description."
+                        },
+                        {
+                            Text: "Fine. Off the record, then. No incident report, no clipboard, nothing filed. Settle it, and one of us stops counting."
+                        }
+                    ],
+                    Name: "Auditor — off the record",
+                    Label: "off_record_fight"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
                             Name: "off_errand_3_active"
                         },
                         {

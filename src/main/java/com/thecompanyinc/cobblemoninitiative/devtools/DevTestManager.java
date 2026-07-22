@@ -285,8 +285,15 @@ public final class DevTestManager {
     for (TrainerConfig t : configLoader.getAllTrainers()) {
       String a = t.getAchievementOnDefeat();
       if (a == null || !a.startsWith("badge_")) continue;
-      if (grant.contains(a)) progress.addDefeatedTrainer(t.getId());
-      else progress.getDefeatedTrainers().remove(t.getId());
+      // Toggle the defeated_<leader> PLAYER TAG too — dialog/quest gates check the tag, not
+      // the progress Set (kept in step with DevCommands.devBadges).
+      if (grant.contains(a)) {
+        progress.addDefeatedTrainer(t.getId());
+        player.addTag("defeated_" + t.getId());
+      } else {
+        progress.getDefeatedTrainers().remove(t.getId());
+        player.removeTag("defeated_" + t.getId());
+      }
     }
     for (String a : grant) progress.addAchievement(a);
     InitiativeInit.getLevelCapManager().updateLevelCap(player);

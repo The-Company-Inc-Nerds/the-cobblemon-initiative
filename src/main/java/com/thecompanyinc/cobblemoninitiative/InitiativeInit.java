@@ -347,6 +347,28 @@ public class InitiativeInit implements ModInitializer {
     );
   }
 
+  /** Gym-leader id → the post-win "watcher" cutscene that pans up to the shadow figure. */
+  private static final java.util.Map<String, String> LEADER_VICTORY_WATCHERS = java.util.Map.of(
+    "takehara_leader", "takehara_victory_watcher");
+
+  /**
+   * After a gym leader falls, pan up to the all-black figure watching from outside the glass
+   * (note 20). One-shot per leader, latched by a persistent player tag exactly like
+   * NuzlockeInit.maybePlayShrineReveal so a mid-scene relog can't replay it.
+   */
+  private static void maybePlayVictoryWatcher(ServerPlayer player, String leaderId) {
+    String scene = LEADER_VICTORY_WATCHERS.get(leaderId);
+    if (scene == null) return;
+    String seenTag = "ci_seen_" + scene;
+    if (player.getTags().contains(seenTag)) return;
+    net.minecraft.server.MinecraftServer server = player.getServer();
+    if (server == null) return;
+    player.addTag(seenTag); // latch BEFORE dispatch
+    server.getCommands().performPrefixedCommand(
+      player.createCommandSourceStack().withPermission(4).withSuppressedOutput(),
+      "cutscene play " + scene);
+  }
+
   private void registerBattleEvents() {
     // Showrunner design (2026-07-04): the vanilla Cobblemon starter flow is CLOSED —
     // starters come from the three stand-in NPCs Acacia spawns (givepokemonother +
@@ -478,6 +500,10 @@ public class InitiativeInit implements ModInitializer {
                 matched.getId()
               );
               progressManager.onTrainerDefeated(player, matched.getId());
+
+              // Note 20: after a gym leader falls, pan up to the shadow figure watching
+              // from outside the glass. One-shot per leader.
+              maybePlayVictoryWatcher(player, matched.getId());
 
               // Keep rctmod's native series graph in step (round 10): players enter
               // the cobblemon-initiative series via initialSeries, but tbcs battles

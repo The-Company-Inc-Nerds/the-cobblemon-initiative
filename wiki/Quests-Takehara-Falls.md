@@ -24,14 +24,12 @@ This page lists every quest and paid encounter in and around Takehara Falls. For
 | [The Brood Tower (Gym 1)](#gym-1--the-brood-tower-falls-badge) | Leader Cicada | gym ladder | main quest | **Falls Badge → cap 22**, 1200 CD |
 | [Full Tower Clear](#full-tower-clear--the-tower-clear-bonus) | Gym Guide | beat all 4 tower trainers | no | 600 CD + Exp Candy + training pack |
 | [Cascade Ascent](#cascade-ascent) | Falls Warden Shou | timed climb | yes | 500 CD + major pack |
-| [Quarterly Sprint](#quarterly-sprint) | Petal Courier Mio | timed race | yes | 500 CD + major pack |
-| [Sting Operation](#sting-operation-asset-under-valuation) | Beekeeper Tomo | walk + optional battle | yes | 350 CD + hive goods |
-| [Notice of Non-Compliance](#notice-of-non-compliance) | Printmaker Mei | stealth pasting | yes | 400 CD + Heal Ball |
+| [Notice of Non-Compliance](#notice-of-non-compliance) | Printmaker Mei | swarm defense | yes | 400 CD |
 | [Natural History](#natural-history-museum-bones--fossil-revival) | Curator Kenji + Sayuri | dig & donate | yes | 400 CD + one fossil revival |
 | [Stakeholder Alignment](#stakeholder-alignment-the-mayors-roof) | *(roof scene)* | doubles battle | no | 460 + 600 CD |
 | [Sweetwater Futures](#sweetwater-futures-beekeeper-masumi) | Beekeeper Masumi | fetch | no | 300 CD + a queen Combee |
 | [The De-Acquisition Desk](#the-de-acquisition-desk-trader-mayu) | Trader Mayu | trade | no | Elekid Lv 12 |
-| [Out of Office](#out-of-office-fisherman-genji) | Fisherman Genji | fetch + wager | no | Poké Rod + 300 CD |
+| [Out of Office](#out-of-office-fisherman-genji) | Fisherman Genji | fetch + wager | no | Poké Bait + 300 CD |
 | [Canvasser Patrol](#canvasser-patrol-kazuo) | Kazuo | optional battle | no | 280 CD |
 | [Nurse Lila](#nurse-lila--paid-heal) | Nurse Lila | service | — | full heal, costs 100 CD |
 
@@ -56,7 +54,8 @@ flowchart LR
     F2["Tower floor 2<br/>Shin · Taro"] --> N
     N --> S["Jr. Apprentice Sora<br/>(flowerbeds)"]
     S --> A["Apprentice Aiko<br/>(greenhouse · doubles)"]
-    A --> C["Leader Cicada<br/>Falls Badge → cap 22"]
+    A --> G["Falls-cave offerings<br/>Glow Berry + Spore Blossom"]
+    G --> C["Leader Cicada<br/>Falls Badge → cap 22"]
 ```
 
 ### The ladder
@@ -76,7 +75,8 @@ flowchart LR
 1. *(Optional)* Talk to the **Gym Guide** for the badge / level-cap / hardcore briefing.
 2. *(Optional)* Climb the gym tower. Every tower trainer you beat **drains the ladder above**: one win and Sora's team fights with its training potential zeroed; two and Aiko's does; all four and Leader Cicada's own team comes in drained. Skip the tower entirely if you want the ladder at full strength — or clear all four for the [tower-clear bonus](#full-tower-clear--the-tower-clear-bonus).
 3. The apprentices are **not in the gym** — beat **Jr. Apprentice Sora** in the flowerbeds (singles), then **Apprentice Aiko** in the greenhouse center (doubles).
-4. Challenge **Leader Cicada** at the arena up the falls. She carries **3× Full Restore** — chip damage alone will not close it, and her Lv 17 Yanmega on a Choice Scarf outspeeds anything at your cap.
+4. **Gather the falls-cave offerings.** After you beat the apprentice and talk to Cicada, she logs a small errand: bring her a **Glow Berry** and a **Spore Blossom** from the falls cave (the mouth is at [2125 136 2703]). She will not battle until you hand both over. (Cocoa beans off Blossom Path are optional flavor, not part of the requirement.)
+5. Challenge **Leader Cicada** at the arena up the falls. She carries **3× Full Restore** — chip damage alone will not close it, and her Lv 17 Yanmega on a Choice Scarf outspeeds anything at your cap.
 
 ### Rewards
 
@@ -90,7 +90,7 @@ flowchart LR
 ### Forks
 
 - The tower gate is **any 2 of 4** — you may skip two tower trainers entirely.
-- No other branches; the ladder order (tower → Sora → Aiko → Cicada) is enforced by each trainer's willingness to fight.
+- No other branches; the ladder order (tower → Sora → Aiko → gather the falls-cave offerings → Cicada) is enforced by each trainer's willingness to fight.
 
 ---
 
@@ -116,18 +116,18 @@ Beat **all four** tower trainers (Koji, Yuki, Shin, Taro) and the Gym Guide pays
 |  |  |
 |---|---|
 | **Giver** | Falls Warden Shou |
-| **Location** | The Plunge Pool at the base of the falls; the finish is a marker at the crest |
-| **Start** | Talk to Shou **@ VERIFY** (plunge pool base beside the sign-up board) → *Attempt the Ascent — ninety seconds* |
-| **Repeatable** | First clear one-time; a 60-second **gold run** repeats after it |
-| **Tracker** | Yes — *Base to crest before the clock dies* |
+| **Location** | The Plunge Pool at the base of the falls; five marker rings run up to the crest |
+| **Start** | Talk to Shou **@ VERIFY** (plunge pool base beside the sign-up board) → *Attempt the Ascent — fifty seconds* |
+| **Repeatable** | First clear one-time; a **gold run** repeats after it |
+| **Tracker** | Yes — *Pass the five rings before the clock dies* |
 
 ### Walkthrough
 
-1. Talk to Shou at the plunge pool. (Ask about the record board — the standing record is marked **RECORD UNDER AUDIT**, and its holder apparently *never existed*.)
-2. Start the **90-second climb**. A countdown bar runs with audio pings at 60/30/10/5/3/2/1s. The course is built so every missed jump lands in water — no fall damage.
-3. Reach the crest marker before the clock dies.
+1. Talk to Shou at the plunge pool. She grants you the **Cascade Boots** — blue Depth-Strider boots for the climb. (Ask about the record board — the standing record is marked **RECORD UNDER AUDIT**, and its holder apparently *never existed*.)
+2. Start the **50-second climb**. A countdown bar runs with audio pings at 30/10/5/3/2/1s. The course is built so every missed jump lands in water — no fall damage.
+3. Pass through the **five marker rings in order** up the falls before the clock dies.
 4. Time out = free retry. No teleport, no damage, no cost — walk back down and go again.
-5. After your first clear (and with at least one badge), Shou offers the **gold time**: the same climb in **60 seconds**, repeatable.
+5. After your first clear (and with at least one badge), Shou offers the **gold time**: the same five-ring climb on a tighter clock, repeatable.
 
 ### Rewards
 
@@ -135,69 +135,7 @@ Beat **all four** tower trainers (Koji, Yuki, Shin, Taro) and the Gym Guide pays
 - **Gold run (repeatable):** **300 CD** (Verified Rate), money only — no repeat items.
 
 > [!NOTE]
-> The gold-time victory line congratulates you on behalf of "Ayame" — the warden's nameplate reads **Shou**. Known naming bug. Also, the crest marker is placed per-world by the showrunner; if the start warns loudly that no finish exists, that world isn't set up yet.
-
----
-
-## Quarterly Sprint
-
-|  |  |
-|---|---|
-| **Giver** | Petal Courier Mio |
-| **Location** | Starts at the Sango-side mouth of Blossom Path (start line ~[2505 71 2850]); finishes at the **delivery bell** at the Takehara arch [1924 110 2584] |
-| **Start** | Talk to Mio → *Race the bell* (always free to enter) |
-| **Repeatable** | First win one-time; a paid **morning route** repeats once per day |
-| **Tracker** | Yes — *Ring the bell at the Takehara arch* |
-
-### Walkthrough
-
-1. Take the race at the start line. A **180-second** countdown bar starts (pings at 60/30/10/5/3/2/1s).
-2. Run the ~580-block Blossom Path route west and enter the bell zone at the Takehara arch before the bar drains.
-3. Make it → **DELIVERED**. Miss it → you're teleported back to the start line, nothing lost, free retry.
-4. After the first win, Mio offers *Run the morning route — 150 CD purse*, once per Minecraft day (resets at dawn).
-
-### Rewards
-
-- **First win:** **500 CD** (Verified Rate) + 2× Exp. Candy XS + 1× Heal Ball + major training pack.
-- **Daily rematch:** **150 CD** (Verified Rate) — deliberately below the cheapest trainer prize, so it never becomes a money printer.
-
-> [!CAUTION]
-> Blossom Path is **not** a safe zone. Wild encounters and the verification checkpoint sit directly on the racing line — in hardcore Nuzlocke, *that* is the real difficulty of a 3-minute sprint. See **[[Quests Blossom Path]]** for what's waiting on the route.
-
----
-
-## Sting Operation (Asset Under Valuation) — ✅ Done
-
-|  |  |
-|---|---|
-| **Giver** | Beekeeper Tomo |
-| **Location** | The hive trees at the Blossom Arch — Takehara end of Blossom Path [~1920 105 2570] |
-| **Start** | Talk to Tomo **@ 1920 105 2570** → *Walk the hive line* |
-| **Repeatable** | One-time (plus a one-time post-badge follow-up) |
-| **Tracker** | Yes — *Walk the four seals with Tomo* |
-
-The Company stapled **"asset under valuation"** seals to Tomo's hive trees. He'd like them off.
-
-### Walkthrough
-
-1. Pry **seal one** (the first tree), **seal two** (the barcoded landing board), and **seal three** (the "productive partnership" print) — in order, with Tomo. You can leave and resume at any seal.
-2. **Seal four is guarded.** An Asset Valuation Field Agent stands in front of it. Clear him one of two ways (below), then pry the seal.
-3. Behind seal four: **Field Memo 7-12** — honey **REJECTED** (*"assets mobile and armed"*), a different crop **APPROVED** (*"proceed to Hua Zhan"*). Take it; it's a keepsake, and it's the run's first written pointer at what the Company is actually planting.
-4. Turn in with Tomo.
-5. **After you beat Cicada**, come back once more for the *first harvest of the free market*.
-
-### Forks
-
-- **Fight the Field Agent** — Poochyena 12 / Grimer 13. Prize **280 CD** flat + 2× Poké Ball.
-- **Cite his own do-not-disturb notice back at him** — a talk-past. No battle, no prize, same result.
-
-### Rewards
-
-- **Main turn-in:** **350 CD** (Verified Rate) + 3× Honey Bottle + 8× Honeycomb + 2× Potion + standard training pack.
-- **Post-badge follow-up:** **350 CD** (Verified Rate) + 4× Honey Bottle + 8× Honeycomb.
-
-> [!NOTE]
-> No gift Pokémon here — the Combee lives with [Beekeeper Masumi](#sweetwater-futures-beekeeper-masumi) instead.
+> The gold-time victory line congratulates you on behalf of "Ayame" — the warden's nameplate reads **Shou**. Known naming bug. Also, the five marker rings are placed per-world by the showrunner; if the start warns loudly that no course exists, that world isn't set up yet.
 
 ---
 
@@ -207,29 +145,24 @@ The Company stapled **"asset under valuation"** seals to Tomo's hive trees. He'd
 |---|---|
 | **Giver** | Printmaker Mei |
 | **Location** | Print stall by the gym entrance, in eyeshot of the canvasser's patrol loop |
-| **Start** | Talk to Mei **@ VERIFY** (print stall by the gym entrance — persisted body, no coords in JSON) → *Take the three moth prints* |
+| **Start** | Talk to Mei **@ VERIFY** (print stall by the gym entrance — persisted body, no coords in JSON) → *Stand with Mei* |
 | **Repeatable** | One-time |
-| **Tracker** | Yes — *Paste three moth prints unseen* |
+| **Tracker** | Yes — *Protect Mei's stall from the swarm* |
 
-The Company glued **"Verified Trust, Verified Value"** notices over Mei's moth-wing prints at three spots in town. She wants her art back up — while the Company's canvasser isn't looking.
+The Company doesn't argue with Mei's moth-wing prints — it sabotages her stall. A swarm of angry bees descends on her counter, and she needs someone standing between them and her.
 
 ### Walkthrough
 
-1. From Mei's counter, watch **Kazuo the canvasser** walk his loop (gym entrance → falls overlook → bridge).
-2. When his eyes are elsewhere, paste **print one** (gym entrance), **print two** (falls overlook), **print three** (bridge mural) — the checks happen at the moment you commit each paste.
-3. Caught mid-paste? He lectures you, the paste is voided, and you retry freely. Nobody gets hurt over paper — but a scolding does cost you the "clean run" flourish.
-4. All three up → collect pay from Mei. Under board three, the old bridge mural shows a **face painted out twice**; the print guild's ledger page for that year is missing. File that away.
-
-### Forks
-
-- **Clean run vs. scolded run** — *identical payout*, different turn-in dialogue. The stealth is for pride (and the audience).
+1. Talk to Mei at her stall. When the sabotage swarm drops, the fight is on.
+2. **Kill the five angry bees** attacking the stall. Keep them off Mei until the last one is down.
+3. Swarm cleared → collect pay from Mei. Look over her counter afterward — the old bridge mural nearby shows a **face painted out twice**, and the print guild's ledger page for that year is missing. File that away.
 
 ### Rewards
 
-- **400 CD** (Verified Rate) + 3× Potion + 1× Heal Ball + standard training pack.
+- **400 CD** (Verified Rate) + 3× Potion + standard training pack.
 
 > [!NOTE]
-> **As shipped:** the stealth check only bites once the canvasser is placed and watching in your world — in an unprepared world every paste counts as unseen. The tracker waypoint for this quest also currently points at ground level (y 64) rather than the town terraces; trust the descriptions, not the marker.
+> **As shipped:** the swarm spawns when Mei's scene is armed in your world; in an unprepared world the stall stands quiet. The tracker waypoint for this quest also currently points at ground level (y 64) rather than the town terraces; trust the descriptions, not the marker.
 
 ---
 
@@ -357,15 +290,15 @@ Mayu names ex-contract Pokémon for the line item that bought them. The Elekid i
 |---|---|
 | **Giver** | Fisherman Genji — ex-Company auditor, *"made redundant by the water"* (his Psyduck idles nearby, [~1893 105 2470]) |
 | **Location** | The Plunge Pool |
-| **Start** | Talk — bring him 8 string and he restrings two rods, one for you |
-| **Repeatable** | Rod one-time; the wager repeats until you win it |
+| **Start** | Talk — bring him 8 string and he mixes up a batch of bait, a share for you |
+| **Repeatable** | Bait one-time; the wager repeats until you win it |
 | **Tracker** | No |
 
 ### Walkthrough
 
 1. Farm **8 string** from Blossom Path spiders after dark.
-2. Hand them in (short counts get a recount) → your rod + pay.
-3. With the rod done, his **200 CD friendly wager** opens: his two river-dwellers (Poliwag 13 / Goldeen 13) vs. your team. *"One wager a visit."*
+2. Hand them in (short counts get a recount) → your bait + pay.
+3. With the bait handed over, his **200 CD friendly wager** opens: his two river-dwellers (Poliwag 13 / Goldeen 13) vs. your team. *"One wager a visit."*
 
 ### Forks
 
@@ -374,8 +307,11 @@ Mayu names ex-contract Pokémon for the line item that bought them. The Elekid i
 
 ### Rewards
 
-- **Rod turn-in:** consumes 8× String; gives 1× **Poké Rod** + **300 CD** (Verified Rate) + standard training pack.
+- **Bait turn-in:** consumes 8× String; gives **Poké Bait** + **300 CD** (Verified Rate) + standard training pack.
 - **Wager win:** **200 CD** flat.
+
+> [!NOTE]
+> The Poké Rod comes from the **Sango Classic** first-win reward now, not from Genji — see **[[Quests Sango Town]]**.
 
 ---
 
@@ -383,15 +319,15 @@ Mayu names ex-contract Pokémon for the line item that bought them. The Elekid i
 
 |  |  |
 |---|---|
-| **Giver** | Kazuo — the Company canvasser whose notices you may have been peeling |
+| **Giver** | Kazuo — the Company canvasser posting notices around town |
 | **Location** | Patrol loop: gym entrance → falls overlook → bridge, sweeping past Mei's stall |
-| **Start** | Talk to him (he also happens to be the live obstacle for [Notice of Non-Compliance](#notice-of-non-compliance)) |
+| **Start** | Talk to him |
 | **Repeatable** | Battle one-time; the "fee" is not gated |
 | **Tracker** | No |
 
 ### Forks
 
-- ***Answer for the postings*** — an opt-in battle, only offered **after you hold the Falls Badge**. Meowth 13 / Koffing 14, prize **280 CD** flat, one win only. He does **not** leave town after losing — the patrol (and Mei's stealth game) continues.
+- ***Answer for the postings*** — an opt-in battle, only offered **after you hold the Falls Badge**. Meowth 13 / Koffing 14, prize **280 CD** flat, one win only. He does **not** leave town after losing — the patrol continues.
 - ***Purchase administrative clearance — 150 CD*** — a fee for a polite line. Pure flavor.
 - Say nothing and move on.
 
@@ -422,9 +358,9 @@ Not quests — but worth a hello. Three resident Pokémon appear around town as 
 
 ## Not in this town
 
-Three nearby quests are often mistaken for Takehara content:
+A few nearby quests are often mistaken for Takehara content:
 
-- **Head Count** (the meadow census) and the **Voluntary Verification Checkpoint** belong to the road — see **[[Quests Blossom Path]]**.
+- The **Voluntary Verification Checkpoint** belongs to the road — see **[[Quests Blossom Path]]**.
 - **Adjusted Retail** (the price check) and **Greenspace 7, Under-Performing** (the gym-gate audit) belong to the next city — see **[[Quests Hua Zhan City]]**.
 
 ---

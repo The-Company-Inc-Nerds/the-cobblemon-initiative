@@ -202,7 +202,13 @@ public class CutsceneManager {
     state.setBase(eyeX, eyeY, eyeZ, script.relative);
     if (script.relative && script.facingFrame) state.setFacingFrame(startYaw, startPitch);
     if (endCommand != null && !endCommand.isBlank()) state.setEndCommand(endCommand);
-    if (hasDouble) state.setDoubleSkinPending(true);
+    // Only patch the double to the player's live skin when the scene actually wants the
+    // player's face (the player_double preset). Other doubles — e.g. the all-black victory
+    // watcher (watcher_shadow_dark) — must keep their own baked skin; patching them would
+    // clobber it to the player skin (the note-20 blocker).
+    if (hasDouble && script.doublePreset != null && script.doublePreset.contains("player_double")) {
+      state.setDoubleSkinPending(true);
+    }
     active.put(player.getUUID(), state);
 
     // Keep the scene subject (the leader the end-command battles) entity-loaded for the whole

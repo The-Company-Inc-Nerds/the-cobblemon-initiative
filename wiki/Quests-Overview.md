@@ -2,7 +2,7 @@
 
 > *Work is never hard to find here. Somebody always needs a letter carried, a fence watched, a price checked twice. Just read the receipt before you pocket it — the rate line is the only sentence in this region that never lies.*
 
-The region runs on paperwork, and so does your journey: **72 quests with 159 tracked objectives**, from the main badge road down to a bread round on your mother's lane. This page explains the quest *system* — the sidebar, the tracker, how you get paid, and the rules every quest plays by — and ends with an **index of every quest** pointing to its area page.
+The region runs on paperwork, and so does your journey: **69 quests with 157 tracked objectives**, from the main badge road down to a bread round on your mother's lane. This page explains the quest *system* — the sidebar, the tracker, how you get paid, and the rules every quest plays by — and ends with an **index of every quest** pointing to its area page.
 
 For the story walkthrough, see **[[Quests Main Story]]**. For the areas: **[[Quests-Sango Town]]** · **[[Quests Blossom Path]] · [[Quests Harvest Road]]** · **[[Quests-Takehara Falls]]** · **[[Quests-Hua Zhan City]]**.
 
@@ -114,7 +114,7 @@ Almost every quest in the region is **one-time**: it latches on completion and i
 
 | Kind | Examples | Rule |
 |------|----------|------|
-| **Daily** | Mio's morning delivery route (150 CD), Dr. Asha's clinic prescription (1 Potion) | Once per Minecraft day, resets at dawn |
+| **Daily** | Dr. Asha's clinic prescription (1 Potion) | Once per Minecraft day, resets at dawn |
 | **Re-entry** | The Sango Classic fishing derby (200 CD repeat purse vs a 150 CD entry), the Cascade gold-time run (300 CD, needs a badge) | Pay/qualify each attempt; money only |
 | **Services** | Nurse heals (flat **100 CD**, every town), shops, the Granary's grain-for-goods counter | Always available; these are the money *sinks* |
 
@@ -165,13 +165,12 @@ The pinned top line of the sidebar, from waking up in Sango Town to the end of t
 
 | Quest | Giver | Hook | Rewards |
 |-------|-------|------|---------|
-| The Sango Classic | Deka | 150 CD entry, 120 seconds, three fish off the pond | 500 CD + major pack first win; 200 CD repeats |
+| The Sango Classic | Deka | 150 CD entry, 95 seconds, three fish from the pond | 500 CD + major pack + Poké Rod first win; 200 CD repeats |
 | Long-Term Growth Vehicle | Deka | A fully verified investment opportunity. It is a Magikarp. | Magikarp Lv 5 (costs 500 CD) |
-| The Shorefront Invitational | Harbourmaster Tayo | A three-round dock bracket; the champion's envelope arrives exactly 3% light | 600 CD purse + major pack + Heal Ball |
+| The Waterside Invitational | Pondwarden Tayo | A three-round pondside bracket; the champion's purse arrives exactly 3% light | 600 CD purse + major pack + Net Ball (paid on the spot) |
 | No Such Recipient | Uncle Marlow | Thirty-one years on the route, one letter that never delivered | Wingull Lv 12 (deliver fork) + standard pack |
 | The Incomplete File | Lucian Scrollkeeper | The archive has a you-shaped hole in it — a three-stage chain spanning the whole run | 300 + 300 + 600 CD, then **4000 CD + grand pack** |
-| Per My Last Memo | The checkpoint tent | Eight unseen seconds buys you the conversation at the tent flap | 400 CD + standard pack at turn-in |
-| Off the Record | Lucian Scrollkeeper | Two quiet carries past the auditors — then get counted on purpose | 550+ CD + standard pack (+ Heal Ball clean sweep) |
+| Off the Record | Lucian Scrollkeeper | After badge 3, run four Company agents out of the Sango lanes | 300 CD + standard pack + title card |
 | Pending Review | Imani, the census desk | Sign the Field Liability Policy. Or don't. | 500 CD + ID (sign) *or* the Elder's field kit (refuse); major pack either way |
 | The Lane Looks After Its Own | Oma | A bread round on Mom's lane | ~600 CD flat + supplies + optional free Eevee (1/20 shiny) |
 | Adjunct Faculty | Assistants Miri & Raan | The lab's grant went in for verification and came back as a very polite silence | 250 CD + minor pack each |
@@ -183,11 +182,8 @@ The pinned top line of the sidebar, from waking up in Sango Town to the end of t
 
 | Quest | Giver | Hook | Rewards |
 |-------|-------|------|---------|
-| Head Count | Field Researcher Ume | Catch one, self-report, and read the payee line on your first payroll receipt | 250 CD + minor pack; optional 900 CD wager |
-| Per My Last Memo | The verification checkpoint | *"Verification is voluntary. Compliance is appreciated."* | 400 CD + standard pack (also listed under Sango) |
 | Know Your Customer | Femi, door-to-door | A survey with a sketch stapled to the last page (after badge 1) | 460 CD + potions (fight fork) |
 | Blossom Path Regulars | Four locals | Eye contact is a contract out here | 150–250 CD flat prizes |
-| Roadside Work Orders | Forewoman Tetsu | Three contracts on a decommissioned road crew's board | 550 CD + items + female Combee Lv 8; golden apple for all three |
 | Right of Way | A survey wagon mid-road | Two agents grading every smallholding for acquisition (after badge 1) | 600 CD in prizes + 250 CD filing |
 | Unauthorized Harvest | The occupied Firstfurrow Farm | Clear the fence, then take the field back — the first liberation | 800 CD in prizes; the money steadies region-wide |
 | First Night Watch | The gate lantern at Firstfurrow | Hold the freed field from dusk to first light | 500 CD + major pack + breakfast hamper |
@@ -199,16 +195,14 @@ The pinned top line of the sidebar, from waking up in Sango Town to the end of t
 
 | Quest | Giver | Hook | Rewards |
 |-------|-------|------|---------|
-| Cascade Ascent | Falls Warden Shou | Base to crest in ninety seconds; every missed jump lands in water | 500 CD + major pack; 300 CD gold-time repeats |
-| Quarterly Sprint | Petal Courier Mio | Race the delivery bell down Blossom Path (~580 blocks, 180 seconds) | 500 CD + major pack; 150 CD daily |
-| Sting Operation | Beekeeper Tomo | Four "asset under valuation" seals on the hive line; the fourth is guarded | 350 CD + standard pack + honey; post-badge encore |
-| Notice of Non-Compliance | Printmaker Mei | Paste three moth prints back up while the canvasser's eyes are elsewhere | 400 CD + standard pack + Heal Ball |
+| Cascade Ascent | Falls Warden Shou | Five marker rings up the falls in fifty seconds, in Cascade Boots | 500 CD + major pack; gold-time repeats |
+| Notice of Non-Compliance | Printmaker Mei | Kill the sabotage bee-swarm before it wrecks Mei's stall | 400 CD + standard pack |
 | Natural History | Curator Kenji & Sayuri | Six bones for the plinth — and one de-extinction per fiscal era | 400 CD + standard pack; Kabuto *or* Anorith Lv 10 |
 | Stakeholder Alignment | Two suits on the gym roof | Step between the Site Assessors and the mayor | 460 CD prize + 600 CD thanks + major pack |
 | Performance Review | Nobody announces it | Ghost the gym tower unseen — or sweep all four trainers | 400–600 CD + major pack (hidden stealth meta) |
 | Sweetwater Futures | Beekeeper Masumi | The Company bought her hives in perpetuity. Nobody contracted the wild nests. | 300 CD + standard pack + female Combee Lv 12 |
 | The De-Acquisition Desk | Trader Mayu | Your Paras for an Elekid named Surcharge | Elekid Lv 12 |
-| Out of Office | Fisherman Genji | Eight string restrings two rods — one of them yours. Then, a wager. | Poké Rod + 300 CD + standard pack; 200 CD wager |
+| Out of Office | Fisherman Genji | Eight string for a batch of bait — a share for you. Then, a wager. | Poké Bait + 300 CD + standard pack; 200 CD wager |
 | Canvasser Patrol | Kazuo | Answer for the postings (after badge 1) — or buy "administrative clearance" | 280 CD flat |
 | Nurse Lila | The Pokémon Center | *"The invoice arrives pre-verified."* | Full heal, 100 CD per visit |
 

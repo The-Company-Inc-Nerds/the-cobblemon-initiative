@@ -1,0 +1,27 @@
+{
+  "_comment": "DRAKE — Royal League Elite Four (Dragon) intro. A per-leader copy of the Cicada scene (takehara_leader_intro.json), reusing its relative+facingFrame+endBack:7 geometry VERBATIM so gym/engage_royal_elite_4 still opens the battle from the endBack:7 stage-back. Camera path is leader-agnostic: pull up over the challenger's shoulder framing Drake, a TIGHT ZOOM-IN dolly to his face (the z:-8.5 -> z:-6.8 close holds mirror the Cicada push-in), a high side-profile sweep, then drop home. startTitle names him; a Dragon-type effect layer — ender_dragon growl/flap + portal.trigger swells, with dragon_breath then flame particles at the zoom — sells The Last Wyrm. Particles anchor off the CHALLENGER'S look frame (`execute at @s positioned ^ ^1 ^7`) since Drake has no fixed uuid; that's a best-effort placement toward where the leader hovers (~7 blocks ahead). IN-WORLD TUNING NEEDED: air-verify at the real Royal League arena and nudge the ^-offset + the zoom-keyframe framing so the breath/flame land ON Drake. endBack 7 MUST stay to match the shared engage function.",
+  "relative": true,
+  "facingFrame": true,
+  "skippable": true,
+  "endBack": 7.0,
+  "startTitle": "§5Elite Four Drake",
+  "startSubtitle": "§dThe Last Wyrm §8— §5Dragon",
+  "keyframes": [
+    { "x": 0.0, "y": 2.5, "z": -4.0, "yaw": 0.0, "pitch": 12.0, "ticks": 30 },
+    { "x": -1.2, "y": 2.2, "z": -8.5, "yaw": 0.0, "pitch": 6.0, "ticks": 45 },
+    { "x": -1.2, "y": 2.2, "z": -8.5, "yaw": 0.0, "pitch": 6.0, "ticks": 20 },
+    { "x": -0.4, "y": 2.6, "z": -6.8, "yaw": 0.0, "pitch": 8.0, "ticks": 18 },
+    { "x": -0.4, "y": 2.6, "z": -6.8, "yaw": 0.0, "pitch": 8.0, "ticks": 30 },
+    { "x": 6.5, "y": 4.5, "z": 1.5, "yaw": -55.0, "pitch": 22.0, "ticks": 50 },
+    { "x": 0.0, "y": 1.0, "z": -6.5, "yaw": 0.0, "pitch": 4.0, "ticks": 40 }
+  ],
+  "cues": [
+    { "tick": 8, "sound": "minecraft:entity.ender_dragon.growl", "volume": 0.8, "pitch": 0.8 },
+    { "tick": 10, "sound": "minecraft:block.portal.trigger", "volume": 0.5, "pitch": 1.0 },
+    { "tick": 70, "sound": "minecraft:entity.ender_dragon.flap", "volume": 0.8, "pitch": 1.0 },
+    { "tick": 78, "command": "execute at @s positioned ^ ^1 ^7 run particle minecraft:dragon_breath ~ ~ ~ 0.6 0.8 0.6 0.02 32 force" },
+    { "tick": 96, "command": "execute at @s positioned ^ ^1 ^7 run particle minecraft:flame ~ ~ ~ 0.6 0.8 0.6 0.02 32 force" },
+    { "tick": 100, "sound": "minecraft:entity.ender_dragon.growl", "volume": 0.5, "pitch": 0.7 },
+    { "tick": 190, "sound": "minecraft:entity.player.levelup", "volume": 0.6, "pitch": 0.5 }
+  ]
+}

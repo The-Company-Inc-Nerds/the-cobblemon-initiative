@@ -1617,6 +1617,19 @@ public class CobblemonInitiativeCommands {
       board.getOrCreatePlayerScore(revived, obj);
     score.set(score.get() + 1);
 
+    // Vanilla PlayerList.respawn drops a bedless player on the spawn COLUMN, whose
+    // MOTION_BLOCKING heightmap scan lands on the Sango spawn-house ROOF — the exact bug
+    // InitiativeInit.snapFirstJoinToSpawn fixes for first join, except JOIN never fires on
+    // a respawn. Snap the revive to the shared town spawn so a dishonored respawn lands
+    // inside Sango, not on the roof.
+    net.minecraft.server.level.ServerLevel overworld = server.overworld();
+    if (revived.serverLevel() == overworld) {
+      net.minecraft.core.BlockPos spawn = overworld.getSharedSpawnPos();
+      revived.teleportTo(
+        overworld, spawn.getX() + 0.5, spawn.getY(), spawn.getZ() + 0.5,
+        overworld.getSharedSpawnAngle(), 0.0f);
+    }
+
     revived.sendSystemMessage(Component.literal(
       "§8You claw back from the dark. That was not how it was meant to end — and the ledger remembers."));
     revived.level().playSound(

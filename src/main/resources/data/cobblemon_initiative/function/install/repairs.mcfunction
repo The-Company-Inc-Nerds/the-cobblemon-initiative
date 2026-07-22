@@ -33,3 +33,10 @@ execute unless score #repair_a9 ci_ambient matches 1 run function cobblemon_init
 # ── wave a10 (0.6.0-alpha.10): dialog cohesion pass — latch-placed cast re-latched so
 #    punched-up dialog reaches already-spawned bodies (uuid'd NPCs refresh via preset hash) ──
 execute unless score #repair_a10 ci_ambient matches 1 run function cobblemon_initiative:install/repairs_a10_arm
+
+# ── wave a13 (0.6.0-alpha.13): duplicate cobblemon-model companions — a10 killed the six
+#    Cobblemon-model companions (Mimi/Jackpot/Coins/Bobber/Cloud/Pip) with the WRONG
+#    easy_npc type (humanoid, not cobblemon_npc) so the kill no-opped while the latch
+#    reset → a second body spawned. Re-kill by the correct type (name + entity-tag) and
+#    re-latch so each respawns as a single body ──
+execute unless score #repair_a13 ci_ambient matches 1 run function cobblemon_initiative:install/repairs_a13_arm

@@ -1,0 +1,27 @@
+{
+  "_comment": "CHAMPION CYNTHIA — Royal League champion intro (The Standing Throne). A per-leader copy of leader_intro.json (the shared scene cannot carry a name title), reusing Cicada's takehara_leader_intro geometry VERBATIM — the same relative+facingFrame+endBack:7 chaining so gym/engage/engage_royal_champion still opens the battle from the endBack stage. Structure mirrors leader_intro: pull up over the challenger's shoulder framing Cynthia, then a TIGHT ZOOM-IN dolly to her face (the z:-8.5 -> z:-6.8 close hold), cross high for a side profile, then drop home. startTitle names her; a coronation/throne theme — raid horn + beacon activate open, the challenge-complete fanfare and beacon power-select land the seat-of-power reveal, with totem_of_undying + end_rod particles crowning her. Champion has no uuid, so particles anchor off the CHALLENGER'S look frame (execute at @s positioned ^ ^1 ^7) toward where she stands, like Cicada. IN-WORLD TUNING NEEDED: air-verify the ^-offset and the zoom-keyframe framing at the real Royal League throne [3528 166 2773] and nudge as needed. endBack 7 MUST match leader_intro so the post-scene battle opens correctly.",
+  "relative": true,
+  "facingFrame": true,
+  "skippable": true,
+  "endBack": 7.0,
+  "startTitle": "§6Champion Cynthia",
+  "startSubtitle": "§eThe Standing Throne §8— §6Champion",
+  "keyframes": [
+    { "x": 0.0, "y": 2.5, "z": -4.0, "yaw": 0.0, "pitch": 12.0, "ticks": 30 },
+    { "x": -1.2, "y": 2.2, "z": -8.5, "yaw": 0.0, "pitch": 6.0, "ticks": 45 },
+    { "x": -1.2, "y": 2.2, "z": -8.5, "yaw": 0.0, "pitch": 6.0, "ticks": 20 },
+    { "x": -0.4, "y": 2.6, "z": -6.8, "yaw": 0.0, "pitch": 8.0, "ticks": 18 },
+    { "x": -0.4, "y": 2.6, "z": -6.8, "yaw": 0.0, "pitch": 8.0, "ticks": 30 },
+    { "x": 6.5, "y": 4.5, "z": 1.5, "yaw": -55.0, "pitch": 22.0, "ticks": 50 },
+    { "x": 0.0, "y": 1.0, "z": -6.5, "yaw": 0.0, "pitch": 4.0, "ticks": 40 }
+  ],
+  "cues": [
+    { "tick": 8, "sound": "minecraft:event.raid.horn", "volume": 0.7, "pitch": 0.8 },
+    { "tick": 10, "sound": "minecraft:block.beacon.activate", "volume": 0.6, "pitch": 1.0 },
+    { "tick": 70, "sound": "minecraft:ui.toast.challenge_complete", "volume": 0.8, "pitch": 1.0 },
+    { "tick": 78, "command": "execute at @s positioned ^ ^1 ^7 run particle minecraft:totem_of_undying ~ ~ ~ 0.6 0.8 0.6 0.02 32 force" },
+    { "tick": 96, "command": "execute at @s positioned ^ ^1 ^7 run particle minecraft:end_rod ~ ~ ~ 0.6 0.8 0.6 0.02 32 force" },
+    { "tick": 100, "sound": "minecraft:block.beacon.power_select", "volume": 0.6, "pitch": 1.2 },
+    { "tick": 190, "sound": "minecraft:entity.player.levelup", "volume": 0.6, "pitch": 0.5 }
+  ]
+}

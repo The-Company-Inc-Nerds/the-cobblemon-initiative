@@ -1,0 +1,27 @@
+{
+  "_comment": "TITANIA — Mystic Marsh (gym 3, Fairy) leader intro. A per-leader copy of leader_intro.json (the shared scene cannot carry a name title), reusing Cicada's takehara_leader_intro geometry VERBATIM: the same relative+facingFrame+endBack:7 chaining so gym/engage/engage_mystic_leader still opens the battle from the endBack stage. Camera pulls up over the challenger's shoulder framing Titania, TIGHT ZOOM-IN dolly to her face (the two z:-8.5 -> z:-6.8 close holds mirror starter_reveal's push-in), crosses high for a side profile, then drops home. startTitle names her; a Fairy/Mist-Court theme sells the reveal — amethyst chime + hit sparkle on the pull-up, enchantment-table shimmer at the zoom, amethyst resonance on the profile cross, closing levelup swell. Particles (enchant at the zoom, end_rod at the profile) are anchored ON the leader via `execute at <uuid>` so they land on Titania herself (fixes Cicada's rough challenger-offset placement). IN-WORLD TUNING MAY BE NEEDED: air-verify the zoom-keyframe framing and the particle height (~1 block above the leader's feet) at the real Mystic Marsh arena; nudge if the float-leader hovers higher/lower than assumed. endBack 7 MUST match leader_intro so the post-scene battle opens correctly.",
+  "relative": true,
+  "facingFrame": true,
+  "skippable": true,
+  "endBack": 7.0,
+  "startTitle": "§dLeader Titania",
+  "startSubtitle": "§5Queen of the Mist Court §8— §dFairy",
+  "keyframes": [
+    { "x": 0.0, "y": 2.5, "z": -4.0, "yaw": 0.0, "pitch": 12.0, "ticks": 30 },
+    { "x": -1.2, "y": 2.2, "z": -8.5, "yaw": 0.0, "pitch": 6.0, "ticks": 45 },
+    { "x": -1.2, "y": 2.2, "z": -8.5, "yaw": 0.0, "pitch": 6.0, "ticks": 20 },
+    { "x": -0.4, "y": 2.6, "z": -6.8, "yaw": 0.0, "pitch": 8.0, "ticks": 18 },
+    { "x": -0.4, "y": 2.6, "z": -6.8, "yaw": 0.0, "pitch": 8.0, "ticks": 30 },
+    { "x": 6.5, "y": 4.5, "z": 1.5, "yaw": -55.0, "pitch": 22.0, "ticks": 50 },
+    { "x": 0.0, "y": 1.0, "z": -6.5, "yaw": 0.0, "pitch": 4.0, "ticks": 40 }
+  ],
+  "cues": [
+    { "tick": 8, "sound": "minecraft:block.amethyst_block.chime", "volume": 0.9, "pitch": 1.2 },
+    { "tick": 10, "sound": "minecraft:block.amethyst_block.hit", "volume": 0.5, "pitch": 1.4 },
+    { "tick": 70, "sound": "minecraft:block.enchantment_table.use", "volume": 0.8, "pitch": 1.0 },
+    { "tick": 78, "command": "execute at b665f300-628d-445b-8a3e-42a5cefca1bd run particle minecraft:enchant ~ ~1 ~ 0.6 0.8 0.6 0.02 32 force" },
+    { "tick": 96, "command": "execute at b665f300-628d-445b-8a3e-42a5cefca1bd run particle minecraft:end_rod ~ ~1 ~ 0.6 0.8 0.6 0.02 32 force" },
+    { "tick": 100, "sound": "minecraft:block.amethyst_block.resonate", "volume": 0.6, "pitch": 1.0 },
+    { "tick": 190, "sound": "minecraft:entity.player.levelup", "volume": 0.6, "pitch": 0.5 }
+  ]
+}

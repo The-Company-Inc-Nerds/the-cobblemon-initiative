@@ -40,6 +40,98 @@
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
+                            Name: "badges_gte_3"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "no_defeated_offrec_tunde"
+                        }
+                    ],
+                    Priority: 50,
+                    Buttons: [
+                        {
+                            Name: "Off the record it is",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_offrec_tunde"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "say There is nothing here to appraise anymore. Enjoy the field while it is scenery."
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_offrec_tunde"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:villain_grunt_1 @s"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_offrec_tunde"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:villain_grunt_1 onwin {1: ['cobbledollars give @1 400', 'tag @1 add defeated_offrec_tunde', '@2 say Off the record, then. The appraisal is void, the parcel unclaimed, and I was never at this fence.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 150', '@1 say A verified outcome. The Company thanks you for your cooperation and keeps the land.']}"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_offrec_tunde"
+                                }
+                            ],
+                            Label: "fight_button"
+                        },
+                        {
+                            Name: "Walk away",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "walk_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "You again — and not for the docks this time. Someone at the archive has been asking the wrong questions, and now here you are at my fence."
+                        },
+                        {
+                            Text: "Fine. Off the record, then. No memo, no audit, no witnesses. Settle it and one of us stops appraising this town."
+                        }
+                    ],
+                    Name: "Liaison — off the record",
+                    Label: "off_record_fight"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
                             Name: "fields_liberated_gte_1"
                         }
                     ],

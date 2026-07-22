@@ -11,3 +11,5 @@ bossbar set cobblemon_initiative:cascade visible false
 # A relog mid-run abandons the attempt cleanly (tags persist; timer state resets).
 tag @a remove ci_ascending
 scoreboard objectives add ci_cascade_day dummy
+# Per-player ordered-checkpoint counter (0 = none passed, advances 1..4 through the 5 rings).
+scoreboard objectives add ci_cascade_cp dummy

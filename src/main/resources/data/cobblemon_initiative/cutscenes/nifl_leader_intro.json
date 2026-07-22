@@ -1,0 +1,27 @@
+{
+  "_comment": "BOREAS — Nifl Town (gym 9, Ice) leader intro. A per-leader copy of the Cicada scene (leader_intro can't carry a name title), reusing the SAME relative+facingFrame+endBack:7 geometry VERBATIM so gym/engage_nifl_leader still opens the battle from the endBack:7 stage-back. Camera path is leader-agnostic: pull up over the challenger's shoulder framing Boreas, a TIGHT ZOOM-IN dolly to his face (the z:-8.5 -> z:-6.8 close holds mirror starter_reveal's push-in), cross high for a side profile, then drop home. Ice theme swapped onto the shared cue skeleton: glass/powder-snow breaks and snow steps for the White Silence reveal, snowflake + snowball particles anchored ON the leader by uuid (particles land on Boreas at the zoom instead of Cicada's rough challenger-facing guess). tick 190 keeps the universal levelup swell. IN-WORLD TUNING MAY BE NEEDED: air-verify the zoom-keyframe framing and particle density at the real Nifl arena; endBack 7 MUST match so the post-scene battle opens correctly.",
+  "relative": true,
+  "facingFrame": true,
+  "skippable": true,
+  "endBack": 7.0,
+  "startTitle": "§bLeader Boreas",
+  "startSubtitle": "§fWarden of the White Silence §8— §bIce",
+  "keyframes": [
+    { "x": 0.0, "y": 2.5, "z": -4.0, "yaw": 0.0, "pitch": 12.0, "ticks": 30 },
+    { "x": -1.2, "y": 2.2, "z": -8.5, "yaw": 0.0, "pitch": 6.0, "ticks": 45 },
+    { "x": -1.2, "y": 2.2, "z": -8.5, "yaw": 0.0, "pitch": 6.0, "ticks": 20 },
+    { "x": -0.4, "y": 2.6, "z": -6.8, "yaw": 0.0, "pitch": 8.0, "ticks": 18 },
+    { "x": -0.4, "y": 2.6, "z": -6.8, "yaw": 0.0, "pitch": 8.0, "ticks": 30 },
+    { "x": 6.5, "y": 4.5, "z": 1.5, "yaw": -55.0, "pitch": 22.0, "ticks": 50 },
+    { "x": 0.0, "y": 1.0, "z": -6.5, "yaw": 0.0, "pitch": 4.0, "ticks": 40 }
+  ],
+  "cues": [
+    { "tick": 8, "sound": "minecraft:block.glass.break", "volume": 0.9, "pitch": 1.2 },
+    { "tick": 10, "sound": "minecraft:block.powder_snow.break", "volume": 0.5, "pitch": 1.0 },
+    { "tick": 70, "sound": "minecraft:block.powder_snow.step", "volume": 0.8, "pitch": 1.0 },
+    { "tick": 78, "command": "execute at cc1f6d46-48c1-42f2-bf46-a07194593733 run particle minecraft:snowflake ~ ~1 ~ 0.6 0.8 0.6 0.02 32 force" },
+    { "tick": 96, "command": "execute at cc1f6d46-48c1-42f2-bf46-a07194593733 run particle minecraft:item_snowball ~ ~1 ~ 0.6 0.8 0.6 0.02 32 force" },
+    { "tick": 100, "sound": "minecraft:block.glass.break", "volume": 0.4, "pitch": 1.4 },
+    { "tick": 190, "sound": "minecraft:entity.player.levelup", "volume": 0.6, "pitch": 0.5 }
+  ]
+}

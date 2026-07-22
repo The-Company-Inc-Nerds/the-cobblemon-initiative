@@ -1,6 +1,5 @@
-# ☎ Professor Acacia — a second starter is waiting (unlocked at 15 dex catches). One-shot. @s.
+# ☎ Professor Acacia — second starter waiting (15 dex). Video call. One-shot. @s.
 tag @s add call_acacia_second_done
-title @s actionbar {"text":"☎ Phone ringing — Professor Acacia","color":"aqua"}
+title @s actionbar {"text":"☎ Incoming call — Professor Acacia","color":"aqua"}
 playsound minecraft:block.note_block.bell master @s ~ ~ ~ 1 1
-tellraw @s ["",{"text":"☎ ","color":"aqua"},{"text":"Professor Acacia: ","color":"aqua","bold":true},{"text":"Your Pokedex is filling out faster than I can log it. Fifteen species and counting — you have the hands for this work.","color":"white"}]
-tellraw @s [{"text":"   Come back to the lab when you pass through Sango. A trainer who catches like you have earned a second partner. I set one aside.","color":"gray","italic":true}]
+function cobblemon_initiative:phone/deliver {caller:"phone_acacia",tag:"ci_phone_acacia",label:"call_second"}

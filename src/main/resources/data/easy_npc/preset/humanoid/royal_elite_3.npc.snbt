@@ -87,19 +87,6 @@
                                 },
                                 {
                                     Type: "COMMAND",
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_defeated_royal_elite_3"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tbcs attach rctmod:royal_elite_3 @s"
-                                },
-                                {
-                                    Type: "COMMAND",
                                     ExecAsUser: 1b,
                                     ConditionDataSet: {
                                         ConditionDataSet: [
@@ -110,7 +97,7 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:royal_elite_3 onwin {1: ['cobbledollars give @1 8000', 'tag @1 add defeated_royal_elite_3', '@2 say Even darkness has a shape, and you found it. Drake is last of the four. Do not let him intimidate you.'], 2: ['@1 say You lost the thread in the gloom. Find it again, and we will dance once more.']}"
+                                    Cmd: "cutscene play royal_elite_3_intro function cobblemon_initiative:gym/engage_royal_elite_3"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

@@ -1,0 +1,27 @@
+{
+  "_comment": "MARCUS — Royal League Elite Four (Rock). A per-leader copy of the Cicada leader intro (takehara_leader_intro.json), reusing the SAME relative+facingFrame+endBack:7 camera geometry verbatim so the post-scene battle still opens from the endBack:7 stage-back. Only the title/subtitle and the theme cues change: stone-break / deepslate / anvil-land / ravager-roar sell 'The Standing Mountain', with a stone block-dust burst then a crit sparkle at the zoom-in. Particles anchor off the CHALLENGER'S look frame (execute at @s positioned ^ ^1 ^7) since this leader has no fixed uuid — best-effort placement toward where Marcus stands ~7 blocks ahead. IN-WORLD TUNING NEEDED: air-verify + nudge the ^-offset and zoom framing at the real Royal League Elite Four hall; endBack 7 MUST stay to match the shared leader intro so the battle opens correctly.",
+  "relative": true,
+  "facingFrame": true,
+  "skippable": true,
+  "endBack": 7.0,
+  "startTitle": "§7Elite Four Marcus",
+  "startSubtitle": "§8The Standing Mountain §8— §7Rock",
+  "keyframes": [
+    { "x": 0.0, "y": 2.5, "z": -4.0, "yaw": 0.0, "pitch": 12.0, "ticks": 30 },
+    { "x": -1.2, "y": 2.2, "z": -8.5, "yaw": 0.0, "pitch": 6.0, "ticks": 45 },
+    { "x": -1.2, "y": 2.2, "z": -8.5, "yaw": 0.0, "pitch": 6.0, "ticks": 20 },
+    { "x": -0.4, "y": 2.6, "z": -6.8, "yaw": 0.0, "pitch": 8.0, "ticks": 18 },
+    { "x": -0.4, "y": 2.6, "z": -6.8, "yaw": 0.0, "pitch": 8.0, "ticks": 30 },
+    { "x": 6.5, "y": 4.5, "z": 1.5, "yaw": -55.0, "pitch": 22.0, "ticks": 50 },
+    { "x": 0.0, "y": 1.0, "z": -6.5, "yaw": 0.0, "pitch": 4.0, "ticks": 40 }
+  ],
+  "cues": [
+    { "tick": 8, "sound": "minecraft:block.stone.break", "volume": 0.9, "pitch": 0.7 },
+    { "tick": 10, "sound": "minecraft:block.deepslate.break", "volume": 0.5, "pitch": 0.8 },
+    { "tick": 70, "sound": "minecraft:block.anvil.land", "volume": 0.7, "pitch": 0.7 },
+    { "tick": 78, "command": "execute at @s positioned ^ ^1 ^7 run particle block minecraft:stone ~ ~ ~ 0.6 0.8 0.6 0.02 32 force" },
+    { "tick": 96, "command": "execute at @s positioned ^ ^1 ^7 run particle minecraft:crit ~ ~ ~ 0.6 0.8 0.6 0.02 32 force" },
+    { "tick": 100, "sound": "minecraft:entity.ravager.roar", "volume": 0.6, "pitch": 0.7 },
+    { "tick": 190, "sound": "minecraft:entity.player.levelup", "volume": 0.6, "pitch": 0.5 }
+  ]
+}

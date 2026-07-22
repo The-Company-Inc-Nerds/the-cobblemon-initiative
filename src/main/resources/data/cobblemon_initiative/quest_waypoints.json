@@ -576,33 +576,6 @@
       ]
     },
     {
-      "holder": "q.side_shift",
-      "name": "Roadside Work Orders — Night Shift",
-      "stages": [
-        {
-          "if_tags": [
-            "work_night_active"
-          ],
-          "not_tags": [
-            "work_night_paid"
-          ],
-          "label": "Cull eight on Blossom Path tonight",
-          "x": 2185.0,
-          "y": 64.0,
-          "z": 2786.0
-        },
-        {
-          "if_tags": [
-            "work_night_done"
-          ],
-          "not_tags": [
-            "work_night_paid"
-          ],
-          "label": "Collect night pay from Tetsu"
-        }
-      ]
-    },
-    {
       "holder": "q.side_bones",
       "name": "Natural History",
       "stages": [
@@ -617,33 +590,6 @@
           "x": 1902.5,
           "y": 114.0,
           "z": 2337.5
-        }
-      ]
-    },
-    {
-      "holder": "q.side_memo",
-      "name": "Per My Last Memo",
-      "stages": [
-        {
-          "if_tags": [
-            "ckpt_warned"
-          ],
-          "not_tags": [
-            "memo_heard"
-          ],
-          "label": "Ears on the checkpoint tent"
-        },
-        {
-          "if_tags": [
-            "memo_heard"
-          ],
-          "not_tags": [
-            "memo_delivered"
-          ],
-          "label": "Bring Memo 44-C to Lucian",
-          "x": 2627.0,
-          "y": 119.0,
-          "z": 2778.0
         }
       ]
     },
@@ -752,53 +698,51 @@
       "stages": [
         {
           "if_tags": [
-            "errand1_done",
-            "errand2_done",
-            "errand3_done"
+            "badges_gte_3"
           ],
           "not_tags": [
-            "off_record_complete"
+            "defeated_offrec_tunde"
           ],
-          "label": "Return to Lucian for the quiet pay",
-          "x": 2627.0,
-          "y": 119.0,
-          "z": 2778.0
+          "label": "Clear the four Company agents in Sango",
+          "x": 2581.5,
+          "y": 111.0,
+          "z": 2822.5
         },
         {
           "if_tags": [
-            "off_errand_3_active"
+            "badges_gte_3"
           ],
           "not_tags": [
-            "errand3_done"
+            "defeated_offrec_musa"
           ],
-          "label": "Let an auditor log you — read the poster",
+          "label": "Clear the four Company agents in Sango",
+          "x": 2592.5,
+          "y": 111.0,
+          "z": 2815.5
+        },
+        {
+          "if_tags": [
+            "badges_gte_3"
+          ],
+          "not_tags": [
+            "defeated_offrec_bomani"
+          ],
+          "label": "Clear the four Company agents in Sango",
           "x": 2611.5,
           "y": 110.0,
           "z": 2792.5
         },
         {
           "if_tags": [
-            "carrying_basket"
+            "badges_gte_3"
           ],
           "not_tags": [
-            "errand2_done"
+            "defeated_offrec_jelani"
           ],
-          "label": "Carry the basket to Fara — unseen",
-          "x": 2631.5,
-          "y": 112.0,
-          "z": 2806.5
-        },
-        {
-          "if_tags": [
-            "carrying_ledger"
-          ],
-          "not_tags": [
-            "errand1_done"
-          ],
-          "label": "Carry the satchel to Oma — unseen",
-          "x": 2586.5,
-          "y": 107.0,
-          "z": 2958.5
+          "label": "Clear the four Company agents in Sango",
+          "x": 2578.5,
+          "y": 108.0,
+          "z": 2942.5
         }
       ]
     },
@@ -817,24 +761,6 @@
           "x": 1602.1,
           "y": 90.0,
           "z": 2481.3
-        }
-      ]
-    },
-    {
-      "holder": "q.side_sprint",
-      "name": "Quarterly Sprint",
-      "stages": [
-        {
-          "if_tags": [
-            "ci_sprinting"
-          ],
-          "not_tags": [
-            "race_won"
-          ],
-          "label": "Ring the bell at the Takehara arch",
-          "x": 1924.0,
-          "y": 110.0,
-          "z": 2584.0
         }
       ]
     },
@@ -869,24 +795,6 @@
       ]
     },
     {
-      "holder": "q.side_sting",
-      "name": "Sting Operation",
-      "stages": [
-        {
-          "if_tags": [
-            "sting_seal_1"
-          ],
-          "not_tags": [
-            "sting_reward_paid"
-          ],
-          "label": "Walk the four seals with Tomo",
-          "x": 1920.5,
-          "y": 105.0,
-          "z": 2569.5
-        }
-      ]
-    },
-    {
       "holder": "q.side_posters",
       "name": "Notice of Non-Compliance",
       "stages": [
@@ -897,25 +805,28 @@
           "not_tags": [
             "sq_posters_done"
           ],
-          "label": "Paste three moth prints unseen",
-          "x": 1915.0,
-          "y": 64.0,
-          "z": 2467.0
+          "label": "Stand off the swarm at Mei's stall",
+          "x": 1818.0,
+          "y": 109.0,
+          "z": 2506.0
         }
       ]
     },
     {
-      "holder": "q.side_census",
-      "name": "Head Count",
+      "holder": "q.side_takehara_cave",
+      "name": "The Falls Cave",
       "stages": [
         {
           "if_tags": [
-            "census_accepted"
+            "takehara_cave_started"
           ],
           "not_tags": [
-            "census_paid"
+            "mc_gym1_done"
           ],
-          "label": "Log a verified capture for Ume"
+          "label": "Gather a Glow Berry and a Spore Blossom",
+          "x": 2125.0,
+          "y": 136.0,
+          "z": 2703.0
         }
       ]
     },
@@ -987,6 +898,60 @@
       ]
     },
     {
+      "holder": "q.side_invit",
+      "name": "Waterside Invitational",
+      "stages": [
+        {
+          "if_tags": [
+            "defeated_sq_bracket_3"
+          ],
+          "not_tags": [
+            "invit_podium_done"
+          ],
+          "label": "Collect your purse from Pondwarden Tayo",
+          "x": 2542.5,
+          "y": 108.0,
+          "z": 2953.5
+        },
+        {
+          "if_tags": [
+            "defeated_sq_bracket_2"
+          ],
+          "not_tags": [
+            "defeated_sq_bracket_3"
+          ],
+          "label": "Final round — beat Pondwarden Tayo",
+          "x": 2542.5,
+          "y": 108.0,
+          "z": 2953.5
+        },
+        {
+          "if_tags": [
+            "defeated_sq_bracket_1"
+          ],
+          "not_tags": [
+            "defeated_sq_bracket_2"
+          ],
+          "label": "Round two — beat Net-Mender Kima",
+          "x": 2627.5,
+          "y": 118.0,
+          "z": 2808.5
+        },
+        {
+          "if_tags": [
+            "invit_entered"
+          ],
+          "not_tags": [
+            "defeated_sq_bracket_1"
+          ],
+          "label": "Round one — beat Reedhand Lumo",
+          "x": 2604.5,
+          "y": 110.0,
+          "z": 2822.5
+        }
+      ]
+    },
+    {
       "holder": "q.side_clinic",
       "name": "Preferred Provider",
       "stages": [
@@ -997,7 +962,7 @@
           "not_tags": [
             "clinic_stocked"
           ],
-          "label": "Clinic list: 8 oran, 4 pecha, 2 cheri",
+          "label": "Clinic list: 1 oran, 1 pecha, 1 cheri",
           "x": 2677.5,
           "y": 118.0,
           "z": 2931.5

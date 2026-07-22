@@ -40,60 +40,6 @@
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
-                            Name: "sting_memo_taken"
-                        },
-                        {
-                            Type: "PLAYER_TAG",
-                            Operation: "EQUALS",
-                            Name: "no_field_memo_filed"
-                        }
-                    ],
-                    Priority: 77,
-                    Buttons: [
-                        {
-                            Name: "File Field Memo 7-12",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "function cobblemon_initiative:sidequest/personnel_file/file_field_memo"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    Cmd: "tellraw @initiator [{\"text\":\"Lucian shelves the determinations beside the perpetuity contract and lets the two of them argue.\",\"color\":\"gold\"}]"
-                                },
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "file_memo712_button"
-                        },
-                        {
-                            Name: "Keep it for now",
-                            Actions: [
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "keep_button"
-                        }
-                    ],
-                    Texts: [
-                        {
-                            Text: "Pilot determinations. Honey rejected — assets mobile and armed. I have met the assets; the phrasing is fair. And wheat approved, proceed to Hua Zhan. They wrote down where they are going next and stapled it behind a beehive."
-                        },
-                        {
-                            Text: "This is the same Company that bought a beekeepers yield in perpetuity while rejecting honey as a commodity. Both papers are signed. Both are policy. Hand it here — the archive pays a records fee for live Company paper."
-                        }
-                    ],
-                    Name: "Lucian — Field Memo 7-12",
-                    Label: "memo712_turn_in"
-                },
-                {
-                    Conditions: [
-                        {
-                            Type: "PLAYER_TAG",
-                            Operation: "EQUALS",
                             Name: "carrying_dead_letter"
                         },
                         {
@@ -765,17 +711,12 @@
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
-                            Name: "no_off_record_started"
+                            Name: "no_defeated_offrec_jelani"
                         },
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
-                            Name: "no_notices_filed"
-                        },
-                        {
-                            Type: "PLAYER_TAG",
-                            Operation: "EQUALS",
-                            Name: "badges_lt_3"
+                            Name: "badges_gte_3"
                         }
                     ],
                     Priority: 51,
@@ -801,7 +742,7 @@
                             Label: "histories_button"
                         },
                         {
-                            Name: "Third badge. Noted.",
+                            Name: "Off the record. Noted.",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -812,10 +753,10 @@
                     ],
                     Texts: [
                         {
-                            Text: "The three records are filed — the ledger remembers its first draft again, and it has you to thank. The next chapter is being pasted up in a town you cannot argue with until you are wearing a third badge, so that part waits on the roads."
+                            Text: "The three records are filed and the ledger remembers its first draft — thanks to you. Now there is a thing that will not keep, and it never touches a file. A word off the record."
                         },
                         {
-                            Text: "But there is one thing that will not keep, and it never touches a file. A word off the record, while the two grey coats in the square have their backs turned. If you have the nerve for something quiet, say so."
+                            Text: "Four Company people are working the Sango lanes — a man appraising the wheat field, the courier at his cart, and the two auditors sweeping the square with their clipboards. Clear them out, quietly, and give this town a season to breathe. And no — this conversation did not happen."
                         }
                     ],
                     Name: "Lucian — a word off the record",
@@ -1103,7 +1044,12 @@
                                 {
                                     Type: "PLAYER_TAG",
                                     Operation: "EQUALS",
-                                    Name: "no_off_record_started"
+                                    Name: "badges_gte_3"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_offrec_jelani"
                                 }
                             ],
                             Label: "offrec_button"
@@ -1161,7 +1107,12 @@
                                 {
                                     Type: "PLAYER_TAG",
                                     Operation: "EQUALS",
-                                    Name: "no_off_record_started"
+                                    Name: "badges_gte_3"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_offrec_jelani"
                                 }
                             ],
                             Label: "offrec_button"
@@ -1212,7 +1163,12 @@
                                 {
                                     Type: "PLAYER_TAG",
                                     Operation: "EQUALS",
-                                    Name: "no_off_record_started"
+                                    Name: "badges_gte_3"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_offrec_jelani"
                                 }
                             ],
                             Label: "offrec_button"
@@ -1242,32 +1198,17 @@
                     Priority: -1,
                     Buttons: [
                         {
-                            Name: "Take the ledger satchel",
+                            Name: "Consider it done — off the record",
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "tag @s add off_record_started"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "tag @s add carrying_ledger"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "scoreboard players set @s obs_count 0"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    Cmd: "title @initiator actionbar [{\"text\":\"Carry the satchel to Oma at her fence - unseen by the auditors. Break their line of sight with buildings and crouch.\",\"color\":\"yellow\"}]"
+                                    Cmd: "title @initiator actionbar [{\"text\":\"Clear the four Company agents: Tunde at the wheat field, Musa at the courier cart, and both auditors in the square. Beat each and they are gone.\",\"color\":\"yellow\"}]"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "take_satchel_button"
+                            Label: "accept_button"
                         },
                         {
                             Name: "Not my errand",
@@ -1281,10 +1222,10 @@
                     ],
                     Texts: [
                         {
-                            Text: "Lower your voice. The two grey coats in the square are on an observation sweep, and everything they see goes on a file that outlives the seer. Some of what this town does should stay off that file. Nothing illegal. Just neighborly, and quiet."
+                            Text: "Lower your voice. Four of them are working these lanes right now. Tunde is at the wheat field appraising ground he does not own. Musa sits with his cart on the north road. And the two auditors patrol the square, clipboards up, their sight cones crossing over the census desk."
                         },
                         {
-                            Text: "Carry my ledger satchel to Oma at her fence, and do it without a clipboard ever landing its eyes on you. If one does, it is not the end - it is only a line item, and line items can be redacted. But try for clean. Clean is a kind of freedom around here."
+                            Text: "Clear them out. Off the record — the way a thing gets done when nobody wants it on a file. They will not come quietly; the Company never does. But beat each of them and they are simply gone from this town, and no, this conversation did not happen."
                         }
                     ],
                     Name: "Lucian — off the record",

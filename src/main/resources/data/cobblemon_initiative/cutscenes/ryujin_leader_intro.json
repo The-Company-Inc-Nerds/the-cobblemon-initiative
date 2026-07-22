@@ -1,0 +1,27 @@
+{
+  "_comment": "RYUJIN — Ryujin Keep (gym 8, Dragon) leader intro. A per-leader copy of leader_intro.json (the shared scene cannot carry a name title), reusing Cicada's relative+facingFrame+endBack:7 geometry VERBATIM so the camera path stays leader-agnostic and gym/engage_ryujin_leader still opens the battle from the endBack:7 stage-back. Structure mirrors leader_intro: pull up over the challenger's shoulder framing Ryujin, then a TIGHT ZOOM-IN dolly to the face (the z:-8.5 -> z:-6.8 close hold), cross high for a side profile, then drop home. startTitle names them; the theme is DRAGON/RIFT — ender_dragon growl+flap and portal ambient sell the torn-rift Keeper, with dragon_breath then portal particles anchored ON the leader's body (this leader HAS a uuid, so particles land on them via `execute at <uuid>`, fixing Cicada's rough challenger-facing placement). The universal levelup swell closes at tick 190. IN-WORLD TUNING NEEDED: air-verify + nudge the particle heights and the zoom-keyframe framing at the real Ryujin Keep arena (leader floats over the rift stage). endBack 7 MUST match leader_intro so the post-scene battle opens correctly.",
+  "relative": true,
+  "facingFrame": true,
+  "skippable": true,
+  "endBack": 7.0,
+  "startTitle": "§5Leader Ryujin",
+  "startSubtitle": "§dKeeper of the Rift §8— §5Dragon",
+  "keyframes": [
+    { "x": 0.0, "y": 2.5, "z": -4.0, "yaw": 0.0, "pitch": 12.0, "ticks": 30 },
+    { "x": -1.2, "y": 2.2, "z": -8.5, "yaw": 0.0, "pitch": 6.0, "ticks": 45 },
+    { "x": -1.2, "y": 2.2, "z": -8.5, "yaw": 0.0, "pitch": 6.0, "ticks": 20 },
+    { "x": -0.4, "y": 2.6, "z": -6.8, "yaw": 0.0, "pitch": 8.0, "ticks": 18 },
+    { "x": -0.4, "y": 2.6, "z": -6.8, "yaw": 0.0, "pitch": 8.0, "ticks": 30 },
+    { "x": 6.5, "y": 4.5, "z": 1.5, "yaw": -55.0, "pitch": 22.0, "ticks": 50 },
+    { "x": 0.0, "y": 1.0, "z": -6.5, "yaw": 0.0, "pitch": 4.0, "ticks": 40 }
+  ],
+  "cues": [
+    { "tick": 8, "sound": "minecraft:entity.ender_dragon.growl", "volume": 0.7, "pitch": 0.7 },
+    { "tick": 10, "sound": "minecraft:block.portal.ambient", "volume": 0.5, "pitch": 0.8 },
+    { "tick": 70, "sound": "minecraft:entity.ender_dragon.flap", "volume": 0.8, "pitch": 1.0 },
+    { "tick": 78, "command": "execute at 41d696fd-1824-4eaa-8b76-53f68095bafc run particle minecraft:dragon_breath ~ ~1 ~ 0.6 0.8 0.6 0.02 32 force" },
+    { "tick": 96, "command": "execute at 41d696fd-1824-4eaa-8b76-53f68095bafc run particle minecraft:portal ~ ~1 ~ 0.6 0.8 0.6 0.02 32 force" },
+    { "tick": 100, "sound": "minecraft:entity.ender_dragon.growl", "volume": 0.5, "pitch": 0.6 },
+    { "tick": 190, "sound": "minecraft:entity.player.levelup", "volume": 0.6, "pitch": 0.5 }
+  ]
+}

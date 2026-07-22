@@ -1,17 +1,18 @@
 {
-  "_comment": "Victor -> Victini reveal — plays as sango/victor_transform fires (the swap happens the same tick). Victor body at 2522.6/131/2815.5 = the WEST ledge of Kesi's grain tower. Tower geometry (RCON block-probed 2026-07-16): inner cap cylinder x2524-2534 with a SOLID roof disc at y134, outer rim parapet at y132 (x2521 for z2813-2817, x2522 at z2812/2818) — the only open corridor with sight lines is the west walkway itself (x 2522.3-2523.5, y 132.8-135, z 2812-2819). The old east-side orbit (x 2524.5-2528) flew through the cap roof — that was the 'camera goes into a wall'. New path stays INSIDE the rim on the player's side: settle north on the ledge -> crane up and over Victini -> drop to a south close-up -> retreat up-and-back north along the ledge for the farewell (bookends the approach; keeping the farewell inside the rim is deliberate — a high outside angle puts the parapet across Victini's body). KEYFRAME-Y CONVENTION (see docs/ENGINE_FINDINGS.md): the spectated rig renders ~1.78 above keyframe y (armor-stand eye height), so keyframe y sits 1.78 below the intended camera eye; the RENDERED eye path here (y 132.9-134.8) is exactly the corridor that was verified open air against the live world (engine-exact tick sampler over RCON, zero solid hits, sight lines included), with yaw/pitch computed from those eye points.",
+  "_comment": "Victor -> Victini reveal, RELOCATED to 2536/106/2900 (note 4). Keyframes are the ORIGINAL tower-verified path (RCON block-probed 2026-07-16) TRANSLATED by the humanoid's move delta (+13.4, -25.0, +84.5) from 2522.6/131/2815.5 -> 2536/106/2900, so the framing RELATIVE to Victini is preserved exactly. The reveal spot is assumed open like the tower ledge — if it isn't, re-probe/nudge in-world. THE TRANSFORM NOW HAPPENS MID-CUTSCENE: sango/victor_transform teleports the humanoid here and plays this scene; the cue at tick 60 runs sango/victor_transform_swap, which flashes the humanoid into Victini ON CAMERA, then the cry + title land as the camera cranes over and drops to the south close-up. KEYFRAME-Y CONVENTION (docs/ENGINE_FINDINGS.md): the spectated rig renders ~1.78 above keyframe y.",
   "relative": false,
   "skippable": true,
   "keyframes": [
-    { "x": 2523.1, "y": 131.6, "z": 2813.0, "yaw": 11.0, "pitch": 25.0, "ticks": 25 },
-    { "x": 2523.3, "y": 132.8, "z": 2816.0, "yaw": 126.0, "pitch": 68.0, "ticks": 40 },
-    { "x": 2523.4, "y": 131.1, "z": 2818.4, "yaw": 165.0, "pitch": 17.0, "ticks": 45 },
-    { "x": 2523.0, "y": 133.0, "z": 2811.8, "yaw": 6.0, "pitch": 37.0, "ticks": 40 }
+    { "x": 2536.5, "y": 106.6, "z": 2897.5, "yaw": 11.0, "pitch": 25.0, "ticks": 25 },
+    { "x": 2536.7, "y": 107.8, "z": 2900.5, "yaw": 126.0, "pitch": 68.0, "ticks": 40 },
+    { "x": 2536.8, "y": 106.1, "z": 2902.9, "yaw": 165.0, "pitch": 17.0, "ticks": 45 },
+    { "x": 2536.4, "y": 108.0, "z": 2896.3, "yaw": 6.0, "pitch": 37.0, "ticks": 40 }
   ],
   "cues": [
     { "tick": 8, "sound": "minecraft:block.beacon.activate", "volume": 1.0, "pitch": 1.4 },
-    { "tick": 45, "sound": "cobblemon:pokemon.victini.cry", "volume": 1.5, "pitch": 1.0 },
-    { "tick": 55, "title": "§d§lVICTINI", "subtitle": "§7The silent apprentice was never silent" },
+    { "tick": 60, "command": "function cobblemon_initiative:sango/victor_transform_swap" },
+    { "tick": 63, "sound": "cobblemon:pokemon.victini.cry", "volume": 1.5, "pitch": 1.0 },
+    { "tick": 72, "title": "§d§lVICTINI", "subtitle": "§7The silent apprentice was never silent" },
     { "tick": 130, "subtitle": "§7It was waiting for someone worth speaking to" }
   ]
 }

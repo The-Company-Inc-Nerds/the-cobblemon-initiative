@@ -82,6 +82,7 @@ public class NuzlockeInit implements ModInitializer {
       if (++announceTick % Math.max(1, config.getZoneCheckCadenceTicks()) != 0) return;
       for (ServerPlayer player : server.getPlayerList().getPlayers()) {
         checkZoneTransition(player);
+        suppressSafeZonePhantoms(player);
       }
     });
 
@@ -717,6 +718,41 @@ public class NuzlockeInit implements ModInitializer {
           sendZoneExit(player, prevName);
         }
       }
+    }
+  }
+
+  /**
+   * Towns and shrines suppress natural hostile spawns, but MobSpawnMixin only guards
+   * NaturalSpawner.spawnCategoryForPosition — the overworld's separate PhantomSpawner
+   * bypasses it entirely, so with doInsomnia on, a sleepless player gets phantoms swooping
+   * even inside a safe zone (the "after some time I just randomly was killed" playtest
+   * report from Sango). While a player stands in a suppressing zone (mobsSpawn=false) we
+   * reset their insomnia timer so nothing new targets them, and discard any phantom that
+   * already spawned above town before it can land a hardcore-fatal swoop.
+   */
+  private static void suppressSafeZonePhantoms(ServerPlayer player) {
+    if (config == null) return;
+    String dim = player.level().dimension().location().toString();
+    NuzlockeConfig.SafeZone zone = config.getSafeZoneAt(
+      dim, player.getBlockX(), player.getBlockY(), player.getBlockZ(), player.getServer());
+    if (zone == null || zone.mobsSpawn) return; // only zones that suppress spawns
+
+    // Reset TIME_SINCE_REST — exactly what a night's sleep resets, and what the vanilla
+    // PhantomSpawner gates the 72000-tick threshold on — so no new phantom spawns while
+    // the player lingers in the safe zone.
+    player.getStats().setValue(
+      player,
+      net.minecraft.stats.Stats.CUSTOM.get(net.minecraft.stats.Stats.TIME_SINCE_REST),
+      0);
+
+    // Remove any phantom that already spawned over the safe zone (spawns ~20b up, then
+    // swoops) — the stat reset only stops NEW spawns.
+    java.util.List<net.minecraft.world.entity.monster.Phantom> phantoms =
+      player.serverLevel().getEntitiesOfClass(
+        net.minecraft.world.entity.monster.Phantom.class,
+        player.getBoundingBox().inflate(64.0));
+    for (net.minecraft.world.entity.monster.Phantom phantom : phantoms) {
+      phantom.discard();
     }
   }
 

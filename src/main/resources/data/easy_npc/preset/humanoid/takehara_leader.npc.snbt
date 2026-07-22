@@ -87,7 +87,21 @@
                     Priority: 18,
                     Buttons: [
                         {
-                            Name: "I'll go do that",
+                            Name: "I'll go find them",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:sidequest/takehara_cave/start"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "log_button"
+                        },
+                        {
+                            Name: "Not yet",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -98,10 +112,10 @@
                     ],
                     Texts: [
                         {
-                            Text: "The woods keep spiders, challenger, and their webs keep a lesson patience cannot skip. Go clear the spiders in the falls woods and cut me a length of String from a cobweb, then come back to me."
+                            Text: "The woods keep more than spiders, challenger. Deep in the falls cave — the mouth is at 2125, 136, 2703 — a Glow Berry and a Spore Blossom grow side by side in the dark. Bring me one of each and I will know your hand is steady enough for a Bug leader."
                         },
                         {
-                            Text: "No badge before that. A trainer who cannot steady a hand around a web has nothing to show a Bug leader."
+                            Text: "No badge before that. There are cocoa pods on the trees off Blossom Path too, if you want a sweeter walk — but it is the berry and the blossom I am asking for."
                         }
                     ],
                     Name: "Cicada — prove yourself in the world",
@@ -145,7 +159,7 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "cutscene play leader_intro function cobblemon_initiative:gym/engage_takehara_leader"
+                                    Cmd: "cutscene play takehara_leader_intro function cobblemon_initiative:gym/engage_takehara_leader"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -241,7 +255,7 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "cutscene play leader_intro function cobblemon_initiative:gym/engage_takehara_leader_weak"
+                                    Cmd: "cutscene play takehara_leader_intro function cobblemon_initiative:gym/engage_takehara_leader_weak"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -340,9 +354,6 @@
         ModelData: {
             Pose: "CUSTOM",
             DefaultPose: "STANDING",
-            Root: {
-                Rotation: [3.14159f, 0.0f, 0.0f, 0.0f]
-            },
             Rotation: {
                 Head: [0.0f, -0.20943952f, 0.0f, 0.0f]
             }

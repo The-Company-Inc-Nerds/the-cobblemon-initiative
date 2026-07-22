@@ -296,7 +296,7 @@ execute if score #amb_auditor_b ci_ambient matches 0 if entity @a[x=2578.5,y=108
 execute if score #amb_hoothoot ci_ambient matches 0 if entity @a[x=2521.5,y=106,z=2914.5,distance=..40] run function cobblemon_initiative:ambient/place/hoothoot
 execute if score #amb_magikarp ci_ambient matches 0 if entity @a[x=2568.5,y=111,z=2855.5,distance=..40] run function cobblemon_initiative:ambient/place/magikarp
 execute if score #amb_mrmime ci_ambient matches 0 if entity @a[x=2605.5,y=109,z=2846.5,distance=..40] run function cobblemon_initiative:ambient/place/mrmime
-execute if score #amb_sango_lotad ci_ambient matches 0 if entity @a[x=2633.5,y=112,z=2806.5,distance=..40] run function cobblemon_initiative:ambient/place/sango_lotad
+execute if score #amb_sango_lotad ci_ambient matches 0 if entity @a[x=2633.5,y=113,z=2807.5,distance=..40] run function cobblemon_initiative:ambient/place/sango_lotad
 execute if score #amb_sango_marill ci_ambient matches 0 if entity @a[x=2545.5,y=106,z=2912.5,distance=..40] run function cobblemon_initiative:ambient/place/sango_marill
 execute if score #amb_sango_starly ci_ambient matches 0 if entity @a[x=2678.5,y=106,z=2923.5,distance=..40] run function cobblemon_initiative:ambient/place/sango_starly
 execute if score #amb_sango_wooper ci_ambient matches 0 if entity @a[x=2544.5,y=106,z=2913.5,distance=..40] run function cobblemon_initiative:ambient/place/sango_wooper

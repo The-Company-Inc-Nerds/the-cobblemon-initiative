@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:chest",
+  "_comment": "Cascade Ascent grant — blue Depth Strider I leather boots handed out at the start of every Cascade Ascent attempt (start.mcfunction). Keepsake: unbreakable, dyed Takehara blue (3949802), Depth Strider 1 so the plunge-pool wading between checkpoints doesn't cost the clock. Component shape is 1.21.1 — verify in-game.",
+  "pools": [
+    {
+      "name": "depth_strider_boots",
+      "rolls": 1,
+      "bonus_rolls": 0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:leather_boots",
+          "functions": [
+            {
+              "function": "minecraft:set_name",
+              "name": { "text": "Cascade Boots", "color": "aqua", "italic": false }
+            },
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "minecraft:enchantments": { "levels": { "minecraft:depth_strider": 1 } },
+                "minecraft:dyed_color": { "rgb": 3949802, "show_in_tooltip": false },
+                "minecraft:unbreakable": {}
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
