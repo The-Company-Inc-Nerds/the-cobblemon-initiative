@@ -47,6 +47,22 @@ public class NpcSightConfig {
   /** Run the full sight check every N server ticks (5 ≈ 4×/sec at 20 TPS). */
   private int tickInterval = 5;
 
+  /**
+   * Extra movement speed applied to a PURSUE-mode NPC while it is actively chasing a player
+   * (a transient {@code ADD_MULTIPLIED_BASE} modifier on {@code minecraft:movement_speed},
+   * added in {@code startFollow} and stripped in {@code stopFollow}). 0.6 = +60% over the
+   * preset's base walk speed so sight-triggered trainers actually run the player down instead
+   * of ambling after them. 0 disables the boost.
+   */
+  private double pursuitSpeedBonus = 0.3;
+
+  /**
+   * Sight range (blocks) used for PURSUE-mode NPCs, taken as {@code max(perNpcRange, this)} so a
+   * challenger keyed to the small global default still spots the player from across an open path.
+   * Only widens PURSUE detection — DIALOG/APPROACH_ONCE/PASSIVE keep their own range.
+   */
+  private int pursuitSightRange = 16;
+
   /** Debug raycast: block step between particles. */
   private double debugRayStep = 0.5;
 
@@ -122,6 +138,11 @@ public class NpcSightConfig {
 
   public int getFovDegrees() { return fovDegrees; }
   public int getTickInterval() { return tickInterval; }
+  public double getPursuitSpeedBonus() { return pursuitSpeedBonus; }
+  public int getPursuitSightRange() { return pursuitSightRange; }
+
+  public void setPursuitSpeedBonus(double v) { this.pursuitSpeedBonus = v; }
+  public void setPursuitSightRange(int v) { this.pursuitSightRange = v; }
   public double getDebugRayStep() { return debugRayStep; }
   public int getDebugRayMaxSteps() { return debugRayMaxSteps; }
 

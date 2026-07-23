@@ -4,16 +4,64 @@
   "_skippable_note": "NON-skippable ON PURPOSE: the transform (victor_transform_swap) fires from the tick-60 cue and is what kills the apprentice + spawns Victini. The dispatch is now one-shot (victor_transform_fired), so a skip BEFORE tick 60 would end the scene with no Victini and no way to re-trigger — a soft-lock. Letting the ~7.5s scene always run to tick 60 guarantees the reveal completes.",
   "skippable": false,
   "keyframes": [
-    { "x": 2536.5, "y": 106.6, "z": 2897.5, "yaw": 11.0, "pitch": 25.0, "ticks": 25 },
-    { "x": 2536.7, "y": 107.8, "z": 2900.5, "yaw": 126.0, "pitch": 68.0, "ticks": 40 },
-    { "x": 2536.8, "y": 106.1, "z": 2902.9, "yaw": 165.0, "pitch": 17.0, "ticks": 45 },
-    { "x": 2536.4, "y": 108.0, "z": 2896.3, "yaw": 6.0, "pitch": 37.0, "ticks": 40 }
+    {
+      "x": 2538.6,
+      "y": 107.0,
+      "z": 2900.4,
+      "yaw": 88.9,
+      "pitch": 16.5,
+      "ticks": 30
+    },
+    {
+      "x": 2538.5,
+      "y": 107.0,
+      "z": 2898.5,
+      "yaw": 52.5,
+      "pitch": 18.6,
+      "ticks": 20
+    },
+    {
+      "x": 2539.1,
+      "y": 105,
+      "z": 2900.6,
+      "yaw": 91.9,
+      "pitch": 3.0,
+      "ticks": 20
+    },
+    {
+      "x": 2538.0,
+      "y": 105,
+      "z": 2900.6,
+      "yaw": 94.6,
+      "pitch": 8.2,
+      "ticks": 20
+    }
   ],
   "cues": [
-    { "tick": 8, "sound": "minecraft:block.beacon.activate", "volume": 1.0, "pitch": 1.4 },
-    { "tick": 60, "command": "function cobblemon_initiative:sango/victor_transform_swap" },
-    { "tick": 63, "sound": "cobblemon:pokemon.victini.cry", "volume": 1.5, "pitch": 1.0 },
-    { "tick": 72, "title": "§d§lVICTINI", "subtitle": "§7The silent apprentice was never silent" },
-    { "tick": 130, "subtitle": "§7It was waiting for someone worth speaking to" }
+    {
+      "tick": 8,
+      "sound": "minecraft:block.beacon.activate",
+      "volume": 1.0,
+      "pitch": 1.4
+    },
+    {
+      "tick": 60,
+      "command": "function cobblemon_initiative:sango/victor_transform_swap"
+    },
+    {
+      "tick": 63,
+      "sound": "cobblemon:pokemon.victini.cry",
+      "volume": 1.5,
+      "pitch": 1.0
+    },
+    {
+      "tick": 72,
+      "title": "§d§lVICTINI",
+      "subtitle": "§7The silent apprentice was never silent"
+    },
+    {
+      "tick": 130,
+      "subtitle": "§7It was waiting for someone worth speaking to"
+    }
   ]
 }

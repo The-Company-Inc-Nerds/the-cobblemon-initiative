@@ -741,6 +741,23 @@ public class NobleEncounterManager {
           openBattle(server, player, state, cfg, level);
         }
       }
+      case "defeat" -> { // NO CATCH: the boss is beaten down, collapses, and yields — no body-swap,
+        // no Phase-2 wild battle. teardown() (via complete) despawns the frozen Phase-1 body.
+        if (t <= 40) {
+          double frac = t / 40.0;
+          double radius = Math.max(0.6, state.getArenaRadius() * (1.0 - frac));
+          NobleFx.drawRing(level, sx, sy + 0.2 + frac * 2.5, sz, radius,
+            element.telegraphColor(), new double[] { 0.0, 0.8 });
+          NobleFx.burst(level, ParticleTypes.SMOKE, sx, sy + 1.0 + frac * 1.5, sz, 3, 0.5, 0.02);
+        }
+        if (t == 20) {
+          NobleFx.playSoundId(level, sx, sy, sz, "minecraft:entity.ender_dragon.death", 0.9f, 1.2f);
+        } else if (t == 45) {
+          sendStaggerTitle(player, cfg);
+        } else if (t >= 70) {
+          complete(server, player, state, false); // defeated (not captured) — commandsOnDefeat pays out
+        }
+      }
       default -> { // collapse cocoon: the ring spirals inward and the real noble rises from the burst
         if (t <= 40) {
           double frac = t / 40.0;

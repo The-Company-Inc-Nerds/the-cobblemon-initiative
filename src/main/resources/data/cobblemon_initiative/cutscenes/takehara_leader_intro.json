@@ -1,28 +1,22 @@
 {
-  "_comment": "CICADA — Takehara Falls (gym 1, Bug) leader intro. A per-leader copy of leader_intro.json (the shared scene cannot carry a name title), keeping the SAME relative+facingFrame+endBack:7 chaining so gym/engage/engage_takehara_leader still opens the battle from the endBack stage. Structure mirrors leader_intro: pull up over the challenger's shoulder framing Cicada, then a TIGHT ZOOM-IN dolly to her face (the two z:-8.5 -> z:-6.8 close holds mirror starter_reveal's push-in), cross high for a side profile, then drop home. startTitle names her; a bug-type effect cue (happy_villager + sculk_soul particles) is ANCHORED ON CICADA'S uuid body (execute at c577141c-…) so the burst lands ON her wherever cicada_float has left her, plus insect/beacon sounds sell the Broodmother reveal. endBack 7 MUST match leader_intro so the post-scene battle opens correctly. The camera path is the shared leader_intro geometry (verified via facingFrame); only the zoom-keyframe framing might want an in-world nudge at the real Takehara arena (float leader over the open-top floor-1 arena, floor 2055.5/138/2460.5).",
-  "relative": true,
-  "facingFrame": true,
+  "_comment": "CICADA — Takehara Falls (gym 1, Bug) leader intro. Camera path RECORDED IN-WORLD (/cutscene record, promoted 2026-07-23) — this scene is now ABSOLUTE (was the shared relative+facingFrame leader_intro geometry; only Cicada's copy is converted, the other leaders keep their facingFrame copies). Frames Cicada over the open-top floor-1 arena (floor 2055.5/138/2460.5) and holds. endBack is 0: positioning for the battle is done explicitly by battle.stage_pos on the takehara_leader character (compiler emits `tp @s 2055.5 138 2473.5 facing entity <cicada>` in gym/engage_takehara_leader before the battle opens). startTitle names her; the bug-type effect burst (happy_villager + sculk_soul) is ANCHORED ON CICADA'S uuid body (execute at c577141c-…) so it lands on her wherever cicada_float left her. Cues re-timed to the 70-tick recorded duration.",
+  "relative": false,
   "skippable": true,
-  "endBack": 7.0,
+  "endBack": 0.0,
   "startTitle": "§aLeader Cicada",
   "startSubtitle": "§2Broodmother of the Falls §8— §aBug",
   "keyframes": [
-    { "x": 0.0, "y": -0.5, "z": -4.0, "yaw": 0.0, "pitch": 5.0, "ticks": 30 },
-    { "x": -1.2, "y": -0.8, "z": -8.5, "yaw": 0.0, "pitch": 3.0, "ticks": 45 },
-    { "x": -1.2, "y": -0.8, "z": -8.5, "yaw": 0.0, "pitch": 3.0, "ticks": 20 },
-    { "x": -0.4, "y": -0.4, "z": -6.8, "yaw": 0.0, "pitch": 4.0, "ticks": 18 },
-    { "x": -0.4, "y": -0.4, "z": -6.8, "yaw": 0.0, "pitch": 4.0, "ticks": 30 },
-    { "x": 6.5, "y": 4.5, "z": 1.5, "yaw": -55.0, "pitch": 22.0, "ticks": 50 },
-    { "x": 0.0, "y": 1.0, "z": -6.5, "yaw": 0.0, "pitch": 4.0, "ticks": 40 }
+    { "x": 2055.4, "y": 139.6, "z": 2464.0, "yaw": 179.2, "pitch": 1.6, "ticks": 30 },
+    { "x": 2055.2, "y": 140.4, "z": 2462.5, "yaw": -174.8, "pitch": 14.3, "ticks": 20 },
+    { "x": 2055.3, "y": 140.4, "z": 2471.4, "yaw": 178.8, "pitch": 11.5, "ticks": 20 }
   ],
-  "_retune_2026_07_21": "Opening keyframes 1-5 dropped 3.0 blocks (y 2.5/2.2/2.6 -> -0.5/-0.8/-0.4) and their down-pitch eased (12/6/8 -> 5/3/4): the scene opened ~3 blocks over Cicada's head. She hovers at conversation height y139 (cicada_float: arena floor y138, one block up) and hangs inverted; the +1.7775 rig offset put the old y=2.5 keyframe's eye at ~y142.3, ~3 above her. New y=-0.5 lands the eye at ~y139.3 (rig-corrected), level with her, so the near-level pitch centers her hanging body. kf6 (high side cross) and kf7 (drop-home into endBack battle) intentionally left high.",
   "cues": [
     { "tick": 8, "sound": "minecraft:block.beehive.enter", "volume": 0.9, "pitch": 0.7 },
     { "tick": 10, "sound": "minecraft:block.note_block.imitate.ender_dragon", "volume": 0.5, "pitch": 0.6 },
-    { "tick": 70, "sound": "minecraft:block.beacon.power_select", "volume": 0.8, "pitch": 0.8 },
-    { "tick": 78, "command": "execute at c577141c-305f-4c20-a6bb-444d3b4d5ae0 run particle minecraft:happy_villager ~ ~1 ~ 0.7 0.9 0.7 0.02 40 force" },
-    { "tick": 96, "command": "execute at c577141c-305f-4c20-a6bb-444d3b4d5ae0 run particle minecraft:sculk_soul ~ ~1 ~ 0.5 0.8 0.5 0.01 24 force" },
-    { "tick": 100, "sound": "minecraft:entity.silverfish.ambient", "volume": 0.6, "pitch": 0.8 },
-    { "tick": 190, "sound": "minecraft:entity.player.levelup", "volume": 0.6, "pitch": 0.5 }
+    { "tick": 40, "sound": "minecraft:block.beacon.power_select", "volume": 0.8, "pitch": 0.8 },
+    { "tick": 45, "command": "execute at c577141c-305f-4c20-a6bb-444d3b4d5ae0 run particle minecraft:happy_villager ~ ~1 ~ 0.7 0.9 0.7 0.02 40 force" },
+    { "tick": 52, "command": "execute at c577141c-305f-4c20-a6bb-444d3b4d5ae0 run particle minecraft:sculk_soul ~ ~1 ~ 0.5 0.8 0.5 0.01 24 force" },
+    { "tick": 55, "sound": "minecraft:entity.silverfish.ambient", "volume": 0.6, "pitch": 0.8 },
+    { "tick": 66, "sound": "minecraft:entity.player.levelup", "volume": 0.6, "pitch": 0.5 }
   ]
 }

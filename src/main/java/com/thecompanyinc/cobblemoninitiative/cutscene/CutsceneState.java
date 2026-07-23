@@ -49,6 +49,11 @@ public class CutsceneState {
   /** True until the runtime player-skin patch has been applied to the discovered double. */
   private boolean doubleSkinPending = false;
 
+  /** Facing yaw applied to the player-skinned double once discovered (import_new ignores the
+   * command-source rotation, so the "you" double is turned by a data-modify in the skin patch).
+   * Null = leave the body at its spawned/baked facing. */
+  private Float playerDoubleYaw = null;
+
   /** Chunk + block anchor of the entity-ticking ticket that pins the scene subject (the leader
    * the end-command battles) loaded through the pan. Null when no ticket was added. */
   private net.minecraft.world.level.ChunkPos subjectChunk;
@@ -126,6 +131,9 @@ public class CutsceneState {
 
   public boolean isDoubleSkinPending() { return doubleSkinPending; }
   public void setDoubleSkinPending(boolean v) { this.doubleSkinPending = v; }
+
+  public Float getPlayerDoubleYaw() { return playerDoubleYaw; }
+  public void setPlayerDoubleYaw(float yaw) { this.playerDoubleYaw = yaw; }
 
   public void setSubjectAnchor(net.minecraft.world.level.ChunkPos c, net.minecraft.core.BlockPos p) {
     this.subjectChunk = c; this.subjectPos = p;

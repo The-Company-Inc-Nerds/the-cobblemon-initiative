@@ -53,6 +53,9 @@ public class CutsceneManager {
 
   /** Body-double preset MUST bake {@code Tags:["ci_cutscene_double"]} so teardown can find it. */
   private static final String DOUBLE_TAG = "ci_cutscene_double";
+  /** The player-skinned double ALSO bakes this so the runtime skin patch can target it and
+   * not a sibling figure (the Takehara scene stands a "you" double AND a watcher double). */
+  private static final String PLAYER_DOUBLE_TAG = "ci_cutscene_playerdouble";
   private static final String RIG_TAG = "ci_cutscene_rig";
 
   /** Hard safety cap: no scene runs longer than this many ticks regardless of the script. */
@@ -178,8 +181,9 @@ public class CutsceneManager {
       restoreZ -= Math.cos(yawRad) * script.endBack;  // -forward.z * endBack
     }
 
-    // Optional body-double (must bake the DOUBLE_TAG in its preset for cleanup).
-    boolean hasDouble = spawnDouble(server, level, player, script);
+    // Optional body-double(s) (each must bake the DOUBLE_TAG in its preset for cleanup).
+    List<CutsceneScript.DoubleSpec> doubleSpecs = resolveDoubles(script);
+    boolean hasDouble = spawnDoubles(server, level, player, doubleSpecs);
 
     // The camera rig: an invisible, weightless armor stand the client tracks + spectates.
     ArmorStand rig = new ArmorStand(level, eyeX, eyeY, eyeZ);
@@ -202,11 +206,14 @@ public class CutsceneManager {
     state.setBase(eyeX, eyeY, eyeZ, script.relative);
     if (script.relative && script.facingFrame) state.setFacingFrame(startYaw, startPitch);
     if (endCommand != null && !endCommand.isBlank()) state.setEndCommand(endCommand);
-    // Only patch the double to the player's live skin when the scene actually wants the
-    // player's face (the player_double preset). Other doubles — e.g. the all-black victory
-    // watcher (watcher_shadow_dark) — must keep their own baked skin; patching them would
-    // clobber it to the player skin (the note-20 blocker).
-    if (hasDouble && script.doublePreset != null && script.doublePreset.contains("player_double")) {
+    // Only patch a double to the player's live skin when a spec asks for it (the "you"
+    // double). Other doubles — e.g. the all-black victory watcher (watcher_shadow_dark) —
+    // must keep their own baked skin; patching them would clobber it (the note-20 blocker).
+    boolean skinPending = false;
+    for (CutsceneScript.DoubleSpec spec : doubleSpecs) {
+      if (spec.playerSkin) { skinPending = true; state.setPlayerDoubleYaw(spec.yaw); break; }
+    }
+    if (hasDouble && skinPending) {
       state.setDoubleSkinPending(true);
     }
     active.put(player.getUUID(), state);
@@ -300,7 +307,7 @@ public class CutsceneManager {
     // deferred and hands back no UUID). Give up after ~40 ticks so a bad preset degrades to
     // the default skin rather than retrying forever.
     if (state.isDoubleSkinPending()) {
-      if (applyDoubleSkin(server, state, player) || state.getTickCount() > 40) {
+      if (applyPlayerDoublePatch(server, state, player) || state.getTickCount() > 40) {
         state.setDoubleSkinPending(false);
       }
     }
@@ -432,32 +439,63 @@ public class CutsceneManager {
 
   // ── Body double (optional) ───────────────────────────────────────────────────
 
-  private boolean spawnDouble(MinecraftServer server, ServerLevel level, ServerPlayer player, CutsceneScript script) {
-    if (script.doublePreset == null || script.doublePreset.isBlank()) return false;
-    double[] dp = script.doublePos;
-    double dx = (dp != null && dp.length == 3) ? dp[0] : player.getX();
-    double dy = (dp != null && dp.length == 3) ? dp[1] : player.getY();
-    double dz = (dp != null && dp.length == 3) ? dp[2] : player.getZ();
-    CommandSourceStack src = server.createCommandSourceStack().withPermission(4).withSuppressedOutput();
-    if (level != null) src = src.withLevel(level).withPosition(new Vec3(dx, dy, dz));
-    runCommand(server, src, String.format(Locale.ROOT,
-      "easy_npc preset import_new data %s %.2f %.2f %.2f", script.doublePreset, dx, dy, dz));
-    return true;
+  /** Normalise a script's double declaration to a spec list: the {@code doubles} array when
+   * present (multi-figure scenes), else a single spec synthesised from {@code doublePreset}/
+   * {@code doublePos} (the pre-existing single-double scenes — shadow_watcher, boss intros). */
+  private static List<CutsceneScript.DoubleSpec> resolveDoubles(CutsceneScript script) {
+    if (script.doubles != null && !script.doubles.isEmpty()) return script.doubles;
+    if (script.doublePreset != null && !script.doublePreset.isBlank()) {
+      CutsceneScript.DoubleSpec spec = new CutsceneScript.DoubleSpec();
+      spec.preset = script.doublePreset;
+      spec.pos = script.doublePos;
+      spec.playerSkin = script.doublePreset.contains("player_double");
+      return List.of(spec);
+    }
+    return List.of();
+  }
+
+  /** Spawn every declared double. Returns whether any were spawned (drives the teardown sweep). */
+  private boolean spawnDoubles(MinecraftServer server, ServerLevel level, ServerPlayer player,
+                               List<CutsceneScript.DoubleSpec> specs) {
+    boolean any = false;
+    for (CutsceneScript.DoubleSpec spec : specs) {
+      if (spec.preset == null || spec.preset.isBlank()) continue;
+      double[] dp = spec.pos;
+      double dx = (dp != null && dp.length == 3) ? dp[0] : player.getX();
+      double dy = (dp != null && dp.length == 3) ? dp[1] : player.getY();
+      double dz = (dp != null && dp.length == 3) ? dp[2] : player.getZ();
+      // Facing is NOT set on the source: easy_npc's import_new IGNORES the command-source
+      // rotation (bytecode-verified against the pinned Easy NPC jar — the placement functions
+      // use `import` onto an EXISTING body, which keeps its own yaw). The player-skinned double
+      // is turned to
+      // spec.yaw by a data-modify in applyPlayerDoublePatch once it exists; other doubles keep
+      // their preset/spawn facing (bake a Rotation into the preset if one needs a set yaw).
+      CommandSourceStack src = server.createCommandSourceStack().withPermission(4).withSuppressedOutput();
+      if (level != null) src = src.withLevel(level).withPosition(new Vec3(dx, dy, dz));
+      runCommand(server, src, String.format(Locale.ROOT,
+        "easy_npc preset import_new data %s %.2f %.2f %.2f", spec.preset, dx, dy, dz));
+      any = true;
+    }
+    return any;
   }
 
   /**
-   * Patch the discovered double to render the player's skin, via a /data write into the Easy
-   * NPC SkinData compound (there is no skin command for player skins). The skin resolves from
-   * the stored UUID against Mojang's session server, so on a normal online client the live
-   * player's UUID renders "you" with nothing baked in; offline it falls back to the default
-   * variant. Returns false (retry next tick) until the tagged body is spawned + discoverable.
+   * Patch the discovered player-skinned double: render the player's skin (a /data write into the
+   * Easy NPC SkinData compound — there is no skin command for player skins) AND turn it to the
+   * scripted facing (import_new ignores the spawn rotation, so the yaw is written here too). The
+   * skin resolves from the stored UUID against Mojang's session server, so a normal online client
+   * renders "you" with nothing baked in; offline it falls back to the default variant. Returns
+   * false (retry next tick) until the tagged body is spawned + discoverable.
    */
-  private boolean applyDoubleSkin(MinecraftServer server, CutsceneState state, ServerPlayer player) {
+  private boolean applyPlayerDoublePatch(MinecraftServer server, CutsceneState state, ServerPlayer player) {
     ServerLevel level = resolveLevel(server, state.getDimension());
     if (level == null) return true; // nothing to patch; stop retrying
     Entity body = null;
     for (Entity e : level.getAllEntities()) {
-      if (e.isAlive() && e.getTags().contains(DOUBLE_TAG)) { body = e; break; }
+      // PLAYER_DOUBLE_TAG (not DOUBLE_TAG): a scene may stand several doubles, but only the
+      // player-skinned "you" carries this tag — patching a sibling (e.g. the watcher) would
+      // clobber its baked skin.
+      if (e.isAlive() && e.getTags().contains(PLAYER_DOUBLE_TAG)) { body = e; break; }
     }
     if (body == null) return false; // not spawned yet — retry
     int[] u = UUIDUtil.uuidToIntArray(player.getUUID());
@@ -467,6 +505,13 @@ public class CutsceneManager {
       body.getUUID(), name, u[0], u[1], u[2], u[3]);
     CommandSourceStack src = server.createCommandSourceStack().withPermission(4).withSuppressedOutput().withLevel(level);
     runCommand(server, src, cmd);
+    // Face the scripted yaw (import_new spawned it facing default south). Rotation is the base
+    // entity [yaw, pitch] list; we only turn it horizontally.
+    Float yaw = state.getPlayerDoubleYaw();
+    if (yaw != null) {
+      runCommand(server, src, String.format(Locale.ROOT,
+        "data modify entity %s Rotation set value [%.1ff,0.0f]", body.getUUID(), yaw));
+    }
     return true;
   }
 

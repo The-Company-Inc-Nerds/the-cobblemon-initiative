@@ -46,6 +46,10 @@ public class ShrineChallengeManager {
    *  "Hydra gauntlet stage dispatch" section. */
   private final Map<UUID, HydraDispatch> hydraDispatches = new HashMap<>();
 
+  /** Players awaiting the deferred noble hand-off after clearing a noble_gauntlet's trainer
+   *  phase — see onTrainerDefeated / tickNobleHandoffs. */
+  private final Map<UUID, NobleHandoff> nobleHandoffs = new HashMap<>();
+
   /** Per-world recorded safe-path positions (writable; ships with the map save). */
   private final ShrinePathStorage pathStorage = new ShrinePathStorage();
   /** shrineId -> baked safe positions from the config JSON (packed BlockPos). */
@@ -189,6 +193,16 @@ public class ShrineChallengeManager {
         );
         // The heads have no NPC bodies — the manager dispatches each stage battle
         // at the challenger (anchored tbcs, the Stadium wave pattern).
+        scheduleHydraStage(player, HYDRA_FIRST_DELAY_TICKS);
+      }
+      case "noble_gauntlet" -> {
+        player.sendSystemMessage(
+          Component.literal(
+            "§5§l[Trial of the Wyrm] §r§7Three heads take the field at once — stand your ground!"
+          )
+        );
+        // Single anchored triple battle (same Stadium wave pattern as the hydra stages); on
+        // victory the trial hands off to the noble body-swap fight (see onTrainerDefeated).
         scheduleHydraStage(player, HYDRA_FIRST_DELAY_TICKS);
       }
       case "fairy_tests" -> {
@@ -523,6 +537,26 @@ public class ShrineChallengeManager {
           }
         }
       }
+      case "noble_gauntlet" -> {
+        List<String> stages = config.getStageTrainerIds();
+        int current = state.getCurrentStageIndex();
+        if (current < stages.size() && stages.get(current).equals(trainerId)) {
+          // The trial's trainer phase is a single triple battle. Winning it tears the shrine
+          // trial down and (deferred a beat) hands off to the noble body-swap fight — that
+          // fight's rewards award the shrine crystal, so nothing is granted here.
+          healParty(player);
+          player.sendSystemMessage(Component.literal(
+            "§5§l[Trial of the Wyrm] §r§7The heads fall — but the wyrm itself uncoils. §cHold your ground!"));
+          String nobleId = config.getNobleId();
+          MinecraftServer server = player.getServer();
+          clearChallengeEffects(player);
+          activeStates.remove(player.getUUID());
+          cancelHydraDispatch(server, player.getUUID());
+          if (nobleId != null && !nobleId.isBlank()) {
+            nobleHandoffs.put(player.getUUID(), new NobleHandoff(HYDRA_NEXT_DELAY_TICKS, nobleId));
+          }
+        }
+      }
       case "dark_gauntlet" -> {
         if (trainerId.equals(config.getTargetTrainerId())) {
           completeChallenge(player, state);
@@ -593,6 +627,7 @@ public class ShrineChallengeManager {
     expired.forEach(activeStates::remove);
 
     tickHydraDispatches(server);
+    tickNobleHandoffs(server);
     tickRecording(server);
   }
 
@@ -656,7 +691,7 @@ public class ShrineChallengeManager {
       ShrineChallengeConfig config =
         state == null ? null : challenges.get(state.getShrineId());
       if (player == null || config == null
-        || !"hydra_gauntlet".equals(config.getType())
+        || !usesStageDispatch(config.getType())
         || state.getCurrentStageIndex() >= config.getStageTrainerIds().size()) {
         // Challenge ended, player left, or gauntlet finished — drop + sweep.
         it.remove();
@@ -735,6 +770,51 @@ public class ShrineChallengeManager {
     InitiativeInit.LOGGER.info(
       "[Shrine] Dispatched hydra stage {} ({}) for {}.",
       stageIndex + 1, trainerId, player.getName().getString());
+  }
+
+  /** Types whose battles run through the anchored-TBCS stage engine above: the hydra heads
+   *  and the wyrm's single triple (noble_gauntlet). */
+  private static boolean usesStageDispatch(String type) {
+    return "hydra_gauntlet".equals(type) || "noble_gauntlet".equals(type);
+  }
+
+  // ── Noble hand-off (noble_gauntlet) ──────────────────────────────────────────
+  // Once a noble_gauntlet's trainer phase falls, the trial hands off to a LoA-style body-swap
+  // fight (the wyrm itself), whose rewards award the shrine crystal. Deferred a few ticks so the
+  // noble spawn doesn't race the just-ended battle's teardown (same reason stages are scheduled,
+  // not dispatched inline, from the victory event).
+
+  private static final class NobleHandoff {
+    int delayTicks;
+    final String nobleId;
+
+    NobleHandoff(int delayTicks, String nobleId) {
+      this.delayTicks = delayTicks;
+      this.nobleId = nobleId;
+    }
+  }
+
+  private void tickNobleHandoffs(MinecraftServer server) {
+    if (nobleHandoffs.isEmpty()) return;
+    Iterator<Map.Entry<UUID, NobleHandoff>> it = nobleHandoffs.entrySet().iterator();
+    while (it.hasNext()) {
+      Map.Entry<UUID, NobleHandoff> entry = it.next();
+      ServerPlayer player = server.getPlayerList().getPlayer(entry.getKey());
+      if (player == null) {
+        it.remove();
+        continue;
+      }
+      NobleHandoff pending = entry.getValue();
+      if (--pending.delayTicks > 0) continue;
+      it.remove();
+      boolean started = com.thecompanyinc.cobblemoninitiative.noble.NobleEncounterInit
+        .getManager()
+        .start(player, pending.nobleId);
+      if (!started) {
+        player.sendSystemMessage(Component.literal(
+          "§c[Trial of the Wyrm] §7The wyrm did not stir. Speak with the keeper to face it again."));
+      }
+    }
   }
 
   /** Captures every block a recording dev walks over as a safe-path position. */

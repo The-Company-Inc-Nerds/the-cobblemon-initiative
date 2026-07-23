@@ -286,6 +286,7 @@ public class InitiativeInit implements ModInitializer {
           com.thecompanyinc.cobblemoninitiative.founder.FounderMirrorManager.refresh(handler.player);
         }
         frontierManager.onPlayerJoin(handler.player); // parked-party reminder
+        resendOwedVictoryWatchers(handler.player); // self-heal a watcher lost to a mid-window relog
         // Silently backfill every achievement this (possibly deep) save already qualifies for,
         // then arm the live-toast path. Runs after progress is loaded (SERVER_STARTED precedes
         // any join) and before the player acts, so nothing retroactive toasts.
@@ -352,22 +353,70 @@ public class InitiativeInit implements ModInitializer {
   private static final java.util.Map<String, String> LEADER_VICTORY_WATCHERS = java.util.Map.of(
     "takehara_leader", "takehara_victory_watcher");
 
+  /** The scenes we may hand to a client — validated inside {@link #playVictoryWatcherConfirmed}
+   * so a stale/forged C2S bounce can never run an arbitrary cutscene. */
+  private static final java.util.Set<String> VICTORY_WATCHER_SCENES =
+    java.util.Set.copyOf(LEADER_VICTORY_WATCHERS.values());
+
+  private static String victoryWatcherSeenTag(String scene) { return "ci_seen_" + scene; }
+
   /**
    * After a gym leader falls, pan up to the all-black figure watching from outside the glass
-   * (note 20). One-shot per leader, latched by a persistent player tag exactly like
-   * NuzlockeInit.maybePlayShrineReveal so a mid-scene relog can't replay it.
+   * (note 20). One-shot per leader.
+   *
+   * <p>The scene is NOT played here: BATTLE_VICTORY fires while Cobblemon's battle GUI still
+   * owns the client camera, so a spectator cutscene started now climbs UNSEEN (the reveal read
+   * as "it doesn't climb after the battle"). Instead we hand the scene to the client, which
+   * holds it until its battle GUI has closed ({@code getBattle()==null} — the same gate the
+   * nickname prompt uses) and then bounces a C2S back so the server plays it, exactly like the
+   * {@code /cutscene play} command path.
+   *
+   * <p>The one-shot latch ({@code ci_seen_<scene>}) is committed only when the scene ACTUALLY
+   * plays ({@link #playVictoryWatcherConfirmed}) — never here at send time — so a disconnect in
+   * the send→play window doesn't silently burn the beat; {@link #resendOwedVictoryWatchers}
+   * re-offers it on the next join.
    */
   private static void maybePlayVictoryWatcher(ServerPlayer player, String leaderId) {
     String scene = LEADER_VICTORY_WATCHERS.get(leaderId);
     if (scene == null) return;
-    String seenTag = "ci_seen_" + scene;
-    if (player.getTags().contains(seenTag)) return;
-    net.minecraft.server.MinecraftServer server = player.getServer();
-    if (server == null) return;
-    player.addTag(seenTag); // latch BEFORE dispatch
-    server.getCommands().performPrefixedCommand(
-      player.createCommandSourceStack().withPermission(4).withSuppressedOutput(),
-      "cutscene play " + scene);
+    if (player.getTags().contains(victoryWatcherSeenTag(scene))) return; // already played
+    com.thecompanyinc.cobblemoninitiative.network.InitiativePayloads.sendVictoryWatcher(player, scene);
+  }
+
+  /**
+   * JOIN re-arm: re-offer any victory-watcher the player is OWED (leader defeated) but hasn't
+   * SEEN — self-heals a scene lost when a disconnect interrupted the send→play round-trip. The
+   * leader's TBCS onwin sets {@code defeated_<leaderId>} (persistent), so "owed" survives relog.
+   */
+  static void resendOwedVictoryWatchers(ServerPlayer player) {
+    for (java.util.Map.Entry<String, String> e : LEADER_VICTORY_WATCHERS.entrySet()) {
+      if (player.getTags().contains("defeated_" + e.getKey())
+          && !player.getTags().contains(victoryWatcherSeenTag(e.getValue()))) {
+        com.thecompanyinc.cobblemoninitiative.network.InitiativePayloads.sendVictoryWatcher(player, e.getValue());
+      }
+    }
+  }
+
+  /**
+   * Play a victory-watcher scene the client has confirmed is safe to run (its battle GUI is
+   * gone). Validates the id against {@link #VICTORY_WATCHER_SCENES}, then latches the one-shot
+   * tag ONLY on a successful start — a refused play (dead player, missing manager) stays owed
+   * and re-arms next join. Idempotent: a second bounce for an already-seen scene is a no-op.
+   */
+  public static void playVictoryWatcherConfirmed(ServerPlayer player, String scene) {
+    if (player == null || scene == null || !VICTORY_WATCHER_SCENES.contains(scene)) {
+      if (player != null) {
+        LOGGER.warn("[VictoryWatcher] Rejected unknown scene '{}' from {}.",
+          scene, player.getName().getString());
+      }
+      return;
+    }
+    String seenTag = victoryWatcherSeenTag(scene);
+    if (player.getTags().contains(seenTag)) return; // already played
+    var manager = com.thecompanyinc.cobblemoninitiative.cutscene.CutsceneInit.getManager();
+    if (manager != null && manager.play(player, scene)) {
+      player.addTag(seenTag); // latch on CONFIRM (successful start), not on send
+    }
   }
 
   private void registerBattleEvents() {

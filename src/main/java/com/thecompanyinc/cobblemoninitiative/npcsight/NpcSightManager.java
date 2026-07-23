@@ -161,7 +161,13 @@ public class NpcSightManager {
     }
 
     ServerLevel level = (ServerLevel) npc.level();
+    String mode = data.effectiveMode();
     int range = data.getEffectiveSightRange(config.getDefaultSightRange());
+    // Sight-based challengers (PURSUE) spot the player from farther so the ambush triggers
+    // across an open path — widen to the pursuit range, keeping any larger per-NPC override.
+    if (NpcSightData.MODE_PURSUE.equals(mode)) {
+      range = Math.max(range, config.getPursuitSightRange());
+    }
 
     // +1 so the NPC's own standing block is not counted against the range
     ServerPlayer nearestPlayer = findNearestPlayer(level, npc, range + 1);
@@ -176,7 +182,7 @@ public class NpcSightManager {
       drawDebugRay(level, npc, nearestPlayer, canSee);
     }
 
-    switch (data.effectiveMode()) {
+    switch (mode) {
       case NpcSightData.MODE_PURSUE -> handlePursue(server, npc, nearestPlayer, canSee, data);
       case NpcSightData.MODE_APPROACH_ONCE -> handleApproachOnce(server, npc, nearestPlayer, canSee, data);
       case NpcSightData.MODE_PASSIVE -> { /* scoreboard-only: the quest tick reads it */ }
@@ -568,6 +574,33 @@ public class NpcSightManager {
     if (!isEasyNpcPresent()) return;
     runCommand(server, String.format(
       "easy_npc objective %s set follow player %s", npc.getUUID(), playerName(player)));
+    applyPursuitSpeed(npc);
+  }
+
+  /** Resource id for the transient movement-speed modifier applied while a PURSUE-mode NPC is
+   *  actively chasing. Transient (never written to entity NBT) so it self-clears if the NPC
+   *  unloads mid-chase — no risk of a permanently sped-up trainer surviving a reload. */
+  private static final net.minecraft.resources.ResourceLocation PURSUIT_SPEED_MODIFIER =
+    net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("cobblemon_initiative", "sight_pursuit");
+
+  /** Speed the NPC up while it runs the player down (amount is config-tunable, 0 disables). */
+  private void applyPursuitSpeed(Entity npc) {
+    double bonus = config.getPursuitSpeedBonus();
+    if (bonus <= 0.0 || !(npc instanceof net.minecraft.world.entity.LivingEntity living)) return;
+    net.minecraft.world.entity.ai.attributes.AttributeInstance speed =
+      living.getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.MOVEMENT_SPEED);
+    if (speed == null || speed.hasModifier(PURSUIT_SPEED_MODIFIER)) return;
+    speed.addTransientModifier(new net.minecraft.world.entity.ai.attributes.AttributeModifier(
+      PURSUIT_SPEED_MODIFIER, bonus,
+      net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
+  }
+
+  /** Drop the pursuit speed boost when the chase ends (arrival hold, stand-down, teardown). */
+  private void removePursuitSpeed(Entity npc) {
+    if (!(npc instanceof net.minecraft.world.entity.LivingEntity living)) return;
+    net.minecraft.world.entity.ai.attributes.AttributeInstance speed =
+      living.getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.MOVEMENT_SPEED);
+    if (speed != null) speed.removeModifier(PURSUIT_SPEED_MODIFIER);
   }
 
   /**
@@ -583,6 +616,7 @@ public class NpcSightManager {
    * entry whose goal is already gone.)
    */
   private void stopFollow(MinecraftServer server, Entity npc) {
+    removePursuitSpeed(npc);
     if (!isEasyNpcPresent()) return;
     boolean removed = runVerifiedCommand(
       server, String.format("easy_npc objective %s remove follow player", npc.getUUID()));

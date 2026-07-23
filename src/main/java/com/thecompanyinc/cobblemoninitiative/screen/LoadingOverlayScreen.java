@@ -16,8 +16,9 @@ import net.minecraft.util.Mth;
  * the integrated server, which would freeze the very install this screen is waiting on. It also
  * swallows input (a Screen suppresses movement) so the player can't walk blind behind the black.
  *
- * <p>Deliberately withholds the bright title — that reveal belongs to the opening cutscene's
- * {@code startTitle}. Here the brand is a muted grey ledger line, matching the cold-open tone.
+ * <p>Shows the game title card — an enlarged ledger-amber "The Cobblemon Initiative" over a
+ * muted memo subtitle — above the progress bar, so the brand reads immediately on the cold open
+ * (the opening cutscene re-states it via {@code startTitle}).
  */
 public class LoadingOverlayScreen extends Screen {
 
@@ -85,8 +86,15 @@ public class LoadingOverlayScreen extends Screen {
     int bx = cx - barW / 2;
     int by = this.height / 2 + 8;
 
+    // Title card above the bar: the game title (ledger amber, enlarged 2x) over a memo subtitle.
+    graphics.pose().pushPose();
+    graphics.pose().translate(cx, by - 50, 0);
+    graphics.pose().scale(2.0f, 2.0f, 1.0f);
     graphics.drawCenteredString(this.font,
-      Component.literal("§8THE COBBLEMON INITIATIVE"), cx, by - 26, COL_BRAND);
+      Component.literal("The Cobblemon Initiative"), 0, 0, COL_BAR_FILL);
+    graphics.pose().popPose();
+    graphics.drawCenteredString(this.font,
+      Component.literal("ASSET: UNKNOWN"), cx, by - 24, COL_BRAND);
 
     graphics.fill(bx - 1, by - 1, bx + barW + 1, by + barH + 1, COL_BAR_BORDER);
     graphics.fill(bx, by, bx + barW, by + barH, COL_BAR_TRACK);

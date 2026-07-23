@@ -324,6 +324,29 @@ nix develop -c javap -p -c <extracted>.class
   leader_intro, shadow_watcher, shrine/blossom/rift) render ~1.78 high — retune on
   next visual pass rather than changing the engine (an engine fix re-frames every
   tuned scene at once).
+- **A spectator cutscene fired the same tick as `BATTLE_VICTORY` climbs UNSEEN** (root-caused
+  0.6.0-alpha.19, the "victory watcher doesn't climb after the battle but does via
+  `/cutscene play`" report). Cobblemon's CLIENT battle GUI still OWNS the camera when
+  `BATTLE_VICTORY` fires, so `player.setCamera(rig)` is masked while the rig eases through its
+  keyframes — by the time the GUI closes the motion is already done. Via the command there is no
+  battle GUI, so it renders from tick 0. FIX PATTERN: don't play a post-battle cutscene
+  server-side on the event; hand it to the client (S2C) and let the client bounce a C2S once
+  `CobblemonClient.INSTANCE.getBattle() == null` (the exact gate `NuzlockeClientInit`'s nickname
+  prompt already uses — "offers hold until it ends"), then play it server-side. Because the play
+  is now an async round-trip, latch any one-shot `ci_seen_` tag on the CONFIRM (successful
+  `CutsceneManager.play`), NOT at send time, and re-arm on JOIN (`resendOwedVictoryWatchers`:
+  `defeated_<leader>` set but `ci_seen_` absent) so a disconnect in the window self-heals instead
+  of silently burning the beat. Same gotcha applies to ANY post-battle client takeover.
+- **A cutscene can stand MULTIPLE body-doubles** (0.6.0-alpha.19): `CutsceneScript.doubles`
+  (`DoubleSpec` = preset/pos/playerSkin/yaw) supersedes the single `doublePreset`/`doublePos`
+  (still honored). Every double's preset must bake `Tag ci_cutscene_double` (the teardown sweep);
+  the player-skinned "you" must ALSO bake `ci_cutscene_playerdouble` so the runtime SkinData patch
+  targets it and never clobbers a sibling's baked skin (e.g. the all-black watcher). `easy_npc
+  preset import_new` IGNORES the command-source rotation (bytecode-verified — placement functions
+  use `import` onto an EXISTING body via `execute as <uuid> at @s`, which keeps its own yaw), so a
+  double's facing is set by a runtime `data modify entity <uuid> Rotation set value [<yaw>f,0f]`
+  in the same tag-discovery pass that applies the skin — only for the player double; non-player
+  doubles need a baked `Rotation` in their SNBT.
 - **AutoInstall is version-aware** (alpha.9+): the world latch stores `modVersion`; a
   bump re-applies only the idempotent content refresh (NPC repaint + register_sight)
   on rejoin — same version never re-fires (bump `build.gradle.kts` per content release,

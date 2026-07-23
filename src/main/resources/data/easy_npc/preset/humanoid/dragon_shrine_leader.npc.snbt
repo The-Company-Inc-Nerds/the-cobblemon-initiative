@@ -40,58 +40,6 @@
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
-                            Name: "dragon_shrine_trial_clear"
-                        },
-                        {
-                            Type: "PLAYER_TAG",
-                            Operation: "EQUALS",
-                            Name: "no_dragon_crystal_claimed"
-                        }
-                    ],
-                    Priority: 30,
-                    Buttons: [
-                        {
-                            Name: "Receive the Dragon Shrine Crystal",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "give @s cobblemon-initiative:dragon_shrine_crystal"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "tag @s add dragon_crystal_claimed"
-                                },
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "claim_button"
-                        },
-                        {
-                            Name: "Not yet",
-                            Actions: [
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "leave_button"
-                        }
-                    ],
-                    Texts: [
-                        {
-                            Text: "Three heads bowed. The shrine counts that as a word given. Take the crystal — the old scale-and-storm sleeps in it, and it wakes wherever you set it down. Choose that ground with more care than the Company ever chose theirs."
-                        }
-                    ],
-                    Name: "Draconis — the crystal",
-                    Label: "cleared"
-                },
-                {
-                    Conditions: [
-                        {
-                            Type: "PLAYER_TAG",
-                            Operation: "EQUALS",
                             Name: "dragon_crystal_claimed"
                         }
                     ],
@@ -109,7 +57,7 @@
                     ],
                     Texts: [
                         {
-                            Text: "You carry the wyrm token now. The shrine breathes easier with you gone, and yet it watches the door for your return."
+                            Text: "You met the wyrm eye to eye and it gave you its scale. The shrine breathes easier with you gone, and yet it watches the door for your return."
                         },
                         {
                             Text: "I have guarded this fire all my years and never felt it lean toward a stranger. It leaned toward you. I do not think you were ever a stranger to it."
@@ -133,7 +81,7 @@
                             Label: "gaze_button"
                         },
                         {
-                            Name: "Wake the hydra",
+                            Name: "Wake the wyrm",
                             Actions: [
                                 {
                                     Type: "COMMAND",
@@ -173,10 +121,10 @@
                             Text: "Halt. You stand in the breath of the Dragon Shrine, where the oldest fire still coils and waits. I am Draconis, and I keep its hunger. The wyrm itself is not easily flattered."
                         },
                         {
-                            Text: "Rouse the hydra first - three heads, one hunger, and it heals between each fall so a single answer will not do. Field a party built for two-on-two; the wyrm does not fight one at a time, and neither do I. The old fire stirs for you the way it stirs for things it has tasted before."
+                            Text: "It shows all three heads at once - one triple battle, one hunger, no healing between falls. Field a party built for three-on-three; the wyrm does not fight one at a time. The old fire stirs for you the way it stirs for things it has tasted before."
                         },
                         {
-                            Text: "Power is not given at this gate. It is taken, scale by scale, from one who would deny it. Wake the wyrm and face me, and we will see what the fire already suspects."
+                            Text: "And when the heads are down the wyrm does not simply yield - it uncoils and takes you itself. Put it down or catch it, and the crystal is yours by right, not by my hand. Wake the wyrm, and we will see what the fire already suspects."
                         }
                     ],
                     Name: "Draconis — challenge",

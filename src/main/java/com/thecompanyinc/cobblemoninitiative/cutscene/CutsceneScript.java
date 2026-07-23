@@ -50,6 +50,33 @@ public class CutsceneScript {
   /** Optional [x,y,z] for the double; null = the player's position at play time. */
   public double[] doublePos;
 
+  /**
+   * Optional MULTIPLE body-doubles — one entry per figure in frame. When present this
+   * SUPERSEDES {@code doublePreset}/{@code doublePos} (which stay for single-double
+   * scenes). The Takehara victory scene uses this to stand BOTH a player-skinned "you"
+   * on the arena floor AND the all-black watcher up at the shaft mouth. Every spec's
+   * preset must still bake {@code Tag ci_cutscene_double} for the teardown sweep; the
+   * player-skinned one must ALSO bake {@code ci_cutscene_playerdouble} so the runtime
+   * skin patch targets it and not a sibling figure.
+   */
+  public List<DoubleSpec> doubles;
+
+  /** One body-double. */
+  public static class DoubleSpec {
+    /** Easy NPC humanoid preset (same form as {@link #doublePreset}). */
+    public String preset;
+    /** Absolute [x,y,z]; null = the player's position at play time. */
+    public double[] pos;
+    /** Patch this body to render the triggering player's skin at runtime (the "you" double).
+     * The preset must bake {@code ci_cutscene_playerdouble} so the patch can find it. */
+    public boolean playerSkin = false;
+    /** Facing yaw. Easy NPC's {@code import_new} IGNORES the spawn rotation, so this is applied
+     * at runtime ONLY to the player-skinned double (found by its {@code ci_cutscene_playerdouble}
+     * tag). Non-player doubles keep their preset/spawn facing — bake a {@code Rotation} into the
+     * preset if one needs a specific yaw. Default 0 = south. */
+    public float yaw = 0f;
+  }
+
   /** Optional fake weather for the scene: DOWNPOUR | THUNDERSTORM | CLEAR (else real sky). */
   public String ambientWeather;
 

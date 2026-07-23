@@ -3,7 +3,7 @@
     author: "TheCompanyInc",
     category: "Cutscene",
     created: 0L,
-    description: "Body-double stand-in for the cutscene engine. Renders the triggering player's skin (SkinData is patched to PLAYER_SKIN with the player's name+UUID at runtime by CutsceneManager). Invulnerable, no-AI, silent, no dialog, no name. Swept by the data-level Tag ci_cutscene_double.",
+    description: "Body-double stand-in for the cutscene engine. Renders the triggering player's skin (SkinData is patched to PLAYER_SKIN with the player's name+UUID at runtime by CutsceneManager, which finds this body by the ci_cutscene_playerdouble Tag so it never clobbers a sibling double's skin). Invulnerable, no-AI, silent, no dialog, no name. Swept by the data-level Tag ci_cutscene_double.",
     entityTypeId: "easy_npc:humanoid",
     modified: 0L,
     name: "Player Double",
@@ -11,7 +11,7 @@
     version: "1.0.0"
   },
   data: {
-    Tags: ["ci_cutscene_double"],
+    Tags: ["ci_cutscene_double", "ci_cutscene_playerdouble"],
     NoAI: 1b,
     Silent: 1b,
     ActionData: {

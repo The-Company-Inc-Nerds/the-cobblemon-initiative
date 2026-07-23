@@ -29,6 +29,11 @@ public class NuzlockeClientInit implements ClientModInitializer {
   private static final Queue<InitiativePayloads.NicknamePromptPayload> pendingNicknames =
     new ConcurrentLinkedQueue<>();
 
+  /** A victory-watcher scene queued by the server, held until the Cobblemon battle GUI has
+   *  fully closed — playing it while the GUI still owned the camera hid the rig's ascent
+   *  ("it doesn't climb after the battle"). Cleared once bounced back or on disconnect. */
+  private static volatile String pendingVictoryWatcher = null;
+
   @Override
   public void onInitializeClient() {
     LOGGER.info("Nuzlocke client initialized!");
@@ -47,6 +52,11 @@ public class NuzlockeClientInit implements ClientModInitializer {
     ClientPlayNetworking.registerGlobalReceiver(
       InitiativePayloads.NicknamePromptPayload.TYPE,
       (payload, context) -> pendingNicknames.add(payload));
+
+    // Victory-watcher scene: held (below) until the battle GUI closes, then bounced back.
+    ClientPlayNetworking.registerGlobalReceiver(
+      InitiativePayloads.VictoryWatcherPayload.TYPE,
+      (payload, context) -> pendingVictoryWatcher = payload.scene());
 
     // Live-earn achievement toast (backfills never send this — see AchievementToasts).
     // Popped straight away; no screen sequencing needed, a toast overlays whatever's up.
@@ -93,6 +103,7 @@ public class NuzlockeClientInit implements ClientModInitializer {
       .register((handler, client) -> {
         pendingNicknames.clear();
         pendingPicker = null;
+        pendingVictoryWatcher = null;
         // A mid-install disconnect must never strand the player on the black overlay.
         if (client.screen instanceof LoadingOverlayScreen) client.setScreen(null);
       });
@@ -121,6 +132,18 @@ public class NuzlockeClientInit implements ClientModInitializer {
           if (offer != null) {
             client.setScreen(new NicknamePromptScreen(offer.monUuid(), offer.speciesName()));
           }
+        }
+
+        // Victory-watcher: once the battle GUI is truly gone (getBattle()==null), ask the
+        // server to play the scene. Separate from the else-if chain above — it sends a
+        // packet, opens no screen — so a gym win with nothing else queued fires it at once.
+        // Re-check screen==null: a branch above may have opened a modal THIS tick, and the
+        // scene must not start behind it.
+        if (pendingVictoryWatcher != null && client.screen == null
+            && com.cobblemon.mod.common.client.CobblemonClient.INSTANCE.getBattle() == null) {
+          String scene = pendingVictoryWatcher;
+          pendingVictoryWatcher = null;
+          ClientPlayNetworking.send(new InitiativePayloads.VictoryWatcherReadyPayload(scene));
         }
       }
     });

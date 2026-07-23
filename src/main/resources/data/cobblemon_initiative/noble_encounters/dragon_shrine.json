@@ -1,0 +1,62 @@
+{
+  "_comment": "HAND-AUTHORED (not scripts/generate_noble — that generator only emits the wandering pseudo-legendary ROSTER). The Dragon Shrine guardian: after the player clears the single GEN_9_TRIPLES Hydreigon battle, ShrineChallengeManager hands off to this noble (deferred a few ticks so it doesn't race the battle teardown). No arena.center → the body spawns at the player's feet, right where they won the trial. Defeating OR capturing the wyrm awards the Dragon Shrine Crystal + latches the trial/claim tags, so the crystal comes from the fight itself (Draconis just acknowledges it afterward).",
+  "id": "dragon_shrine",
+  "displayName": "§5§lWyrm of the Shrine",
+  "type": "boss",
+  "element": "dragon",
+  "bodyPreset": "easy_npc:preset/cobblemon/noble_dragon_shrine.npc.snbt",
+  "bodyTag": "noble_dragon_shrine_body",
+  "battleSpecies": "hydreigon level=72 min_perfect_ivs=6 nature=modest ability=levitate special_attack_ev=252 speed_ev=252 hp_ev=4",
+
+  "startTitle": "§5§lTHE WYRM UNCOILS",
+  "startSubtitle": "§7The old scale-and-storm wakes for you",
+  "introSeconds": 3,
+
+  "arena": {
+    "radius": 16,
+    "dimension": "minecraft:overworld"
+  },
+
+  "stagger": {
+    "staggerAtHealthFraction": 0.25,
+    "bossBarColor": "PURPLE",
+    "bossBarOverlay": "NOTCHED_10"
+  },
+
+  "phase1": {
+    "attacks": [
+      { "type": "projectile", "cooldownTicks": 80,  "params": { "count": 2, "speed": 1.0, "spread": 0.08, "damage": 6 } },
+      { "type": "stomp",      "cooldownTicks": 75,  "params": { "range": 3, "damage": 8, "knockback": 1.2, "windupTicks": 18 } },
+      { "type": "beam",       "cooldownTicks": 130, "params": { "length": 16.0, "width": 2.2, "windupTicks": 26, "damage": 8.0 } }
+    ],
+    "attackGapTicks": 26
+  },
+
+  "phase2": {
+    "healPartyBeforeBattle": true
+  },
+
+  "rewards": {
+    "storyFlag": { "objective": "defeated_dragon_shrine", "holder": "@s", "value": 1 },
+    "achievement": "cobblemon_initiative:nobles/dragon_shrine",
+    "commandsOnCapture": [
+      "give {player} cobblemon-initiative:dragon_shrine_crystal",
+      "tag {player} add dragon_shrine_trial_clear",
+      "tag {player} add dragon_crystal_claimed"
+    ],
+    "commandsOnDefeat": [
+      "give {player} cobblemon-initiative:dragon_shrine_crystal",
+      "tag {player} add dragon_shrine_trial_clear",
+      "tag {player} add dragon_crystal_claimed"
+    ]
+  },
+
+  "completeTitle": "§6§lThe Wyrm Yields",
+  "completeSubtitle": "§7Its crystal is yours",
+  "sounds": {
+    "start": "minecraft:entity.ender_dragon.growl",
+    "stagger": "minecraft:entity.generic.explode",
+    "complete": "minecraft:ui.toast.challenge_complete",
+    "hornOnStart": true
+  }
+}

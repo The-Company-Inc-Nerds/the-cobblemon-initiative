@@ -20,9 +20,16 @@ public class ShrineChallengeConfig {
    */
   private String type;
 
-  // ── hydra_gauntlet ──────────────────────────────────────────────────────────
-  /** Trainer IDs for each stage, in order. */
+  // ── hydra_gauntlet / noble_gauntlet ─────────────────────────────────────────
+  /** Trainer IDs for each stage, in order. (noble_gauntlet uses a single stage.) */
   private List<String> stageTrainerIds = Collections.emptyList();
+
+  /**
+   * noble_gauntlet only: the noble encounter id started once the (single) stage trainer is
+   * beaten — the trial's second phase is a LoA-style body-swap fight whose rewards hand over
+   * the shrine crystal. Null for the plain hydra_gauntlet / other types.
+   */
+  private String nobleId;
 
   // ── fairy_tests ─────────────────────────────────────────────────────────────
   /** Minimum friendship required to pass test 1. */
@@ -88,6 +95,7 @@ public class ShrineChallengeConfig {
   public String getStartSubtitle() { return startSubtitle; }
   public String getType() { return type; }
   public List<String> getStageTrainerIds() { return stageTrainerIds; }
+  public String getNobleId() { return nobleId; }
   public int getFriendshipThreshold() { return friendshipThreshold; }
   public int getFullnessThreshold() { return fullnessThreshold; }
   public String getCultistLeaderTrainerId() { return cultistLeaderTrainerId; }
