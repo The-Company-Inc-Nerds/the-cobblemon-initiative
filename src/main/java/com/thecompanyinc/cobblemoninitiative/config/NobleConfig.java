@@ -40,7 +40,12 @@ public class NobleConfig {
    */
   private float arenaRadiusMultiplier = 1.4f;
 
-  /** Multiplier on the Phase-1 body's max health (applied once, at body discovery). */
+  /**
+   * Multiplier on the Phase-1 body's max health (applied once, at body discovery). Left at 1.0
+   * (neutral): the noble body presets now carry the hardcore-tuned (halved) max_health as their
+   * baked base values, so this knob must stay at 1.0 or it would stack on top of that cut. Retune
+   * in ModMenu (clamp 0.25–4.0) for further per-instance adjustment.
+   */
   private float bossHealthMultiplier = 1.0f;
 
   /** Multiplier on the Phase-1 body's native melee attack damage (applied at discovery). */
