@@ -1,5 +1,8 @@
 package com.thecompanyinc.cobblemoninitiative.cutscene;
 
+import com.cobblemon.mod.common.Cobblemon;
+import com.cobblemon.mod.common.api.storage.party.PlayerPartyStore;
+import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.google.gson.Gson;
 import com.thecompanyinc.cobblemoninitiative.InitiativeInit;
 import java.io.InputStream;
@@ -226,6 +229,20 @@ public class CutsceneManager {
     ChunkPos subjectChunk = new ChunkPos(subjectPos);
     level.getChunkSource().addRegionTicket(TicketType.PORTAL, subjectChunk, SUBJECT_TICKET_RADIUS, subjectPos);
     state.setSubjectAnchor(subjectChunk, subjectPos);
+
+    // Recall the player's sent-out (following) Pokémon so nothing chases the camera rig during
+    // the scene. Pokemon.recall() flips the mon to InactivePokemonState and discards its live
+    // entity (SentOutState.recall() → entity.discard()); it does NOT remove it from the party or
+    // touch storeCoordinates, so party contents are unchanged. getEntity() is null for benched
+    // mons, so this is a no-op for them. Not re-sent afterward — the follow mon is cosmetic and
+    // is re-summoned naturally by the player / next battle. (The party iterator returns a
+    // filterNotNull snapshot, so no CME and no null elements; getEntity()!=null is the real guard.)
+    PlayerPartyStore ciParty = Cobblemon.INSTANCE.getStorage().getParty(player);
+    for (Pokemon ciMon : ciParty) {
+      if (ciMon.getEntity() != null) {
+        ciMon.recall();
+      }
+    }
 
     // Spectator FIRST, then attach the camera (the vanilla /spectate order; a live swap is
     // hardcore-safe — no guard on changeGameModeForPlayer).

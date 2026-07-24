@@ -3,4 +3,6 @@
 # the one-shot watcher_seen_1 tag makes the inner call dead forever after the first play — so this
 # is effectively free once seen. The scene names nothing (Rule 7); the player just glimpses a copy
 # of themselves watching, then it is gone. Independent of the phone toggle.
-execute as @a[tag=defeated_takehara_leader] unless entity @s[tag=watcher_seen_1] run function cobblemon_initiative:flavor/watcher_fire
+# DISABLED (playtest): the takehara_victory_watcher already carries the post-badge-1 beat, so the
+# shadow watcher is held back for now. Re-enable by uncommenting the line below.
+# execute as @a[tag=defeated_takehara_leader] unless entity @s[tag=watcher_seen_1] run function cobblemon_initiative:flavor/watcher_fire
