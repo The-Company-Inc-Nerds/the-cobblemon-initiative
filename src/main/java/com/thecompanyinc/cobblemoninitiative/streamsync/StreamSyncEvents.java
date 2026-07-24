@@ -5,6 +5,8 @@ import com.google.gson.JsonObject;
 import com.thecompanyinc.cobblemoninitiative.InitiativeInit;
 import com.thecompanyinc.cobblemoninitiative.config.TrainerConfig;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
 
 /**
  * The static event bus other subsystems post to — one-liners at their EXISTING
@@ -35,6 +37,16 @@ public final class StreamSyncEvents {
 
   /** A Pokémon permanently left the run (faint removal, sacrifice, duplicate release). */
   public static void pokemonLost(ServerPlayer player, Pokemon pokemon, String cause) {
+    pokemonLost(player, pokemon, cause, null);
+  }
+
+  /**
+   * As {@link #pokemonLost(ServerPlayer, Pokemon, String)}, but also carrying who/what
+   * KO'd it (the faint path — see {@link StreamSyncManager#describeKiller}). {@code killer}
+   * is null for causes with no attacker (sacrifice, duplicate release) and is built on the
+   * CALLING thread so the pusher never touches battle objects.
+   */
+  public static void pokemonLost(ServerPlayer player, Pokemon pokemon, String cause, JsonObject killer) {
     // Count the loss FIRST, before the overlay gate — this is the single choke point every
     // permanent loss funnels through, so it is the always-tracked run death count the
     // "deathless / flawless" achievements read (they must stay truthful even with the
@@ -52,7 +64,33 @@ public final class StreamSyncEvents {
     JsonObject json = eventEnvelope("pokemon_lost");
     json.addProperty("cause", cause);
     json.add("pokemon", StreamSyncManager.describePokemon(pokemon));
+    if (killer != null) json.add("killer", killer);
     json.addProperty("deathsTotal", deathsTotal);
+    pusher.enqueueEvent(json);
+    StreamSyncInit.getManager().invalidate();
+  }
+
+  /**
+   * The TRAINER themselves died a NON-whiteout death — a natural hardcore death (fall,
+   * lava, mob, drowning, …). {@code source}'s short id becomes the wire {@code cause}
+   * ("fall"/"lava"/"mob"/…), its localized text the {@code deathMessage}, and the
+   * attacking entity, if any, the {@code killedBy} name. Whiteouts do NOT come here —
+   * {@code NuzlockeInit}'s AFTER_DEATH hook filters them out, because the richer
+   * {@code whiteout} event has already reported the blackout.
+   */
+  public static void playerDeath(ServerPlayer player, DamageSource source) {
+    StreamSyncPusher pusher = StreamSyncInit.getPusher();
+    if (pusher == null) return;
+    JsonObject json = eventEnvelope("player_death");
+    json.addProperty("player", player.getName().getString());
+    if (source != null) {
+      json.addProperty("cause", source.getMsgId());
+      json.addProperty("deathMessage", source.getLocalizedDeathMessage(player).getString());
+      Entity killer = source.getEntity();
+      if (killer != null) json.addProperty("killedBy", killer.getName().getString());
+    } else {
+      json.addProperty("cause", "unknown");
+    }
     pusher.enqueueEvent(json);
     StreamSyncInit.getManager().invalidate();
   }

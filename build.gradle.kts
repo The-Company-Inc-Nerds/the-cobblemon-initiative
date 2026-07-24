@@ -57,6 +57,9 @@ dependencies {
     modRuntimeOnly("net.fabricmc.fabric-api:fabric-api:0.116.12+1.21.1")
     modImplementation(fabricApi.module("fabric-command-api-v2", "0.116.12+1.21.1"))
     modImplementation(fabricApi.module("fabric-lifecycle-events-v1", "0.116.12+1.21.1"))
+    // ServerLivingEntityEvents.AFTER_DEATH — the trainer's hardcore-death record for StreamSync
+    // (rides the full fabric-api runtime bundle above; declared here for the compile classpath).
+    modImplementation(fabricApi.module("fabric-entity-events-v1", "0.116.12+1.21.1"))
     modImplementation(fabricApi.module("fabric-resource-loader-v0", "0.116.12+1.21.1"))
     modImplementation(fabricApi.module("fabric-events-interaction-v0", "0.116.12+1.21.1"))
     modImplementation(fabricApi.module("fabric-key-binding-api-v1", "0.116.12+1.21.1"))

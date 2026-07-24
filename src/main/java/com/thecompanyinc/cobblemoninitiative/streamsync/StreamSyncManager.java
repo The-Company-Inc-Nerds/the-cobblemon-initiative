@@ -1,7 +1,13 @@
 package com.thecompanyinc.cobblemoninitiative.streamsync;
 
 import com.cobblemon.mod.common.Cobblemon;
+import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
+import com.cobblemon.mod.common.api.battles.model.actor.ActorType;
+import com.cobblemon.mod.common.api.battles.model.actor.BattleActor;
+import com.cobblemon.mod.common.api.events.battles.BattleFaintedEvent;
 import com.cobblemon.mod.common.api.storage.party.PlayerPartyStore;
+import com.cobblemon.mod.common.battles.ActiveBattlePokemon;
+import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -191,6 +197,80 @@ public class StreamSyncManager {
     json.addProperty("shiny", pokemon.getShiny());
     json.addProperty("gender", pokemon.getGender().name().toLowerCase(Locale.ROOT));
     return json;
+  }
+
+  /**
+   * Best-effort "who or what KO'd it" for a faint-path {@code pokemon_lost}: the
+   * enemy Pokémon that caused the faint plus whether it was a wild mon or a
+   * trainer's (with the trainer's name). The attacker is resolved most-precise
+   * first — the faint context's origin, then an opponent this Pokémon actually
+   * faced, then any active enemy on the field — ruling out self-KOs (recoil,
+   * poison, confusion) so those never mis-credit the opponent. Returns null when
+   * nothing enemy-side resolves (e.g. a weather / entry-hazard KO); the wire's
+   * {@code killer} field is simply omitted then. SERVER thread only, like
+   * {@link #describePokemon} (the pusher only ever sees the finished JsonObject).
+   */
+  public static JsonObject describeKiller(BattleFaintedEvent event) {
+    BattlePokemon killed = event.getKilled();
+    BattlePokemon attacker = resolveAttacker(event, killed);
+    if (attacker == null) return null;
+
+    JsonObject json = new JsonObject();
+    BattleActor actor = attacker.getActor();
+    ActorType type = actor != null ? actor.getType() : null;
+    if (type == ActorType.NPC) {
+      json.addProperty("by", "trainer");
+      if (actor.getName() != null) json.addProperty("trainer", actor.getName().getString());
+    } else if (type == ActorType.WILD) {
+      json.addProperty("by", "wild");
+    } else {
+      json.addProperty("by", "unknown");
+    }
+
+    Pokemon mon = attacker.getEffectedPokemon();
+    if (mon != null) {
+      json.addProperty("species", mon.getSpecies().getResourceIdentifier().toString());
+      json.addProperty("dex", mon.getSpecies().getNationalPokedexNumber());
+      MutableComponent nick = mon.getNickname();
+      json.addProperty(
+        "name",
+        nick != null && !nick.getString().isBlank() ? nick.getString() : mon.getSpecies().getName()
+      );
+    }
+    return json;
+  }
+
+  /** The enemy Pokémon that caused {@code killed}'s faint, most-precise source first, or null. */
+  private static BattlePokemon resolveAttacker(BattleFaintedEvent event, BattlePokemon killed) {
+    // 1) The faint context's origin is the EXACT source of the KO. When it is known, trust it:
+    //    an enemy is the killer; a self/ally source (recoil, poison, confusion, or friendly
+    //    fire between the player's own mons in doubles) means no enemy did it — credit no one
+    //    rather than falling through and guessing an unrelated opponent.
+    BattlePokemon origin = event.getContext() != null ? event.getContext().getOrigin() : null;
+    if (origin != null) return isEnemy(origin, killed) ? origin : null;
+    // 2) Origin unknown (weather, entry hazard, chip): best-effort — an opponent this mon faced…
+    for (BattlePokemon faced : killed.getFacedOpponents()) {
+      if (isEnemy(faced, killed)) return faced;
+    }
+    // 3) …else any active Pokémon on a non-player side.
+    PokemonBattle battle = event.getBattle();
+    if (battle != null) {
+      for (BattleActor actor : battle.getActors()) {
+        if (actor.getType() == ActorType.PLAYER) continue;
+        for (ActiveBattlePokemon active : actor.getActivePokemon()) {
+          BattlePokemon bp = active.getBattlePokemon();
+          if (bp != null) return bp;
+        }
+      }
+    }
+    return null;
+  }
+
+  /** A non-player-side Pokémon other than the fallen one itself (excludes recoil/poison self-KOs). */
+  private static boolean isEnemy(BattlePokemon candidate, BattlePokemon killed) {
+    if (candidate == null || candidate.getActor() == null) return false;
+    if (candidate.getUuid().equals(killed.getUuid())) return false;
+    return candidate.getActor().getType() != ActorType.PLAYER;
   }
 
   /** Badge count — the same gym-leader derivation the all_badges achievement uses. */

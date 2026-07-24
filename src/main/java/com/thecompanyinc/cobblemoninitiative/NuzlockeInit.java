@@ -13,6 +13,7 @@ import com.cobblemon.mod.common.api.storage.party.PlayerPartyStore;
 import com.cobblemon.mod.common.api.storage.pc.PCStore;
 import com.cobblemon.mod.common.battles.actor.PlayerBattleActor;
 import com.cobblemon.mod.common.pokemon.Pokemon;
+import com.google.gson.JsonObject;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -20,6 +21,8 @@ import com.thecompanyinc.cobblemoninitiative.config.NuzlockeConfig;
 import com.thecompanyinc.cobblemoninitiative.config.ProgressionConfig;
 import com.thecompanyinc.cobblemoninitiative.stadium.StadiumManager;
 import com.thecompanyinc.cobblemoninitiative.streamsync.StreamSyncEvents;
+import com.thecompanyinc.cobblemoninitiative.streamsync.StreamSyncInit;
+import com.thecompanyinc.cobblemoninitiative.streamsync.StreamSyncManager;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -29,6 +32,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import kotlin.Unit;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
@@ -65,6 +69,10 @@ public class NuzlockeInit implements ModInitializer {
    *  a Nuzlocke whiteout will not fire {@code player.kill()} on them. Opened by the Dishonorable
    *  Respawn path so a queued same-battle re-entry can't re-kill the revived player. */
   private static final Map<UUID, Long> whiteoutGraceUntil = new ConcurrentHashMap<>();
+  /** Players whose imminent {@code player.kill()} is a Nuzlocke whiteout (marked by
+   *  {@link #whiteoutKill}, consumed by the AFTER_DEATH hook) — so the blackout is not
+   *  ALSO reported as a natural {@code player_death} (which would double the grave). */
+  private static final java.util.Set<UUID> pendingWhiteoutDeaths = ConcurrentHashMap.newKeySet();
   private static final Map<UUID, String> playerZones = new ConcurrentHashMap<>();
   private static int announceTick = 0;
   private static final Random URGE_RANDOM = new Random();
@@ -81,6 +89,17 @@ public class NuzlockeInit implements ModInitializer {
     CobblemonEvents.BATTLE_FLED.subscribe(Priority.NORMAL, NuzlockeInit::handleBattleFled);
     CobblemonEvents.BATTLE_VICTORY.subscribe(Priority.NORMAL, NuzlockeInit::handleBattleVictory);
     CobblemonEvents.POKEMON_CAPTURED.subscribe(Priority.NORMAL, NuzlockeInit::handlePokemonCaptured);
+
+    // Record the TRAINER's own hardcore deaths for the stream overlay's graveyard. A
+    // whiteout is already reported (richer) by its own event just before player.kill(),
+    // so it is filtered here; everything else (fall, lava, mob, drowning, …) ships as a
+    // natural player_death carrying the DamageSource's cause + message + killer.
+    ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
+      if (entity instanceof ServerPlayer sp) {
+        if (pendingWhiteoutDeaths.remove(sp.getUUID())) return;
+        StreamSyncEvents.playerDeath(sp, source);
+      }
+    });
 
     ServerTickEvents.END_SERVER_TICK.register(server -> {
       if (++announceTick % Math.max(1, config.getZoneCheckCadenceTicks()) != 0) return;
@@ -109,8 +128,10 @@ public class NuzlockeInit implements ModInitializer {
                 .executes(context -> {
                   var player = context.getSource().getPlayerOrException();
                   player.sendSystemMessage(Component.literal("§7[dev] Forcing whiteout."));
-                  pendingWhiteoutDeath = true;
-                  player.kill();
+                  // Route through whiteoutKill so the forced whiteout is a real one — it fires the
+                  // whiteout event + stat + AFTER_DEATH marker, so the stream overlay records a
+                  // whiteout stone, not a mislabeled genericKill "natural death".
+                  whiteoutKill(player, StreamSyncEvents.REASON_FAINT);
                   return 1;
                 })
             )
@@ -126,8 +147,9 @@ public class NuzlockeInit implements ModInitializer {
                     player.sendSystemMessage(
                       Component.literal("§7[dev] One Pokémon left — forcing whiteout instead.")
                     );
-                    pendingWhiteoutDeath = true;
-                    player.kill();
+                    // Same as /nuzlocke deathscreen: a real whiteout (event + stat + marker), not
+                    // a bare kill that the overlay would mislabel as a natural death.
+                    whiteoutKill(player, StreamSyncEvents.REASON_FAINT);
                   } else {
                     player.sendSystemMessage(Component.literal("§7[dev] Opening sacrifice selection."));
                     pendingSacrifice = true;
@@ -474,7 +496,10 @@ public class NuzlockeInit implements ModInitializer {
     if (config.isRemoveFaintedPokemon()) {
       Pokemon faintedPokemonObj = faintedPokemon.getEffectedPokemon();
       party.remove(faintedPokemonObj);
-      StreamSyncEvents.pokemonLost(player, faintedPokemonObj, StreamSyncEvents.CAUSE_FAINT);
+      // Resolve the KO'er only while streaming — keeps the disabled path zero-alloc.
+      JsonObject killer = StreamSyncInit.getPusher() != null
+        ? StreamSyncManager.describeKiller(event) : null;
+      StreamSyncEvents.pokemonLost(player, faintedPokemonObj, StreamSyncEvents.CAUSE_FAINT, killer);
       LOGGER.info("Removed {} from {}'s party", pokemonName, player.getName().getString());
     }
 
@@ -674,6 +699,9 @@ public class NuzlockeInit implements ModInitializer {
       return;
     }
     pendingWhiteoutDeath = true;
+    // Tag the resulting AFTER_DEATH as a whiteout so it is not re-reported as a natural
+    // player_death — the whiteout event below is the run-ender's authoritative record.
+    pendingWhiteoutDeaths.add(player.getUUID());
     StreamSyncEvents.whiteout(player, reason);
     player.kill();
   }
