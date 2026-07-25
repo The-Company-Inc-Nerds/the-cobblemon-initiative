@@ -5,9 +5,13 @@
 # read as the call, and a "Hang up" close button ends it. The caller's ON_CLOSE_DIALOG trigger
 # (easy_npc delete @s) despawns it on hang-up; the pre-spawn delete below sweeps any straggler.
 # $(caller)=preset filename, $(tag)=body tag, $(label)=dialog entry label.
-# OPEN IS A BOUNDED RETRY (real root cause, bytecode+log-verified against Easy NPC 6.25.0):
-# the server open path is synchronous and correct (import_new loads DialogData BEFORE the body
-# is added to the world), so NO server-side defer — 5t or 20t — ever fixed it. The break is
+# PRIMARY BUG (why the phone never opened, any build): the delete line below shipped with a
+# leading `$` but no `$(...)` variable, so Minecraft rejected the whole file — "Macro without
+# variables" — and deliver never LOADED, so nothing downstream ran. `$` only belongs on lines
+# that use a macro variable; the delete line has none, so it is a plain command now.
+# OPEN IS ALSO A BOUNDED RETRY (defends a secondary client-side race, bytecode+log-verified vs
+# Easy NPC 6.25.0): the server open path is synchronous and correct (import_new loads DialogData
+# BEFORE the body is added to the world), so NO server-side defer — 5t or 20t — ever helped. The break is
 # CLIENT-side: the freshly-spawned body isn't in the client's LivingEntityManager tracking map
 # yet when the open-menu packet lands, so DialogScreen.<init> calls getEasyNPC().getLivingEntity()
 # on a null entity and NPEs on the render thread → the screen never builds, silently. (Matching
@@ -15,7 +19,7 @@
 # range.) A single fixed delay keeps losing that race; a small self-retry wins it once the client
 # tracks the body. phone/open re-issues the open each tick and stops on a spent try budget.
 # Single-player only (CLAUDE.md), so the open targets @a[limit=1] = the player.
-$execute at @s run easy_npc delete @e[type=easy_npc:humanoid,tag=ci_phone_caller,distance=..64]
+execute at @s run easy_npc delete @e[type=easy_npc:humanoid,tag=ci_phone_caller,distance=..64]
 $execute at @s run easy_npc preset import_new data easy_npc:preset/humanoid/$(caller).npc.snbt ~ ~ ~
 $data modify storage cobblemon_initiative:phone open set value {tag:"$(tag)",label:"$(label)"}
 scoreboard players set #phone_open_tries ci_dawn 4

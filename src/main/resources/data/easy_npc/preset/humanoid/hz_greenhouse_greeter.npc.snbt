@@ -39,7 +39,7 @@
                     Priority: 10,
                     Buttons: [
                         {
-                            Name: "Point me to the greenhouse",
+                            Name: "Point me to the gym",
                             Actions: [
                                 {
                                     Type: "COMMAND",
@@ -48,13 +48,31 @@
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "title @initiator actionbar [{\"text\":\"North end of town — the glass tower. Ask for the docent in the lobby.\",\"color\":\"gray\"}]"
+                                    Cmd: "title @initiator actionbar [{\"text\":\"Up the rise — find Garden Master Wei on the west hill to begin the four gardens.\",\"color\":\"gray\"}]"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "tour_button"
+                            Label: "gym_button"
+                        },
+                        {
+                            Name: "The Company house?",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add hz_arrived"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "title @initiator actionbar [{\"text\":\"Down the south lane — the low house with the good paper. Ask for Shu inside; she keeps the dispatch board.\",\"color\":\"gray\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "house_button"
                         },
                         {
                             Name: "Just passing through",
@@ -73,10 +91,10 @@
                     ],
                     Texts: [
                         {
-                            Text: "Welcome to Hua Zhan City, and to the Company greenhouse program. Free public tours, every day, no account required. Verified growth. Verified value."
+                            Text: "Welcome to Hua Zhan City. Here to challenge the gym? It is up the rise — though Blossom takes challengers the old way, so walk the four gardens and press their seals before you knock."
                         },
                         {
-                            Text: "You came up the Harvest Road, I can tell — you have the look of someone who saw the fields. Come and see where they begin. The big glass tower at the north end. And do go all the way to the top. That is where it makes sense."
+                            Text: "You came up the Harvest Road, I can tell — you have the look of someone who saw the fields. The Company keeps a house down the south lane, if you are curious where all that grain goes. Free to look. Verified growth, verified value, they say."
                         }
                     ],
                     Name: "Greeter — verified growth",
@@ -104,7 +122,7 @@
                     ],
                     Texts: [
                         {
-                            Text: "You did the full tour, then. All the way up. Wonderful. Everything you saw is entirely as scheduled."
+                            Text: "You went all the way through the house, then. Wonderful. Everything you saw is entirely as scheduled."
                         },
                         {
                             Text: "The tour continues as scheduled. Verified growth. Verified value. Have a pleasant day — and do mind who you tell about the view."

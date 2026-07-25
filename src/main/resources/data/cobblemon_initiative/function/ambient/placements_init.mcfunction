@@ -97,10 +97,6 @@ execute unless score #amb_gaviota_trainer_1 ci_ambient matches 0.. run scoreboar
 execute unless score #amb_gaviota_trainer_2 ci_ambient matches 0.. run scoreboard players set #amb_gaviota_trainer_2 ci_ambient 0
 execute unless score #amb_gaviota_trainer_3 ci_ambient matches 0.. run scoreboard players set #amb_gaviota_trainer_3 ci_ambient 0
 execute unless score #amb_gaviota_trainer_4 ci_ambient matches 0.. run scoreboard players set #amb_gaviota_trainer_4 ci_ambient 0
-execute unless score #amb_hua_zhan_trainer_1 ci_ambient matches 0.. run scoreboard players set #amb_hua_zhan_trainer_1 ci_ambient 0
-execute unless score #amb_hua_zhan_trainer_2 ci_ambient matches 0.. run scoreboard players set #amb_hua_zhan_trainer_2 ci_ambient 0
-execute unless score #amb_hua_zhan_trainer_3 ci_ambient matches 0.. run scoreboard players set #amb_hua_zhan_trainer_3 ci_ambient 0
-execute unless score #amb_hua_zhan_trainer_4 ci_ambient matches 0.. run scoreboard players set #amb_hua_zhan_trainer_4 ci_ambient 0
 execute unless score #amb_kalahar_apprentice ci_ambient matches 0.. run scoreboard players set #amb_kalahar_apprentice ci_ambient 0
 execute unless score #amb_kalahar_jr_apprentice ci_ambient matches 0.. run scoreboard players set #amb_kalahar_jr_apprentice ci_ambient 0
 execute unless score #amb_kalahar_mirage_1 ci_ambient matches 0.. run scoreboard players set #amb_kalahar_mirage_1 ci_ambient 0
@@ -154,10 +150,13 @@ execute unless score #amb_meowth ci_ambient matches 0.. run scoreboard players s
 execute unless score #amb_wooloo ci_ambient matches 0.. run scoreboard players set #amb_wooloo ci_ambient 0
 execute unless score #amb_hz_analyst ci_ambient matches 0.. run scoreboard players set #amb_hz_analyst ci_ambient 0
 execute unless score #amb_hz_receptionist ci_ambient matches 0.. run scoreboard players set #amb_hz_receptionist ci_ambient 0
+execute unless score #amb_hz_statue_moss ci_ambient matches 0.. run scoreboard players set #amb_hz_statue_moss ci_ambient 0
+execute unless score #amb_hz_statue_orchard ci_ambient matches 0.. run scoreboard players set #amb_hz_statue_orchard ci_ambient 0
+execute unless score #amb_hz_statue_pond ci_ambient matches 0.. run scoreboard players set #amb_hz_statue_pond ci_ambient 0
+execute unless score #amb_hz_statue_terrace ci_ambient matches 0.. run scoreboard players set #amb_hz_statue_terrace ci_ambient 0
 execute unless score #amb_hz_trader_apricorns ci_ambient matches 0.. run scoreboard players set #amb_hz_trader_apricorns ci_ambient 0
 execute unless score #amb_hz_trader_berries ci_ambient matches 0.. run scoreboard players set #amb_hz_trader_berries ci_ambient 0
 execute unless score #amb_hz_trader_mints ci_ambient matches 0.. run scoreboard players set #amb_hz_trader_mints ci_ambient 0
-execute unless score #amb_rezoning_notice_board ci_ambient matches 0.. run scoreboard players set #amb_rezoning_notice_board ci_ambient 0
 execute unless score #amb_ironwave_furfrou ci_ambient matches 0.. run scoreboard players set #amb_ironwave_furfrou ci_ambient 0
 execute unless score #amb_ironwave_herdier ci_ambient matches 0.. run scoreboard players set #amb_ironwave_herdier ci_ambient 0
 execute unless score #amb_ironwave_noctowl ci_ambient matches 0.. run scoreboard players set #amb_ironwave_noctowl ci_ambient 0

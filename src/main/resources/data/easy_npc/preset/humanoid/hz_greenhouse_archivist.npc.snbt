@@ -39,7 +39,28 @@
                     Priority: 10,
                     Buttons: [
                         {
-                            Name: "Go up to the catwalk",
+                            Name: "Say it for her — the crop is wheat",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:sidequest/greenhouse/reveal"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_wheat_named"
+                                }
+                            ],
+                            Label: "name_it_button"
+                        },
+                        {
+                            Name: "Step back from the board",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -78,7 +99,28 @@
                     Priority: 15,
                     Buttons: [
                         {
-                            Name: "Go up to the catwalk",
+                            Name: "Say it for her — the crop is wheat",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:sidequest/greenhouse/reveal"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_wheat_named"
+                                }
+                            ],
+                            Label: "name_it_button"
+                        },
+                        {
+                            Name: "Step back from the board",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -120,7 +162,7 @@
                     ],
                     Texts: [
                         {
-                            Text: "You saw it from the top, then you understand. It was never ten farms. It was one room, printed ten times onto a map."
+                            Text: "You said it out loud, then you understand. It was never ten farms. It was one room, printed ten times onto a map."
                         },
                         {
                             Text: "Go carefully. The board remembers every name. So do the people who read it to me each morning."

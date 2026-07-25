@@ -6,7 +6,7 @@
         description: "gym_trainer at Hua Zhan City - Still Pond (act 1). Compiled from dialog-src.",
         entityTypeId: "easy_npc:humanoid",
         modified: 0L,
-        name: "Ranger Xiu",
+        name: "Stone Warden of the Still Pond",
         variantType: "STEVE",
         version: "1.0.0"
     },
@@ -73,7 +73,7 @@
                             Text: "The surface has gone perfectly still around the reflection of the mark. The pond does not do that for tourists."
                         }
                     ],
-                    Name: "Ranger Xiu — the seal holds",
+                    Name: "Still Pond — the seal holds",
                     Label: "sealed"
                 },
                 {
@@ -130,10 +130,10 @@
                             Text: "The pond is satisfied, and a still pond is the oldest judge in town."
                         },
                         {
-                            Text: "The pond seal sits in my pedestal at the waterline. Press your hand — and if the reflection beside yours looks familiar, the old botany says not to worry."
+                            Text: "The pond seal sits in the pedestal at the waterline. Press your hand — and if the reflection beside yours looks familiar, the old botany says not to worry."
                         }
                     ],
-                    Name: "Ranger Xiu — after the match",
+                    Name: "Still Pond — after the match",
                     Label: "seal"
                 },
                 {
@@ -151,7 +151,7 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute as @initiator run function cobblemon_initiative:hua_zhan/warden_wake {x:1484,y:87,z:2160}"
+                                    Cmd: "execute as @initiator run function cobblemon_initiative:hua_zhan/warden_wake {x:1479,y:87,z:2112}"
                                 },
                                 {
                                     Type: "COMMAND",
@@ -207,7 +207,7 @@
                             Label: "battle_button"
                         },
                         {
-                            Name: "Read the station plaque",
+                            Name: "Read the old botany",
                             Actions: [
                                 {
                                     Type: "OPEN_NAMED_DIALOG",
@@ -228,20 +228,20 @@
                     ],
                     Texts: [
                         {
-                            Text: "Last of the four gardens. The old botany carved its fourth warden kneeling at the waterline, fist to the stones, reading the pond — and my partner drinks sun and water both, and answers to neither. The plaque behind me says so, and the plaque has never lied."
+                            Text: "STONE WARDEN OF THE STILL POND — last of the four gardens. The old botany carved it kneeling at the waterline, fist to the stones, reading the pond. An etching beneath the crest reads: the pond drinks sun and water both, and answers to neither."
                         },
                         {
-                            Text: "Strange. The water went still when you walked up, and for a heartbeat it held a face this stone almost knew. The old botany says the pond only shows what was already yours. Wake the statue, and we will find out what you brought."
+                            Text: "Strange — the water went still when you walked up, and for a heartbeat it held a face this stone almost knew. Master Wei sent you, so the pond will answer. Wake its guardian and best it; the pond only ever shows what was already yours."
                         }
                     ],
-                    Name: "Xiu — warden of the water",
+                    Name: "Still Pond — the stone stirs",
                     Label: "challenge"
                 },
                 {
                     Priority: 10,
                     Buttons: [
                         {
-                            Name: "Read the station plaque",
+                            Name: "Read the old botany",
                             Actions: [
                                 {
                                     Type: "OPEN_NAMED_DIALOG",
@@ -262,13 +262,13 @@
                     ],
                     Texts: [
                         {
-                            Text: "STATION OF THE POND — last of the four gardens. An etching beneath the crest reads: the pond pair drinks sun and water both, and answers to neither. Birds and bugs read this water better than boots ever will."
+                            Text: "STATION OF THE POND — last of the four gardens. An etching beneath the crest reads: the pond drinks sun and water both, and answers to neither. Birds and bugs read this water better than boots ever will."
                         },
                         {
-                            Text: "The statue kneels at the waterline, reading the pond, and does not look up. The gate keeper at the gym entrance keeps the rites of the four gardens."
+                            Text: "The statue kneels at the waterline, reading the pond, and does not look up. They say Garden Master Wei, up the west hill, knows how to wake it."
                         }
                     ],
-                    Name: "Station Of The Pond Station",
+                    Name: "Stone Warden of the Still Pond",
                     Label: "default"
                 },
                 {
@@ -375,30 +375,13 @@
         Invulnerable: 0b,
         LeftHanded: 0b,
         ModelData: {
-            Scale: {
-                Head: [1.3f, 1.5f, 1.3f],
-                Body: [1.3f, 1.5f, 1.3f],
-                LeftArm: [1.3f, 1.5f, 1.3f],
-                RightArm: [1.3f, 1.5f, 1.3f],
-                LeftLeg: [1.3f, 1.5f, 1.3f],
-                RightLeg: [1.3f, 1.5f, 1.3f]
-            },
-            Pose: "CUSTOM",
             DefaultPose: "STANDING",
-            Rotation: {
-                Head: [0.5f, 0.0f, 0.0f, 1.0f],
-                RightArm: [-0.3f, 0.0f, 0.1f, 1.0f],
-                LeftArm: [-1.05f, 0.0f, -0.15f, 1.0f],
-                RightLeg: [1.5f, 0.0f, -0.05f, 1.0f],
-                LeftLeg: [-1.6f, 0.0f, 0.05f, 1.0f]
-            },
-            Position: {
-                Head: [0.0f, 4.0f, 0.0f],
-                Body: [0.0f, 4.0f, 0.0f],
-                RightArm: [0.0f, 4.0f, 0.0f],
-                LeftArm: [0.0f, 4.0f, 0.0f],
-                RightLeg: [0.0f, 4.0f, 0.0f],
-                LeftLeg: [0.0f, 4.0f, 0.0f]
+            Pose: "VANILLA",
+            Position: {},
+            Rotation: {},
+            Scale: {},
+            Visible: {
+                Boots: 1b
             }
         },
         Navigation: {
@@ -467,6 +450,6 @@
             }
         ],
         id: "easy_npc:humanoid",
-        CustomName: '{"text": "Ranger Xiu", "color": "#FFFFFF"}'
+        CustomName: '{"text": "Stone Warden of the Still Pond", "color": "#FFFFFF"}'
     }
 }

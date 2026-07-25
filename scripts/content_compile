@@ -1108,6 +1108,20 @@ def compile_character(ch: dict, dialogs: dict, registers: dict, lore: dict):
         lst = ",".join('"%s"' % t for t in tags)
         out = sm.set_path(out, ["data", "Tags"], sm.parse_snbt("{K:[%s]}" % lst)["K"])
         out = sm.set_path(out, ["data", "CustomNameVisible"], sm.parse_snbt("{K:1b}")["K"])
+    # PokéPhone caller bodies are video-call props: visible ONLY in creative (for debugging),
+    # never in survival/spectator, so the physical body never stands in-frame during a call —
+    # the dialog GUI still renders the caller's face (that's the menu ScreenData, not the world
+    # entity). BYTECODE (Easy NPC 6.25.0 VisibilityHandler.handleIsInvisibleToPlayer): master
+    # VISIBLE must stay true, the observer's gamemode picks VISIBLE_IN_<MODE>, and the owner/team
+    # early-visible paths are zeroed so nothing overrides the survival/spectator hide. (No uuid,
+    # no visuals export -> DisplayAttribute is the base template's, so this override is final.)
+    if "ci_phone_caller" in tags:
+        out = sm.set_path(out, ["data", "DisplayAttribute"], sm.parse_snbt(
+            '{K:[{Bool:1b,Type:"VISIBLE"},{Bool:1b,Type:"VISIBLE_AT_DAY"},'
+            '{Bool:1b,Type:"VISIBLE_AT_NIGHT"},{Bool:1b,Type:"VISIBLE_IN_CREATIVE"},'
+            '{Bool:0b,Type:"VISIBLE_IN_SPECTATOR"},{Bool:0b,Type:"VISIBLE_IN_STANDARD"},'
+            '{Bool:0b,Type:"VISIBLE_TO_OWNER"},{Bool:0b,Type:"VISIBLE_TO_TEAM"},'
+            '{Int:7,Type:"LIGHT_LEVEL"},{Text:"ALWAYS",Type:"NAME_VISIBILITY"}]}')["K"])
     return out
 
 

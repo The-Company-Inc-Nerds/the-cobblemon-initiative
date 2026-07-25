@@ -3,10 +3,10 @@
         author: "TheCompanyInc",
         category: "Trainer",
         created: 0L,
-        description: "gym_trainer at Hua Zhan City - Orchard Rows (act 1). Compiled from dialog-src.",
+        description: "gym_trainer at Hua Zhan City - Water Terrace (act 1). Compiled from dialog-src.",
         entityTypeId: "easy_npc:humanoid",
         modified: 0L,
-        name: "Botanist Mei",
+        name: "Stone Warden of the Water Terrace",
         variantType: "STEVE",
         version: "1.0.0"
     },
@@ -40,7 +40,7 @@
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
-                            Name: "seal_orchard"
+                            Name: "seal_terrace"
                         }
                     ],
                     Priority: 30,
@@ -56,7 +56,7 @@
                             Label: "study_button"
                         },
                         {
-                            Name: "Leave the rows",
+                            Name: "Leave the terrace",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -67,13 +67,13 @@
                     ],
                     Texts: [
                         {
-                            Text: "The orchard seal has taken to the wood like a graft to old stock. Two of the four gardens keep this mark at most — count yourself among the patient."
+                            Text: "The terrace seal glistens under a thin film of channel water. It will not wash out — nothing pressed honestly ever does."
                         },
                         {
-                            Text: "Sap has already beaded along the seal line. The orchard accepts you."
+                            Text: "Below the mark, the vines have turned one leaf each toward the stone, which the old botany says is how a terrace applauds."
                         }
                     ],
-                    Name: "Botanist Mei — the seal holds",
+                    Name: "Water Terrace — the seal holds",
                     Label: "sealed"
                 },
                 {
@@ -81,12 +81,12 @@
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
-                            Name: "defeated_hua_zhan_trainer_2"
+                            Name: "defeated_hua_zhan_trainer_3"
                         },
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
-                            Name: "no_seal_orchard"
+                            Name: "no_seal_terrace"
                         }
                     ],
                     Priority: 20,
@@ -97,7 +97,7 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "tag @s add seal_orchard"
+                                    Cmd: "tag @s add seal_terrace"
                                 },
                                 {
                                     Type: "COMMAND",
@@ -106,7 +106,7 @@
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "title @initiator actionbar [{\"text\":\"The orchard seal takes.\",\"color\":\"green\"}]"
+                                    Cmd: "title @initiator actionbar [{\"text\":\"The terrace seal takes.\",\"color\":\"green\"}]"
                                 },
                                 {
                                     Type: "OPEN_NAMED_DIALOG",
@@ -127,13 +127,13 @@
                     ],
                     Texts: [
                         {
-                            Text: "The rows have accepted you — and the stone does not hum for tourists."
+                            Text: "The channels have agreed to you, and the stone builds nothing the hill has not agreed to."
                         },
                         {
-                            Text: "The orchard seal is grafted into my pedestal. Press your hand while the wood is still warm from the match."
+                            Text: "The terrace seal is set in the pedestal above the water. Press your hand — shared water arrives everywhere, and so will word of this match."
                         }
                     ],
-                    Name: "Botanist Mei — after the match",
+                    Name: "Water Terrace — after the match",
                     Label: "seal"
                 },
                 {
@@ -147,11 +147,11 @@
                     Priority: 15,
                     Buttons: [
                         {
-                            Name: "Ready a Pokéball — wake the statue of the rows",
+                            Name: "Ready a Pokéball — wake the statue of the channels",
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute as @initiator run function cobblemon_initiative:hua_zhan/warden_wake {x:1432,y:85,z:1964}"
+                                    Cmd: "execute as @initiator run function cobblemon_initiative:hua_zhan/warden_wake {x:1456,y:103,z:2098}"
                                 },
                                 {
                                     Type: "COMMAND",
@@ -160,11 +160,11 @@
                                             {
                                                 Type: "PLAYER_TAG",
                                                 Operation: "EQUALS",
-                                                Name: "defeated_hua_zhan_trainer_2"
+                                                Name: "defeated_hua_zhan_trainer_3"
                                             }
                                         ]
                                     },
-                                    Cmd: "say The orchard already counts you. The seal is on the plaque among the trunks."
+                                    Cmd: "say The terrace already agreed to you. The seal waits in the retaining wall."
                                 },
                                 {
                                     Type: "COMMAND",
@@ -173,11 +173,11 @@
                                             {
                                                 Type: "PLAYER_TAG",
                                                 Operation: "EQUALS",
-                                                Name: "no_defeated_hua_zhan_trainer_2"
+                                                Name: "no_defeated_hua_zhan_trainer_3"
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs attach rctmod:hua_zhan_trainer_2 @s"
+                                    Cmd: "tbcs attach rctmod:hua_zhan_trainer_3 @s"
                                 },
                                 {
                                     Type: "COMMAND",
@@ -187,11 +187,11 @@
                                             {
                                                 Type: "PLAYER_TAG",
                                                 Operation: "EQUALS",
-                                                Name: "no_defeated_hua_zhan_trainer_2"
+                                                Name: "no_defeated_hua_zhan_trainer_3"
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:hua_zhan_trainer_2 onwin {1: ['tag @1 add defeated_hua_zhan_trainer_2', '@2 say The graft holds — yours does, I mean. The stone bows as far as stone can. The seal will take your hand now.', '@2 execute at @s run particle minecraft:totem_of_undying ~ ~1.2 ~ 0.4 0.9 0.4 0.08 120 force', '@2 execute at @s run particle minecraft:end_rod ~ ~1 ~ 0.3 0.8 0.3 0.02 60 force', '@2 execute at @s run playsound minecraft:block.beacon.activate master @a ~ ~ ~ 1 1.3', 'effect give @2 minecraft:glowing 60 0 true'], 2: ['@1 say Years to set a graft, one frost night to end it. The statue keeps reaching. Warm up and walk the rows again.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:hua_zhan_trainer_3 onwin {1: ['tag @1 add defeated_hua_zhan_trainer_3', '@2 say Invited, not argued with — and the water went with you. The salute stands for you now. The seal will take your hand.', '@2 execute at @s run particle minecraft:totem_of_undying ~ ~1.2 ~ 0.4 0.9 0.4 0.08 120 force', '@2 execute at @s run particle minecraft:end_rod ~ ~1 ~ 0.3 0.8 0.3 0.02 60 force', '@2 execute at @s run playsound minecraft:block.beacon.activate master @a ~ ~ ~ 1 1.3', 'effect give @2 minecraft:glowing 60 0 true'], 2: ['@1 say The channel runs the way it has always run. The stone salutes the water, not the hurry. Come back when it invites you.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -201,13 +201,13 @@
                                 {
                                     Type: "PLAYER_TAG",
                                     Operation: "EQUALS",
-                                    Name: "no_defeated_hua_zhan_trainer_2"
+                                    Name: "no_defeated_hua_zhan_trainer_3"
                                 }
                             ],
                             Label: "battle_button"
                         },
                         {
-                            Name: "Read the station plaque",
+                            Name: "Read the old botany",
                             Actions: [
                                 {
                                     Type: "OPEN_NAMED_DIALOG",
@@ -217,7 +217,7 @@
                             Label: "plaque_button"
                         },
                         {
-                            Name: "Leave the rows",
+                            Name: "Leave the terrace",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -228,20 +228,20 @@
                     ],
                     Texts: [
                         {
-                            Text: "Mind the rows. Every tree here carries wood from a tree that no longer stands — nothing in this orchard is ever really gone, and neither is its warden. The old botany carved me reaching for a harvest that never ends. Second monument of four."
+                            Text: "STONE WARDEN OF THE WATER TERRACE — third of the four gardens. The old botany carved it mid-salute, hand raised to open the channels, and the hand has not come down since. A waterline note beneath the crest reads: the terrace vines climb on poison and patience."
                         },
                         {
-                            Text: "The old botany says a graft is a promise between two trees, and a trainer and a partner are the same promise made twice a day. Wake the stone and show me yours has taken."
+                            Text: "Master Wei sent you, so the water will answer. Wake the guardian of the channels and best it — clear air and a sharp beak cut these vines down to size, and the stone hopes you know it."
                         }
                     ],
-                    Name: "Mei — warden of the orchard rows",
+                    Name: "Water Terrace — the stone stirs",
                     Label: "challenge"
                 },
                 {
                     Priority: 10,
                     Buttons: [
                         {
-                            Name: "Read the station plaque",
+                            Name: "Read the old botany",
                             Actions: [
                                 {
                                     Type: "OPEN_NAMED_DIALOG",
@@ -251,7 +251,7 @@
                             Label: "plaque_button"
                         },
                         {
-                            Name: "Leave the rows",
+                            Name: "Leave the terrace",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -262,13 +262,13 @@
                     ],
                     Texts: [
                         {
-                            Text: "STATION OF THE ORCHARD — second of the four gardens. A carving beneath the crest reads: graft wood takes years to set and one frost night to end. The orchard fears ice above all things, and what a garden fears, a clever challenger brings."
+                            Text: "STATION OF THE TERRACE — third of the four gardens. A waterline note beneath the crest reads: the terrace vines climb on poison and patience. Clear air and a sharp beak cut them down to size."
                         },
                         {
-                            Text: "The statue keeps its vigil over the rows, stone-still. The gate keeper at the gym entrance keeps the rites of the four gardens."
+                            Text: "The statue stands in the channel spray, unmoving. They say Garden Master Wei, up the west hill, knows how to wake it."
                         }
                     ],
-                    Name: "Station Of The Orchard Station",
+                    Name: "Stone Warden of the Water Terrace",
                     Label: "default"
                 },
                 {
@@ -295,13 +295,13 @@
                     ],
                     Texts: [
                         {
-                            Text: "OLD BOTANY, PAGE OF THE ORCHARD. A graft is a promise between two trees: the rootstock gives patience, the scion gives fruit, and neither gets to take the credit alone. The first gardeners said a trainer and a partner are the same promise, made twice a day."
+                            Text: "OLD BOTANY, PAGE OF THE TERRACE. The terrace was cut by hand, one step a season, because water cannot be argued with — only invited. The first gardeners built nothing the hill had not already agreed to. That is the whole engineering manual of the old botany."
                         },
                         {
-                            Text: "Every tree in these rows carries wood from a tree that no longer stands. Nothing in the old botany is ever really gone — it is grafted forward."
+                            Text: "Water that is shared arrives everywhere. Water that is owned arrives with a fee. The channels have run free since the first step was cut, and the terrace intends to keep it that way."
                         }
                     ],
-                    Name: "Old Botany — The Graft",
+                    Name: "Old Botany — The Channel",
                     Label: "lore"
                 }
             ]
@@ -375,22 +375,13 @@
         Invulnerable: 0b,
         LeftHanded: 0b,
         ModelData: {
-            Scale: {
-                Head: [1.3f, 1.5f, 1.3f],
-                Body: [1.3f, 1.5f, 1.3f],
-                LeftArm: [1.3f, 1.5f, 1.3f],
-                RightArm: [1.3f, 1.5f, 1.3f],
-                LeftLeg: [1.3f, 1.5f, 1.3f],
-                RightLeg: [1.3f, 1.5f, 1.3f]
-            },
-            Pose: "CUSTOM",
             DefaultPose: "STANDING",
-            Rotation: {
-                Head: [-0.45f, 0.0f, 0.0f, 1.0f],
-                RightArm: [-3.0f, 0.0f, 0.25f, 1.0f],
-                LeftArm: [-3.0f, 0.0f, -0.25f, 1.0f],
-                RightLeg: [0.0f, 0.0f, -0.08f, 1.0f],
-                LeftLeg: [0.0f, 0.0f, 0.08f, 1.0f]
+            Pose: "VANILLA",
+            Position: {},
+            Rotation: {},
+            Scale: {},
+            Visible: {
+                Boots: 1b
             }
         },
         Navigation: {
@@ -428,7 +419,7 @@
             Timestamp: 0L,
             Type: "CUSTOM",
             URL: "",
-            UUID: [I; 1465568200, 54549265, -1284212746, -1752572920]
+            UUID: [I; -522438802, 936139371, -1941236078, -2125756149]
         },
         SoundData: {
             SoundDataSet: [
@@ -459,6 +450,6 @@
             }
         ],
         id: "easy_npc:humanoid",
-        CustomName: '{"text": "Botanist Mei", "color": "#FFFFFF"}'
+        CustomName: '{"text": "Stone Warden of the Water Terrace", "color": "#FFFFFF"}'
     }
 }

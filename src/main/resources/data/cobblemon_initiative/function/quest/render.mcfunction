@@ -113,11 +113,6 @@ execute if entity @s[tag=hz_office_warned,tag=!hz_minutes_heard] run scoreboard 
 execute if entity @s[tag=hz_minutes_heard,tag=!hz_minutes_filed] if score @s ci_papers_held matches ..1 run scoreboard players set q.side_minutes ci_quest 77
 execute if entity @s[tag=hz_minutes_heard,tag=!hz_minutes_filed] if score @s ci_papers_held matches ..1 run scoreboard players display name q.side_minutes ci_quest [{"text":"• Deliver the minutes to Lucian in Sango","color":"gray"}]
 
-# Verified Growth (reveal spine): tour pointer until the catwalk reveal lands.
-scoreboard players reset q.side_green ci_quest
-execute if entity @s[tag=hz_arrived,tag=!wheat_named] run scoreboard players set q.side_green ci_quest 79
-execute if entity @s[tag=hz_arrived,tag=!wheat_named] run scoreboard players display name q.side_green ci_quest [{"text":"• Tour the Verified Growth greenhouse","color":"gray"}]
-
 # Grain In, Goods Out (the Miller Walk): survey line while active; flips to the report
 # leg once both survey halves are logged (hz_saw_pitch + hz_saw_granary — the grain_survey
 # tick loggers, `Noted (n/3)` pattern).
