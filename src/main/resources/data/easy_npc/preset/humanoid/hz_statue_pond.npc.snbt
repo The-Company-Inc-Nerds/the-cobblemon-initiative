@@ -3,10 +3,10 @@
         author: "TheCompanyInc",
         category: "Trainer",
         created: 0L,
-        description: "gym_trainer at Hua Zhan City - Still Pond (act 1). Compiled from dialog-src.",
+        description: "gym_trainer at Hua Zhan City - The Quiet Garden (act 1). Compiled from dialog-src.",
         entityTypeId: "easy_npc:humanoid",
         modified: 0L,
-        name: "Stone Warden of the Still Pond",
+        name: "Warden of the Quiet Garden",
         variantType: "STEVE",
         version: "1.0.0"
     },
@@ -56,7 +56,7 @@
                             Label: "study_button"
                         },
                         {
-                            Name: "Leave the water",
+                            Name: "Leave the rows",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -67,13 +67,13 @@
                     ],
                     Texts: [
                         {
-                            Text: "The pond seal shows twice — once in the stone, once in the water. The old botany counts that as two witnesses."
+                            Text: "The seal sits low among the rows, half-hidden by leaves, the way everything here is half-hidden. The quiet garden does not advertise, and it does not forget."
                         },
                         {
-                            Text: "The surface has gone perfectly still around the reflection of the mark. The pond does not do that for tourists."
+                            Text: "The stone warden keeps its watch over the little plot no one photographs. A still garden is the oldest judge in town, and the hardest to fool."
                         }
                     ],
-                    Name: "Still Pond — the seal holds",
+                    Name: "The Quiet Garden — the seal holds",
                     Label: "sealed"
                 },
                 {
@@ -106,7 +106,7 @@
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "title @initiator actionbar [{\"text\":\"The pond seal takes.\",\"color\":\"green\"}]"
+                                    Cmd: "title @initiator actionbar [{\"text\":\"The quiet garden's seal takes.\",\"color\":\"green\"}]"
                                 },
                                 {
                                     Type: "OPEN_NAMED_DIALOG",
@@ -127,13 +127,13 @@
                     ],
                     Texts: [
                         {
-                            Text: "The pond is satisfied, and a still pond is the oldest judge in town."
+                            Text: "The quiet garden is satisfied — and the quietest judge is the hardest to fool."
                         },
                         {
-                            Text: "The pond seal sits in the pedestal at the waterline. Press your hand — and if the reflection beside yours looks familiar, the old botany says not to worry."
+                            Text: "The seal is set low in the rows. Press your hand, and the honest crop will remember an honest hand."
                         }
                     ],
-                    Name: "Still Pond — after the match",
+                    Name: "The Quiet Garden — after the match",
                     Label: "seal"
                 },
                 {
@@ -147,11 +147,11 @@
                     Priority: 15,
                     Buttons: [
                         {
-                            Name: "Ready a Pokéball — wake the statue of the water",
+                            Name: "Ready a Pokéball — wake the warden of the quiet garden",
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute as @initiator run function cobblemon_initiative:hua_zhan/warden_wake {x:1479,y:87,z:2112}"
+                                    Cmd: "execute as @initiator run function cobblemon_initiative:hua_zhan/warden_wake {x:1538,y:85,z:2026}"
                                 },
                                 {
                                     Type: "COMMAND",
@@ -164,7 +164,7 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "say The pond has already answered you. The seal waits in the stones at the waterline."
+                                    Cmd: "say The quiet garden already counts you. Its seal is set low among the rows."
                                 },
                                 {
                                     Type: "COMMAND",
@@ -191,7 +191,7 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:hua_zhan_trainer_4 onwin {1: ['tag @1 add defeated_hua_zhan_trainer_4', '@2 say No more, no less, and no refunds — the pond showed exactly what you brought, and it was enough. The stone kneels to you now. The seal will take your hand.', '@2 execute at @s run particle minecraft:totem_of_undying ~ ~1.2 ~ 0.4 0.9 0.4 0.08 120 force', '@2 execute at @s run particle minecraft:end_rod ~ ~1 ~ 0.3 0.8 0.3 0.02 60 force', '@2 execute at @s run playsound minecraft:block.beacon.activate master @a ~ ~ ~ 1 1.3', 'effect give @2 minecraft:glowing 60 0 true'], 2: ['@1 say The water shows what you brought. Today it showed the bottom of the pond. The statue has knelt for a hundred years — it can wait for you to try again.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:hua_zhan_trainer_4 onwin {1: ['tag @1 add defeated_hua_zhan_trainer_4', '@2 say The quiet garden is satisfied — and the quietest judge is the hardest to fool. The seal in the rows will take your hand.', '@2 execute at @s run particle minecraft:totem_of_undying ~ ~1.2 ~ 0.4 0.9 0.4 0.08 120 force', '@2 execute at @s run particle minecraft:end_rod ~ ~1 ~ 0.3 0.8 0.3 0.02 60 force', '@2 execute at @s run playsound minecraft:block.beacon.activate master @a ~ ~ ~ 1 1.3', 'effect give @2 minecraft:glowing 60 0 true'], 2: ['@1 say The quiet garden feeds people, not hurry. It will still be here, growing, when you come back grown.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -217,7 +217,7 @@
                             Label: "plaque_button"
                         },
                         {
-                            Name: "Leave the water",
+                            Name: "Leave the rows",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -228,13 +228,13 @@
                     ],
                     Texts: [
                         {
-                            Text: "STONE WARDEN OF THE STILL POND — last of the four gardens. The old botany carved it kneeling at the waterline, fist to the stones, reading the pond. An etching beneath the crest reads: the pond drinks sun and water both, and answers to neither."
+                            Text: "WARDEN OF THE QUIET GARDEN — the humble, and the last of the four. The old botany carved this one smallest, over the plot no one looks at twice: the honest crop that feeds people instead of photographs. What a garden fears, a clever challenger brings; what a garden feeds, it never forgets."
                         },
                         {
-                            Text: "Strange — the water went still when you walked up, and for a heartbeat it held a face this stone almost knew. Master Wei sent you, so the pond will answer. Wake its guardian and best it; the pond only ever shows what was already yours."
+                            Text: "Master Wei sent you, so the quiet rows will answer. Wake the guardian of the little garden and best it — the smallest judge is the one you most want on your side."
                         }
                     ],
-                    Name: "Still Pond — the stone stirs",
+                    Name: "The Quiet Garden — the stone stirs",
                     Label: "challenge"
                 },
                 {
@@ -251,7 +251,7 @@
                             Label: "plaque_button"
                         },
                         {
-                            Name: "Leave the water",
+                            Name: "Leave the rows",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -262,20 +262,20 @@
                     ],
                     Texts: [
                         {
-                            Text: "STATION OF THE POND — last of the four gardens. An etching beneath the crest reads: the pond drinks sun and water both, and answers to neither. Birds and bugs read this water better than boots ever will."
+                            Text: "WARDEN OF THE QUIET GARDEN — last of the four stone wardens, standing over a small plot most people walk straight past. A low stone reads: this row feeds people, not photographs."
                         },
                         {
-                            Text: "The statue kneels at the waterline, reading the pond, and does not look up. They say Garden Master Wei, up the west hill, knows how to wake it."
+                            Text: "The stone keeps its watch over the honest crop and does not stir for passers-by. They say Garden Master Wei, up the west hill, knows how to wake it."
                         }
                     ],
-                    Name: "Stone Warden of the Still Pond",
+                    Name: "Warden of the Quiet Garden",
                     Label: "default"
                 },
                 {
                     Priority: -1,
                     Buttons: [
                         {
-                            Name: "Back to the statue",
+                            Name: "Back to the warden",
                             Actions: [
                                 {
                                     Type: "OPEN_DEFAULT_DIALOG"
@@ -295,13 +295,13 @@
                     ],
                     Texts: [
                         {
-                            Text: "OLD BOTANY, PAGE OF THE POND. The pond is the oldest mirror in town. The first gardeners ended every pilgrimage here because a still pond shows a trainer exactly what they brought to it — no more, no less, and no refunds."
+                            Text: "OLD BOTANY, PAGE OF THE QUIET GARDEN. The first gardeners ended every pilgrimage at the smallest plot on purpose. A trainer who has walked the whole circuit and still kneels to the humblest row has learned the only lesson the old botany teaches."
                         },
                         {
-                            Text: "Some mornings the pond shows a face a heartbeat before its owner arrives. The old botany never explained this page. It only says: whatever the water shows you, it was already yours."
+                            Text: "This garden grows the one coin the Company has not adjusted yet — food, honestly, for people who are hungry. It is worth nothing on any ledger and everything to the row beside it. Remember which botany taught you."
                         }
                     ],
-                    Name: "Old Botany — The Mirror",
+                    Name: "Old Botany — The Quiet Row",
                     Label: "lore"
                 }
             ]
@@ -450,6 +450,6 @@
             }
         ],
         id: "easy_npc:humanoid",
-        CustomName: '{"text": "Stone Warden of the Still Pond", "color": "#FFFFFF"}'
+        CustomName: '{"text": "Warden of the Quiet Garden", "color": "#FFFFFF"}'
     }
 }

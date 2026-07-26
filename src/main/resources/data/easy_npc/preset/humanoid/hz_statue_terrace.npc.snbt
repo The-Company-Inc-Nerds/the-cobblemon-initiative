@@ -3,10 +3,10 @@
         author: "TheCompanyInc",
         category: "Trainer",
         created: 0L,
-        description: "gym_trainer at Hua Zhan City - Water Terrace (act 1). Compiled from dialog-src.",
+        description: "gym_trainer at Hua Zhan City - The Green Square (act 1). Compiled from dialog-src.",
         entityTypeId: "easy_npc:humanoid",
         modified: 0L,
-        name: "Stone Warden of the Water Terrace",
+        name: "The Stone Knight",
         variantType: "STEVE",
         version: "1.0.0"
     },
@@ -56,7 +56,7 @@
                             Label: "study_button"
                         },
                         {
-                            Name: "Leave the terrace",
+                            Name: "Leave the square",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -67,13 +67,13 @@
                     ],
                     Texts: [
                         {
-                            Text: "The terrace seal glistens under a thin film of channel water. It will not wash out — nothing pressed honestly ever does."
+                            Text: "The seal is set in the knight's plinth, and the square's dust does not settle on it. Iron keeps its own the way stone keeps a promise."
                         },
                         {
-                            Text: "Below the mark, the vines have turned one leaf each toward the stone, which the old botany says is how a terrace applauds."
+                            Text: "The knight stands straight again over the square, blank visor to the street. For a heartbeat, as you turn away, the polished stone holds a face — and then it is just stone."
                         }
                     ],
-                    Name: "Water Terrace — the seal holds",
+                    Name: "The Stone Knight — the seal holds",
                     Label: "sealed"
                 },
                 {
@@ -106,7 +106,7 @@
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "title @initiator actionbar [{\"text\":\"The terrace seal takes.\",\"color\":\"green\"}]"
+                                    Cmd: "title @initiator actionbar [{\"text\":\"The stone knight's seal takes.\",\"color\":\"green\"}]"
                                 },
                                 {
                                     Type: "OPEN_NAMED_DIALOG",
@@ -127,13 +127,13 @@
                     ],
                     Texts: [
                         {
-                            Text: "The channels have agreed to you, and the stone builds nothing the hill has not agreed to."
+                            Text: "The knight yields — as far as iron yields. You stood straight against it, and a straight back is the one thing this stone respects."
                         },
                         {
-                            Text: "The terrace seal is set in the pedestal above the water. Press your hand — shared water arrives everywhere, and so will word of this match."
+                            Text: "The seal is set in the plinth. Press your hand — and pay no mind to the face the visor held for a heartbeat. The old botany says the stone only shows what was already yours."
                         }
                     ],
-                    Name: "Water Terrace — after the match",
+                    Name: "The Stone Knight — after the match",
                     Label: "seal"
                 },
                 {
@@ -147,11 +147,11 @@
                     Priority: 15,
                     Buttons: [
                         {
-                            Name: "Ready a Pokéball — wake the statue of the channels",
+                            Name: "Ready a Pokéball — wake the stone knight",
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute as @initiator run function cobblemon_initiative:hua_zhan/warden_wake {x:1456,y:103,z:2098}"
+                                    Cmd: "execute as @initiator run function cobblemon_initiative:hua_zhan/warden_wake {x:1479,y:87,z:2112}"
                                 },
                                 {
                                     Type: "COMMAND",
@@ -164,7 +164,7 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "say The terrace already agreed to you. The seal waits in the retaining wall."
+                                    Cmd: "say The knight has already saluted you. Its seal is set in the plinth."
                                 },
                                 {
                                     Type: "COMMAND",
@@ -191,7 +191,7 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:hua_zhan_trainer_3 onwin {1: ['tag @1 add defeated_hua_zhan_trainer_3', '@2 say Invited, not argued with — and the water went with you. The salute stands for you now. The seal will take your hand.', '@2 execute at @s run particle minecraft:totem_of_undying ~ ~1.2 ~ 0.4 0.9 0.4 0.08 120 force', '@2 execute at @s run particle minecraft:end_rod ~ ~1 ~ 0.3 0.8 0.3 0.02 60 force', '@2 execute at @s run playsound minecraft:block.beacon.activate master @a ~ ~ ~ 1 1.3', 'effect give @2 minecraft:glowing 60 0 true'], 2: ['@1 say The channel runs the way it has always run. The stone salutes the water, not the hurry. Come back when it invites you.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:hua_zhan_trainer_3 onwin {1: ['tag @1 add defeated_hua_zhan_trainer_3', '@2 say The knight yields — as far as iron yields. You stood straight, and it respects a straight back. The seal in the plinth will take your hand.', '@2 execute at @s run particle minecraft:totem_of_undying ~ ~1.2 ~ 0.4 0.9 0.4 0.08 120 force', '@2 execute at @s run particle minecraft:end_rod ~ ~1 ~ 0.3 0.8 0.3 0.02 60 force', '@2 execute at @s run playsound minecraft:block.beacon.activate master @a ~ ~ ~ 1 1.3', 'effect give @2 minecraft:glowing 60 0 true'], 2: ['@1 say The knight has held this square longer than the badge has existed. It is not moved by a hurried hand. Stand straighter and return.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -217,7 +217,7 @@
                             Label: "plaque_button"
                         },
                         {
-                            Name: "Leave the terrace",
+                            Name: "Leave the square",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -228,13 +228,13 @@
                     ],
                     Texts: [
                         {
-                            Text: "STONE WARDEN OF THE WATER TERRACE — third of the four gardens. The old botany carved it mid-salute, hand raised to open the channels, and the hand has not come down since. A waterline note beneath the crest reads: the terrace vines climb on poison and patience."
+                            Text: "THE STONE KNIGHT — the iron of the four. The old botany carved this one wrong on purpose: not a gardener but a guard, straight-backed in the square, because even a garden keeps one that will not bend. It has held this stone longer than the badge has existed."
                         },
                         {
-                            Text: "Master Wei sent you, so the water will answer. Wake the guardian of the channels and best it — clear air and a sharp beak cut these vines down to size, and the stone hopes you know it."
+                            Text: "Strange — the light caught its blank visor when you walked up, and for a heartbeat the polished stone held a face this knight almost knew. Master Wei sent you, so the iron will answer. Wake it, and stand straight."
                         }
                     ],
-                    Name: "Water Terrace — the stone stirs",
+                    Name: "The Stone Knight — the stone stirs",
                     Label: "challenge"
                 },
                 {
@@ -251,7 +251,7 @@
                             Label: "plaque_button"
                         },
                         {
-                            Name: "Leave the terrace",
+                            Name: "Leave the square",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -262,20 +262,20 @@
                     ],
                     Texts: [
                         {
-                            Text: "STATION OF THE TERRACE — third of the four gardens. A waterline note beneath the crest reads: the terrace vines climb on poison and patience. Clear air and a sharp beak cut them down to size."
+                            Text: "THE STONE KNIGHT — third of the four stone wardens, and the odd one: a guard in armour where the others are gardeners, straight-backed in the middle of the square. A line on the plinth reads: even a garden keeps one that stands with a straight back."
                         },
                         {
-                            Text: "The statue stands in the channel spray, unmoving. They say Garden Master Wei, up the west hill, knows how to wake it."
+                            Text: "The visor is blank and polished, and the stone does not stir for passers-by. They say Garden Master Wei, up the west hill, knows how to wake it."
                         }
                     ],
-                    Name: "Stone Warden of the Water Terrace",
+                    Name: "The Stone Knight",
                     Label: "default"
                 },
                 {
                     Priority: -1,
                     Buttons: [
                         {
-                            Name: "Back to the statue",
+                            Name: "Back to the warden",
                             Actions: [
                                 {
                                     Type: "OPEN_DEFAULT_DIALOG"
@@ -295,13 +295,13 @@
                     ],
                     Texts: [
                         {
-                            Text: "OLD BOTANY, PAGE OF THE TERRACE. The terrace was cut by hand, one step a season, because water cannot be argued with — only invited. The first gardeners built nothing the hill had not already agreed to. That is the whole engineering manual of the old botany."
+                            Text: "OLD BOTANY, PAGE OF THE STONE KNIGHT. The first gardeners carved three wardens of soft things and one of iron, and never explained the fourth. A garden that cannot defend itself is only a field waiting to be re-zoned. The knight is the botany that learned to stand."
                         },
                         {
-                            Text: "Water that is shared arrives everywhere. Water that is owned arrives with a fee. The channels have run free since the first step was cut, and the terrace intends to keep it that way."
+                            Text: "There is a page here the old botany never finished. The knight's visor is polished to a mirror, and some mornings it shows a face a heartbeat before its owner arrives. Whatever the stone shows you, the page says, it was already yours."
                         }
                     ],
-                    Name: "Old Botany — The Channel",
+                    Name: "Old Botany — The Iron",
                     Label: "lore"
                 }
             ]
@@ -450,6 +450,6 @@
             }
         ],
         id: "easy_npc:humanoid",
-        CustomName: '{"text": "Stone Warden of the Water Terrace", "color": "#FFFFFF"}'
+        CustomName: '{"text": "The Stone Knight", "color": "#FFFFFF"}'
     }
 }

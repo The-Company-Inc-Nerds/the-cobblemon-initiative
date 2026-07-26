@@ -149,10 +149,10 @@ execute if score #amb_meowth ci_ambient matches 0 unless entity @e[tag=ci_amb_co
 execute if score #amb_wooloo ci_ambient matches 0 unless entity @e[tag=ci_amb_companion_wooloo] if entity @a[x=1513.5,y=84,z=1988.5,distance=..40] run function cobblemon_initiative:ambient/place/wooloo
 execute if score #amb_hz_analyst ci_ambient matches 0 if entity @a[x=1532.5,y=93,z=2005.5,distance=..40] run function cobblemon_initiative:ambient/place/hz_analyst
 execute if score #amb_hz_receptionist ci_ambient matches 0 if entity @a[x=1540.5,y=86,z=2001.5,distance=..40] run function cobblemon_initiative:ambient/place/hz_receptionist
-execute if score #amb_hz_statue_moss ci_ambient matches 0 if entity @a[x=1451.8,y=90,z=2026.3,distance=..40] run function cobblemon_initiative:ambient/place/hz_statue_moss
-execute if score #amb_hz_statue_orchard ci_ambient matches 0 if entity @a[x=1538.5,y=85,z=2026.5,distance=..40] run function cobblemon_initiative:ambient/place/hz_statue_orchard
-execute if score #amb_hz_statue_pond ci_ambient matches 0 if entity @a[x=1479.9,y=87,z=2112.6,distance=..40] run function cobblemon_initiative:ambient/place/hz_statue_pond
-execute if score #amb_hz_statue_terrace ci_ambient matches 0 if entity @a[x=1456.5,y=103,z=2098.1,distance=..40] run function cobblemon_initiative:ambient/place/hz_statue_terrace
+execute if score #amb_hz_statue_moss ci_ambient matches 0 if entity @a[x=1456.5,y=103,z=2098.1,distance=..40] run function cobblemon_initiative:ambient/place/hz_statue_moss
+execute if score #amb_hz_statue_orchard ci_ambient matches 0 if entity @a[x=1451.8,y=90,z=2026.3,distance=..40] run function cobblemon_initiative:ambient/place/hz_statue_orchard
+execute if score #amb_hz_statue_pond ci_ambient matches 0 if entity @a[x=1538.5,y=85,z=2026.5,distance=..40] run function cobblemon_initiative:ambient/place/hz_statue_pond
+execute if score #amb_hz_statue_terrace ci_ambient matches 0 if entity @a[x=1479.9,y=87,z=2112.6,distance=..40] run function cobblemon_initiative:ambient/place/hz_statue_terrace
 execute if score #amb_hz_trader_apricorns ci_ambient matches 0 if entity @a[x=1512.5,y=85,z=2082.5,distance=..40] run function cobblemon_initiative:ambient/place/hz_trader_apricorns
 execute if score #amb_hz_trader_berries ci_ambient matches 0 if entity @a[x=1538.5,y=86,z=2064.5,distance=..40] run function cobblemon_initiative:ambient/place/hz_trader_berries
 execute if score #amb_hz_trader_mints ci_ambient matches 0 if entity @a[x=1488.5,y=87,z=2090.5,distance=..40] run function cobblemon_initiative:ambient/place/hz_trader_mints

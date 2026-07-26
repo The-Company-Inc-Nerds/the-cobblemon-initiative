@@ -1,6 +1,6 @@
-# Four Gardens Pilgrimage — sidebar side objective (mirrors the q.side_wheat block at the
+# Four Wardens Pilgrimage — sidebar side objective (mirrors the q.side_wheat block at the
 # bottom of quest/render; the orchestrator appends the call there). Run as @s = the player.
-# Shows the Garden seals n/4 line once the first seal is pressed; clears once Wei grants
+# Shows the Warden seals n/4 line once the first seal is pressed; clears once Wei grants
 # the blessing (pilgrimage_done latch). Also called directly from the plaque update and
 # the blessing button for an instant refresh. q.side_pilgrim rides ci_quest at 78 — just
 # below the wheat-war line (80), above nothing else.

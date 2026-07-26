@@ -93,7 +93,7 @@ execute if entity @s[tag=wheat_war_active,tag=heard_wheat_pitch] if score @s fie
 execute if entity @s[tag=wheat_war_active,tag=heard_wheat_pitch] run function cobblemon_initiative:quest/set_wheat with storage cobblemon_initiative:quest
 
 # ── beat-2 side objectives (appended by the quest build) ──
-# Four Gardens Pilgrimage: Garden seals n/4 side line — lights at the first seal, clears on the blessing (pilgrimage_done latch). Counting + macro render live in sidequest/pilgrimage/hud (mirrors the q.side_wheat block above; q.side_pilgrim rides ci_quest 78, below wheat at 80).
+# Four Wardens Pilgrimage: Warden seals n/4 side line — lights at the first seal, clears on the blessing (pilgrimage_done latch). Counting + macro render live in sidequest/pilgrimage/hud (mirrors the q.side_wheat block above; q.side_pilgrim rides ci_quest 78, below wheat at 80).
 function cobblemon_initiative:sidequest/pilgrimage/hud
 
 # Price Check (Hua Zhan side quest): shows Price checks noted n/3 once Kaito hands out the check (hz_price_check_active), hides after turn-in (hz_prices_done). Scratch counter #prices quest_hud per the render ladder pattern; macro lives in sidequest/price_check/set_prices (quest/ dir is shared).

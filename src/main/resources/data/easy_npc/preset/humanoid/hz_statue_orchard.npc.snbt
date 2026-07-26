@@ -3,10 +3,10 @@
         author: "TheCompanyInc",
         category: "Trainer",
         created: 0L,
-        description: "gym_trainer at Hua Zhan City - Orchard Rows (act 1). Compiled from dialog-src.",
+        description: "gym_trainer at Hua Zhan City - The Gate Garden (act 1). Compiled from dialog-src.",
         entityTypeId: "easy_npc:humanoid",
         modified: 0L,
-        name: "Stone Warden of the Orchard Rows",
+        name: "Warden of the Gate Garden",
         variantType: "STEVE",
         version: "1.0.0"
     },
@@ -56,7 +56,7 @@
                             Label: "study_button"
                         },
                         {
-                            Name: "Leave the rows",
+                            Name: "Leave the garden",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -67,13 +67,13 @@
                     ],
                     Texts: [
                         {
-                            Text: "The orchard seal has taken to the stone like a graft to old stock. Sap has beaded along the line. The rows accept you."
+                            Text: "The threshold seal has set into the gatepost stone, and the ivy has turned one leaf toward it — the old botany says that is how a gate garden approves of a guest."
                         },
                         {
-                            Text: "Every tree here carries wood from a tree that no longer stands. Nothing in this orchard is ever really gone — and neither is its warden."
+                            Text: "The stone warden keeps its watch on the path to the gym. Nothing gets to the keeper it does not let through."
                         }
                     ],
-                    Name: "Orchard Rows — the seal holds",
+                    Name: "The Gate Garden — the seal holds",
                     Label: "sealed"
                 },
                 {
@@ -106,7 +106,7 @@
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "title @initiator actionbar [{\"text\":\"The orchard seal takes.\",\"color\":\"green\"}]"
+                                    Cmd: "title @initiator actionbar [{\"text\":\"The gate garden's seal takes.\",\"color\":\"green\"}]"
                                 },
                                 {
                                     Type: "OPEN_NAMED_DIALOG",
@@ -127,13 +127,13 @@
                     ],
                     Texts: [
                         {
-                            Text: "The rows have accepted you — and the stone does not hum for tourists."
+                            Text: "The threshold opens. You passed the gate garden the way it likes to be passed — slowly, and looking — and the stone does not open for tourists."
                         },
                         {
-                            Text: "The orchard seal is grafted into the pedestal. Press your hand while the wood is still warm from the match."
+                            Text: "The seal is set in the gatepost. Press your hand, and the garden at the door will vouch that you came the old way."
                         }
                     ],
-                    Name: "Orchard Rows — after the match",
+                    Name: "The Gate Garden — after the match",
                     Label: "seal"
                 },
                 {
@@ -147,11 +147,11 @@
                     Priority: 15,
                     Buttons: [
                         {
-                            Name: "Ready a Pokéball — wake the statue of the rows",
+                            Name: "Ready a Pokéball — wake the warden of the gate garden",
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute as @initiator run function cobblemon_initiative:hua_zhan/warden_wake {x:1538,y:85,z:2026}"
+                                    Cmd: "execute as @initiator run function cobblemon_initiative:hua_zhan/warden_wake {x:1451,y:90,z:2026}"
                                 },
                                 {
                                     Type: "COMMAND",
@@ -164,7 +164,7 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "say The orchard already counts you. The seal is on the plaque among the trunks."
+                                    Cmd: "say You already passed this threshold. The seal is set in the gatepost."
                                 },
                                 {
                                     Type: "COMMAND",
@@ -191,7 +191,7 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:hua_zhan_trainer_2 onwin {1: ['tag @1 add defeated_hua_zhan_trainer_2', '@2 say The graft holds — yours does, I mean. The stone bows as far as stone can. The seal will take your hand now.', '@2 execute at @s run particle minecraft:totem_of_undying ~ ~1.2 ~ 0.4 0.9 0.4 0.08 120 force', '@2 execute at @s run particle minecraft:end_rod ~ ~1 ~ 0.3 0.8 0.3 0.02 60 force', '@2 execute at @s run playsound minecraft:block.beacon.activate master @a ~ ~ ~ 1 1.3', 'effect give @2 minecraft:glowing 60 0 true'], 2: ['@1 say Years to set a graft, one frost night to end it. The statue keeps reaching. Warm up and walk the rows again.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:hua_zhan_trainer_2 onwin {1: ['tag @1 add defeated_hua_zhan_trainer_2', '@2 say The threshold opens. You passed the gate garden the way it likes — slowly, and looking. The seal in the gatepost will take your hand now.', '@2 execute at @s run particle minecraft:totem_of_undying ~ ~1.2 ~ 0.4 0.9 0.4 0.08 120 force', '@2 execute at @s run particle minecraft:end_rod ~ ~1 ~ 0.3 0.8 0.3 0.02 60 force', '@2 execute at @s run playsound minecraft:block.beacon.activate master @a ~ ~ ~ 1 1.3', 'effect give @2 minecraft:glowing 60 0 true'], 2: ['@1 say The gate garden does not open for the impatient. Come back to the threshold when you are ready to be weighed.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -217,7 +217,7 @@
                             Label: "plaque_button"
                         },
                         {
-                            Name: "Leave the rows",
+                            Name: "Leave the garden",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -228,13 +228,13 @@
                     ],
                     Texts: [
                         {
-                            Text: "STONE WARDEN OF THE ORCHARD ROWS — second of the four gardens. The old botany carved it reaching for a harvest that never ends. A carving beneath the crest reads: graft wood takes years to set and one frost night to end. The orchard fears ice above all things."
+                            Text: "WARDEN OF THE GATE GARDEN — the threshold. The old botany carved this one at the very door of the gym, because the garden decides who reaches the keeper long before the keeper does. It is the last green you pass and the first that judges you."
                         },
                         {
-                            Text: "Master Wei sent you, so the wood will answer. Wake the guardian of the rows and best it — a graft is a promise between two trees, and a trainer and a partner are the same promise. Show me yours has taken."
+                            Text: "Master Wei sent you, so the gate will answer. Wake the guardian of the threshold and best it — a garden lets through what it has weighed, and it means to weigh you."
                         }
                     ],
-                    Name: "Orchard Rows — the stone stirs",
+                    Name: "The Gate Garden — the stone stirs",
                     Label: "challenge"
                 },
                 {
@@ -251,7 +251,7 @@
                             Label: "plaque_button"
                         },
                         {
-                            Name: "Leave the rows",
+                            Name: "Leave the garden",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -262,20 +262,20 @@
                     ],
                     Texts: [
                         {
-                            Text: "STATION OF THE ORCHARD — second of the four gardens. A carving beneath the crest reads: graft wood takes years to set and one frost night to end. The orchard fears ice above all things, and what a garden fears, a clever challenger brings."
+                            Text: "WARDEN OF THE GATE GARDEN — second of the four stone wardens, standing in the little garden at the gym's threshold. A carving on the gatepost reads: the door is the garden's, not the keeper's."
                         },
                         {
-                            Text: "The statue keeps its vigil over the rows, stone-still. They say Garden Master Wei, up the west hill, knows how to wake it."
+                            Text: "The stone keeps its watch on the path and does not stir for passers-by. They say Garden Master Wei, up the west hill, knows how to wake it."
                         }
                     ],
-                    Name: "Stone Warden of the Orchard Rows",
+                    Name: "Warden of the Gate Garden",
                     Label: "default"
                 },
                 {
                     Priority: -1,
                     Buttons: [
                         {
-                            Name: "Back to the statue",
+                            Name: "Back to the warden",
                             Actions: [
                                 {
                                     Type: "OPEN_DEFAULT_DIALOG"
@@ -295,13 +295,13 @@
                     ],
                     Texts: [
                         {
-                            Text: "OLD BOTANY, PAGE OF THE ORCHARD. A graft is a promise between two trees: the rootstock gives patience, the scion gives fruit, and neither gets to take the credit alone. The first gardeners said a trainer and a partner are the same promise, made twice a day."
+                            Text: "OLD BOTANY, PAGE OF THE GATE GARDEN. The first gardeners planted the threshold last and trusted it first. A garden at a door is a slow kind of guard — it lets everyone in and remembers everyone who hurried."
                         },
                         {
-                            Text: "Every tree in these rows carries wood from a tree that no longer stands. Nothing in the old botany is ever really gone — it is grafted forward."
+                            Text: "The keeper of a gym is only the last test. The garden at the gate is the first, and the honest one: it asks nothing but that you walk in looking, and it has turned away more of the proud than any leader ever has."
                         }
                     ],
-                    Name: "Old Botany — The Graft",
+                    Name: "Old Botany — The Threshold",
                     Label: "lore"
                 }
             ]
@@ -450,6 +450,6 @@
             }
         ],
         id: "easy_npc:humanoid",
-        CustomName: '{"text": "Stone Warden of the Orchard Rows", "color": "#FFFFFF"}'
+        CustomName: '{"text": "Warden of the Gate Garden", "color": "#FFFFFF"}'
     }
 }

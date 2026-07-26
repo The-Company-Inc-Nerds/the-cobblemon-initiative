@@ -3,10 +3,10 @@
         author: "TheCompanyInc",
         category: "Trainer",
         created: 0L,
-        description: "gym_trainer at Hua Zhan City - Moss Court (act 1). Compiled from dialog-src.",
+        description: "gym_trainer at Hua Zhan City - The Old Bough (act 1). Compiled from dialog-src.",
         entityTypeId: "easy_npc:humanoid",
         modified: 0L,
-        name: "Stone Warden of the Moss Court",
+        name: "Warden of the Old Bough",
         variantType: "STEVE",
         version: "1.0.0"
     },
@@ -56,7 +56,7 @@
                             Label: "study_button"
                         },
                         {
-                            Name: "Leave the court",
+                            Name: "Climb back down",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -67,13 +67,13 @@
                     ],
                     Texts: [
                         {
-                            Text: "The seal of the moss court sits warm in the stone. One hand-print, older than the badge, and the moss has already closed over its edge as if it were pressed a hundred years ago."
+                            Text: "The seal sits in the root-stone at the foot of the great tree, and the bark has already begun to close over its edge — the old bough takes its time, even with a mark."
                         },
                         {
-                            Text: "The statue's arms are folded again. It has kept this pose longer than the town has had a name."
+                            Text: "The stone warden folds its arms again up in the branches. It has kept that pose since before the town below it had a name."
                         }
                     ],
-                    Name: "Moss Court — the seal holds",
+                    Name: "The Old Bough — the seal holds",
                     Label: "sealed"
                 },
                 {
@@ -106,7 +106,7 @@
                                 },
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "title @initiator actionbar [{\"text\":\"The moss court seal takes.\",\"color\":\"green\"}]"
+                                    Cmd: "title @initiator actionbar [{\"text\":\"The old bough's seal takes.\",\"color\":\"green\"}]"
                                 },
                                 {
                                     Type: "OPEN_NAMED_DIALOG",
@@ -127,13 +127,13 @@
                     ],
                     Texts: [
                         {
-                            Text: "Fairly grown, fairly cut. The court has no further argument with you — feel how warm the stone still is."
+                            Text: "Slow-grown, well-grown. The old bough has no further argument with you — feel how the stone still holds the warmth of the branch."
                         },
                         {
-                            Text: "The first seal is set in the pedestal. Press your hand to it, and the moss will remember you as one of the patient."
+                            Text: "The first seal is set in the root-stone below. Press your hand to it, and the oldest tree in the city will remember you as one of the patient."
                         }
                     ],
-                    Name: "Moss Court — after the match",
+                    Name: "The Old Bough — after the match",
                     Label: "seal"
                 },
                 {
@@ -147,11 +147,11 @@
                     Priority: 15,
                     Buttons: [
                         {
-                            Name: "Ready a Pokéball — wake the statue of the moss court",
+                            Name: "Ready a Pokéball — wake the warden of the old bough",
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "execute as @initiator run function cobblemon_initiative:hua_zhan/warden_wake {x:1451,y:90,z:2026}"
+                                    Cmd: "execute as @initiator run function cobblemon_initiative:hua_zhan/warden_wake {x:1456,y:103,z:2098}"
                                 },
                                 {
                                     Type: "COMMAND",
@@ -164,7 +164,7 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "say The court is already yours. The seal is in the stone beside me."
+                                    Cmd: "say The old bough already counts you. Its seal is set in the root-stone below."
                                 },
                                 {
                                     Type: "COMMAND",
@@ -191,7 +191,7 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:hua_zhan_trainer_1 onwin {1: ['tag @1 add defeated_hua_zhan_trainer_1', '@2 say Patience loses to patience sometimes. The stone concedes — the seal will take your hand now.', '@2 execute at @s run particle minecraft:totem_of_undying ~ ~1.2 ~ 0.4 0.9 0.4 0.08 120 force', '@2 execute at @s run particle minecraft:end_rod ~ ~1 ~ 0.3 0.8 0.3 0.02 60 force', '@2 execute at @s run playsound minecraft:block.beacon.activate master @a ~ ~ ~ 1 1.3', 'effect give @2 minecraft:glowing 60 0 true'], 2: ['@1 say The moss remembers every foot that rushed. The statue did not move, and it did not need to. Wait, grow, and walk the court again.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:hua_zhan_trainer_1 onwin {1: ['tag @1 add defeated_hua_zhan_trainer_1', '@2 say Slow-grown, well-grown. The old bough concedes — the seal in the root-stone will take your hand now.', '@2 execute at @s run particle minecraft:totem_of_undying ~ ~1.2 ~ 0.4 0.9 0.4 0.08 120 force', '@2 execute at @s run particle minecraft:end_rod ~ ~1 ~ 0.3 0.8 0.3 0.02 60 force', '@2 execute at @s run playsound minecraft:block.beacon.activate master @a ~ ~ ~ 1 1.3', 'effect give @2 minecraft:glowing 60 0 true'], 2: ['@1 say The bough has stood a hundred winters; it can wait out one hurried trainer. Wait, grow, and climb again.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -217,7 +217,7 @@
                             Label: "plaque_button"
                         },
                         {
-                            Name: "Leave the court",
+                            Name: "Climb back down",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -228,13 +228,13 @@
                     ],
                     Texts: [
                         {
-                            Text: "STONE WARDEN OF THE MOSS COURT — first of the four gardens. The old botany carved four stone wardens over its gardens, and carved this one first, arms folded, so the court would never forget how to stand still. A worn line beneath the crest reads: moss holds water and hates the torch."
+                            Text: "WARDEN OF THE OLD BOUGH — eldest of the four. The old botany carved its first warden up here, in the tree that was already old when the first gardeners came, arms folded on the great branch so the city would never forget how to stand still."
                         },
                         {
-                            Text: "Master Wei sent you, so the stone will answer. Ready a Pokéball and wake the guardian of the moss court — best it, and the seal at its pedestal is yours."
+                            Text: "Master Wei sent you, so the old wood will answer. Ready a Pokéball and wake the guardian of the bough — best it, and the seal in the root-stone is yours."
                         }
                     ],
-                    Name: "Moss Court — the stone stirs",
+                    Name: "The Old Bough — the stone stirs",
                     Label: "challenge"
                 },
                 {
@@ -251,7 +251,7 @@
                             Label: "plaque_button"
                         },
                         {
-                            Name: "Leave the court",
+                            Name: "Climb back down",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -262,20 +262,20 @@
                     ],
                     Texts: [
                         {
-                            Text: "STATION OF THE MOSS COURT — first of the four gardens. A worn line beneath the crest reads: moss holds water and hates the torch. So does everything the court grows."
+                            Text: "WARDEN OF THE OLD BOUGH — first of the four stone wardens. It stands out on the great branch of the oldest tree in the city, arms folded, watching the streets below. A worn line in the root-stone reads: what grows slow grows true."
                         },
                         {
-                            Text: "The statue's arms stay folded; the stone does not stir for passers-by. They say the keeper of the four gardens — Garden Master Wei, up the west hill — knows how to wake it."
+                            Text: "The stone does not stir for passers-by. They say the keeper of the old way — Garden Master Wei, up the west hill — knows how to wake it."
                         }
                     ],
-                    Name: "Stone Warden of the Moss Court",
+                    Name: "Warden of the Old Bough",
                     Label: "default"
                 },
                 {
                     Priority: -1,
                     Buttons: [
                         {
-                            Name: "Back to the statue",
+                            Name: "Back to the warden",
                             Actions: [
                                 {
                                     Type: "OPEN_DEFAULT_DIALOG"
@@ -295,13 +295,13 @@
                     ],
                     Texts: [
                         {
-                            Text: "OLD BOTANY, PAGE OF THE MOSS COURT. Before the town had a name it had this court. The first gardeners judged a trainer the way they judged a cutting — not by how fast it grew but by how well it waited. The moss remembers every foot that rushed."
+                            Text: "OLD BOTANY, PAGE OF THE OLD BOUGH. Before the town had a name it had this tree. The first gardeners judged a trainer the way they judged a cutting — not by how fast it grew but by how well it waited. The bough remembers every foot that rushed the climb."
                         },
                         {
-                            Text: "The hill gardens grew here first. Everything that grows under glass in the valley came after, and it knows it."
+                            Text: "This tree grew here first. Everything that grows under glass in the valley came after, and it knows it. The old bough has outlived every gardener who ever pruned it, and intends to outlive a few more."
                         }
                     ],
-                    Name: "Old Botany — First Leaf",
+                    Name: "Old Botany — The First Bough",
                     Label: "lore"
                 }
             ]
@@ -450,6 +450,6 @@
             }
         ],
         id: "easy_npc:humanoid",
-        CustomName: '{"text": "Stone Warden of the Moss Court", "color": "#FFFFFF"}'
+        CustomName: '{"text": "Warden of the Old Bough", "color": "#FFFFFF"}'
     }
 }

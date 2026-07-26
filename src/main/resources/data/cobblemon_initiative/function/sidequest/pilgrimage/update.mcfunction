@@ -1,4 +1,4 @@
-# Four Gardens Pilgrimage — seal counter refresh. Run AS the player right after a station
+# Four Wardens Pilgrimage — seal counter refresh. Run AS the player right after a station
 # plaque grants a seal tag (the plaque press buttons call this as_player). Counts the four
 # seal tags, toasts progress on the actionbar via the set-style macro (mirrors
 # quest/set_wheat), points home to Wei at 4/4, then re-renders the sidebar side line
