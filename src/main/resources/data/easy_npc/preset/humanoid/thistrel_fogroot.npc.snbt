@@ -1,9 +1,9 @@
 {
     PresetMetadata: {
         author: "TheCompanyInc",
-        category: "Civilian",
+        category: "Merchant",
         created: 0L,
-        description: "civilian at Mystic Marsh - North Reeds (act 1). Compiled from dialog-src.",
+        description: "merchant at Mystic Marsh - North Reeds, Brewing-Supplies Shelf (act 1). Compiled from dialog-src.",
         entityTypeId: "easy_npc:humanoid",
         modified: 0L,
         name: "Thistrel Fogroot",
@@ -33,19 +33,29 @@
         CanPickUpLoot: 0b,
         CustomNameVisible: 1b,
         DialogData: {
-            Type: "BASIC",
+            Type: "STANDARD",
             DialogDataSet: [
                 {
                     Priority: 10,
                     Buttons: [
                         {
-                            Name: "Goodbye",
+                            Name: "Browse the brewing supplies",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "still_shelf"
+                                }
+                            ],
+                            Label: "supplies_button"
+                        },
+                        {
+                            Name: "Keep the candle lit",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "goodbye_button"
+                            Label: "leave_button"
                         }
                     ],
                     Texts: [
@@ -60,10 +70,141 @@
                         },
                         {
                             Text: "Auntie Bramblea says the gym leader trains blindfolded. Wrong. Titania is a GHOST, and ghosts do not need eyes. Nobody I know has seen her up close. I know how the unseen operate now. Professionally."
+                        },
+                        {
+                            Text: "Elowen bottles the marsh and sells you the finished thing. Respectable. I sell what goes IN the cauldron — rods, wart, dusts, an eye I keep double-jarred. The witch has me stock it. Do not ask me which of it is for her. I do not ask either."
                         }
                     ],
                     Name: "Thistrel Fogroot",
                     Label: "default"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Blaze Rod — 300 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/market/buy_blaze_rod"
+                                }
+                            ],
+                            Label: "buy_blaze_button"
+                        },
+                        {
+                            Name: "Nether Wart — 60 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/market/buy_nether_wart"
+                                }
+                            ],
+                            Label: "buy_wart_button"
+                        },
+                        {
+                            Name: "Glowstone Dust — 80 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/market/buy_glowstone_dust"
+                                }
+                            ],
+                            Label: "buy_glowstone_button"
+                        },
+                        {
+                            Name: "The stranger jars",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "odd_jars"
+                                }
+                            ],
+                            Label: "odd_jars_button"
+                        },
+                        {
+                            Name: "Back to Thistrel",
+                            Actions: [
+                                {
+                                    Type: "OPEN_DEFAULT_DIALOG"
+                                }
+                            ],
+                            Label: "back_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The still shelf. Blaze rods — genuine, traded off a courier who did not love carrying them through a wetland, which is why they cost what they cost. Wart for the base of everything. Glowstone dust for strength; wisp-shed, I gather it respectfully. The stranger jars are behind me, ask and I will turn around."
+                        }
+                    ],
+                    Name: "Thistrel — the still shelf",
+                    Label: "still_shelf"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Redstone Dust — 40 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/market/buy_redstone_dust"
+                                }
+                            ],
+                            Label: "buy_redstone_button"
+                        },
+                        {
+                            Name: "Gunpowder — 40 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/market/buy_gunpowder"
+                                }
+                            ],
+                            Label: "buy_gunpowder_button"
+                        },
+                        {
+                            Name: "Fermented Spider Eye — 90 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/market/buy_fermented_eye"
+                                }
+                            ],
+                            Label: "buy_eye_button"
+                        },
+                        {
+                            Name: "The still shelf",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "still_shelf"
+                                }
+                            ],
+                            Label: "still_shelf_button"
+                        },
+                        {
+                            Name: "Back to Thistrel",
+                            Actions: [
+                                {
+                                    Type: "OPEN_DEFAULT_DIALOG"
+                                }
+                            ],
+                            Label: "back_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The odd jars. Redstone stretches a brew longer — the witch prefers her workings unhurried. Sneeze powder turns a bottle into a splash, do not open it near the candle. And the fermented eye turns a brew INSIDE OUT, which sounds bad, and is, on purpose. Double-jarred. Absolutely not for eating."
+                        }
+                    ],
+                    Name: "Thistrel — the odd jars",
+                    Label: "odd_jars"
                 }
             ]
         },
@@ -145,27 +286,15 @@
         },
         Navigation: {
             Home: {
+                X: 1122,
                 Y: 65,
-                Z: 2329,
-                X: 1121
+                Z: 2330
             }
         },
         ObjectiveData: {
             HasObjectives: 1b,
             HasTravelTarget: 0b,
             ObjectiveDataSet: [
-                {
-                    Type: "RANDOM_STROLL_AROUND_HOME",
-                    Prio: 2,
-                    Id: "ambient_stroll_home",
-                    SpeedModifier: 0.8d
-                },
-                {
-                    Type: "MOVE_BACK_TO_HOME",
-                    Prio: 3,
-                    Id: "ambient_back_home",
-                    SpeedModifier: 1.0d
-                },
                 {
                     Type: "LOOK_AT_PLAYER",
                     Prio: 9,

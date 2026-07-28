@@ -245,15 +245,25 @@
                     Priority: 10,
                     Buttons: [
                         {
-                            Name: "Take in the shrine",
+                            Name: "Swear the Final Vow - Resolve",
                             Actions: [
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "cutscene play fairy_shrine_reveal"
+                                    Cmd: "cobblemon-initiative shrine fairy test resolve"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "gaze_button"
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_fairy_resolve_ready"
+                                }
+                            ],
+                            Label: "resolve_button"
                         },
                         {
                             Name: "Step into the light",
@@ -296,7 +306,7 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:fairy_shrine_leader onwin {1: ['cobbledollars give @1 2500', 'tag @1 add defeated_fairy_shrine_leader', '@2 say The light has chosen to follow you. Be gentle with what it shows you.', 'execute as @1 unless entity @1[tag=shrine_frag_seen] run function cobblemon_initiative:memory/shrine/first_keeper'], 2: ['@1 say The radiance turns away for now. Come back when your heart is steadier.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:fairy_shrine_leader onwin {1: ['cobbledollars give @1 2500', 'tag @1 add defeated_fairy_shrine_leader', '@2 say The light has chosen to follow you. Be gentle with what it shows you.', 'execute as @1 run function cobblemon_initiative:memory/shrine/first_keeper'], 2: ['@1 say The radiance turns away for now. Come back when your heart is steadier.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -316,7 +326,7 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "tellraw @initiator [{\"text\":\"The light holds you at its edge. Aurora does not move. The vows are not yet kept - climb back up the drowned stair and take them in order, from the First Vow at the top of the water. The fifth vow, resolve, opens the way.\",\"color\":\"gray\"}]"
+                                    Cmd: "tellraw @initiator [{\"text\":\"The light holds you at its edge. Aurora does not move. The vows are not yet kept - take the four vows of the drowned stair in order, from the First Vow at the top of the water, then swear the last vow, resolve, to Aurora herself.\",\"color\":\"gray\"}]"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -346,10 +356,10 @@
                             Text: "Soft now. You have reached the floor of the drowned stair, where the light does not warm so much as it reveals. I am Aurora, its keeper and its servant. The choir you passed on the way down was mine once. Now I am theirs."
                         },
                         {
-                            Text: "The radiance does not test a team. It tests a bond. Five vows line the stair above you - devotion, nourishment, a name, the light, and at the last, resolve. Take each vow at its keeper as you descend, with one bonded companion who will stand alone on your belt."
+                            Text: "The radiance does not test a team. It tests a bond. Four vows line the stair above you - devotion, nourishment, a name, the light. The last vow, resolve, is mine to hear: every vow at once, sworn with one bonded companion who stands alone on your belt."
                         },
                         {
-                            Text: "I cannot give you the light. I can only stand between you and it until every vow is kept. Keep the fifth, and step into the light."
+                            Text: "I cannot give you the light. I can only stand between you and it until every vow is kept. Swear the last vow to me, and step into the light."
                         }
                     ],
                     Name: "Aurora - the floor",
@@ -448,7 +458,7 @@
             IsAttackableByPlayers: 0b,
             IsInvulnerable: 1b,
             IsPushable: 0b,
-            NoGravity: 0b,
+            NoGravity: 1b,
             PushEntities: 0b
         },
         HandDropChances: [0.085f, 0.085f],
@@ -460,7 +470,10 @@
         LeftHanded: 0b,
         ModelData: {
             DefaultPose: "STANDING",
-            Pose: "VANILLA"
+            Pose: "VANILLA",
+            Root: {
+                Scale: [1.2f, 1.2f, 1.2f]
+            }
         },
         Navigation: {
             Home: {
@@ -559,6 +572,7 @@
             }
         ],
         id: "easy_npc:fairy",
-        CustomName: '{"text": "High Priestess Aurora", "color": "#FFFFFF"}'
+        CustomName: '{"text": "High Priestess Aurora", "color": "#FFFFFF"}',
+        NoGravity: 1b
     }
 }

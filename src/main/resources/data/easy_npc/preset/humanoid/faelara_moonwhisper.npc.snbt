@@ -33,19 +33,64 @@
         CanPickUpLoot: 0b,
         CustomNameVisible: 1b,
         DialogData: {
-            Type: "BASIC",
+            Type: "STANDARD",
             DialogDataSet: [
                 {
-                    Priority: 10,
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "faelara_pair_done"
+                        }
+                    ],
+                    Priority: 20,
                     Buttons: [
                         {
-                            Name: "Goodbye",
+                            Name: "Mind the mud, Hex",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "goodbye_button"
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Still carrying both, I hope. The glow keeps the shadow honest and the shadow keeps the glow humble. Hex refuses to be either on schedule."
+                        },
+                        {
+                            Text: "The lapis grinds finest under a full moon, if you ever take up the press. Or keep it in your pocket and let it remind you what you walked in here carrying."
+                        }
+                    ],
+                    Name: "Faelara — glow and shadow",
+                    Label: "done"
+                },
+                {
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "Show her the glow and the shadow",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:sidequest/faelara/show_pair"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "show_pair_button"
+                        },
+                        {
+                            Name: "Leave her to the pressing",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
                         }
                     ],
                     Texts: [
@@ -57,6 +102,9 @@
                         },
                         {
                             Text: "Hex — get out of the mud, you menace. Sorry. My Morgrem thinks fog is a personal invitation to make trouble."
+                        },
+                        {
+                            Text: "Do me a kindness if you walk the routes. I want to see a Fairy and a Dark in the same party — the glow and the shadow, side by side. The marsh is both at once, and almost nobody carries it that way. There is lapis in it for you. Press-jar blue, the honest kind."
                         }
                     ],
                     Name: "Faelara Moonwhisper",

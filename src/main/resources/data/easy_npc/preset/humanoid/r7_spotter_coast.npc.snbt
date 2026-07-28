@@ -267,6 +267,25 @@
                                             }
                                         ]
                                     },
+                                    Cmd: "tag @s add in_trainer_battle"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_r7_spotter_coast"
+                                            },
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_declined_r7_spotter_coast"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:r7_spotter_coast onwin {1: ['cobbledollars give @1 560', 'tag @1 add defeated_r7_spotter_coast', '@2 say Clean footing on a bad wind. The coast road is yours.', 'tag @1 remove in_trainer_battle'], 2: ['@1 say The tide takes the slow ones. Dry off and read the wind again.', 'tag @2 remove in_trainer_battle']}"
                                 },
                                 {

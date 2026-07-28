@@ -251,6 +251,25 @@
                                             }
                                         ]
                                     },
+                                    Cmd: "tag @s add in_trainer_battle"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_deepcore_trainer_2"
+                                            },
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_deepcore_trainer_1"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "tbcs battle GEN_9_MULTI @s rctmod:deepcore_second vs rctmod:deepcore_trainer_2 rctmod:deepcore_trainer_1 onwin {1: ['tag @1 add defeated_deepcore_trainer_2', 'tag @1 add defeated_deepcore_trainer_1', '@3 say Good bout. No grudges, like I said - now go scare Kenji for me.', 'tag @1 remove in_trainer_battle'], 2: ['@1 say Shake it off and drill again. Then come back to the ring.', 'tag @3 remove in_trainer_battle']}"
                                 },
                                 {

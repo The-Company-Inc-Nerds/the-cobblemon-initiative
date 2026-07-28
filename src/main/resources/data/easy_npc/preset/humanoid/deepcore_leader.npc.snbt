@@ -87,7 +87,7 @@
                     Priority: 18,
                     Buttons: [
                         {
-                            Name: "I'll go do that",
+                            Name: "I will go do that",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -175,28 +175,127 @@
                     Label: "ready"
                 },
                 {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "no_dc_track_full"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "no_dc_track_pit"
+                        }
+                    ],
                     Priority: 10,
                     Buttons: [
                         {
-                            Name: "Goodbye",
+                            Name: "Face the whole dojo",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add dc_track_full"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "tellraw @initiator [{\"text\":\"The Gauntlet is live. The floor masters are hunting you now — when one closes in, the fight is on. Drop them in any order, then clear the pit and return to Bruno.\",\"color\":\"gold\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "track_full_button"
+                        },
+                        {
+                            Name: "Just the apprentices — straight to the pit",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add dc_track_pit"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:gym/engage_deepcore_pit"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "track_pit_button"
+                        },
+                        {
+                            Name: "Let me think",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "goodbye_button"
+                            Label: "leave_button"
                         }
                     ],
                     Texts: [
                         {
-                            Text: "Marshal Osei runs my door and my apprentices run the pit. The four masters on the floor are yours to take in any order — or not at all. The pit does not move: Ken and Striker fight you together, two on two, one bout."
+                            Text: "Deepcore City, and I am Leader Bruno. My gym does not queue politely. Four masters roam the floor and once the Gauntlet is live they hunt you down — the ambush IS the bout. The pit at the bottom never moves: Ken and Striker together, two on two, with a second from the gym at your corner. Clear the pit and I will fight you. How much floor you carry first is your call."
                         },
                         {
-                            Text: "The gym lends you a second so nobody stands alone down there. Clear the pit and come back. I do not fight anyone who has not earned the walk down."
+                            Text: "One question before anything else, challenger: how much do you want to bleed on the way down? Take the whole dojo and the floor masters come for you where you stand — every one you drop leaves the pit more tired. Or walk past them straight to my apprentices at full strength, right now. Either road ends in the pit, and the pit ends at me."
                         }
                     ],
-                    Name: "Bruno — not yet",
+                    Name: "Bruno — choose your Gauntlet",
                     Label: "default"
+                },
+                {
+                    Priority: 8,
+                    Buttons: [
+                        {
+                            Name: "Send me back to the pit",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:gym/engage_deepcore_pit"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "dc_track_pit"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_deepcore_apprentice"
+                                }
+                            ],
+                            Label: "pit_relaunch_button"
+                        },
+                        {
+                            Name: "I will be back",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The road is chosen but the pit has not cleared you yet. Ken and Striker fight as one side, and the gym lends you a second so nobody stands alone down there."
+                        },
+                        {
+                            Text: "Nothing more to say until the pit says it for you. Walk down, take the bout, walk back out standing."
+                        }
+                    ],
+                    Name: "Bruno — the pit still waits",
+                    Label: "track_status"
                 },
                 {
                     Conditions: [

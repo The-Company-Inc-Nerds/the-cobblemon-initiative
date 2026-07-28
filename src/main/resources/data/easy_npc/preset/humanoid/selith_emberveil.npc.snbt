@@ -1,9 +1,9 @@
 {
     PresetMetadata: {
         author: "TheCompanyInc",
-        category: "Service",
+        category: "Civilian",
         created: 0L,
-        description: "healer at Mystic Marsh - Marsh Clinic (act 1). Compiled from dialog-src.",
+        description: "civilian at Mystic Marsh - West Edge Hut (act 1). Compiled from dialog-src.",
         entityTypeId: "easy_npc:humanoid",
         modified: 0L,
         name: "Selith Emberveil",
@@ -40,22 +40,23 @@
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
-                            Name: "badges_gte_3"
+                            Name: "traded_selith"
                         }
                     ],
                     Priority: 20,
                     Buttons: [
                         {
-                            Name: "Patch up my team",
+                            Name: "Ask how the deal was struck",
                             Actions: [
                                 {
-                                    Type: "CLOSE_DIALOG"
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "seal"
                                 }
                             ],
-                            Label: "heal_button"
+                            Label: "seal_button"
                         },
                         {
-                            Name: "We are fine, thank you",
+                            Name: "She is in good hands",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -66,29 +67,65 @@
                     ],
                     Texts: [
                         {
-                            Text: "You again — and in one piece, which puts you ahead of most who walk in here. Sit, let me look at your team. Marsh-lily poultice and a will-o-oil rub; it is not a proper Center but it holds a Pokemon together till you reach one. Half of what limps to my door got bitten inside the town limits, if you can believe a town would allow that."
+                            Text: "How is the fire keeping? Do not let her sweet-talk you — she eats better than I do and she knows it. Meanwhile the whisker-fish has already called tomorrow for rain. I am delighted with it."
                         },
                         {
-                            Text: "The willows have been leaning your way when you pass. I noticed it stitching a ranger back up by the window. Trees do not lean, dear. Not for a stranger. I did not say a word to him and I will not say more to you — heal up and go."
+                            Text: "The hut is damper without her and I find I do not mind. The Barboach naps in the rain barrel and twitches before every storm. A fish that tells the weather is worth ten that only look pretty."
                         }
                     ],
-                    Name: "Selith — the herbalist",
-                    Label: "mid"
+                    Name: "Selith — the whisker-fish",
+                    Label: "after"
                 },
                 {
                     Priority: 10,
                     Buttons: [
                         {
-                            Name: "Please, heal them",
+                            Name: "Trade a Barboach for the Salandit",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative trade barboach salandit 28 traded_selith"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_traded_selith"
+                                }
+                            ],
+                            Label: "trade_button"
+                        },
+                        {
+                            Name: "Not parting with a fish today",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "heal_button"
+                            Label: "decline_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "See the lamp by the door? Not a lamp. Salandit. Ember hatched in my firebox two winters back and the damp has never once put her out. But a fire in a marsh is a guest, not a resident, and I am tired of apologizing to the bog for her. So — bring me a Barboach. The mud-whisker fish, the one that feels weather coming through its face. Straight across: your fish out of the pools, my flame to somewhere with more to burn."
                         },
                         {
-                            Name: "Maybe later",
+                            Text: "No coin in this. Coin gets counted, and a counted trade belongs to whoever prints the coin — hand to hand is the only exchange the Company cannot see. A Barboach from your party for my Salandit, even trade. She is the only flame that likes the wet, and I am asking you to take her somewhere drier anyway. That is the whole deal and I will not be improving it."
+                        }
+                    ],
+                    Name: "Selith — the ember keeper",
+                    Label: "default"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Warm on both counts",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -99,14 +136,11 @@
                     ],
                     Texts: [
                         {
-                            Text: "You have the look of someone who fought their way in through the reeds. Set your team down, I will see to them — bog-remedy, not a machine, but it has never once failed me. The proper Center is a whole town off and the marsh does not care that you are tired."
-                        },
-                        {
-                            Text: "Do keep your Pokemon out of the water at night. I can fix a bite. I cannot fix whatever leaves bites like the ones I have been seeing this season."
+                            Text: "Struck, hand to hand, and no ledger the wiser. Keep her warm and she will keep you warm back. That is not marsh poetry, that is a fire safety notice."
                         }
                     ],
-                    Name: "Selith — the herbalist",
-                    Label: "default"
+                    Name: "Selith — struck",
+                    Label: "seal"
                 }
             ]
         },

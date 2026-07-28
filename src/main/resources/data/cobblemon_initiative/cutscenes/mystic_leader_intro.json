@@ -1,5 +1,5 @@
 {
-  "_comment": "TITANIA — Mystic Marsh (gym 3, Fairy) leader intro. A per-leader copy of leader_intro.json (the shared scene cannot carry a name title). ALPHA.26 PLAYTEST RE-RECORD: rebuilt ABSOLUTE from the showrunner's /cutscene record path at the real arena (replaces the Cicada-geometry relative fallback that was flagged 'in-world tuning may be needed' — it was): open on Titania from the challenger side, swing right for a raised profile cross over the floats, drift in, then drop to the stage line facing her. endBack REMOVED on purpose — gym/engage_mystic_leader now tp's the challenger to the explicit battle.stage_pos 943.4 69 2434.1 (facing Titania, floats pass through exactly), so the scene owes no restore geometry and skip still lands the same spot. Fairy/Mist-Court theme retimed to the 90t path: amethyst resonance chime on the open, enchantment-table shimmer + enchant burst at the profile cross (~t24), end_rod halo on the drift-in (~t55), closing levelup swell (~t75). Particles stay anchored ON the leader via `execute at <uuid>` so they land on Titania herself wherever she hovers.",
+  "_comment": "TITANIA — Mystic Marsh (gym 3, Fairy) leader intro. A per-leader copy of leader_intro.json (the shared scene cannot carry a name title). ALPHA.26 PLAYTEST RE-RECORD: rebuilt ABSOLUTE from the showrunner's /cutscene record path at the real arena (replaces the Cicada-geometry relative fallback that was flagged 'in-world tuning may be needed' — it was): open on Titania from the challenger side, swing right for a raised profile cross over the floats, drift in, then drop to the stage line facing her. endBack REMOVED on purpose — gym/engage_mystic_leader now tp's the challenger to the explicit battle.stage_pos 943.4 69 2434.1 (facing Titania, floats pass through exactly), so the scene owes no restore geometry and skip still lands the same spot. Fairy/Mist-Court theme retimed to the 90t path: amethyst resonance chime on the open, enchantment-table shimmer + enchant burst at the profile cross (~t24), end_rod halo on the drift-in (~t55), closing levelup swell (~t75). Particles stay anchored ON the leader via `execute at <uuid>` so they land on Titania herself wherever she hovers. 0.7.0-a3 playtest: scene read sparse on stream — five fairy/marsh cues layered in (all force so spectator-distance renders, all tick<90 = the keyframe sum): cherry_leaves petal fall on the open (t10), spore_blossom_air drift over the arena water absolute 943.4 71 2440 at the profile cross (t30), witch motes at her hem (t40), wide end_rod halo swell on the drift-in (t60), totem_of_undying burst under the levelup swell (t76).",
   "relative": false,
   "skippable": true,
   "startTitle": "§dLeader Titania",
@@ -13,10 +13,15 @@
   "cues": [
     { "tick": 6, "sound": "minecraft:block.amethyst_block.resonate", "volume": 0.9, "pitch": 1.2 },
     { "tick": 8, "sound": "minecraft:block.amethyst_block.chime", "volume": 0.5, "pitch": 1.4 },
+    { "tick": 10, "command": "execute at b665f300-628d-445b-8a3e-42a5cefca1bd run particle minecraft:cherry_leaves ~ ~2 ~ 2.5 1.5 2.5 0 40 force" },
     { "tick": 22, "sound": "minecraft:block.enchantment_table.use", "volume": 0.8, "pitch": 1.0 },
     { "tick": 24, "command": "execute at b665f300-628d-445b-8a3e-42a5cefca1bd run particle minecraft:enchant ~ ~1 ~ 0.6 0.8 0.6 0.02 32 force" },
+    { "tick": 30, "command": "particle minecraft:spore_blossom_air 943.4 71 2440 3 2 4 0 60 force" },
+    { "tick": 40, "command": "execute at b665f300-628d-445b-8a3e-42a5cefca1bd run particle minecraft:witch ~ ~0.2 ~ 0.8 0.4 0.8 0.02 24 force" },
     { "tick": 53, "sound": "minecraft:block.amethyst_block.resonate", "volume": 0.6, "pitch": 1.0 },
     { "tick": 55, "command": "execute at b665f300-628d-445b-8a3e-42a5cefca1bd run particle minecraft:end_rod ~ ~1 ~ 0.6 0.8 0.6 0.02 32 force" },
-    { "tick": 75, "sound": "minecraft:entity.player.levelup", "volume": 0.6, "pitch": 0.5 }
+    { "tick": 60, "command": "execute at b665f300-628d-445b-8a3e-42a5cefca1bd run particle minecraft:end_rod ~ ~1 ~ 1.2 1.2 1.2 0.03 60 force" },
+    { "tick": 75, "sound": "minecraft:entity.player.levelup", "volume": 0.6, "pitch": 0.5 },
+    { "tick": 76, "command": "execute at b665f300-628d-445b-8a3e-42a5cefca1bd run particle minecraft:totem_of_undying ~ ~1.5 ~ 0.5 0.8 0.5 0.15 40 force" }
   ]
 }

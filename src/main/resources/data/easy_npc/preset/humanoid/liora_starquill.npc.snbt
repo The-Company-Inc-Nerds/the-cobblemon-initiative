@@ -1,9 +1,9 @@
 {
     PresetMetadata: {
         author: "TheCompanyInc",
-        category: "Civilian",
+        category: "Service",
         created: 0L,
-        description: "civilian at Mystic Marsh - North Overlook (act 1). Compiled from dialog-src.",
+        description: "healer at Mystic Marsh - Pokemon Center (act 1). Compiled from dialog-src.",
         entityTypeId: "easy_npc:humanoid",
         modified: 0L,
         name: "Liora Starquill",
@@ -33,47 +33,79 @@
         CanPickUpLoot: 0b,
         CustomNameVisible: 1b,
         DialogData: {
-            Type: "BASIC",
+            Type: "CUSTOM",
             DialogDataSet: [
                 {
                     Priority: 10,
                     Buttons: [
                         {
-                            Name: "Take a copy of the wisp-map",
+                            Name: "Heal my team - posted rate",
                             Actions: [
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_gift_liora_wisp_map_claimed"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "loot give @s loot cobblemon_initiative:npc_gift/common"
+                                    Cmd: "function cobblemon_initiative:economy/heal_paid"
                                 },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_gift_liora_wisp_map_claimed"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tag @s add gift_liora_wisp_map_claimed"
+                                    Cmd: "tag @s add met_mm_nurse"
+                                },
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "healed"
                                 }
                             ],
-                            Label: "map_button"
+                            Label: "heal_button"
                         },
                         {
-                            Name: "Clear skies to you",
+                            Name: "Use the PC",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:pc/open"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "pc_button"
+                        },
+                        {
+                            Name: "Not right now",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add met_mm_nurse"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Welcome to the Mystic Marsh Center - mind the boardwalk, it weeps at the joints. Full restore is the posted rate, no account card needed, and the tea by the door is free whether you can pay or not. Marsh hospitality."
+                        },
+                        {
+                            Text: "You look like the road chewed you up. Willowmire Path does that. Set your team down, the schedule is on the post, and the stars will still be where I charted them when you wake."
+                        },
+                        {
+                            Text: "Nurse by day, wisp-charter by night - in this town those are the same job. The lights mark where the boardwalk lies and where the water tells the truth. I mend whatever ignored the difference."
+                        }
+                    ],
+                    Name: "Liora Starquill",
+                    Label: "default"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Thank you, Nurse",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -84,20 +116,14 @@
                     ],
                     Texts: [
                         {
-                            Text: "I chart the wisps — where they hang, where they drift, where they go dark. A wisp-map is worth more than any surveyor plat in a place that reshapes itself with the tide. Try telling that to the Company man and his rulers."
+                            Text: "There - rested and mended, billed at the posted rate, same as everyone who crosses my boards. Mind the wisps on the way out. They lead the tired ones in circles - unless you carry my map."
                         },
                         {
-                            Text: "The lights have been clustering, lately. Pulling toward the deep pools like iron to a lodestone. I do not know what they are gathering to watch. I only draw where they gather."
-                        },
-                        {
-                            Text: "Take a copy if you are shrine-bound. The boardwalk lies but the wisps do not — not to me, at least. Not yet."
-                        },
-                        {
-                            Text: "The Company surveyor asked to license my charts. License. As if the wisps would hold still for a fee schedule. I quoted him a price in clear nights and he wrote it down before he understood it."
+                            Text: "Good as new. Quarry Road south is long and Deepcore at the end of it is longer. Rest here while the fen lets you."
                         }
                     ],
-                    Name: "Liora Starquill",
-                    Label: "default"
+                    Name: "Liora Starquill - rested",
+                    Label: "healed"
                 }
             ]
         },

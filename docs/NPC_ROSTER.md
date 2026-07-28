@@ -8,7 +8,7 @@
 >
 > DEV DOCUMENT - full spoilers. The player-facing wiki lives in `wiki/`.
 
-**748 characters** - 351 persisted world bodies, 347 latch-spawned, 50 unplaced (no body, no latch - phone callers, script-spawned bodies like the transformed Hua Zhan leader, dead content, act-2/3 casting).
+**750 characters** - 355 persisted world bodies, 345 latch-spawned, 50 unplaced (no body, no latch - phone callers, script-spawned bodies like the transformed Hua Zhan leader, dead content, act-2/3 casting).
 
 **Reading the tables:** *(body)* = persisted world entity (moves only via repairs tp);
 *(latch)* = spawned at the authored coords when a player first comes within 40 blocks;
@@ -118,14 +118,14 @@
 | **Deng Haoran** `deng_haoran` | Harvest Road — fifty paces west of the Firstfurrow fence - 1496 88 2454 (body) | battles `sq_rt2_haoran` (2x lv19-20: lillipup, phanpy), prize 260, forced at close range; cmd: homestead claim; runs: homestead/need_beacon | world-body look |
 | **Granny Yun** `granny_yun` | Harvest Road — roadside camp west of Firstfurrow - 1476.5 90 2437.5 (latch) | flavor / lore dialog | skin `single/granny_yun` |
 | **Harvest Hand Luo Shiming** `luo_shiming` | Harvest Road — Hua Zhan Gate - 1650 88 2520 (body) | battles `sq_rt2_wager` (2x lv22-23: drilbur, deerling), prize 380 | world-body look |
-| **Sporeherd Maslen** `mirek` | Willowmire Path — Hua Zhan to Mystic Marsh corridor - 1400 88 2336 (body) | battles `r3_trainer_shroom` (2x lv31-32: shroomish, shiinotic), prize 340, pursues on sight r8, forced at close range | world-body look |
+| **Sporeherd Maslen** `mirek` | Willowmire Path — Hua Zhan to Mystic Marsh corridor - 1400 88 2336 (body) | battles `r3_trainer_shroom` (2x lv26-27: shroomish, shiinotic), prize 340, pursues on sight r8, forced at close range | world-body look |
 | **Old Deng** `old_deng` | Harvest Road — roadside camp west of Firstfurrow - 1478.5 90 2440.5 (latch) | walks up on first sight; runs: sidequest/tenants_of_record/walk | skin `single/old_deng` |
 | **The Field Watcher** `watch_lantern` | Harvest Road - Firstfurrow farm gate - 1601.6 90 2480.8 (latch) | runs: sidequest/night_watch/start | skin `single/prop_wood_post` |
 | **Kite Runner Xu Jianyu** `xu_jianyu` | Harvest Road — High Ledge - 1492 91 2318 (body) | battles `sq_rt2_kite` (2x lv20-21: pidgeotto, fletchinder), prize 300, pursues on sight r8, forced at close range | world-body look |
 
 ## Hua Zhan City — Gym 2 (Grass, cap 30)
 
-`characters/hua_zhan/` - 31 NPCs
+`characters/hua_zhan/` - 32 NPCs
 
 | NPC | Where | Does | Looks |
 |---|---|---|---|
@@ -135,25 +135,26 @@
 | **Acorn** `companion_hua_zhan_seedot` | Hua Zhan City - Hilltop Dojo, The Steps - 1447.5 93 2056.5 (latch) | flavor / lore dialog | Cobblemon model: seedot |
 | **Ridge** `companion_hua_zhan_skiddo` | Hua Zhan City - Hilltop Dojo, Upper Terrace - 1413.5 112 2054.5 (latch) | flavor / lore dialog | Cobblemon model: skiddo |
 | **Nub** `companion_hua_zhan_sunkern` | Hua Zhan City - North Edge, The Family Plot - 1425.5 85 1960.5 (latch) | flavor / lore dialog | Cobblemon model: sunkern |
+| **Ludwig** `companion_ludwig` | Hua Zhan City - Wool House roof - 1537.8 102.1 2114.6 (latch) | runs: easteregg/ludwig_mogul | Cobblemon model: jigglypuff |
 | **Coins** `companion_meowth` | Hua Zhan City - 1543.5 88 2109.5 (latch) | flavor / lore dialog | Cobblemon model: meowth |
-| **Cloud** `companion_wooloo` | Hua Zhan City - 1510.5 84 1990.5 (latch) | flavor / lore dialog | Cobblemon model: wooloo |
+| **Cloud** `companion_wooloo` | Hua Zhan City - 1502.5 84 2085.5 (latch) | flavor / lore dialog | Cobblemon model: wooloo |
 | **Lan** `hz_analyst` | Hua Zhan City — Company Branch Office, mezzanine - 1532.5 93 2005.5 (latch) | battles `sq_hz_analyst` (2x lv25-26: kadabra, gothorita), prize 300; runs: route/stake_sq_hz_analyst, route/decline_sq_hz_analyst | skin `single/thecompany_grunt_1` |
 | **Branch Manager Chen Bao** `hz_branch_manager` | Hua Zhan City — Company Branch Office, top floor - 1536 99 1996 (body) | flavor / lore dialog | skin `single/thecompany_admin_1` |
 | **Shu** `hz_greenhouse_archivist` | Hua Zhan City - Wool Loft - 1538 94 2112 (body) | sells (3): wool_white, wool_black, shears | world-body look |
 | **Bo** `hz_greenhouse_greeter` | Hua Zhan City — South Gate - 1482 87 2166 (body) | walks up on first sight | world-body look |
-| **Rong** `hz_greenhouse_overseer` | Hua Zhan City - Branch Office Loft - 1541.5 96 1992.5 (body, moved by repairs) | runs: sidequest/greenhouse/exit_fee | skin `single/thecompany_admin_1` |
+| **Rong** `hz_greenhouse_overseer` | Hua Zhan City - Branch Office Loft - 1533.5 99 2000.5 (body, moved by repairs) | runs: sidequest/greenhouse/exit_fee | skin `single/thecompany_admin_1` |
 | **Wei Feng** `hz_martkeeper` | Hua Zhan City - Pokemart counter - 1424 85 1960 (body) | opens the Pokemart shop; runs: sidequest/price_check/payout, sidequest/price_check/start | world-body look |
 | **Guo the Miller** `hz_miller` | Hua Zhan City — The Mill - 1512 84 1988 (body) | runs: sidequest/grain_survey/payout | world-body look |
 | **Nurse Mei Lin** `hz_nurse` | Hua Zhan City - Pokemon Center - 1432.5 90 2151.5 (body, moved by repairs) | runs: economy/heal_paid, pc/open, economy/reward/minor | world-body look |
 | **Anong** `hz_office_clerk` | Hua Zhan City — Company Branch Office, mezzanine - 1534 93 2006 (body) | flavor / lore dialog | world-body look |
 | **Ning** `hz_receptionist` | Hua Zhan City — Company Branch Office, ground floor - 1538.5 87 1999.5 (latch) | flavor / lore dialog | skin `single/thecompany_grunt_2` |
-| **Linh Hua** `hz_stall_linh` | Hua Zhan City - Produce Stall, East Market Street - 1544 86 2060 (body) | sells (10): mint_adamant, mint_modest, mint_jolly, mint_timid, mint_impish...; runs: sidequest/price_check/note_1 | world-body look |
+| **Linh Hua** `hz_stall_linh` | Hua Zhan City - Produce Stall, East Market Street - 1544.5 86 2048.5 (body, moved by repairs) | sells (10): mint_adamant, mint_modest, mint_jolly, mint_timid, mint_impish...; runs: sidequest/price_check/note_1 | world-body look |
 | **Wei Shun** `hz_stall_wei` | Hua Zhan City - Tool Stall, East Market Street - 1482 87 2096 (body) | runs: sidequest/price_check/note_2 | world-body look |
 | **Warden of the Old Bough** `hz_statue_moss` | Hua Zhan City - The Old Bough - 1456.5 103 2098.1 (latch) | battles `hua_zhan_trainer_1` (2x lv19-20: shroomish, tangela); runs: sidequest/pilgrimage/update, hua_zhan/warden_wake | skin `single/hz_statue_moss` |
 | **Warden of the Gate Garden** `hz_statue_orchard` | Hua Zhan City - The Gate Garden - 1451.8 90 2026.3 (latch) | battles `hua_zhan_trainer_2` (2x lv19-20: cottonee, petilil); runs: sidequest/pilgrimage/update, hua_zhan/warden_wake | skin `single/hz_statue_orchard` |
 | **Warden of the Quiet Garden** `hz_statue_pond` | Hua Zhan City - The Quiet Garden - 1538.5 84 2026.5 (latch) | battles `hua_zhan_trainer_4` (2x lv21-21: lombre, sunkern); runs: sidequest/pilgrimage/update, hua_zhan/warden_wake | skin `single/hz_statue_pond` |
 | **The Stone Knight** `hz_statue_terrace` | Hua Zhan City - The Green Square - 1479.9 87 2112.6 (latch) | battles `hua_zhan_trainer_3` (2x lv20-21: bellsprout, ferroseed); runs: sidequest/pilgrimage/update, hua_zhan/warden_wake | skin `single/hz_statue_terrace` |
-| **Bo Huan** `hz_trader_apricorns` | Hua Zhan City - East Market Street, Apricorn Cart - 1512.5 84 2085.5 (latch) | sells (9): apricorn_red, apricorn_yellow, apricorn_pink, apricorn_blue, apricorn_green... | skin `groups/hua_zhan` |
+| **Bo Huan** `hz_trader_apricorns` | Hua Zhan City - East Market Street, Apricorn Cart - 1502.5 84 2087.5 (latch) | sells (9): apricorn_red, apricorn_yellow, apricorn_pink, apricorn_blue, apricorn_green... | skin `groups/hua_zhan` |
 | **Auntie Song** `hz_trader_berries` | Hua Zhan City - East Market Street, Berry Stand - 1534.5 86 2058.5 (latch) | sells (10): oran, sitrus, leppa, lum, cheri...; runs: sidequest/price_check/note_3 | skin `single/auntie_song` |
 | **Kaito Zhang** `hz_woolkeeper` | Hua Zhan City - Wool House, ground floor counter - 1542 88 2110 (body) | flavor / lore dialog | world-body look |
 | **Kai Tan** `kai_tan` | Hua Zhan City - Hilltop Dojo, Upper Terrace - 1412 112 2054 (body) | flavor / lore dialog | world-body look |
@@ -168,13 +169,13 @@
 | NPC | Where | Does | Looks |
 |---|---|---|---|
 | **Bittern-Watcher Odui** `r3_lorekeeper_bittern` | Willowmire - reed blind - 1372.5 64 2329.5 (latch) | flavor / lore dialog | fairy (GREEN) |
-| **Marsh Scout Reeta** `r3_spotter_marsh` | Willowmire Boardwalk - 1372.5 64 2329.5 (latch) | battles `r3_spotter_marsh` (3x lv33-35: quagsire, golduck, pelipper), prize 420, pursues on sight r8, forced at close range | skin `single/mystic_apprentice` |
-| **Rowan** `rowan` | Willowmire Path — Mystic Marsh Gate - 1233.5 65 2368.5 (body, moved by repairs) | battles `r3_trainer_rowan` (2x lv34-35: skorupi, whirlipede), prize 420, pursues on sight r8, forced at close range | world-body look |
-| **Selene** `selene` | Willowmire Path — Marsh Edge - 1312 63 2354 (body) | battles `r3_trainer_selene` (2x lv33-34: lombre, kirlia), prize 380, pursues on sight r8, forced at close range | world-body look |
+| **Marsh Scout Reeta** `r3_spotter_marsh` | Willowmire Boardwalk - 1372.5 64 2329.5 (latch) | battles `r3_spotter_marsh` (3x lv27-29: quagsire, psyduck, pelipper), prize 420, pursues on sight r8, forced at close range | skin `single/mystic_apprentice` |
+| **Rowan** `rowan` | Willowmire Path — Mystic Marsh Gate - 1233.5 65 2368.5 (body, moved by repairs) | battles `r3_trainer_rowan` (2x lv28-29: skorupi, whirlipede), prize 420, pursues on sight r8, forced at close range | world-body look |
+| **Selene** `selene` | Willowmire Path — Marsh Edge - 1312 63 2354 (body) | battles `r3_trainer_selene` (2x lv27-28: lombre, kirlia), prize 380, pursues on sight r8, forced at close range | world-body look |
 
 ## Mystic Marsh — Gym 3 (Fairy, cap 37)
 
-`characters/mystic/` - 36 NPCs
+`characters/mystic/` - 35 NPCs
 
 | NPC | Where | Does | Looks |
 |---|---|---|---|
@@ -188,36 +189,35 @@
 | **Echo** `companion_mystic_ralts` | Mystic Marsh - Deep Pool - 943.5 91 2420.5 (latch) | flavor / lore dialog | Cobblemon model: ralts |
 | **Puddle** `companion_mystic_wooper` | Mystic Marsh - North Reeds - 1123.5 65 2330.5 (latch) | flavor / lore dialog | Cobblemon model: wooper |
 | **Corvin Thistlefen** `corvin_thistlefen` | Mystic Marsh - Paddy Road - 1184 65 2524 (body) | fetch: 5x cod -> `corvin_fish_done`; runs: sidequest/corvin/reward | world-body look |
-| **Elowen Mistbloom** `elowen_mistbloom` | Mystic Marsh - East Boardwalk, Apothecary Stall - 1236.5 65 2442.5 (body, moved by repairs) | sells (4): potion, super_potion, antidote, awakening | world-body look |
-| **Faelara Moonwhisper** `faelara_moonwhisper` | Mystic Marsh - Herb Terrace - 1212 87 2442 (body) | flavor / lore dialog | world-body look |
+| **Elowen Mistbloom** `elowen_mistbloom` | Mystic Marsh - East Boardwalk, Apothecary Stall - 1236.5 65 2442.5 (body, moved by repairs) | sells (4): brew_healing, brew_regen, brew_nightglow, brew_deepbreath | world-body look |
+| **Faelara Moonwhisper** `faelara_moonwhisper` | Mystic Marsh - Herb Terrace - 1212 87 2442 (body) | runs: sidequest/faelara/show_pair | world-body look |
 | **Faelrin Nightreed** `faelrin_nightreed` | Mystic Marsh - Central Boardwalk - 1146 65 2494 (body) | gifts mon: morelull level=25; fetch: 16x torch -> `faelrin_torches_in` | world-body look |
 | **Ilyana Mossveil** `ilyana_mossveil` | Mystic Marsh - Pokemart machine counter - 1176 65 2522 (body) | sells (6): tr_drainingkiss, tr_mudshot, tr_waterpulse, tm_venoshock, tm_gigadrain... | world-body look |
-| **Korrin Reedshade** `korrin_reedshade` | Mystic Marsh - North Boardwalk - 1130 67 2396 (body) | flavor / lore dialog | world-body look |
-| **Liora Starquill** `liora_starquill` | Mystic Marsh - North Overlook - 1176 69 2360 (body) | gift: one_time `liora_wisp_map` | world-body look |
+| **Korrin Reedshade** `korrin_reedshade` | Mystic Marsh - North Boardwalk - 1130 67 2396 (body) | fetch: 5x blue_orchid -> `korrin_flowers_in`; gives: super_potion x2; runs: economy/payout, economy/reward/minor | world-body look |
+| **Liora Starquill** `liora_starquill` | Mystic Marsh - Pokemon Center - 1176 69 2360 (body) | runs: economy/heal_paid, pc/open | world-body look |
 | **Lysara Moonfen** `lysara_moonfen` | Mystic Marsh - West Lane - 1046 65 2466 (body) | flavor / lore dialog | world-body look |
 | **Lysira Dewfen** `lysira_dewfen` | Mystic Marsh - Boardwalk - 1096 80 2520 (body) | fetch: 8x glowstone_dust -> `lysira_round_in`; runs: sidequest/lysira/reward | world-body look |
 | **Charm-Weaver Marigold** `mm_charm_seller` | Mystic Marsh - Charm Stall - 1076.5 66 2452.5 (latch) | battles `sq_marigold_charm` (2x lv28-29: clefable, granbull), prize 200; runs: sidequest/marigold/turn_in_charm | skin `single/mystic_trainer_1` |
 | **Verified Clerk Osric** `mm_exchange_clerk` | Mystic Marsh - Exchange Board - 1111.5 66 2444.5 (latch) | runs: sidequest/exchange_board/price_read | skin `single/town_shopkeeper` |
 | **Thimble** `mm_fairy_thimble` | Mystic Marsh - West Boardwalk Stilt-House - 1026.5 75 2503.5 (latch) | flavor / lore dialog | fairy (RED) |
 | **Wick** `mm_fairy_wick` | Mystic Marsh - West Boardwalk Stilt-House - 1030.5 75 2507.5 (latch) | flavor / lore dialog | fairy (BLUE) |
-| **Steward Halvard** `mm_field_guard` | Mirebloom Paddies - 1229.5 90 2820.5 (latch) | battles `mm_field_guard` (2x lv27-29: mightyena, obstagoon), prize 500 | skin `single/wheat_factor` |
-| **Fen-Nurse Wisteria** `mm_nurse` | Mystic Marsh - Pokemon Center - 1068.5 65 2465.5 (latch) | runs: economy/heal_paid, pc/open, sidequest/rumors/shrine_fairy | skin `single/nurse_center` |
+| **Steward Halvard** `mm_field_guard` | Mirebloom Paddies - 1222.5 91 2821.5 (latch) | runs: liberation/free_field | skin `single/wheat_factor` |
 | **Sedge** `mm_wheat_trader` | Mystic Marsh - Willowmire Causeway - 1058.5 78 2478.5 (latch) | battles `wheat_trader_ambush` (2x lv38-39: miltank, tauros), prize 400; native trade window (trade_wheat_trader); native trade window (trade_wheat_trader); gift: one_time `sedge_perch_gift` | skin `single/wheat_factor` |
-| **Marsh-Child Bryn** `mm_will_o_wisp_child` | Mystic Marsh - Fen Boardwalk - 1064.5 65 2470.5 (latch) | runs: sidequest/rumors/shrine_fairy, sidequest/bryn/show_fairy | STEVE default |
+| **Marsh-Child Bryn** `mm_will_o_wisp_child` | Mystic Marsh - Fen Boardwalk - 1064.5 65 2470.5 (latch) | runs: sidequest/rumors/shrine_fairy, sidequest/bryn/show_fairy | skin `single/marsh_child` |
 | **Morveth Marshbloom** `morveth_marshbloom` | Mystic Marsh - North Rise - 1123.5 75 2335.5 (latch) | runs: sidequest/morveth/feed | bogged (BOGGED) |
 | **Nyxen Shadowfen** `nyxen_shadowfen` | Mystic Marsh - 942 91 2420 (body) | flavor / lore dialog | world-body look |
 | **Orinthal Runehart** `orinthal_runehart` | Mystic Marsh - Willowmire Mouth - 970 92 2460 (body) | flavor / lore dialog | skin `single/thecompany_grunt_3` |
-| **Selith Emberveil** `selith_emberveil` | Mystic Marsh - Marsh Clinic - 918 70 2444 (body) | flavor / lore dialog | world-body look |
+| **Selith Emberveil** `selith_emberveil` | Mystic Marsh - West Edge Hut - 918 70 2444 (body) | mon trade: your barboach -> salandit | world-body look |
 | **Sylthra Veilsting** `sylthra_veilsting` | Mystic Marsh - South Ferry - 942 63 2558 (body) | flavor / lore dialog | world-body look |
 | **Sylvara Dewshade** `sylvara_dewshade` | Mystic Marsh - Southeast Lane - 1214 65 2498 (body) | flavor / lore dialog | world-body look |
 | **Thalorin Wispbrook** `thalorin_wispbrook` | Mystic Marsh - High Stilt - 1232 102 2438 (body) | sells (4): ench_depthstrider2, ench_unbreaking3, ench_protection2, ench_efficiency3 | world-body look |
-| **Thalvess Murkmantle** `thalvess_murkmantle` | Mystic Marsh - Stilt Market - 1030 65 2434 (body) | flavor / lore dialog | world-body look |
-| **Thistrel Fogroot** `thistrel_fogroot` | Mystic Marsh - North Reeds - 1122 65 2330 (body) | flavor / lore dialog | world-body look |
+| **Thalvess Murkmantle** `thalvess_murkmantle` | Mystic Marsh - Stilt Market - 1030 65 2434 (body) | gifts mon: feebas level=25; fetch: 8x lily_pad -> `thalvess_feebas_in`; fetch: 8x lily_pad -> `thalvess_feebas_in` | world-body look |
+| **Thistrel Fogroot** `thistrel_fogroot` | Mystic Marsh - North Reeds, Brewing-Supplies Shelf - 1122.5 65 2330.5 (body, moved by repairs) | sells (6): blaze_rod, nether_wart, glowstone_dust, redstone_dust, gunpowder... | world-body look |
 | **Veyric Ashenmark** `veyric_ashenmark_b` | Mystic Marsh - Southeast Boardwalk - 1100 67 2516 (body) | sells (4): mushroom_red, mushroom_brown, mushroom_stew, glow_berries | world-body look |
 
 ## Deepcore City — Gym 4 (Fighting, cap 44)
 
-`characters/deepcore/` - 35 NPCs
+`characters/deepcore/` - 34 NPCs
 
 | NPC | Where | Does | Looks |
 |---|---|---|---|
@@ -232,52 +232,55 @@
 | **Foreman Kang** `deepcore_foreman_kang` | Deepcore City - Pit-Head - 1120.5 111 3300.5 (latch) | runs: sidequest/deepcore/stake_assessor, sidequest/deepcore/turn_in_pages | skin `single/deepcore_trainer_1` |
 | **Old Dun** `deepcore_ladder_barker` | Deepcore City - Played-Out Shaft - 1060.5 119 3200.5 (latch) | runs: sidequest/deepcore/ladder_round_1, sidequest/deepcore/ladder_round_2, sidequest/deepcore/ladder_round_3 | skin `single/deepcore_trainer_1` |
 | **Re-Verified Reserve Ledger** `deepcore_ledger_board` | Deepcore City - Company Field Office - 1152.5 146 3284.5 (latch) | flavor / lore dialog | skin `single/prop_wood_post` |
-| **Sten Vale** `deepcore_martkeeper` | Deepcore City - Pit-Head Pokemart - 1100.5 111 3215.5 (latch) | opens the Pokemart shop | skin `single/town_shopkeeper` |
+| **Sten Vale** `deepcore_martkeeper` | Deepcore City - East Row Pokemart - 1160.5 124 3268.5 (latch) | opens the Pokemart shop | skin `single/town_shopkeeper` |
 | **Miner Rill** `deepcore_miner_rill` | Deepcore City - Pit-Head - 1110.5 109 3230.5 (latch) | flavor / lore dialog | skin `single/deepcore_trainer_2` |
-| **Nurse Rilka** `deepcore_nurse` | Deepcore City - Pit-Head Center - 1092.5 114 3208.5 (latch) | runs: economy/heal_paid, pc/open | skin `single/nurse_center` |
-| **Dorga Flintpick** `dorga_flintpick` | Deepcore City — Lower Gallery - 1154 109 3154 (body) | flavor / lore dialog | world-body look |
-| **Durn Heavyload** `durn_heavyload` | Deepcore City — Ore Hoist - 1112 97 3200 (body) | flavor / lore dialog | world-body look |
+| **Rilka** `deepcore_nurse` | Deepcore City - Pit-Head Quarry Side - 1092.5 114 3208.5 (latch) | flavor / lore dialog | skin `single/deepcore_trainer_2` |
+| **Dorga Flintpick** `dorga_flintpick` | Deepcore City — Lower Gallery - 1154 109 3154 (body) | gifts mon: drilbur level=33; fetch: 12x gunpowder -> `dorga_powder_in` | skin `single/kalahar_trainer_2` |
+| **Durn Heavyload** `durn_heavyload` | Deepcore City — Ore Hoist - 1112 97 3200 (body) | fetch: 8x bread -> `durn_meal_done`; runs: economy/payout, economy/reward/minor | skin `single/deepcore_trainer_1` |
 | **Elda Gatepick** `elda_gatepick` | Deepcore City — South Gate - 1082 122 3100 (body) | flavor / lore dialog | world-body look |
 | **Fenn Rockwhisper** `fenn_rockwhisper` | Deepcore City — Gym Approach - 1176 123 3234 (body) | flavor / lore dialog | world-body look |
 | **Gorran Hollowstep** `gorran_hollowstep` | Deepcore City — Echo Landing - 1100 123 3122 (body) | flavor / lore dialog | world-body look |
-| **Helka Dustmantle** `helka_dustmantle` | Deepcore City — Dust Ward - 1194 107 3168 (body) | fetch: 3x oran_berry -> `helka_poultice_done` | world-body look |
+| **Helka Dustmantle** `helka_dustmantle` | Deepcore City — Dust Ward - 1194 107 3168 (body) | fetch: 3x oran_berry -> `helka_poultice_done`; sells (6): redstone, redstone_torch, repeater, hopper, observer... | world-body look |
 | **Karn Tunnelwatch** `karn_tunnelwatch` | Deepcore City — North Watch - 1076 122 3250 (body) | flavor / lore dialog | world-body look |
 | **Kelda Stoneforge** `kelda_stoneforge` | Deepcore City — Old Pit-Head - 974 129 3198 (body) | flavor / lore dialog | world-body look |
-| **Mavrik Bedrock** `mavrik_bedrock` | Deepcore City — Sparring Shaft - 1020 129 3188 (body) | flavor / lore dialog | world-body look |
 | **Mirek Coalstain** `mirek_coalstain` | Deepcore City — Coal Landing - 1128 108 3162 (body) | flavor / lore dialog | world-body look |
-| **Nessa Corelight** `nessa_corelight` | Deepcore City — Assay Window - 1210 125 3234 (body) | flavor / lore dialog | world-body look |
-| **Orrin Stonelace** `orrin_stonelace` | Deepcore City — Commissary Row - 1216 125 3244 (body) | flavor / lore dialog | world-body look |
+| **Nessa Corelight** `nessa_corelight` | Deepcore City — Assay Window - 1210 125 3234 (body) | mon trade: your roggenrola -> hawlucha; mon trade: your roggenrola -> hawlucha | world-body look |
+| **Orrin Stonelace** `orrin_stonelace` | Deepcore City - Pokemon Center - 1216 125 3244 (body) | runs: economy/heal_paid, pc/open | world-body look |
 | **Rurik Deepdelve** `rurik_deepdelve` | Deepcore City — Deep Gallery - 1020 129 3216 (body) | flavor / lore dialog | world-body look |
 | **Rurik Tunnelguard** `rurik_tunnelguard` | Deepcore City — Vault Approach - 1178 108 3152 (body) | flavor / lore dialog | world-body look |
 | **Roderick** `sq_deepcore_assessor` | Deepcore City - Company Field Office - 1150.5 146 3282.5 (latch) | battles `sq_deepcore_assessor` (2x lv34-35: watchog, mightyena), prize 500; runs: sidequest/deepcore/stake_assessor, route/decline_sq_deepcore_assessor | skin `single/thecompany_grunt_1` |
 | **Syla Ironchalk** `syla_ironchalk` | Deepcore City — Survey Landing - 1102 129 3260 (body) | flavor / lore dialog | world-body look |
 | **Thrain Coalbreaker** `thrain_coalbreaker` | Deepcore City — High Pit-Head - 994 143 3206 (body) | flavor / lore dialog | world-body look |
 | **Tilda Oreweaver** `tilda_oreweaver` | Deepcore City — Sorting Floor - 1062 119 3202 (body) | flavor / lore dialog | world-body look |
-| **Vorn Gravelhand** `vorn_gravelhand` | Deepcore City — Rubble Chute - 1200 112 3196 (body) | flavor / lore dialog | world-body look |
+| **Vorn Gravelhand** `vorn_gravelhand` | Deepcore City — Rubble Chute - 1200 112 3196 (body) | sells (5): torches, coal, iron_ingot, rails, iron_pickaxe | skin `single/kalahar_trainer_1` |
 | **Corliss** `wheat_trader_deepcore` | Deepcore City - Mine Commissary - 1180.5 123 3260.5 (latch) | battles `wheat_trader_ambush` (2x lv38-39: miltank, tauros), prize 400; native trade window (trade_wheat_trader); native trade window (trade_wheat_trader) | skin `single/wheat_factor` |
 | **Yorin Crateshift** `yorin_crateshift` | Deepcore City — Loading Dock - 1160 124 3278 (body) | flavor / lore dialog | world-body look |
 
 ## Route 5
 
-`characters/route5/` - 5 NPCs
+`characters/route5/` - 9 NPCs
 
 | NPC | Where | Does | Looks |
 |---|---|---|---|
+| **Darrik Stonevein** `darrik_stonevein` | Quarry Road — Upper Bench - 1160 91 2878 (body) | battles `r5_trainer_darrik` (2x lv34-34: dwebble, crustle), prize 400, pursues on sight r8, forced at close range | world-body look |
+| **Helda Ironstep** `helda_ironstep` | Quarry Road — Haul Road Bend - 1248 84 2798 (body) | battles `r5_trainer_helda` (2x lv33-34: graveler, lairon), prize 400, pursues on sight r8, forced at close range | world-body look |
+| **Kelda Deepmark** `kelda_deepmark` | Quarry Road — Deepcore Rim - 1024 114 3066 (body) | battles `r5_trainer_kelda` (2x lv34-35: carkol, golett), prize 420, pursues on sight r8, forced at close range | world-body look |
 | **Stranded Hauler Poe** `r5_merchant_stranded` | The Quarry - broken cart - 1150.5 64 2830.5 (latch) | native trade window (trade_pokemart); fetch: 4x stick -> `poe_wheel_splinted` | skin `single/deepcore_trainer_2` |
 | **Rockbreaker Dala** `r5_trainer_quarry` | The Quarry - lower bench - 1150.5 64 2830.5 (latch) | battles `r5_trainer_quarry` (3x lv40-42: graveler, onix, rhydon), prize 520, forced at close range | skin `single/deepcore_trainer_1` |
+| **Rovan Pickstride** `rovan_pickstride` | Quarry Road — First Bench - 1226 74 2654 (body) | battles `r5_trainer_rovan` (2x lv33-33: boldore, onix), prize 380, pursues on sight r8, forced at close range | world-body look |
 | **Chen** `villain_route_agent_5` | The Quarry - toll ledge - 1150.5 83 2830.5 (latch) | battles `villain_grunt_3` (2x lv26-28: koffing, golbat), prize 480 | skin `single/thecompany_grunt_1` |
 | **Nao** `villain_site_manager_2` | Mirebloom Paddies - The Sluice Gate (R5) - 1229.5 90 2820.5 (latch) | battles `villain_site_manager_2` (2x lv33-34: mightyena, obstagoon), prize 620 | skin `single/thecompany_grunt_2` |
 | **Kai** `villain_yield_officer_2` | Mirebloom Paddies - Quarry Road Fence (R5) - 1221.5 91 2826.5 (latch) | battles `villain_yield_officer_2` (2x lv30-31: watchog, liepard), prize 340 | skin `single/thecompany_grunt_1` |
 
 ## Gaviota Port — Gym 5 (Water, cap 50)
 
-`characters/gaviota/` - 38 NPCs
+`characters/gaviota/` - 39 NPCs
 
 | NPC | Where | Does | Looks |
 |---|---|---|---|
 | **Alessia Corrente** `alessia_corrente` | Gaviota Port - Boardwalk - 550 87 3476 (body) | flavor / lore dialog | world-body look |
 | **Antonio Bracci** `antonio_bracci` | Gaviota Port - Lower Docks - 452 64 3502 (body) | flavor / lore dialog | world-body look |
-| **Bianca Litorra** `bianca_litorra` | Gaviota Port - Boardwalk - 540 86 3490 (body) | cmd: daycare deposit; daycare withdraw 1; daycare withdraw 2; daycare status | world-body look |
+| **Bianca Litorra** `bianca_litorra` | Gaviota Port - Boardwalk - 540 86 3490 (body) | cmd: daycare withdraw 1; daycare withdraw 2; daycare status; daycare deposit | skin `single/hua_zhan_apprentice` |
 | **Carlo Retezza** `carlo_retezza` | Gaviota Port - Lower Docks - 486 68 3506 (body) | flavor / lore dialog | world-body look |
 | **Wax** `companion_gaviota_buizel` | Gaviota Port - Lower Docks - 421.5 67 3554.5 (latch) | flavor / lore dialog | Cobblemon model: buizel |
 | **Pinch** `companion_gaviota_corphish` | Gaviota Port - Fish Market - 519.5 70 3554.5 (latch) | flavor / lore dialog | Cobblemon model: corphish |
@@ -294,14 +297,13 @@
 | **Tally Clerk Pell** `gaviota_manifest_a` | Gaviota Port - Main Pier Freight Stack - 566.5 85 3564.5 (latch) | runs: sidequest/manifest/note_1 | skin `groups/gaviota` |
 | **Tally Clerk Odile** `gaviota_manifest_b` | Gaviota Port - Wharf Crates - 588.5 86 3600.5 (latch) | runs: sidequest/manifest/note_2 | skin `groups/gaviota` |
 | **Tally Clerk Bram** `gaviota_manifest_c` | Gaviota Port - Deep Pier, Dunewind Load - 605.5 87 3650.5 (latch) | runs: sidequest/manifest/note_3 | skin `groups/gaviota` |
-| **Nurse Coralie** `gaviota_nurse` | Gaviota Port - Pokemon Center - 560.5 82 3540.5 (latch) | heals your party; runs: economy/heal_paid, pc/open, sidequest/rumors/coralie | skin `single/nurse_center` |
+| **Lucia Marelli** `gaviota_nurse` | Gaviota Port - Pokemon Center - 560.5 82 3540.5 (body, moved by repairs) | heals your party; runs: economy/heal_paid, pc/open, sidequest/rumors/coralie | skin `single/nurse_center` |
 | **Sable** `gaviota_smuggler` | Gaviota Port - Westwind Fields Sea Dock - 700.5 103 3255.5 (latch) | battles `wheat_trader_ambush` (2x lv38-39: miltank, tauros), prize 500; native trade window (trade_wheat_trader); native trade window (trade_wheat_trader) | skin `single/wheat_factor` |
 | **Dock Hand Mattias** `gaviota_union_hand` | Gaviota Port - The Wharf - 580.5 86 3600.5 (latch) | flavor / lore dialog | skin `groups/gaviota` |
 | **Tide-Caller Gianna** `gianna_ondina` | Gaviota Port - North Pier - 600 92 3666 (body) | flavor / lore dialog | world-body look |
 | **Luca Pietrafonda** `luca_pietrafonda` | Gaviota Port - East Boardwalk - 622 83 3474 (body) | flavor / lore dialog | world-body look |
 | **Luca Scarpelli** `luca_scarpelli` | Gaviota Port - Upper Terrace - 612 92 3640 (body) | flavor / lore dialog | world-body look |
-| **Lucia Marelli** `lucia_marelli` | Gaviota Port - Open Podium - 586 89 3436 (body) | flavor / lore dialog | world-body look |
-| **Titleholder Marlin** `marco_rinaldi` | Gaviota Port - Championship Pier - 656 83 3538 (body) | flavor / lore dialog | world-body look |
+| **Titleholder Marlin** `marco_rinaldi` | Gaviota Port - Pokemart counter - 656.5 83 3533.5 (body, moved by repairs) | opens the Pokemart shop | world-body look |
 | **Matteo Lucente** `matteo_lucente` | Gaviota Port - Lower Docks - 414 68 3546 (body) | flavor / lore dialog | world-body look |
 | **Mira Pescara** `mira_pescara` | Gaviota Port - North Pier - 586 103 3608 (body) | flavor / lore dialog | world-body look |
 | **Nina Soldini** `nina_soldini` | Gaviota Port - Waterfront Cafe - 500 68 3498 (body) | flavor / lore dialog | world-body look |
@@ -313,6 +315,8 @@
 | **Sofia Bellmare** `sofia_bellmare` | Gaviota Port - East Boardwalk - 650 83 3546 (body) | flavor / lore dialog | world-body look |
 | **Tessa Corallo** `tessa_corallo` | Gaviota Port - North Pier - 606 88 3588 (body) | flavor / lore dialog | world-body look |
 | **Vittorio Salmare** `vittorio_salmare` | Gaviota Port - North Pier - 560 103 3646 (body) | flavor / lore dialog | world-body look |
+| **Zwiggo Man** `zwiggo_man` | Gaviota Port - West Quay - 410.7 64 3501.4 (latch) | runs: gaviota/zwiggo_summon | skin `single/fairy_shrine_keeper` |
+| **Zwiggo** `zwiggo_swampert` | Gaviota Port - West Quay (summoned) - UNPLACED | gifts mon: swampert level=40 nickname=Zwiggo | Cobblemon model: swampert |
 
 ## Battle Bay
 
@@ -797,17 +801,16 @@
 
 ## Elemental Shrines
 
-`characters/shrine/` - 13 NPCs
+`characters/shrine/` - 12 NPCs
 
 | NPC | Where | Does | Looks |
 |---|---|---|---|
 | **High Priest Draconis** `dragon_shrine_leader` | Dragon Shrine - 2004.5 71 919.5 (latch) | battles `dragon_shrine_leader` (4x lv59-64: druddigon, kommoo, goodra, hydreigon); cmd: shrine dragon start; cutscene: dragon_shrine_reveal; runs: sidequest/shrine/dragon_trial_help | skin `single/dragon_shrine_keeper` |
-| **The First Vow - Devotion** `fairy_allay_1` | Fairy Shrine - The Drowned Stair - 943.4 40 2644.5 (latch) | cmd: shrine fairy start; shrine fairy test; runs: sidequest/shrine/fairy_trial_help | allay (ALLAY) |
-| **The Second Vow - Nourishment** `fairy_allay_2` | Fairy Shrine - The Drowned Stair - 949.2 24 2666.5 (latch) | cmd: shrine fairy test | allay (GRASSLAND) |
-| **The Third Vow - Naming** `fairy_allay_3` | Fairy Shrine - The Drowned Stair - 979.3 22 2682.5 (latch) | cmd: shrine fairy test | allay (WATER) |
-| **The Fourth Vow - Light** `fairy_allay_4` | Fairy Shrine - The Drowned Stair - 921.1 4 2698.9 (latch) | cmd: shrine fairy test | allay (LAVA) |
-| **The Fifth Vow - Resolve** `fairy_allay_5` | Fairy Shrine - The Drowned Stair - 928.5 0 2716.2 (latch) | cmd: shrine fairy test | allay (ALLAY) |
-| **High Priestess Aurora** `fairy_shrine_leader` | Fairy Shrine - 947.5 0 2703.8 (latch) | battles `fairy_shrine_leader` (4x lv27-32: carbink, primarina, hatterene, florges), prize 2500; gives: fairy_shrine_crystal; cutscene: fairy_shrine_reveal; runs: sidequest/shrine/five_keepers_reward | fairy (BLUE) |
+| **The First Vow - Devotion** `fairy_allay_1` | Fairy Shrine - The Drowned Stair - 943.4 41 2644.5 (latch) | cmd: shrine fairy start; shrine fairy test; cutscene: fairy_shrine_reveal; runs: sidequest/shrine/fairy_trial_help | allay (ALLAY) |
+| **The Second Vow - Nourishment** `fairy_allay_2` | Fairy Shrine - The Drowned Stair - 949.2 25 2666.5 (latch) | cmd: shrine fairy test | allay (GRASSLAND) |
+| **The Third Vow - Naming** `fairy_allay_3` | Fairy Shrine - The Drowned Stair - 979.3 23 2682.5 (latch) | cmd: shrine fairy test | allay (WATER) |
+| **The Fourth Vow - Light** `fairy_allay_4` | Fairy Shrine - The Drowned Stair - 921.1 5 2698.9 (latch) | cmd: shrine fairy test | allay (LAVA) |
+| **High Priestess Aurora** `fairy_shrine_leader` | Fairy Shrine - 947.5 1.5 2703.8 (latch) | battles `fairy_shrine_leader` (4x lv27-32: carbink, primarina, hatterene, florges), prize 2500; gives: fairy_shrine_crystal; cmd: shrine fairy test; runs: sidequest/shrine/five_keepers_reward | fairy (BLUE) |
 | **Acolyte of the Flame** `fire_shrine_cultist` | Fire Shrine approach - 3584.5 96 4672.3 (latch) | cmd: shrine fire start; cutscene: fire_shrine_reveal; runs: sidequest/shrine/fire_trial_help | skin `single/fire_shrine_keeper` |
 | **High Priest Ignis** `fire_shrine_leader` | Fire Shrine - 3498.6 51 4702.5 (latch) | battles `fire_shrine_leader` (4x lv71-76: volcarona, torkoal, darmanitan, chandelure); gives: fire_shrine_crystal; cmd: shrine fire complete | skin `single/fire_shrine_keeper` |
 | **Acolyte of the Deep** `ground_shrine_cultist` | Ground Shrine approach - 1903.4 113.5 4009.5 (latch) | cmd: shrine ground start; cutscene: ground_shrine_reveal; runs: sidequest/shrine/ground_trial_help | skin `single/ground_shrine_keeper` |
@@ -817,7 +820,7 @@
 
 ## Gym staff — leaders, guides & gym trainers (all towns)
 
-`characters/gym/` - 84 NPCs
+`characters/gym/` - 83 NPCs
 
 | NPC | Where | Does | Looks |
 |---|---|---|---|
@@ -830,10 +833,9 @@
 | **Rocker Static** `cyber_trainer_3` | Cyber City - Gym, the upper deck - 1303.5 100 1192.5 (latch) | battles `cyber_trainer_3` (2x lv50-51: elekid, pachirisu) | skin `groups/cyber` |
 | **Mechanic Gigabyte** `cyber_trainer_4` | Cyber City - Gym, the upper deck - 1309.5 100 1192.5 (latch) | battles `cyber_trainer_4` (2x lv51-51: emolga, luxio) | skin `groups/cyber` |
 | **Apprentice Ken** `deepcore_apprentice` | Deepcore City - Gym, the deep pit - 984.3 129 3173.2 (latch) | battles `deepcore_apprentice` (3x lv34-35: machoke, hariyama, primeape) | skin `single/deepcore_apprentice` |
-| **Deepcore Gym Guide** `deepcore_guide` | Deepcore City - UNPLACED | gym-guide info pages | STEVE default |
+| **Mavrik Bedrock** `deepcore_guide` | Deepcore City - Sparring Shaft - 1020 129 3188 (body) | gym-guide info pages | world-body look |
 | **Jr. Apprentice Striker** `deepcore_jr_apprentice` | Deepcore City - Gym, the deep pit - 997.7 129 3174.5 (latch) | battles `deepcore_jr_apprentice` (2x lv33-33: machoke, hariyama) | skin `single/deepcore_apprentice` |
-| **Leader Bruno** `deepcore_leader` | Deepcore City - 992 129 3192 (body) | battles `deepcore_leader` (4x lv37-39: lucario, medicham, machamp, toxicroak), prize 2800; cutscene: deepcore_leader_intro | skin `single/deepcore_leader` |
-| **Gauntlet Marshal Osei** `deepcore_marshal` | Deepcore City - Gym entrance - 996.5 129 3188.5 (latch) | flavor / lore dialog | skin `single/deepcore_trainer_1` |
+| **Leader Bruno** `deepcore_leader` | Deepcore City - 992 129 3192 (body) | battles `deepcore_leader` (4x lv37-39: lucario, medicham, machamp, toxicroak), prize 2800; cutscene: deepcore_leader_intro; runs: gym/engage_deepcore_pit | skin `single/deepcore_leader` |
 | **Black Belt Ryu** `deepcore_trainer_1` | Deepcore City - Gym, the training floor - 1016.5 129 3158.3 (latch) | battles `deepcore_trainer_1` (2x lv31-32: machop, makuhita), pursues on sight r8, forced at close range | skin `single/deepcore_trainer_1` |
 | **Battle Girl Mika** `deepcore_trainer_2` | Deepcore City - Gym, the training floor - 958.4 129 3156.7 (latch) | battles `deepcore_trainer_2` (2x lv32-32: meditite, riolu), pursues on sight r8, forced at close range | skin `single/deepcore_trainer_2` |
 | **Martial Artist Kenji** `deepcore_trainer_3` | Deepcore City - Gym, the inner ring - 965.8 141.5 3187.7 (latch) | battles `deepcore_trainer_3` (2x lv32-32: croagunk, riolu), pursues on sight r8, forced at close range | skin `single/deepcore_trainer_1` |
@@ -867,7 +869,7 @@
 | **Apprentice Faye** `mystic_apprentice` | Mystic Marsh - Gym, the still pool - 922.4 92 2439.5 (latch) | battles `mystic_apprentice` (3x lv27-28: kirlia, granbull, togetic) | skin `single/mystic_apprentice` |
 | **Veyric Ashenmark** `mystic_guide` | Mystic Marsh - West Gym Approach - 974 70 2442 (body) | gym-guide info pages | world-body look |
 | **Jr. Apprentice Nixie** `mystic_jr_apprentice` | Mystic Marsh - Gym, the apprentice pool - 965.5 92 2439.5 (latch) | battles `mystic_jr_apprentice` (2x lv26-26: kirlia, granbull) | skin `single/mystic_apprentice` |
-| **Leader Titania** `mystic_leader` | Mystic Marsh - 944 69 2444 (body) | battles `mystic_leader` (4x lv30-32: clefable, mawile, gardevoir, wigglytuff), prize 2400; cutscene: mystic_leader_intro | skin `single/mystic_leader` |
+| **Leader Titania** `mystic_leader` | Mystic Marsh - 943.5 69 2444 (body, moved by repairs) | battles `mystic_leader` (4x lv30-32: clefable, mawile, gardevoir, wigglytuff), prize 2400; cmd: reflect; cutscene: mystic_leader_intro | skin `single/mystic_leader` |
 | **Fairy Tale Girl Luna** `mystic_trainer_1` | Mystic Marsh - Gym, the reeds - 912.5 70 2407.6 (latch) | battles `mystic_trainer_1` (2x lv24-25: clefairy, snubbull) | skin `single/mystic_trainer_1` |
 | **Hex Maniac Stella** `mystic_trainer_2` | Mystic Marsh - Gym, the reeds - 973.9 70 2471.3 (latch) | battles `mystic_trainer_2` (2x lv25-25: spritzee, swirlix) | skin `single/mystic_trainer_2` |
 | **Pokémon Ranger Lyra** `mystic_trainer_3` | Mystic Marsh - Gym, the inner path - 919.5 92 2461.4 (latch) | battles `mystic_trainer_3` (2x lv25-25: marill, ralts) | skin `single/mystic_trainer_1` |

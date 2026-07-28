@@ -413,22 +413,34 @@ public class InstallCommand {
         for (InstallZone iz : config.zones) {
           if (existing.contains(iz.name.toLowerCase())) {
             skipped++;
-            // Backfill the polygon onto a zone baked before polygons existed, so a plain
-            // re-run upgrades an existing world's boundaries to match the map (no wipe).
-            if (iz.hasVertices()) {
-              for (NuzlockeConfig.SafeZone old : nzConfig.getSafeZones()) {
-                if (old.name != null
-                    && old.name.equalsIgnoreCase(iz.name)
-                    && old.polygon == null) {
-                  int[][] poly = new int[iz.vertices.size()][2];
-                  for (int vi = 0; vi < iz.vertices.size(); vi++) {
-                    poly[vi][0] = iz.vertices.get(vi).x;
-                    poly[vi][1] = iz.vertices.get(vi).z;
-                  }
-                  old.polygon = poly;
-                  backfilled++;
-                }
+            for (NuzlockeConfig.SafeZone old : nzConfig.getSafeZones()) {
+              if (old.name == null || !old.name.equalsIgnoreCase(iz.name)) {
+                continue;
               }
+              // Backfill the polygon onto a zone baked before polygons existed, so a plain
+              // re-run upgrades an existing world's boundaries to match the map (no wipe).
+              if (iz.hasVertices() && old.polygon == null) {
+                int[][] poly = new int[iz.vertices.size()][2];
+                for (int vi = 0; vi < iz.vertices.size(); vi++) {
+                  poly[vi][0] = iz.vertices.get(vi).x;
+                  poly[vi][1] = iz.vertices.get(vi).z;
+                }
+                old.polygon = poly;
+                backfilled++;
+              }
+              // install.json is authoritative for the AUTHORED zone fields on re-run —
+              // skip-on-collision froze the alpha.1 Mystic Marsh farm-template leftover
+              // (mobsSpawn=true on a TOWN) into every existing world even after the data
+              // fix. Baked geometry (center/radius/polygon) stays world-owned.
+              old.mobsSpawn = iz.mobsSpawn;
+              old.preventHostileOnly = iz.hostileOnly;
+              old.announce = iz.announce;
+              old.subtitle = iz.subtitle != null ? iz.subtitle : "";
+              old.color = iz.color != null ? iz.color : "";
+              old.type = iz.type != null ? iz.type : "";
+              old.activeWhenObjective = iz.activeWhenObjective;
+              old.activeWhenHolder = iz.activeWhenHolder;
+              old.activeWhenMin = iz.activeWhenMin;
             }
             continue;
           }

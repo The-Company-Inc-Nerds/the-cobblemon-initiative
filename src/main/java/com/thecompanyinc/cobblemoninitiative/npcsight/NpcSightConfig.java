@@ -50,18 +50,22 @@ public class NpcSightConfig {
   /**
    * Extra movement speed applied to a PURSUE-mode NPC while it is actively chasing a player
    * (a transient {@code ADD_MULTIPLIED_BASE} modifier on {@code minecraft:movement_speed},
-   * added in {@code startFollow} and stripped in {@code stopFollow}). 0.6 = +60% over the
-   * preset's base walk speed so sight-triggered trainers actually run the player down instead
-   * of ambling after them. 0 disables the boost.
+   * added in {@code startFollow} and stripped in {@code stopFollow}). 0.1 = +10% over the
+   * preset's base walk speed. Playtest ruling (0.7.0-alpha.3, route-3 "way too fast"): the
+   * old +30% on top of the 0.5 preset base read as a teleport-sprint; a mild edge keeps
+   * pursuit menacing without the blur. 0 disables the boost.
    */
-  private double pursuitSpeedBonus = 0.3;
+  private double pursuitSpeedBonus = 0.1;
 
   /**
    * Sight range (blocks) used for PURSUE-mode NPCs, taken as {@code max(perNpcRange, this)} so a
    * challenger keyed to the small global default still spots the player from across an open path.
    * Only widens PURSUE detection — DIALOG/APPROACH_ONCE/PASSIVE keep their own range.
+   * Capped at 12 (was 16): Easy NPC's FollowLivingEntityGoal TELEPORTS the NPC to the player
+   * at >=12 blocks, so any chase acquired past that began with a native teleport — a big part
+   * of the playtest "way too fast" report.
    */
-  private int pursuitSightRange = 16;
+  private int pursuitSightRange = 12;
 
   /** Debug raycast: block step between particles. */
   private double debugRayStep = 0.5;

@@ -233,6 +233,25 @@
                                             }
                                         ]
                                     },
+                                    Cmd: "tag @s add in_trainer_battle"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_r3_trainer_selene"
+                                            },
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_declined_r3_trainer_selene"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:r3_trainer_selene onwin {1: ['cobbledollars give @1 380', 'tag @1 add defeated_r3_trainer_selene', '@2 say A clean cross at the failing light. The marsh will remember you kindly.', 'tag @1 remove in_trainer_battle'], 2: ['@1 say The dusk never loses out here. Rest your team and try my hour again.', 'tag @2 remove in_trainer_battle']}"
                                 },
                                 {

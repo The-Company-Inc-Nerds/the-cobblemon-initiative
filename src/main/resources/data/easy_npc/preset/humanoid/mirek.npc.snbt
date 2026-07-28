@@ -269,6 +269,25 @@
                                             }
                                         ]
                                     },
+                                    Cmd: "tag @s add in_trainer_battle"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_r3_trainer_shroom"
+                                            },
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_declined_r3_trainer_shroom"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:r3_trainer_shroom onwin {1: ['cobbledollars give @1 340', 'tag @1 add defeated_r3_trainer_shroom', '@2 say Well grown. You root deeper than you look. The road past the hollow is yours.', 'tag @1 remove in_trainer_battle'], 2: ['@1 say The damp wins by waiting. Dry off, rest your team, and come back to the hollow.', 'tag @2 remove in_trainer_battle']}"
                                 },
                                 {
@@ -355,6 +374,25 @@
                                         ]
                                     },
                                     Cmd: "tbcs attach rctmod:r3_trainer_shroom @s"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_r3_trainer_shroom"
+                                            },
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_declined_r3_trainer_shroom"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tag @s add in_trainer_battle"
                                 },
                                 {
                                     Type: "COMMAND",

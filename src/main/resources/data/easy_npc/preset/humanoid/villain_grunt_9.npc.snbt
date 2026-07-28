@@ -159,6 +159,20 @@
                                             }
                                         ]
                                     },
+                                    Cmd: "tag @s add in_trainer_battle"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_grunt_9"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:villain_grunt_9 onwin {1: ['cobbledollars give @1 500', 'tag @1 add defeated_villain_grunt_9', '@2 say I held this corridor through two reorganisations. I will not be the one who explains how you passed.', 'tag @1 remove in_trainer_battle', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 330', '@1 say Breach neutralised. Return to the lobby and someone will see to your account.', 'tag @2 remove in_trainer_battle']}"
                                 },
                                 {
@@ -213,6 +227,20 @@
                                         ]
                                     },
                                     Cmd: "tbcs attach rctmod:villain_grunt_9 @s"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_grunt_9"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tag @s add in_trainer_battle"
                                 },
                                 {
                                     Type: "COMMAND",

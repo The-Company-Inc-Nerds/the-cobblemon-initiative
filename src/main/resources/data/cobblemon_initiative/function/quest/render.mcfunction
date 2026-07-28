@@ -320,10 +320,14 @@ scoreboard players reset q.side_verified ci_quest
 execute unless entity @s[tag=mm_board_done] if score #idx cd_instability matches 16.. run scoreboard players set q.side_verified ci_quest 55
 execute unless entity @s[tag=mm_board_done] if score #idx cd_instability matches 16.. run scoreboard players display name q.side_verified ci_quest [{"text":"• Witness the exchange board at the marsh kiosk","color":"gray"}]
 
-# The Mirebloom Paddy (frees farm_2): lights after the rumor hub points south, off on liberation (field_2_liberated).
+# The Mirebloom Paddy (frees farm_2, a21 Halvard re-role N16): fight Nao the site manager on the
+# fence gate (perimeter via Kai), then tell Steward Halvard to open the sluice; off on liberation
+# (field_2_liberated). Two staged pairs, mutually exclusive tags, later pair wins.
 scoreboard players reset q.side_mirebloom ci_quest
-execute if entity @s[tag=met_mm_nurse,tag=!field_2_liberated] run scoreboard players set q.side_mirebloom ci_quest 54
-execute if entity @s[tag=met_mm_nurse,tag=!field_2_liberated] run scoreboard players display name q.side_mirebloom ci_quest [{"text":"• Free the Mirebloom Paddies from the Company","color":"gray"}]
+execute if entity @s[tag=met_mm_nurse,tag=!defeated_villain_site_manager_2] run scoreboard players set q.side_mirebloom ci_quest 54
+execute if entity @s[tag=met_mm_nurse,tag=!defeated_villain_site_manager_2] run scoreboard players display name q.side_mirebloom ci_quest [{"text":"• Free the Mirebloom Paddies from the Company","color":"gray"}]
+execute if entity @s[tag=defeated_villain_site_manager_2,tag=!field_2_liberated] run scoreboard players set q.side_mirebloom ci_quest 54
+execute if entity @s[tag=defeated_villain_site_manager_2,tag=!field_2_liberated] run scoreboard players display name q.side_mirebloom ci_quest [{"text":"• Tell Steward Halvard the fence is down","color":"gray"}]
 
 # The Drained Nets (Corvin's cod fetch, slot 60, alpha.26 N17): button-start (corvin_quest_started),
 # retargets to the collect beat on turn-in, drops off the sidebar on payout (wisps convention).
@@ -523,32 +527,31 @@ execute if score #shrines quest_hud matches 1.. unless entity @s[tag=five_keeper
 execute if score #shrines quest_hud matches 1.. unless entity @s[tag=five_keepers_paid] run scoreboard players display name q.side_shrines_capstone ci_quest [{"text":"• Five Keepers - clear all five elemental shrines","color":"aqua"}]
 execute if entity @s[tag=defeated_fairy_shrine_leader,tag=defeated_ground_shrine_leader,tag=defeated_dragon_shrine_leader,tag=defeated_ice_shrine_leader,tag=defeated_fire_shrine_leader,tag=!five_keepers_paid] run scoreboard players set q.side_shrines_capstone ci_quest 93
 execute if entity @s[tag=defeated_fairy_shrine_leader,tag=defeated_ground_shrine_leader,tag=defeated_dragon_shrine_leader,tag=defeated_ice_shrine_leader,tag=defeated_fire_shrine_leader,tag=!five_keepers_paid] run scoreboard players display name q.side_shrines_capstone ci_quest [{"text":"• Five Keepers - claim the reckoning from Keeper Aurora","color":"aqua"}]
-execute if entity @s[tag=five_keepers_paid] run scoreboard players set q.side_shrines_capstone ci_quest 93
-execute if entity @s[tag=five_keepers_paid] run scoreboard players display name q.side_shrines_capstone ci_quest [{"text":"• Five Keepers - the crystals answer to one hand","color":"dark_aqua"}]
+# a21 never-clears fix: the five_keepers_paid done row is GONE — the reset above drops the line
+# (and the tracker entry) once the reckoning is claimed. Same ruling as the five shrine rows below.
 # alpha.26 descent redesign: the old cultist-ladder middle stage gated on
 # defeated_fairy_shrine_cultist_2 — a tag nothing has granted since the a19 cultist drop,
 # so it could never show. Re-keyed on the Java-granted trial tags, mirroring the register.
 scoreboard players reset q.side_shrine_fairy ci_quest
 execute if entity @s[tag=defeated_mystic_leader,tag=!fairy_shrine_trial_clear,tag=!fairy_crystal_claimed] run scoreboard players set q.side_shrine_fairy ci_quest 94
-execute if entity @s[tag=defeated_mystic_leader,tag=!fairy_shrine_trial_clear,tag=!fairy_crystal_claimed] run scoreboard players display name q.side_shrine_fairy ci_quest [{"text":"• Follow the five vows down the drowned stair","color":"gray"}]
+execute if entity @s[tag=defeated_mystic_leader,tag=!fairy_shrine_trial_clear,tag=!fairy_crystal_claimed] run scoreboard players display name q.side_shrine_fairy ci_quest [{"text":"• Follow the vows down the drowned stair","color":"gray"}]
 execute if entity @s[tag=fairy_shrine_trial_clear,tag=!fairy_crystal_claimed] run scoreboard players set q.side_shrine_fairy ci_quest 94
 execute if entity @s[tag=fairy_shrine_trial_clear,tag=!fairy_crystal_claimed] run scoreboard players display name q.side_shrine_fairy ci_quest [{"text":"• Claim the crystal from Keeper Aurora","color":"light_purple"}]
-execute if entity @s[tag=fairy_crystal_claimed] run scoreboard players set q.side_shrine_fairy ci_quest 94
-execute if entity @s[tag=fairy_crystal_claimed] run scoreboard players display name q.side_shrine_fairy ci_quest [{"text":"• Fairy Shrine cleared - the crystal raises Xerneas","color":"dark_aqua"}]
+# a21 (N7): the fairy_crystal_claimed done row is GONE — claiming the crystal clears the line.
 scoreboard players reset q.side_shrine_ground ci_quest
 execute if entity @s[tag=defeated_kalahar_leader,tag=!defeated_ground_shrine_leader] run scoreboard players set q.side_shrine_ground ci_quest 95
 execute if entity @s[tag=defeated_kalahar_leader,tag=!defeated_ground_shrine_leader] run scoreboard players display name q.side_shrine_ground ci_quest [{"text":"• Descend the Ground Shrine cultist ladder","color":"gray"}]
 execute if entity @s[tag=defeated_kalahar_leader,tag=defeated_ground_shrine_cultist_2,tag=!defeated_ground_shrine_leader] run scoreboard players set q.side_shrine_ground ci_quest 95
 execute if entity @s[tag=defeated_kalahar_leader,tag=defeated_ground_shrine_cultist_2,tag=!defeated_ground_shrine_leader] run scoreboard players display name q.side_shrine_ground ci_quest [{"text":"• Face High Priest Terran - fights in pairs","color":"gold"}]
-execute if entity @s[tag=defeated_ground_shrine_leader] run scoreboard players set q.side_shrine_ground ci_quest 95
-execute if entity @s[tag=defeated_ground_shrine_leader] run scoreboard players display name q.side_shrine_ground ci_quest [{"text":"• Ground Shrine cleared - the crystal raises Groudon","color":"dark_aqua"}]
+execute if entity @s[tag=defeated_ground_shrine_leader,tag=!ground_crystal_claimed] run scoreboard players set q.side_shrine_ground ci_quest 95
+execute if entity @s[tag=defeated_ground_shrine_leader,tag=!ground_crystal_claimed] run scoreboard players display name q.side_shrine_ground ci_quest [{"text":"• Claim the crystal from Keeper Terran","color":"light_purple"}]
 scoreboard players reset q.side_shrine_dragon ci_quest
 execute if entity @s[tag=defeated_ryujin_leader,tag=!defeated_dragon_shrine_leader] run scoreboard players set q.side_shrine_dragon ci_quest 96
 execute if entity @s[tag=defeated_ryujin_leader,tag=!defeated_dragon_shrine_leader] run scoreboard players display name q.side_shrine_dragon ci_quest [{"text":"• Climb the Dragon Shrine cultist ladder","color":"gray"}]
 execute if entity @s[tag=defeated_ryujin_leader,tag=defeated_dragon_shrine_cultist_2,tag=!defeated_dragon_shrine_leader] run scoreboard players set q.side_shrine_dragon ci_quest 96
 execute if entity @s[tag=defeated_ryujin_leader,tag=defeated_dragon_shrine_cultist_2,tag=!defeated_dragon_shrine_leader] run scoreboard players display name q.side_shrine_dragon ci_quest [{"text":"• Face High Priest Draconis - fights in pairs","color":"gold"}]
-execute if entity @s[tag=defeated_dragon_shrine_leader] run scoreboard players set q.side_shrine_dragon ci_quest 96
-execute if entity @s[tag=defeated_dragon_shrine_leader] run scoreboard players display name q.side_shrine_dragon ci_quest [{"text":"• Dragon Shrine cleared - the crystal raises Rayquaza","color":"dark_aqua"}]
+execute if entity @s[tag=defeated_dragon_shrine_leader,tag=!dragon_crystal_claimed] run scoreboard players set q.side_shrine_dragon ci_quest 96
+execute if entity @s[tag=defeated_dragon_shrine_leader,tag=!dragon_crystal_claimed] run scoreboard players display name q.side_shrine_dragon ci_quest [{"text":"• Claim the crystal from Keeper Draconis","color":"light_purple"}]
 scoreboard players reset q.side_shrine_ice ci_quest
 execute if entity @s[tag=defeated_nifl_leader,tag=!defeated_ice_shrine_leader] run scoreboard players set q.side_shrine_ice ci_quest 97
 execute if entity @s[tag=defeated_nifl_leader,tag=!defeated_ice_shrine_leader] run scoreboard players display name q.side_shrine_ice ci_quest [{"text":"• Cross the Ice Shrine cultist ladder","color":"gray"}]
@@ -556,8 +559,8 @@ execute if entity @s[tag=defeated_nifl_leader,tag=defeated_ice_shrine_cultist_2,
 execute if entity @s[tag=defeated_nifl_leader,tag=defeated_ice_shrine_cultist_2,tag=!ice_shrine_trial_clear,tag=!defeated_ice_shrine_leader] run scoreboard players display name q.side_shrine_ice ci_quest [{"text":"• Cross the frozen path, then face Glacius","color":"aqua"}]
 execute if entity @s[tag=defeated_nifl_leader,tag=ice_shrine_trial_clear,tag=!defeated_ice_shrine_leader] run scoreboard players set q.side_shrine_ice ci_quest 97
 execute if entity @s[tag=defeated_nifl_leader,tag=ice_shrine_trial_clear,tag=!defeated_ice_shrine_leader] run scoreboard players display name q.side_shrine_ice ci_quest [{"text":"• Face High Priest Glacius","color":"aqua"}]
-execute if entity @s[tag=defeated_ice_shrine_leader] run scoreboard players set q.side_shrine_ice ci_quest 97
-execute if entity @s[tag=defeated_ice_shrine_leader] run scoreboard players display name q.side_shrine_ice ci_quest [{"text":"• Ice Shrine cleared - the crystal raises Articuno","color":"dark_aqua"}]
+execute if entity @s[tag=defeated_ice_shrine_leader,tag=!ice_crystal_claimed] run scoreboard players set q.side_shrine_ice ci_quest 97
+execute if entity @s[tag=defeated_ice_shrine_leader,tag=!ice_crystal_claimed] run scoreboard players display name q.side_shrine_ice ci_quest [{"text":"• Claim the crystal from Keeper Glacius","color":"light_purple"}]
 scoreboard players reset q.side_shrine_fire ci_quest
 execute if entity @s[tag=royal_league_champion,tag=!defeated_fire_shrine_leader] run scoreboard players set q.side_shrine_fire ci_quest 98
 execute if entity @s[tag=royal_league_champion,tag=!defeated_fire_shrine_leader] run scoreboard players display name q.side_shrine_fire ci_quest [{"text":"• Climb the Fire Shrine cultist ladder","color":"gray"}]
@@ -565,8 +568,8 @@ execute if entity @s[tag=royal_league_champion,tag=defeated_fire_shrine_cultist_
 execute if entity @s[tag=royal_league_champion,tag=defeated_fire_shrine_cultist_2,tag=!fire_shrine_trial_clear,tag=!defeated_fire_shrine_leader] run scoreboard players display name q.side_shrine_fire ci_quest [{"text":"• Run the burning path, then face Ignis","color":"gold"}]
 execute if entity @s[tag=royal_league_champion,tag=fire_shrine_trial_clear,tag=!defeated_fire_shrine_leader] run scoreboard players set q.side_shrine_fire ci_quest 98
 execute if entity @s[tag=royal_league_champion,tag=fire_shrine_trial_clear,tag=!defeated_fire_shrine_leader] run scoreboard players display name q.side_shrine_fire ci_quest [{"text":"• Face High Priest Ignis","color":"gold"}]
-execute if entity @s[tag=defeated_fire_shrine_leader] run scoreboard players set q.side_shrine_fire ci_quest 98
-execute if entity @s[tag=defeated_fire_shrine_leader] run scoreboard players display name q.side_shrine_fire ci_quest [{"text":"• Fire Shrine cleared - the crystal raises Moltres","color":"dark_aqua"}]
+execute if entity @s[tag=defeated_fire_shrine_leader,tag=!fire_crystal_claimed] run scoreboard players set q.side_shrine_fire ci_quest 98
+execute if entity @s[tag=defeated_fire_shrine_leader,tag=!fire_crystal_claimed] run scoreboard players display name q.side_shrine_fire ci_quest [{"text":"• Claim the crystal from Keeper Ignis","color":"light_purple"}]
 
 # ===== 13_nobles_gating (NOBLE half) =====
 # === Noble encounters (endgame set-pieces, slots 86-92; above the town side quests, below the main line at 100). Append to function/quest/render.mcfunction. defeated_noble_<id> is the noble engine storyFlag SCOREBOARD (created lazily on first subdual) - zero-init each objective then gate the done-state on the SCORE, never a tag (a defeated_noble_<id> tag would be dead). ===

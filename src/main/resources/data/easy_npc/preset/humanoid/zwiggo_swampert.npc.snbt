@@ -1,13 +1,13 @@
 {
     PresetMetadata: {
         author: "TheCompanyInc",
-        category: "Shrine",
+        category: "Civilian",
         created: 0L,
-        description: "shrine_cultist at Fairy Shrine - The Drowned Stair (act 1). Compiled from dialog-src.",
-        entityTypeId: "easy_npc:allay",
+        description: "civilian at Gaviota Port - West Quay (summoned) (act 1). Compiled from dialog-src.",
+        entityTypeId: "easy_npc:cobblemon_npc",
         modified: 0L,
-        name: "The Fifth Vow - Resolve",
-        variantType: "ALLAY",
+        name: "Zwiggo",
+        variantType: "COBBLEMON_NPC",
         version: "1.0.0"
     },
     data: {
@@ -39,35 +39,78 @@
                     Priority: 10,
                     Buttons: [
                         {
-                            Name: "Take the Fifth Vow - Resolve",
+                            Name: "Take Zwiggo with you",
                             Actions: [
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "cobblemon-initiative shrine fairy test resolve"
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_zwiggo_joined"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "cobblemon-initiative givemon swampert level=40 nickname=Zwiggo"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_zwiggo_joined"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tag @s add zwiggo_joined"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_zwiggo_joined"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tag @e[tag=zwiggo_body,distance=..3] add zwiggo_pop"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "vow_test_button"
+                            Label: "accept_button"
                         },
                         {
-                            Name: "To the floor",
+                            Name: "Not yet, big fellow",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "leave_button"
+                            Label: "later_button"
                         }
                     ],
                     Texts: [
                         {
-                            Text: "The fifth vow is resolve, and it is every vow at once. Devotion. Nourishment. The name. The light. And one thing more - your companion must stand alone on your belt, with no other soul to lean on."
+                            Text: "Zwig? (The swampert looks from you to the mossy man on the quay and back again. It seems to have already decided something about you.)"
                         },
                         {
-                            Text: "This is the last step above the floor. Speak the fifth vow with the four already kept, and the Priestess will let the two of you into the light. We will be singing. Listen for us on the way down."
+                            Text: "(It plants both fins on the stone and waits, tail dripping harbour water. Somewhere behind you, the man is very carefully not watching.)"
+                        },
+                        {
+                            Text: "Zwig-go. (It says it the way you would offer a handshake.)"
                         }
                     ],
-                    Name: "The Fifth Vow - Resolve",
+                    Name: "Zwiggo",
                     Label: "default"
                 }
             ]
@@ -106,11 +149,15 @@
                 Type: "VISIBLE_TO_TEAM"
             },
             {
+                Bool: 1b,
+                Type: "INTERACTION_WHEN_INVISIBLE"
+            },
+            {
                 Int: 7,
                 Type: "LIGHT_LEVEL"
             },
             {
-                Text: "ALWAYS",
+                Text: "MOUSE_OVER",
                 Type: "NAME_VISIBILITY"
             }
         ],
@@ -128,7 +175,9 @@
             HealthRegeneration: 0.0d,
             IsAttackableByMonsters: 0b,
             IsAttackableByPlayers: 0b,
+            IsExplosionResistant: 0b,
             IsInvulnerable: 1b,
+            IsKnockbackResistant: 0b,
             IsPushable: 0b,
             NoGravity: 0b,
             PushEntities: 0b
@@ -146,15 +195,21 @@
         },
         Navigation: {
             Home: {
-                X: 0,
-                Y: 0,
-                Z: 0
+                X: 406,
+                Y: 64,
+                Z: 3501
             }
         },
         ObjectiveData: {
             HasObjectives: 1b,
             HasTravelTarget: 0b,
             ObjectiveDataSet: [
+                {
+                    Type: "MOVE_BACK_TO_HOME",
+                    Prio: 2,
+                    Id: "ambient_back_home_only",
+                    SpeedModifier: 1.0d
+                },
                 {
                     Type: "LOOK_AT_PLAYER",
                     Prio: 9,
@@ -182,7 +237,10 @@
             EntityExperience: 1,
             EntityExperienceLevel: 1
         },
-        RenderData: {},
+        RenderData: {
+            EntityModel: "cobblemon:swampert",
+            Type: "COBBLEMON_ENTITY"
+        },
         SkinData: {
             Content: "",
             DisableLayers: 0b,
@@ -193,54 +251,26 @@
             UUID: [I; 0, 0, 0, 0]
         },
         SoundData: {
-            SoundDataSet: [
-                {
-                    Type: "AMBIENT",
-                    Name: "minecraft:entity.parrot.ambient"
-                },
-                {
-                    Type: "DEATH",
-                    Name: "minecraft:entity.parrot.death"
-                },
-                {
-                    Type: "EAT",
-                    Name: "minecraft:entity.parrot.eat"
-                },
-                {
-                    Type: "HURT",
-                    Name: "minecraft:entity.parrot.hurt"
-                },
-                {
-                    Type: "TRADE",
-                    Name: "minecraft:entity.villager.trade"
-                },
-                {
-                    Type: "TRADE_YES",
-                    Name: "minecraft:entity.villager.yes"
-                },
-                {
-                    Type: "TRADE_NO",
-                    Name: "minecraft:entity.villager.no"
-                }
-            ]
+            SoundDataSet: []
         },
         Status: {
             finalized: 0b,
             npc_data_last_saved: 0L,
             npc_data_last_update: 0L
         },
-        VariantType: "ALLAY",
+        VariantType: "COBBLEMON_NPC",
         attributes: [
             {
-                base: 20.0d,
-                id: "minecraft:generic.max_health"
+                base: 0.6d,
+                id: "minecraft:generic.movement_speed"
             },
             {
-                base: 0.5d,
-                id: "minecraft:generic.movement_speed"
+                base: 32.0d,
+                id: "minecraft:generic.follow_range"
             }
         ],
-        id: "easy_npc:allay",
-        CustomName: '{"text": "The Fifth Vow - Resolve", "color": "#FFFFFF"}'
+        id: "easy_npc:cobblemon_npc",
+        CustomName: '{"text": "Zwiggo", "color": "#FFFFFF"}',
+        Tags: ["zwiggo_body"]
     }
 }

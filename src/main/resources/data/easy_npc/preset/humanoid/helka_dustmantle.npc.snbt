@@ -1,9 +1,9 @@
 {
     PresetMetadata: {
         author: "TheCompanyInc",
-        category: "Service",
+        category: "Merchant",
         created: 0L,
-        description: "healer at Deepcore City — Dust Ward (act 1). Compiled from dialog-src.",
+        description: "merchant at Deepcore City — Dust Ward (act 1). Compiled from dialog-src.",
         entityTypeId: "easy_npc:humanoid",
         modified: 0L,
         name: "Helka Dustmantle",
@@ -33,7 +33,7 @@
         CanPickUpLoot: 0b,
         CustomNameVisible: 1b,
         DialogData: {
-            Type: "BASIC",
+            Type: "STANDARD",
             DialogDataSet: [
                 {
                     Conditions: [
@@ -46,6 +46,16 @@
                     Priority: 20,
                     Buttons: [
                         {
+                            Name: "Open the signal cabinet",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "signal_shelf"
+                                }
+                            ],
+                            Label: "cabinet_button"
+                        },
+                        {
                             Name: "Goodbye",
                             Actions: [
                                 {
@@ -57,7 +67,7 @@
                     ],
                     Texts: [
                         {
-                            Text: "Cough into your elbow, same as ever. The oran batch is holding — your three berries have gone further than the commissary has all quarter."
+                            Text: "Cough into your elbow, same as ever. The oran batch is holding — your three berries have gone further than the commissary has all quarter. Cabinet is open if you need wire."
                         },
                         {
                             Text: "The ward smells like a hedge in spring now, which beats what it smelled like before. The deep crews thank you. Or they would, if thanking were a thing miners did out loud."
@@ -92,24 +102,162 @@
                                 }
                             ],
                             Label: "berry_button"
+                        },
+                        {
+                            Name: "Open the signal cabinet",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "signal_shelf"
+                                }
+                            ],
+                            Label: "cabinet_button"
                         }
                     ],
                     Texts: [
                         {
-                            Text: "Cough into your elbow near my ward, not the open air, there is enough rock in these lungs already. I mix the poultices that keep the deep crews breathing. It is honest work in a town where that is getting rare."
+                            Text: "Cough into your elbow near my ward, not the open air, there is enough rock in these lungs already. I mix the poultices that keep the deep crews breathing, and I sell the wire that rings the gas bell before they stop. Prevention pays better than cure and I stock both."
                         },
                         {
-                            Text: "The Center up top will patch your Pokemon. I patch the people, and lately I patch more nerves than knees. Whole town is holding its breath about the money. Breath-holding is bad for you. I should know."
+                            Text: "The Center up top will patch your Pokemon. I patch the people, and lately I wire the galleries too — every alarm line I sell is one less stretcher on my table. The cabinet is open. The whole town is holding its breath about the money. Breath-holding is bad for you. I should know."
                         },
                         {
-                            Text: "If a grey suit tells you the pit is safer than ever, ask him to spend one shift in the deep gallery and come cough on my table after. I have never once treated a man in a clean shirt."
+                            Text: "If a grey suit tells you the pit is safer than ever, ask him why the ward buys its own signal wire. The Company budget for alarms got re-verified into a memo about alarms. I have never once treated a man in a clean shirt."
                         },
                         {
-                            Text: "I am short on oran berries for the poultice base — the commissary re-verified my order into next month, whatever that means. If three of them ever find their way into your bag, my door is open."
+                            Text: "I am short on oran berries for the poultice base — the commissary re-verified my order into next month, whatever that means. If three of them ever find their way into your bag, my door is open. The wire cabinet is open regardless. Safety does not wait on berries."
                         }
                     ],
                     Name: "Helka Dustmantle",
                     Label: "default"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Redstone Dust x8 — 100 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/market/buy_redstone"
+                                }
+                            ],
+                            Label: "buy_redstone_button"
+                        },
+                        {
+                            Name: "Redstone Torch x4 — 60 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/market/buy_redstone_torch"
+                                }
+                            ],
+                            Label: "buy_redstone_torch_button"
+                        },
+                        {
+                            Name: "Repeater — 150 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/market/buy_repeater"
+                                }
+                            ],
+                            Label: "buy_repeater_button"
+                        },
+                        {
+                            Name: "See the machine shelf",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "machine_shelf"
+                                }
+                            ],
+                            Label: "machine_shelf_button"
+                        },
+                        {
+                            Name: "Back to Helka",
+                            Actions: [
+                                {
+                                    Type: "OPEN_DEFAULT_DIALOG"
+                                }
+                            ],
+                            Label: "back_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Signal shelf. Dust for the lines, torches to hold a level, repeaters so the bell still rings at the far end of a long gallery. A gas bell that rings late is a poultice order, and I would rather sell you the wire."
+                        }
+                    ],
+                    Name: "Helka — the signal shelf",
+                    Label: "signal_shelf"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Hopper — 300 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/market/buy_hopper"
+                                }
+                            ],
+                            Label: "buy_hopper_button"
+                        },
+                        {
+                            Name: "Observer — 250 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/market/buy_observer"
+                                }
+                            ],
+                            Label: "buy_observer_button"
+                        },
+                        {
+                            Name: "Piston — 200 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/market/buy_piston"
+                                }
+                            ],
+                            Label: "buy_piston_button"
+                        },
+                        {
+                            Name: "Back to the signal shelf",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "signal_shelf"
+                                }
+                            ],
+                            Label: "signal_shelf_button"
+                        },
+                        {
+                            Name: "Back to Helka",
+                            Actions: [
+                                {
+                                    Type: "OPEN_DEFAULT_DIALOG"
+                                }
+                            ],
+                            Label: "back_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Machine shelf. Hoppers so nobody carries ore up a ladder with a bad back, observers that watch a wall so a person does not have to, pistons for doors that shut faster than gas travels. Every one of these replaces a job that used to end up on my table."
+                        }
+                    ],
+                    Name: "Helka — the machine shelf",
+                    Label: "machine_shelf"
                 }
             ]
         },

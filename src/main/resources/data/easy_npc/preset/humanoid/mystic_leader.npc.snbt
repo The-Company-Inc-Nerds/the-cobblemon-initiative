@@ -17,6 +17,13 @@
                     {
                         Type: "OPEN_DEFAULT_DIALOG"
                     }
+                ],
+                ON_OPEN_DIALOG: [
+                    {
+                        Type: "COMMAND",
+                        ExecAsUser: 1b,
+                        Cmd: "cobblemon-initiative reflect"
+                    }
                 ]
             }
         },
@@ -123,111 +130,34 @@
                     Priority: 15,
                     Buttons: [
                         {
-                            Name: "My fire leads",
+                            Name: "Look into the water",
                             Actions: [
                                 {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "tag @s add lead_fire"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "tag @s add mm_declared"
-                                },
-                                {
-                                    Type: "CLOSE_DIALOG"
+                                    Type: "OPEN_DEFAULT_DIALOG"
                                 }
                             ],
-                            Label: "fire_button"
+                            Label: "look_button"
                         },
                         {
-                            Name: "My water leads",
+                            Name: "I need to prepare",
                             Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "tag @s add lead_water"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "tag @s add mm_declared"
-                                },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "water_button"
-                        },
-                        {
-                            Name: "My grass leads",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "tag @s add lead_grass"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "tag @s add mm_declared"
-                                },
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "grass_button"
-                        },
-                        {
-                            Name: "My electric leads",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "tag @s add lead_electric"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "tag @s add mm_declared"
-                                },
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "electric_button"
-                        },
-                        {
-                            Name: "None of those lead",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "tag @s add lead_shadow"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "tag @s add mm_declared"
-                                },
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "other_button"
+                            Label: "leave_button"
                         }
                     ],
                     Texts: [
                         {
-                            Text: "Welcome to Mystic Marsh. I am Leader Titania. Fairy-types are gentle until the moment they are not — and this marsh likes to study a challenger before it tests one. So tell me plainly: who walks at the front of your party?"
+                            Text: "Welcome to Mystic Marsh. I am Leader Titania. Be still a moment — the water beside us has gone flat as glass, and it is already reading whoever walks at the front of your party."
                         },
                         {
-                            Text: "The water here goes still as glass before every gym battle, and it asks the same question of everyone who leans over it. Which partner leads your line, challenger? Say it, and let the marsh listen."
+                            Text: "The marsh studies every challenger before it tests one. It stopped asking questions long ago — it simply looks. Lean over the still water with me and see what it found at the front of your line."
                         }
                     ],
-                    Name: "Titania — the marsh asks",
-                    Label: "declare"
+                    Name: "Titania — the marsh looks",
+                    Label: "reflect_wait"
                 },
                 {
                     Conditions: [
@@ -777,7 +707,7 @@
                     Type: "LOOK_AT_PLAYER",
                     Prio: 9,
                     Id: "ambient_look_player",
-                    LookDistance: 8.0f
+                    LookDistance: 14.0f
                 },
                 {
                     Type: "LOOK_RANDOM_AROUND",
@@ -786,7 +716,7 @@
                 },
                 {
                     Type: "LOOK_AT_RESET",
-                    Prio: 9,
+                    Prio: 10,
                     Id: "ambient_look_reset"
                 }
             ]

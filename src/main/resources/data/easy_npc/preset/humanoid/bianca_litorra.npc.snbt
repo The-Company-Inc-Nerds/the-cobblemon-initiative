@@ -36,22 +36,15 @@
             Type: "STANDARD",
             DialogDataSet: [
                 {
-                    Priority: 10,
-                    Buttons: [
+                    Conditions: [
                         {
-                            Name: "Board a Pokemon (choose up to 2)",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "cobblemon-initiative daycare deposit"
-                                },
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "deposit_button"
-                        },
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "ci_daycare_gte_2"
+                        }
+                    ],
+                    Priority: 30,
+                    Buttons: [
                         {
                             Name: "Take back pen 1",
                             Actions: [
@@ -59,6 +52,9 @@
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
                                     Cmd: "cobblemon-initiative daycare withdraw 1"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
                                 }
                             ],
                             Label: "withdraw1_button"
@@ -70,6 +66,9 @@
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
                                     Cmd: "cobblemon-initiative daycare withdraw 2"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
                                 }
                             ],
                             Label: "withdraw2_button"
@@ -97,13 +96,127 @@
                     ],
                     Texts: [
                         {
-                            Text: "Done selling shells — this desk is the real work now. Off to the gyms, are you? Leave a couple here and the salt air will do the rest — they come back a little bigger and none the worse. I keep them fed, I keep them safe, and I never let them battle. That is the whole promise."
+                            Text: "Both pens spoken for - a full house and a loud one. Yours are fed, walked, and thoroughly spoiled. Say the word and I will fetch one out for you."
+                        },
+                        {
+                            Text: "No vacancies today, which is my favourite kind of day. The two of them nap in shifts so somebody is always watching the gate for you. Taking one home, or just checking in?"
+                        },
+                        {
+                            Text: "Full pens. The salt air is doing its work - you will notice the difference when you take them back. And you can, any time. That is the other half of the promise."
+                        }
+                    ],
+                    Name: "Bianca Litorra - full house",
+                    Label: "pens_full"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "ci_daycare_gte_1"
+                        }
+                    ],
+                    Priority: 20,
+                    Buttons: [
+                        {
+                            Name: "Board another (one pen free)",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative daycare deposit"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "deposit_button"
+                        },
+                        {
+                            Name: "Take them back",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative daycare withdraw 1"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "withdraw1_button"
+                        },
+                        {
+                            Name: "How are they doing? (check the pen)",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative daycare status"
+                                }
+                            ],
+                            Label: "status_button"
+                        },
+                        {
+                            Name: "Leave them to it",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "One guest in, one pen free. Your boarder is doing fine - a little plumper and a lot more opinionated than you left them. Dropping off another, or taking them home?"
+                        },
+                        {
+                            Text: "Just the one boarder at the moment, and they have already claimed the sunny corner. There is room for a second if the road is getting heavy."
+                        },
+                        {
+                            Text: "Your little one watches the boardwalk every morning like you might come up it. Today they were right. Collecting, or leaving a friend to keep them company?"
+                        }
+                    ],
+                    Name: "Bianca Litorra - one pen busy",
+                    Label: "one_boarded"
+                },
+                {
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "Board a Pokemon (choose up to 2)",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative daycare deposit"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "deposit_button"
+                        },
+                        {
+                            Name: "Just saying hello",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Done selling shells - this desk is the real work now. Off to the gyms, are you? Leave a couple here and the salt air will do the rest - they come back a little bigger and none the worse. I keep them fed, I keep them safe, and I never let them battle. That is the whole promise."
                         },
                         {
                             Text: "We are not Company, if that is your worry. They came round once with an offer and a form; I told them where to file it. A Pokemon left here is left with people, not a ledger."
                         },
                         {
-                            Text: "Two pens is all I have room for. Drop off, pick up, or check on them — your call."
+                            Text: "Two pens is all I have room for, both empty and aired out this morning. Drop off up to two and go chase your badges - they will be here, fatter and happier, when you get back."
                         },
                         {
                             Text: "They do come back a touch spoiled, fair warning. Last season a boarded machop learned to wave goodbye. Nobody here taught it, and we all pretend that is not the sweetest thing on this coast."
@@ -230,13 +343,13 @@
         },
         RenderData: {},
         SkinData: {
-            Type: "SECURE_REMOTE_URL",
-            URL: "https://www.minecraftskins.com/uploads/skins/2024/09/11/the-arrival-of-autumn---rce-22762268.png?v945",
-            UUID: [I; 127971276, 1876967345, -1352493296, -1629730806],
-            Name: "",
             Content: "",
-            Timestamp: 1772552086514L,
-            DisableLayers: 0b
+            DisableLayers: 0b,
+            Name: "",
+            Timestamp: 0L,
+            Type: "CUSTOM",
+            URL: "",
+            UUID: [I; 1523133644, -1272685904, -1239438277, 432117274]
         },
         SoundData: {
             SoundDataSet: [

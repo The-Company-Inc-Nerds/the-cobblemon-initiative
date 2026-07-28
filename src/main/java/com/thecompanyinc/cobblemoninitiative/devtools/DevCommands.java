@@ -283,6 +283,30 @@ public final class DevCommands {
         ),
       true
     );
+
+    // Playtest trap (alpha.2, route-3 trio): every forced VERY_CLOSE ambush battle is
+    // gated on the dex_gte_2 fairness floor, and a fresh dev-badged profile usually has
+    // caught nothing — the ambush silently never fires (and Easy NPC's per-band
+    // de-dupe means it can't re-fire while the pursuer pins you inside the band).
+    // Warn instead of faking dex entries: the floor is a B1 fairness rule, not a gate
+    // to bypass.
+    if (player.getServer() != null) {
+      var scoreboard = player.getServer().getScoreboard();
+      var dexObj = scoreboard.getObjective("dex_caught");
+      long dexCaught = dexObj != null
+        ? scoreboard.getOrCreatePlayerScore(player, dexObj).get()
+        : 0;
+      if (dexCaught < 2) {
+        context.getSource().sendSuccess(
+          () ->
+            Component.literal(
+              "§6⚠ dex_caught < 2 — forced route ambushes (dex_gte_2 fairness floor) "
+                + "will NOT trigger on this profile. Catch two Pokémon to test them."
+            ),
+          false
+        );
+      }
+    }
     return 1;
   }
 

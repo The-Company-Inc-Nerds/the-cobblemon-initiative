@@ -33,19 +33,91 @@
         CanPickUpLoot: 0b,
         CustomNameVisible: 1b,
         DialogData: {
-            Type: "BASIC",
+            Type: "STANDARD",
             DialogDataSet: [
                 {
-                    Priority: 10,
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "durn_meal_done"
+                        }
+                    ],
+                    Priority: 20,
                     Buttons: [
                         {
-                            Name: "Goodbye",
+                            Name: "It was nothing — really",
                             Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/payout {amount:240}"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/reward/minor"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add durn_meal_paid"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "tellraw @initiator [{\"text\":\"Durn presses the crew whip-round into your hand — coin off six lunch pails, and a candy tin the winch crew swears by.\",\"color\":\"green\"}]"
+                                },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "goodbye_button"
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_durn_meal_paid"
+                                }
+                            ],
+                            Label: "claim_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Eight loaves! The crew ate like foremen and hauled like heroes, and the hoist ran sweeter for it all shift. You are welcome at this winch forever, friend."
+                        },
+                        {
+                            Text: "The deep crew still talks about the bread day. Mavo cried a little. He says it was the dust. It was not the dust."
+                        },
+                        {
+                            Text: "Full crew, full carts. Turns out the secret to quota was lunch. I am going to write that up and mail it to the commissary with no name on it."
+                        }
+                    ],
+                    Name: "Durn Heavyload",
+                    Label: "thanks"
+                },
+                {
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "Hand over 8 bread",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative turnin minecraft:bread 8 durn_meal_done"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_durn_meal_done"
+                                }
+                            ],
+                            Label: "bread_button"
                         }
                     ],
                     Texts: [
@@ -60,6 +132,9 @@
                         },
                         {
                             Text: "Winch seized up in the spring, and Bruno came down and hauled the carts by hand while we fixed her. Twelve trips. Only thing he said all day was sorry for the delay. That is the whole man, right there."
+                        },
+                        {
+                            Text: "The commissary re-verified our shift meals into thin air, and a hungry winch crew is a slow winch crew. Eight loaves of plain bread would feed the whole rope gang for a day. If a baker ever owes you a favour, this is where to spend it."
                         }
                     ],
                     Name: "Durn Heavyload",
@@ -183,13 +258,13 @@
         },
         RenderData: {},
         SkinData: {
-            Type: "SECURE_REMOTE_URL",
-            URL: "https://www.minecraftskins.com/uploads/skins/2025/08/04/-steve-is-always-up-for-the-job---23447058.png?v945",
-            UUID: [I; 1476900995, -1702676174, -1596386180, -975728563],
-            Name: "",
             Content: "",
-            Timestamp: 1772045654491L,
-            DisableLayers: 0b
+            DisableLayers: 0b,
+            Name: "",
+            Timestamp: 0L,
+            Type: "CUSTOM",
+            URL: "",
+            UUID: [I; 2085945649, -103196618, -1687372961, 769480855]
         },
         SoundData: {
             SoundDataSet: [

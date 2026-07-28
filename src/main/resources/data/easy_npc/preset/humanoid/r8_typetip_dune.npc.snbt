@@ -233,6 +233,25 @@
                                             }
                                         ]
                                     },
+                                    Cmd: "tag @s add in_trainer_battle"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_r8_typetip_dune"
+                                            },
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_declined_r8_typetip_dune"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:r8_typetip_dune onwin {1: ['cobbledollars give @1 650', 'tag @1 add defeated_r8_typetip_dune', '@2 say Now you feel it. Earthquake finds every set of feet. Gaia will not surprise you.', 'tag @1 remove in_trainer_battle'], 2: ['@1 say The dune wins when you fight it standing still. Rest and read the sand again.', 'tag @2 remove in_trainer_battle']}"
                                 },
                                 {

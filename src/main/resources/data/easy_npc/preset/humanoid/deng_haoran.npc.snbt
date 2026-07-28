@@ -380,6 +380,25 @@
                                             }
                                         ]
                                     },
+                                    Cmd: "tag @s add in_trainer_battle"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_sq_rt2_haoran"
+                                            },
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_declined_sq_rt2_haoran"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:sq_rt2_haoran onwin {1: ['cobbledollars give @1 260', 'tag @1 add defeated_sq_rt2_haoran', '@2 say You mean it more than I do. There is the purse — I will win it back off the next traveler, watch me.', 'tag @1 remove in_trainer_battle'], 2: ['@1 say Phanpy eats first tonight. House rule — winner picks the bowl order.', 'tag @2 remove in_trainer_battle']}"
                                 },
                                 {
@@ -469,6 +488,25 @@
                                         ]
                                     },
                                     Cmd: "tbcs attach rctmod:sq_rt2_haoran @s"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_sq_rt2_haoran"
+                                            },
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_declined_sq_rt2_haoran"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tag @s add in_trainer_battle"
                                 },
                                 {
                                     Type: "COMMAND",

@@ -228,6 +228,9 @@ public class InitiativeInit implements ModInitializer {
     // Mirror Pokédex caught-count into the dex_caught scoreboard (starter unlock gates).
     DexScoreManager.init();
 
+    // Mirror daycare custody into ci_daycare (Bianca's state-aware dialog ladder, a3).
+    com.thecompanyinc.cobblemoninitiative.daycare.DaycareScoreManager.init();
+
     CommandRegistrationCallback.EVENT.register(
       (dispatcher, registryAccess, environment) -> {
         CobblemonInitiativeCommands.register(dispatcher);
@@ -278,6 +281,11 @@ public class InitiativeInit implements ModInitializer {
     net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents.JOIN.register(
       (handler, sender, server) -> {
         com.thecompanyinc.cobblemoninitiative.compat.RctmodServerConfig.ensurePlayerSeries(handler.player);
+        // in_trainer_battle safety clear (alpha.2): battles are in-memory and cannot
+        // survive a relog, but the tag persists in player NBT — a disconnect mid-battle
+        // fires neither onwin nor BATTLE_FLED (Cobblemon forceties via stop()), so a
+        // leaked tag would permanently stand down every pursue trainer on the map.
+        handler.player.removeTag("in_trainer_battle");
         snapFirstJoinToSpawn(handler.player, server);
         flavorConfig.applyGymGateTag(handler.player); // gym MC gate on/off for the joiner
         // Post-Board endgame: keep the Founder mirror tracking the live party across

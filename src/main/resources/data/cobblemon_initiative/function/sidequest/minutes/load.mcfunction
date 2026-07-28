@@ -10,3 +10,6 @@
 # checkpoint_agent — which is every player standing in this office — so sharing the
 # objective would zero this quest forever. A namespaced clone keeps both pollers honest.
 scoreboard objectives add ci_loiter_hz dummy
+# ALPHA.3 (N1): escort-out cooldown for minutes/caught — 200t (10 s) set on kick,
+# decayed by minutes/tick, gates the caught branch in near_office.
+scoreboard objectives add ci_kick_cd dummy

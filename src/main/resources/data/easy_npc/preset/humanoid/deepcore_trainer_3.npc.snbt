@@ -180,6 +180,20 @@
                                             }
                                         ]
                                     },
+                                    Cmd: "tag @s add in_trainer_battle"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_deepcore_trainer_3"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:deepcore_trainer_3 onwin {1: ['tag @1 add defeated_deepcore_trainer_3', '@2 say Discipline and power, together. The ring is yours.', 'tag @1 remove in_trainer_battle'], 2: ['@1 say Slow down. Find the form, then find me again.', 'tag @2 remove in_trainer_battle']}"
                                 },
                                 {

@@ -40,6 +40,62 @@
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
+                            Name: "thalvess_feebas_in"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "no_thalvess_feebas_done"
+                        }
+                    ],
+                    Priority: 25,
+                    Buttons: [
+                        {
+                            Name: "Take the Feebas",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative givemon feebas level=25"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add thalvess_feebas_done"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "tellraw @initiator [{\"text\":\"Feebas joined you — the marsh keeps a longer ledger, and today it paid out.\",\"color\":\"aqua\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "feebas_button"
+                        },
+                        {
+                            Name: "Hold it for me a moment",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Eight dried marsh-lily, counted twice. That is a real favour, the kind my grandmother would have written in the good ledger. So here is mine. Fished this little one out of the fog a month back — ugliest fish in the marsh and I say that with love. Feed it, drag it through a few badges, and one day it turns into the sort of thing that makes harbour towns write poems. Gaviota will not know what hit it."
+                        }
+                    ],
+                    Name: "Thalvess — a favour repaid",
+                    Label: "feebas_ready"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
                             Name: "badges_gte_3"
                         }
                     ],
@@ -54,6 +110,27 @@
                                 }
                             ],
                             Label: "shop_button"
+                        },
+                        {
+                            Name: "Offer a favour — 8 dried marsh-lily",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative turnin minecraft:lily_pad 8 thalvess_feebas_in"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_thalvess_feebas_done"
+                                }
+                            ],
+                            Label: "favour_button"
                         },
                         {
                             Name: "Later",
@@ -88,6 +165,27 @@
                                 }
                             ],
                             Label: "shop_button"
+                        },
+                        {
+                            Name: "Offer a favour — 8 dried marsh-lily",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative turnin minecraft:lily_pad 8 thalvess_feebas_in"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_thalvess_feebas_done"
+                                }
+                            ],
+                            Label: "favour_button"
                         },
                         {
                             Name: "Just browsing",

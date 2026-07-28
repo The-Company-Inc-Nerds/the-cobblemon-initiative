@@ -1,6 +1,9 @@
-# flee_cooldown — 15 s re-engage grace after fleeing a trainer battle (alpha.26).
+# flee_cooldown — 5 min re-engage grace after fleeing a trainer battle (alpha.26;
+# lengthened 15 s -> 5 min by the 0.7.0-alpha.3 playtest ruling: fleeing must buy a
+# very long reset before the forced fight re-arms; the dialog battle button stays
+# available throughout, so voluntary re-engage is never blocked).
 # Hand-authored; registered in #minecraft:tick. NuzlockeInit.handleBattleFled sets
-# ci_flee_cd=300 when the player FLEES a TRAINER battle; this tick decrements it and
+# ci_flee_cd=6000 when the player FLEES a TRAINER battle; this tick decrements it and
 # maintains the INVERSE tag no_recent_flee, exactly the band_tags pattern: Easy NPC
 # 6.25's PLAYER_TAG condition IGNORES the Operation field (bytecode: contains() only),
 # so "no recent flee" must be an EQUALS gate on an inverse tag, never NOT_EQUALS.

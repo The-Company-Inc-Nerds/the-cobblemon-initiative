@@ -240,6 +240,25 @@
                                             }
                                         ]
                                     },
+                                    Cmd: "tag @s add in_trainer_battle"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_r3_spotter_marsh"
+                                            },
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_declined_r3_spotter_marsh"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:r3_spotter_marsh onwin {1: ['cobbledollars give @1 420', 'tag @1 add defeated_r3_spotter_marsh', '@2 say Sharp footwork on wet wood. You have earned the crossing.', 'tag @1 remove in_trainer_battle'], 2: ['@1 say The bog does not forgive a slow step. Dry off and come back.', 'tag @2 remove in_trainer_battle']}"
                                 },
                                 {
@@ -337,6 +356,25 @@
                                         ]
                                     },
                                     Cmd: "tbcs attach rctmod:r3_spotter_marsh @s"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_r3_spotter_marsh"
+                                            },
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_declined_r3_spotter_marsh"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tag @s add in_trainer_battle"
                                 },
                                 {
                                     Type: "COMMAND",

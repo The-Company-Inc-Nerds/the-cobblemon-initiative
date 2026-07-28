@@ -175,8 +175,8 @@ The last gym of Act I, and the narrative hinge of the early game. Titania fields
 The Fairy Shrine is the one shrine that naturally falls inside Act I. Unlike the parkour and gauntlet shrines elsewhere, it is a **bond test**, not a battle gauntlet — it interrogates how you treat the Pokémon a Nuzlocke teaches you to grieve.
 
 ### What to expect
-- **Present your lead.** *"Present your lead Pokémon to the shrine altar."* The shrine reads your front Pokémon against a battery of tests.
-- **Five Tests of the Heart.** Run individually via the altar (or `/ca shrine fairy test <name>`): **friendship**, **fullness**, **nickname**, **shiny**, and **resolve**. The friendship test wants high bond (threshold **160**); the fullness test wants a well-fed companion (threshold **50**). The remaining tests check that you've nicknamed it, raised a shiny, and — *resolve* — that you have skin in the game.
+- **Present your lead.** The trial runs down a **drowned stair** below the marsh pond: four vow-keepers checkpoint the descent, and each reads your front Pokémon.
+- **Five Tests of the Heart.** Four vows are taken on the way down — **friendship** (bond threshold **160**), **fullness** (a companion that's actually been fed — threshold **4**), **nickname**, and **shiny** — and the last, **resolve**, is sworn to the High Priestess at the floor: every vow at once, with that companion alone on your belt.
 - **The grounds are quiet; the stakes are not.** The shrine grounds suppress hostile spawns and the Dark Urge, but a Pokémon fainted in the resolve battle is still a Nuzlocke loss — and the faint damage still lands on *you*. You can abort at any time with `/shrine-abort` (no penalty) if a test isn't passing yet.
 - **Thematic payoff.** The Fairy Shrine is the lore's quiet counter-argument to the shadow self: the Dark Urge says *assets fail, you replace them.* The Five Tests reward you for the opposite — for naming, feeding, and refusing to treat a Pokémon as inventory. Passing it is a statement about who you're becoming, set against who you were.
 
@@ -184,7 +184,7 @@ The Fairy Shrine is the one shrine that naturally falls inside Act I. Unlike the
 > Because it's bond-gated rather than level-gated, the Fairy Shrine rewards a party you've actually *lived with*. If your lead is a fresh catch, it likely won't pass friendship/fullness yet — come back once you've put real time into it.
 
 > [!NOTE]
-> **Content status:** the Fairy cult's battles — the cultists and High Priestess Aurora herself — are not yet fightable in the current build (their teams are unfinished placeholders). The five tests run; the battle finale is still landing. See [[Guidebook Shrines]].
+> The vow-keepers on the stair are **bodies, not battles** — the only fight in this shrine is the solo finale against High Priestess Aurora, and she fights for real. See [[Guidebook Shrines]].
 
 ---
 

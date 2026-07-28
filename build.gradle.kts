@@ -15,7 +15,7 @@ plugins {
 }
 
 group = "com.thecompanyinc"
-version = "0.7.0-alpha.1"
+version = "0.7.0-alpha.3"
 
 architectury {
     platformSetupLoomIde()
@@ -75,6 +75,10 @@ dependencies {
     // standalone jar's mod id is `journeymap-api-fabric` — distinct from `journeymap` and
     // the (unloaded) nested copy, so the loader sees exactly one provider. Dev-only, never published.
     modLocalRuntime("info.journeymap:journeymap-api-fabric:2.0.0-1.21.1")
+    // Easy NPC compile visibility for MoveBackToHomeGoalMixin (flying-nav crash guard).
+    // Same pinned artifact as the modRuntimeOnly line below — compile-only here so the
+    // published scope stays unchanged; names are un-obfuscated, mixin uses remap=false.
+    modCompileOnly("maven.modrinth:Epm6R3P2:pxt6JAIU") { isTransitive = false }
     modImplementation("com.cobblemon:mod:1.7.3+1.21.1") { isTransitive = false }
     modImplementation("com.cobblemon:fabric:1.7.3+1.21.1")
     implementation("com.google.code.gson:gson:2.10.1")

@@ -200,6 +200,16 @@ public class CobblemonInitiativeCommands {
                 .executes(CobblemonInitiativeCommands::mirrorRefresh)
             )
         )
+        // Titania's mirror read (0.7.0-alpha.3): tags the player from PARTY SLOT 1's primary
+        // elemental type (lead_fire|water|grass|electric, anything else → lead_shadow) plus
+        // mm_declared — replacing the old declare-your-lead Q&A so her mirror teams key off
+        // the actual lead without the player ever being asked. Fired from her ON_OPEN_DIALOG
+        // trigger; re-runs every open so a party swap re-mirrors. Silent + synchronous.
+        .then(
+          Commands.literal("reflect")
+            .requires(source -> source.hasPermission(2))
+            .executes(CobblemonInitiativeCommands::reflectLead)
+        )
         // Party elemental-type probe: adds <tag> to the player if ANY party member has the
         // given type. Silent both ways — the tag is added synchronously, so the SAME dialog
         // function can branch on it right after the call (Bryn's show-a-Fairy-type beat).
@@ -658,6 +668,34 @@ public class CobblemonInitiativeCommands {
     }
     return com.thecompanyinc.cobblemoninitiative.founder.FounderMirrorManager.refresh(player)
       ? 1 : 0;
+  }
+
+  /** Mirror-team tags Titania's dialog gates on; reflect clears the stale one before
+   *  re-tagging so a party swap between opens never leaves two lead_* tags standing. */
+  private static final String[] REFLECT_LEAD_TAGS = {
+    "lead_fire", "lead_water", "lead_grass", "lead_electric", "lead_shadow"
+  };
+
+  /** /cobblemon-initiative reflect — tag the player from party slot 1's primary type
+   *  (fire/water/grass/electric, else shadow) + mm_declared. Empty slot 1 → no-op, so a
+   *  first open before any starter still falls to the ungated default entry. */
+  private static int reflectLead(CommandContext<CommandSourceStack> context) {
+    ServerPlayer player = context.getSource().getPlayer();
+    if (player == null) return 0;
+    PlayerPartyStore party = Cobblemon.INSTANCE.getStorage().getParty(player);
+    Pokemon lead = party.get(0);
+    if (lead == null) return 0;
+    String primary = lead.getPrimaryType().getName().toLowerCase(java.util.Locale.ROOT);
+    String leadTag = switch (primary) {
+      case "fire", "water", "grass", "electric" -> "lead_" + primary;
+      default -> "lead_shadow";
+    };
+    for (String tag : REFLECT_LEAD_TAGS) {
+      if (!tag.equals(leadTag)) player.removeTag(tag);
+    }
+    player.addTag(leadTag);
+    player.addTag("mm_declared");
+    return 1;
   }
 
   /** /cobblemon-initiative partyhas <type> <tag> — tag the player if any party member
@@ -1642,12 +1680,17 @@ public class CobblemonInitiativeCommands {
     revived.getFoodData().setFoodLevel(20);
     revived.addTag("dishonored");
 
-    // A same-turn multi-KO whiteout queues more than one player.kill(): the first popped this
-    // death screen (pausing the single-player server), and the rest are frozen behind it and
-    // would fire on the revived player a few seconds from now. Open a short grace so the
-    // Nuzlocke run-ender can't immediately re-kill the clawed-back player (~5s — you cannot
-    // start and lose a fresh battle that fast, so a real whiteout is never suppressed).
-    com.thecompanyinc.cobblemoninitiative.NuzlockeInit.grantWhiteoutGrace(revived, 100);
+    // The death screen pauses the single-player server, freezing the dying battle's remaining
+    // showdown messages (more faints, the loss itself, queued whiteout kills). Cobblemon paces
+    // those out over several seconds AFTER revive — the old 100-tick grace could expire before
+    // they landed, and it only gated the whiteout kill anyway (queued faint hurt() damage
+    // killed the revived player outright: the "respawns then kills you moments later" playtest
+    // bug). Open a generous 60s grace that suppresses ALL Nuzlocke battle fallout; it is safe
+    // because BATTLE_STARTED_POST revokes it the moment a genuinely new battle begins.
+    com.thecompanyinc.cobblemoninitiative.NuzlockeInit.grantWhiteoutGrace(revived, 1200);
+    // A flee/forfeit event frozen behind the death screen may have queued a sacrifice prompt
+    // for the now-wiped party — never pop it on the revived player.
+    com.thecompanyinc.cobblemoninitiative.NuzlockeInit.clearPendingSacrifice();
     net.minecraft.world.scores.Scoreboard board = server.getScoreboard();
     net.minecraft.world.scores.Objective obj =
       board.getObjective("dishonorable_respawns");

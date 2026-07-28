@@ -78,3 +78,16 @@ execute unless score #repair_a18 ci_ambient matches 1 run function cobblemon_ini
 # ── wave a19 (0.7.0-alpha.1, audit rulings): Tunde double-purse re-latch, auditor dead-
 #    entry re-latches, Dune rename re-latch, ghost-cast scoreboard/tag hygiene ──
 execute unless score #repair_a19 ci_ambient matches 1 run function cobblemon_initiative:install/repairs_a19_arm
+
+# ── wave a20 (0.7.0-alpha.2): marsh-crash playtest wave — Hua Zhan moves (Linh tp,
+#    Bo Huan + Cloud re-latch to the market corner, Rong loft tp + static eavesdrop
+#    sensor), Wisteria cut (Liora = the marsh nurse on the Center body), fairy shrine
+#    vows raised +1 / Fifth Vow cut / Aurora float+scale re-latch at y1.5 ──
+execute unless score #repair_a20 ci_ambient matches 1 run function cobblemon_initiative:install/repairs_a20_arm
+
+# ── wave a21 (0.7.0-alpha.3): 36-note playtest wave — First Vow one-button re-latch,
+#    Bryn kid-skin re-latch + Thistrel stall tp, Titania re-aim, phone-caller park +
+#    Mom-call re-ring, Mirebloom Halvard re-role (fence kill takes Nao's stacked body,
+#    both latches re-armed), Deepcore Sten/Rilka re-latches + Osei cut + Ken pit-lead
+#    re-latch, Gaviota Coralie cut -> Lucia nurse tp + Marlin to the mart register ──
+execute unless score #repair_a21 ci_ambient matches 1 run function cobblemon_initiative:install/repairs_a21_arm

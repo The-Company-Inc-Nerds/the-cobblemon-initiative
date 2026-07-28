@@ -76,8 +76,11 @@ public class NuzlockeInit implements ModInitializer {
    */
   private static final String FLEE_COOLDOWN_OBJ = "ci_flee_cd";
 
-  /** 15 seconds at 20 tps — enough to actually leave the 4-block forced-battle band. */
-  private static final int FLEE_COOLDOWN_TICKS = 300;
+  /** 5 minutes at 20 tps — playtest ruling (0.7.0-alpha.3): fleeing buys a genuinely long
+   *  reprieve before the corridor trainers re-force the fight (the old 15 s expired while
+   *  the player was still fumbling out of the 4-block band). Voluntary re-engage via the
+   *  dialog battle button stays available throughout — only the forced path waits. */
+  private static final int FLEE_COOLDOWN_TICKS = 6000;
 
   private static NuzlockeConfig config;
   private static boolean pendingWhiteoutDeath = false;
@@ -106,6 +109,20 @@ public class NuzlockeInit implements ModInitializer {
     CobblemonEvents.BATTLE_FLED.subscribe(Priority.NORMAL, NuzlockeInit::handleBattleFled);
     CobblemonEvents.BATTLE_VICTORY.subscribe(Priority.NORMAL, NuzlockeInit::handleBattleVictory);
     CobblemonEvents.POKEMON_CAPTURED.subscribe(Priority.NORMAL, NuzlockeInit::handlePokemonCaptured);
+
+    // A genuinely NEW battle ends the post-revive grace immediately — this is what makes a
+    // long grace window safe: every battle event arriving during grace can only be frozen
+    // fallout of the battle the player already died in, never a fresh fight's outcome.
+    CobblemonEvents.BATTLE_STARTED_POST.subscribe(Priority.NORMAL, event -> {
+      for (ServerPlayer battlePlayer : event.getBattle().getPlayers()) {
+        if (whiteoutGraceUntil.remove(battlePlayer.getUUID()) != null) {
+          LOGGER.info(
+            "Post-revive grace ended for {} — new battle started",
+            battlePlayer.getName().getString());
+        }
+      }
+      return Unit.INSTANCE;
+    });
 
     // Record the TRAINER's own hardcore deaths for the stream overlay's graveyard. A
     // whiteout is already reported (richer) by its own event just before player.kill(),
@@ -391,6 +408,21 @@ public class NuzlockeInit implements ModInitializer {
     }
     if (wasTrainerBattle) startFleeCooldown(player);
 
+    // alpha.2 leak fix: BATTLE_FLED fires neither onwin branch, so a fled trigger-forced
+    // battle left in_trainer_battle on the player forever — permanently standing down
+    // every pursue trainer on the map. Clear it here; victory/loss keep their onwin clears.
+    player.removeTag("in_trainer_battle");
+
+    // Post-revive grace: this fled event is frozen fallout of the battle the player already
+    // died in (the death screen pauses the SP server; a new battle revokes the grace at
+    // start) — no sacrifice, no run-ender. The cooldown/tag maintenance above still applies.
+    if (inWhiteoutGrace(player)) {
+      LOGGER.info(
+        "Suppressed stale flee fallout for {} — inside post-revive grace",
+        player.getName().getString());
+      return Unit.INSTANCE;
+    }
+
     if (!config.isSacrificeOnFlee()) return Unit.INSTANCE;
 
     // Stadium exhibition runs are attrition-free: battles use CLONED parties and the
@@ -466,6 +498,15 @@ public class NuzlockeInit implements ModInitializer {
 
       ServerPlayer player = playerActor.getEntity();
       if (player == null) continue;
+
+      // Post-revive grace: a loss delivered during grace is the already-died-in battle
+      // resolving after the death-screen pause — never a fresh forfeit.
+      if (inWhiteoutGrace(player)) {
+        LOGGER.info(
+          "Suppressed stale battle-loss fallout for {} — inside post-revive grace",
+          player.getName().getString());
+        continue;
+      }
 
       // Stadium runs: losing an exhibition wave is not a forfeit — the battle party is
       // a clone (real party often healthy), so this branch would whiteout-kill a player
@@ -543,6 +584,18 @@ public class NuzlockeInit implements ModInitializer {
 
     ServerPlayer player = playerActor.getEntity();
     if (player == null) return Unit.INSTANCE;
+
+    // Post-revive grace: faint fallout arriving during grace belongs to the battle the
+    // player already whiteouted in — the death screen pauses the SP server and Cobblemon
+    // paces the frozen messages out over several seconds after revive. Without this gate
+    // the queued faints re-apply hurt() damage (which the whiteout-only grace check never
+    // covered) and can flat-out kill the freshly-revived player.
+    if (inWhiteoutGrace(player)) {
+      LOGGER.info(
+        "Suppressed stale faint fallout for {} — inside post-revive grace",
+        player.getName().getString());
+      return Unit.INSTANCE;
+    }
 
     // Stadium exhibition faints are clone faints — no damage, no removal, no whiteout.
     // Battle Frontier faints (frontier_active tag) are exhibition faints too: the safe
@@ -772,16 +825,25 @@ public class NuzlockeInit implements ModInitializer {
   }
 
   /**
-   * Open a brief window during which a Nuzlocke whiteout will NOT {@code player.kill()} this
-   * player. Called from the Dishonorable Respawn command: when the run-ending faint is a
-   * same-turn multi-KO, the battle queues more than one whiteout kill — the first pops the death
-   * screen (which pauses the single-player server), and the rest, frozen behind that screen,
-   * fire on the freshly-revived player a few seconds after they claw back. The grace only gates
-   * the Nuzlocke run-ender: environmental damage still kills, and a fresh battle cannot be
-   * started AND lost inside the window, so a legitimate whiteout is never eaten.
+   * Open a window during which ALL Nuzlocke battle fallout (whiteout kill, faint damage +
+   * party removal, flee/forfeit sacrifice) is suppressed for this player. Called from the
+   * Dishonorable Respawn command: the death screen pauses the single-player server, freezing
+   * the dying battle's remaining showdown messages — Cobblemon then paces them out over
+   * several seconds after revive, where they would re-kill the clawed-back player (queued
+   * whiteout kills, or plain faint {@code hurt()} damage that the old whiteout-only check
+   * never covered). The window can be generous because {@code BATTLE_STARTED_POST} revokes
+   * it the instant a NEW battle begins — a legitimate whiteout is never eaten, and
+   * environmental damage still kills throughout.
    */
   public static void grantWhiteoutGrace(ServerPlayer player, int ticks) {
     whiteoutGraceUntil.put(player.getUUID(), player.level().getGameTime() + ticks);
+  }
+
+  /** Drop a queued sacrifice prompt. Called on Dishonorable Respawn: a flee/forfeit event
+   *  frozen behind the death screen may have flagged a sacrifice for a party that is now
+   *  wiped — popping that screen on the revived player is meaningless and soft-locks UX. */
+  public static void clearPendingSacrifice() {
+    pendingSacrifice = false;
   }
 
   private static boolean inWhiteoutGrace(ServerPlayer player) {

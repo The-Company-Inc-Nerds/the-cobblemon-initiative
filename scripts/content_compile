@@ -635,11 +635,14 @@ def battle_actions(ch: dict, where: str, override: dict | None = None,
         else:
             warn(f"{where}: GEN_9_MULTI trainer_2 '{t2}' has no trainer_2_body_tag — "
                  f"its body (if any) will not face the battle.")
-    # engage:touch (round 13d) — flag the player as in a forced battle BEFORE it starts, so
-    # NpcSight stands the pursuer down (it would otherwise keep chasing mid-battle). Cleared
-    # in both onwin branches. Trigger path only — dialog buttons open with the player already
-    # adjacent, no pursuit to stop.
-    if trigger_ctx and ch.get("engage") == "touch":
+    # Flag the player as in a forced battle BEFORE it starts, so NpcSight stands the
+    # pursuer down (it would otherwise keep chasing mid-battle). Cleared in both onwin
+    # branches; NuzlockeInit clears it on flee (BATTLE_FLED fires no onwin). Round 13d
+    # shipped this trigger-path-only ("dialog buttons open with the player already
+    # adjacent"); the alpha.2 route-3 playtest proved a pursuer whose forced trigger was
+    # gated out STILL follows into a button-started battle — tag both paths. The Java
+    # BattleRegistry stand-down is the belt-and-braces for non-tbcs battles.
+    if ch.get("engage") == "touch":
         acts.append(command_action("tag @s add in_trainer_battle", True, gate, where))
     # Bare tbcs + not_tag action Conditions: the ExecAsUser source is the player, and an
     # `execute unless entity @s[tag=…] run` guard would be silently blocked (Easy NPC 6.25
@@ -1107,6 +1110,23 @@ def compile_character(ch: dict, dialogs: dict, registers: dict, lore: dict):
     out = sm.set_path(out, ["PresetMetadata"], meta)
 
     out = apply_triggers(out, ch)
+    # FLYING-NAV CRASH GUARD (alpha.2, marsh playtest server kill): easy_npc:fairy/allay
+    # bodies use FlyingPathNavigation, and Easy NPC 6.25.0 MoveBackToHomeGoal.reachedHome
+    # null-derefs getGroundPathNavigation() on them (the no-home branch — preset Home
+    # {0,0,0} counts as "no home"). MoveBackToHomeGoalMixin guards live worlds; this
+    # write-gate keeps the hazard un-authorable (Bramblea's a26 conversion leftover).
+    fly = visual_entity_type(ch)
+    if fly in ("fairy", "allay"):
+        mv_obj = (ch.get("movement") or {}).get("objective") or "ambient_stationary_look"
+        snip = SNIPPET_DIR / ("ambient/" + mv_obj + ".snbt")
+        if not snip.is_file():
+            snip = SNIPPET_DIR / (mv_obj + ".snbt")
+        if snip.is_file() and any(g in snip.read_text()
+                                  for g in ("MOVE_BACK_TO_HOME", "RANDOM_STROLL_AROUND_HOME")):
+            raise CompileError(
+                f"{cid}: flying entity type '{fly}' with home-based movement objective "
+                f"'{mv_obj}' — Easy NPC's MoveBackToHomeGoal NPE-crashes flying bodies "
+                f"(null GroundPathNavigation); use ambient_stationary_look or ambient_static")
     out = apply_movement(out, ch.get("movement"))
     if ch.get("trade"):
         out = apply_nondialog_snippet(out, "trade/" + ch["trade"]["snippet"])
@@ -1137,20 +1157,31 @@ def compile_character(ch: dict, dialogs: dict, registers: dict, lore: dict):
         lst = ",".join('"%s"' % t for t in tags)
         out = sm.set_path(out, ["data", "Tags"], sm.parse_snbt("{K:[%s]}" % lst)["K"])
         out = sm.set_path(out, ["data", "CustomNameVisible"], sm.parse_snbt("{K:1b}")["K"])
-    # PokéPhone caller bodies are video-call props: visible ONLY in creative (for debugging),
-    # never in survival/spectator, so the physical body never stands in-frame during a call —
-    # the dialog GUI still renders the caller's face (that's the menu ScreenData, not the world
-    # entity). BYTECODE (Easy NPC 6.25.0 VisibilityHandler.handleIsInvisibleToPlayer): master
-    # VISIBLE must stay true, the observer's gamemode picks VISIBLE_IN_<MODE>, and the owner/team
-    # early-visible paths are zeroed so nothing overrides the survival/spectator hide. (No uuid,
-    # no visuals export -> DisplayAttribute is the base template's, so this override is final.)
+    # PokéPhone caller bodies are video-call props: never rendered in survival/spectator, so
+    # the physical body never stands in-frame during a call — the dialog GUI still renders the
+    # caller's face (that's the menu ScreenData, not the world entity). BYTECODE (Easy NPC
+    # 6.25.0 VisibilityHandler + vanilla LivingEntityRenderer): the a22 premise ("master
+    # VISIBLE must stay true, gamemode flags do the hiding") was WRONG for rendering — the
+    # client only consults isInvisibleTo(player) (the per-gamemode logic) AFTER isInvisible()
+    # is already true, and handleIsInvisible returns invisible only when the master VISIBLE
+    # attribute is present AND false. With VISIBLE:1b the body rendered SOLID everywhere
+    # (live-verified on the alpha.2 stray Mom body). So: master VISIBLE must be 0b; then
+    # survival/spectator skip the body entirely and VISIBLE_IN_CREATIVE:1b leaves a
+    # translucent debug ghost in creative. Missing-entry default is FALSE (EASY_NPC_REFERENCE
+    # 1281) — keep the explicit 0b mode/owner/team list, do not trim it. NAME_VISIBILITY
+    # NEVER + CustomNameVisible 0b (overriding the generic entity_tags 1b above): the "Mom"
+    # nametag renders even on invisible entities. INTERACTION_WHEN_INVISIBLE absent->false is
+    # fine — calls open via the server command path (easy_npc dialog open), not interaction.
+    # (No uuid, no visuals export -> DisplayAttribute is the base template's, so this
+    # override is final.)
     if "ci_phone_caller" in tags:
         out = sm.set_path(out, ["data", "DisplayAttribute"], sm.parse_snbt(
-            '{K:[{Bool:1b,Type:"VISIBLE"},{Bool:1b,Type:"VISIBLE_AT_DAY"},'
+            '{K:[{Bool:0b,Type:"VISIBLE"},{Bool:1b,Type:"VISIBLE_AT_DAY"},'
             '{Bool:1b,Type:"VISIBLE_AT_NIGHT"},{Bool:1b,Type:"VISIBLE_IN_CREATIVE"},'
             '{Bool:0b,Type:"VISIBLE_IN_SPECTATOR"},{Bool:0b,Type:"VISIBLE_IN_STANDARD"},'
             '{Bool:0b,Type:"VISIBLE_TO_OWNER"},{Bool:0b,Type:"VISIBLE_TO_TEAM"},'
-            '{Int:7,Type:"LIGHT_LEVEL"},{Text:"ALWAYS",Type:"NAME_VISIBILITY"}]}')["K"])
+            '{Int:7,Type:"LIGHT_LEVEL"},{Text:"NEVER",Type:"NAME_VISIBILITY"}]}')["K"])
+        out = sm.set_path(out, ["data", "CustomNameVisible"], sm.parse_snbt("{K:0b}")["K"])
     return out
 
 

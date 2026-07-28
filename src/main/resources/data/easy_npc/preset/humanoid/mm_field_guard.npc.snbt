@@ -1,9 +1,9 @@
 {
     PresetMetadata: {
         author: "TheCompanyInc",
-        category: "Villain",
+        category: "Civilian",
         created: 0L,
-        description: "wheat_trader at Mirebloom Paddies (act 1). Compiled from dialog-src.",
+        description: "civilian at Mirebloom Paddies (act 1). Compiled from dialog-src.",
         entityTypeId: "easy_npc:humanoid",
         modified: 0L,
         name: "Steward Halvard",
@@ -57,13 +57,13 @@
                     ],
                     Texts: [
                         {
-                            Text: "The water runs where it likes now. Marsh-rice for the town again, not for a ledger. I stood the gate because it was the job. I am not sorry it is over."
+                            Text: "The water runs where it likes again and the rice stands up straighter every dawn. You gave an old steward his field back. The marsh will not forget it, and neither will I."
                         },
                         {
-                            Text: "Nothing to guard here anymore, pilgrim. The fen took its field back. Mind Quarry Road south - the stone is Company ground too, and Deepcore does not give an inch."
+                            Text: "Marsh-rice for the town again, not for a ledger. If the Company sends another fence, they will find the whole fen against them this time. Mind Quarry Road south — the stone is Company ground too."
                         }
                     ],
-                    Name: "Steward Halvard - fence down",
+                    Name: "Steward Halvard - the water runs",
                     Label: "liberated"
                 },
                 {
@@ -71,131 +71,85 @@
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
-                            Name: "badges_gte_3"
+                            Name: "defeated_villain_site_manager_2"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "no_field_2_liberated"
                         }
                     ],
                     Priority: 30,
                     Buttons: [
                         {
-                            Name: "Take the paddy",
+                            Name: "The fence is down - open the sluice",
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "defeated_mm_field_guard"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "say The fence is down and the water runs free. There is nothing here to guard now. Go on."
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_defeated_mm_field_guard"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tbcs attach rctmod:mm_field_guard @s"
-                                },
-                                {
-                                    Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_defeated_mm_field_guard"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:mm_field_guard onwin {1: ['cobbledollars give @1 500', 'tag @1 add defeated_mm_field_guard', '@2 say The fence comes down. The corridor holds without one paddy - Deepcore does not fall so easy, whoever you are.', 'execute as @1 run function cobblemon_initiative:liberation/free_field {field:farm_2}'], 2: ['@1 say The paddy stays Company ground. Verified, fenced, and filed. Try the shrine, pilgrim - it wants nothing from you.']}"
+                                    Cmd: "function cobblemon_initiative:liberation/free_field {field:farm_2}"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "title @initiator title [{\"text\":\"MIREBLOOM LIBERATED\",\"color\":\"gold\"}]"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "title @initiator subtitle [{\"text\":\"ADJUSTMENT reversed - the paddies are off the ledger and back on the map\",\"color\":\"gray\"}]"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "tellraw @initiator [{\"text\":\"Halvard hauls the sluice gate wide — the Mirebloom Paddies run free, and the marsh takes its field back.\",\"color\":\"green\"}]"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "fight_button"
+                            Label: "open_sluice_button"
+                        },
+                        {
+                            Name: "Hold the water a moment",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
                         }
                     ],
                     Texts: [
                         {
-                            Text: "Hold. I know that walk. I have stood this gate long enough to have seen the portraits come down - and yours was one of them, before they papered over the wall. You are supposed to be filed. You are supposed to be nothing. And here you are counting my rows with the old eyes."
-                        },
-                        {
-                            Text: "The memo said a saboteur. The memo did not say YOU. I do not know which of us the Company lied to worse. But the paddy is my orders, and orders are what is left when the face on the wall is gone. Come take it, then. Prove the memo wrong."
+                            Text: "You moved that enforcer off my gate. I watched the whole bout from the dyke and I have not breathed this easy in a season. Say the word and I open the sluice — the marsh takes its field back the moment the water runs."
                         }
                     ],
-                    Name: "Steward Halvard - a filed face",
-                    Label: "mid"
+                    Name: "Steward Halvard - say the word",
+                    Label: "fence_down"
                 },
                 {
                     Priority: 10,
                     Buttons: [
                         {
-                            Name: "Take the paddy",
+                            Name: "Look toward the fence",
                             Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "defeated_mm_field_guard"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "say The fence is down and the water runs free. There is nothing here to guard now. Go on."
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_defeated_mm_field_guard"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tbcs attach rctmod:mm_field_guard @s"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_defeated_mm_field_guard"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:mm_field_guard onwin {1: ['cobbledollars give @1 500', 'tag @1 add defeated_mm_field_guard', '@2 say The fence comes down. The corridor holds without one paddy - Deepcore does not fall so easy, whoever you are.', 'execute as @1 run function cobblemon_initiative:liberation/free_field {field:farm_2}'], 2: ['@1 say The paddy stays Company ground. Verified, fenced, and filed. Try the shrine, pilgrim - it wants nothing from you.']}"
-                                },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "fight_button"
+                            Label: "leave_button"
                         }
                     ],
                     Texts: [
                         {
-                            Text: "Far enough. Mirebloom Paddies are verified Company ground - fenced, filed, and none of yours. The grain goes where the grain goes. You match a description we were told to forget, but a description is not a permit. Turn around."
+                            Text: "Keep your voice down, pilgrim. That is a Company enforcer on my fence gate. The Mirebloom Paddies fed this town for three generations, and now I sign a receipt to walk my own dykes."
                         },
                         {
-                            Text: "This water is Company water now, whatever the town says it used to be. Move along, or make it a matter for the ledger. Your choice, and the ledger always wins."
+                            Text: "I steward these paddies — stewarded, before the fence went up. The Company calls it verification. The rice calls it drowning on a schedule. And I can do nothing while that man holds the gate."
+                        },
+                        {
+                            Text: "They fenced the water first, then the field, then me. If somebody were to move that enforcer off my gate, the sluice could run inside the hour. I did not say that out loud."
+                        },
+                        {
+                            Text: "Strange thing — the enforcer squints at you like a memo he was told to shred. I stopped asking what the Company forgets on purpose. It is safer not to know."
                         }
                     ],
                     Name: "Steward Halvard",

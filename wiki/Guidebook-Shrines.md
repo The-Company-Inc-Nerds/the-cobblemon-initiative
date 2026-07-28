@@ -73,10 +73,10 @@ Whichever way it ends, completion pays the same: crystal, memory sting (first cl
 |---|---|
 | **Status** | ✅ Done |
 | **Opens after** | Mystic Marsh (Gym 3) |
-| **Leader** | High Priestess Aurora — start the trial and claim the crystal at her altar **@ 951 3 2715** |
+| **Leader** | High Priestess Aurora — at the floor of the Drowned Stair **@ 947 1 2704**; the trial begins at the First Vow atop the stair **@ 943 41 2644** |
 | **Trial** | Fairy tests — bonded, shiny, solo lead |
 
-**The trial:** the only non-combat-first shrine. You bring your **lead Pokémon** to Aurora's altar and prove your bond through a series of tests — friendship, fullness, a nickname, shininess — before the final check: your candidate must be your **only** party member. Pass it and the shrine registers that exact Pokémon, then sends you to battle Aurora **alone, with the bond as your only weapon.**
+**The trial:** the only non-combat-first shrine. A drowned stair descends below the marsh pond, and four allay-bodied **vows** checkpoint the way down — friendship, fullness, a nickname, shininess — each taken at its keeper with your **lead Pokémon**. At the floor waits the High Priestess herself, who hears the final vow, **resolve**: every vow at once, and your candidate must be your **only** party member. Pass it and the shrine registers that exact Pokémon, then sends you to battle Aurora **alone, with the bond as your only weapon.**
 
 **Tips**
 - The shiny requirement makes this a *late, deliberate* project for a Pokémon you've raised, nicknamed, and bonded with — not a walk-up.
@@ -153,7 +153,7 @@ Whichever way it ends, completion pays the same: crystal, memory sting (first cl
 
 ## The Five Keepers capstone — ✅ Done
 
-Claim all five shrine crystals and a **Last Pilgrim** — a wandering figure near the Fairy shrine approach **@ 945 9 2712** — acknowledges the collection and pays out a **one-time capstone**: **5,000 CobbleDollars, a Master Ball, and a stack of Rare Candy** (10), with a streamable *"FIVE KEEPERS ANSWER"* title card. The Master Ball alone is run-defining on a Nuzlocke (a guaranteed catch on something you'd never otherwise risk).
+Claim all five shrine crystals and **High Priestess Aurora herself** — at the floor of the Drowned Stair — acknowledges the collection and pays out a **one-time capstone**: **5,000 CobbleDollars, a Master Ball, and a stack of Rare Candy** (10), with a streamable *"FIVE KEEPERS ANSWER"* title card. The Master Ball alone is run-defining on a Nuzlocke (a guaranteed catch on something you'd never otherwise risk).
 
 > **Note:** the 5,000 is a *face* value — like every mod-routed CobbleDollar payout it runs through the Company's skim, so at peak currency instability you may actually pocket as little as 75% (~3,750). The Master Ball and candy are delivered flat.
 
@@ -168,7 +168,7 @@ flowchart LR
   T --> K["Clear the trial<br/>→ crystal claim + memory sting"]
   K --> X["Place the crystal anywhere<br/>→ wild lv70 guardian to catch"]
   K --> C{"All five cleared?"}
-  C -->|yes| P["The Last Pilgrim pays<br/>5,000 CD + Master Ball + candy"]
+  C -->|yes| P["Aurora pays the capstone<br/>5,000 CD + Master Ball + candy"]
 ```
 
 **Rules of thumb for a hardcore Nuzlocke:**

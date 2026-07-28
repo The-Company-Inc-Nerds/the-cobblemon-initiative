@@ -233,6 +233,25 @@
                                             }
                                         ]
                                     },
+                                    Cmd: "tag @s add in_trainer_battle"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_r3_trainer_rowan"
+                                            },
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_declined_r3_trainer_rowan"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:r3_trainer_rowan onwin {1: ['cobbledollars give @1 420', 'tag @1 add defeated_r3_trainer_rowan', '@2 say There it is. You move like the venom now. The mist court is going to hate you.', 'tag @1 remove in_trainer_battle'], 2: ['@1 say Stung and schooled. Rest up, come back, and this time answer venom with venom.', 'tag @2 remove in_trainer_battle']}"
                                 },
                                 {
@@ -319,6 +338,25 @@
                                         ]
                                     },
                                     Cmd: "tbcs attach rctmod:r3_trainer_rowan @s"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_r3_trainer_rowan"
+                                            },
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_declined_r3_trainer_rowan"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tag @s add in_trainer_battle"
                                 },
                                 {
                                     Type: "COMMAND",

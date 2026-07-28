@@ -12,10 +12,15 @@
 # backwards), and the hz_office_staff sight profile is range 14 (r10 was
 # mathematically short of this landing at 11.0-12.7 blocks, so EYES ON YOU could
 # never fire here). Floors still block LOS: break line of sight to win the count.
+# ALPHA.3 (N1): being seen has consequences now — off cooldown the staff walk you out
+# (minutes/caught: reset + ci_kick_cd 200 + escort tp to the street). On cooldown the
+# OLD reset + EYES ON YOU still applies, so a cooldown player can never loiter while
+# visible. unless-matches-1.. is true for unset scores (fresh players get kicked).
 
-# Seen by any office staff: reset the countdown and flash the warning.
-execute if entity @e[tag=hz_office_staff,scores={can_see_player=1}] run scoreboard players reset @s ci_loiter_hz
-execute if entity @e[tag=hz_office_staff,scores={can_see_player=1}] run title @s actionbar [{"text":"EYES ON YOU","color":"red","bold":true},{"text":" — the reading starts over","color":"gray"}]
+# Seen by any office staff: reset the countdown; off cooldown -> the staff walk you out.
+execute if entity @e[tag=hz_office_staff,scores={can_see_player=1}] unless score @s ci_kick_cd matches 1.. run function cobblemon_initiative:sidequest/minutes/caught
+execute if entity @e[tag=hz_office_staff,scores={can_see_player=1}] if score @s ci_kick_cd matches 1.. run scoreboard players reset @s ci_loiter_hz
+execute if entity @e[tag=hz_office_staff,scores={can_see_player=1}] if score @s ci_kick_cd matches 1.. run title @s actionbar [{"text":"EYES ON YOU","color":"red","bold":true},{"text":" — the reading starts over","color":"gray"}]
 
 # Unseen: count up.
 execute unless entity @e[tag=hz_office_staff,scores={can_see_player=1}] run scoreboard players add @s ci_loiter_hz 1

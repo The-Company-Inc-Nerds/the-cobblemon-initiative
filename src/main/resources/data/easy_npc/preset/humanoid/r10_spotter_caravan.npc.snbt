@@ -267,6 +267,25 @@
                                             }
                                         ]
                                     },
+                                    Cmd: "tag @s add in_trainer_battle"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_r10_spotter_caravan"
+                                            },
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_declined_r10_spotter_caravan"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:r10_spotter_caravan onwin {1: ['cobbledollars give @1 520', 'tag @1 add defeated_r10_spotter_caravan', '@2 say Cleared. The road is yours - a guard only checks a face once.', 'tag @1 remove in_trainer_battle'], 2: ['@1 say The artery keeps its own. Rest at the crossing and try the road again.', 'tag @2 remove in_trainer_battle']}"
                                 },
                                 {

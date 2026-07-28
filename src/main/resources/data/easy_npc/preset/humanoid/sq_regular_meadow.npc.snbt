@@ -269,6 +269,25 @@
                                             }
                                         ]
                                     },
+                                    Cmd: "tag @s add in_trainer_battle"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_sq_regular_meadow"
+                                            },
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_declined_sq_regular_meadow"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:sq_regular_meadow onwin {1: ['cobbledollars give @1 150', 'tag @1 add defeated_sq_regular_meadow', '@2 say The meadow looks after its own. No hard feelings - have a snack before you go.', 'tag @1 remove in_trainer_battle'], 2: ['@1 say Oh, they liked that. They always fight better for an audience.', 'tag @2 remove in_trainer_battle']}"
                                 },
                                 {

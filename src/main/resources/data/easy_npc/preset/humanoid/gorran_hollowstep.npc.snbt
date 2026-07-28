@@ -168,11 +168,15 @@
         LeftHanded: 0b,
         ModelData: {
             DefaultPose: "STANDING",
-            Pose: "VANILLA",
-            Visible: {},
-            Rotation: {},
-            Position: {},
-            Scale: {}
+            Pose: "CUSTOM",
+            Scale: {
+                Head: [1.2f, 0.7f, 1.5f],
+                Body: [1.2f, 0.7f, 1.5f],
+                LeftArm: [1.2f, 0.7f, 1.5f],
+                RightArm: [1.2f, 0.7f, 1.5f],
+                LeftLeg: [1.2f, 0.7f, 1.5f],
+                RightLeg: [1.2f, 0.7f, 1.5f]
+            }
         },
         Navigation: {
             Home: {
@@ -185,18 +189,6 @@
             HasObjectives: 1b,
             HasTravelTarget: 0b,
             ObjectiveDataSet: [
-                {
-                    Type: "RANDOM_STROLL_AROUND_HOME",
-                    Prio: 2,
-                    Id: "ambient_stroll_home",
-                    SpeedModifier: 0.8d
-                },
-                {
-                    Type: "MOVE_BACK_TO_HOME",
-                    Prio: 3,
-                    Id: "ambient_back_home",
-                    SpeedModifier: 1.0d
-                },
                 {
                     Type: "LOOK_AT_PLAYER",
                     Prio: 9,

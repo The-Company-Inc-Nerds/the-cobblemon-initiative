@@ -1,9 +1,9 @@
 {
     PresetMetadata: {
         author: "TheCompanyInc",
-        category: "Civilian",
+        category: "Merchant",
         created: 0L,
-        description: "civilian at Gaviota Port - Championship Pier (act 1). Compiled from dialog-src.",
+        description: "merchant at Gaviota Port - Pokemart counter (act 1). Compiled from dialog-src.",
         entityTypeId: "easy_npc:humanoid",
         modified: 0L,
         name: "Titleholder Marlin",
@@ -46,6 +46,19 @@
                     Priority: 20,
                     Buttons: [
                         {
+                            Name: "Browse the shelf",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "tellraw @initiator [{\"text\":\"The Pokemart register is on the counter — the badge_5 stock is stacked behind it. Trade at the CobbleMerchant.\",\"color\":\"gray\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "browse_button"
+                        },
+                        {
                             Name: "The big one",
                             Actions: [
                                 {
@@ -57,10 +70,10 @@
                     ],
                     Texts: [
                         {
-                            Text: "You beat my record time. Ten fish before the clock ran, on the final round, in front of the whole pier. The title is yours — I concede it clean, no excuses, no re-weigh."
+                            Text: "You beat my record time. Ten fish before the clock ran, on the final round, in front of the whole pier. The title is yours — I concede it clean, no excuses, no re-weigh. And look where conceding got me: behind the mart counter, selling balls to the trainer who took my name off the board. Shelf is yours too. Posted price, champion rate — which is the same rate, but I say it warmer."
                         },
                         {
-                            Text: "Here is the thing nobody stamps, though: the biggest fish in this harbour never gets weighed. Never touches the scale. Sits out past the last buoy where no bracket number can reach it. Go ask the Tide-Caller about the big one. I chased it once. Came back wiser and dry."
+                            Text: "The champ buys potions like everyone else, and now the champ is you. Take the shelf discount that does not exist and hear the thing nobody stamps: the biggest fish in this harbour never gets weighed. Never touches the scale. Sits out past the last buoy where no bracket number can reach it. Go ask the Tide-Caller about the big one. I chased it once. Came back wiser and dry."
                         }
                     ],
                     Name: "Titleholder Marlin — conceding the title",
@@ -69,6 +82,19 @@
                 {
                     Priority: 10,
                     Buttons: [
+                        {
+                            Name: "Browse the shelf",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "tellraw @initiator [{\"text\":\"The Pokemart register is on the counter — the badge_5 stock is stacked behind it. Trade at the CobbleMerchant.\",\"color\":\"gray\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "browse_button"
+                        },
                         {
                             Name: "I will chase the record",
                             Actions: [
@@ -81,13 +107,16 @@
                     ],
                     Texts: [
                         {
-                            Text: "I hold the Gaviota Open title, and the round-three record along with it — ten on the clock, clean. If you want it, the clock is how you take it. Not from me. From the fish."
+                            Text: "Gaviota Pokemart — five badges deep, and the shelf shows it. Yes, I am that Marlin. I hold the Open title and the round-three record, and between defences I hold inventory, because the record is glory and glory does not restock itself. Browse away."
                         },
                         {
-                            Text: "Everyone thinks the Open is about the purse. The purse gets skimmed, so the purse is a lie. The record is the only honest number on this whole pier. That is the one I defend."
+                            Text: "Balls, potions, line and salt — everything a wet route asks for, posted price, no haggling. The Open purse gets skimmed, so the purse is a lie, but this register is the one honest number I am allowed to defend on a weekday."
+                        },
+                        {
+                            Text: "You want the title? The clock is how you take it — ten on the final round, not from me, from the fish. You want supplies for the trying? That part I can do right now. The register is on the counter."
                         }
                     ],
-                    Name: "Titleholder Marlin — the reigning champ",
+                    Name: "Titleholder Marlin — champ at the counter",
                     Label: "default"
                 }
             ]
@@ -170,9 +199,9 @@
         },
         Navigation: {
             Home: {
+                X: 656,
                 Y: 83,
-                Z: 3537,
-                X: 655
+                Z: 3533
             }
         },
         ObjectiveData: {

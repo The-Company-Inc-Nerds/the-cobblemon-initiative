@@ -1,9 +1,9 @@
 {
     PresetMetadata: {
         author: "TheCompanyInc",
-        category: "Civilian",
+        category: "Merchant",
         created: 0L,
-        description: "civilian at Deepcore City — Rubble Chute (act 1). Compiled from dialog-src.",
+        description: "merchant at Deepcore City — Rubble Chute (act 1). Compiled from dialog-src.",
         entityTypeId: "easy_npc:humanoid",
         modified: 0L,
         name: "Vorn Gravelhand",
@@ -33,37 +33,123 @@
         CanPickUpLoot: 0b,
         CustomNameVisible: 1b,
         DialogData: {
-            Type: "BASIC",
+            Type: "STANDARD",
             DialogDataSet: [
                 {
                     Priority: 10,
                     Buttons: [
                         {
-                            Name: "Goodbye",
+                            Name: "Browse the salvage shelf",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "salvage"
+                                }
+                            ],
+                            Label: "salvage_button"
+                        },
+                        {
+                            Name: "Just passing the chute",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "goodbye_button"
+                            Label: "leave_button"
                         }
                     ],
                     Texts: [
                         {
-                            Text: "I clear the spoil. Whatever the pick leaves behind, I move it somewhere it is not in the way. Been doing it so long I have started thinking of the whole economy as one big chute that somebody upstairs keeps dumping into."
+                            Text: "I clear the spoil. Whatever the pick leaves behind, I move it somewhere it is not in the way — and the good bits end up on this shelf at prices the ledger already wrote off. Salvage does not adjust. Salvage just sits there being useful."
                         },
                         {
-                            Text: "Currency crisis, they say. Reserve trouble, they say. Friend, I have shovelled worse than trouble out of tighter spaces than this. It all moves eventually. The only question is who is standing under the chute when it goes."
+                            Text: "Currency crisis, they say. Reserve trouble, they say. Friend, I have shovelled worse than trouble out of tighter spaces than this. It all moves eventually. Meanwhile a torch is a torch and mine cost what they cost yesterday."
                         },
                         {
-                            Text: "You look like a person things happen around. Do me a favour and let them happen somewhere I have already cleared. I hate mucking a room twice."
+                            Text: "You look like a person things happen around. Buy a spare pickaxe before they do. I hate mucking a room twice and I hate selling to a ghost even more."
                         },
                         {
-                            Text: "Heard the vault is not empty at all — it is full of paperwork. Somebody upstairs worked out that forms weigh less than stars and file better. Me, I just clear what falls off the cart."
+                            Text: "Heard the vault is not empty at all — it is full of paperwork. Somebody upstairs worked out that forms weigh less than stars and file better. Me, I sell what falls off the cart. Nothing on my shelf has ever needed re-verifying."
                         }
                     ],
                     Name: "Vorn Gravelhand",
                     Label: "default"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Torches x16 — 60 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/market/buy_torches"
+                                }
+                            ],
+                            Label: "buy_torches_button"
+                        },
+                        {
+                            Name: "Coal x8 — 80 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/market/buy_coal"
+                                }
+                            ],
+                            Label: "buy_coal_button"
+                        },
+                        {
+                            Name: "Iron Ingot — 120 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/market/buy_iron_ingot"
+                                }
+                            ],
+                            Label: "buy_iron_ingot_button"
+                        },
+                        {
+                            Name: "Rails x8 — 150 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/market/buy_rails"
+                                }
+                            ],
+                            Label: "buy_rails_button"
+                        },
+                        {
+                            Name: "Iron Pickaxe — 400 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/market/buy_iron_pickaxe"
+                                }
+                            ],
+                            Label: "buy_iron_pickaxe_button"
+                        },
+                        {
+                            Name: "Back to Vorn",
+                            Actions: [
+                                {
+                                    Type: "OPEN_DEFAULT_DIALOG"
+                                }
+                            ],
+                            Label: "back_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The shelf. Torches by the bundle because the dark down here is not a metaphor. Coal for the same reason. Iron the assay office weighed and forgot. Rails, straightened personally, mostly by throwing them. And one good pickaxe for when yours gives up in the middle of a wall — they always give up in the middle of a wall."
+                        }
+                    ],
+                    Name: "Vorn — the salvage shelf",
+                    Label: "salvage"
                 }
             ]
         },
@@ -155,18 +241,6 @@
             HasTravelTarget: 0b,
             ObjectiveDataSet: [
                 {
-                    Type: "RANDOM_STROLL_AROUND_HOME",
-                    Prio: 2,
-                    Id: "ambient_stroll_home",
-                    SpeedModifier: 0.8d
-                },
-                {
-                    Type: "MOVE_BACK_TO_HOME",
-                    Prio: 3,
-                    Id: "ambient_back_home",
-                    SpeedModifier: 1.0d
-                },
-                {
                     Type: "LOOK_AT_PLAYER",
                     Prio: 9,
                     Id: "ambient_look_player",
@@ -195,13 +269,13 @@
         },
         RenderData: {},
         SkinData: {
-            Type: "SECURE_REMOTE_URL",
-            URL: "https://www.minecraftskins.com/uploads/skins/2025/12/03/ann10neck-23690361.png?v945",
-            UUID: [I; 324190849, -1596771428, -1866379048, 304511991],
-            Name: "",
             Content: "",
-            Timestamp: 1772025715977L,
-            DisableLayers: 0b
+            DisableLayers: 0b,
+            Name: "",
+            Timestamp: 0L,
+            Type: "CUSTOM",
+            URL: "",
+            UUID: [I; -1240199179, -107784559, -1937040431, 1432805729]
         },
         SoundData: {
             SoundDataSet: [

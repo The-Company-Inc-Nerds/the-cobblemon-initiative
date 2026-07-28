@@ -267,6 +267,25 @@
                                             }
                                         ]
                                     },
+                                    Cmd: "tag @s add in_trainer_battle"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_r14_spotter_frost"
+                                            },
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_declined_r14_spotter_frost"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:r14_spotter_frost onwin {1: ['cobbledollars give @1 850', 'tag @1 add defeated_r14_spotter_frost', '@2 say Warm blood, cold nerve. You take the ice better than most. Nifl is yours to reach.', 'tag @1 remove in_trainer_battle'], 2: ['@1 say The pass takes the unprepared. Thaw out at the waypost and try the crossing again.', 'tag @2 remove in_trainer_battle']}"
                                 },
                                 {

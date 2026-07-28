@@ -1,9 +1,9 @@
 {
     PresetMetadata: {
         author: "TheCompanyInc",
-        category: "Merchant",
+        category: "Service",
         created: 0L,
-        description: "merchant at Deepcore City — Commissary Row (act 1). Compiled from dialog-src.",
+        description: "healer at Deepcore City - Pokemon Center (act 1). Compiled from dialog-src.",
         entityTypeId: "easy_npc:humanoid",
         modified: 0L,
         name: "Orrin Stonelace",
@@ -33,34 +33,165 @@
         CanPickUpLoot: 0b,
         CustomNameVisible: 1b,
         DialogData: {
-            Type: "BASIC",
+            Type: "CUSTOM",
             DialogDataSet: [
                 {
                     Priority: 10,
                     Buttons: [
                         {
-                            Name: "Goodbye",
+                            Name: "Heal my team - posted rate",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/heal_paid"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add met_deepcore_nurse"
+                                },
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "healed"
+                                }
+                            ],
+                            Label: "heal_button"
+                        },
+                        {
+                            Name: "Use the PC",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:pc/open"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "pc_button"
+                        },
+                        {
+                            Name: "Anyone need a hand around here?",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add met_deepcore_nurse"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "tellraw @initiator [{\"text\":\"Foreman Kang, if you can stand his grumbling. Old union man, retired to a stool by the pit-head. Says the new ore ledger reads like a lie he cannot spell.\",\"color\":\"gold\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_deepcore_restructure_done"
+                                }
+                            ],
+                            Label: "kang_button"
+                        },
+                        {
+                            Name: "What is the dojo shouting about?",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add met_deepcore_nurse"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "tellraw @initiator [{\"text\":\"Old Dun runs the Iron Ladder down a played-out shaft. Three fights, no heals between them. Bring me the pieces after and I will not ask how it went.\",\"color\":\"gold\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_iron_ladder_cleared"
+                                }
+                            ],
+                            Label: "ladder_button"
+                        },
+                        {
+                            Name: "Any news off the road?",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add met_deepcore_nurse"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "tellraw @initiator [{\"text\":\"A water delegation came up from Gaviota Port asking after this mine - after the reserve numbers, specifically. Leader Neptune does not send people to ask about weather. Somebody down the coast is worried too.\",\"color\":\"aqua\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "gaviota_button"
+                        },
+                        {
+                            Name: "Just passing",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add met_deepcore_nurse"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Orrin. I sold lamp oil at the commissary for twenty years and then this town needed somebody at the Center desk more than it needed wick. Same counter manner, better stock. The rate is posted on the wall and I can look you in the eye about it. Sit your team down - the supply road runs easier since somebody gave the fields back."
+                        },
+                        {
+                            Text: "Careful, careful - set them down like crates of oil, not sacks of gravel. A peddler learns hands before a medic does, that is my theory and my patients have stopped arguing with it. I keep the posted rate, same for a miner as for a champion. My deliveries even arrive on time now the road past the fields runs quiet. Whatever you did out there, it reaches this counter."
+                        },
+                        {
+                            Text: "Half this waiting room is dojo bruises and the other half read their pay slip too closely. I used to sell those men rope. Now I splint them. The Center rate is chalked where the oil prices used to be, and unlike some boards in this town every number on mine is true. The road up from the fields runs cleaner than it did a badge ago - my crates noticed even if the ledgers pretend not to."
+                        }
+                    ],
+                    Name: "Orrin Stonelace - Center desk",
+                    Label: "default"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Thank you, Orrin",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "goodbye_button"
+                            Label: "leave_button"
                         }
                     ],
                     Texts: [
                         {
-                            Text: "Lamp oil, wick, spare striker, good rope — everything a deep crew burns through. I take coin, real coin, and I will keep taking it until the day it will not buy oil, which the fellow two stalls down keeps promising is soon."
+                            Text: "There - mended and billed at the posted rate, same as everyone who crosses my floor. Quarry Road brought you in rough. Rest while the pit lets you."
                         },
                         {
-                            Text: "See that grain buyer set up by the mine gate? Offering to pay wages in wheat before, and I quote him, the paper money learns it is worthless. In a commissary. To miners. That is not commerce, that is a funeral with a sales pitch."
-                        },
-                        {
-                            Text: "Prices on my end have crept up, I will not pretend they have not. But I mark my own board and I can look you in the eye about every number on it. Ask the fellow with the wheat to do the same. Go on, I will wait."
+                            Text: "Good as new. Gaviota is a long haul down the coast road and the water gets deeper the further you go. Set them down again before you leave if you need to."
                         }
                     ],
-                    Name: "Orrin Stonelace",
-                    Label: "default"
+                    Name: "Orrin - rested",
+                    Label: "healed"
                 }
             ]
         },

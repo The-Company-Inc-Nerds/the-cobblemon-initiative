@@ -1,0 +1,11 @@
+# Orc camp P9 (790 63 3403) — lowland hollow camp, easiest of the eight (bottom of the
+# menace ladder — first camp most routes meet). Run positioned at the pin from orc/tick;
+# latch set FIRST (one-shot raise). 4 mobs: two axe vindicators in leather, one husk
+# marauder, War-Chief in full iron at 36 HP. Drop-chance loot carry (0.25f armor / 0.5f
+# hands, husk CanPickUpLoot 0b).
+scoreboard players set #orc_camp_p9 ci_ambient 1
+title @a[distance=..48] actionbar [{"text":"War-drums on the ridge — a raider camp stirs","color":"red"}]
+execute positioned ~3 ~1 ~4 run summon minecraft:vindicator ~ ~ ~ {Tags:["orc_camp_p9","ci_orc"],PersistenceRequired:1b,CustomName:'{"text":"Orc Raider"}',HandItems:[{id:"minecraft:iron_axe",count:1},{}],HandDropChances:[0.5f,0.0f],ArmorItems:[{},{},{id:"minecraft:leather_chestplate",count:1},{}],ArmorDropChances:[0.25f,0.25f,0.25f,0.25f]}
+execute positioned ~-4 ~1 ~2 run summon minecraft:vindicator ~ ~ ~ {Tags:["orc_camp_p9","ci_orc"],PersistenceRequired:1b,CustomName:'{"text":"Orc Raider"}',HandItems:[{id:"minecraft:iron_axe",count:1},{}],HandDropChances:[0.5f,0.0f],ArmorItems:[{id:"minecraft:leather_boots",count:1},{},{},{id:"minecraft:leather_helmet",count:1}],ArmorDropChances:[0.25f,0.25f,0.25f,0.25f]}
+execute positioned ~-2 ~1 ~-4 run summon minecraft:husk ~ ~ ~ {Tags:["orc_camp_p9","ci_orc"],PersistenceRequired:1b,IsBaby:0b,CanPickUpLoot:0b,CustomName:'{"text":"Orc Marauder"}',HandItems:[{id:"minecraft:iron_sword",count:1},{}],HandDropChances:[0.5f,0.0f],ArmorItems:[{},{},{},{id:"minecraft:leather_helmet",count:1}],ArmorDropChances:[0.25f,0.25f,0.25f,0.25f]}
+execute positioned ~0 ~1 ~2 run summon minecraft:vindicator ~ ~ ~ {Tags:["orc_camp_p9","ci_orc"],PersistenceRequired:1b,CustomName:'{"text":"Orc War-Chief","color":"red"}',CustomNameVisible:1b,attributes:[{id:"minecraft:generic.max_health",base:36d}],Health:36f,HandItems:[{id:"minecraft:iron_axe",count:1},{}],HandDropChances:[0.5f,0.0f],ArmorItems:[{id:"minecraft:iron_boots",count:1},{id:"minecraft:iron_leggings",count:1},{id:"minecraft:iron_chestplate",count:1},{id:"minecraft:iron_helmet",count:1}],ArmorDropChances:[0.25f,0.25f,0.25f,0.25f]}

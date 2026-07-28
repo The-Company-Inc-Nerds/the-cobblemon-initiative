@@ -267,6 +267,25 @@
                                             }
                                         ]
                                     },
+                                    Cmd: "tag @s add in_trainer_battle"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_r16_spotter_causeway"
+                                            },
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_declined_r16_spotter_causeway"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:r16_spotter_causeway onwin {1: ['cobbledollars give @1 1100', 'tag @1 add defeated_r16_spotter_causeway', '@2 say Clean crossing. You have earned the far arch - the League will not intimidate you.', 'tag @1 remove in_trainer_battle'], 2: ['@1 say The causeway does not forgive a slow team on the open run. Regroup and cross again.', 'tag @2 remove in_trainer_battle']}"
                                 },
                                 {

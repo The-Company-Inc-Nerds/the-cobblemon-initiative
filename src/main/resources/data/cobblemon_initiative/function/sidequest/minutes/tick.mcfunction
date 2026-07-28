@@ -43,3 +43,6 @@ execute as @a[scores={ci_loiter_hz=1..}] at @s unless entity @e[tag=hz_branch_ma
 
 # EYES ON YOU / CLEAR meter + loiter countdown at the door for players without the minutes.
 execute as @a[tag=!hz_minutes_heard] at @s if entity @e[tag=hz_branch_manager,distance=..6] run function cobblemon_initiative:sidequest/minutes/near_office
+
+# ALPHA.3 (N1): kick cooldown decay — see minutes/caught.
+scoreboard players remove @a[scores={ci_kick_cd=1..}] ci_kick_cd 1

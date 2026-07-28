@@ -19,8 +19,10 @@ execute as @a[scores={dex_caught=50..}] unless entity @s[tag=call_acacia_dex_don
 # ── Mom — proud (5 badges) + worried (first Nuzlocke loss) ──
 execute as @a[scores={memory_fragment=5..}] unless entity @s[tag=call_mom_proud_done] run function cobblemon_initiative:phone/ring_mom_proud
 execute as @a[tag=nuzlocke_lost_one] unless entity @s[tag=call_mom_worry_done] run function cobblemon_initiative:phone/ring_mom_worry
-# ── The Company — escalating recognition/threat arc (anonymous @3 -> DJ @7 -> the Board @Champion) ──
-execute as @a[scores={memory_fragment=3..}] unless entity @s[tag=call_company_watch_done] run function cobblemon_initiative:phone/ring_company_watch
+# ── The Company — escalating threat arc (DJ @7 -> the Board @Champion). The anonymous @3 beat was
+# CUT in 0.7.0-a3: it fired the same throttle pass as ring_mom at badge 3 and the double deliver ate
+# the Mom call (second pre-spawn sweep deleted the first caller + clobbered the open compound). The
+# phone_unknown caller stays authored but dormant — the beat may return at gym 4.
 execute as @a[scores={memory_fragment=7..},tag=!defeated_villain_boss] unless entity @s[tag=call_dj_threat_done] run function cobblemon_initiative:phone/ring_dj_threat
 execute as @a[tag=royal_league_champion] unless entity @s[tag=call_board_gloat_done] run function cobblemon_initiative:phone/ring_board_gloat
 # The Founder — pre-finale call. DORMANT until act-3 emits a `board_cleared` player tag (Board content unbuilt).

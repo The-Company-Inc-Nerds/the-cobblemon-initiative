@@ -251,6 +251,25 @@
                                             }
                                         ]
                                     },
+                                    Cmd: "tag @s add in_trainer_battle"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_deepcore_trainer_1"
+                                            },
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_deepcore_trainer_2"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "tbcs battle GEN_9_MULTI @s rctmod:deepcore_second vs rctmod:deepcore_trainer_1 rctmod:deepcore_trainer_2 onwin {1: ['tag @1 add defeated_deepcore_trainer_1', 'tag @1 add defeated_deepcore_trainer_2', '@3 say Clean strike. The floor is yours to pass.', 'tag @1 remove in_trainer_battle'], 2: ['@1 say Get your stance right and come back. The floor is patient.', 'tag @3 remove in_trainer_battle']}"
                                 },
                                 {

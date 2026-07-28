@@ -38,6 +38,22 @@ npcsight stoptag 1f5eaff3-56c0-4b4f-bca5-ec2e49d93660 defeated_r3_trainer_rowan
 npcsight add 19625595-ee88-4ab8-a671-b7e3e8fdac01 8
 npcsight mode 19625595-ee88-4ab8-a671-b7e3e8fdac01 pursue
 npcsight stoptag 19625595-ee88-4ab8-a671-b7e3e8fdac01 defeated_r3_trainer_selene
+# Darrik Stonevein (darrik_stonevein)
+npcsight add efb0b45f-6069-478b-9cca-dc82ed9973e7 8
+npcsight mode efb0b45f-6069-478b-9cca-dc82ed9973e7 pursue
+npcsight stoptag efb0b45f-6069-478b-9cca-dc82ed9973e7 defeated_r5_trainer_darrik
+# Helda Ironstep (helda_ironstep)
+npcsight add 15a61002-e396-457d-99ae-d4f8c52f8eef 8
+npcsight mode 15a61002-e396-457d-99ae-d4f8c52f8eef pursue
+npcsight stoptag 15a61002-e396-457d-99ae-d4f8c52f8eef defeated_r5_trainer_helda
+# Kelda Deepmark (kelda_deepmark)
+npcsight add 15f6a57e-a7a3-4e2b-80f3-d58e4745a811 8
+npcsight mode 15f6a57e-a7a3-4e2b-80f3-d58e4745a811 pursue
+npcsight stoptag 15f6a57e-a7a3-4e2b-80f3-d58e4745a811 defeated_r5_trainer_kelda
+# Rovan Pickstride (rovan_pickstride)
+npcsight add 4b74f60b-5fb3-45b8-a318-c9a89c6f1a84 8
+npcsight mode 4b74f60b-5fb3-45b8-a318-c9a89c6f1a84 pursue
+npcsight stoptag 4b74f60b-5fb3-45b8-a318-c9a89c6f1a84 defeated_r5_trainer_rovan
 # Lucian Scrollkeeper (lucian_scrollkeeper)
 npcsight add 7aeca5b3-1f72-4072-a8c4-e6eef877f160 6 open_file
 npcsight mode 7aeca5b3-1f72-4072-a8c4-e6eef877f160 approach_once

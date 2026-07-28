@@ -86,7 +86,7 @@ The marsh is a town of charm-sellers and luck-readers, so it's the first place t
 
 | Status | Quest | Giver | What you do | Reward |
 |:------:|-------|-------|-------------|--------|
-| ✅ Done | **The Water Remembers** | Fen-Nurse Wisteria `@ 1068 65 2465` | Heal at the marsh Center; hear the rumors that point you at the town's other quests | Paid healing + the town's quest board |
+| ✅ Done | **The Water Remembers** | Liora Starquill `@ 1176 69 2360` | Heal at the marsh Center; hear the rumors that point you at the town's other quests | Paid healing + the town's quest board |
 | ✅ Done | **Wisps in the Reeds** | Charm-Weaver Marigold `@ 1076 66 2452` | Bring 8 string from the reeds; keep a warding charm, then an optional friendly wager | ~300 CD + training pack (+ 200 CD wager) |
 | ✅ Done | **Verified Weather** | Verified Clerk Osric `@ 1082 66 2448` | Witness the exchange board "recalibrate" three times and sign off | A deliberately short "witness fee" (~60 CD) |
 | ✅ Done | **The Alternative** | Sedge `@ 1058 78 2478` | Meet the marsh's wheat trader and hear the alternative-currency pitch | Trade goods; feeds the Wheat War thread |
@@ -94,9 +94,9 @@ The marsh is a town of charm-sellers and luck-readers, so it's the first place t
 
 ### The Water Remembers — ✅ Done
 
-> Giver: **Fen-Nurse Wisteria** `@ 1068 65 2465` (behind the marsh Center counter).
+> Giver: **Liora Starquill** `@ 1176 69 2360` (behind the marsh Center counter).
 
-There's no free healing machine in the marsh — **Fen-Nurse Wisteria** heals your team for the posted rate, same as every nurse on the route (price drifts up with the instability index). She's also the town's rumor hub: ask what needs doing and she'll point you at Marigold's charm stall and the fenced paddy south of town, and name the road out to Deepcore. Later she delivers the first civilian "the money feels wrong" murmur — coin comes up light in her drawer — but she reads it as the fen's bad luck, not anything she could name. This is a signpost, not a fetch: no turn-in, just the town's quest board.
+There's no free healing machine in the marsh — **Liora Starquill**, the Center's stargazer-nurse, heals your team for the posted rate, same as every nurse on the route (price drifts up with the instability index). By night she charts the will-o-wisps, and if you ask about anything older than the gym she'll press a hand-inked **wisp-map** into your hands. She's also the town's rumor hub: ask what needs doing and she'll point you at Marigold's charm stall and the fenced paddy south of town, and name the road out to Deepcore. Later she delivers the first civilian "the money feels wrong" murmur — coin comes up light in her drawer — but she reads it as the fen's bad luck, not anything she could name. This is a signpost, not a fetch: no turn-in, just the town's quest board.
 
 ### Wisps in the Reeds — ✅ Done
 

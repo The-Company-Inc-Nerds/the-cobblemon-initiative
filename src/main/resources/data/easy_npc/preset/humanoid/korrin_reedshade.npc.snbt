@@ -33,24 +33,102 @@
         CanPickUpLoot: 0b,
         CustomNameVisible: 1b,
         DialogData: {
-            Type: "BASIC",
+            Type: "STANDARD",
             DialogDataSet: [
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "korrin_flowers_in"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "no_korrin_gift_done"
+                        }
+                    ],
+                    Priority: 25,
+                    Buttons: [
+                        {
+                            Name: "Take the fund and the brews",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/payout {amount:250}"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/reward/minor"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "give @s cobblemon:super_potion 2"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add korrin_gift_done"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "tellraw @initiator [{\"text\":\"Korrin clutches the orchids like a badge already won.\",\"color\":\"aqua\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "reward_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Blue orchids. Actual blue orchids, and you just — walked out there and picked them, like the fog is not full of teeth. Alright. Titania said charm her first, and this time I am doing the charm part. Take my flower fund — I was never going to survive picking them myself — and the spare brews from my pack. You earned both and I owe you the badge I am about to go win."
+                        }
+                    ],
+                    Name: "Korrin Reedshade — the charm part",
+                    Label: "flowers_in"
+                },
                 {
                     Priority: 10,
                     Buttons: [
                         {
-                            Name: "Goodbye",
+                            Name: "Hand over blue orchids — 5, for the charm part",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative turnin minecraft:blue_orchid 5 korrin_flowers_in"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_korrin_gift_done"
+                                }
+                            ],
+                            Label: "flowers_button"
+                        },
+                        {
+                            Name: "Good luck with the rematch",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "goodbye_button"
+                            Label: "leave_button"
                         }
                     ],
                     Texts: [
                         {
-                            Text: "I came for the badge a week ago and I am still here. Not because Titania beat me twice — alright, partly that. Mostly it is the nights. Nobody warned me a town could have a creeper problem. My Wooper stands watch and I have not slept right since."
+                            Text: "I came for the badge a week ago and I am still here. Not because Titania beat me twice — alright, partly that. Mostly it is the nights. Nobody warned me the marsh past the lamps has a creeper problem. My Wooper stands watch and I have not slept right since."
                         },
                         {
                             Text: "You want advice? Bring something that hits fairies hard and bring a torch that never goes out. And when Titania says charm her first, she means it. I skipped the charm part. Do not skip the charm part."

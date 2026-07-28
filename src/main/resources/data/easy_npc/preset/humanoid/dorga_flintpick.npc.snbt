@@ -33,19 +33,87 @@
         CanPickUpLoot: 0b,
         CustomNameVisible: 1b,
         DialogData: {
-            Type: "BASIC",
+            Type: "STANDARD",
             DialogDataSet: [
                 {
-                    Priority: 10,
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "dorga_powder_in"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "no_dorga_gift_done"
+                        }
+                    ],
+                    Priority: 25,
                     Buttons: [
                         {
-                            Name: "Goodbye",
+                            Name: "Take the Drilbur",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative givemon drilbur level=33"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add dorga_gift_done"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "tellraw @initiator [{\"text\":\"Drilbur joined you — dug straight out of the Deepcore lower gallery, and it has never once come up short.\",\"color\":\"gold\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "drilbur_button"
+                        },
+                        {
+                            Name: "Keep it warm a moment longer",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "goodbye_button"
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Twelve measures of powder, dry and proper. The blast schedule is saved and so is my standing with the crew, which around here is worth more than the wage. So — square deal. The little digger sleeps in my tent and eats half my ration, and on my pay slip that is a debt I cannot carry. Take the Drilbur. It moves more rock in an hour than the whole gallery six roster, it deserves a trainer whose coin is not adjusting."
+                        }
+                    ],
+                    Name: "Dorga — squared up",
+                    Label: "drilbur_ready"
+                },
+                {
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "Hand over 12 gunpowder",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative turnin minecraft:gunpowder 12 dorga_powder_in"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_dorga_gift_done"
+                                }
+                            ],
+                            Label: "powder_button"
                         }
                     ],
                     Texts: [
@@ -60,6 +128,9 @@
                         },
                         {
                             Text: "And now they have gone and cut the haphazard pay. Which fits, honestly. Haphazard is exactly how that roof hangs over gallery six, and exactly how I expect to be paid for standing under it."
+                        },
+                        {
+                            Text: "Mind the tent, that is the blast kit under the tarp — or it would be, if the commissary had not re-verified my powder ration down to a stern note. Twelve measures of gunpowder gets gallery six blasted on schedule. Creepers drop it, if you have the nerve for that kind of shopping."
                         }
                     ],
                     Name: "Dorga Flintpick",
@@ -195,13 +266,13 @@
         },
         RenderData: {},
         SkinData: {
-            Type: "SECURE_REMOTE_URL",
-            URL: "https://www.minecraftskins.com/uploads/skins/2025/12/19/old-miner-23729808.png?v945",
-            UUID: [I; -1724898975, 1317614133, -1712799091, 789151250],
-            Name: "",
             Content: "",
-            Timestamp: 1772025575523L,
-            DisableLayers: 0b
+            DisableLayers: 0b,
+            Name: "",
+            Timestamp: 0L,
+            Type: "CUSTOM",
+            URL: "",
+            UUID: [I; 1137969252, 299065129, -1289794983, 984250859]
         },
         SoundData: {
             SoundDataSet: [

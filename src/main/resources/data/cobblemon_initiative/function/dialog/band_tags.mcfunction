@@ -49,6 +49,12 @@ execute as @a unless score @s cd_instability matches 56.. run tag @s remove cd_i
 execute as @a if score @s cd_instability matches 8.. run tag @s add cd_instability_gte_8
 execute as @a unless score @s cd_instability matches 8.. run tag @s remove cd_instability_gte_8
 
+execute as @a if score @s ci_daycare matches 1.. run tag @s add ci_daycare_gte_1
+execute as @a unless score @s ci_daycare matches 1.. run tag @s remove ci_daycare_gte_1
+
+execute as @a if score @s ci_daycare matches 2.. run tag @s add ci_daycare_gte_2
+execute as @a unless score @s ci_daycare matches 2.. run tag @s remove ci_daycare_gte_2
+
 execute as @a if score @s ci_papers_filed matches 3.. run tag @s add ci_papers_filed_gte_3
 execute as @a unless score @s ci_papers_filed matches 3.. run tag @s remove ci_papers_filed_gte_3
 
@@ -63,9 +69,6 @@ execute as @a unless score @s cyber_tower matches 2.. run tag @s remove cyber_to
 
 execute as @a if score @s cyber_tower matches 4.. run tag @s add cyber_tower_gte_4
 execute as @a unless score @s cyber_tower matches 4.. run tag @s remove cyber_tower_gte_4
-
-execute as @a if score @s deepcore_tower matches 1.. run tag @s add deepcore_tower_gte_1
-execute as @a unless score @s deepcore_tower matches 1.. run tag @s remove deepcore_tower_gte_1
 
 execute as @a if score @s deepcore_tower matches 2.. run tag @s add deepcore_tower_gte_2
 execute as @a unless score @s deepcore_tower matches 2.. run tag @s remove deepcore_tower_gte_2
@@ -272,8 +275,10 @@ tag @a[tag=!company_overthrown] add no_company_overthrown
 tag @a[tag=company_overthrown] remove no_company_overthrown
 tag @a[tag=!corvin_fish_paid] add no_corvin_fish_paid
 tag @a[tag=corvin_fish_paid] remove no_corvin_fish_paid
-tag @a[tag=!dc_gauntlet_started] add no_dc_gauntlet_started
-tag @a[tag=dc_gauntlet_started] remove no_dc_gauntlet_started
+tag @a[tag=!dc_track_full] add no_dc_track_full
+tag @a[tag=dc_track_full] remove no_dc_track_full
+tag @a[tag=!dc_track_pit] add no_dc_track_pit
+tag @a[tag=dc_track_pit] remove no_dc_track_pit
 tag @a[tag=!declined_nifl_records_officer] add no_declined_nifl_records_officer
 tag @a[tag=declined_nifl_records_officer] remove no_declined_nifl_records_officer
 tag @a[tag=!declined_nifl_warrant_officer] add no_declined_nifl_warrant_officer
@@ -298,8 +303,16 @@ tag @a[tag=!declined_r3_trainer_selene] add no_declined_r3_trainer_selene
 tag @a[tag=declined_r3_trainer_selene] remove no_declined_r3_trainer_selene
 tag @a[tag=!declined_r3_trainer_shroom] add no_declined_r3_trainer_shroom
 tag @a[tag=declined_r3_trainer_shroom] remove no_declined_r3_trainer_shroom
+tag @a[tag=!declined_r5_trainer_darrik] add no_declined_r5_trainer_darrik
+tag @a[tag=declined_r5_trainer_darrik] remove no_declined_r5_trainer_darrik
+tag @a[tag=!declined_r5_trainer_helda] add no_declined_r5_trainer_helda
+tag @a[tag=declined_r5_trainer_helda] remove no_declined_r5_trainer_helda
+tag @a[tag=!declined_r5_trainer_kelda] add no_declined_r5_trainer_kelda
+tag @a[tag=declined_r5_trainer_kelda] remove no_declined_r5_trainer_kelda
 tag @a[tag=!declined_r5_trainer_quarry] add no_declined_r5_trainer_quarry
 tag @a[tag=declined_r5_trainer_quarry] remove no_declined_r5_trainer_quarry
+tag @a[tag=!declined_r5_trainer_rovan] add no_declined_r5_trainer_rovan
+tag @a[tag=declined_r5_trainer_rovan] remove no_declined_r5_trainer_rovan
 tag @a[tag=!declined_r7_spotter_coast] add no_declined_r7_spotter_coast
 tag @a[tag=declined_r7_spotter_coast] remove no_declined_r7_spotter_coast
 tag @a[tag=!declined_r8_trainer_dune] add no_declined_r8_trainer_dune
@@ -516,8 +529,6 @@ tag @a[tag=!defeated_market_challenger_1] add no_defeated_market_challenger_1
 tag @a[tag=defeated_market_challenger_1] remove no_defeated_market_challenger_1
 tag @a[tag=!defeated_market_challenger_2] add no_defeated_market_challenger_2
 tag @a[tag=defeated_market_challenger_2] remove no_defeated_market_challenger_2
-tag @a[tag=!defeated_mm_field_guard] add no_defeated_mm_field_guard
-tag @a[tag=defeated_mm_field_guard] remove no_defeated_mm_field_guard
 tag @a[tag=!defeated_mm_wheat_trader] add no_defeated_mm_wheat_trader
 tag @a[tag=defeated_mm_wheat_trader] remove no_defeated_mm_wheat_trader
 tag @a[tag=!defeated_mystic_apprentice] add no_defeated_mystic_apprentice
@@ -612,8 +623,16 @@ tag @a[tag=!defeated_r3_trainer_selene] add no_defeated_r3_trainer_selene
 tag @a[tag=defeated_r3_trainer_selene] remove no_defeated_r3_trainer_selene
 tag @a[tag=!defeated_r3_trainer_shroom] add no_defeated_r3_trainer_shroom
 tag @a[tag=defeated_r3_trainer_shroom] remove no_defeated_r3_trainer_shroom
+tag @a[tag=!defeated_r5_trainer_darrik] add no_defeated_r5_trainer_darrik
+tag @a[tag=defeated_r5_trainer_darrik] remove no_defeated_r5_trainer_darrik
+tag @a[tag=!defeated_r5_trainer_helda] add no_defeated_r5_trainer_helda
+tag @a[tag=defeated_r5_trainer_helda] remove no_defeated_r5_trainer_helda
+tag @a[tag=!defeated_r5_trainer_kelda] add no_defeated_r5_trainer_kelda
+tag @a[tag=defeated_r5_trainer_kelda] remove no_defeated_r5_trainer_kelda
 tag @a[tag=!defeated_r5_trainer_quarry] add no_defeated_r5_trainer_quarry
 tag @a[tag=defeated_r5_trainer_quarry] remove no_defeated_r5_trainer_quarry
+tag @a[tag=!defeated_r5_trainer_rovan] add no_defeated_r5_trainer_rovan
+tag @a[tag=defeated_r5_trainer_rovan] remove no_defeated_r5_trainer_rovan
 tag @a[tag=!defeated_r7_spotter_coast] add no_defeated_r7_spotter_coast
 tag @a[tag=defeated_r7_spotter_coast] remove no_defeated_r7_spotter_coast
 tag @a[tag=!defeated_r8_trainer_dune] add no_defeated_r8_trainer_dune
@@ -890,10 +909,16 @@ tag @a[tag=!doc_portrait] add no_doc_portrait
 tag @a[tag=doc_portrait] remove no_doc_portrait
 tag @a[tag=!docs_filed] add no_docs_filed
 tag @a[tag=docs_filed] remove no_docs_filed
+tag @a[tag=!dorga_gift_done] add no_dorga_gift_done
+tag @a[tag=dorga_gift_done] remove no_dorga_gift_done
 tag @a[tag=!dragon_shrine_trial_clear] add no_dragon_shrine_trial_clear
 tag @a[tag=dragon_shrine_trial_clear] remove no_dragon_shrine_trial_clear
 tag @a[tag=!dragon_slain] add no_dragon_slain
 tag @a[tag=dragon_slain] remove no_dragon_slain
+tag @a[tag=!durn_meal_done] add no_durn_meal_done
+tag @a[tag=durn_meal_done] remove no_durn_meal_done
+tag @a[tag=!durn_meal_paid] add no_durn_meal_paid
+tag @a[tag=durn_meal_paid] remove no_durn_meal_paid
 tag @a[tag=!faelrin_gift_done] add no_faelrin_gift_done
 tag @a[tag=faelrin_gift_done] remove no_faelrin_gift_done
 tag @a[tag=!fairy_crystal_claimed] add no_fairy_crystal_claimed
@@ -974,8 +999,6 @@ tag @a[tag=!gift_liora_good_tea_claimed] add no_gift_liora_good_tea_claimed
 tag @a[tag=gift_liora_good_tea_claimed] remove no_gift_liora_good_tea_claimed
 tag @a[tag=!gift_liora_route_kit_claimed] add no_gift_liora_route_kit_claimed
 tag @a[tag=gift_liora_route_kit_claimed] remove no_gift_liora_route_kit_claimed
-tag @a[tag=!gift_liora_wisp_map_claimed] add no_gift_liora_wisp_map_claimed
-tag @a[tag=gift_liora_wisp_map_claimed] remove no_gift_liora_wisp_map_claimed
 tag @a[tag=!gift_mei_hearth_tin_claimed] add no_gift_mei_hearth_tin_claimed
 tag @a[tag=gift_mei_hearth_tin_claimed] remove no_gift_mei_hearth_tin_claimed
 tag @a[tag=!gift_mira_field_kit_claimed] add no_gift_mira_field_kit_claimed
@@ -1052,12 +1075,16 @@ tag @a[tag=!kele_gift] add no_kele_gift
 tag @a[tag=kele_gift] remove no_kele_gift
 tag @a[tag=!kjell_line_mended] add no_kjell_line_mended
 tag @a[tag=kjell_line_mended] remove no_kjell_line_mended
+tag @a[tag=!korrin_gift_done] add no_korrin_gift_done
+tag @a[tag=korrin_gift_done] remove no_korrin_gift_done
 tag @a[tag=!lane_done] add no_lane_done
 tag @a[tag=lane_done] remove no_lane_done
 tag @a[tag=!lane_started] add no_lane_started
 tag @a[tag=lane_started] remove no_lane_started
 tag @a[tag=!letter_delivered] add no_letter_delivered
 tag @a[tag=letter_delivered] remove no_letter_delivered
+tag @a[tag=!ludwig_mogul_done] add no_ludwig_mogul_done
+tag @a[tag=ludwig_mogul_done] remove no_ludwig_mogul_done
 tag @a[tag=!lysira_round_done] add no_lysira_round_done
 tag @a[tag=lysira_round_done] remove no_lysira_round_done
 tag @a[tag=!manifest_paid] add no_manifest_paid
@@ -1196,6 +1223,8 @@ tag @a[tag=!takumi_grit_stocked] add no_takumi_grit_stocked
 tag @a[tag=takumi_grit_stocked] remove no_takumi_grit_stocked
 tag @a[tag=!temper_blade_done] add no_temper_blade_done
 tag @a[tag=temper_blade_done] remove no_temper_blade_done
+tag @a[tag=!thalvess_feebas_done] add no_thalvess_feebas_done
+tag @a[tag=thalvess_feebas_done] remove no_thalvess_feebas_done
 tag @a[tag=!the_hand_done] add no_the_hand_done
 tag @a[tag=the_hand_done] remove no_the_hand_done
 tag @a[tag=!the_hand_plate] add no_the_hand_plate
@@ -1210,8 +1239,12 @@ tag @a[tag=!took_deep_manifest] add no_took_deep_manifest
 tag @a[tag=took_deep_manifest] remove no_took_deep_manifest
 tag @a[tag=!took_route_manifest] add no_took_route_manifest
 tag @a[tag=took_route_manifest] remove no_took_route_manifest
+tag @a[tag=!traded_nessa] add no_traded_nessa
+tag @a[tag=traded_nessa] remove no_traded_nessa
 tag @a[tag=!traded_sefu] add no_traded_sefu
 tag @a[tag=traded_sefu] remove no_traded_sefu
+tag @a[tag=!traded_selith] add no_traded_selith
+tag @a[tag=traded_selith] remove no_traded_selith
 tag @a[tag=!transition_paid] add no_transition_paid
 tag @a[tag=transition_paid] remove no_transition_paid
 tag @a[tag=!verification_bonus_paid] add no_verification_bonus_paid
@@ -1220,6 +1253,8 @@ tag @a[tag=!waystone_stone_left] add no_waystone_stone_left
 tag @a[tag=waystone_stone_left] remove no_waystone_stone_left
 tag @a[tag=!yield_report_taken] add no_yield_report_taken
 tag @a[tag=yield_report_taken] remove no_yield_report_taken
+tag @a[tag=!zwiggo_joined] add no_zwiggo_joined
+tag @a[tag=zwiggo_joined] remove no_zwiggo_joined
 tag @a[tag=!zyra_flint_done] add no_zyra_flint_done
 tag @a[tag=zyra_flint_done] remove no_zyra_flint_done
 

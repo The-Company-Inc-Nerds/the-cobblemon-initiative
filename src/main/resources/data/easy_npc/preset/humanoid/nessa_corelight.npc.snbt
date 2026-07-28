@@ -40,11 +40,63 @@
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
+                            Name: "traded_nessa"
+                        }
+                    ],
+                    Priority: 25,
+                    Buttons: [
+                        {
+                            Name: "Balanced books, clerk",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The pledge line is closed. Your rock weighs what it weighs, the bird is off my books, and for one entry in this whole ledger the numbers are actually true. Do not tell my supervisor how good that felt."
+                        },
+                        {
+                            Text: "That Hawlucha spent months glaring at me from behind the window like the delay was my fault. Now it is your problem, and my ledger holds one honest rock. Best trade this office has cleared all year. And the memo in the back room still has your jaw, by the way. I still did not say that."
+                        }
+                    ],
+                    Name: "Nessa — one line closed",
+                    Label: "after"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
                             Name: "badges_gte_3"
                         }
                     ],
                     Priority: 20,
                     Buttons: [
+                        {
+                            Name: "Trade a Roggenrola for the Hawlucha",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative trade roggenrola hawlucha 34 traded_nessa"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_traded_nessa"
+                                }
+                            ],
+                            Label: "trade_button"
+                        },
                         {
                             Name: "I did not hear it",
                             Actions: [
@@ -70,6 +122,27 @@
                     Priority: 10,
                     Buttons: [
                         {
+                            Name: "Trade a Roggenrola for the Hawlucha",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative trade roggenrola hawlucha 34 traded_nessa"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_traded_nessa"
+                                }
+                            ],
+                            Label: "trade_button"
+                        },
+                        {
                             Name: "Stay safe, clerk",
                             Actions: [
                                 {
@@ -81,10 +154,10 @@
                     ],
                     Texts: [
                         {
-                            Text: "Ore in the pan, weight on the slip, stamp on the slip. That is the whole job, and it used to be an honest one. Do not ask me if it still is. The window is open, that is all I can promise you."
+                            Text: "Ore in the pan, weight on the slip, stamp on the slip. That is the whole job, and it used to be an honest one. Do not ask me if it still is. The window is open, that is all I can promise you. Oh — and if you happen to carry a Roggenrola, ask me about the bird. It is a long story with a short ledger line."
                         },
                         {
-                            Text: "The payout scale reads light this quarter. Everyone in line tells me the same — coin came up short again. I stamp it anyway. A stamp is not an opinion, or so my supervisor keeps reminding me."
+                            Text: "The payout scale reads light this quarter. Everyone in line tells me the same — coin came up short again. I stamp it anyway. A stamp is not an opinion, or so my supervisor keeps reminding me. Meanwhile there is a Hawlucha behind this window that a short-paid miner left as a pledge, and it judges my paperwork all day. I want it redeemed. In rock, ideally. Rock I can certify."
                         }
                     ],
                     Name: "Nessa — the assay clerk",

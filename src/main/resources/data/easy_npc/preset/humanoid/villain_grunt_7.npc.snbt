@@ -159,6 +159,20 @@
                                             }
                                         ]
                                     },
+                                    Cmd: "tag @s add in_trainer_battle"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_grunt_7"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:villain_grunt_7 onwin {1: ['cobbledollars give @1 380', 'tag @1 add defeated_villain_grunt_7', '@2 say The model did not account for you. I will adjust the model. I always adjust the model.', 'tag @1 remove in_trainer_battle', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 250', '@1 say Volatility resolved. The CobbleDollar is fine. The CobbleDollar has always been fine.', 'tag @2 remove in_trainer_battle']}"
                                 },
                                 {
@@ -228,6 +242,20 @@
                                         ]
                                     },
                                     Cmd: "tbcs attach rctmod:villain_grunt_7 @s"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_villain_grunt_7"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tag @s add in_trainer_battle"
                                 },
                                 {
                                     Type: "COMMAND",

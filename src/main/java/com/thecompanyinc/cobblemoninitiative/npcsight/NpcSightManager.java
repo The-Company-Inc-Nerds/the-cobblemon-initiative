@@ -36,8 +36,9 @@ public class NpcSightManager {
   // (cleared in both onwin branches) — pursuers stand down while it is present.
   private static final String IN_TRAINER_BATTLE_TAG = "in_trainer_battle";
 
-  // alpha.26 flee cooldown: per-player scoreboard armed to 300 by NuzlockeInit when the
-  // player FLEES a trainer battle, decremented by the combat/flee_cooldown datapack tick.
+  // alpha.26 flee cooldown: per-player scoreboard armed to 6000 (5 min, a3 ruling) by
+  // NuzlockeInit when the player FLEES a trainer battle, decremented by the
+  // combat/flee_cooldown datapack tick.
   // While > 0 a PURSUE-mode chaser holds instead of walking the player back into the
   // 4-block forced-battle band (the band trigger itself is gated preset-side on the
   // inverse no_recent_flee tag — this only suppresses the chase movement).
@@ -338,10 +339,21 @@ public class NpcSightManager {
   /** True when the pursuer should stop chasing: the player carries this NPC's stand-down
    *  tag (defeated), OR the player is in a forced trainer battle (round 13d — the
    *  engage:touch trigger sets in_trainer_battle at battle start and both onwin branches
-   *  clear it; without this the pursuer kept walking into the player mid-battle). */
+   *  clear it; without this the pursuer kept walking into the player mid-battle), OR the
+   *  player is in ANY live Cobblemon battle (alpha.2, route-3 playtest: a battle started
+   *  from a dialog BUTTON never sets the tag — button battles open with the player already
+   *  adjacent — so Maslen/Selene kept following the player around mid-fight; the
+   *  BattleRegistry liveness check covers button, gym, and wild battles alike). */
   private boolean standDown(NpcSightData data, ServerPlayer player) {
     if (player == null) return false;
     if (player.getTags().contains(IN_TRAINER_BATTLE_TAG)) return true;
+    try {
+      if (com.cobblemon.mod.common.battles.BattleRegistry.getBattleByParticipatingPlayer(player) != null) {
+        return true;
+      }
+    } catch (Exception ignored) {
+      // Registry lookup must never take the sight tick down with it.
+    }
     return data.hasStopTag() && player.getTags().contains(data.stopTag);
   }
 

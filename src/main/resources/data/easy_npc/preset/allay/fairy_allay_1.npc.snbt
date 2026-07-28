@@ -39,8 +39,13 @@
                     Priority: 10,
                     Buttons: [
                         {
-                            Name: "Speak the vows and begin the descent",
+                            Name: "Take the First Vow - Devotion",
                             Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cutscene play fairy_shrine_reveal"
+                                },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
@@ -50,17 +55,14 @@
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
                                     Cmd: "cobblemon-initiative shrine fairy start"
-                                }
-                            ],
-                            Label: "begin_vows_button"
-                        },
-                        {
-                            Name: "Take the First Vow - Devotion",
-                            Actions: [
+                                },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
                                     Cmd: "cobblemon-initiative shrine fairy test friendship"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
                                 }
                             ],
                             Label: "vow_test_button"
@@ -77,10 +79,10 @@
                     ],
                     Texts: [
                         {
-                            Text: "We were the choir of this shrine, and when it drowned the light kept what mattered of us. Speak the vows here at the first step, then follow them down the water - four more of us wait below, and the Priestess waits at the floor."
+                            Text: "We were the choir of this shrine, and when it drowned the light kept what mattered of us. The descent begins at this first step: swear the First Vow to me and the water will hear every vow you take below - three more of us wait on the stair, and the Priestess keeps the last vow at the floor."
                         },
                         {
-                            Text: "No vow can be kept before the vows are spoken. Begin here, or the water will not hear you at the lower steps. The first vow is devotion - bring the companion of your heart close, and we will listen for the bond."
+                            Text: "The first vow is devotion. Bring the companion of your heart close and swear it here, and we will listen for the bond - the water remembers your oath the whole way down. If the bond is not yet deep enough, walk together a while and come back to us."
                         }
                     ],
                     Name: "The First Vow - Devotion",

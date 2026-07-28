@@ -180,6 +180,20 @@
                                             }
                                         ]
                                     },
+                                    Cmd: "tag @s add in_trainer_battle"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_deepcore_trainer_4"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:deepcore_trainer_4 onwin {1: ['tag @1 add defeated_deepcore_trainer_4', '@2 say You kept the rhythm. The floor is all yours now.', 'tag @1 remove in_trainer_battle'], 2: ['@1 say You lost the beat. Find it again and come back.', 'tag @2 remove in_trainer_battle']}"
                                 },
                                 {

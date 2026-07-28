@@ -267,6 +267,25 @@
                                             }
                                         ]
                                     },
+                                    Cmd: "tag @s add in_trainer_battle"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_r12_spotter_pylon"
+                                            },
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_declined_r12_spotter_pylon"
+                                            }
+                                        ]
+                                    },
                                     Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:r12_spotter_pylon onwin {1: ['cobbledollars give @1 700', 'tag @1 add defeated_r12_spotter_pylon', '@2 say Clean current. You read the grid better than I read you. Cyber City is yours to reach.', 'tag @1 remove in_trainer_battle'], 2: ['@1 say The overload wins when you stand in it. Ground yourself and come back to the line.', 'tag @2 remove in_trainer_battle']}"
                                 },
                                 {

@@ -505,7 +505,11 @@ public class ShrineChallengeManager {
    */
   public void onTrainerDefeated(ServerPlayer player, String trainerId) {
     ShrineChallengeState state = activeStates.get(player.getUUID());
-    if (state == null) return;
+    if (state == null) {
+      // No in-memory trial — still salvage a fairy keeper win (see fairySalvage).
+      fairySalvage(player, trainerId);
+      return;
+    }
 
     ShrineChallengeConfig config = challenges.get(state.getShrineId());
     if (config == null) return;
@@ -566,7 +570,12 @@ public class ShrineChallengeManager {
         // Complete the challenge when the cult leader is defeated with the
         // registered Pokémon still in party slot 0.
         UUID registeredUuid = state.getFairyTestPokemonUuid();
-        if (registeredUuid == null) return; // resolve not yet run
+        if (registeredUuid == null) {
+          // A start-button re-run wiped the registered mon but the trial is live —
+          // the persistent resolve tag is the truth; salvage instead of stranding.
+          fairySalvage(player, trainerId);
+          return;
+        }
         if (!trainerId.equals(config.getCultistLeaderTrainerId())) return;
 
         PlayerPartyStore party = Cobblemon.INSTANCE.getStorage().getParty(player);
@@ -1017,11 +1026,40 @@ public class ShrineChallengeManager {
 
   // ── Private helpers ───────────────────────────────────────────────────────────
 
+  /**
+   * Belt-and-braces fairy completion (0.7.0-alpha.3): the resolve pass is recorded on the
+   * PLAYER (persistent {@code fairy_resolve_ready} tag) but the trial state lives in memory
+   * only — a relog, or the First Vow start button re-running {@code shrine fairy start},
+   * wipes it while the tag survives. The keeper battle is one-time (gated
+   * {@code no_defeated_fairy_shrine_leader}), so a keeper win that completes nothing
+   * strands the crystal permanently. If the defeated trainer is the fairy keeper and the
+   * player carries the resolve tag without the clear tag, complete the trial anyway — the
+   * resolve contract was verified when the tag was granted.
+   */
+  private void fairySalvage(ServerPlayer player, String trainerId) {
+    if (!player.getTags().contains("fairy_resolve_ready")) return;
+    for (Map.Entry<String, ShrineChallengeConfig> entry : challenges.entrySet()) {
+      ShrineChallengeConfig cfg = entry.getValue();
+      if (!"fairy_tests".equals(cfg.getType())) continue;
+      if (!trainerId.equals(cfg.getCultistLeaderTrainerId())) continue;
+      if (player.getTags().contains(entry.getKey() + "_shrine_trial_clear")) return;
+      InitiativeInit.LOGGER.info(
+        "Fairy shrine salvage completion for {} — keeper defeated with resolve tag but no live trial state",
+        player.getName().getString()
+      );
+      completeChallenge(player, entry.getKey());
+      return;
+    }
+  }
+
   private void completeChallenge(
     ServerPlayer player,
     ShrineChallengeState state
   ) {
-    String shrineId = state.getShrineId();
+    completeChallenge(player, state.getShrineId());
+  }
+
+  private void completeChallenge(ServerPlayer player, String shrineId) {
     ShrineChallengeConfig config = challenges.get(shrineId);
     String displayName = config != null ? config.getDisplayName() : shrineId;
 

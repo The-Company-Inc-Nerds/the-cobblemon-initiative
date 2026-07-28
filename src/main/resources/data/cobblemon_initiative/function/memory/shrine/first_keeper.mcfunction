@@ -1,10 +1,14 @@
 # The Land Remembers (14_shrines Q3) — one-time elemental-recognition sting on the FIRST
 # shrine leader defeated. Called from every shrine leader on_win as:
-#   execute as @1 unless entity @1[tag=shrine_frag_seen] run function ...:memory/shrine/first_keeper
+#   execute as @1 run function ...:memory/shrine/first_keeper
+# (ALPHA.2 FIX: the old on_win guard `unless entity @1[tag=…]` hit the documented
+# name+selector-args never-parses trap — @1 expands to the player NAME — so the sting
+# silently never fired. The one-time latch lives HERE now, in @s selector form.)
 # Runs in the winning player's context (@s). The shrine_frag_seen latch makes only the
 # first clear show it; the other four keepers fire this line into a no-op. Circles the
 # amnesia mystery from the ELEMENTAL angle without touching cd_instability or naming the
 # Founder. Macro-safe: no apostrophes, no percent, no double-quotes in the delivered text.
+execute if entity @s[tag=shrine_frag_seen] run return 0
 tag @s add shrine_frag_seen
 
 title @s times 10 80 20
