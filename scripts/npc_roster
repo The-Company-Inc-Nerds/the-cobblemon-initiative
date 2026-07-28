@@ -1,0 +1,373 @@
+#!/usr/bin/env python3
+"""
+npc_roster — generate docs/NPC_ROSTER.md, the dev cast sheet: every authored NPC
+grouped by area, with what they do, where they stand, and what they look like.
+
+Sources (read-only; mirrors content_compile conventions):
+  dialog-src/characters/**/*.json   the cast (area = subdirectory)
+  dialog-src/dialog/*.json          referenced dialog trees (for button actions)
+  dialog-src/visuals/*.npc.snbt     entity-type/variant swaps (fairy/allay/bogged...)
+  src/main/resources/data/easy_npc/preset/<etype>/<id>.npc.snbt  compiled looks routing
+  src/main/resources/data/rctmod/trainers/<id>.json              live battle teams
+  dev/UPM 2_ Full NPC List - npc_list.csv.csv                    world-body coords
+  function/install/repairs_a*_apply.mcfunction                   tp-by-uuid overrides
+                                    (later waves win — moved bodies show LIVE coords)
+
+Run after any cast change (content_compile does NOT run this):  scripts/npc_roster
+"""
+
+import csv
+import json
+import re
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent
+CHAR_DIR = ROOT / "dialog-src" / "characters"
+DIALOG_DIR = ROOT / "dialog-src" / "dialog"
+VISUALS_DIR = ROOT / "dialog-src" / "visuals"
+PRESET_ROOT = ROOT / "src/main/resources/data/easy_npc/preset"
+TRAINER_DIR = ROOT / "src/main/resources/data/rctmod/trainers"
+INSTALL_DIR = ROOT / "src/main/resources/data/cobblemon_initiative/function/install"
+CSV_PATH = ROOT / "dev" / "UPM 2_ Full NPC List - npc_list.csv.csv"
+OUT = ROOT / "docs" / "NPC_ROSTER.md"
+
+# Curated section order + titles. Unlisted dirs are appended alphabetically.
+AREAS = [
+    ("sango", "Sango Town — the start (no gym)"),
+    ("route1", "Route 1"),
+    ("takehara", "Takehara Falls — Gym 1 (Bug, cap 22)"),
+    ("route2", "Route 2 — Harvest Road"),
+    ("hua_zhan", "Hua Zhan City — Gym 2 (Grass, cap 30)"),
+    ("route3", "Route 3 — to the Marsh"),
+    ("mystic", "Mystic Marsh — Gym 3 (Fairy, cap 37)"),
+    ("deepcore", "Deepcore City — Gym 4 (Fighting, cap 44)"),
+    ("route5", "Route 5"),
+    ("gaviota", "Gaviota Port — Gym 5 (Water, cap 50)"),
+    ("battlebay", "Battle Bay"),
+    ("route7", "Route 7"),
+    ("kalahar", "Kalahar Reach — Gym 6 (Ground, cap 56)"),
+    ("route8", "Route 8"),
+    ("cyber", "Cyber City — Gym 7 (Electric, cap 62)"),
+    ("route10", "Route 10"),
+    ("ironwave", "Ironwave"),
+    ("route12", "Route 12"),
+    ("ryujin", "Ryujin Keep — Gym 8 (Dragon, cap 68)"),
+    ("route13", "Route 13"),
+    ("nifl", "Nifl Town — Gym 9 (Ice, cap 74)"),
+    ("route14", "Route 14"),
+    ("route15", "Route 15"),
+    ("scorchspire", "Scorchspire — Gym 10 (Fire, cap 80)"),
+    ("route16", "Route 16"),
+    ("route_royal", "Royal Road"),
+    ("royal_town", "Royal League Town"),
+    ("royal", "Royal League — Elite Four & Champion"),
+    ("frontier", "Battle Frontier (post-League)"),
+    ("safari", "Safari"),
+    ("legendary", "Legendary encounters"),
+    ("shrine", "Elemental Shrines"),
+    ("gym", "Gym staff — leaders, guides & gym trainers (all towns)"),
+    ("routes", "Roaming & route regulars (map-wide)"),
+    ("villain", "The Company, Inc. (SPOILERS)"),
+    ("phone", "PokePhone callers (no body)"),
+]
+
+
+def load_json(path):
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except Exception as exc:  # keep generating; report at the end
+        ERRORS.append(f"{path.relative_to(ROOT)}: {exc}")
+        return None
+
+
+ERRORS = []
+
+
+def world_bodies():
+    """uuid -> (x, y, z, csv_name) from the builder CSV."""
+    out = {}
+    if not CSV_PATH.exists():
+        return out
+    with CSV_PATH.open(encoding="utf-8") as fh:
+        for row in csv.DictReader(fh):
+            uuid = (row.get("UUID") or "").strip().lower()
+            if uuid:
+                try:
+                    out[uuid] = (float(row["X"]), float(row["Y"]), float(row["Z"]),
+                                 (row.get("Name") or "").strip())
+                except (KeyError, ValueError):
+                    pass
+    return out
+
+
+def repairs_tp_overrides():
+    """uuid -> (x, y, z) from repairs tp lines; later waves override earlier ones."""
+    tp_re = re.compile(
+        r"^tp\s+([0-9a-f]{8}-[0-9a-f-]{27})\s+([\d.+-]+)\s+([\d.+-]+)\s+([\d.+-]+)",
+        re.IGNORECASE)
+    waves = sorted(INSTALL_DIR.glob("repairs_a*_apply*.mcfunction"),
+                   key=lambda p: int(re.search(r"a(\d+)", p.name).group(1)))
+    out = {}
+    for path in waves:
+        for line in path.read_text(encoding="utf-8").splitlines():
+            m = tp_re.match(line.strip())
+            if m:
+                out[m.group(1).lower()] = tuple(float(m.group(i)) for i in (2, 3, 4))
+    return out
+
+
+def preset_etype(cid):
+    """Which preset/<etype>/ dir the compiled preset landed in (the looks routing)."""
+    for pdir in sorted(PRESET_ROOT.iterdir()):
+        if pdir.is_dir() and (pdir / f"{cid}.npc.snbt").exists():
+            return pdir.name
+    return None
+
+
+def visuals_variant(cid):
+    path = VISUALS_DIR / f"{cid}.npc.snbt"
+    if not path.exists():
+        return None
+    m = re.search(r'variantType\s*:\s*"(\w+)"', path.read_text(encoding="utf-8"))
+    return m.group(1) if m else None
+
+
+def trainer_team(trainer_id):
+    """(n_mons, lv_min, lv_max, species_csv) from the LIVE rctmod def, or None."""
+    path = TRAINER_DIR / f"{trainer_id}.json"
+    data = load_json(path) if path.exists() else None
+    if not data or not isinstance(data.get("team"), list) or not data["team"]:
+        return None
+    levels = [m.get("level", 0) for m in data["team"]]
+    species = [str(m.get("species", "?")) for m in data["team"]]
+    return len(levels), min(levels), max(levels), ", ".join(species)
+
+
+def fmt_coord(v):
+    return f"{v:g}"
+
+
+def latch_coords(pl):
+    """Mirror the compiler: integer x/z get +0.5, y passes through."""
+    fx = pl["x"] + 0.5 if float(pl["x"]).is_integer() else pl["x"]
+    fz = pl["z"] + 0.5 if float(pl["z"]).is_integer() else pl["z"]
+    return fx, pl["y"], fz
+
+
+def dialog_tree(ch, dialogs):
+    if isinstance(ch.get("dialog_inline"), dict):
+        return ch["dialog_inline"]
+    ref = ch.get("dialog") or ""
+    if ref.startswith("dialog:"):
+        return dialogs.get(ref.split(":", 1)[1])
+    return None
+
+
+def walk_actions(ch, dialogs):
+    """Yield every {do,...} action reachable from the dialog tree + triggers."""
+    tree = dialog_tree(ch, dialogs)
+    entries = (tree or {}).get("entries") or []
+    for entry in entries:
+        for btn in entry.get("buttons") or []:
+            yield from (a for a in btn.get("actions") or [] if isinstance(a, dict))
+    for trig in ch.get("triggers") or []:
+        yield from (a for a in trig.get("actions") or [] if isinstance(a, dict))
+
+
+def describe_does(ch, dialogs):
+    """One terse cell: what interacting with this NPC actually does."""
+    parts = []
+    sells, cutscenes, fns, gives, modcmds = [], [], [], [], []
+    battle = ch.get("battle") or {}
+    if battle.get("intro_scene"):
+        cutscenes.append(battle["intro_scene"])
+    trainer = battle.get("trainer") or ch.get("trainer")
+    if trainer:
+        team = trainer_team(trainer)
+        team_s = (f" ({team[0]}x lv{team[1]}-{team[2]}: {team[3]})" if team else "")
+        bits = [f"battles `{trainer}`{team_s}"]
+        if battle.get("prize"):
+            bits.append(f"prize {battle['prize']}")
+        if (ch.get("sight") or {}).get("mode") == "pursue":
+            bits.append(f"pursues on sight r{ch['sight'].get('range', 5)}")
+        if ch.get("engage") == "touch":
+            bits.append("forced at close range")
+        parts.append(", ".join(bits))
+    else:
+        sight = ch.get("sight") or {}
+        if sight.get("mode") == "dialog":
+            parts.append(f"hails on sight r{sight.get('range', 5)}")
+        elif sight.get("mode") == "approach_once":
+            parts.append("walks up on first sight")
+
+    for act in walk_actions(ch, dialogs):
+        cmd = act.get("cmd") or ""
+        if act.get("do") == "trade":
+            parts.append(f"native trade window ({(ch.get('trade') or {}).get('snippet', '?')})")
+        elif act.get("do") == "give":
+            loot = ch.get("loot") or {}
+            parts.append(f"gift: {loot.get('type', '?')} `{loot.get('key', '?')}`")
+        elif "economy/market/buy_" in cmd:
+            sells.append(re.search(r"buy_(\w+)", cmd).group(1))
+        elif " turnin " in f" {cmd} ":
+            m = re.search(r"turnin\s+(\S+)\s+(\d+)(?:\s+(\w+))?", cmd)
+            if m:
+                parts.append(f"fetch: {m.group(2)}x {m.group(1).split(':')[-1]}"
+                             + (f" -> `{m.group(3)}`" if m.group(3) else ""))
+        elif " givemon " in f" {cmd} ":
+            m = re.search(r"givemon\s+(\S+)((?:\s\S+)*)", cmd)
+            parts.append(f"gifts mon: {m.group(1)}{m.group(2)}".rstrip())
+        elif re.search(r"\btrade\s+\w+\s+\w+", cmd) and "cobblemon-initiative" in cmd:
+            m = re.search(r"trade\s+(\w+)\s+(\w+)", cmd)
+            parts.append(f"mon trade: your {m.group(1)} -> {m.group(2)}")
+        elif "cutscene play" in cmd:
+            cutscenes.append(cmd.split("cutscene play", 1)[1].split()[0])
+        elif re.match(r"give\s+@s\s+\S+", cmd):
+            m = re.match(r"give\s+@s\s+(\S+?)(?:\[\S*\])?\s*(\d+)?\s*$", cmd)
+            if m:
+                gives.append(m.group(1).split(":")[-1]
+                             + (f" x{m.group(2)}" if m.group(2) else ""))
+        elif "cobblemon-initiative" in cmd:
+            sub = cmd.split("cobblemon-initiative", 1)[1].strip()
+            if sub:
+                modcmds.append(" ".join(sub.split()[:3]))
+        elif cmd.startswith("function "):
+            fns.append(cmd.split()[1].split(":")[-1])
+    if sells:
+        uniq = list(dict.fromkeys(sells))
+        shown = ", ".join(uniq[:5]) + ("..." if len(uniq) > 5 else "")
+        parts.append(f"sells ({len(uniq)}): {shown}")
+    service = (ch.get("service") or {}).get("kind")
+    if service:
+        parts.append({"heal": "heals your party", "pc": "opens the PC",
+                      "starter": "starter pick", "shop_cobbledollars": "opens the Pokemart shop",
+                      "gym_guide": "gym-guide info pages"}.get(service, service))
+    if gives:
+        parts.append("gives: " + ", ".join(dict.fromkeys(gives)))
+    if modcmds:
+        parts.append("cmd: " + "; ".join(dict.fromkeys(modcmds)))
+    if cutscenes:
+        parts.append("cutscene: " + ", ".join(dict.fromkeys(cutscenes)))
+    interesting = [f for f in dict.fromkeys(fns)
+                   if not any(s in f for s in ("economy/market/", "dialog/", "band_tags"))]
+    if interesting and len(parts) < 4:
+        parts.append("runs: " + ", ".join(interesting[:3]))
+    if not parts:
+        parts.append("flavor / lore dialog")
+    return "; ".join(parts)
+
+
+def describe_where(ch, bodies, tps):
+    uuid = (ch.get("uuid") or "").strip().lower()
+    pl = ch.get("placement")
+    loc = (ch.get("location") or "").strip()
+    if uuid:
+        if uuid in tps:
+            x, y, z = tps[uuid]
+            pos = f"{fmt_coord(x)} {fmt_coord(y)} {fmt_coord(z)} (body, moved by repairs)"
+        elif uuid in bodies:
+            x, y, z, _ = bodies[uuid]
+            pos = f"{fmt_coord(x)} {fmt_coord(y)} {fmt_coord(z)} (body)"
+        else:
+            pos = f"body `{uuid[:8]}` (not in CSV)"
+    elif isinstance(pl, dict):
+        x, y, z = latch_coords(pl)
+        pos = f"{fmt_coord(x)} {fmt_coord(y)} {fmt_coord(z)} (latch)"
+    else:
+        pos = "UNPLACED"
+    return f"{loc} - {pos}" if loc else pos
+
+
+def describe_looks(ch):
+    cid = ch["id"]
+    if ch.get("cobblemon_model"):
+        return f"Cobblemon model: {ch['cobblemon_model']}"
+    etype = preset_etype(cid)
+    if etype and etype not in ("humanoid", "humanoid_slim"):
+        variant = visuals_variant(cid)
+        return f"{etype}" + (f" ({variant})" if variant else "")
+    skin = ch.get("skin") or {}
+    slim = " (slim)" if etype == "humanoid_slim" else ""
+    if skin.get("texture"):
+        return f"skin `{skin['texture']}`{slim}"
+    if (ch.get("uuid") or "").strip():
+        return f"world-body look{slim}"
+    return f"STEVE default{slim}"
+
+
+def esc(text):
+    return str(text).replace("|", "\\|").replace("\n", " ")
+
+
+def main():
+    dialogs = {p.stem: load_json(p) for p in sorted(DIALOG_DIR.glob("*.json"))}
+    bodies = world_bodies()
+    tps = repairs_tp_overrides()
+
+    by_area = {}
+    for path in sorted(CHAR_DIR.glob("*/*.json")):
+        ch = load_json(path)
+        if not ch or ch.get("kind") != "character":
+            continue
+        by_area.setdefault(path.parent.name, []).append(ch)
+
+    known = [a for a, _ in AREAS]
+    order = list(AREAS) + [(a, a.replace("_", " ").title())
+                           for a in sorted(by_area) if a not in known]
+
+    n_total = sum(len(v) for v in by_area.values())
+    n_body = sum(1 for v in by_area.values() for c in v if (c.get("uuid") or "").strip())
+    n_latch = sum(1 for v in by_area.values() for c in v
+                  if not (c.get("uuid") or "").strip() and isinstance(c.get("placement"), dict))
+    n_unplaced = n_total - n_body - n_latch
+
+    lines = [
+        "# NPC Roster - The Cobblemon Initiative",
+        "",
+        "> **AUTO-GENERATED by `scripts/npc_roster` - do not hand-edit.** Rerun after any",
+        "> cast change (content_compile does not run it). Sources: `dialog-src/characters/`",
+        "> (grouped by subdirectory), compiled preset routing for looks, live `rctmod`",
+        "> trainer defs for teams, the builder CSV for world-body coords, and",
+        "> `install/repairs_a*_apply` tp lines so moved bodies show LIVE coordinates.",
+        ">",
+        "> DEV DOCUMENT - full spoilers. The player-facing wiki lives in `wiki/`.",
+        "",
+        f"**{n_total} characters** - {n_body} persisted world bodies, {n_latch} latch-spawned,"
+        f" {n_unplaced} unplaced (no body, no latch - phone callers, script-spawned bodies like"
+        " the transformed Hua Zhan leader, dead content, act-2/3 casting).",
+        "",
+        "**Reading the tables:** *(body)* = persisted world entity (moves only via repairs tp);",
+        "*(latch)* = spawned at the authored coords when a player first comes within 40 blocks;",
+        "*world-body look* = keeps the builder-dressed skin; entity types like *fairy (BLUE)* /",
+        "*allay* / *bogged* are Easy NPC model swaps via `dialog-src/visuals/`.",
+        "",
+    ]
+
+    for area, title in order:
+        chars = by_area.get(area)
+        if not chars:
+            continue
+        chars.sort(key=lambda c: c["id"])
+        lines += [f"## {title}", "", f"`characters/{area}/` - {len(chars)} NPCs", "",
+                  "| NPC | Where | Does | Looks |", "|---|---|---|---|"]
+        for ch in chars:
+            name = f"**{esc(ch.get('display_name', ch['id']))}** `{ch['id']}`"
+            lines.append("| " + " | ".join([
+                name,
+                esc(describe_where(ch, bodies, tps)),
+                esc(describe_does(ch, dialogs)),
+                esc(describe_looks(ch)),
+            ]) + " |")
+        lines.append("")
+
+    OUT.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    print(f"wrote {OUT.relative_to(ROOT)} - {n_total} NPCs, "
+          f"{len([a for a, _ in order if by_area.get(a)])} areas"
+          + (f", {len(ERRORS)} parse errors" if ERRORS else ""))
+    for err in ERRORS:
+        print(f"  warn {err}", file=sys.stderr)
+
+
+if __name__ == "__main__":
+    main()

@@ -1,9 +1,9 @@
 {
     PresetMetadata: {
         author: "TheCompanyInc",
-        category: "Civilian",
+        category: "Merchant",
         created: 0L,
-        description: "civilian at Mystic Marsh - Southeast Boardwalk (act 1). Compiled from dialog-src.",
+        description: "merchant at Mystic Marsh - Southeast Boardwalk (act 1). Compiled from dialog-src.",
         entityTypeId: "easy_npc:humanoid",
         modified: 0L,
         name: "Veyric Ashenmark",
@@ -33,34 +33,109 @@
         CanPickUpLoot: 0b,
         CustomNameVisible: 1b,
         DialogData: {
-            Type: "BASIC",
+            Type: "STANDARD",
             DialogDataSet: [
                 {
                     Priority: 10,
                     Buttons: [
                         {
-                            Name: "Goodbye",
+                            Name: "Browse the mushroom crate",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "crate"
+                                }
+                            ],
+                            Label: "crate_button"
+                        },
+                        {
+                            Name: "Wrong Veyric, sorry",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "goodbye_button"
+                            Label: "leave_button"
                         }
                     ],
                     Texts: [
                         {
-                            Text: "You are after the other Veyric, the one who runs herbs for the healer. Everyone is. We share a name and half a face and the marsh cannot tell us apart either — the fog muddles names, is what the old folk say. I have started answering to both. Simpler that way."
+                            Text: "Mushrooms, traveller — red, brown, stewed, and the glowing berries that keep the dark polite on the walk home. All picked off my own planks, which I also mend, so the stock is exactly as fresh as the footing."
                         },
                         {
-                            Text: "Round here a name is a loose thing. The water borrows them, the mist swaps them, the diviner says the pools have been chewing on one for weeks. In the marsh you learn not to hold your name too tight. It only makes it easier to lose."
+                            Text: "You are after the other Veyric. Everyone is, and it got worse — the League went and made HIM the official gym guide, so now every trainer bound for the fairy gym finds the wrong Veyric first and asks me about seals and wardens. I sell mushrooms. He has the sash. West road, near the clinic."
                         },
                         {
-                            Text: "If you meant me, though — I mend the southeast planks. If you meant him, west road, near the clinic. If you meant a third Veyric, I would not be surprised. This bog does that."
+                            Text: "Round here a name is a loose thing. The water borrows them, the mist swaps them. In the marsh you learn not to hold your name too tight. Mine is apparently a franchise now, and I am the location that sells stew."
                         }
                     ],
                     Name: "Veyric Ashenmark",
                     Label: "default"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Red Mushroom x4 — 60 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/market/buy_mushroom_red"
+                                }
+                            ],
+                            Label: "buy_mushroom_red_button"
+                        },
+                        {
+                            Name: "Brown Mushroom x4 — 60 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/market/buy_mushroom_brown"
+                                }
+                            ],
+                            Label: "buy_mushroom_brown_button"
+                        },
+                        {
+                            Name: "Mushroom Stew — 90 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/market/buy_mushroom_stew"
+                                }
+                            ],
+                            Label: "buy_mushroom_stew_button"
+                        },
+                        {
+                            Name: "Glow Berries x3 — 120 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/market/buy_glow_berries"
+                                }
+                            ],
+                            Label: "buy_glow_berries_button"
+                        },
+                        {
+                            Name: "Back to Veyric",
+                            Actions: [
+                                {
+                                    Type: "OPEN_DEFAULT_DIALOG"
+                                }
+                            ],
+                            Label: "back_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The crate. Reds for stew, browns for stew, stew for anyone who does not want to meet a cauldron halfway, and glow berries for the lamps the town forgot to build out this far. Nothing in here has ever seen a price index, and if a clipboard comes for my crate it can have the plank I keep for rot."
+                        }
+                    ],
+                    Name: "Veyric — the mushroom crate",
+                    Label: "crate"
                 }
             ]
         },

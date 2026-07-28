@@ -112,11 +112,69 @@
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
+                            Name: "hz_cottonee_traded"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "no_sua_thanks_seen"
+                        }
+                    ],
+                    Priority: 22,
+                    Buttons: [
+                        {
+                            Name: "Wind and open country",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add sua_thanks_seen"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "So you took the Cottonee. Good hands, I think. Understand what you carried off, though — it was hatched on ground the Company now calls its own, and walking it out of here is the only way any of us leaves that field. Give it wind and open country. It has had enough of standing behind a moving fence."
+                        },
+                        {
+                            Text: "The Bug you left me is already earning its rows. Keeps the crawlers off the young stalks better than any voucher-paid scarecrow the Company ever shipped us. Fair trade — the first fair trade this plot has seen in a season. Feng would say the arithmetic finally came out even."
+                        }
+                    ],
+                    Name: "Sua Chai - the drifter walked out",
+                    Label: "trade_thanks"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
                             Name: "badges_gte_2"
                         }
                     ],
                     Priority: 20,
                     Buttons: [
+                        {
+                            Name: "Ask about the Cottonee",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "offer_trade"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_hz_cottonee_traded"
+                                }
+                            ],
+                            Label: "trade_hint_button"
+                        },
                         {
                             Name: "I will look at the Acres",
                             Actions: [
@@ -139,8 +197,63 @@
                     Label: "fenceline_hint"
                 },
                 {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Make the trade (on camera)",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add hz_cottonee_traded"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "trade_button"
+                        },
+                        {
+                            Name: "Not right now",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "You carry a Bug-type? I could use one on these rows. Badge-one country is thick with pests and I am short a defender since Feng took the mart counter and left me the plot. Trade me any Bug and I will hand you our Cottonee — a Grass and Fairy drifter, level twenty, cotton-spored and full of prankster tricks. It was hatched on the ground past that fence, and it deserves better than watching the posts with me."
+                        },
+                        {
+                            Text: "It is an honest swap, done the old way — you set your Bug out where the whole street can see it, I hand you the Cottonee, and nobody signs a thing. No stamp. No re-verification. Just two people and a handshake, which the Company has decided is the one contract it cannot audit."
+                        }
+                    ],
+                    Name: "Sua Chai - the trade",
+                    Label: "offer_trade"
+                },
+                {
                     Priority: 10,
                     Buttons: [
+                        {
+                            Name: "Ask about the Cottonee",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "offer_trade"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_hz_cottonee_traded"
+                                }
+                            ],
+                            Label: "trade_hint_button"
+                        },
                         {
                             Name: "You are not imagining it",
                             Actions: [
@@ -159,7 +272,7 @@
                             Text: "They measure very generously, the Company men. Generous toward themselves. Comes to the same field either way, only now a little more of it is theirs and a little less of it is ours, and all of it is verified."
                         },
                         {
-                            Text: "Feng minds the rows, I mind the line. Between us we mind a plot that gets a foot smaller every quarter and never once shows up shrunk on any deed. Sit a while. Watch the far posts with me. Tell me I am imagining it."
+                            Text: "My sister Feng used to mind the rows while I minded the line. Now she minds the Pokemart ledger in town and I mind everything out here — a plot that gets a foot smaller every quarter and never once shows up shrunk on any deed. Sit a while. Watch the far posts with me. Tell me I am imagining it."
                         }
                     ],
                     Name: "Sua Chai - the porch",

@@ -3,4 +3,4 @@
 # — edit the character JSON, not this file. Runs AS the challenger from the
 # scene's endBack stage position; the cutscene end-funnel fires it on skip too.
 execute if entity @e[tag=hz_leader_body,limit=1] run tbcs attach rctmod:hua_zhan_leader @e[tag=hz_leader_body,limit=1]
-tbcs battle GEN_9_SINGLES @s vs rctmod:hua_zhan_leader onwin {1: ['cobbledollars give @1 1800', 'tag @1 add defeated_hua_zhan_leader', '@2 say Good roots. You bend where you must and you hold where it counts. Take Giga Drain with you — draw deep, and go on growing.'], 2: ['@1 say A seedling cannot rush the sun. Tend your team and come back when you have grown.']}
+tbcs battle GEN_9_SINGLES @s vs rctmod:hua_zhan_leader onwin {1: ['cobbledollars give @1 1800', 'tag @1 add defeated_hua_zhan_leader', '@2 say Good roots. You bend where you must and you hold where it counts. Draw deep from this one, and go on growing — the Bloom Badge remembers what it grew through.'], 2: ['@1 say A seedling cannot rush the sun. Tend your team and come back when you have grown.']}

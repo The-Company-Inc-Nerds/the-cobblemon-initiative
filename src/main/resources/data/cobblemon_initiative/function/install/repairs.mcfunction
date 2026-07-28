@@ -59,3 +59,22 @@ execute unless score #repair_a15 ci_ambient matches 1 run function cobblemon_ini
 #    descends to the path (the "something special" signal). Reconcile existing saves: qualified →
 #    adopt the a15 path body as descended; not-yet-qualified → move him back up to the tower ──
 execute unless score #repair_a16 ci_ambient matches 1 run function cobblemon_initiative:install/repairs_a16_arm
+
+# ── wave a17 (0.6.0-alpha.25): Hua Zhan playtest wave — posed warden statues, Yan →
+#    branch-office door, Auntie Song move+skin+price-stop-3, Madam Qiu released, Bo Huan
+#    + Auntie Song + Scorchspire-healer button-cap page splits, Ning/Lan/Cloud moves and
+#    the office sensor re-tag (uuid'd re-casts — nurse/clerk/mart/wool/guide — refresh in
+#    place via update_npc_presets, no kills needed) ──
+execute unless score #repair_a17 ci_ambient matches 1 run function cobblemon_initiative:install/repairs_a17_arm
+
+# ── wave a18 (0.7.0-alpha.1): Hua Zhan -> Mystic Marsh -> fairy shrine playtest wave —
+#    statue scale/height re-latches, Nurse/Nana/Rong/Bo Huan moves, Blossom re-spawned
+#    at the P1 battle spot with the swapped-back skin, Mystic boardwalk moves + the
+#    Bramblea/Morveth fairy/bogged conversions (uuid bodies released), Rowan claimed +
+#    tp'd, Last Pilgrim released + old Aurora body cleared for the fairy-type descent
+#    redesign (five allay vows are new latches) ──
+execute unless score #repair_a18 ci_ambient matches 1 run function cobblemon_initiative:install/repairs_a18_arm
+
+# ── wave a19 (0.7.0-alpha.1, audit rulings): Tunde double-purse re-latch, auditor dead-
+#    entry re-latches, Dune rename re-latch, ghost-cast scoreboard/tag hygiene ──
+execute unless score #repair_a19 ci_ambient matches 1 run function cobblemon_initiative:install/repairs_a19_arm

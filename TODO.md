@@ -8,6 +8,80 @@ done, Claude removes it **and** any release-removal it unblocks.
 
 ---
 
+## 2026-07-27 — 0.7.0-alpha.1: Hua Zhan → Mystic Marsh → fairy shrine playtest wave
+
+All 38 playtest notes (N1-N30, P1-P8 + gym3 re-record) implemented; compile 760 errors:0;
+trainer validator 0/0 on the three new route teams; lint delta zero (all 87 errors are the
+pre-existing Java-granted-tag / phone-villain baseline classes). **repairs_a18** wired
+(statues, Nurse/Nana/Rong/Bo Huan/Elowen/Branith/Rowan moves, Blossom P1 re-spawn,
+Bramblea/Morveth uuid releases, Pilgrim released + old Aurora cleared). Highlights: fairy
+shrine is now a five-allay drowned descent ending at a fairy-type Aurora (data-only — the
+Java fairy_tests engine is untouched); Five Keepers capstone moved onto Aurora; Mystic cast
+re-roled (potion/TM/enchant/mushroom traders, Corvin fetch slot 60, Lamplighters Round slot
+62, Faelrin Morelull gift, Morveth bogged rotten-flesh repeatable, Bramblea + 2 house
+fairies, west Veyric = gym guide re-cast); route trio Maslen/Selene/Rowan (pursue + touch,
+31-35 band); eavesdrop quest fixed (Chen Bao ambient_static — he never looks up now — +
+office sensor range 14 so EYES ON YOU is contestable at the door).
+- [ ] 🧱 `gradle build` + `build-mrpack` + install run (repairs_a18 + update_npc_presets +
+      register_sight all ride it), then client relog.
+- [ ] 🔍 FIRST-USE MECHANISMS to eyeball in-world: Stone Knight `Root.Scale` 1.3 (first
+      whole-model scale); allay/bogged/fairy entity types (BOGGED VariantType is inferred
+      from SkeletonSkinVariant — if he renders wrong try type skeleton + variant BOGGED);
+      `tbcs attach` onto the fairy-type Aurora body (first non-humanoid battle attach).
+- [ ] 🔍 Fairy descent full run: begin at allay 1 (tests REQUIRE an active trial — start
+      button is there), five vows down, resolve solo at the Fifth Vow, Aurora battle +
+      crystal, Five Keepers claim on her `all_five` entry.
+- [ ] 🔍 Blossom: aya_transform now spawns her at 1381.2 93 2047.4 (P1); both Hua Zhan
+      cutscenes translated by (-0.3, -12.1) — eyeball framing; confirm skin swap direction
+      reads right on stream (leader now wears the new 4d90f2b8 texture).
+- [ ] 🔍 Gym 3: engage tp to 943.4 69 2434.1 facing Titania + the promoted 4-keyframe
+      intro re-record (cues re-anchored on her uuid).
+- [ ] 🔍 Eavesdrop at the door: EYES ON YOU should now fire on the open stairwell climb
+      (Ning/Anong r14); Lan still rides her own hz_analyst DIALOG profile at r10
+      (first-tag-wins) — bump her too if the landing still feels uncontested.
+- [ ] 🔍 Bramblea house fairies (Thimble 1026.5 75 2503.5 / Wick 1030.5 75 2507.5) are
+      interior guesses ±3 blocks off her spot — nudge placements if inside walls.
+- [ ] 🔍 Enchanted-book wrappers use 1.21.1 `stored_enchantments` component syntax
+      (jar-verified codec, runtime-unproven) — buy one from Thalorin.
+- [ ] 💻 Retired-in-place leftovers (cleanup-pass candidates): rctmod
+      `sq_rt2_scarecrow.json` + its side_quests/act1.json DB entry + orphaned
+      `route/decline_sq_rt2_scarecrow.mcfunction`; unused tag `ilyana_barter_done`
+      (optional `tag @a remove` in a future repairs wave).
+- [ ] 💻 fairy_shrine_reveal final push re-aimed by estimate (947 22 2686 pitch 49) —
+      re-record in-world when the site is next loaded.
+
+### 2026-07-27 — Audit rulings (all 8 decided; implementation wave in flight)
+Rulings: HQ gate = 6 fields everywhere · Tunde podium entry deleted (re-voiced as OtR
+agent) · Wen cut, 7 gym guides KEPT for placement · ghost cast cut (checkpoint pair,
+Femi, Binta + notice posts; Incomplete File ends at stage 1) · dead-code sweep + badge
+ceremony wired for all 10 gyms · Hilda points at Vetra · Gaviota Open derby BUILT
+(Enzo hosts, champion tag finally grantable) · Kalahar hippo renamed Dune.
+- [ ] 🧱 **Gym-guide placement walk (ruling 3)**: drop pins for the 7 kept guides
+      (Deepcore, Gaviota, Kalahar, Cyber, Ryujin, Nifl, Scorchspire — one at each gym
+      approach, playtest-note format) + skin picks (all are STEVE default today; town
+      groups/* skins are the cheap option). I wire placements + repairs on receipt.
+- [ ] 🔍 After install run: Gaviota Open full loop (enter→catch→hand-in→champion
+      entries on all four regulars), badge ceremony fireworks on next badge, Tunde
+      re-latch, Dune re-latch.
+
+### 2026-07-27 — Quest/NPC drift audit (see docs/QUEST_NPC_AUDIT_2026-07-27.md)
+21-agent wiki-vs-live sweep. Fixed mechanically: render.mcfunction is HAND-MAINTAINED
+(sidebar lines for slots 60/62 added, fairy ladder re-keyed off the dead cultist tag,
+Five Keepers→Aurora label, q.side_lane re-slotted 78→69, q.side_bones→Sayuri).
+- [ ] 🧱 **Showrunner decisions** (audit §6): cut-or-keep Wen + 7 unplaced gym guides +
+      dead functions (greenhouse/reveal, noncompliance/*, old off_record/*, badge
+      ceremony); Tunde double-purse podium entry (live dupe — recommend remove); **HQ
+      gate 4-vs-6 fields canon split** (DJ/render/ceremony say 6; register/door/spec say
+      4); place-or-cut the ghost cast (checkpoint pair, Femi, Binta + notice posts —
+      Incomplete File stages 2-3 dead until placed); Hilda Frostmother re-role.
+- [ ] 💻 After rulings: stale TM promise onwin lines (Gaia/Vulcan/Titania), dead
+      off_record tick line, shrine rumor never-retire gates, Sefu seal, register
+      _comment refresh.
+- [ ] 🧱 Wiki sync pass — audit §2/§3 is the punch-list (arena coords on ~7 pages,
+      fairy descent, heal fees, shops table, team retunes, 10 undocumented quests);
+      then re-run publish-wiki (last sync 2026-07-18).
+
+
 ## 2026-07-20 — Dialog cohesion pass (alpha.10): all-cast punch-up
 
 **357 files punched / 444 already strong / 57 new interactive touches** (one-time gifts,
@@ -509,7 +583,8 @@ build` for the Java/rctmod half):**
 - **Battle-order gates** (dialog-src, compiled): every Battle Frontier brain + challenger gated on
   `royal_league_champion` (brains also on both facility challengers); Royal League E4→Champion ladder
   (`royal_elite_N` chain, Aria on badges≥10 + `defeated_villain_boss`); Board gated on
-  `defeated_villain_boss`; DJ gated on `badges_gte_7` (+ the existing fields≥4).
+  `defeated_villain_boss`; DJ gated on `badges_gte_7` (+ the fields gate — ≥6 since the
+  alpha.26 audit rulings raised the six-field canon everywhere; was ≥4 when this landed).
 - **Advancements** — shrine grant ids fixed (`shrines/shrine_<type>`); authored `gyms/all_badges`,
   `shrines/all_shrines`, and a hidden `villain/` branch (acting_ceo / board_cleared /
   company_overthrown, wired into `grantAdvancementForTrainer` + the board block); gym 1/2 advancement
@@ -950,7 +1025,7 @@ Author in batches; each batch unblocks Claude wiring the same day:
   - [ ] 3 management (Regional Manager Shade, Senior Director Vex, COO Noir)
   - [ ] Acting CEO DJ at HQ `[1590 51 1028]`
   - [ ] 4 Board members + The Founder (post-Royal-League, The Boardroom)
-- [ ] **Wheat fields** — zones are DONE (10 farms in install.json, gated on `field_freed`/`farm_1`..`farm_10` — those ids are now canonical). **As shipped (2026-07-04) only `farm_1` is wired to `liberation/free_field` — `fields_liberated` maxes at 1**, so the HQ-raid gate (4), the wheat-trader escalation (2/4), the relief shop tiers (2/4), and the granary ambush (4) are all unreachable. **This is the single biggest Act-1→Act-2 blocker.** **PLACED (0.5.0-alpha.14):** the field-guard cast is the 23 `villain_{site_manager,yield_officer}_N` (farm staff, one pair per farm at its zone center) + `villain_route_agent_N` (route patrols) — authored alpha.13 with dialog+battles but at placeholder Y=64 (buried in stone); repositioned to real surface Y per-farm/route, Highfield pair de-stacked, in-world verified grounded+separated. *DONE (re-verified in-repo 2026-07-17):* every guard's battle onwin already fires `liberation/free_field {field:"farm_N"}` in the compiled presets; derived mapping 1=Firstfurrow 2=Mirebloom 3=Westwind 4=Dryrow 5=Crossroads 6=Fenceline 7=Coldfurrow 8=Frostfallow 9=Highfield 10=Ashloam. Remaining 🔍: clone the wheat_war scenario per farm (fight beats blocked on the TBCS battle-stall item above).
+- [ ] **Wheat fields** — zones are DONE (10 farms in install.json, gated on `field_freed`/`farm_1`..`farm_10` — those ids are now canonical). **As shipped (2026-07-04) only `farm_1` is wired to `liberation/free_field` — `fields_liberated` maxes at 1**, so the HQ-raid gate (6 — alpha.26 audit rulings; was 4), the wheat-trader escalation (2/4), the relief shop tiers (2/4), and the granary ambush (4) are all unreachable. **This is the single biggest Act-1→Act-2 blocker.** **PLACED (0.5.0-alpha.14):** the field-guard cast is the 23 `villain_{site_manager,yield_officer}_N` (farm staff, one pair per farm at its zone center) + `villain_route_agent_N` (route patrols) — authored alpha.13 with dialog+battles but at placeholder Y=64 (buried in stone); repositioned to real surface Y per-farm/route, Highfield pair de-stacked, in-world verified grounded+separated. *DONE (re-verified in-repo 2026-07-17):* every guard's battle onwin already fires `liberation/free_field {field:"farm_N"}` in the compiled presets; derived mapping 1=Firstfurrow 2=Mirebloom 3=Westwind 4=Dryrow 5=Crossroads 6=Fenceline 7=Coldfurrow 8=Frostfallow 9=Highfield 10=Ashloam. Remaining 🔍: clone the wheat_war scenario per farm (fight beats blocked on the TBCS battle-stall item above).
 - [ ] 🧱 **Place the compiled-but-unplaced NPCs** — the dead-letter checkpoint agent (`checkpoint_agent` tag), the Per My Last Memo courier, and the Head Count census wagon: compiled presets exist for all three, but there is no UUID mapping / import line yet.
 - [ ] **Wheat-trader NPCs** — place (trade→recognize→ambush) from `wheat_trader_gate` + `trade_wheat_trader` + `dialog_wheat_pitch`
 - [ ] **Granary trader NPC** — Company Inc. member selling items **for wheat**. **Infrastructure landed:**
@@ -982,7 +1057,7 @@ Author in batches; each batch unblocks Claude wiring the same day:
   - [x] ~~Granary `sell_wheat` datapack~~ — **dropped (design confirmed):** the default economy is CobbleDollars + its built-in bank (handles wheat→CD), and wheat trading is the Easy NPC "wheat traders" (paper). No custom CD sell-back / Granary datapack.
   - [x] `wheat_war_active` flag — set by the first field liberation (`free_field_apply` adds the player tag; `quest/render` shows the wheat-fields HUD line)
   - [x] Wire `wheat_trader/load` + `wheat_trader/tick` into the function tags (+ new `liberation/load`)
-  - [x] **Balance decisions (resolved 2026-07-02):** pushback stays **−6/field**; liberation **swaps tiers** — every 2 fields upgrades the active shop+granary tier to a pre-baked relief catalog (`<tier>_relief1/2`, −12 idx each; `ShopTierManager.resolveRelief` reads `fields_liberated` live; `shop refresh` fired by `free_field_apply`; gym rewards unchanged); HQ raid is **hard-gated on 4 liberated fields** (DJ's battle entry gated, "monopoly holds" refusal below it, quest HUD shows "Starve the monopoly" until 4). Thresholds (2/level, −12, gate=4) tunable 🔍.
+  - [x] **Balance decisions (resolved 2026-07-02):** pushback stays **−6/field**; liberation **swaps tiers** — every 2 fields upgrades the active shop+granary tier to a pre-baked relief catalog (`<tier>_relief1/2`, −12 idx each; `ShopTierManager.resolveRelief` reads `fields_liberated` live; `shop refresh` fired by `free_field_apply`; gym rewards unchanged); HQ raid is **hard-gated on 6 liberated fields** (DJ's battle entry gated, "monopoly holds" refusal below it, quest HUD shows "Starve the monopoly" until 6 — was 4 at this 2026-07-02 resolution; raised by the alpha.26 audit rulings, six-field canon). Thresholds (2/level, −12, gate=6) tunable 🔍.
   - [ ] *(Option C, deferred)* stateful `farmzone/` subsystem (soil/growth/patrols/HQ-difficulty)
 - [ ] **P5 — Wheat traders full wiring** — _done: the trade→recognize→ambush dialogue, **Company Wheat Scrip currency** (alpha.14 — renamed paper + `custom_data{ci_scrip:1b}`, jar-verified Easy NPC rejects plain paper via the component-exact ItemCost predicate; was plain `minecraft:paper`), 2/4 thresholds, **ambush trainers** (`wheat_trader_ambush` L38-39 farm team / `granary_ambush` L43-44, in villain_team.json, species+items jar-validated), **wheat-trader hostile tier now offers the battle** ("Stand and fight" → tbcs vs wheat_trader_ambush), and the **granary post-trade poller** (`granary/tick`: hostile trade arms `granary_ambush_armed`, ~15s countdown → "Asset located. Initiating retrieval." → battle, one-shot via defeated_granary_ambush)._ Remaining: in-world placement (Easy NPC traders) 🧱 + in-game verify the tbcs battle/onwin path 🔍. (`wheat_ambush_armed` is now superseded — wheat traders battle directly from dialog; objective left declared, unused.)
 - [x] ~~Smoke-test `cobbledollars add @s`~~ — **moot (2026-07-03):** CobbleDollars 2.0.0-Beta-5.1 has **no `add` subcommand at all** (jar-verified grammar: pay/query/give/remove/set/reload/leaderboard). Every `cobbledollars add` in the repo (pay_macro, granary ambush, all 143 battle-prize onwin strings) was a dead command — all replaced with `cobbledollars give <targets> <amount>` (selector-first, accepts @s under execute-as). Verify in-game that a battle prize actually lands (runbook Round 5 canary #5).

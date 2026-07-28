@@ -260,7 +260,7 @@ are winnable but not free.
 **Skew note:** at `cd_instability=25`, `economy/payout` rate = 100 − min(25/4,25) = **94%** of face
 (quest payouts skew; the flat 5400 battle prize does not). **Shop:** leader fires
 `cobblemon-initiative shop badge_9` → tier `badge_9` catalog (exists in `scripts/shop_tiers/master_shop.json`).
-Because Nifl is post-HQ (≥4 fields liberated for the raid gate), the **relief** tier may already be
+Because Nifl is post-HQ (≥6 fields liberated for the raid gate), the **relief** tier may already be
 active — confirm which catalog is live so the mart stock reads correctly (see §9). No new liberation
 here (all fields freed pre-Royal-League); Nifl only *spends* the stabilized economy.
 

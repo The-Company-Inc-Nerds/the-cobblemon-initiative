@@ -22,10 +22,22 @@ npcsight stoptag 4637e716-e0e0-48f0-9359-c9c2292574c5 defeated_sq_regular_spotte
 npcsight add 932ba1f1-fd1f-4ea4-837f-dcc16bf0bf4b 8
 npcsight mode 932ba1f1-fd1f-4ea4-837f-dcc16bf0bf4b pursue
 npcsight stoptag 932ba1f1-fd1f-4ea4-837f-dcc16bf0bf4b defeated_sq_regular_typetip
+# Sporeherd Maslen (mirek)
+npcsight add ae9aa285-8251-46db-a520-ab00dab02a21 8
+npcsight mode ae9aa285-8251-46db-a520-ab00dab02a21 pursue
+npcsight stoptag ae9aa285-8251-46db-a520-ab00dab02a21 defeated_r3_trainer_shroom
 # Kite Runner Xu Jianyu (xu_jianyu)
 npcsight add 535c306c-cb90-43c1-a405-e84099a01b8d 8
 npcsight mode 535c306c-cb90-43c1-a405-e84099a01b8d pursue
 npcsight stoptag 535c306c-cb90-43c1-a405-e84099a01b8d defeated_sq_rt2_kite
+# Rowan (rowan)
+npcsight add 1f5eaff3-56c0-4b4f-bca5-ec2e49d93660 8
+npcsight mode 1f5eaff3-56c0-4b4f-bca5-ec2e49d93660 pursue
+npcsight stoptag 1f5eaff3-56c0-4b4f-bca5-ec2e49d93660 defeated_r3_trainer_rowan
+# Selene (selene)
+npcsight add 19625595-ee88-4ab8-a671-b7e3e8fdac01 8
+npcsight mode 19625595-ee88-4ab8-a671-b7e3e8fdac01 pursue
+npcsight stoptag 19625595-ee88-4ab8-a671-b7e3e8fdac01 defeated_r3_trainer_selene
 # Lucian Scrollkeeper (lucian_scrollkeeper)
 npcsight add 7aeca5b3-1f72-4072-a8c4-e6eef877f160 6 open_file
 npcsight mode 7aeca5b3-1f72-4072-a8c4-e6eef877f160 approach_once

@@ -1,9 +1,9 @@
 {
     PresetMetadata: {
         author: "TheCompanyInc",
-        category: "Civilian",
+        category: "Merchant",
         created: 0L,
-        description: "civilian at Mystic Marsh - South Lane (act 1). Compiled from dialog-src.",
+        description: "merchant at Mystic Marsh - Pokemart machine counter (act 1). Compiled from dialog-src.",
         entityTypeId: "easy_npc:humanoid",
         modified: 0L,
         name: "Ilyana Mossveil",
@@ -33,31 +33,40 @@
         CanPickUpLoot: 0b,
         CustomNameVisible: 1b,
         DialogData: {
-            Type: "BASIC",
+            Type: "STANDARD",
             DialogDataSet: [
                 {
-                    Priority: 10,
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "badges_gte_3"
+                        }
+                    ],
+                    Priority: 13,
                     Buttons: [
                         {
-                            Name: "Barter: offer 3 Oran Berries",
+                            Name: "Browse the thread rack",
                             Actions: [
                                 {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "cobblemon-initiative turnin cobblemon:oran_berry 3 ilyana_barter_done"
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "thread_rack"
                                 }
                             ],
-                            Conditions: [
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "no_ilyana_barter_done"
-                                }
-                            ],
-                            Label: "barter_button"
+                            Label: "rack_button"
                         },
                         {
-                            Name: "Keep your coin, then",
+                            Name: "Browse the loom cabinet",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "loom_cabinet"
+                                }
+                            ],
+                            Label: "cabinet_button"
+                        },
+                        {
+                            Name: "Just looking",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -68,33 +77,37 @@
                     ],
                     Texts: [
                         {
-                            Text: "Reed-mats, marsh-cloth, lily-dyed thread. I take berries, I take a good bundle of oil, I take help mending my nets. I do not take coin. Put it away — it is worth a little less than it was this morning and we both know it."
+                            Text: "Third badge, is it. Then the whole counter is yours — thread rack and loom cabinet both. A record is one good thread: one pass, and it had better be the right cloth. A machine is a loom — eight passes, then the frame gives and no mender in the region may touch it. Weaver terms. They are the correct terms and the League should adopt them."
                         },
                         {
-                            Text: "My Cottonee spins better thread than any Company loom ever will, and it does it for nothing but a scratch behind its little cotton head. There is your whole marsh economy, right there."
-                        },
-                        {
-                            Text: "The pink light off the water is stronger this season. My gran would say something is coming to a head. My gran said that about most things, mind. But she was right about the important ones."
-                        },
-                        {
-                            Text: "Elowen keeps telling travellers the fog is Cottonee fluff. It is fog, love. Though I notice Spindle has stopped correcting her, which I believe means it enjoys the credit."
+                            Text: "Buy the Gleam if you are going anywhere dark, which from this town is everywhere. I wove one into my Cottonee as a test and it lit the back room like a festival. The League made me log that as inventory shrinkage."
                         }
                     ],
                     Name: "Ilyana Mossveil",
-                    Label: "default"
+                    Label: "tier3"
                 },
                 {
                     Conditions: [
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
-                            Name: "ilyana_barter_done"
+                            Name: "badges_gte_2"
                         }
                     ],
                     Priority: 12,
                     Buttons: [
                         {
-                            Name: "A pleasure doing barter",
+                            Name: "Browse the thread rack",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "thread_rack"
+                                }
+                            ],
+                            Label: "rack_button"
+                        },
+                        {
+                            Name: "Just looking",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -105,17 +118,149 @@
                     ],
                     Texts: [
                         {
-                            Text: "(A length of lily-dyed thread is knotted to your bag strap now — her mark. Weavers in three towns will assume you are somebody.) Fair trade, fairly closed."
+                            Text: "Two badges opens the thread rack — records, one pass each, marsh moves priced by the weight of the cloth. The loom cabinet waits on a third badge. League ordinance. I have read it twice looking for a loophole and it is depressingly well woven."
                         },
                         {
-                            Text: "Berries for thread, thread for berries. That is a marsh ledger — short, honest, and nobody prints more of it overnight."
-                        },
-                        {
-                            Text: "My gran always said you can trust anyone whose pockets smell of Oran. I used to think it was a proverb. No. She just liked the berries."
+                            Text: "I used to take three Oran berries for anything on my stall, and it was a better system. The League does not recognise berries as legal tender for machines. So: coin, at this counter only, under protest. Do not look so pleased about it."
                         }
                     ],
-                    Name: "Ilyana — square accounts",
-                    Label: "barter_thanks"
+                    Name: "Ilyana Mossveil",
+                    Label: "tier2"
+                },
+                {
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "Just looking",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Machine counter. Yes — the barter weaver, behind League glass, taking coin. The ordinance says machines sell for CobbleDollars or they do not sell, and this town needs its counter stocked more than I need my pride. My cloth is still barter only. Forever. Ask anyone."
+                        },
+                        {
+                            Text: "No stock for you yet — under two badges I may not sell you so much as a chipped record. That part is ordinance too, and no, berries do not help. I asked. In writing. Come back with two badges and I will open the thread rack."
+                        },
+                        {
+                            Text: "Elowen still tells travellers the fog is Cottonee fluff. It is fog, love. Mine sleeps behind this counter now and the fog carries on outside regardless, which I consider proof."
+                        }
+                    ],
+                    Name: "Ilyana Mossveil",
+                    Label: "default"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "TR Draining Kiss — 1000 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/market/buy_tr_drainingkiss"
+                                }
+                            ],
+                            Label: "buy_tr_drainingkiss_button"
+                        },
+                        {
+                            Name: "TR Mud Shot — 1100 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/market/buy_tr_mudshot"
+                                }
+                            ],
+                            Label: "buy_tr_mudshot_button"
+                        },
+                        {
+                            Name: "TR Water Pulse — 1200 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/market/buy_tr_waterpulse"
+                                }
+                            ],
+                            Label: "buy_tr_waterpulse_button"
+                        },
+                        {
+                            Name: "Back to the counter",
+                            Actions: [
+                                {
+                                    Type: "OPEN_DEFAULT_DIALOG"
+                                }
+                            ],
+                            Label: "back_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The thread rack. One pass each — a record burns as it teaches, like a thread you cannot unpick. Draining Kiss for taking back what a fight costs you, Mud Shot for this entire province, Water Pulse for the routes where the road forgets it is a road. Priced by the weight of the cloth."
+                        }
+                    ],
+                    Name: "Ilyana — the thread rack",
+                    Label: "thread_rack"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "TM Venoshock — 2400 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/market/buy_tm_venoshock"
+                                }
+                            ],
+                            Label: "buy_tm_venoshock_button"
+                        },
+                        {
+                            Name: "TM Giga Drain — 2600 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/market/buy_tm_gigadrain"
+                                }
+                            ],
+                            Label: "buy_tm_gigadrain_button"
+                        },
+                        {
+                            Name: "TM Dazzling Gleam — 3000 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/market/buy_tm_dazzlinggleam"
+                                }
+                            ],
+                            Label: "buy_tm_dazzlinggleam_button"
+                        },
+                        {
+                            Name: "Back to the counter",
+                            Actions: [
+                                {
+                                    Type: "OPEN_DEFAULT_DIALOG"
+                                }
+                            ],
+                            Label: "back_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The loom cabinet. Eight passes to a machine and no repairs — when the frame gives, it gives, and you will feel it go. Venoshock for the patient, Giga Drain for the thrifty, Dazzling Gleam for anyone planning to argue with a Dragon one day. That last one is the finest thread I stock, and I stock it grudgingly, because it outshines my own work."
+                        }
+                    ],
+                    Name: "Ilyana — the loom cabinet",
+                    Label: "loom_cabinet"
                 }
             ]
         },

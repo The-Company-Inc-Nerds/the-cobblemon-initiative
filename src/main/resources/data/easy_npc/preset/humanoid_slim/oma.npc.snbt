@@ -40,61 +40,6 @@
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
-                            Name: "carrying_ledger"
-                        },
-                        {
-                            Type: "PLAYER_TAG",
-                            Operation: "EQUALS",
-                            Name: "no_errand1_done"
-                        }
-                    ],
-                    Priority: 45,
-                    Buttons: [
-                        {
-                            Name: "Hand over the satchel, take the basket",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "function cobblemon_initiative:sidequest/off_record/deliver_ledger"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "tag @s add carrying_basket"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "scoreboard players set @s obs_count 0"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    Cmd: "title @initiator actionbar [{\"text\":\"Carry the bread basket to Fara by the noticeboard - unseen.\",\"color\":\"yellow\"}]"
-                                },
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "handoff_button"
-                        }
-                    ],
-                    Texts: [
-                        {
-                            Text: "Lucians satchel. And no grey coat on your heel - or if there was, you lost it, which is the same thing to me. Set it here. The less that leaves this fence in writing, the better we all sleep."
-                        },
-                        {
-                            Text: "One more, while you still have the quiet in you. Run this bread basket to Fara by the noticeboard, same rules. Eyes off you the whole way."
-                        }
-                    ],
-                    Name: "Oma — the satchel",
-                    Label: "off_ledger"
-                },
-                {
-                    Conditions: [
-                        {
-                            Type: "PLAYER_TAG",
-                            Operation: "EQUALS",
                             Name: "lane_done"
                         }
                     ],

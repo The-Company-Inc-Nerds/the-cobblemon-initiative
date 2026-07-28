@@ -33,11 +33,98 @@
         CanPickUpLoot: 0b,
         CustomNameVisible: 1b,
         DialogData: {
-            Type: "BASIC",
+            Type: "STANDARD",
             DialogDataSet: [
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "corvin_fish_done"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "no_corvin_fish_paid"
+                        }
+                    ],
+                    Priority: 25,
+                    Buttons: [
+                        {
+                            Name: "Witness the count",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:sidequest/corvin/reward"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "claim_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Let me see them. River-bright, every one — no paddy haze on the scales. Four generations of Thistlefens would like a word with whoever wrote these waters off as spent."
+                        },
+                        {
+                            Text: "Five, from open water. I am going to count them out loud where the ledger man can hear me. You stand there and be my witness. That is the whole job. That has always been the whole job."
+                        }
+                    ],
+                    Name: "Corvin — counting the catch",
+                    Label: "claim"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "corvin_fish_paid"
+                        }
+                    ],
+                    Priority: 24,
+                    Buttons: [
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The count is filed where the Company cannot amend it — in every kitchen on this road. Five live-water cod against a whole quarter of paddy wheat, and the cod won."
+                        },
+                        {
+                            Text: "Eels next year, mark me. The water remembers how. It only needed somebody to notice it was still trying."
+                        }
+                    ],
+                    Name: "Corvin — the count stands",
+                    Label: "done"
+                },
                 {
                     Priority: 10,
                     Buttons: [
+                        {
+                            Name: "Ask about the old nets",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add corvin_quest_started"
+                                },
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "details"
+                                }
+                            ],
+                            Label: "nets_button"
+                        },
                         {
                             Name: "Goodbye",
                             Actions: [
@@ -61,6 +148,41 @@
                     ],
                     Name: "Corvin Thistlefen",
                     Label: "default"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Hand over 5 cod from the living waters",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative turnin minecraft:cod 5 corvin_fish_done"
+                                }
+                            ],
+                            Label: "cod_button"
+                        },
+                        {
+                            Name: "The reeds it is, then",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "back_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The nets are still in the shed. Oiled. Ready. My grandfather said a dry net is just a flag of surrender with holes in it. So here is what I want, and it is not charity — the living channels out past the reeds still run, and the cod still run in them. Bring me five. Not to eat. To count."
+                        },
+                        {
+                            Text: "Five cod from open water, mind. I will know farm-raised if you try it — farm-raised has a look, like a number that has been rounded. The point is proof: the waters the Company did not drain still give more than the ones it did."
+                        }
+                    ],
+                    Name: "Corvin — the old nets",
+                    Label: "details"
                 }
             ]
         },

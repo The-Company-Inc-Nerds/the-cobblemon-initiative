@@ -275,7 +275,7 @@ ladder 56–61, apprentice-double ace 61, leader ace **64**, Heritage Envoy ~62�
 
 **Shop / instability:** `cd_instability` **holds 25** post-HQ, so the economy voice is the
 **corrupted-propaganda** register (`§k` glitch, leaks). Shop tier steps to **`badge_8`**
-on leader defeat; because the HQ gate required **≥4 liberated fields**, the player is
+on leader defeat; because the HQ gate required **≥6 liberated fields**, the player is
 already at a **relief tier** (`ShopTierManager` resolves `<tier>_relief1/2` live from
 `fields_liberated`; every 2 fields = −12 idx, floor 0). Prices have eased from the Gym-7
 peak (+28%) toward +12.5% post-DJ. **CD sinks:** the keep shop (`badge_8` catalog),

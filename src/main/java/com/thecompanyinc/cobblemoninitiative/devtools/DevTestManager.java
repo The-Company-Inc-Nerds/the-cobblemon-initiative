@@ -91,18 +91,19 @@ public final class DevTestManager {
     m.put("shrine_dragon", new StageSetup(7, List.of(), List.of(), Map.of(), List.of(), "dragon_shrine_leader"));
     m.put("shrine_ice",    new StageSetup(8, List.of(), List.of(), Map.of(), List.of(), "ice_shrine_leader"));
     m.put("shrine_fire",   new StageSetup(9, List.of(), List.of(), Map.of(), List.of(), "fire_shrine_leader"));
-    // HQ raid: badge 7 + the fields_liberated>=4 gate DJ's battle button reads.
+    // HQ raid: badge 7 + the fields_liberated>=6 gate DJ's battle button reads
+    // (alpha.26 audit rulings: SIX-field canon everywhere).
     m.put("hq", new StageSetup(
-      7, List.of(), List.of("wheat_war_active"), Map.of("fields_liberated", 4), List.of(), "villain_boss"));
+      7, List.of(), List.of("wheat_war_active"), Map.of("fields_liberated", 6), List.of(), "villain_boss"));
     m.put("royal", new StageSetup(
-      10, List.of(), List.of(), Map.of("fields_liberated", 4), List.of(), "royal_elite_1"));
+      10, List.of(), List.of(), Map.of("fields_liberated", 6), List.of(), "royal_elite_1"));
     // Board era: post-champion (cap 85) + post-HQ; the royal_league_champion TAG is what
     // the quest HUD reads, the achievement is what raises the cap.
     m.put("board", new StageSetup(
       10,
       List.of("royal_league_champion"),
       List.of("royal_league_champion", "defeated_villain_boss", "wheat_war_active"),
-      Map.of("fields_liberated", 4),
+      Map.of("fields_liberated", 6),
       List.of("royal_champion", "villain_boss"),
       "board_lauren"));
     // Founder: board cleared (cap 100) — tags gate his dialog, the achievement lifts the cap.
@@ -112,7 +113,7 @@ public final class DevTestManager {
       List.of(
         "royal_league_champion", "defeated_villain_boss", "wheat_war_active",
         "defeated_board_lauren", "defeated_board_madeline", "defeated_board_matt", "defeated_board_micah"),
-      Map.of("fields_liberated", 4),
+      Map.of("fields_liberated", 6),
       List.of("royal_champion", "villain_boss", "board_lauren", "board_madeline", "board_matt", "board_micah"),
       "villain_final_boss"));
     return m;

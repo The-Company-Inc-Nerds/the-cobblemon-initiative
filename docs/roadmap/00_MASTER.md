@@ -32,7 +32,8 @@ Sections (all under `docs/roadmap/`):
 
 > **Main-loop spot-check (2026-07-05) — two headline claims verified before trusting the synthesis:**
 > - ✅ **Farm blocker CONFIRMED.** Only `farm_1` is wired anywhere in `function/liberation/` +
->   `dialog-src/` (12 refs; no `farm_2..6`). The HQ gate (`fields_liberated >= 4`) is genuinely
+>   `dialog-src/` (12 refs; no `farm_2..6`). The HQ gate (`fields_liberated >= 6` since the
+>   alpha.26 audit rulings; `>= 4` at the time of this check) is genuinely
 >   impassable today. `wheat_war_farms` at build-order #3 is correct and is the single highest
 >   unblock.
 > - ⚠️ **"24 missing gym team files" is relative to the PROPOSED 5-rung ladder, not a gap in the

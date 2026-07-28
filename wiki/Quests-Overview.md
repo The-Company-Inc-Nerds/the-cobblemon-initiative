@@ -2,7 +2,7 @@
 
 > *Work is never hard to find here. Somebody always needs a letter carried, a fence watched, a price checked twice. Just read the receipt before you pocket it — the rate line is the only sentence in this region that never lies.*
 
-The region runs on paperwork, and so does your journey: **69 quests with 157 tracked objectives**, from the main badge road down to a bread round on your mother's lane. This page explains the quest *system* — the sidebar, the tracker, how you get paid, and the rules every quest plays by — and ends with an **index of every quest** pointing to its area page.
+The region runs on paperwork, and so does your journey: **69 quests with 154 tracked objectives**, from the main badge road down to a bread round on your mother's lane. This page explains the quest *system* — the sidebar, the tracker, how you get paid, and the rules every quest plays by — and ends with an **index of every quest** pointing to its area page.
 
 For the story walkthrough, see **[[Quests Main Story]]**. For the areas: **[[Quests-Sango Town]]** · **[[Quests Blossom Path]] · [[Quests Harvest Road]]** · **[[Quests-Takehara Falls]]** · **[[Quests-Hua Zhan City]]**.
 
@@ -169,7 +169,7 @@ The pinned top line of the sidebar, from waking up in Sango Town to the end of t
 | Long-Term Growth Vehicle | Deka | A fully verified investment opportunity. It is a Magikarp. | Magikarp Lv 5 (costs 500 CD) |
 | The Waterside Invitational | Pondwarden Tayo | A three-round pondside bracket; the champion's purse arrives exactly 3% light | 600 CD purse + major pack + Net Ball (paid on the spot) |
 | No Such Recipient | Uncle Marlow | Thirty-one years on the route, one letter that never delivered | Wingull Lv 12 (deliver fork) + standard pack |
-| The Incomplete File | Lucian Scrollkeeper | The archive has a you-shaped hole in it — a three-stage chain spanning the whole run | 300 + 300 + 600 CD, then **4000 CD + grand pack** |
+| The Incomplete File | Lucian Scrollkeeper | The archive has a you-shaped hole in it — recover three misfiled originals | 300 CD to open + 300 CD + potions at the filing |
 | Off the Record | Lucian Scrollkeeper | After badge 3, run four Company agents out of the Sango lanes | 300 CD + standard pack + title card |
 | Pending Review | Imani, the census desk | Sign the Field Liability Policy. Or don't. | 500 CD + ID (sign) *or* the Elder's field kit (refuse); major pack either way |
 | The Lane Looks After Its Own | Oma | A bread round on Mom's lane | ~600 CD flat + supplies + optional free Eevee (1/20 shiny) |
@@ -182,7 +182,6 @@ The pinned top line of the sidebar, from waking up in Sango Town to the end of t
 
 | Quest | Giver | Hook | Rewards |
 |-------|-------|------|---------|
-| Know Your Customer | Femi, door-to-door | A survey with a sketch stapled to the last page (after badge 1) | 460 CD + potions (fight fork) |
 | Blossom Path Regulars | Four locals | Eye contact is a contract out here | 150–250 CD flat prizes |
 | Right of Way | A survey wagon mid-road | Two agents grading every smallholding for acquisition (after badge 1) | 600 CD in prizes + 250 CD filing |
 | Unauthorized Harvest | The occupied Firstfurrow Farm | Clear the fence, then take the field back — the first liberation | 800 CD in prizes; the money steadies region-wide |
@@ -210,8 +209,8 @@ The pinned top line of the sidebar, from waking up in Sango Town to the end of t
 
 | Quest | Giver | Hook | Rewards |
 |-------|-------|------|---------|
-| Adjusted Retail | Kaito Zhang, martkeeper | Note three price tickets. The numbers moved overnight — except at the unverified stall. | 260 CD (Company-branded receipt) + two packs |
-| Greenspace 7, Under-Performing | The Yield Analyst at the gym gate | The garden is being valued as an under-performing asset | Yield report + optional 480 CD battle; 150 CD goodwill later |
+| Adjusted Retail | Wei Feng, martkeeper | Note three price tickets. The numbers moved overnight — except at the unverified stall. | 260 CD (Company-branded receipt) + two packs |
+| Greenspace 7, Under-Performing | Yan, the Yield Analyst at the branch office door | The garden is being valued as an under-performing asset | Yield report + optional 480 CD battle; 150 CD goodwill later |
 | Verified Growth (the Greenhouse Tour) | The Company's south-gate greeter | Three floors of ferns and one catwalk view you won't forget | Visitor kit — and a word gets said out loud |
 | Grain In, Goods Out | Guo the Miller | Hear the pitch, see the company store, collect your fee on camera | 300 CD + standard pack + miller's dozen |
 | Minutes of the Quarterly Review | Nobody — a top-floor door | Eight unseen seconds outside the branch manager's office | 400 CD + standard pack; optional 300 CD wager |

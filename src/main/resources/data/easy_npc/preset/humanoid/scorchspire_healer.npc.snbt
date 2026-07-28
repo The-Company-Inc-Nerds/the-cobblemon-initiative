@@ -115,7 +115,7 @@
                             Label: "heal_button"
                         },
                         {
-                            Name: "Ask about the forge",
+                            Name: "Ask what work is going",
                             Actions: [
                                 {
                                     Type: "COMMAND",
@@ -123,96 +123,11 @@
                                     Cmd: "tag @s add met_scorchspire_healer"
                                 },
                                 {
-                                    Type: "COMMAND",
-                                    Cmd: "tellraw @initiator [{\"text\":\"Forgemaster Sena is burning a dead Company requisition down at the forge - she could use a second pair of hands.\",\"color\":\"gold\"}]"
-                                },
-                                {
-                                    Type: "CLOSE_DIALOG"
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "rumors"
                                 }
                             ],
-                            Conditions: [
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "no_forge_order_done"
-                                }
-                            ],
-                            Label: "forge_tip"
-                        },
-                        {
-                            Name: "Ask about the bladesmith",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "tag @s add met_scorchspire_healer"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    Cmd: "tellraw @initiator [{\"text\":\"Bladesmith Hollis tempers keepsakes in the forge annex - bring him iron and he will quench you something for the League.\",\"color\":\"gold\"}]"
-                                },
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Conditions: [
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "no_temper_blade_done"
-                                }
-                            ],
-                            Label: "temper_tip"
-                        },
-                        {
-                            Name: "Ask about Old Marren",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "tag @s add met_scorchspire_healer"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    Cmd: "tellraw @initiator [{\"text\":\"Old Marren at the hearth is chasing a door plate he lost to the slag heap. Sixty years at the bellows - humor him.\",\"color\":\"gold\"}]"
-                                },
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Conditions: [
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "no_the_hand_done"
-                                }
-                            ],
-                            Label: "marren_tip"
-                        },
-                        {
-                            Name: "Ask about the shrine road",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "tag @s add met_scorchspire_healer"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    Cmd: "tellraw @initiator [{\"text\":\"There is a jumpy clerk hiding down the shrine road, and some hard-looking company came asking after her. The Fire Shrine is that way too, if you have the nerve.\",\"color\":\"gold\"}]"
-                                },
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Conditions: [
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "no_retirement_memo_taken"
-                                }
-                            ],
-                            Label: "shrineroad_tip"
+                            Label: "rumors_button"
                         },
                         {
                             Name: "Is there anything older than the gym here?",
@@ -265,6 +180,119 @@
                     ],
                     Name: "Nurse Ember",
                     Label: "default"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Ask about the forge",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "tellraw @initiator [{\"text\":\"Forgemaster Sena is burning a dead Company requisition down at the forge - she could use a second pair of hands.\",\"color\":\"gold\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_forge_order_done"
+                                }
+                            ],
+                            Label: "forge_tip"
+                        },
+                        {
+                            Name: "Ask about the bladesmith",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "tellraw @initiator [{\"text\":\"Bladesmith Hollis tempers keepsakes in the forge annex - bring him iron and he will quench you something for the League.\",\"color\":\"gold\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_temper_blade_done"
+                                }
+                            ],
+                            Label: "temper_tip"
+                        },
+                        {
+                            Name: "Ask about Old Marren",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "tellraw @initiator [{\"text\":\"Old Marren at the hearth is chasing a door plate he lost to the slag heap. Sixty years at the bellows - humor him.\",\"color\":\"gold\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_the_hand_done"
+                                }
+                            ],
+                            Label: "marren_tip"
+                        },
+                        {
+                            Name: "Ask about the shrine road",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "tellraw @initiator [{\"text\":\"There is a jumpy clerk hiding down the shrine road, and some hard-looking company came asking after her. The Fire Shrine is that way too, if you have the nerve.\",\"color\":\"gold\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_retirement_memo_taken"
+                                }
+                            ],
+                            Label: "shrineroad_tip"
+                        },
+                        {
+                            Name: "Back to the desk",
+                            Actions: [
+                                {
+                                    Type: "OPEN_DEFAULT_DIALOG"
+                                }
+                            ],
+                            Label: "back_button"
+                        },
+                        {
+                            Name: "Thanks, Nurse",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Work? Always, in a forge town. I keep the waiting-room ledger of who is grumbling about what - it is better triage than half my charts."
+                        },
+                        {
+                            Text: "Ask around before you take the Descent. This town pays its debts in favors, and favors travel."
+                        }
+                    ],
+                    Name: "Nurse Ember - the waiting-room ledger",
+                    Label: "rumors"
                 },
                 {
                     Priority: -1,

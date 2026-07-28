@@ -1,6 +1,6 @@
 {
   "name": "incomplete_file",
-  "description": "The Incomplete File (q.side_file) end-to-end at Lucian Scrollkeeper's Sango desk: open the Personnel File, recover the portrait backing (courier-cart chest click) and re-signed ledger page (shore-warehouse barrel click), refuse Musa's 900 CD buyout to keep the founding charter, file all three, then play the badge bridge and stages 2-3. Assumed-faked prerequisites: the third badge is faked via memory_fragment 3 (drives the badges_gte_3 band tag), the three Revision Notice pulls run their real pull_notice_N functions by rcon (notice posts + Company Surveyor are unplaced), and the stage-3 HQ gate is faked with tag defeated_villain_boss; assumes no pending Lucian delivery turn-ins (memo/letter/minutes/manifest tags) on the test player, which would preempt the stage entries.",
+  "description": "The Incomplete File (q.side_file) end-to-end at Lucian Scrollkeeper's Sango desk: open the Personnel File, recover the portrait backing (courier-cart chest click) and re-signed ledger page (shore-warehouse barrel click), refuse Musa's 900 CD buyout to keep the founding charter, file all three, then read the one-shot file-closed coda. alpha.26 audit rulings: stages 2-3 (Revision Notices + post-HQ grand filing) were CUT with the never-placed ghost cast — the quest completes at the stage-1 filing and this scenario ends at the file_closed entry. Assumes no pending Lucian delivery turn-ins (letter/minutes/manifest tags) on the test player, which would preempt the stage entries.",
   "steps": [
     {
       "comment": "-- reset (idempotent re-runs): every chain tag, granted items, quest scores --"
@@ -36,25 +36,7 @@
       "rcon": "tag {player} remove docs_filed"
     },
     {
-      "rcon": "tag {player} remove notice_1"
-    },
-    {
-      "rcon": "tag {player} remove notice_2"
-    },
-    {
-      "rcon": "tag {player} remove notice_3"
-    },
-    {
-      "rcon": "tag {player} remove notices_filed"
-    },
-    {
-      "rcon": "tag {player} remove file_refiled"
-    },
-    {
-      "rcon": "tag {player} remove defeated_villain_boss"
-    },
-    {
-      "rcon": "scoreboard players set {player} ci_notices 0"
+      "rcon": "tag {player} remove file_closed_read"
     },
     {
       "rcon": "scoreboard players set {player} memory_fragment 0"
@@ -294,7 +276,7 @@
       "wait_no_screen": true
     },
     {
-      "wait_chat": "Stage one filed",
+      "wait_chat": "The record is filed",
       "kinds": [
         "overlay"
       ],
@@ -305,7 +287,7 @@
       "expect": "passed"
     },
     {
-      "comment": "-- beat 6: the badge bridge - under three badges the file waits (same leave line on both the off-record prompt and the plain bridge, so either branch passes) --"
+      "comment": "-- beat 6 (alpha.26 audit rulings): the one-shot file-closed coda — the quest now completes at the filing; re-open Lucian and read the closure --"
     },
     {
       "sleep": 1.0
@@ -318,146 +300,25 @@
     },
     {
       "expect_screen_text": [
-        "The three records are filed — the ledger remembers its first draft again, and it has you to thank. The next chapter is being pasted up in a town you cannot argue with until you are wearing a third badge, so that part waits on the roads.",
-        "But there is one thing that will not keep, and it never touches a file. A word off the record, while the two grey coats in the square have their backs turned. If you have the nerve for something quiet, say so."
+        "The three records lie together at last — the portrait backing, the ledger page, the charter. Read as one document they have a shape where a name should be, and every cross-reference renders that name as static. This record was not lost. It was retired.",
+        "So the file is closed. Not solved — closed. An archive knows the difference. The shelf stays warm for anything on Company letterhead you happen to notice; roads write things down, and I pay for live paper."
       ]
     },
     {
-      "click": "Third badge. Noted."
+      "screenshot": "file_closed_coda"
+    },
+    {
+      "click": "Let it rest"
     },
     {
       "wait_no_screen": true
     },
     {
-      "comment": "-- beat 7: fake the third badge (memory_fragment drives badges_gte_3 in dialog/band_tags) - stage 2 brief --"
-    },
-    {
-      "rcon": "scoreboard players set {player} memory_fragment 3"
-    },
-    {
-      "sleep": 1.0
-    },
-    {
-      "interact_npc": "{g.uuid}"
-    },
-    {
-      "wait_screen": "Dialog"
-    },
-    {
-      "expect_screen_text": [
-        "The region is being re-signed again. A Company Surveyor walks Blossom Path pasting Revision Notices — this signage supersedes all prior signage, prior signage never existed, that sort of thing. I want three, intact, and I want them pulled while her eyes are elsewhere.",
-        "If she sees you holding one, she will not touch you. She will note the time and adjust her clipboard, and your intact notices will not be intact any more. Patience beats her. It usually does."
-      ]
-    },
-    {
-      "screenshot": "stage2_brief"
-    },
-    {
-      "click": "I will watch her loop"
-    },
-    {
-      "wait_no_screen": true
-    },
-    {
-      "comment": "-- beat 8: pull the three Revision Notices via their real pull functions (posts + surveyor unplaced, so no sighting can zero the count) --"
-    },
-    {
-      "rcon": "execute as {player} at @s run function cobblemon_initiative:sidequest/personnel_file/pull_notice_1"
-    },
-    {
-      "rcon": "execute as {player} at @s run function cobblemon_initiative:sidequest/personnel_file/pull_notice_2"
-    },
-    {
-      "rcon": "execute as {player} at @s run function cobblemon_initiative:sidequest/personnel_file/pull_notice_3"
-    },
-    {
-      "rcon": "execute if score {player} ci_notices matches 3",
-      "expect": "passed"
-    },
-    {
-      "sleep": 1.0
-    },
-    {
-      "comment": "-- beat 9: stage 2 turn-in - the intact notices --"
-    },
-    {
-      "interact_npc": "{g.uuid}"
-    },
-    {
-      "wait_screen": "Dialog"
-    },
-    {
-      "expect_screen_text": "Three Revision Notices, corners uncurled"
-    },
-    {
-      "click": "Hand over the intact notices"
-    },
-    {
-      "wait_no_screen": true
-    },
-    {
-      "wait_chat": "Revision notices filed",
-      "kinds": [
-        "overlay"
-      ],
-      "timeout": 10
-    },
-    {
-      "rcon": "execute if entity @a[name={player},tag=notices_filed]",
-      "expect": "passed"
-    },
-    {
-      "comment": "-- beat 10: fake the HQ raid gate (defeated_villain_boss) - stage 3, the record reassembled and closed --"
-    },
-    {
-      "rcon": "tag {player} add defeated_villain_boss"
-    },
-    {
-      "sleep": 1.0
-    },
-    {
-      "interact_npc": "{g.uuid}"
-    },
-    {
-      "wait_screen": "Dialog"
-    },
-    {
-      "expect_screen_text": [
-        "You came back. Good. I have laid all of it out — the portrait backing, the ledger, the charter, the notices. Read together they make one document, and the document has a shape where a name should be. The reassembly renders it as static. Every pass, static.",
-        "So I will say what the file says. This record was not lost. It was retired. No — that is wrong too. There was never a record. That is the sentence they wrote over the sentence that used to be here. Sit down. Let me close the file properly, and pay what the archive owes you for finishing its work."
-      ]
-    },
-    {
-      "screenshot": "record_reassembled"
-    },
-    {
-      "click": "Let her close the file"
-    },
-    {
-      "wait_no_screen": true
-    },
-    {
-      "wait_chat": "The file is closed",
-      "kinds": [
-        "overlay"
-      ],
-      "timeout": 10
-    },
-    {
-      "rcon": "execute if entity @a[name={player},tag=file_refiled]",
+      "rcon": "execute if entity @a[name={player},tag=file_closed_read]",
       "expect": "passed"
     },
     {
       "screenshot": "incomplete_file_closed"
-    },
-    {
-      "comment": "-- trailing cleanup: mid-run fakes must not leak into later scenarios (badge band tags re-derive from memory_fragment every tick) --"
-    },
-    {
-      "rcon": "scoreboard players set {player} memory_fragment 0"
-    },
-    {
-      "rcon": "tag {player} remove defeated_villain_boss"
     }
   ]
 }

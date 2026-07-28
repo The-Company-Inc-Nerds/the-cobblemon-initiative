@@ -36,6 +36,11 @@
                                 {
                                     Type: "PLAYER_TAG",
                                     Operation: "EQUALS",
+                                    Name: "no_recent_flee"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
                                     Name: "no_defeated_mm_wheat_trader"
                                 }
                             ]
@@ -56,6 +61,11 @@
                                     Type: "PLAYER_TAG",
                                     Operation: "EQUALS",
                                     Name: "dex_gte_2"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_recent_flee"
                                 },
                                 {
                                     Type: "PLAYER_TAG",
@@ -293,6 +303,16 @@
                             Label: "trade_button"
                         },
                         {
+                            Name: "Ask what the view costs",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "climbed"
+                                }
+                            ],
+                            Label: "perch_button"
+                        },
+                        {
                             Name: "I will keep my coin",
                             Actions: [
                                 {
@@ -329,6 +349,67 @@
                     ],
                     Name: "Wheat Trader — the pitch",
                     Label: "default"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Accept the discretion payment",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_gift_sedge_perch_gift_claimed"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "loot give @s loot cobblemon_initiative:npc_gift/common"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_gift_sedge_perch_gift_claimed"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tag @s add gift_sedge_perch_gift_claimed"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "discretion_button"
+                        },
+                        {
+                            Name: "I saw plenty",
+                            Actions: [
+                                {
+                                    Type: "OPEN_DEFAULT_DIALOG"
+                                }
+                            ],
+                            Label: "back_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "You climbed the whole cap to reach my office. Good lungs. Bad timing. Company policy on unscheduled visitors with elevation: the Company pays for discretion. You were never up here, you saw nothing from up here, and this is compensation for the nothing you saw."
+                        },
+                        {
+                            Text: "Do not look south while I am handing this over. There is nothing south. That is precisely the nothing I am paying you about. Sign nothing, say nothing, take the parcel."
+                        }
+                    ],
+                    Name: "Sedge — regarding the view",
+                    Label: "climbed"
                 }
             ]
         },

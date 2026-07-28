@@ -81,7 +81,7 @@
                     ],
                     Texts: [
                         {
-                            Text: "Kaito sent you? Then write this down exactly. The crate of greens behind me listed at 50 all spring. The Company calibrated my scale twice since the sign went up, and the same crate rings up 54 today. Eight parts in a hundred — and the scale did not get heavier. The greens did not get greener."
+                            Text: "Wei Feng sent you? Then write this down exactly. The crate of greens behind me listed at 50 all spring. The Company calibrated my scale twice since the sign went up, and the same crate rings up 54 today. Eight parts in a hundred — and the scale did not get heavier. The greens did not get greener."
                         },
                         {
                             Text: "Fifty was the price. Fifty-four is the ticket. The only thing that changed between those two numbers is a man with a clipboard calling my scale accurate."
@@ -131,7 +131,7 @@
                     ],
                     Texts: [
                         {
-                            Text: "Kaito sent you? Then write this down exactly. The crate of greens behind me listed at 50 all spring. Since the Company calibrated my scale the same crate rings up 52. Four parts in a hundred, so far — and the scale did not get heavier. The greens did not get greener."
+                            Text: "Wei Feng sent you? Then write this down exactly. The crate of greens behind me listed at 50 all spring. Since the Company calibrated my scale the same crate rings up 52. Four parts in a hundred, so far — and the scale did not get heavier. The greens did not get greener."
                         },
                         {
                             Text: "Fifty was the price. Fifty-two is the ticket. Small number, I know. It was smaller before the man with the clipboard called my scale accurate, and it has never once moved down."
@@ -156,6 +156,40 @@
                     Priority: 20,
                     Buttons: [
                         {
+                            Name: "The forward drawer",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "drawer_forward"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "hz_market_eq_1"
+                                }
+                            ],
+                            Label: "forward_button"
+                        },
+                        {
+                            Name: "The steady drawer",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "drawer_steady"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "hz_market_eq_2"
+                                }
+                            ],
+                            Label: "steady_button"
+                        },
+                        {
                             Name: "On my way",
                             Actions: [
                                 {
@@ -167,10 +201,10 @@
                     ],
                     Texts: [
                         {
-                            Text: "You wrote mine down already. Take the number up the street before the index moves it again."
+                            Text: "You wrote mine down already. Take the number to the Pokemart before the index moves it again."
                         },
                         {
-                            Text: "My ticket is in your notes. Go collect the other two — Wei Shun with the tools, Mei Lin down the southwest lane."
+                            Text: "My ticket is in your notes. Go collect the other two — Wei Shun with the tools, Auntie Song at the berry stand."
                         }
                     ],
                     Name: "Linh Hua — on the record",
@@ -187,6 +221,50 @@
                     Priority: 15,
                     Buttons: [
                         {
+                            Name: "The forward drawer",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "drawer_forward"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "hz_market_eq_1"
+                                }
+                            ],
+                            Label: "forward_button"
+                        },
+                        {
+                            Name: "The steady drawer",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "drawer_steady"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "hz_market_eq_2"
+                                }
+                            ],
+                            Label: "steady_button"
+                        },
+                        {
+                            Name: "The curio shelf",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "curios"
+                                }
+                            ],
+                            Label: "curio_button"
+                        },
+                        {
                             Name: "Good for the street",
                             Actions: [
                                 {
@@ -198,10 +276,10 @@
                     ],
                     Texts: [
                         {
-                            Text: "Kaito flipped his verified sign face-down and the whole street heard about it by lunch. First honest piece of signage this market has seen in a season — and it took your notebook to do it."
+                            Text: "Wei Feng flipped her verified sign face-down and the whole street heard about it by lunch. First honest piece of signage this market has seen in a season — and it took your notebook to do it."
                         },
                         {
-                            Text: "The tickets still ride the index. But now everyone SAYS so out loud, which is not nothing. Greens are where they always were."
+                            Text: "The tickets still ride the index. But now everyone SAYS so out loud, which is not nothing. Greens are where they always were — and the mint cabinet never checked an index in its life."
                         }
                     ],
                     Name: "Linh Hua — the sign came down",
@@ -210,6 +288,50 @@
                 {
                     Priority: 10,
                     Buttons: [
+                        {
+                            Name: "The forward drawer",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "drawer_forward"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "hz_market_eq_1"
+                                }
+                            ],
+                            Label: "forward_button"
+                        },
+                        {
+                            Name: "The steady drawer",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "drawer_steady"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "hz_market_eq_2"
+                                }
+                            ],
+                            Label: "steady_button"
+                        },
+                        {
+                            Name: "The curio shelf",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "curios"
+                                }
+                            ],
+                            Label: "curio_button"
+                        },
                         {
                             Name: "Just looking",
                             Actions: [
@@ -222,10 +344,13 @@
                     ],
                     Texts: [
                         {
-                            Text: "Greens, crates, honest weight. The stall is older than every sign on this street, and it plans to outlive a few more of them."
+                            Text: "Greens, crates, honest weight — and the mint cabinet, since Madam Qiu retired up-valley and left it to me. A drawer for every temperament, she used to say. I say a leaf is a leaf and twenty-two hundred is twenty-two hundred, and both of us are right."
                         },
                         {
-                            Text: "Buy or browse, either is welcome. Mind the ticket, not the sign — the ticket is the one that changes."
+                            Text: "Buy or browse, either is welcome. Mind the ticket, not the sign — the ticket is the one that changes. The mints never do; dried mint does not read the index."
+                        },
+                        {
+                            Text: "Half the drawers rest each day — dried mint sulks if the cabinet never closes. Whichever drawer stands open this morning, that is the argument on offer. Dawn turns the key."
                         },
                         {
                             Text: "They say the dojo Master threw a Company man clean off the terrace. My cousin swears she watched him land. My cousin was at this stall buying greens when it happened, but the story is better her way."
@@ -233,6 +358,222 @@
                     ],
                     Name: "Linh Hua — the produce stall",
                     Label: "default"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Adamant Mint — 2200 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/market/buy_mint_adamant"
+                                }
+                            ],
+                            Label: "buy_adamant_button"
+                        },
+                        {
+                            Name: "Modest Mint — 2200 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/market/buy_mint_modest"
+                                }
+                            ],
+                            Label: "buy_modest_button"
+                        },
+                        {
+                            Name: "Jolly Mint — 2200 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/market/buy_mint_jolly"
+                                }
+                            ],
+                            Label: "buy_jolly_button"
+                        },
+                        {
+                            Name: "Timid Mint — 2200 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/market/buy_mint_timid"
+                                }
+                            ],
+                            Label: "buy_timid_button"
+                        },
+                        {
+                            Name: "The steady drawer",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "drawer_steady"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "hz_market_eq_2"
+                                }
+                            ],
+                            Label: "steady_button"
+                        },
+                        {
+                            Name: "Back to Linh Hua",
+                            Actions: [
+                                {
+                                    Type: "OPEN_DEFAULT_DIALOG"
+                                }
+                            ],
+                            Label: "back_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The forward drawer — tempers that push. Adamant and Jolly for the body, Modest and Timid for the mind. Qiu wrote the labels; I just keep the key. Decide which argument your partner should win."
+                        }
+                    ],
+                    Name: "Linh Hua — the forward drawer",
+                    Label: "drawer_forward"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Impish Mint — 2200 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/market/buy_mint_impish"
+                                }
+                            ],
+                            Label: "buy_impish_button"
+                        },
+                        {
+                            Name: "Bold Mint — 2200 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/market/buy_mint_bold"
+                                }
+                            ],
+                            Label: "buy_bold_button"
+                        },
+                        {
+                            Name: "Calm Mint — 2200 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/market/buy_mint_calm"
+                                }
+                            ],
+                            Label: "buy_calm_button"
+                        },
+                        {
+                            Name: "Careful Mint — 2200 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/market/buy_mint_careful"
+                                }
+                            ],
+                            Label: "buy_careful_button"
+                        },
+                        {
+                            Name: "The forward drawer",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "drawer_forward"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "hz_market_eq_1"
+                                }
+                            ],
+                            Label: "forward_button"
+                        },
+                        {
+                            Name: "Back to Linh Hua",
+                            Actions: [
+                                {
+                                    Type: "OPEN_DEFAULT_DIALOG"
+                                }
+                            ],
+                            Label: "back_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The steady drawer — tempers that hold. Impish and Bold for the walls, Calm and Careful for the patience behind them. Nothing in this drawer ever starts a fight. Nothing in it loses one quickly either."
+                        }
+                    ],
+                    Name: "Linh Hua — the steady drawer",
+                    Label: "drawer_steady"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Leaf Stone — 2800 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/market/buy_leaf_stone"
+                                }
+                            ],
+                            Label: "buy_leaf_stone_button"
+                        },
+                        {
+                            Name: "Sun Stone — 2800 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/market/buy_sun_stone"
+                                }
+                            ],
+                            Label: "buy_sun_stone_button"
+                        },
+                        {
+                            Name: "Back to Linh Hua",
+                            Actions: [
+                                {
+                                    Type: "OPEN_DEFAULT_DIALOG"
+                                }
+                            ],
+                            Label: "back_button"
+                        },
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The curio shelf came with the cabinet. Stones out of the greenhouse trade — a leaf for the growers, a sun for the believers. Not produce, I grant you. But they sell to the same hearts, and the hearts keep asking."
+                        }
+                    ],
+                    Name: "Linh Hua — the curio shelf",
+                    Label: "curios"
                 }
             ]
         },

@@ -36,6 +36,143 @@
             Type: "STANDARD",
             DialogDataSet: [
                 {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "hz_price_check_active"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "no_hz_price_3"
+                        }
+                    ],
+                    Priority: 25,
+                    Buttons: [
+                        {
+                            Name: "Note the price",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:sidequest/price_check/note_3"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "note_button"
+                        },
+                        {
+                            Name: "Leave the stand",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "A price check, at MY stand? Oh, write it down, dear, write it all down. Ninety the pair, same as spring, same as last spring. No sign, no calibration visits, no man with a clipboard. I used to think the Company forgot me. Lately I think being forgotten is the only thing keeping my ticket still."
+                        },
+                        {
+                            Text: "The blessed stalls all drifted up and mine sat where I planted it — and the only difference between us is that no clipboard has ever blessed a berry of mine. Tell the mart exactly that, word for word. I will wait."
+                        }
+                    ],
+                    Name: "Auntie Song — the unblessed ticket",
+                    Label: "price_stop"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "hz_price_3"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "no_hz_prices_done"
+                        }
+                    ],
+                    Priority: 20,
+                    Buttons: [
+                        {
+                            Name: "On my way",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Told you — still ninety the pair. If the mart wants proof the index is the disease, I am the healthy patient."
+                        },
+                        {
+                            Text: "You have my number, which is to say the old number. Take it to the Pokemart and let Wei Feng do the arithmetic out loud."
+                        }
+                    ],
+                    Name: "Auntie Song — the healthy patient",
+                    Label: "noted"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "hz_prices_done"
+                        }
+                    ],
+                    Priority: 15,
+                    Buttons: [
+                        {
+                            Name: "Browse the fresh shelf",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "fresh"
+                                }
+                            ],
+                            Label: "fresh_button"
+                        },
+                        {
+                            Name: "Browse the cures basket",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "cures"
+                                }
+                            ],
+                            Label: "cures_button"
+                        },
+                        {
+                            Name: "Good for the street",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The mart flipped its verified sign face-down — because of a notebook with MY ticket in it. The unblessed berry stand outpricing the calibrated shelves, on the record at last. I have been insufferable about it all week, dear, and I intend to continue."
+                        },
+                        {
+                            Text: "Buy a berry to celebrate. Same price as spring. That is rather the point."
+                        }
+                    ],
+                    Name: "Auntie Song — vindicated",
+                    Label: "sign_down"
+                },
+                {
                     Priority: 10,
                     Buttons: [
                         {
@@ -211,6 +348,37 @@
                             Label: "buy_chesto_button"
                         },
                         {
+                            Name: "The far side of the basket",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "cures_far"
+                                }
+                            ],
+                            Label: "cures_far_button"
+                        },
+                        {
+                            Name: "Back to Auntie Song",
+                            Actions: [
+                                {
+                                    Type: "OPEN_DEFAULT_DIALOG"
+                                }
+                            ],
+                            Label: "back_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Two to a bag, ninety the pair, one for every ailment on the road. The mart wants two hundred fifty for one bottle of the same promise — and their bottle never grew on a branch. Burns and frost live on the far side of the basket, dear — the basket is deeper than it looks."
+                        }
+                    ],
+                    Name: "Auntie Song — the cures basket, near side",
+                    Label: "cures"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
                             Name: "Rawst Berry x2 — 90 CD",
                             Actions: [
                                 {
@@ -244,6 +412,16 @@
                             Label: "buy_persim_button"
                         },
                         {
+                            Name: "The near side of the basket",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "cures"
+                                }
+                            ],
+                            Label: "cures_near_button"
+                        },
+                        {
                             Name: "Back to Auntie Song",
                             Actions: [
                                 {
@@ -251,24 +429,15 @@
                                 }
                             ],
                             Label: "back_button"
-                        },
-                        {
-                            Name: "Goodbye",
-                            Actions: [
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "goodbye_button"
                         }
                     ],
                     Texts: [
                         {
-                            Text: "Two to a bag, ninety the pair, one for every ailment on the road. The mart wants two hundred fifty for one bottle of the same promise — and their bottle never grew on a branch."
+                            Text: "The far side. Rawst for the burns, Aspear for the frost, Persim for the head that will not clear. Same bag, same ninety — the basket does not do tiers, dear, whatever the mart says about selection."
                         }
                     ],
-                    Name: "Auntie Song — the cures basket",
-                    Label: "cures"
+                    Name: "Auntie Song — the cures basket, far side",
+                    Label: "cures_far"
                 }
             ]
         },
@@ -396,7 +565,7 @@
             Timestamp: 0L,
             Type: "CUSTOM",
             URL: "",
-            UUID: [I; 1859485937, 1872058542, -1266287113, 2079690003]
+            UUID: [I; -140867045, -148680271, -1764422721, 2144082083]
         },
         SoundData: {
             SoundDataSet: [

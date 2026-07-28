@@ -1,9 +1,9 @@
 {
     PresetMetadata: {
         author: "TheCompanyInc",
-        category: "Civilian",
+        category: "Gym Guide",
         created: 0L,
-        description: "civilian at Hua Zhan City - Hilltop Dojo, The Steps (act 1). Compiled from dialog-src.",
+        description: "gym_guide at Hua Zhan City - Hilltop Dojo, The Steps (act 1). Compiled from dialog-src.",
         entityTypeId: "easy_npc:humanoid",
         modified: 0L,
         name: "Tao Shen",
@@ -33,34 +33,228 @@
         CanPickUpLoot: 0b,
         CustomNameVisible: 1b,
         DialogData: {
-            Type: "BASIC",
+            Type: "CUSTOM",
             DialogDataSet: [
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "no_pilgrimage_done"
+                        }
+                    ],
+                    Priority: 15,
+                    Buttons: [
+                        {
+                            Name: "Explain the gym",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add pilgrimage_started"
+                                },
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "explain"
+                                }
+                            ],
+                            Label: "explain_button"
+                        },
+                        {
+                            Name: "I will find the hill",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add pilgrimage_started"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Heading up? Then you should know Hua Zhan is a strange gym, challenger — half of it is not in any building. I am the guide here; I also hold the low stance on every landing of this stair, which is the same job on different days. Blossom accepts challengers the old way: wake the four stone wardens first."
+                        },
+                        {
+                            Text: "Keep up the west stair and find Garden Master Wei at the top. Four stone wardens scattered across the city, four seals — wake and best each, then press its seal at the stone once the warden yields, and finish the circle. The hill itself will vouch for you at the gym door."
+                        }
+                    ],
+                    Name: "Tao Shen — the old way",
+                    Label: "pilgrim_hint"
+                },
                 {
                     Priority: 10,
                     Buttons: [
                         {
-                            Name: "Goodbye",
+                            Name: "Explain the gym",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "explain"
+                                }
+                            ],
+                            Label: "explain_button"
+                        },
+                        {
+                            Name: "About the Company house",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "greenhouse_tour"
+                                }
+                            ],
+                            Label: "greenhouse_button"
+                        },
+                        {
+                            Name: "Heard anything interesting?",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "guide_gossip"
+                                }
+                            ],
+                            Label: "gossip_button"
+                        },
+                        {
+                            Name: "I know what I am doing",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "goodbye_button"
+                            Label: "leave_button"
                         }
                     ],
                     Texts: [
                         {
-                            Text: "Down the stair, up the stair, hold the low stance at every landing until the knees stop arguing. That is the whole curriculum. Kai Tan makes it look like nothing from the terrace — he forgets he spent two winters exactly where I am standing."
+                            Text: "Welcome, challenger. I am the gym guide — every trainer who takes this stair passes me first, and the smart ones stop to breathe. Down the stair, up the stair, hold the low stance at every landing until the knees stop arguing. That is the whole curriculum, and it is also my advice."
                         },
                         {
-                            Text: "You can hear the greenhouse fans from up here when the wind drops. Thousands of little pumps keeping something alive under all that glass. Whatever it is, it does not have to climb a single step for its water. Down here we earn ours."
+                            Text: "Looks like you mean business. Want the lay of the land before you face the leader?"
                         },
                         {
-                            Text: "A man in a grey suit tried to climb these steps in dress shoes last season, folder under his arm, talking about partnership. He got to about the seventh stair. Grass philosophy, first lesson: the ground you did not train on does not owe you a grip."
+                            Text: "In Hua Zhan even the gym is half garden. Mind where you step and be polite to the flowerbeds - some of them outrank me. A man in a grey suit tried this climb in dress shoes last season. He got to about the seventh stair. The ground you did not train on does not owe you a grip."
                         }
                     ],
-                    Name: "Tao Shen",
+                    Name: "Tao Shen — guide on the stair",
                     Label: "default"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Got it",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "default"
+                                }
+                            ],
+                            Label: "back_button"
+                        },
+                        {
+                            Name: "Thanks",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Beat the leader and you earn the badge. Each badge you collect raises your level cap, so your team can keep pace with the road ahead. Skip a gym and you will hit a wall you cannot train through."
+                        },
+                        {
+                            Text: "The leader specialises in one type, so build a team that answers it. Heal up at the center before you challenge, and remember — out here a fainted partner does not come back. Choose your battles like they are permanent. Because for you, they are."
+                        },
+                        {
+                            Text: "One more thing the new ones never hear. The badges are not just for show. The whole region runs on a single currency these days, and a single name behind it. The further you climb, the more that name seems to lean your way. I would keep my eyes open if I were you."
+                        }
+                    ],
+                    Name: "How Gyms Work",
+                    Label: "explain"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Back",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "default"
+                                }
+                            ],
+                            Label: "back_button"
+                        },
+                        {
+                            Name: "Thanks",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The Company keeps a house down the south lane. Free to look, they say — verified growth, verified value. Step inside and see what they actually grow before you challenge Blossom. Ask for Shu and her dispatch board. You can hear their fans from this stair when the wind drops — thousands of little pumps keeping something alive that never earned its water. Down here we earn ours."
+                        },
+                        {
+                            Text: "But the gym is what you came for. Walk to the four stone wardens, best each, press their seals, and let Blossom show you the old way still wins."
+                        }
+                    ],
+                    Name: "Tao Shen — the Company house",
+                    Label: "greenhouse_tour"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Back",
+                            Actions: [
+                                {
+                                    Type: "OPEN_DEFAULT_DIALOG"
+                                }
+                            ],
+                            Label: "gossip_back_button"
+                        },
+                        {
+                            Name: "Leave",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "gossip_leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "There are ten of us guides, one per gym, and we share a newsletter. This month it is mostly the other nine arguing over who invented saying — you got this. For the record, I invented it."
+                        },
+                        {
+                            Text: "One of the other guides swears the healing machine runs on a Chansey in the back room. Ours runs on compost heat. That part is true, which is somehow worse."
+                        },
+                        {
+                            Text: "Prize money used to come straight from the League. Now it routes through one office in Cyber City. I asked which office. The reply was a pamphlet about wheat."
+                        },
+                        {
+                            Text: "A guide remembers every challenger. Even the ones whose parties walk out smaller than they walked in. Blossom plants something for each of those. She thinks nobody has noticed the row."
+                        },
+                        {
+                            Text: "Kai Tan says I am one rung below him on the terrace. He forgets he spent two winters exactly where I am standing. Guides remember that kind of thing too."
+                        }
+                    ],
+                    Name: "Guide Gossip",
+                    Label: "guide_gossip"
                 }
             ]
         },

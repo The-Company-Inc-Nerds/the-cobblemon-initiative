@@ -140,7 +140,7 @@ Status legend: **OK** verified current · **CHANGED** drifted from the wiki (now
 - [ ] **Off the Records** (`q.side_offrecords`) — Giver: Off-Records Clerk Maren @ 1520 89 1100 · 1 stage · Reward: 1200 CD (payout) + training pack · Status: CHANGED
   - Stale caveats removed; quest is live. Post-Volt gate (accept latch ci_file_active; distinct holder from Hua Zhan's q.side_offrec). Props cyber_archive_1/2/3 at the records annex. Wiki correctly notes the "beat Volt" gate.
 - [ ] **The Door Downtown** (`q.side_door`) — Giver: Grid Broker Ohmond @ 1555 92 1108 · 2 stages · Reward: free HQ pointer (always) + optional 1500 CD wager win/loss OR 300 CD paid decline · Status: CHANGED
-  - Stale caveats removed; quest is live. Post-Volt. Pointer delivered on wager win, wager loss, AND paid decline (all route through door/deliver_pointer, idempotent on hq_pointer_done). RUNTIME BUG to test: pointer text says "fields four / four liberated fields" but the real HQ gate (quest/render) is 6 fields — the wiki's "six" is correct; fix the pointer text, not the wiki.
+  - Stale caveats removed; quest is live. Post-Volt. Pointer delivered on wager win, wager loss, AND paid decline (all route through door/deliver_pointer, idempotent on hq_pointer_done). FIXED (alpha.26 audit rulings): pointer text raised to "fields six / six liberated fields" — matches the real HQ gate (quest/render, DJ dialog, ceremony, all 6). Verify the title + tellraw read "six" in-game after the recompile.
 
 ## Ryujin Keep
 - [ ] **The Nervous Clerk** (`q.side_clerk8`) — Giver: A Nervous Clerk @ 2160 64 890 · 1 stage · Reward: 400 CD + keepsake page (paper) + standard training gift · Status: OK

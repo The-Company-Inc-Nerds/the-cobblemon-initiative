@@ -79,7 +79,7 @@
             {
               "objective": "fields_liberated",
               "op": "lte",
-              "value": 3
+              "value": 5
             }
           ],
           "label": "Liberate wheat fields, then raid HQ"
@@ -97,7 +97,7 @@
             {
               "objective": "fields_liberated",
               "op": "gte",
-              "value": 4
+              "value": 6
             }
           ],
           "label": "Raid Company HQ  [1590 51 1028]",
@@ -664,9 +664,9 @@
             "sq_museum_donation_done"
           ],
           "label": "Six bones complete the exhibit",
-          "x": 1902.5,
+          "x": 1869.5,
           "y": 114.0,
-          "z": 2337.5
+          "z": 2330.5
         }
       ]
     },
@@ -695,19 +695,6 @@
           "x": 2656.5,
           "y": 106.0,
           "z": 2897.5
-        },
-        {
-          "if_tags": [
-            "letter_surrendered"
-          ],
-          "not_tags": [
-            "marlow_thanks_done",
-            "carrying_dead_letter"
-          ],
-          "label": "Tell Marlow how it ended",
-          "x": 2656.5,
-          "y": 106.0,
-          "z": 2897.5
         }
       ]
     },
@@ -723,46 +710,13 @@
         },
         {
           "if_tags": [
-            "docs_filed"
-          ],
-          "not_tags": [
-            "notices_filed",
-            "sold_docs"
-          ],
-          "scores": [
-            {
-              "objective": "memory_fragment",
-              "op": "lte",
-              "value": 2
-            }
-          ],
-          "label": "Lucian waits on a third badge",
-          "x": 2627.0,
-          "y": 119.0,
-          "z": 2778.0
-        },
-        {
-          "if_tags": [
             "file_opened"
           ],
           "not_tags": [
-            "notices_filed",
+            "docs_filed",
             "sold_docs"
           ],
           "label": "Rebuild the record for Lucian",
-          "x": 2627.0,
-          "y": 119.0,
-          "z": 2778.0
-        },
-        {
-          "if_tags": [
-            "notices_filed",
-            "defeated_villain_boss"
-          ],
-          "not_tags": [
-            "file_refiled"
-          ],
-          "label": "The file can close — see Lucian",
           "x": 2627.0,
           "y": 119.0,
           "z": 2778.0
@@ -853,9 +807,9 @@
             "yield_report_taken"
           ],
           "label": "The gym gate audit — get the draft",
-          "x": 1505.5,
-          "y": 86.0,
-          "z": 2043.5
+          "x": 1547.0,
+          "y": 84.0,
+          "z": 2003.0
         },
         {
           "if_tags": [
@@ -1277,6 +1231,78 @@
       ]
     },
     {
+      "holder": "q.side_nets",
+      "name": "The Drained Nets",
+      "stages": [
+        {
+          "if_tags": [
+            "corvin_fish_paid"
+          ],
+          "label": "The Drained Nets - the old waters still give"
+        },
+        {
+          "if_tags": [
+            "corvin_fish_done"
+          ],
+          "not_tags": [
+            "corvin_fish_paid"
+          ],
+          "label": "Collect the catch bounty from Corvin",
+          "x": 1184.5,
+          "y": 65.0,
+          "z": 2523.5
+        },
+        {
+          "if_tags": [
+            "corvin_quest_started"
+          ],
+          "not_tags": [
+            "corvin_fish_done"
+          ],
+          "label": "Bring Corvin 5 cod from living water",
+          "x": 1184.5,
+          "y": 65.0,
+          "z": 2523.5
+        }
+      ]
+    },
+    {
+      "holder": "q.side_lamps",
+      "name": "The Lamplighters Round",
+      "stages": [
+        {
+          "if_tags": [
+            "lysira_round_done"
+          ],
+          "label": "The round burns steady over the south dock"
+        },
+        {
+          "if_tags": [
+            "lysira_round_in"
+          ],
+          "not_tags": [
+            "lysira_round_done"
+          ],
+          "label": "Collect the round bounty from Lysira",
+          "x": 1096.5,
+          "y": 80.0,
+          "z": 2519.5
+        },
+        {
+          "if_tags": [
+            "lysira_round_started"
+          ],
+          "not_tags": [
+            "lysira_round_in"
+          ],
+          "label": "Bring Lysira 8 glowstone dust for the lamps",
+          "x": 1096.5,
+          "y": 80.0,
+          "z": 2519.5
+        }
+      ]
+    },
+    {
       "holder": "q.side_verified",
       "name": "Verified Weather",
       "stages": [
@@ -1293,9 +1319,9 @@
             }
           ],
           "label": "Witness the exchange board at the marsh kiosk",
-          "x": 1082.5,
+          "x": 1111.5,
           "y": 66.0,
-          "z": 2448.5
+          "z": 2444.5
         }
       ]
     },
@@ -1507,6 +1533,24 @@
           "x": 552.5,
           "y": 81.0,
           "z": 3552.5
+        }
+      ]
+    },
+    {
+      "holder": "q.side_gaviota_open",
+      "name": "The Gaviota Open",
+      "stages": [
+        {
+          "if_tags": [
+            "gaviota_open_active"
+          ],
+          "not_tags": [
+            "gaviota_open_champion"
+          ],
+          "label": "Ten fish before the clock runs out",
+          "x": 578.5,
+          "y": 89.0,
+          "z": 3440.5
         }
       ]
     },
@@ -2123,10 +2167,10 @@
           "not_tags": [
             "five_keepers_paid"
           ],
-          "label": "Five Keepers - claim the crystals from the Last Pilgrim",
-          "x": 945.5,
-          "y": 9.0,
-          "z": 2712.5
+          "label": "Five Keepers - claim the reckoning from Keeper Aurora",
+          "x": 948.0,
+          "y": 0.0,
+          "z": 2704.3
         },
         {
           "not_tags": [
@@ -2162,18 +2206,18 @@
             "fairy_crystal_claimed"
           ],
           "label": "Claim the crystal from Keeper Aurora",
-          "x": 951.5,
-          "y": 3.0,
-          "z": 2715.5
+          "x": 948.0,
+          "y": 0.0,
+          "z": 2704.3
         },
         {
           "not_tags": [
             "fairy_shrine_trial_clear"
           ],
-          "label": "Prove the bond - pass the Trial of Resolve and face Aurora",
-          "x": 951.5,
-          "y": 3.0,
-          "z": 2715.5
+          "label": "Follow the five vows down the drowned stair",
+          "x": 943.9,
+          "y": 40.0,
+          "z": 2644.5
         }
       ]
     },

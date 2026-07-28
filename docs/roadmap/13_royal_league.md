@@ -31,7 +31,7 @@ Marquee stream moments:
 | Field | Value |
 |---|---|
 | Act | **3** (opening — post-Royal-League Board/Founder is the *end* of Act 3; the League is its gate) |
-| `cd_instability` | **25** (stable — DJ was toppled after gym 7 + 4 fields; the League does not move the index) |
+| `cd_instability` | **25** (stable — DJ was toppled after gym 7 + 6 fields; the League does not move the index) |
 | Memory fragment | **None new.** frag_10 ("face your own signature") already fired at Scorchspire. The reveal is held for `reveal/board_fell` and `reveal/founder_defeated` (LORE_BIBLE §5). The League *foreshadows*, never spends the reveal. |
 | Recognition tier | **late** (all six royal characters carry `recognition_tier: late`) — this is the **apex of pre-reveal recognition**: the E4 alarm-then-stand-down; Cynthia fully recognises the CEO and withholds the name |
 | Canon ties | Cynthia is the recognition mirror before the literal mirror. Roland's line "not for whoever the grey suits keep asking after" confirms the Company is still hunting the Founder even here. Champion defeat grants `royal_league_champion` → cap 85 → the **only** gate before the Board (`board_cleared` → 100 → the Founder). |

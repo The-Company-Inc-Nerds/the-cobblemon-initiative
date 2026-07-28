@@ -28,7 +28,7 @@
 | [Verified Growth (the Company House)](#verified-growth-the-company-house) | Bo, greeter | flavor + **the reveal** | no | the truth (spoken) |
 | [Wheat Traders & the Granary](#wheat-traders--the-granary) | *(the wheat economy)* | economy loop | no | trade goods; late-game ambushes |
 | [Grain In, Goods Out](#grain-in-goods-out-the-miller-walk) | Guo the Miller | walking survey | yes | 300 CD + miller's dozen |
-| [Adjusted Retail (the Price Check)](#adjusted-retail-the-price-check) | Kaito Zhang | market survey | yes — *Price checks noted n/3* | 260 CD (Company receipt) |
+| [Adjusted Retail (the Price Check)](#adjusted-retail-the-price-check) | Wei Feng | market survey | yes — *Price checks noted n/3* | 260 CD (Company receipt) |
 | [Minutes of the Quarterly Review](#minutes-of-the-quarterly-review) | *(auto — the branch office)* | stealth | yes | 400 CD + the minutes |
 | [Out of Network (the Clinic Beat)](#out-of-network-the-clinic-beat) | Nurse Mei Lin | fetch + service | yes | 240 CD + clinic bundle |
 
@@ -62,7 +62,7 @@ Blossom keeps her gym the old way. The old botany carved **four stone wardens** 
 ### Walkthrough
 
 1. Talk to **Wei** (or the **Gym Guide**) first — this arms the pilgrimage. Until then the wardens are just plaques to read.
-2. Find each warden → *Ready a Pokéball — wake the warden.* Beat it, then *Press your hand to the seal.* A toast counts your seals; at 4/4 it points you home.
+2. Find each warden → *Ready a Pokéball — wake the warden.* Beat it, then **talk to the statue again** → *Press your hand to the seal* (the seal only offers itself after the match — an actionbar hint fires on the win since a25). A toast counts your seals; at 4/4 it points you home.
 3. Return to Wei → *Receive the blessing of the four wardens.* His handoff sends you to Blossom: *"tell her the hill sent you."*
 4. *(Optional)* **Groundskeeper Aya** at the west stair [1382 93 2060] offers an exhibition — the Sudowoodo gag (Sudowoodo 22 / Tangela 21). One-time, prize **300 CD** flat + 1× Super Potion. *(This is the same Aya who is Blossom in disguise — the exhibition is available before you finish the pilgrimage; once all four seals are pressed and you speak to her again, she drops the broom and reveals herself as the gym leader.)*
 
@@ -81,7 +81,7 @@ Blossom keeps her gym the old way. The old botany carved **four stone wardens** 
 |  |  |
 |---|---|
 | **Status** | ✅ Done (see [Open items](#open-items) re: the wheat gate) |
-| **Giver** | **Leader Blossom** (revealed from **Groundskeeper Aya** at the West Hill stair **@ 1382 93 2060**); the Hua Zhan Gym Guide [1492 86 2050] explains the rules and points at the pilgrimage |
+| **Giver** | **Leader Blossom** (revealed from **Groundskeeper Aya** at the West Hill stair **@ 1382 93 2060**); the gym guide Tao Shen on the west stair [1446 93 2056] explains the rules and points at the pilgrimage |
 | **Location** | Blossom spawns at the West Hill stair on the reveal |
 | **Start** | Press all four warden seals, then speak to Aya again — she reveals herself as Blossom and the challenge opens. Her pre-battle line changes with what you've seen in her city |
 | **Repeatable** | One-time |
@@ -104,7 +104,7 @@ All flavor, one battle: she greets you differently if you've **heard the wheat p
 
 - **Blossom:** **1800 CD** prize (flat) + the **Bloom Badge**:
   - Level cap rises to **30**.
-  - Poké Mart badge-2 shelf opens (Ultra/Dusk/Quick/Timer/Repeat/Dive balls at Kaito's).
+  - Poké Mart badge-2 shelf opens (Ultra/Dusk/Quick/Timer/Repeat/Dive balls at Wei Feng's Pokémart).
   - **Memory fragment 2** fires.
   - The CobbleDollar index takes another knock (**instability +8**).
 - Beat Blossom **and** the gym-gate analyst (either order) and you compose the *Greenspace 7 — retained* ending: the garden is saved from rezoning, and Blossom has an epilogue for you.
@@ -119,9 +119,9 @@ All flavor, one battle: she greets you differently if you've **heard the wheat p
 |  |  |
 |---|---|
 | **Status** | ✅ Done |
-| **Giver** | **Yan**, Yield Analyst — grey suit, clipboard, dispatch tray — at the gym gate **@ ~1505 86 2043** |
-| **Location** | The Hua Zhan gym gate; the report files with **Lucian the archivist** in Sango [2626 118 2776] |
-| **Start** | Auto — approaching the gate fires a one-shot note and lights the tracker: *The gym gate audit — get the draft* |
+| **Giver** | **Yan**, Yield Analyst — grey suit, clipboard, dispatch tray — at the Company branch office door **@ ~1546 84 2002** (moved off the gym gate in a25; the audit is still about the gate garden) |
+| **Location** | The branch office door (the audited garden is at the gym gate); the report files with **Lucian the archivist** in Sango [2626 118 2776] |
+| **Start** | Auto — approaching the analyst fires a one-shot note and lights the tracker: *The gym gate audit — get the draft* |
 | **Repeatable** | One-time |
 | **Tracker** | Yes |
 
@@ -187,10 +187,10 @@ flowchart LR
 |  |  |
 |---|---|
 | **Status** | 🚧 WIP (economy loop; ambush tiers gated on freed fields) |
-| **Location** | Hua Zhan market row (Auntie Song, Bo Huan, Madam Qiu) + the wider wheat economy on **[[Quests Harvest Road]]** |
+| **Location** | Hua Zhan market row (Auntie Song, Bo Huan, Linh Hua, Kaito’s wool shelf) + the wider wheat economy on **[[Quests Harvest Road]]** |
 | **Tracker** | No |
 
-The in-town **market traders** — Auntie Song, Bo Huan, and Madam Qiu — run ordinary walk-up shops (apricorns, berries, mints), and one of them will give you the wheat pitch: *"back your savings in something you can hold."* Hearing it counts the same as the house reveal. The **Company Wheat Scrip** loop and the **Granary** ambush battles (the Grain Buyer / retrieval crews that turn on you once 4+ fields are freed) live on the Harvest Road route — documented under **[[Quests Harvest Road]]** — and are reachable only as the wheat war opens up.
+The in-town **market traders** — Auntie Song (berries), Bo Huan (apricorns), Linh Hua (produce + the mint cabinet, inherited when Madam Qiu retired up-valley in a25), and Kaito Zhang’s wool shelf — run ordinary walk-up shops, and one of them will give you the wheat pitch: *"back your savings in something you can hold."* Hearing it counts the same as the house reveal. The **Company Wheat Scrip** loop and the **Granary** ambush battles (the Grain Buyer / retrieval crews that turn on you once 4+ fields are freed) live on the Harvest Road route — documented under **[[Quests Harvest Road]]** — and are reachable only as the wheat war opens up.
 
 ---
 
@@ -224,20 +224,20 @@ Guo doesn't need convincing — he needs a witness. He pays you to hear the open
 |  |  |
 |---|---|
 | **Status** | ✅ Done |
-| **Giver** | **Kaito Zhang** — keeps a counter in the front of his house on the east market street **@ ~1530 84 2076** |
+| **Giver** | **Wei Feng** — behind the Pokémart counter **@ ~1424 85 1960** (recast a25: Kaito Zhang now runs the wool shelf at his house counter) |
 | **Location** | Three market stalls (below) |
-| **Start** | Talk to Kaito **twice** — the offer opens after your first badge, once the index has moved and the tickets have been re-stickered → *Take the price check* |
+| **Start** | Talk to Wei Feng **twice** — the offer opens after your first badge, once the index has moved and the tickets have been re-stickered → *Take the price check* |
 | **Repeatable** | One-time |
 | **Tracker** | Yes — *Price checks noted n/3* |
 
-Kaito's shelf prices ride the index and he knows it. He wants the drift documented by somebody the stallholders will talk to.
+Wei Feng's shelf prices ride the index and she knows it. She wants the drift documented by somebody the stallholders will talk to — she grew up on the north-edge plot that keeps losing fence posts.
 
 ### Walkthrough — three stalls, any order
 
 1. **Linh Hua**, produce, east market — the crate that was 50 is now 52 and climbing.
 2. **Wei Shun**, tools — the 200 hoe is 208, and the Company rep at his shoulder quotes the price **in sheaves, unprompted**. (Yes — before anyone official has said the word. Note it.)
-3. **Mei Lin**, southwest lane — the counter-beat: her *unverified* stall didn't move at all.
-4. Hand the notes to Kaito. He flips his VERIFIED sign face-down — **ADJUSTED FOR RETAIL** — and points at the yellow rate line on your own payout receipt.
+3. **Auntie Song**, the berry stand — the counter-beat: her *unblessed* ticket didn’t move at all.
+4. Hand the notes to Wei Feng. She flips her VERIFIED sign face-down — **ADJUSTED FOR RETAIL** — and points at the yellow rate line on your own payout receipt.
 
 ### Rewards
 
@@ -287,8 +287,8 @@ The quarterly review is being read aloud behind the top-floor door. You are not 
 |  |  |
 |---|---|
 | **Status** | ✅ Done |
-| **Giver** | **Nurse Mei Lin** — the Pokémon Center nurse who turned down the Company sponsorship folder — at the Center counter **@ 1534 93 2006** |
-| **Location** | Hua Zhan Pokémon Center [1534 93 2006] |
+| **Giver** | **Nurse Mei Lin** — the Pokémon Center nurse who turned down the Company sponsorship folder — at the Center counter **@ ~1435 90 2151** (a25: the nurse identity moved onto the body actually standing in the Center; the old Company-house body is Anong, the branch records clerk) |
+| **Location** | Hua Zhan Pokémon Center [1432 90 2152] |
 | **Start** | Talk twice — introduce yourself, then the restock ask opens |
 | **Repeatable** | Restock one-time; healing always |
 | **Tracker** | Yes |
@@ -307,7 +307,7 @@ Since she said no, her shipments arrive *"adjusted — short two boxes, re-verif
 - **Ongoing:** *Heal my team — 100 CD* — the paid full-party heal + PC access.
 
 > [!NOTE]
-> There is also a separate market-stall civilian named **Mei Lin** in the southwest lane (the price-check counter-beat) — the "Nurse" title keeps the healer distinct.
+> The price-check counter-beat now lives at **Auntie Song’s berry stand** (a25) — the old southwest-lane “Mei Lin” stall civilian was retired when her body became the nurse.
 
 ---
 

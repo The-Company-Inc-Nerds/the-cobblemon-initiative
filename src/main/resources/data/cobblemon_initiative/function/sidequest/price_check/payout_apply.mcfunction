@@ -10,6 +10,6 @@ loot give @s loot cobblemon_initiative:npc_gift/price_check
 tag @s add hz_prices_done
 title @s title [{"text":"ADJUSTED FOR RETAIL","color":"gold","bold":true}]
 title @s subtitle [{"text":"The verified index, checked against the street","color":"gray"}]
-tellraw @s [{"text":"Kaito flips the VERIFIED sign face-down and slides it under the counter.","color":"gray","italic":true}]
+tellraw @s [{"text":"Wei Feng flips the VERIFIED sign face-down and slides it under the counter.","color":"gray","italic":true}]
 playsound minecraft:entity.player.levelup master @s ~ ~ ~ 0.6 1.2
 function cobblemon_initiative:quest/refresh

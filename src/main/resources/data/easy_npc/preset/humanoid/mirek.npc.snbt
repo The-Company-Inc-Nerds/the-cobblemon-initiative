@@ -3,10 +3,10 @@
         author: "TheCompanyInc",
         category: "Duelist",
         created: 0L,
-        description: "duelist at Harvest Road — Takehara Approach (act 1). Compiled from dialog-src.",
+        description: "duelist at Willowmire Path — Hua Zhan to Mystic Marsh corridor (act 1). Compiled from dialog-src.",
         entityTypeId: "easy_npc:humanoid",
         modified: 0L,
-        name: "Scarecrow Wrangler Mirek",
+        name: "Sporeherd Maslen",
         variantType: "STEVE",
         version: "1.0.0"
     },
@@ -26,16 +26,21 @@
                                 {
                                     Type: "PLAYER_TAG",
                                     Operation: "EQUALS",
-                                    Name: "no_defeated_sq_rt2_scarecrow"
+                                    Name: "no_defeated_r3_trainer_shroom"
                                 },
                                 {
                                     Type: "PLAYER_TAG",
                                     Operation: "EQUALS",
-                                    Name: "no_declined_sq_rt2_scarecrow"
+                                    Name: "no_declined_r3_trainer_shroom"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_recent_flee"
                                 }
                             ]
                         },
-                        Cmd: "say My birds marked you a field back — this end of the road settles in battles, not vouchers!"
+                        Cmd: "say The spores marked you a bend back — the hollow settles its tolls in battle, not paperwork!"
                     }
                 ],
                 ON_DISTANCE_VERY_CLOSE: [
@@ -51,16 +56,21 @@
                                 {
                                     Type: "PLAYER_TAG",
                                     Operation: "EQUALS",
-                                    Name: "no_defeated_sq_rt2_scarecrow"
+                                    Name: "no_recent_flee"
                                 },
                                 {
                                     Type: "PLAYER_TAG",
                                     Operation: "EQUALS",
-                                    Name: "no_declined_sq_rt2_scarecrow"
+                                    Name: "no_defeated_r3_trainer_shroom"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_declined_r3_trainer_shroom"
                                 }
                             ]
                         },
-                        Cmd: "tbcs attach rctmod:sq_rt2_scarecrow @s"
+                        Cmd: "tbcs attach rctmod:r3_trainer_shroom @s"
                     },
                     {
                         Type: "COMMAND",
@@ -75,12 +85,17 @@
                                 {
                                     Type: "PLAYER_TAG",
                                     Operation: "EQUALS",
-                                    Name: "no_defeated_sq_rt2_scarecrow"
+                                    Name: "no_recent_flee"
                                 },
                                 {
                                     Type: "PLAYER_TAG",
                                     Operation: "EQUALS",
-                                    Name: "no_declined_sq_rt2_scarecrow"
+                                    Name: "no_defeated_r3_trainer_shroom"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_declined_r3_trainer_shroom"
                                 }
                             ]
                         },
@@ -99,16 +114,21 @@
                                 {
                                     Type: "PLAYER_TAG",
                                     Operation: "EQUALS",
-                                    Name: "no_defeated_sq_rt2_scarecrow"
+                                    Name: "no_recent_flee"
                                 },
                                 {
                                     Type: "PLAYER_TAG",
                                     Operation: "EQUALS",
-                                    Name: "no_declined_sq_rt2_scarecrow"
+                                    Name: "no_defeated_r3_trainer_shroom"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_declined_r3_trainer_shroom"
                                 }
                             ]
                         },
-                        Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:sq_rt2_scarecrow onwin {1: ['cobbledollars give @1 230', 'tag @1 add defeated_sq_rt2_scarecrow', '@2 say Sharp work. The crows would scatter for you without a single scarecrow.', 'tag @1 remove in_trainer_battle'], 2: ['@1 say Ha — the birds still earn better than the vouchers do. Rest yours and come back.', 'tag @2 remove in_trainer_battle']}"
+                        Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:r3_trainer_shroom onwin {1: ['cobbledollars give @1 340', 'tag @1 add defeated_r3_trainer_shroom', '@2 say Well grown. You root deeper than you look. The road past the hollow is yours.', 'tag @1 remove in_trainer_battle'], 2: ['@1 say The damp wins by waiting. Dry off, rest your team, and come back to the hollow.', 'tag @2 remove in_trainer_battle']}"
                     }
                 ]
             }
@@ -133,7 +153,7 @@
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
-                            Name: "defeated_sq_rt2_scarecrow"
+                            Name: "defeated_r3_trainer_shroom"
                         },
                         {
                             Type: "PLAYER_TAG",
@@ -155,13 +175,13 @@
                     ],
                     Texts: [
                         {
-                            Text: "They are flying my birds off honest ground again. First field on this road that belongs to its own dirt in a season."
+                            Text: "A field down the road came home to its own dirt. The mycelium felt it before the banner finished turning — we always feel it first."
                         },
                         {
-                            Text: "Did you see the banner change down the road? A field came home. My scarecrows would stand prouder on ground like that."
+                            Text: "A Company flag came down somewhere and the whole ground exhaled. Spores travel, trainer. So does news."
                         }
                     ],
-                    Name: "Mirek — the road talks back",
+                    Name: "Maslen — spores carry news",
                     Label: "post_liberation"
                 },
                 {
@@ -169,7 +189,7 @@
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
-                            Name: "defeated_sq_rt2_scarecrow"
+                            Name: "defeated_r3_trainer_shroom"
                         }
                     ],
                     Priority: 30,
@@ -186,13 +206,13 @@
                     ],
                     Texts: [
                         {
-                            Text: "Beaten by an honest wallet. It stings less than the vouchers did. The tip still stands — fire, wings, or bugs for the glass garden ahead."
+                            Text: "You are through the hollow. The spores remember your shape now — pass as often as you like."
                         },
                         {
-                            Text: "My birds remember you. So does my pride. Walk safe, trainer."
+                            Text: "Beaten fair, and I will stand here and grow on it. That is not a complaint. Growing on things is the whole job."
                         }
                     ],
-                    Name: "Mirek — beaten",
+                    Name: "Maslen — beaten",
                     Label: "beaten"
                 },
                 {
@@ -208,11 +228,11 @@
                                             {
                                                 Type: "PLAYER_TAG",
                                                 Operation: "EQUALS",
-                                                Name: "defeated_sq_rt2_scarecrow"
+                                                Name: "defeated_r3_trainer_shroom"
                                             }
                                         ]
                                     },
-                                    Cmd: "say The road is yours, trainer. My birds tip their wings when you pass."
+                                    Cmd: "say The spores remember your shape, trainer. Pass in peace and mind the caps."
                                 },
                                 {
                                     Type: "COMMAND",
@@ -221,16 +241,16 @@
                                             {
                                                 Type: "PLAYER_TAG",
                                                 Operation: "EQUALS",
-                                                Name: "no_defeated_sq_rt2_scarecrow"
+                                                Name: "no_defeated_r3_trainer_shroom"
                                             },
                                             {
                                                 Type: "PLAYER_TAG",
                                                 Operation: "EQUALS",
-                                                Name: "no_declined_sq_rt2_scarecrow"
+                                                Name: "no_declined_r3_trainer_shroom"
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs attach rctmod:sq_rt2_scarecrow @s"
+                                    Cmd: "tbcs attach rctmod:r3_trainer_shroom @s"
                                 },
                                 {
                                     Type: "COMMAND",
@@ -240,16 +260,16 @@
                                             {
                                                 Type: "PLAYER_TAG",
                                                 Operation: "EQUALS",
-                                                Name: "no_defeated_sq_rt2_scarecrow"
+                                                Name: "no_defeated_r3_trainer_shroom"
                                             },
                                             {
                                                 Type: "PLAYER_TAG",
                                                 Operation: "EQUALS",
-                                                Name: "no_declined_sq_rt2_scarecrow"
+                                                Name: "no_declined_r3_trainer_shroom"
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:sq_rt2_scarecrow onwin {1: ['cobbledollars give @1 230', 'tag @1 add defeated_sq_rt2_scarecrow', '@2 say Sharp work. The crows would scatter for you without a single scarecrow.', 'tag @1 remove in_trainer_battle'], 2: ['@1 say Ha — the birds still earn better than the vouchers do. Rest yours and come back.', 'tag @2 remove in_trainer_battle']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:r3_trainer_shroom onwin {1: ['cobbledollars give @1 340', 'tag @1 add defeated_r3_trainer_shroom', '@2 say Well grown. You root deeper than you look. The road past the hollow is yours.', 'tag @1 remove in_trainer_battle'], 2: ['@1 say The damp wins by waiting. Dry off, rest your team, and come back to the hollow.', 'tag @2 remove in_trainer_battle']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -259,18 +279,18 @@
                                 {
                                     Type: "PLAYER_TAG",
                                     Operation: "EQUALS",
-                                    Name: "no_declined_sq_rt2_scarecrow"
+                                    Name: "no_declined_r3_trainer_shroom"
                                 }
                             ],
                             Label: "battle_button"
                         },
                         {
-                            Name: "Pay 120 CD to bow out",
+                            Name: "Pay 160 CD to bow out",
                             Actions: [
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "function cobblemon_initiative:route/decline_sq_rt2_scarecrow"
+                                    Cmd: "function cobblemon_initiative:route/decline_r3_trainer_shroom"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -280,12 +300,12 @@
                                 {
                                     Type: "PLAYER_TAG",
                                     Operation: "EQUALS",
-                                    Name: "no_defeated_sq_rt2_scarecrow"
+                                    Name: "no_defeated_r3_trainer_shroom"
                                 },
                                 {
                                     Type: "PLAYER_TAG",
                                     Operation: "EQUALS",
-                                    Name: "no_declined_sq_rt2_scarecrow"
+                                    Name: "no_declined_r3_trainer_shroom"
                                 }
                             ],
                             Label: "bow_out_button"
@@ -293,10 +313,10 @@
                     ],
                     Texts: [
                         {
-                            Text: "Free advice, since the Company already took my fee. The city ahead grows its badges under glass — bring fire, wings, or bugs and the glass garden wilts fast."
+                            Text: "Free advice from the damp. Past the reeds sits the mist court — a Fairy keeper, charm thick as fog. Steel or poison wilts the mist court fast. Pack a sting before you pack a lunch."
                         }
                     ],
-                    Name: "Mirek — free advice",
+                    Name: "Maslen — free advice from the damp",
                     Label: "type_tip"
                 },
                 {
@@ -312,11 +332,11 @@
                                             {
                                                 Type: "PLAYER_TAG",
                                                 Operation: "EQUALS",
-                                                Name: "defeated_sq_rt2_scarecrow"
+                                                Name: "defeated_r3_trainer_shroom"
                                             }
                                         ]
                                     },
-                                    Cmd: "say The road is yours, trainer. My birds tip their wings when you pass."
+                                    Cmd: "say The spores remember your shape, trainer. Pass in peace and mind the caps."
                                 },
                                 {
                                     Type: "COMMAND",
@@ -325,16 +345,16 @@
                                             {
                                                 Type: "PLAYER_TAG",
                                                 Operation: "EQUALS",
-                                                Name: "no_defeated_sq_rt2_scarecrow"
+                                                Name: "no_defeated_r3_trainer_shroom"
                                             },
                                             {
                                                 Type: "PLAYER_TAG",
                                                 Operation: "EQUALS",
-                                                Name: "no_declined_sq_rt2_scarecrow"
+                                                Name: "no_declined_r3_trainer_shroom"
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs attach rctmod:sq_rt2_scarecrow @s"
+                                    Cmd: "tbcs attach rctmod:r3_trainer_shroom @s"
                                 },
                                 {
                                     Type: "COMMAND",
@@ -344,16 +364,16 @@
                                             {
                                                 Type: "PLAYER_TAG",
                                                 Operation: "EQUALS",
-                                                Name: "no_defeated_sq_rt2_scarecrow"
+                                                Name: "no_defeated_r3_trainer_shroom"
                                             },
                                             {
                                                 Type: "PLAYER_TAG",
                                                 Operation: "EQUALS",
-                                                Name: "no_declined_sq_rt2_scarecrow"
+                                                Name: "no_declined_r3_trainer_shroom"
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:sq_rt2_scarecrow onwin {1: ['cobbledollars give @1 230', 'tag @1 add defeated_sq_rt2_scarecrow', '@2 say Sharp work. The crows would scatter for you without a single scarecrow.', 'tag @1 remove in_trainer_battle'], 2: ['@1 say Ha — the birds still earn better than the vouchers do. Rest yours and come back.', 'tag @2 remove in_trainer_battle']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:r3_trainer_shroom onwin {1: ['cobbledollars give @1 340', 'tag @1 add defeated_r3_trainer_shroom', '@2 say Well grown. You root deeper than you look. The road past the hollow is yours.', 'tag @1 remove in_trainer_battle'], 2: ['@1 say The damp wins by waiting. Dry off, rest your team, and come back to the hollow.', 'tag @2 remove in_trainer_battle']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -363,7 +383,7 @@
                                 {
                                     Type: "PLAYER_TAG",
                                     Operation: "EQUALS",
-                                    Name: "no_declined_sq_rt2_scarecrow"
+                                    Name: "no_declined_r3_trainer_shroom"
                                 }
                             ],
                             Label: "battle_button"
@@ -379,12 +399,12 @@
                             Label: "tip_button"
                         },
                         {
-                            Name: "Pay 120 CD to bow out",
+                            Name: "Pay 160 CD to bow out",
                             Actions: [
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "function cobblemon_initiative:route/decline_sq_rt2_scarecrow"
+                                    Cmd: "function cobblemon_initiative:route/decline_r3_trainer_shroom"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -394,12 +414,12 @@
                                 {
                                     Type: "PLAYER_TAG",
                                     Operation: "EQUALS",
-                                    Name: "no_defeated_sq_rt2_scarecrow"
+                                    Name: "no_defeated_r3_trainer_shroom"
                                 },
                                 {
                                     Type: "PLAYER_TAG",
                                     Operation: "EQUALS",
-                                    Name: "no_declined_sq_rt2_scarecrow"
+                                    Name: "no_declined_r3_trainer_shroom"
                                 }
                             ],
                             Label: "bow_out_button"
@@ -407,16 +427,16 @@
                     ],
                     Texts: [
                         {
-                            Text: "Forty scarecrows. The Company ordered forty for the big field and paid me in vouchers no shop on this road will take. So now I train birds instead — the crows fear nothing paper ever built."
+                            Text: "The Company sent an auditor to my hollow. He wrote NON YIELD GROWTH on a clipboard, taped the notice to my oldest log, and billed me for the tape. So now I train what grows on the notice."
                         },
                         {
-                            Text: "You walk like someone carrying real coin. Care to help a craftsman feel like a trainer again?"
+                            Text: "You walk fast for spore country. Everything arrives here eventually — rot, rain, the quarterly review. Battles just arrive faster."
                         },
                         {
-                            Text: "(he adjusts a scarecrow arm with great tenderness) They do not scare crows, you know. They give them somewhere official to sit. Like management."
+                            Text: "(he stands so still that for a moment you cannot tell him from the stumps) Patience is my whole strategy, trainer. The damp always wins by waiting."
                         }
                     ],
-                    Name: "Mirek — the scarecrow wrangler",
+                    Name: "Sporeherd Maslen",
                     Label: "default"
                 }
             ]
@@ -590,6 +610,6 @@
             }
         ],
         id: "easy_npc:humanoid",
-        CustomName: '{"text": "Scarecrow Wrangler Mirek", "color": "#FFFF00"}'
+        CustomName: '{"text": "Sporeherd Maslen", "color": "#FFFF00"}'
     }
 }

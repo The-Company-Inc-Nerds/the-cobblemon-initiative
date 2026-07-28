@@ -40,11 +40,98 @@
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
+                            Name: "lysira_round_in"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "no_lysira_round_done"
+                        }
+                    ],
+                    Priority: 25,
+                    Buttons: [
+                        {
+                            Name: "Walk the round with her",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:sidequest/lysira/reward"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "claim_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Eight measures, dry and bright. Hold the ladder and mind your eyes — wisp-glass takes the dust all at once, like it has been holding its breath. Walk it with me. A round you have fed is a round you will trust after dark, and I want you trusting this one."
+                        },
+                        {
+                            Text: "There. Four lanterns, lit and fed, willow to willow. The mist is already sulking about it. Come here — the last one on the round is mine to show you."
+                        }
+                    ],
+                    Name: "Lysira — the round refilled",
+                    Label: "claim"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "lysira_round_done"
+                        }
+                    ],
+                    Priority: 24,
+                    Buttons: [
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The round held all night on your dust. Not one lamp guttered. That has not happened since before the fog turned mean, and I am telling everyone it was my technique."
+                        },
+                        {
+                            Text: "Remember what I showed you. The last lamp on the round looks over the south dock, and I keep it brightest for a reason. The waters go down there. Lanterns only ever mind what goes down."
+                        }
+                    ],
+                    Name: "Lysira — the round holds",
+                    Label: "done"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
                             Name: "badges_gte_3"
                         }
                     ],
                     Priority: 20,
                     Buttons: [
+                        {
+                            Name: "Tell me about the round",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add lysira_round_started"
+                                },
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "round_detail"
+                                }
+                            ],
+                            Label: "help_button"
+                        },
                         {
                             Name: "Staying in the light",
                             Actions: [
@@ -72,6 +159,11 @@
                         {
                             Name: "Tell me about the round",
                             Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add lysira_round_started"
+                                },
                                 {
                                     Type: "OPEN_NAMED_DIALOG",
                                     Cmd: "round_detail"
@@ -104,7 +196,18 @@
                     Priority: -1,
                     Buttons: [
                         {
-                            Name: "I will be back",
+                            Name: "Hand over 8 glowstone dust",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative turnin minecraft:glowstone_dust 8 lysira_round_in"
+                                }
+                            ],
+                            Label: "dust_button"
+                        },
+                        {
+                            Name: "I will fetch the dust",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -115,10 +218,10 @@
                     ],
                     Texts: [
                         {
-                            Text: "Four lanterns, in order, down the willows toward the shrine. Light them and the boardwalk holds till dawn — a safe corridor, earned, not given. That is the only kind of safe this marsh sells."
+                            Text: "Four lanterns, in order, down the willows toward the shrine — and every one of them is starving. The wisp-glass burns glowstone, not wick. Eight measures of dust refills the whole round, and a fed lantern is the one argument the mist has never won."
                         },
                         {
-                            Text: "Come back when your nerve is up. The fog is patient and so am I."
+                            Text: "Mind where you buy it. The Exchange sells glowstone at what they call the verified rate, which is the honest Nether price plus the cost of the word verified. Dig it or trade it, eight measures, and the boardwalk holds till dawn."
                         }
                     ],
                     Name: "Lysira — the round",

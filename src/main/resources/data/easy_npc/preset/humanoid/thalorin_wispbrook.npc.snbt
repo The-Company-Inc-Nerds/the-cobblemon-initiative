@@ -1,9 +1,9 @@
 {
     PresetMetadata: {
         author: "TheCompanyInc",
-        category: "Civilian",
+        category: "Merchant",
         created: 0L,
-        description: "civilian at Mystic Marsh - High Stilt (act 1). Compiled from dialog-src.",
+        description: "merchant at Mystic Marsh - High Stilt (act 1). Compiled from dialog-src.",
         entityTypeId: "easy_npc:humanoid",
         modified: 0L,
         name: "Thalorin Wispbrook",
@@ -33,11 +33,135 @@
         CanPickUpLoot: 0b,
         CustomNameVisible: 1b,
         DialogData: {
-            Type: "BASIC",
+            Type: "STANDARD",
             DialogDataSet: [
                 {
                     Priority: 10,
                     Buttons: [
+                        {
+                            Name: "Browse the enchant-glass",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "glass_rack"
+                                }
+                            ],
+                            Label: "rack_button"
+                        },
+                        {
+                            Name: "Ask about the mushrooms",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "spore_lore"
+                                }
+                            ],
+                            Label: "spores_button"
+                        },
+                        {
+                            Name: "Enjoy the view",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "You climbed all the way up. Good — the shop only works on people who look up. I used to mend the high roofs and blow lantern glass down there. Then the mushrooms moved into my kiln loft and started, well, explaining things. Now I seal workings into glass. Same sand, same breath, better conversations."
+                        },
+                        {
+                            Text: "Before you browse anything else: Depth Strider. This town is half water and every road out of it is wetter. Seal that to your boots and the flooded paths carry you like dry boardwalk. I am not upselling you. I am keeping your name off the drowned list, which is a real list, and the diviner keeps it."
+                        },
+                        {
+                            Text: "Every lantern on that boardwalk started in my little kiln. These days I fire something stronger — a book of glass with a working sealed inside. Lysira keeps the dark honest with light. I keep it honest with inventory."
+                        },
+                        {
+                            Text: "You can still see the Company site from here — the grey scab on the green. They would call my spore method proprietary fermentation and invoice the marsh for its own fog. Buy your glass from a man the mushrooms actually like."
+                        }
+                    ],
+                    Name: "Thalorin Wispbrook",
+                    Label: "default"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Depth Strider II — 1200 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/market/buy_ench_depthstrider2"
+                                }
+                            ],
+                            Label: "buy_ench_depthstrider2_button"
+                        },
+                        {
+                            Name: "Unbreaking III — 1500 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/market/buy_ench_unbreaking3"
+                                }
+                            ],
+                            Label: "buy_ench_unbreaking3_button"
+                        },
+                        {
+                            Name: "Protection II — 1000 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/market/buy_ench_protection2"
+                                }
+                            ],
+                            Label: "buy_ench_protection2_button"
+                        },
+                        {
+                            Name: "Efficiency III — 900 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/market/buy_ench_efficiency3"
+                                }
+                            ],
+                            Label: "buy_ench_efficiency3_button"
+                        },
+                        {
+                            Name: "Back to Thalorin",
+                            Actions: [
+                                {
+                                    Type: "OPEN_DEFAULT_DIALOG"
+                                }
+                            ],
+                            Label: "back_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The rack. Four workings I can seal reliably, priced by how much glass survives the sealing. The Depth Strider is the one this marsh was born for — walk the flooded routes like planks and stop budgeting your breath. Unbreaking if you love a tool, Protection if you love yourself, Efficiency if you are in a hurry, which up here nobody is."
+                        }
+                    ],
+                    Name: "Thalorin — the enchant-glass rack",
+                    Label: "glass_rack"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Back to Thalorin",
+                            Actions: [
+                                {
+                                    Type: "OPEN_DEFAULT_DIALOG"
+                                }
+                            ],
+                            Label: "back_button"
+                        },
                         {
                             Name: "Goodbye",
                             Actions: [
@@ -50,17 +174,14 @@
                     ],
                     Texts: [
                         {
-                            Text: "Best view in the marsh from up here — I mend the high roofs and blow the glass for the wisp-lanterns, so I earned the perch. From above, the fog looks like a soft grey sea with little gold lamps burning through it. Down in it, it looks like teeth."
+                            Text: "The mushrooms grow in the old kiln loft, right where the heat pools. They hum when a batch of glass is ready to take a working — a little chord, like wet wine glasses. The diviner says I have simply learned to smell the sealing temperature. The diviner does not sleep up here. The mushrooms hum."
                         },
                         {
-                            Text: "Every lantern on that boardwalk started as sand and marsh-glow in my little kiln. Lysira lights them, I make them. Between us we keep the dark honest. That is a full-time job in the one town that lets its dark stay hungry."
-                        },
-                        {
-                            Text: "You can see the Company site from here too — that grey scab on the green where the paddy is. Ugly from any height. Some things you cannot make look better by standing further off."
+                            Text: "Once — once — a cap came up glowing in a script I could very nearly read. I copied it onto a lantern before it faded. That lantern has never gone out. I do not sell that one. Some stock is colleagues. No, I do not eat them either. You do not eat your colleagues."
                         }
                     ],
-                    Name: "Thalorin Wispbrook",
-                    Label: "default"
+                    Name: "Thalorin — on the mushrooms",
+                    Label: "spore_lore"
                 }
             ]
         },

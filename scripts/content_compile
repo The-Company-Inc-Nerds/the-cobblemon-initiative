@@ -801,6 +801,17 @@ def build_entry(e: dict, conds: list, ch: dict, registers: dict, lore: dict,
         buttons.append(bow)
     if not _has_close_button(e) and not e.get("no_goodbye") and not strip_free_exit:
         buttons.append(GOODBYE_BUTTON)
+    # PAGE CAP LINT (alpha.25): the Easy NPC dialog GUI holds SIX buttons per page —
+    # more render over/past the panel and push the exit buttons out of reach (the
+    # alpha.19 audit counted four such pages; the playtest confirmed live breakage on
+    # hz_trader_apricorns "colors"). The cap counts COMPILED buttons, auto-Goodbye and
+    # auto-bow-out included. Erroring (not warning) rides the write-gate so an
+    # overflowing page can never ship again.
+    if len(buttons) > 6:
+        raise CompileError(
+            f"{where} entry {e['label']!r}: {len(buttons)} compiled buttons "
+            f"(incl. auto-Goodbye/bow-out) exceed the Easy NPC 6-button page cap — "
+            f"split the page (see hz_trader_apricorns colors/colors_cool).")
     if buttons:
         pairs.append(("Buttons", lst([build_button(b, ch, where) for b in buttons])))
     texts = entry_texts(e, registers, lore, where)
@@ -883,7 +894,8 @@ def synth_engage_triggers(ch: dict) -> list[dict]:
     ON_DISTANCE_VERY_CLOSE attach+battle (4.0-block band — reachable by the pursue). Gates ride the doubled
     ConditionDataSet: not_tag defeated always, not_tag declined_<id> when the
     character sells a bow-out (a paid decline stands the trainer down — no hail,
-    no ambush, forever)."""
+    no ambush, forever), plus the alpha.26 no_recent_flee flee-cooldown tag on the
+    hail here and on every VERY_CLOSE battle in apply_triggers (with the dex floor)."""
     engage = ch.get("engage")
     if not engage:
         return []
@@ -899,9 +911,14 @@ def synth_engage_triggers(ch: dict) -> list[dict]:
     out = []
     if b.get("hail_line"):
         check_text(b["hail_line"], f"{ch['id']} battle.hail_line")
+        # alpha.26 flee-cooldown: the hail rides the same no_recent_flee gate as the
+        # forced battle — no taunting during the 15 s post-flee grace window (the tag is
+        # maintained by function/combat/flee_cooldown, NOT band_tags; EQUALS on the
+        # inverse tag because Easy NPC ignores NOT_EQUALS).
         out.append({"on": "ON_DISTANCE_CLOSE",
                     "actions": [{"do": "command", "cmd": "say " + b["hail_line"],
-                                 "gate": {"not_tags": list(negs)}}]})
+                                 "gate": {"not_tags": list(negs),
+                                          "all_tags": ["no_recent_flee"]}}]})
     # VERY_CLOSE (4.0), not TOUCH (1.25): the NpcSight pursue stops the trainer ~2 blocks
     # out, which NEVER reaches the 1.25 touch band — so the forced battle never fired
     # (round 13d bug). 4.0 fires as the pursuer arrives (or as the player walks in).
@@ -949,6 +966,18 @@ def apply_triggers(tree, ch: dict):
             if on == "ON_DISTANCE_VERY_CLOSE" and a.get("do") == "battle":
                 gate = dict(a.get("gate") or {})
                 gate.setdefault("dex", {"op": "gte", "value": DEX_FLOOR})
+                # alpha.26 flee-cooldown: every forced (VERY_CLOSE) battle also requires
+                # the no_recent_flee inverse tag (EQUALS — Easy NPC ignores NOT_EQUALS).
+                # NuzlockeInit arms ci_flee_cd=300 on flee from a trainer battle and
+                # function/combat/flee_cooldown counts it down + maintains the tag, so a
+                # fled trainer cannot re-force the fight while the player is still inside
+                # the 4-block band. Same matrix-wide rule as the dex floor: synthesized
+                # engage:touch AND authored/promoted ambushes alike; dialog battle
+                # BUTTONS stay ungated (clicking one is not a forced start).
+                flee_tags = list(gate.get("all_tags") or [])
+                if "no_recent_flee" not in flee_tags:
+                    flee_tags.append("no_recent_flee")
+                gate["all_tags"] = flee_tags
                 a = {**a, "gate": gate}
             acts += lower_action(a, ch, f"{ch['id']} trigger {on}", trigger_ctx=True)
     for on, acts in events.items():
@@ -1128,9 +1157,15 @@ def compile_character(ch: dict, dialogs: dict, registers: dict, lore: dict):
 # data.* keys adopted from a dialog-src/visuals/<id>.npc.snbt export (showrunner's
 # in-game visual pass): entity type + renderer + look/sound identity. Behavioral keys
 # (ActionData, DialogData, ObjectiveData, Navigation, CustomName*) stay the pipeline's.
+# Rotation / HandItems / HandDropChances (alpha.25, the posed Hua Zhan warden statues):
+# root entity-NBT keys applied by Entity.load on preset import — the same mechanism
+# apply_float uses to bake data.NoGravity, and all three already ship via WORLD_ADOPT
+# for uuid'd bodies. Rotation bakes the at-rest yaw import_new ignores from the command
+# source (ENGINE_FINDINGS §import_new); HandItems renders held items (dakarai precedent).
 VISUAL_ADOPT = [
     "id", "VariantType", "RenderData", "ModelData", "SkinData", "SoundData",
     "attributes", "EntityAttribute", "DisplayAttribute",
+    "Rotation", "HandItems", "HandDropChances",
 ]
 
 

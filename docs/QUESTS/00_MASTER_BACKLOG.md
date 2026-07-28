@@ -47,7 +47,8 @@ cross-unit dependency ordering.
 
 **Totals.** ~**44 tracked quests** across the units (plus rumor hubs and untracked spotters/flavor),
 authored over roughly **185–195 new + reused NPC bodies** (see §8 count breakdown). Cross-doc facts
-verified against the live repo where load-bearing (HQ gate = **4** fields, live `render.mcfunction`;
+verified against the live repo where load-bearing (HQ gate = **6** fields — alpha.26 audit rulings:
+six-field canon, live `render.mcfunction`;
 `liberation/load` names map today seeds **only** `farm_1`; character area folders `mystic/…/frontier`
 are all genuinely new).
 
@@ -100,7 +101,7 @@ The units each introduce a self-contained tag family; all follow the same shape 
 | 06 ryujin | `ryujin_defector_met`, `ryujin_ledger_taken`, `ryujin_charter_read`, `ryujin_heritage_settled`, `ryujin_mail_done`, `ryujin_oath_told` | gates whole town on `defeated_villain_boss` |
 | 07 nifl | `nifl_core_1/2`, `nifl_archive_open/…_read`, `nifl_frostgate_clear`, `nifl_warrant_stood_down`, `nifl_lantern_1..4`, `nifl_lanterns_done` | gates whole town on `defeated_ryujin_leader` |
 | 08 scorchspire | `forge_order_1/2/3`, `forge_order_agent_clear/…_done`, `temper_blade_done`, `the_hand_started/…_plate/…_done`, `severance_met`, `asset_recovery_clear`, `retirement_memo_taken`, **`scrubbing_artifact_plate`**, **`scrubbing_artifact_memo`** | the two `scrubbing_artifact_*` breadcrumbs claim to "feed the Board/Founder reveal chain" — **see DEAD-SET note below** |
-| 10 hq | `hq_raid_active`, `hq_raid_seen`, `hq_floor_1/2/3` | reads `fields_liberated ≥ 4` + `badges ≥ 7` |
+| 10 hq | `hq_raid_active`, `hq_raid_seen`, `hq_floor_1/2/3` | reads `fields_liberated ≥ 6` + `badges ≥ 7` |
 | 11 board | `read_signature_1..4`, `read_all_signatures` (optional) | reuses shipped `defeated_board_*`, `#board`, `company_overthrown` |
 | 12 routes | `field_2..10_liberated` (mirror), per-route `defeated_r*_spotter/trainer/route_agent` | REF field-guard tags authored by `wheat_war_farms` |
 | 13 nobles | `defeated_noble_{mew,articuno,moltres,zapdos,kyogre,groudon,rayquaza}`, `heard_mew_rumor` (optional) | reads shrine-leader tags + `mem_gte_5/7/8/10` band tags |
@@ -382,7 +383,7 @@ most-blocking first.**
 
 ### BATCH 1 — Field-guard liberation wiring (12 routes §4 + `liberation/mirror_field_tags`) 🔓 THE BLOCKER
 **Why first:** TODO.md names the field-guard liberation as *"the single biggest Act-1→Act-2
-blocker"* — today only `farm_1` is wired, so `fields_liberated` maxes at 1 and the HQ gate (4), the
+blocker"* — today only `farm_1` is wired, so `fields_liberated` maxes at 1 and the HQ gate (6), the
 wheat-trader escalation (2/4), the relief shop tiers, and the granary ambush are ALL unreachable.
 This batch lands **where in the sequence: first, before any town side-content that reads a field
 tag.** Ship: the 12 field-guard/site-manager REF bodies positioned per route (§4 map), the
@@ -401,7 +402,7 @@ Oasis pump / boundary stones / caravan-split-tag ride on Batch 1's liberation pl
 ### BATCH 3 — Gaviota + Cyber (03 + 05) — the HQ on-ramp
 Gaviota (`farm_3` liberation, the maritime economy) + Cyber (the HQ pointer, the field-liberation
 push toward `farm_6`/`farm_7`, frag_7 recognition PEAK). Cyber's "Door Downtown" plants the exact
-gate text HQ owns. **Unblocks:** the HQ raid is now reachable (4 fields on the natural path) and
+gate text HQ owns. **Unblocks:** the HQ raid is now reachable (6 fields on the natural path) and
 narratively set up.
 
 ### BATCH 4 — The HQ raid (10) — the Act-2 climax
@@ -556,7 +557,7 @@ docs: `quest/render.mcfunction` (HQ gate = `fields_liberated matches 4..`), `dia
 | # | Severity | Issue | Doc(s) | Fix | needs-code? |
 |---|----------|-------|--------|-----|:-----------:|
 | 1 | **BLOCKER** | **`liberation/mirror_field_tags` does not exist** (verified: `liberation/` has no such file). Every route "talks-back" echo in 12 gates on `field_N_liberated` **tags**, but the only thing produced is the `field_freed` **scoreboard**. Docs 01/03 also gate on `farm_2_free`/`farm_3` as if tags. **~10 dialog gates are DEAD as written.** | 12 (§5/§6), 01, 03 | Ship the ~9-line mirror tick (`for N in 2..10: execute if score farm_N field_freed matches 1 run tag @s add field_N_liberated`) in the liberation tick family, OR rewrite every gate to the `{score:{objective:field_freed,holder:farm_N}}` form. Lock ONE. | **needs code** (new function) |
-| 2 | **BLOCKER** | **HQ gate cross-doc contradiction: live number is 4, doc 12 says 6.** Verified `render.mcfunction` = `fields_liberated matches 4..`. Doc 05 and doc 10 correctly use **4**; **doc 12 says `fields_liberated >= 6` in §1, the §4 header, and the §4 "natural-path check"** and builds its whole feeder argument around 6. A builder following 12 will provision/verify against the wrong gate and the §4 prose ("six pre-HQ fields … the gate opens") is internally confused. | 12 (§1/§4) vs 10/05 | Change doc 12's three `>= 6` mentions to `>= 4`. Keep the 7-feeder slack (harmless). Note the live `ceremony.mcfunction` comment also still says "n/6 counter" — cosmetic, but reconcile so nothing on stream claims 6. | data-only (doc + comment) |
+| 2 | ~~BLOCKER~~ **RESOLVED (alpha.26 audit rulings)** | **HQ gate cross-doc contradiction — settled the other way: canon is `>= 6`.** The live tree now agrees on **6** everywhere (DJ's dialog gate, `render.mcfunction` `fields_liberated matches 6..`, `liberation/ceremony` n/6). Doc 12's `>= 6` was right all along; docs 05/10, the door pointer beat, and the wikis were raised 4 → 6 in the alpha.26 pass. No remaining action. | 12 (§1/§4) vs 10/05 | Done — nothing on stream claims 4 anymore. | data-only (doc + comment) |
 | 3 | **BLOCKER** | **`liberation/load` seeds only `farm_1`** (verified). Any `free_field {field:farm_N}` for N≥2 prints the fallback ("THE PARCEL") instead of the farm name. Six pre-HQ liberations rely on this. | 12 (§4), backlog §8.6 | Add the eight `farm_2..10:"NAME"` seed lines to `liberation/load.mcfunction` in Batch 1. | data-only (datapack) |
 | 4 | **HIGH** | **`mem_gte_N` band tag is invented — the live name is `badges_gte_N`** (verified: band_tags produces `badges_gte_1..10`, no `mem_*`). Doc 13 nobles gates on `mem_gte_5/7/8/10`; doc 11 Odei uses `fields_liberated_gte_4` (which DOES exist). Every `mem_gte_*` gate is **DEAD** until reconciled. | 13 (via backlog §2.4), band_tags | Pick one spelling and make the compiler emit it; simplest is to author noble gates against the existing `badges_gte_N`. Do NOT ship a second parallel band-tag family. | **needs code** (compiler band-tag) OR data-only if docs switch to `badges_gte_N` |
 | 5 | **HIGH** | **`defeated_noble_*` flags produce nothing today** (verified: zero `defeated_noble` refs in the datapack; the noble subsystem writes a `rewards.storyFlag` **scoreboard**). All 7 noble after-entries + sidebar done-states in 13 read them as **tags** → dead gates. | 13 (backlog §2.4 item 2) | One-line tick mirroring the scoreboard→tag, or switch all noble gates to the `score` form. Decide uniformly with #1's ruling. | **needs code** |

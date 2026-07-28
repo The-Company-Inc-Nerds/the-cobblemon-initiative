@@ -174,6 +174,27 @@
                     Priority: 10,
                     Buttons: [
                         {
+                            Name: "Witness a board reading aloud",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:sidequest/exchange_board/price_read"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_mm_board_done"
+                                }
+                            ],
+                            Label: "read_button"
+                        },
+                        {
                             Name: "Just looking",
                             Actions: [
                                 {
@@ -192,6 +213,9 @@
                         },
                         {
                             Text: "Ask me anything about the rate. Not the reserves - the reserves are a Deepcore matter and above my badge, which I am told is a form of trust. It feels like a form of something."
+                        },
+                        {
+                            Text: "Actually - while you are here. Head office wants the posted rate witnessed by a neutral party. The ritual is simple, it is called Verified Weather: watch the board settle, read the number aloud, and come back twice more. Three readings, three visits, and the rate is officially fine. There is a witness fee. Modest. Would you start today."
                         }
                     ],
                     Name: "Verified Clerk Osric",

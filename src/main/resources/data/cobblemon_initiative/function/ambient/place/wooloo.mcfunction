@@ -5,4 +5,4 @@
 # respawn. (Legacy pre-tag dupes are cleared once by install/repairs_a15.)
 kill @e[tag=ci_amb_companion_wooloo]
 scoreboard players set #amb_wooloo ci_ambient 1
-easy_npc preset import_new data easy_npc:preset/humanoid/companion_wooloo.npc.snbt 1513.5 84 1988.5
+easy_npc preset import_new data easy_npc:preset/humanoid/companion_wooloo.npc.snbt 1510.5 84 1990.5

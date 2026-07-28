@@ -1,12 +1,12 @@
 {
     PresetMetadata: {
         author: "TheCompanyInc",
-        category: "Gym Guide",
+        category: "Civilian",
         created: 0L,
-        description: "gym_guide at Hua Zhan City (act 1). Compiled from dialog-src.",
+        description: "civilian at Hua Zhan City - Gym Gate Square (act 1). Compiled from dialog-src.",
         entityTypeId: "easy_npc:humanoid",
         modified: 0L,
-        name: "Hua Zhan Gym Guide",
+        name: "Lanying",
         variantType: "STEVE",
         version: "1.0.0"
     },
@@ -33,43 +33,26 @@
         CanPickUpLoot: 0b,
         CustomNameVisible: 1b,
         DialogData: {
-            Type: "CUSTOM",
+            Type: "STANDARD",
             DialogDataSet: [
                 {
                     Priority: 10,
                     Buttons: [
                         {
-                            Name: "Explain the gym",
+                            Name: "Where do I find the guide?",
                             Actions: [
                                 {
-                                    Type: "OPEN_NAMED_DIALOG",
-                                    Cmd: "explain"
-                                }
-                            ],
-                            Label: "explain_button"
-                        },
-                        {
-                            Name: "About the Company house",
-                            Actions: [
+                                    Type: "COMMAND",
+                                    Cmd: "tellraw @initiator [{\"text\":\"Tao Shen paces the west stair below the dojo — mid-climb, holding a stance. He is the gym guide; the stair is his office.\",\"color\":\"gray\"}]"
+                                },
                                 {
-                                    Type: "OPEN_NAMED_DIALOG",
-                                    Cmd: "greenhouse_tour"
+                                    Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "greenhouse_button"
+                            Label: "guide_button"
                         },
                         {
-                            Name: "Heard anything interesting?",
-                            Actions: [
-                                {
-                                    Type: "OPEN_NAMED_DIALOG",
-                                    Cmd: "guide_gossip"
-                                }
-                            ],
-                            Label: "gossip_button"
-                        },
-                        {
-                            Name: "I know what I am doing",
+                            Name: "Thanks",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -80,122 +63,31 @@
                     ],
                     Texts: [
                         {
-                            Text: "Welcome, challenger. I am the gym guide. Every trainer who walks through that door comes to me first, and the smart ones listen."
+                            Text: "Oh, I am not the guide, whatever the old-timers tell you — that is Tao Shen, up on the west stair. He holds the low stance on the landings between challengers. You will hear his knees before you see him."
                         },
                         {
-                            Text: "Looks like you mean business. Want the lay of the land before you face the leader?"
+                            Text: "Me? I keep the square. I water the gate garden when the warden is not watching — and I am never entirely sure the warden is not watching. It looked at me once, I am almost certain of it, and I have been polite to it ever since."
                         },
                         {
-                            Text: "In Hua Zhan even the gym is half garden. Mind where you step and be polite to the flowerbeds - some of them outrank me."
+                            Text: "If you are here to challenge Blossom, take the west stair and talk to the people on it. This town gives its directions vertically."
                         }
                     ],
-                    Name: "Gym Guide Greeting",
+                    Name: "Lanying — the square",
                     Label: "default"
-                },
-                {
-                    Priority: -1,
-                    Buttons: [
-                        {
-                            Name: "Got it",
-                            Actions: [
-                                {
-                                    Type: "OPEN_NAMED_DIALOG",
-                                    Cmd: "default"
-                                }
-                            ],
-                            Label: "back_button"
-                        },
-                        {
-                            Name: "Thanks",
-                            Actions: [
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "leave_button"
-                        }
-                    ],
-                    Texts: [
-                        {
-                            Text: "Beat the leader and you earn the badge. Each badge you collect raises your level cap, so your team can keep pace with the road ahead. Skip a gym and you will hit a wall you cannot train through."
-                        },
-                        {
-                            Text: "The leader specialises in one type, so build a team that answers it. Heal up at the center before you challenge, and remember — out here a fainted partner does not come back. Choose your battles like they are permanent. Because for you, they are."
-                        },
-                        {
-                            Text: "One more thing the new ones never hear. The badges are not just for show. The whole region runs on a single currency these days, and a single name behind it. The further you climb, the more that name seems to lean your way. I would keep my eyes open if I were you."
-                        }
-                    ],
-                    Name: "How Gyms Work",
-                    Label: "explain"
-                },
-                {
-                    Priority: -1,
-                    Buttons: [
-                        {
-                            Name: "Back",
-                            Actions: [
-                                {
-                                    Type: "OPEN_NAMED_DIALOG",
-                                    Cmd: "default"
-                                }
-                            ],
-                            Label: "back_button"
-                        },
-                        {
-                            Name: "Thanks",
-                            Actions: [
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "leave_button"
-                        }
-                    ],
-                    Texts: [
-                        {
-                            Text: "The Company keeps a house down the south lane. Free to look, they say — verified growth, verified value. Step inside and see what they actually grow before you challenge Blossom. Ask for Shu and her dispatch board."
-                        },
-                        {
-                            Text: "But the gym is what you came for. Walk to the four stone wardens, press their seals, and let Blossom show you the old way still wins."
-                        }
-                    ],
-                    Name: "Guide — the Company house",
-                    Label: "greenhouse_tour"
                 },
                 {
                     Conditions: [
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
-                            Name: "no_pilgrimage_done"
+                            Name: "defeated_hua_zhan_leader"
                         }
                     ],
                     Priority: 15,
                     Buttons: [
                         {
-                            Name: "Explain the gym",
+                            Name: "Take care, Lanying",
                             Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "tag @s add pilgrimage_started"
-                                },
-                                {
-                                    Type: "OPEN_NAMED_DIALOG",
-                                    Cmd: "explain"
-                                }
-                            ],
-                            Label: "explain_button"
-                        },
-                        {
-                            Name: "I will find the hill",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "tag @s add pilgrimage_started"
-                                },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
@@ -205,53 +97,14 @@
                     ],
                     Texts: [
                         {
-                            Text: "Hua Zhan is a strange gym, challenger — half of it is not in this building. Blossom accepts challengers the old way: wake the four stone wardens first."
+                            Text: "The Bloom Badge! The whole square heard. The gate garden's warden stood a little straighter that evening — do not tell me stone cannot be proud, I was here."
                         },
                         {
-                            Text: "Take the west stair up the hill and find Garden Master Wei. Four stone wardens scattered across the city, four seals — wake and best each, take its seal, and finish the circle; the hill itself will vouch for you at this door."
+                            Text: "Blossom will be planting something today. She plants something after every challenger, win or lose. Nobody asks what the row is for. We are all fairly sure we know."
                         }
                     ],
-                    Name: "Guide — the old way",
-                    Label: "pilgrim_hint"
-                },
-                {
-                    Priority: -1,
-                    Buttons: [
-                        {
-                            Name: "Back",
-                            Actions: [
-                                {
-                                    Type: "OPEN_DEFAULT_DIALOG"
-                                }
-                            ],
-                            Label: "gossip_back_button"
-                        },
-                        {
-                            Name: "Leave",
-                            Actions: [
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "gossip_leave_button"
-                        }
-                    ],
-                    Texts: [
-                        {
-                            Text: "There are ten of us guides, one per gym, and we share a newsletter. This month it is mostly the other nine arguing over who invented saying — you got this. For the record, I invented it."
-                        },
-                        {
-                            Text: "One of the other guides swears the healing machine runs on a Chansey in the back room. Ours runs on compost heat. That part is true, which is somehow worse."
-                        },
-                        {
-                            Text: "Prize money used to come straight from the League. Now it routes through one office in Cyber City. I asked which office. The reply was a pamphlet about wheat."
-                        },
-                        {
-                            Text: "A guide remembers every challenger. Even the ones whose parties walk out smaller than they walked in. Blossom plants something for each of those. She thinks nobody has noticed the row."
-                        }
-                    ],
-                    Name: "Guide Gossip",
-                    Label: "guide_gossip"
+                    Name: "Lanying — after the bloom",
+                    Label: "after_badge"
                 }
             ]
         },
@@ -424,6 +277,6 @@
             }
         ],
         id: "easy_npc:humanoid",
-        CustomName: '{"text": "Hua Zhan Gym Guide", "color": "#0000FF"}'
+        CustomName: '{"text": "Lanying", "color": "#0000FF"}'
     }
 }

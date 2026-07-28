@@ -40,11 +40,75 @@
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
+                            Name: "gaviota_open_active"
+                        }
+                    ],
+                    Priority: 40,
+                    Buttons: [
+                        {
+                            Name: "Weigh in the catch",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:sidequest/gaviota_open/turnin"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "turnin_button"
+                        },
+                        {
+                            Name: "Back to the water",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "back_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The clock is running and the scale is hungry! Ten proofs of catch before it dies — cod off a finneon, salmon off a magikarp, pufferfish off a qwilfish, ink off a tentacool. Rod them out of the harbour or beat them out of the shoals, the scale does not care which."
+                        },
+                        {
+                            Text: "Less standing, more casting! Bring the bucket to the scale when there are ten in it."
+                        }
+                    ],
+                    Name: "Weighmaster Enzo — the clock is running",
+                    Label: "active"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
                             Name: "gaviota_open_champion"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "no_gaviota_open_active"
                         }
                     ],
                     Priority: 30,
                     Buttons: [
+                        {
+                            Name: "Defend the title — 200 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:sidequest/gaviota_open/start"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "reenter_button"
+                        },
                         {
                             Name: "Back to the water",
                             Actions: [
@@ -77,6 +141,20 @@
                     Priority: 20,
                     Buttons: [
                         {
+                            Name: "Enter the Open — 200 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:sidequest/gaviota_open/start"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "enter_button"
+                        },
+                        {
                             Name: "I will be back with a rod",
                             Actions: [
                                 {
@@ -88,10 +166,10 @@
                     ],
                     Texts: [
                         {
-                            Text: "Current Badge on you — so the port is yours to fish. The Gaviota Open is the real show now: three rounds, one clock, and a grand purse of five thousand CD. Company-sponsored, Company-verified, and I have learned not to promise you the whole number survives the weigh-in."
+                            Text: "Current Badge on you — so the port is yours to fish. The Gaviota Open is the real show now: one round, one clock, and the grand purse on the board says five thousand CD. Company-sponsored, Company-verified, and I have learned not to promise you the whole number survives the weigh-in."
                         },
                         {
-                            Text: "Cast call, weigh-in, then the final sprint against Marlin over there and his record. Bring nerve and a rod. The scale does not lie — only the envelope does, and that is not my department."
+                            Text: "The format is the record round — the one Marlin set. Entry is two hundred, the clock runs five minutes, and I want ten proofs of catch on my scale before it dies: cod for finneon, salmon for magikarp, pufferfish for qwilfish, ink for tentacool. Rod the harbour or fight the shoals — the water keeps no ledger. No loaner rods at the Open. This is the majors."
                         }
                     ],
                     Name: "Weighmaster Enzo — signups open",

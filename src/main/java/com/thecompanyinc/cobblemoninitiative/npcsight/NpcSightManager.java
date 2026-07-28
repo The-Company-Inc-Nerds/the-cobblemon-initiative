@@ -36,6 +36,13 @@ public class NpcSightManager {
   // (cleared in both onwin branches) — pursuers stand down while it is present.
   private static final String IN_TRAINER_BATTLE_TAG = "in_trainer_battle";
 
+  // alpha.26 flee cooldown: per-player scoreboard armed to 300 by NuzlockeInit when the
+  // player FLEES a trainer battle, decremented by the combat/flee_cooldown datapack tick.
+  // While > 0 a PURSUE-mode chaser holds instead of walking the player back into the
+  // 4-block forced-battle band (the band trigger itself is gated preset-side on the
+  // inverse no_recent_flee tag — this only suppresses the chase movement).
+  private static final String FLEE_COOLDOWN_OBJ = "ci_flee_cd";
+
   // Dead band above followStopDistance before a holding pursuer resumes the chase, so an NPC
   // parked at the hold distance doesn't jitter start/stop when the player drifts a hair.
   private static final double FOLLOW_RESUME_HYSTERESIS = 2.0;
@@ -235,7 +242,8 @@ public class NpcSightManager {
   private void handlePursue(
     MinecraftServer server, Entity npc, ServerPlayer nearestPlayer, boolean canSee, NpcSightData data
   ) {
-    if (!canSee || nearestPlayer == null || standDown(data, nearestPlayer)) {
+    if (!canSee || nearestPlayer == null || standDown(data, nearestPlayer)
+        || fleeCooldownActive(server, nearestPlayer)) {
       if (data.pursuing) {
         stopFollow(server, npc);
         data.pursuing = false;
@@ -307,6 +315,23 @@ public class NpcSightManager {
       stopFollow(server, npc);
       data.pursuing = false;
       storage.put(data); // persist the one-shot latch immediately
+    }
+  }
+
+  /** alpha.26 flee cooldown: true while the fleeing player's ci_flee_cd score is still
+   *  counting down — "they lost track of you". PURSUE-only (APPROACH_ONCE walk-ups are
+   *  story meetings, not re-engagement threats); the missing-objective case reads as no
+   *  cooldown, so a world that has never seen a flee behaves exactly as before. */
+  private boolean fleeCooldownActive(MinecraftServer server, ServerPlayer player) {
+    if (player == null) return false;
+    try {
+      Scoreboard sb = server.getScoreboard();
+      Objective obj = sb.getObjective(FLEE_COOLDOWN_OBJ);
+      if (obj == null) return false;
+      net.minecraft.world.scores.ReadOnlyScoreInfo info = sb.getPlayerScoreInfo(player, obj);
+      return info != null && info.value() > 0;
+    } catch (Exception e) {
+      return false;
     }
   }
 

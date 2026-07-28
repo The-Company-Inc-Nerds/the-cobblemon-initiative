@@ -45,6 +45,9 @@ import net.minecraft.network.protocol.game.ClientboundSetTitlesAnimationPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.scores.Objective;
+import net.minecraft.world.scores.Scoreboard;
+import net.minecraft.world.scores.criteria.ObjectiveCriteria;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,6 +64,20 @@ public class NuzlockeInit implements ModInitializer {
    * clone-party guard for the Frontier's opt-in above-cap grind.
    */
   private static final String FRONTIER_ACTIVE_TAG = "frontier_active";
+
+  /**
+   * alpha.26 flee cooldown: per-player scoreboard armed to {@link #FLEE_COOLDOWN_TICKS} when
+   * the player FLEES a trainer battle. The {@code cobblemon_initiative:combat/flee_cooldown}
+   * datapack tick decrements it and maintains the inverse {@code no_recent_flee} PLAYER_TAG
+   * that compiled {@code engage:touch} presets gate their forced ON_DISTANCE_VERY_CLOSE
+   * battle (and CLOSE hail) on — without the gate the trainer re-forced the fight on the very
+   * next band tick while the fleeing player was still inside the 4-block band.
+   * {@code NpcSightManager} also reads this objective to stand a PURSUE-mode chaser down.
+   */
+  private static final String FLEE_COOLDOWN_OBJ = "ci_flee_cd";
+
+  /** 15 seconds at 20 tps — enough to actually leave the 4-block forced-battle band. */
+  private static final int FLEE_COOLDOWN_TICKS = 300;
 
   private static NuzlockeConfig config;
   private static boolean pendingWhiteoutDeath = false;
@@ -357,11 +374,24 @@ public class NuzlockeInit implements ModInitializer {
   }
 
   private static Unit handleBattleFled(BattleFledEvent event) {
-    if (!config.isSacrificeOnFlee()) return Unit.INSTANCE;
-
     PlayerBattleActor playerActor = event.getPlayer();
     ServerPlayer player = playerActor.getEntity();
     if (player == null) return Unit.INSTANCE;
+
+    // alpha.26 flee cooldown — arm BEFORE any sacrifice-config early return: the grace
+    // window is an anti-re-engage mechanic, not a Nuzlocke one. Trainer battles only
+    // (NPC actor present — same detection handleBattleVictory uses); fleeing a wild
+    // encounter needs no grace.
+    boolean wasTrainerBattle = false;
+    for (BattleActor actor : event.getBattle().getActors()) {
+      if (actor.getType() == ActorType.NPC) {
+        wasTrainerBattle = true;
+        break;
+      }
+    }
+    if (wasTrainerBattle) startFleeCooldown(player);
+
+    if (!config.isSacrificeOnFlee()) return Unit.INSTANCE;
 
     // Stadium exhibition runs are attrition-free: battles use CLONED parties and the
     // StadiumManager (subscribed at Priority.LOWEST, i.e. after this) owns the outcome.
@@ -389,6 +419,41 @@ public class NuzlockeInit implements ModInitializer {
     pendingSacrifice = true;
     LOGGER.info("Player {} fled from battle, sacrifice required", player.getName().getString());
     return Unit.INSTANCE;
+  }
+
+  /**
+   * Set {@code ci_flee_cd} = {@link #FLEE_COOLDOWN_TICKS} on the fleeing player. The
+   * objective is created defensively here (mirrors {@code NpcSightManager.updateScoreboard});
+   * the {@code combat/load} datapack function also registers it on world load. The one-shot
+   * actionbar explains the grace window — the tick function cannot know the cooldown just
+   * STARTED, so the start beat lives here.
+   */
+  private static void startFleeCooldown(ServerPlayer player) {
+    try {
+      if (player.getServer() == null) return;
+      Scoreboard sb = player.getServer().getScoreboard();
+      Objective obj = sb.getObjective(FLEE_COOLDOWN_OBJ);
+      if (obj == null) {
+        obj = sb.addObjective(
+          FLEE_COOLDOWN_OBJ,
+          ObjectiveCriteria.DUMMY,
+          Component.literal(FLEE_COOLDOWN_OBJ),
+          ObjectiveCriteria.RenderType.INTEGER,
+          false,
+          null
+        );
+      }
+      sb.getOrCreatePlayerScore(player, obj).set(FLEE_COOLDOWN_TICKS);
+      player.connection.send(new ClientboundSetActionBarTextPacket(
+        Component.literal("§7They lost track of you — move.")
+      ));
+      LOGGER.info(
+        "Player {} fled a trainer battle — flee cooldown armed ({} ticks)",
+        player.getName().getString(), FLEE_COOLDOWN_TICKS
+      );
+    } catch (Exception e) {
+      LOGGER.warn("Failed to arm flee cooldown: {}", e.getMessage());
+    }
   }
 
   private static Unit handleBattleVictory(BattleVictoryEvent event) {

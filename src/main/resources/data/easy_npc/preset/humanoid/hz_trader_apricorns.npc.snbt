@@ -76,7 +76,7 @@
                             Text: "Ball-craft, friend. An apricorn in the right press is a ball with an opinion. The Company sells you the finished thing at their price — I sell you the tree at mine."
                         },
                         {
-                            Text: "Craft secret, free of charge: a black apricorn pressed on a moonless night sits heavier in the hand. Everyone in the trade knows it. Madam Qiu says otherwise, but she sells leaves, not wood."
+                            Text: "Craft secret, free of charge: a black apricorn pressed on a moonless night sits heavier in the hand. Everyone in the trade knows it. Linh Hua says otherwise, but she sells leaves, not wood."
                         }
                     ],
                     Name: "Bo Huan — the apricorn cart",
@@ -122,6 +122,58 @@
                             Label: "buy_yellow_button"
                         },
                         {
+                            Name: "Pink Apricorns x2 — 120 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/market/buy_apricorn_pink"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "hz_market_eq_1"
+                                }
+                            ],
+                            Label: "buy_pink_button"
+                        },
+                        {
+                            Name: "The cool rows — blue, green, white",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "colors_cool"
+                                }
+                            ],
+                            Label: "cool_rows_button"
+                        },
+                        {
+                            Name: "Back to Bo Huan",
+                            Actions: [
+                                {
+                                    Type: "OPEN_DEFAULT_DIALOG"
+                                }
+                            ],
+                            Label: "back_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Two to a bundle, one hundred twenty the pair. The warm rows hang on this side of the cart — red, yellow, pink. The black jar sits on the workbench shelf with the tumblestones — ask if you do not see it."
+                        },
+                        {
+                            Text: "The hill decides the colors, not me. Warm rows lean one morning, cool rows the next — what I foraged at dawn is what hangs on the cart. The basket on the workbench never argues, if you cannot wait."
+                        }
+                    ],
+                    Name: "Bo Huan — the warm rows",
+                    Label: "colors"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
                             Name: "Blue Apricorns x2 — 120 CD",
                             Actions: [
                                 {
@@ -158,24 +210,6 @@
                             Label: "buy_green_button"
                         },
                         {
-                            Name: "Pink Apricorns x2 — 120 CD",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "function cobblemon_initiative:economy/market/buy_apricorn_pink"
-                                }
-                            ],
-                            Conditions: [
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "hz_market_eq_1"
-                                }
-                            ],
-                            Label: "buy_pink_button"
-                        },
-                        {
                             Name: "White Apricorns x2 — 120 CD",
                             Actions: [
                                 {
@@ -194,14 +228,14 @@
                             Label: "buy_white_button"
                         },
                         {
-                            Name: "The workbench shelf",
+                            Name: "The warm rows — red, yellow, pink",
                             Actions: [
                                 {
                                     Type: "OPEN_NAMED_DIALOG",
-                                    Cmd: "workbench"
+                                    Cmd: "colors"
                                 }
                             ],
-                            Label: "workbench_button"
+                            Label: "warm_rows_button"
                         },
                         {
                             Name: "Back to Bo Huan",
@@ -211,27 +245,15 @@
                                 }
                             ],
                             Label: "back_button"
-                        },
-                        {
-                            Name: "Goodbye",
-                            Actions: [
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "goodbye_button"
                         }
                     ],
                     Texts: [
                         {
-                            Text: "Two to a bundle, one hundred twenty the pair. Pick a color. The black jar sits on the workbench shelf with the tumblestones — ask if you do not see it."
-                        },
-                        {
-                            Text: "The hill decides the colors, not me. Warm rows lean one morning, cool rows the next — what I foraged at dawn is what hangs on the cart. The basket on the workbench never argues, if you cannot wait."
+                            Text: "The cool rows — blue, green, white. Same bundle, same hundred twenty. These lean toward the water and the shade; the press does not care, but the poets do."
                         }
                     ],
-                    Name: "Bo Huan — the seven colors",
-                    Label: "colors"
+                    Name: "Bo Huan — the cool rows",
+                    Label: "colors_cool"
                 },
                 {
                     Priority: -1,

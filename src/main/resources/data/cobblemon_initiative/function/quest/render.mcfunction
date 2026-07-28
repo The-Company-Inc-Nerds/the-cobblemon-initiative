@@ -96,7 +96,7 @@ execute if entity @s[tag=wheat_war_active,tag=heard_wheat_pitch] run function co
 # Four Wardens Pilgrimage: Warden seals n/4 side line — lights at the first seal, clears on the blessing (pilgrimage_done latch). Counting + macro render live in sidequest/pilgrimage/hud (mirrors the q.side_wheat block above; q.side_pilgrim rides ci_quest 78, below wheat at 80).
 function cobblemon_initiative:sidequest/pilgrimage/hud
 
-# Price Check (Hua Zhan side quest): shows Price checks noted n/3 once Kaito hands out the check (hz_price_check_active), hides after turn-in (hz_prices_done). Scratch counter #prices quest_hud per the render ladder pattern; macro lives in sidequest/price_check/set_prices (quest/ dir is shared).
+# Price Check (Hua Zhan side quest): shows Price checks noted n/3 once Wei Feng hands out the check (hz_price_check_active), hides after turn-in (hz_prices_done). Scratch counter #prices quest_hud per the render ladder pattern; macro lives in sidequest/price_check/set_prices (quest/ dir is shared).
 scoreboard players reset q.side_prices ci_quest
 execute if entity @s[tag=hz_price_check_active] unless entity @s[tag=hz_prices_done] run scoreboard players set #prices quest_hud 0
 execute if entity @s[tag=hz_price_check_active] unless entity @s[tag=hz_prices_done] if entity @s[tag=hz_price_1] run scoreboard players add #prices quest_hud 1
@@ -142,6 +142,12 @@ scoreboard players reset q.side_classic ci_quest
 execute if entity @s[tag=classic_active,tag=!sango_classic_champion] run scoreboard players set q.side_classic ci_quest 72
 execute if score q.side_classic ci_quest matches 72 run scoreboard players display name q.side_classic ci_quest [{"text":"• Three fish before the bar empties","color":"gray"}]
 
+# The Gaviota Open (Enzo, the record round, alpha.26 audit rulings): lights only while a
+# round is LIVE (gaviota_open_active); off at champion — same contract as the Classic.
+scoreboard players reset q.side_gaviota_open ci_quest
+execute if entity @s[tag=gaviota_open_active,tag=!gaviota_open_champion] run scoreboard players set q.side_gaviota_open ci_quest 47
+execute if score q.side_gaviota_open ci_quest matches 47 run scoreboard players display name q.side_gaviota_open ci_quest [{"text":"• Ten fish before the clock runs out","color":"gray"}]
+
 # Natural History (Kenji's museum): brush in hand (sq_museum_brush) until the donation
 # case closes (sq_museum_donation_done).
 scoreboard players reset q.side_bones ci_quest
@@ -154,7 +160,6 @@ scoreboard players reset q.side_letter ci_quest
 execute if entity @s[tag=carrying_dead_letter] if score @s ci_papers_held matches ..1 run scoreboard players set q.side_letter ci_quest 68
 execute if entity @s[tag=carrying_dead_letter] if score @s ci_papers_held matches ..1 run scoreboard players display name q.side_letter ci_quest [{"text":"• Walk the dead letter to Lucian","color":"gray"}]
 execute if entity @s[tag=letter_delivered,tag=!marlow_thanks_done] run scoreboard players set q.side_letter ci_quest 68
-execute if entity @s[tag=letter_surrendered,tag=!marlow_thanks_done] run scoreboard players set q.side_letter ci_quest 68
 execute unless entity @s[tag=carrying_dead_letter] if score q.side_letter ci_quest matches 68 run scoreboard players display name q.side_letter ci_quest [{"text":"• Tell Marlow how it ended","color":"gray"}]
 
 # The Incomplete File (Lucian, run-long): active from open_file; goes dormant once the
@@ -164,13 +169,10 @@ execute unless entity @s[tag=carrying_dead_letter] if score q.side_letter ci_que
 # During the badge-1-to-3 dark window (docs filed, notices not yet briefed) the line
 # reads as a wait state instead of a stale errand.
 scoreboard players reset q.side_file ci_quest
-execute if entity @s[tag=file_opened,tag=!notices_filed,tag=!sold_docs] run scoreboard players set q.side_file ci_quest 67
-execute if entity @s[tag=file_opened,tag=!notices_filed,tag=!sold_docs] run scoreboard players display name q.side_file ci_quest [{"text":"• Rebuild the record for Lucian","color":"gray"}]
-execute if entity @s[tag=docs_filed,tag=!notices_filed,tag=!sold_docs] if score @s memory_fragment matches ..2 run scoreboard players display name q.side_file ci_quest [{"text":"• Lucian waits on a third badge","color":"gray"}]
+execute if entity @s[tag=file_opened,tag=!docs_filed,tag=!sold_docs] run scoreboard players set q.side_file ci_quest 67
+execute if entity @s[tag=file_opened,tag=!docs_filed,tag=!sold_docs] run scoreboard players display name q.side_file ci_quest [{"text":"• Rebuild the record for Lucian","color":"gray"}]
 execute if entity @s[tag=sold_docs] run scoreboard players set q.side_file ci_quest 67
 execute if entity @s[tag=sold_docs] run scoreboard players display name q.side_file ci_quest [{"text":"• The record is Company property now","color":"dark_red"}]
-execute if entity @s[tag=notices_filed,tag=defeated_villain_boss,tag=!file_refiled] run scoreboard players set q.side_file ci_quest 67
-execute if entity @s[tag=notices_filed,tag=defeated_villain_boss,tag=!file_refiled] run scoreboard players display name q.side_file ci_quest [{"text":"• The file can close — see Lucian","color":"gray"}]
 
 # Off the Record (note 11 rework): after the third badge, clear the four Company agents
 # working the Sango lanes — Tunde (field), Musa (cart), and the two square auditors Bomani +
@@ -235,14 +237,15 @@ execute if entity @s[tag=farm_1_free,tag=!homecoming_paid,tag=!homecoming_walkin
 execute if entity @s[tag=homecoming_walking,tag=!homecoming_paid] run scoreboard players set q.side_deng ci_quest 59
 execute if entity @s[tag=homecoming_walking,tag=!homecoming_paid] run scoreboard players display name q.side_deng ci_quest [{"text":"• Lead the Dengs to the Firstfurrow gate","color":"gray"}]
 
-# The Lane Looks After Its Own (Oma's delivery loop, round 13d — now trackable): deliver
+# The Lane Looks After Its Own (Omas delivery loop, round 13d — now trackable; slot 69 as of
+# the 2026-07-27 audit — the old 78 collided with q.side_pilgrim, register slot was null): deliver
 # leg while any door is unvisited, then the return leg once all three are done.
 scoreboard players reset q.side_lane ci_quest
-execute if entity @s[tag=lane_started,tag=!lane_done,tag=!delivered_1] run scoreboard players set q.side_lane ci_quest 78
-execute if entity @s[tag=lane_started,tag=!lane_done,tag=!delivered_2] run scoreboard players set q.side_lane ci_quest 78
-execute if entity @s[tag=lane_started,tag=!lane_done,tag=!delivered_3] run scoreboard players set q.side_lane ci_quest 78
-execute if score q.side_lane ci_quest matches 78 run scoreboard players display name q.side_lane ci_quest [{"text":"• Take Oma's baskets down the lane","color":"gray"}]
-execute if entity @s[tag=delivered_1,tag=delivered_2,tag=delivered_3,tag=!lane_done] run scoreboard players set q.side_lane ci_quest 78
+execute if entity @s[tag=lane_started,tag=!lane_done,tag=!delivered_1] run scoreboard players set q.side_lane ci_quest 69
+execute if entity @s[tag=lane_started,tag=!lane_done,tag=!delivered_2] run scoreboard players set q.side_lane ci_quest 69
+execute if entity @s[tag=lane_started,tag=!lane_done,tag=!delivered_3] run scoreboard players set q.side_lane ci_quest 69
+execute if score q.side_lane ci_quest matches 69 run scoreboard players display name q.side_lane ci_quest [{"text":"• Take Oma's baskets down the lane","color":"gray"}]
+execute if entity @s[tag=delivered_1,tag=delivered_2,tag=delivered_3,tag=!lane_done] run scoreboard players set q.side_lane ci_quest 69
 execute if entity @s[tag=delivered_1,tag=delivered_2,tag=delivered_3,tag=!lane_done] run scoreboard players display name q.side_lane ci_quest [{"text":"• Bring the care package back to Oma","color":"gray"}]
 
 # Right of Way (Harvest Road survey detail): the ambush itself has no accept latch (sight-
@@ -321,6 +324,22 @@ execute unless entity @s[tag=mm_board_done] if score #idx cd_instability matches
 scoreboard players reset q.side_mirebloom ci_quest
 execute if entity @s[tag=met_mm_nurse,tag=!field_2_liberated] run scoreboard players set q.side_mirebloom ci_quest 54
 execute if entity @s[tag=met_mm_nurse,tag=!field_2_liberated] run scoreboard players display name q.side_mirebloom ci_quest [{"text":"• Free the Mirebloom Paddies from the Company","color":"gray"}]
+
+# The Drained Nets (Corvin's cod fetch, slot 60, alpha.26 N17): button-start (corvin_quest_started),
+# retargets to the collect beat on turn-in, drops off the sidebar on payout (wisps convention).
+scoreboard players reset q.side_nets ci_quest
+execute if entity @s[tag=corvin_quest_started,tag=!corvin_fish_done] run scoreboard players set q.side_nets ci_quest 60
+execute if entity @s[tag=corvin_quest_started,tag=!corvin_fish_done] run scoreboard players display name q.side_nets ci_quest [{"text":"• Bring Corvin 5 cod from living water","color":"gray"}]
+execute if entity @s[tag=corvin_fish_done,tag=!corvin_fish_paid] run scoreboard players set q.side_nets ci_quest 60
+execute if entity @s[tag=corvin_fish_done,tag=!corvin_fish_paid] run scoreboard players display name q.side_nets ci_quest [{"text":"• Collect the catch bounty from Corvin","color":"gold"}]
+
+# The Lamplighters Round (Lysira's glowstone fetch, slot 62, alpha.26 N26): same shape; the
+# payout beat itself points the player at the south dock (the fairy-shrine breadcrumb).
+scoreboard players reset q.side_lamps ci_quest
+execute if entity @s[tag=lysira_round_started,tag=!lysira_round_in] run scoreboard players set q.side_lamps ci_quest 62
+execute if entity @s[tag=lysira_round_started,tag=!lysira_round_in] run scoreboard players display name q.side_lamps ci_quest [{"text":"• Bring Lysira 8 glowstone dust for the lamps","color":"gray"}]
+execute if entity @s[tag=lysira_round_in,tag=!lysira_round_done] run scoreboard players set q.side_lamps ci_quest 62
+execute if entity @s[tag=lysira_round_in,tag=!lysira_round_done] run scoreboard players display name q.side_lamps ci_quest [{"text":"• Collect the round bounty from Lysira","color":"gold"}]
 
 
 # ═══════════ Town quest packs (gyms 4-7) ═══════════
@@ -503,16 +522,19 @@ scoreboard players reset q.side_shrines_capstone ci_quest
 execute if score #shrines quest_hud matches 1.. unless entity @s[tag=five_keepers_paid] run scoreboard players set q.side_shrines_capstone ci_quest 93
 execute if score #shrines quest_hud matches 1.. unless entity @s[tag=five_keepers_paid] run scoreboard players display name q.side_shrines_capstone ci_quest [{"text":"• Five Keepers - clear all five elemental shrines","color":"aqua"}]
 execute if entity @s[tag=defeated_fairy_shrine_leader,tag=defeated_ground_shrine_leader,tag=defeated_dragon_shrine_leader,tag=defeated_ice_shrine_leader,tag=defeated_fire_shrine_leader,tag=!five_keepers_paid] run scoreboard players set q.side_shrines_capstone ci_quest 93
-execute if entity @s[tag=defeated_fairy_shrine_leader,tag=defeated_ground_shrine_leader,tag=defeated_dragon_shrine_leader,tag=defeated_ice_shrine_leader,tag=defeated_fire_shrine_leader,tag=!five_keepers_paid] run scoreboard players display name q.side_shrines_capstone ci_quest [{"text":"• Five Keepers - claim the crystals from the Last Pilgrim","color":"aqua"}]
+execute if entity @s[tag=defeated_fairy_shrine_leader,tag=defeated_ground_shrine_leader,tag=defeated_dragon_shrine_leader,tag=defeated_ice_shrine_leader,tag=defeated_fire_shrine_leader,tag=!five_keepers_paid] run scoreboard players display name q.side_shrines_capstone ci_quest [{"text":"• Five Keepers - claim the reckoning from Keeper Aurora","color":"aqua"}]
 execute if entity @s[tag=five_keepers_paid] run scoreboard players set q.side_shrines_capstone ci_quest 93
 execute if entity @s[tag=five_keepers_paid] run scoreboard players display name q.side_shrines_capstone ci_quest [{"text":"• Five Keepers - the crystals answer to one hand","color":"dark_aqua"}]
+# alpha.26 descent redesign: the old cultist-ladder middle stage gated on
+# defeated_fairy_shrine_cultist_2 — a tag nothing has granted since the a19 cultist drop,
+# so it could never show. Re-keyed on the Java-granted trial tags, mirroring the register.
 scoreboard players reset q.side_shrine_fairy ci_quest
-execute if entity @s[tag=defeated_mystic_leader,tag=!defeated_fairy_shrine_leader] run scoreboard players set q.side_shrine_fairy ci_quest 94
-execute if entity @s[tag=defeated_mystic_leader,tag=!defeated_fairy_shrine_leader] run scoreboard players display name q.side_shrine_fairy ci_quest [{"text":"• Climb the Fairy Shrine cultist ladder","color":"gray"}]
-execute if entity @s[tag=defeated_mystic_leader,tag=defeated_fairy_shrine_cultist_2,tag=!defeated_fairy_shrine_leader] run scoreboard players set q.side_shrine_fairy ci_quest 94
-execute if entity @s[tag=defeated_mystic_leader,tag=defeated_fairy_shrine_cultist_2,tag=!defeated_fairy_shrine_leader] run scoreboard players display name q.side_shrine_fairy ci_quest [{"text":"• Face High Priestess Aurora","color":"light_purple"}]
-execute if entity @s[tag=defeated_fairy_shrine_leader] run scoreboard players set q.side_shrine_fairy ci_quest 94
-execute if entity @s[tag=defeated_fairy_shrine_leader] run scoreboard players display name q.side_shrine_fairy ci_quest [{"text":"• Fairy Shrine cleared - the crystal raises Xerneas","color":"dark_aqua"}]
+execute if entity @s[tag=defeated_mystic_leader,tag=!fairy_shrine_trial_clear,tag=!fairy_crystal_claimed] run scoreboard players set q.side_shrine_fairy ci_quest 94
+execute if entity @s[tag=defeated_mystic_leader,tag=!fairy_shrine_trial_clear,tag=!fairy_crystal_claimed] run scoreboard players display name q.side_shrine_fairy ci_quest [{"text":"• Follow the five vows down the drowned stair","color":"gray"}]
+execute if entity @s[tag=fairy_shrine_trial_clear,tag=!fairy_crystal_claimed] run scoreboard players set q.side_shrine_fairy ci_quest 94
+execute if entity @s[tag=fairy_shrine_trial_clear,tag=!fairy_crystal_claimed] run scoreboard players display name q.side_shrine_fairy ci_quest [{"text":"• Claim the crystal from Keeper Aurora","color":"light_purple"}]
+execute if entity @s[tag=fairy_crystal_claimed] run scoreboard players set q.side_shrine_fairy ci_quest 94
+execute if entity @s[tag=fairy_crystal_claimed] run scoreboard players display name q.side_shrine_fairy ci_quest [{"text":"• Fairy Shrine cleared - the crystal raises Xerneas","color":"dark_aqua"}]
 scoreboard players reset q.side_shrine_ground ci_quest
 execute if entity @s[tag=defeated_kalahar_leader,tag=!defeated_ground_shrine_leader] run scoreboard players set q.side_shrine_ground ci_quest 95
 execute if entity @s[tag=defeated_kalahar_leader,tag=!defeated_ground_shrine_leader] run scoreboard players display name q.side_shrine_ground ci_quest [{"text":"• Descend the Ground Shrine cultist ladder","color":"gray"}]

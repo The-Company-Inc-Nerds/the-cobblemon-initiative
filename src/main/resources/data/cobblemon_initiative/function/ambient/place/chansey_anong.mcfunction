@@ -5,4 +5,4 @@
 # respawn. (Legacy pre-tag dupes are cleared once by install/repairs_a15.)
 kill @e[tag=ci_amb_companion_chansey_anong]
 scoreboard players set #amb_chansey_anong ci_ambient 1
-easy_npc preset import_new data easy_npc:preset/humanoid/companion_chansey_anong.npc.snbt 1536.5 93 2005.5
+easy_npc preset import_new data easy_npc:preset/humanoid/companion_chansey_anong.npc.snbt 1436.5 90 2148.5

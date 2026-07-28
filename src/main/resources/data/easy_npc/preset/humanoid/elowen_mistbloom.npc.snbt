@@ -1,9 +1,9 @@
 {
     PresetMetadata: {
         author: "TheCompanyInc",
-        category: "Civilian",
+        category: "Merchant",
         created: 0L,
-        description: "civilian at Mystic Marsh - East Boardwalk (act 1). Compiled from dialog-src.",
+        description: "merchant at Mystic Marsh - East Boardwalk, Apothecary Stall (act 1). Compiled from dialog-src.",
         entityTypeId: "easy_npc:humanoid",
         modified: 0L,
         name: "Elowen Mistbloom",
@@ -33,30 +33,40 @@
         CanPickUpLoot: 0b,
         CustomNameVisible: 1b,
         DialogData: {
-            Type: "BASIC",
+            Type: "STANDARD",
             DialogDataSet: [
                 {
                     Priority: 10,
                     Buttons: [
                         {
-                            Name: "Goodbye",
+                            Name: "Browse the remedy shelf",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "remedies"
+                                }
+                            ],
+                            Label: "remedies_button"
+                        },
+                        {
+                            Name: "Just passing through",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "goodbye_button"
+                            Label: "leave_button"
                         }
                     ],
                     Texts: [
                         {
-                            Text: "Marsh-lilies, fresh-cut and still glowing! They only bloom in the deep fog and they only glow for a night, so it is worth it, promise. Pin one to your bag and the willows think you belong here."
+                            Text: "Marsh-lily remedies, fresh-brewed and still glowing! The lilies only bloom in the deep fog and they only glow for a night, so you bottle the glow before it runs out — that is the whole art of apothecary work, timing. The League makes me label them Potion, which is much less romantic but does fit on the sticker."
                         },
                         {
-                            Text: "Everyone acts like the marsh is spooky but I grew up in it and it is only spooky if you are rude to it. Say good morning to the pools. They like that. My gran says they answer back but I have never heard it."
+                            Text: "Everyone acts like the marsh is spooky but I grew up in it and it is only spooky if you are rude to it. Say good morning to the pools, keep a potion in your bag, and nothing out there will ever make you use it. That is marsh logic and it has never once failed me."
                         },
                         {
-                            Text: "Oh — do not go past the lamps after dark though. That part is real. That part I do not argue with."
+                            Text: "Oh — do not go past the lamps after dark though. That part is real. That part I do not argue with. It is also, if I am being honest with you, extremely good for potion sales."
                         },
                         {
                             Text: "The fog is mostly Cottonee fluff, you know. It drifts off them while they sleep, that is why it is soft. Everyone acts like I made this up, but nobody can tell me what ELSE fog would be."
@@ -64,6 +74,71 @@
                     ],
                     Name: "Elowen Mistbloom",
                     Label: "default"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Potion — 300 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/market/buy_potion"
+                                }
+                            ],
+                            Label: "buy_potion_button"
+                        },
+                        {
+                            Name: "Super Potion — 700 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/market/buy_super_potion"
+                                }
+                            ],
+                            Label: "buy_super_potion_button"
+                        },
+                        {
+                            Name: "Antidote — 200 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/market/buy_antidote"
+                                }
+                            ],
+                            Label: "buy_antidote_button"
+                        },
+                        {
+                            Name: "Awakening — 200 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/market/buy_awakening"
+                                }
+                            ],
+                            Label: "buy_awakening_button"
+                        },
+                        {
+                            Name: "Back to Elowen",
+                            Actions: [
+                                {
+                                    Type: "OPEN_DEFAULT_DIALOG"
+                                }
+                            ],
+                            Label: "back_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The shelf! Potions are lily-glow bottled at midnight, the strong ones are two nights of glow, and the antidote is two hundred even — the mart wants two hundred fifty for the same promise and theirs never grew anywhere. The Awakening is for Pokemon the marsh has sung to sleep. It happens more than you would think. It is a very musical marsh."
+                        }
+                    ],
+                    Name: "Elowen — the remedy shelf",
+                    Label: "remedies"
                 }
             ]
         },
@@ -154,18 +229,6 @@
             HasObjectives: 1b,
             HasTravelTarget: 0b,
             ObjectiveDataSet: [
-                {
-                    Type: "RANDOM_STROLL_AROUND_HOME",
-                    Prio: 2,
-                    Id: "ambient_stroll_home",
-                    SpeedModifier: 0.8d
-                },
-                {
-                    Type: "MOVE_BACK_TO_HOME",
-                    Prio: 3,
-                    Id: "ambient_back_home",
-                    SpeedModifier: 1.0d
-                },
                 {
                     Type: "LOOK_AT_PLAYER",
                     Prio: 9,

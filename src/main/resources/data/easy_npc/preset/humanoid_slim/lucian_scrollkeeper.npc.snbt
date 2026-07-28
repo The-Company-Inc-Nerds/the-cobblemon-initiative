@@ -362,161 +362,6 @@
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
-                            Name: "memo_heard"
-                        },
-                        {
-                            Type: "PLAYER_TAG",
-                            Operation: "EQUALS",
-                            Name: "no_memo_delivered"
-                        }
-                    ],
-                    Priority: 71,
-                    Buttons: [
-                        {
-                            Name: "Hand over Memo 44-C",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "function cobblemon_initiative:economy/payout {amount:400}"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "give @s cobblemon:super_potion 2"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "function cobblemon_initiative:economy/reward/standard"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "function cobblemon_initiative:sidequest/memo/take_memo"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "tag @s add memo_delivered"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    Cmd: "tellraw @initiator [{\"text\":\"Lucian files Memo 44-C without reading it twice. The file is incomplete — but growing.\",\"color\":\"gold\"}]"
-                                },
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "hand_memo_button"
-                        },
-                        {
-                            Name: "Keep it for now",
-                            Actions: [
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "keep_button"
-                        }
-                    ],
-                    Texts: [
-                        {
-                            Text: "You are carrying Company paper. Internal distribution, forty-four stroke C. Hand it here — slowly. Documents that insist there was never a founder are my favourite kind. Insistence is a fingerprint."
-                        }
-                    ],
-                    Name: "Lucian — Memo 44-C",
-                    Label: "memo_turn_in"
-                },
-                {
-                    Conditions: [
-                        {
-                            Type: "PLAYER_TAG",
-                            Operation: "EQUALS",
-                            Name: "defeated_villain_boss"
-                        },
-                        {
-                            Type: "PLAYER_TAG",
-                            Operation: "EQUALS",
-                            Name: "notices_filed"
-                        },
-                        {
-                            Type: "PLAYER_TAG",
-                            Operation: "EQUALS",
-                            Name: "no_file_refiled"
-                        }
-                    ],
-                    Priority: 60,
-                    Buttons: [
-                        {
-                            Name: "Let her close the file",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "function cobblemon_initiative:sidequest/personnel_file/refile"
-                                },
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "close_file_button"
-                        }
-                    ],
-                    Texts: [
-                        {
-                            Text: "You came back. Good. I have laid all of it out — the portrait backing, the ledger, the charter, the notices. Read together they make one document, and the document has a shape where a name should be. The reassembly renders it as static. Every pass, static."
-                        },
-                        {
-                            Text: "So I will say what the file says. This record was not lost. It was retired. No — that is wrong too. There was never a record. That is the sentence they wrote over the sentence that used to be here. Sit down. Let me close the file properly, and pay what the archive owes you for finishing its work."
-                        }
-                    ],
-                    Name: "Lucian — the record reassembled",
-                    Label: "stage3"
-                },
-                {
-                    Conditions: [
-                        {
-                            Type: "PLAYER_TAG",
-                            Operation: "EQUALS",
-                            Name: "no_notices_filed"
-                        },
-                        {
-                            Type: "PLAYER_TAG",
-                            Operation: "EQUALS",
-                            Name: "ci_notices_gte_3"
-                        }
-                    ],
-                    Priority: 55,
-                    Buttons: [
-                        {
-                            Name: "Hand over the intact notices",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "function cobblemon_initiative:sidequest/personnel_file/file_notices"
-                                },
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "file_notices_button"
-                        }
-                    ],
-                    Texts: [
-                        {
-                            Text: "Three Revision Notices, corners uncurled, and no audit stamp on any of them. You pulled them clean. Do you know how rare an unobserved document is now? Lay them here. I want to see what the Company thought was worth pasting over twice."
-                        }
-                    ],
-                    Name: "Lucian — the intact notices",
-                    Label: "stage2_turnin"
-                },
-                {
-                    Conditions: [
-                        {
-                            Type: "PLAYER_TAG",
-                            Operation: "EQUALS",
                             Name: "doc_portrait"
                         },
                         {
@@ -650,7 +495,7 @@
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
-                            Name: "memo_delivered"
+                            Name: "docs_filed"
                         },
                         {
                             Type: "PLAYER_TAG",
@@ -692,7 +537,7 @@
                     ],
                     Texts: [
                         {
-                            Text: "Memo forty-four stroke C keeps bothering me. Internal distribution — which means somewhere a branch office files the minutes it is built on. The Eastern District branch in Hua Zhan holds a quarterly review, and no copy of its minutes has ever reached a public shelf."
+                            Text: "The ledger page you filed keeps bothering me. Re-signed under an Eastern District countersignature — which means a branch office somewhere files the minutes that moved the pen. The Eastern District branch in Hua Zhan holds a quarterly review, and no copy of its minutes has ever reached a public shelf."
                         },
                         {
                             Text: "If you are heading east anyway — offices leak at the doors. The archive pays for live Company paper, and minutes are the liveliest paper there is."
@@ -772,63 +617,7 @@
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
-                            Name: "no_notices_filed"
-                        },
-                        {
-                            Type: "PLAYER_TAG",
-                            Operation: "EQUALS",
-                            Name: "badges_lt_3"
-                        }
-                    ],
-                    Priority: 46,
-                    Buttons: [
-                        {
-                            Name: "Read me the histories",
-                            Actions: [
-                                {
-                                    Type: "OPEN_NAMED_DIALOG",
-                                    Cmd: "lore_menu"
-                                }
-                            ],
-                            Label: "histories_button"
-                        },
-                        {
-                            Name: "Third badge. Noted.",
-                            Actions: [
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "leave_button"
-                        }
-                    ],
-                    Texts: [
-                        {
-                            Text: "The three records are filed and the file is quiet — which is not the same as finished. The next chapter is being pasted up in a town you cannot argue with yet. Come back wearing a third badge and I will have work worth the walk."
-                        },
-                        {
-                            Text: "Until then: roads, badges, and anything on Company letterhead you happen to notice. The archive is patient. It is the only patient thing the Company ever built."
-                        }
-                    ],
-                    Name: "Lucian — the file waits",
-                    Label: "stage_bridge"
-                },
-                {
-                    Conditions: [
-                        {
-                            Type: "PLAYER_TAG",
-                            Operation: "EQUALS",
-                            Name: "docs_filed"
-                        },
-                        {
-                            Type: "PLAYER_TAG",
-                            Operation: "EQUALS",
-                            Name: "no_notices_filed"
-                        },
-                        {
-                            Type: "PLAYER_TAG",
-                            Operation: "EQUALS",
-                            Name: "badges_gte_3"
+                            Name: "no_file_closed_read"
                         }
                     ],
                     Priority: 45,
@@ -837,6 +626,11 @@
                             Name: "Read me the histories",
                             Actions: [
                                 {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add file_closed_read"
+                                },
+                                {
                                     Type: "OPEN_NAMED_DIALOG",
                                     Cmd: "lore_menu"
                                 }
@@ -844,8 +638,13 @@
                             Label: "histories_button"
                         },
                         {
-                            Name: "I will watch her loop",
+                            Name: "Let it rest",
                             Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add file_closed_read"
+                                },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
@@ -855,14 +654,14 @@
                     ],
                     Texts: [
                         {
-                            Text: "The region is being re-signed again. A Company Surveyor walks Blossom Path pasting Revision Notices — this signage supersedes all prior signage, prior signage never existed, that sort of thing. I want three, intact, and I want them pulled while her eyes are elsewhere."
+                            Text: "The three records lie together at last — the portrait backing, the ledger page, the charter. Read as one document they have a shape where a name should be, and every cross-reference renders that name as static. This record was not lost. It was retired."
                         },
                         {
-                            Text: "If she sees you holding one, she will not touch you. She will note the time and adjust her clipboard, and your intact notices will not be intact any more. Patience beats her. It usually does."
+                            Text: "So the file is closed. Not solved — closed. An archive knows the difference. The shelf stays warm for anything on Company letterhead you happen to notice; roads write things down, and I pay for live paper."
                         }
                     ],
-                    Name: "Lucian — the notices return",
-                    Label: "stage2_brief"
+                    Name: "Lucian — the file closes",
+                    Label: "file_closed"
                 },
                 {
                     Conditions: [
@@ -1230,57 +1029,6 @@
                     ],
                     Name: "Lucian — off the record",
                     Label: "off_record_offer"
-                },
-                {
-                    Conditions: [
-                        {
-                            Type: "PLAYER_TAG",
-                            Operation: "EQUALS",
-                            Name: "errand1_done"
-                        },
-                        {
-                            Type: "PLAYER_TAG",
-                            Operation: "EQUALS",
-                            Name: "errand2_done"
-                        },
-                        {
-                            Type: "PLAYER_TAG",
-                            Operation: "EQUALS",
-                            Name: "errand3_done"
-                        },
-                        {
-                            Type: "PLAYER_TAG",
-                            Operation: "EQUALS",
-                            Name: "no_off_record_complete"
-                        }
-                    ],
-                    Priority: 70,
-                    Buttons: [
-                        {
-                            Name: "Collect - off the record",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "function cobblemon_initiative:sidequest/off_record/finish"
-                                },
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "collect_button"
-                        }
-                    ],
-                    Texts: [
-                        {
-                            Text: "All three, and the desk in the square is folding its legs. You carried what needed carrying and stood still when standing still was the whole trick. There is a page in my ledger for exactly this kind of work, and unlike theirs, mine forgets on purpose."
-                        },
-                        {
-                            Text: "Here is what the archive owes you. Spend it on something that does not leave a receipt."
-                        }
-                    ],
-                    Name: "Lucian — the quiet ledger",
-                    Label: "off_record_debrief"
                 },
                 {
                     Priority: -1,

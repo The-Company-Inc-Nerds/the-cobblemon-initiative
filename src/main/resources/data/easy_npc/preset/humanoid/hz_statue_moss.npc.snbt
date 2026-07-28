@@ -191,7 +191,7 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:hua_zhan_trainer_1 onwin {1: ['tag @1 add defeated_hua_zhan_trainer_1', '@2 say Slow-grown, well-grown. The old bough concedes — the seal in the root-stone will take your hand now.', '@2 execute at @s run particle minecraft:totem_of_undying ~ ~1.2 ~ 0.4 0.9 0.4 0.08 120 force', '@2 execute at @s run particle minecraft:end_rod ~ ~1 ~ 0.3 0.8 0.3 0.02 60 force', '@2 execute at @s run playsound minecraft:block.beacon.activate master @a ~ ~ ~ 1 1.3', 'effect give @2 minecraft:glowing 60 0 true'], 2: ['@1 say The bough has stood a hundred winters; it can wait out one hurried trainer. Wait, grow, and climb again.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:hua_zhan_trainer_1 onwin {1: ['tag @1 add defeated_hua_zhan_trainer_1', '@2 say Slow-grown, well-grown. The old bough concedes — the seal in the root-stone will take your hand now.', '@2 execute at @s run particle minecraft:totem_of_undying ~ ~1.2 ~ 0.4 0.9 0.4 0.08 120 force', '@2 execute at @s run particle minecraft:end_rod ~ ~1 ~ 0.3 0.8 0.3 0.02 60 force', '@2 execute at @s run playsound minecraft:block.beacon.activate master @a ~ ~ ~ 1 1.3', 'effect give @2 minecraft:glowing 60 0 true', 'execute as @1 run function cobblemon_initiative:hua_zhan/seal_hint'], 2: ['@1 say The bough has stood a hundred winters; it can wait out one hurried trainer. Wait, grow, and climb again.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -231,7 +231,7 @@
                             Text: "WARDEN OF THE OLD BOUGH — eldest of the four. The old botany carved its first warden up here, in the tree that was already old when the first gardeners came, arms folded on the great branch so the city would never forget how to stand still."
                         },
                         {
-                            Text: "Master Wei sent you, so the old wood will answer. Ready a Pokéball and wake the guardian of the bough — best it, and the seal in the root-stone is yours."
+                            Text: "Master Wei sent you, so the old wood will answer. Ready a Pokéball and wake the guardian of the bough — best it, and the seal in the root-stone is yours. When the warden yields, speak to the stone once more: the seal is pressed after the match, not during it."
                         }
                     ],
                     Name: "The Old Bough — the stone stirs",
@@ -375,13 +375,21 @@
         Invulnerable: 0b,
         LeftHanded: 0b,
         ModelData: {
+            Pose: "CUSTOM",
             DefaultPose: "STANDING",
-            Pose: "VANILLA",
-            Position: {},
-            Rotation: {},
-            Scale: {},
-            Visible: {
-                Boots: 1b
+            Rotation: {
+                RightArm: [-2.5f, 0.0f, 0.35f, 1.0f],
+                LeftArm: [-0.5f, 0.5f, 0.0f, 1.0f],
+                RightLeg: [-1.6f, -0.1f, 0.0f, 1.0f],
+                LeftLeg: [-1.5f, 0.35f, 0.0f, 1.0f]
+            },
+            Position: {
+                Head: [0.0f, 5.0f, 0.0f],
+                Body: [0.0f, 5.0f, 0.0f],
+                RightArm: [0.0f, 5.0f, 0.0f],
+                LeftArm: [0.0f, 5.0f, 0.0f],
+                RightLeg: [0.0f, 5.0f, 0.0f],
+                LeftLeg: [0.0f, 5.0f, 0.0f]
             }
         },
         Navigation: {

@@ -389,7 +389,7 @@ band; matches Ignis own roster premium). Arena `center` = **Fire Shrine platform
 storm-bird — the one noble triggered by a *person asking* rather than a monument. Post-gym-7.
 **Forward hook:** Cass mentions *the Company men have gone quiet since the tower fell* (points at
 the HQ raid / Acting CEO DJ, which unlocks in this same band — LORE_BIBLE §8, gated
-`badges gte 7` AND `fields_liberated gte 4`).
+`badges gte 7` AND `fields_liberated gte 6`).
 **Back-echo:** Cass thanks the founder *for the fields you cleared — the grain-lights came back
 on out east* (references `fields_liberated`, the Wheat War).
 

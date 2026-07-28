@@ -95,26 +95,14 @@
                             Label: "bracket100_button"
                         },
                         {
-                            Name: "Check my circuit standing",
+                            Name: "The registrar's desk — standing & withdrawal",
                             Actions: [
                                 {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "cobblemon-initiative stadium status"
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "desk"
                                 }
                             ],
-                            Label: "status_button"
-                        },
-                        {
-                            Name: "Withdraw from the circuit",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "cobblemon-initiative stadium abort"
-                                }
-                            ],
-                            Label: "abort_button"
+                            Label: "desk_button"
                         },
                         {
                             Name: "Step off the floor",
@@ -145,6 +133,58 @@
                     ],
                     Name: "Exhibition Registrar",
                     Label: "default"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Check my circuit standing",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative stadium status"
+                                }
+                            ],
+                            Label: "status_button"
+                        },
+                        {
+                            Name: "Withdraw from the circuit",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative stadium abort"
+                                }
+                            ],
+                            Label: "abort_button"
+                        },
+                        {
+                            Name: "Back to the brackets",
+                            Actions: [
+                                {
+                                    Type: "OPEN_DEFAULT_DIALOG"
+                                }
+                            ],
+                            Label: "back_button"
+                        },
+                        {
+                            Name: "Step off the floor",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The desk handles the paperwork side of the card: your current standing on the circuit, and withdrawals — which the manager refuses mid-bout, so time your paperwork like you time your switches."
+                        }
+                    ],
+                    Name: "Exhibition Registrar — the desk",
+                    Label: "desk"
                 }
             ]
         },

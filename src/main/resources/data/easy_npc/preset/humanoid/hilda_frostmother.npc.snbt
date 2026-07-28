@@ -40,20 +40,55 @@
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
+                            Name: "nifl_lanterns_done"
+                        }
+                    ],
+                    Priority: 40,
+                    Buttons: [
+                        {
+                            Name: "I will come sit sometime",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "There now. I did not leave my chair last night and I did not need to. Four small warmths came back across the ice, one after the other, like old friends knocking to be let in. The wedding. The calling on the north ice. A childs first snow. And the far one — the one that was never a townspersons memory at all."
+                        },
+                        {
+                            Text: "I have walked that round more winters than I can stack, and last night I walked it again without taking a step, because Vetra carried the flame and you carried the rest. Sit by my lake whenever the cold lets you, child. Nothing rots in Nifl, and now nothing of yours is sitting out there in the dark either."
+                        }
+                    ],
+                    Name: "Hilda - the lamps came back on",
+                    Label: "lamps_relit"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
                             Name: "badges_gte_7"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "no_nifl_lanterns_done"
                         }
                     ],
                     Priority: 30,
                     Buttons: [
                         {
-                            Name: "Tell me about the lanterns",
+                            Name: "I will find Keeper Vetra",
                             Actions: [
                                 {
-                                    Type: "OPEN_NAMED_DIALOG",
-                                    Cmd: "the_lanterns"
+                                    Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "lantern_button"
+                            Label: "vetra_button"
                         },
                         {
                             Name: "Not yet",
@@ -70,35 +105,11 @@
                             Text: "Sit by the lake a moment, child. No — I know your face, and I know you do not. That is the cruelty of the cold. It keeps everything, even the things that were taken out of a person on purpose. It has been holding one more memory for you than for anyone else in this town, and it is a heavy one."
                         },
                         {
-                            Text: "The lanterns around the water each keep a small memory the ice gave back to us. A wedding. A lost dog found in a drift. A childs first snow. The fourth one is not a townspersons memory at all. When you are ready, walk them with me — the last light has been waiting for the person it belongs to. I begin to think that is you."
+                            Text: "I hung those lanterns myself, one for every small thing the ice gave back, and I could tell you what each flame keeps with my eyes shut. But a lantern wants a steady hand to relight it, and mine have gone to trembling. Keeper Vetra walks the ring in my stead now — find her down on the shore. The far light has been waiting for the person it belongs to. I begin to think that is you."
                         }
                     ],
                     Name: "Hilda - one more memory than the rest",
                     Label: "late"
-                },
-                {
-                    Priority: -1,
-                    Buttons: [
-                        {
-                            Name: "I will walk them with you",
-                            Actions: [
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "leave_button"
-                        }
-                    ],
-                    Texts: [
-                        {
-                            Text: "In Boreas tradition the cold is not death, it is patience. What the world would rot away and forget, the ice simply keeps until someone is ready to carry it again. We hang a lantern where a memory settled, so it does not go dark and drift out to the lake bottom."
-                        },
-                        {
-                            Text: "Four have gone dim this season. Relight them with me and the ice gives back what it has been minding. Small things, mostly. And one thing that half-heard a name before the frost took it. Do not be startled if a lantern says something meant for you."
-                        }
-                    ],
-                    Name: "Hilda - the Long Memory",
-                    Label: "the_lanterns"
                 },
                 {
                     Priority: 10,
@@ -118,7 +129,7 @@
                             Text: "Welcome to the long memory, traveller. In Nifl we say nothing rots — which the young hear as a comfort and the old hear as a warning. Nothing rots. Nothing is buried and stays buried. The lake keeps a ledger the Company cannot audit."
                         },
                         {
-                            Text: "Warm your hands. The Company came up here once with clipboards and left with frostbite, because you cannot delete what refuses to thaw. Boreas told them so. The ice told them louder."
+                            Text: "See the lanterns ringing the water? I remember every one of them — hung most of them too, back when my hands could hold a flame steady. They cannot any more, so Keeper Vetra walks the round for me, down on the shore. I keep the remembering. She keeps the fire. Between the two of us the lake stays lit."
                         }
                     ],
                     Name: "Hilda Frostmother",

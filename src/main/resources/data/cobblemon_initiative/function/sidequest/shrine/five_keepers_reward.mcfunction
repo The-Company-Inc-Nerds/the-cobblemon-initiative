@@ -1,5 +1,7 @@
 # Five Keepers capstone (14_shrines Q4) — one-time payout for clearing all five elemental
-# shrines. Run AS the player from the Last Pilgrim claim button (gated: all five
+# shrines. Run AS the player from Keeper Aurora claim button (all_five entry; alpha.26:
+# the Last Pilgrim was released with the descent redesign — the claim moved onto Aurora,
+# the first keeper) (gated: all five
 # defeated_<type>_shrine_leader tags held, and not_tag five_keepers_paid on the button).
 # The single shrine CD faucet: 5000 skewed via economy/payout (the Company-skims-everything
 # haircut). Keepsake = a Master Ball (the one no living trainer holds) + a stack of rare
@@ -18,4 +20,4 @@ title @s title [{"text":"FIVE KEEPERS ANSWER","color":"#7A5CA8","bold":true}]
 playsound minecraft:block.beacon.activate master @s ~ ~ ~ 1 1.2
 playsound minecraft:block.amethyst_block.chime master @s ~ ~ ~ 0.8 0.7
 
-tellraw @s [{"text":"[The Last Pilgrim] ","color":"aqua","bold":true},{"text":"Five elements, five keepers, five crystals - all answering to one hand. Be worthy of that.","color":"gray","italic":true}]
+tellraw @s [{"text":"[High Priestess Aurora] ","color":"light_purple","bold":true},{"text":"Five elements, five keepers, five crystals - all answering to one hand. Be worthy of that.","color":"gray","italic":true}]

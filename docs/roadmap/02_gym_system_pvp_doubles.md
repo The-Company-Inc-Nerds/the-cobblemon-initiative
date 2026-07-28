@@ -445,7 +445,7 @@ scripts/generate_npc_function           # npc/preset_map.json + function/update_
   hook that optional post-badge leader dialog (e.g. `fields_thanks`) references.
 - **Consumed BY (every gym area doc):** `mystic_marsh`, `deepcore_city`, `gaviota_port`,
   `kalahar_reach`, `cyber_city`, `ryujin_keep`, `nifl_town`, `scorchspire` — each stamps
-  this pattern. `company_hq` depends on gyms 1–7 clears (badge-7 + 4 fields) as its gate.
+  this pattern. `company_hq` depends on gyms 1–7 clears (badge-7 + 6 fields) as its gate.
   `royal_league` / `board_and_founder` continue the same ladder mechanics past gym 10.
 
 ### Open questions — DECISIONS the showrunner must make

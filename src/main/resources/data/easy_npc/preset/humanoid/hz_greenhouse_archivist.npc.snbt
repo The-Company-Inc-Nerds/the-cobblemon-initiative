@@ -1,9 +1,9 @@
 {
     PresetMetadata: {
         author: "TheCompanyInc",
-        category: "Civilian",
+        category: "Merchant",
         created: 0L,
-        description: "lore_keeper at Hua Zhan City — Greenhouse Seed Vault (act 1). Compiled from dialog-src.",
+        description: "merchant at Hua Zhan City - Wool Loft (act 1). Compiled from dialog-src.",
         entityTypeId: "easy_npc:humanoid",
         modified: 0L,
         name: "Shu",
@@ -39,28 +39,30 @@
                     Priority: 10,
                     Buttons: [
                         {
-                            Name: "Say it for her — the crop is wheat",
+                            Name: "Browse the wool shelf",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "shelf"
+                                }
+                            ],
+                            Label: "shelf_button"
+                        },
+                        {
+                            Name: "Ask about the ledger",
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "function cobblemon_initiative:sidequest/greenhouse/reveal"
+                                    Cmd: "tellraw @initiator [{\"text\":\"One Wooloo. Cloud, at the mill — Guo shears, Grandfather used to bale, I card and file by weight and nap. Four years, zero discrepancies. The Company counts wheat, not wool, and I plan to keep these records exactly that boring.\",\"color\":\"gray\"}]"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Conditions: [
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "no_wheat_named"
-                                }
-                            ],
-                            Label: "name_it_button"
+                            Label: "ledger_button"
                         },
                         {
-                            Name: "Step back from the board",
+                            Name: "Leave the loft",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -71,105 +73,83 @@
                     ],
                     Texts: [
                         {
-                            Text: "This is the dispatch board. Ten farms, all supplied from this one room. I read it every morning like a prayer. Line one is Firstfurrow — you will have walked past it on the road up."
+                            Text: "Shu. I keep the shelf now — Grandfather minds the door and the opinions downstairs, and the counting came up here with me. White by the bale, black by the bundle, weighed twice, because once is a guess."
                         },
                         {
-                            Text: "Firstfurrow. Fenceline Acres. Mirebloom Paddies. Westwind Fields. Dryrow Steading. Crossroads Granary. Coldfurrow Farm. Frostfallow Farm. Highfield Estate. Ashloam Fields. One seed source. One buyer. One crop."
+                            Text: "I grew up on this floor sorting fleeces. Long staple left, short staple right, burrs go back to the sheep for rework. A wool shelf is just an archive with better insulation, and I do not misfile."
                         },
                         {
-                            Text: "There is a manifest for the vault. A founding signature page. It is in the binder, except it is not a page any more. It is a rectangle of cleaner paper, the exact size of a page, where a page used to be. Someone lifted the original and never replaced it. I am not supposed to notice that. I notice."
+                            Text: "Every fleece is off the one flock in this valley the Company has never audited. Sheep do not file yield reports. I checked. Twice."
                         }
                     ],
-                    Name: "Archivist — the dispatch board",
-                    Label: "board"
+                    Name: "Shu — the wool shelf",
+                    Label: "default"
                 },
                 {
-                    Conditions: [
-                        {
-                            Type: "PLAYER_TAG",
-                            Operation: "EQUALS",
-                            Name: "defeated_takehara_leader"
-                        },
-                        {
-                            Type: "PLAYER_TAG",
-                            Operation: "EQUALS",
-                            Name: "no_wheat_named"
-                        }
-                    ],
-                    Priority: 15,
+                    Priority: -1,
                     Buttons: [
                         {
-                            Name: "Say it for her — the crop is wheat",
+                            Name: "White Wool x8 — 120 CD",
                             Actions: [
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "function cobblemon_initiative:sidequest/greenhouse/reveal"
-                                },
-                                {
-                                    Type: "CLOSE_DIALOG"
+                                    Cmd: "function cobblemon_initiative:economy/market/buy_wool_white"
                                 }
                             ],
-                            Conditions: [
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "no_wheat_named"
-                                }
-                            ],
-                            Label: "name_it_button"
+                            Label: "buy_wool_white_button"
                         },
                         {
-                            Name: "Step back from the board",
+                            Name: "Black Wool x4 — 130 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/market/buy_wool_black"
+                                }
+                            ],
+                            Label: "buy_wool_black_button"
+                        },
+                        {
+                            Name: "Shears — 300 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/market/buy_shears"
+                                }
+                            ],
+                            Label: "buy_shears_button"
+                        },
+                        {
+                            Name: "Back to Shu",
+                            Actions: [
+                                {
+                                    Type: "OPEN_DEFAULT_DIALOG"
+                                }
+                            ],
+                            Label: "back_button"
+                        },
+                        {
+                            Name: "Goodbye",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "leave_button"
+                            Label: "goodbye_button"
                         }
                     ],
                     Texts: [
                         {
-                            Text: "You are the one who unsealed the hives in Takehara. Then you have read Determination 7-12 — honey rejected, producers uncooperative, assets mobile and armed. And yet a beekeeper on that same road sold her yield in perpetuity. Rejected as a commodity, purchased forever. Both true. Both filed. I shelve the binder and I do not ask the binder questions."
+                            Text: "The shelf. White by the bale, black off the one contrary sheep on the north plot, and a spare pair of shears — Grandfather retired with two, and the display copy is not for sale."
                         },
                         {
-                            Text: "As for what WAS approved — read the board. Ten farms, one seed source, one buyer, one crop. I am not permitted to say which crop. The board says it ten times a morning without ever using the word. We are all very disciplined here."
+                            Text: "Flat prices, posted nowhere, changed never. The index does not come up these stairs."
                         }
                     ],
-                    Name: "Archivist — the approved crop",
-                    Label: "determinations"
-                },
-                {
-                    Conditions: [
-                        {
-                            Type: "PLAYER_TAG",
-                            Operation: "EQUALS",
-                            Name: "wheat_named"
-                        }
-                    ],
-                    Priority: 20,
-                    Buttons: [
-                        {
-                            Name: "Thank you",
-                            Actions: [
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "leave_button"
-                        }
-                    ],
-                    Texts: [
-                        {
-                            Text: "You said it out loud, then you understand. It was never ten farms. It was one room, printed ten times onto a map."
-                        },
-                        {
-                            Text: "Go carefully. The board remembers every name. So do the people who read it to me each morning."
-                        }
-                    ],
-                    Name: "Archivist — one room, ten times over",
-                    Label: "post_reveal"
+                    Name: "Shu — bales and bundles",
+                    Label: "shelf"
                 }
             ]
         },

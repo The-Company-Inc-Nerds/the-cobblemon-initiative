@@ -7,7 +7,7 @@
 **Status:** ✅ Done · 🚧 WIP (partial) · ❌ Not yet implemented — as of the 2026-07-21 audit.
 
 > [!WARNING]
-> **Spoilers — Act I Company presence, and one Act II gate.** Most Sango quests only show The Company's polite face. Two sections go further: **The Incomplete File** describes a stage that only unlocks in **Act II** (and a choice that can permanently lock you out of it), and **No Such Recipient** brushes the Act I erasure mystery. Those sections carry their own callouts.
+> **Spoilers — Act I Company presence.** Most Sango quests only show The Company's polite face. Two sections go further: **The Incomplete File** contains a choice that can permanently lock you out of its payout, and **No Such Recipient** brushes the Act I erasure mystery. Those sections carry their own callouts.
 
 > [!NOTE]
 > **How quest pay works.** Most quest payments print a receipt with a rate line — the **Verified Rate**. As the CobbleDollar index destabilizes (every early gym badge shakes it; every liberated field steadies it), the rate falls as low as **75% of face value**. Battle prize money is always paid **in full**. Rewards below are marked *(Verified Rate)* or *(flat)* accordingly. Most receipts carry no letterhead; when The Company itself pays you, the receipt does — and those are called out.
@@ -35,7 +35,7 @@ Several quests pay a training pack on top of cash. The tiers:
 | Pending Review | Imani (census desk) | no | one-time | no |
 | Off the Record | Lucian Scrollkeeper | 4 battles | one-time | yes |
 | The Incomplete File | Lucian Scrollkeeper | no | one-time | yes |
-| No Such Recipient | Uncle Marlow | optional | one-time | yes |
+| No Such Recipient | Uncle Marlow | no | one-time | yes |
 | The Sango Classic (derby) | Deka | no | re-enterable | yes |
 | Long-Term Growth Vehicle | Deka | no | one-time | no |
 | The Waterside Invitational | Pondwarden Tayo | 3 rounds | purse one-time | yes |
@@ -159,71 +159,54 @@ Several quests pay a training pack on top of cash. The tiers:
 - Debrief: **300 CD** *(Verified Rate)* + **standard pack**, always.
 - **Clean-sweep bonus:** clear all four and Lucian hands over the *OFF THE RECORD* title card.
 
-> [!NOTE]
-> The surveyor **Binta** is **not** part of this quest — she stays the Company's watcher for [The Incomplete File](#the-incomplete-file--lucians-personnel-file) stealth stage.
-
 ---
 
 ## The Incomplete File — Lucian's personnel file
 
 > **Giver:** Lucian Scrollkeeper [2626.5 118 2776.5] — walking within about 6 blocks of him auto-opens *"a vacuum in the file"* · **No battles** · **One-time** · HUD-tracked
 
-> [!WARNING]
-> **Spoilers: Act II.** This quest's final stage is gated behind the climax of Act II (the raid on Company HQ). It also contains the one choice in Sango that can **permanently** cost you the biggest payout in Act I. Read on informed.
-
-This is the run-spine sidequest — Lucian opens a personnel file on the nameless stranger, and closing it takes the whole campaign.
+This is the archive sidequest — Lucian opens a personnel file on the nameless stranger, and filling it means recovering three misfiled originals from around town.
 
 ```mermaid
 flowchart TD
-    A["Open the file<br/>Personnel File book + 3 Poké Balls + 300 CD"] --> B["Stage 1 — recover three misfiled originals"]
+    A["Open the file<br/>Personnel File book + 3 Poké Balls + 300 CD"] --> B["Recover three misfiled originals"]
     B --> C{"Courier Musa offers<br/>900 CD for your documents"}
     C -->|"Keep the documents"| D["The Founding Charter falls loose<br/>— all three records in hand"]
-    C -->|"Sell both — 900 CD"| X["DEAD END<br/>stage 1 unfinishable,<br/>stages 2 and 3 never open"]
-    D --> E["Stage 1 turn-in:<br/>300 CD + 3 Potions + 1 Antidote"]
-    E --> F["Stage 2 (3+ badges):<br/>pull 3 Revision Notices unseen<br/>→ 600 CD"]
-    F --> G["Stage 3 (after Act II's HQ raid):<br/>4,000 CD + grand pack"]
+    C -->|"Sell both — 900 CD"| X["DEAD END<br/>the filing never happens"]
+    D --> E["The filing:<br/>300 CD + 3 Potions + 1 Antidote<br/>— the file closes"]
 ```
 
 ### Walkthrough
 1. **Open the file.** Press *"Open my file"* — you receive the **Personnel File** (a writable book that doubles as your run's death ledger: *"Section: Partners, Deceased. One page per loss. Remove none."*) plus **3 Poké Balls + 300 CD** *(Verified Rate — "a records-fee refund you never paid")*.
-2. **Stage 1 — three misfiled originals:**
+2. **Three misfiled originals:**
    - **Portrait Backing** — a chest on the Company courier cart at the north end of town; walk up to it at [2591 111 2815].
    - **Ledger Page** — a barrel by the farm fountain on the south side [2584 107 2925].
    - **Founding Charter** — held by Company courier **Musa**, camped beside that same cart [2592 111 2815]. See the fork below.
-3. **Stage 1 turn-in:** with all three, *"Hand Lucian the three records"* — **300 CD** *(Verified Rate)* + **3 Potions + 1 Antidote** (she earmarks the antidote for Cicada's Scolipede).
-4. **Stage 2 (requires 3+ badges):** pull **3 Revision Notices** — gym-entrance wall, shore-warehouse door, town-hall board — while the Company **Surveyor** (she patrols the Blossom Path side, 24-block sightline) does **not** see you holding a pulled notice. Getting spotted fires *LOGGED*, resets all three boards, and costs nothing — free retry, zero damage. Turn-in: **600 CD** *(Verified Rate)*.
-5. **Stage 3 (after Act II's HQ raid):** *"Let her close the file"* — she files it *"under a name she declines to read aloud."* **4,000 CD** *(Verified Rate)* + **grand pack**.
+3. **The filing:** with all three, *"Hand Lucian the three records"* — **300 CD** *(Verified Rate)* + **3 Potions + 1 Antidote** (she earmarks the antidote for Cicada's Scolipede). The file closes here — *"not solved, closed; an archive knows the difference."*
 
 ### Choices & consequences
 
 > [!CAUTION]
-> **The courier's 900 CD offer is a permanent dead end.** With the Portrait Backing and Ledger Page in hand, Musa offers *"Sell both documents — 900 CobbleDollars"* (paid on Company letterhead). Take it and stage 1 can **never** be completed: no stage-1 payout, stages 2 and 3 never open, no grand pack, and the Founding Charter is lost. Lucian will only say: *"you had the whole of it in your hands, and chose the money."* Preserving pays **300 + 600 + 4,000 CD plus two training packs** — the sale is never worth it.
+> **The courier's 900 CD offer is a permanent dead end.** With the Portrait Backing and Ledger Page in hand, Musa offers *"Sell both documents — 900 CobbleDollars"* (paid on Company letterhead). Take it and the filing can **never** happen: no turn-in payout, and the Founding Charter is lost. Lucian will only say: *"you had the whole of it in your hands, and chose the money."*
 
-- **The preserve fork:** press *"Keep the documents"* — the Founding Charter falls loose from Musa's satchel. This is the path that keeps the whole chain alive.
-- Lucian's desk is also the **turn-in point for most Company paper** you'll lift across Act I (Memo 44-C, the Dead Letter, route manifests, transition orders, quarterly minutes) — and her badge-gated lore shelf opens more pages as you progress.
+- **The preserve fork:** press *"Keep the documents"* — the Founding Charter falls loose from Musa's satchel. This is the path that completes the file.
+- Lucian's desk is also the **turn-in point for most Company paper** you'll lift across Act I (the Dead Letter, route manifests, transition orders, quarterly minutes) — and her badge-gated lore shelf opens more pages as you progress.
 
 ---
 
 ## No Such Recipient — Marlow's dead letter
 
-> **Giver:** Uncle Marlow, retired Company courier (31 years on the Sango route), mailbag by his door a few houses from Nalia's [2656.5 106 2897.5] · **Battles optional** · **One-time** · HUD-tracked
+> **Giver:** Uncle Marlow, retired Company courier (31 years on the Sango route), mailbag by his door a few houses from Nalia's [2656.5 106 2897.5] · **No battles** · **One-time** · HUD-tracked
 
-> [!WARNING]
-> **Spoilers: Act I Company presence.** The delivery route crosses the Company checkpoint on Blossom Path.
-
-**How it starts:** Talk to Marlow; press *"Take the dead letter to the archivist."* You receive the **Dead Letter** and Marlow warns about *"grey suits on Blossom Path."*
+**How it starts:** Talk to Marlow; press *"Take the dead letter to the archivist."* You receive the **Dead Letter** — addressee: *record expunged* — and Marlow points you at the one person in town who keeps what other people delete.
 
 ### Walkthrough
-1. **Carry the Dead Letter toward Lucian** [2626.5 118 2776.5].
-2. **The interception:** if you cross the **Voluntary Verification Checkpoint** on Blossom Path while carrying it, the agents flag you for *"unverified correspondence."* Your options: **surrender it**, **pay a 250 CD handling fee** (they stop flagging you; the letter stays yours), or **battle** (see [[Quests Blossom Path]] for the agents' teams — Lv 13–15, genuinely dangerous under the starting cap of 15).
-3. **Deliver to Lucian** (or report the loss if you surrendered).
-4. **Return to Marlow** — *"Tell Marlow how it ended."*
+1. **Carry the Dead Letter to Lucian** [2626.5 118 2776.5] and deliver it.
+2. **Return to Marlow** — *"Tell Marlow how it ended."*
 
-### Choices & consequences
-| Fork | Outcome |
-|------|---------|
-| **Deliver** (sneak past, pay the fee, or beat both agents) | Lucian pays **300 CD** *(Verified Rate)* + **standard pack**; Marlow's thanks: **Wingull Lv 12** (*"the last flier on the Sango route"*) + **2 Antidotes** |
-| **Surrender at the checkpoint** | Quest still closes — Marlow pays the courier's due: **150 CD** *(Verified Rate)* + **2 Antidotes**. The cautious hardcore play is never punished — but you forfeit the Wingull |
+### Rewards
+- Lucian pays **300 CD** *(Verified Rate)* + **standard pack** at the delivery.
+- Marlow's thanks: **Wingull Lv 12** (*"the last flier on the Sango route"*) + **2 Antidotes**.
 
 ---
 
@@ -399,7 +382,7 @@ Baseline day-one stock and prices:
 
 ## See also
 
-- **[[Quests Blossom Path]]** — the road west: the checkpoint, the census meadow, the courier race, and the route battles.
+- **[[Quests Blossom Path]]** — the road west: the census meadow, the courier race, and the route battles.
 - **[[Quests Takehara Falls]]** — gym 1 and the falls-town quest slate.
 - **[[Guidebook Act I]]** — the act-level walkthrough and Nuzlocke cautions.
 - **[[Commands]]** — quest HUD toggles (`/ca quest show|hide|refresh`).

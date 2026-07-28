@@ -33,11 +33,103 @@
         CanPickUpLoot: 0b,
         CustomNameVisible: 1b,
         DialogData: {
-            Type: "BASIC",
+            Type: "STANDARD",
             DialogDataSet: [
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "faelrin_torches_in"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "no_faelrin_gift_done"
+                        }
+                    ],
+                    Priority: 25,
+                    Buttons: [
+                        {
+                            Name: "Take Morelull onto the team",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative givemon morelull level=25"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add faelrin_gift_done"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "tellraw @initiator [{\"text\":\"Morelull joined you — the little lamp walks its own round now.\",\"color\":\"aqua\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "gift_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Sixteen torches. You just bought this town a quiet week, and I do not hand out the word quiet lightly. So — I want you to meet somebody. Little glowing fellow started following the round three months back. Morelull. Lights its own caps, minds its own business, scared off a drowned once by existing at it."
+                        },
+                        {
+                            Text: "The round has torches now. It does not need two lamps that walk. And a thing that grew up guarding a boardwalk should see what the dark looks like past the third willow. Take it. It likes shoulders and it dims itself when you sleep, which is more courtesy than I get from most people."
+                        }
+                    ],
+                    Name: "Faelrin — a lamp that walks",
+                    Label: "gifted"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "faelrin_gift_done"
+                        }
+                    ],
+                    Priority: 24,
+                    Buttons: [
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "How is the lamp? Do not answer — I can see it from here, glowing like it invented the concept. Best partner I ever had on the round. Never once complained about my tallying."
+                        },
+                        {
+                            Text: "Last night: two creepers, one skeleton, zero incidents under the lamps. Your torches are holding. If the marsh takes a night off, that is the closest it comes to a thank-you."
+                        }
+                    ],
+                    Name: "Faelrin — off duty",
+                    Label: "done"
+                },
                 {
                     Priority: 10,
                     Buttons: [
+                        {
+                            Name: "Hand over 16 torches for the lamp round",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative turnin minecraft:torch 16 faelrin_torches_in"
+                                }
+                            ],
+                            Label: "torches_button"
+                        },
                         {
                             Name: "Goodbye",
                             Actions: [
@@ -57,6 +149,9 @@
                         },
                         {
                             Text: "You sleeping here? Bar the shutters. Do not investigate the noise. The noise is never worth investigating."
+                        },
+                        {
+                            Text: "The lamp round eats torches faster than the town dips them. Sixteen would see me through the week — and a man walking the dark with a full satchel walks it a good deal braver."
                         }
                     ],
                     Name: "Faelrin Nightreed",

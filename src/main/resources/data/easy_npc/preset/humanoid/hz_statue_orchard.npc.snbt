@@ -191,7 +191,7 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:hua_zhan_trainer_2 onwin {1: ['tag @1 add defeated_hua_zhan_trainer_2', '@2 say The threshold opens. You passed the gate garden the way it likes — slowly, and looking. The seal in the gatepost will take your hand now.', '@2 execute at @s run particle minecraft:totem_of_undying ~ ~1.2 ~ 0.4 0.9 0.4 0.08 120 force', '@2 execute at @s run particle minecraft:end_rod ~ ~1 ~ 0.3 0.8 0.3 0.02 60 force', '@2 execute at @s run playsound minecraft:block.beacon.activate master @a ~ ~ ~ 1 1.3', 'effect give @2 minecraft:glowing 60 0 true'], 2: ['@1 say The gate garden does not open for the impatient. Come back to the threshold when you are ready to be weighed.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:hua_zhan_trainer_2 onwin {1: ['tag @1 add defeated_hua_zhan_trainer_2', '@2 say The threshold opens. You passed the gate garden the way it likes — slowly, and looking. The seal in the gatepost will take your hand now.', '@2 execute at @s run particle minecraft:totem_of_undying ~ ~1.2 ~ 0.4 0.9 0.4 0.08 120 force', '@2 execute at @s run particle minecraft:end_rod ~ ~1 ~ 0.3 0.8 0.3 0.02 60 force', '@2 execute at @s run playsound minecraft:block.beacon.activate master @a ~ ~ ~ 1 1.3', 'effect give @2 minecraft:glowing 60 0 true', 'execute as @1 run function cobblemon_initiative:hua_zhan/seal_hint'], 2: ['@1 say The gate garden does not open for the impatient. Come back to the threshold when you are ready to be weighed.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -231,7 +231,7 @@
                             Text: "WARDEN OF THE GATE GARDEN — the threshold. The old botany carved this one at the very door of the gym, because the garden decides who reaches the keeper long before the keeper does. It is the last green you pass and the first that judges you."
                         },
                         {
-                            Text: "Master Wei sent you, so the gate will answer. Wake the guardian of the threshold and best it — a garden lets through what it has weighed, and it means to weigh you."
+                            Text: "Master Wei sent you, so the gate will answer. Wake the guardian of the threshold and best it — a garden lets through what it has weighed, and it means to weigh you. When it yields, touch the stone once more: the seal at the gatepost is pressed after the match."
                         }
                     ],
                     Name: "The Gate Garden — the stone stirs",
@@ -375,13 +375,13 @@
         Invulnerable: 0b,
         LeftHanded: 0b,
         ModelData: {
+            Pose: "CUSTOM",
             DefaultPose: "STANDING",
-            Pose: "VANILLA",
-            Position: {},
-            Rotation: {},
-            Scale: {},
-            Visible: {
-                Boots: 1b
+            Rotation: {
+                RightArm: [-0.6f, -0.9f, 0.0f, 1.0f],
+                LeftArm: [-0.6f, 0.9f, 0.0f, 1.0f],
+                RightLeg: [0.0f, 0.0f, 0.0f, 1.0f],
+                LeftLeg: [0.05f, 0.1f, 0.0f, 1.0f]
             }
         },
         Navigation: {

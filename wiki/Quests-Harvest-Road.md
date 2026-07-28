@@ -54,10 +54,10 @@ flowchart TD
 - The CobbleDollar index **steadies** — quest payouts take a smaller haircut at the Verified Rate.
 - Poké Mart prices drop to a **relief tier** immediately.
 - The zone banner over the farm flips to **Liberated**.
-- The wheat traders in the cities *notice*. At 2–3 freed fields they turn suspicious of your face; at 4+ they turn hostile — and 4 freed fields is what finally gets you a meeting at Company HQ (Act II).
+- The wheat traders in the cities *notice*. At 2–3 freed fields they turn suspicious of your face; at 4+ they turn hostile — and 6 freed fields is what finally gets you a meeting at Company HQ (Act II).
 
 > [!NOTE]
-> **As shipped:** **Firstfurrow is the only field that can currently be liberated.** The tracker counts toward six and the HQ meeting requires four — the remaining five field liberations are still being authored, so the Act II gate cannot yet be opened in-game. Firstfurrow is the template every later farm will reuse: clear the perimeter, then flip the field.
+> **As shipped:** **Firstfurrow is the only field that can currently be liberated.** The tracker counts toward six and the HQ meeting requires six — the remaining field liberations are still being authored, so the Act II gate cannot yet be opened in-game. Firstfurrow is the template every later farm will reuse: clear the perimeter, then flip the field.
 
 ---
 

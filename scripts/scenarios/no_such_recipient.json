@@ -1,6 +1,6 @@
 {
   "name": "no_such_recipient",
-  "description": "No Such Recipient (q.side_letter), delivered branch end-to-end: take Uncle Marlow's dead letter in Sango Town, walk it to Lucian Scrollkeeper's archive desk, deliver it for the finders fee, then return to Marlow for the thanks and the Wingull. No prerequisite tags are assumed (Marlow's giver entry is ungated; the Blossom Path surrender checkpoint is unplaced so the walk cannot trip it). Preamble unregisters Lucian's approach_once sight for the run (a mid-walk auto-open pauses the Walker under the screen) and restores the shipped registration once the player is back at Marlow; re-runs keep the extra Wingull (givemon has no dupe gate) and earned CobbleDollar payouts.",
+  "description": "No Such Recipient (q.side_letter), delivered branch end-to-end: take Uncle Marlow's dead letter in Sango Town, walk it to Lucian Scrollkeeper's archive desk, deliver it for the finders fee, then return to Marlow for the thanks and the Wingull. No prerequisite tags are assumed (Marlow's giver entry is ungated; alpha.26 audit rulings cut the Blossom Path checkpoint interception with the never-placed ghost cast, so delivery is the only branch). Preamble unregisters Lucian's approach_once sight for the run (a mid-walk auto-open pauses the Walker under the screen) and restores the shipped registration once the player is back at Marlow; re-runs keep the extra Wingull (givemon has no dupe gate) and earned CobbleDollar payouts.",
   "steps": [
     {
       "comment": "-- reset (idempotent re-runs): chain tags, letter prop, thanks rewards --"
@@ -10,9 +10,6 @@
     },
     {
       "rcon": "tag {player} remove letter_delivered"
-    },
-    {
-      "rcon": "tag {player} remove letter_surrendered"
     },
     {
       "rcon": "tag {player} remove marlow_thanks_done"

@@ -353,9 +353,10 @@ regen and the placement functions spawn the no-`uuid` bodies once.
 **GOTCHAS (verified against `band_tags.mcfunction` / ENGINE_FINDINGS):**
 - **`hq_keycard` is NOT a mechanical gate for DJ** — it is the **basement-elevator door check**
   (ruling 4 geometry; `company_hq`'s `hq_lobby_guard` owns the check). DJ's battle gate is
-  `fields_liberated >= 4` as shipped (`acting_ceo_dj.json`, `render.mcfunction`) — **raised to
-  >= 6 of 10 by RULING 2026-07-06; `company_hq` §8 owns those edits** (incl. the new
-  `fields_liberated_gte_6` band-tag pair if a dialog ever gates on it). Do not wire DJ's entry to
+  `fields_liberated >= 6` as shipped (`acting_ceo_dj.json`, `render.mcfunction` — the 4 -> 6
+  migration landed with the alpha.26 audit rulings) — **>= 6 of 10 per RULING 2026-07-06;
+  `company_hq` §8 tracked those edits** (incl. the
+  `fields_liberated_gte_6` band-tag pair, now maintained). Do not wire DJ's entry to
   `hq_keycard`.
 - If any dialog gates `not_tag:"hq_keycard"`, the compiler must add **`no_hq_keycard`** to
   `band_tags.mcfunction` — Easy NPC 6.25 **ignores NOT_EQUALS** (`contains()` only), so every

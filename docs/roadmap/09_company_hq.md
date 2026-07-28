@@ -1,6 +1,6 @@
 # 09 — Act 2: The Company HQ Raid (the skyscraper)
 
-> Area key: `company_hq` · Act 2 · Hard gate: **gym 7 cleared (badge count ≥ 7)** AND **majority of the wheat-field network liberated: `fields_liberated ≥ 6` of 10** (SHOWRUNNER RULING 2026-07-06 — majority, not all; shipped files still gate ≥ 4 and must be edited, see §8).
+> Area key: `company_hq` · Act 2 · Hard gate: **gym 7 cleared (badge count ≥ 7)** AND **majority of the wheat-field network liberated: `fields_liberated ≥ 6` of 10** (SHOWRUNNER RULING 2026-07-06 — majority, not all; shipped files now gate ≥ 6 — alpha.26 audit rulings applied the migration, see §8).
 > Zone: `install.json` "The Company, Inc." (VILLAIN, `#455A64`), boardroom core `[1590 51 1028]`.
 > **GEOMETRY IS CANON (SHOWRUNNER RULING 2026-07-06):** the HQ is a **skyscraper in Cyber City**. You enter at the **first-floor lobby**. **Down** → basement levels styled as the evil HQ (the Act-2 raid path, DJ at the bottom). **Up** → ordinary corporate flavor floors, topped by the **penthouse** — the player's own old penthouse.
 > STATUS: cast + TrainerConfig registry already exist (`dialog-src/characters/villain/*`, `trainers/villain_team/villain_team.json`). This section wires them into the basement-descent raid, adds the keycard gate + penthouse scene, and retunes the roster to the gym-7 cap window.
@@ -25,7 +25,7 @@ The HQ raid is the Act-2 dungeon: the first time the villain plot stops being sc
 | Field | Value |
 |---|---|
 | Act | **2** (the HQ Raid) — and the tower serves all three acts (see Canon ties) |
-| Entry gate | badge count ≥ 7 (`recognition:late` == `memory_fragment ≥ 7`) **AND** `fields_liberated ≥ 6` of 10 (majority — RULING 2026-07-06; shipped gate is ≥ 4, edit list in §8) |
+| Entry gate | badge count ≥ 7 (`recognition:late` == `memory_fragment ≥ 7`) **AND** `fields_liberated ≥ 6` of 10 (majority — RULING 2026-07-06; shipped gate is ≥ 6 since the alpha.26 audit rulings) |
 | `cd_instability` on clear | clamps **DOWN to 25** via `economy/hq_stabilize` (already wired to DJ's `on_win` + config reward; idempotent double-fire) |
 | Memory fragment | **Penthouse fragment** — a NON-badge fragment (must NOT increment the `memory_fragment` HUD score). Vague, first-person, dread-comedy. Never names the founder. |
 | Recognition tier | **late** throughout (badges ≥ 7). Basement grunts = confused/angry ("stand down, nobody said it"), management = alarm/placing the face, COO Noir = *knows exactly who you are*, DJ = contemptuous ("you look smaller than the legend"). Upper-floor staff, by contrast, are pure re-verified normalcy — they know nothing and it is unsettling. |
@@ -104,7 +104,7 @@ Not a gym, but built like one: a **descending PvP ladder** through the basement 
 | B4 | **COO Noir** `villain_admin_commander` | SINGLES | `all_tags:[defeated_villain_grunt_10, defeated_villain_grunt_11]` | `defeated_villain_admin_commander` |
 | B5 | **Acting CEO DJ** `villain_boss` | SINGLES | `defeated: villain_admin_commander` **AND** `fields_liberated ≥ 6` | `defeated_villain_boss` → `hq_stabilize` |
 
-**Hard gate (DJ) — shipped at ≥ 4, RULING raises it to ≥ 6 of 10:** `acting_ceo_dj.json` `default` entry currently gates `fields_liberated {op:gte, value:4}` and the `monopoly_holds` fallback (priority 10) refuses the meeting otherwise ("come back when the fields stop answering our memos"). **EDIT the value 4 → 6** (majority of the ten-field network — see `wheat_war_farms`). ALSO add the `defeated: villain_admin_commander` condition to the `default` entry so DJ cannot be skipped past Noir.
+**Hard gate (DJ) — ≥ 6 of 10 (RULING; shipped ✅ alpha.26 audit rulings):** `acting_ceo_dj.json` `default` entry now gates `fields_liberated {op:gte, value:6}` and the `monopoly_holds` fallback (priority 10) refuses the meeting otherwise ("come back when the fields stop answering our memos"). The 4 → 6 edit is DONE. STILL OPEN: add the `defeated: villain_admin_commander` condition to the `default` entry so DJ cannot be skipped past Noir.
 
 **Gate rewiring needed** (the management dialogs currently challenge unconditionally at priority 10): add the floor-grunt `all_tags` gate to each management challenge entry, plus a "clear the floor first" fallback entry (priority 5, no battle button). Shade already has `after` (priority 30, `defeated:villain_admin`) + `recognition` (mid) + `default` entries — insert the grunt gate on the `recognition`/`default` battle entries. Copy the gym-ladder gate idiom from `trainers/gyms/hua_zhan_city.json` prerequisites (the PvP-ladder pattern) — here expressed as dialog `defeated_*` gates rather than RCT prereqs (tbcs bypasses RCT gating; ENGINE_FINDINGS §2 TBCS).
 
@@ -191,10 +191,10 @@ Training-pack rule: DJ's one-time completion may carry a `training_grand`/`major
 
 **Pipeline (run in order — ENGINE_FINDINGS §3):** edit `dialog-src/**` → `scripts/content_compile` (auto-runs sight/band_tags/preset merge + the final steps) → `scripts/generate_granary_tiers` → `scripts/update_preset_index` → `scripts/generate_npc_function` → `gradle build`.
 
-**RULING-DRIVEN EDITS (gate 4 → 6, geometry):**
-- `dialog-src/characters/villain/acting_ceo_dj.json` — `default` entry gate `fields_liberated {op:gte, value:4}` → **`value:6`**; ALSO add `defeated: villain_admin_commander` (belt-and-braces on top of the fields gate). The `monopoly_holds` refusal copy still works verbatim at 6.
-- `function/dialog/band_tags.mcfunction` — currently maintains `fields_liberated_gte_1/2/4` only (verified). **ADD the `fields_liberated_gte_6` add/remove pair** (copy the gte_4 idiom) if any dialog gates on the band tag.
-- `function/quest/render.mcfunction` L34–38 — the main-quest HUD lines gate on `fields_liberated matches 4..` and print "▶ Raid Company HQ [1590 51 1028]" (verified). **EDIT `4..` → `6..`** and reconcile the printed coordinate with the final tower-entrance decision (the lobby is at street level ~y64; `[1590 51 1028]` is the basement boardroom — a lobby-door coordinate reads better on the HUD once the builder confirms it).
+**RULING-DRIVEN EDITS (gate 4 → 6, geometry) — the 4 → 6 migration is ✅ DONE (alpha.26 audit rulings):**
+- `dialog-src/characters/villain/acting_ceo_dj.json` — `default` entry gate `fields_liberated {op:gte, value:6}` ✅ done. STILL OPEN: add `defeated: villain_admin_commander` (belt-and-braces on top of the fields gate). The `monopoly_holds` refusal copy still works verbatim at 6.
+- `function/dialog/band_tags.mcfunction` — ✅ the compiler now maintains the `fields_liberated_gte_6` add/remove pair (verified alongside gte_1/2/4).
+- `function/quest/render.mcfunction` — ✅ the main-quest HUD lines gate on `fields_liberated matches 6..` and print "▶ Raid Company HQ [1590 51 1028]" (verified). STILL OPEN: reconcile the printed coordinate with the final tower-entrance decision (the lobby is at street level ~y64; `[1590 51 1028]` is the basement boardroom — a lobby-door coordinate reads better on the HUD once the builder confirms it).
 - Coordinate ownership of the field count with **`wheat_war_farms`** (`03`) — the network is TEN fields (`install.json` FARM zones `farm_1`–`farm_10`, verified holders exist) and the majority gate is **6**.
 
 **Files to CREATE:**

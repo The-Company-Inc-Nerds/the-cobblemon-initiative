@@ -6,6 +6,10 @@
 > written into `dialog-src/`, `src/`, or the datapack — copy the JSON blocks out of here
 > when building. Read alongside `dialog-src/schema/README.md` and `docs/LORE_BIBLE.md §4`.
 
+> **alpha.26 audit rulings:** the HQ raid gate canon is **SIX freed fields** (of the
+> ten-farm network) — matching DJ's shipped dialog gate, `quest/render.mcfunction`, and
+> `liberation/ceremony`. Every `fields ≥ 4` in this doc has been raised to `≥ 6`.
+
 ---
 
 ## 1. Overview
@@ -25,11 +29,11 @@ type `VILLAIN`, `mobsSpawn:false`, `announce:true`) already covers the footprint
 | Level cap | **62** (Cyber, gym 7) |
 | `cd_instability` | **56** — the PEAK of Act 1 (money feels most broken here) |
 | Recognition band | **late** (`memory_fragment gte 7`) |
-| Gate to enter the fight | `memory_fragment gte 7` **AND** `fields_liberated gte 4` |
+| Gate to enter the fight | `memory_fragment gte 7` **AND** `fields_liberated gte 6` |
 
 **The arc job.** This is the **Act-2 climax** and the single biggest earned beat before the
 Royal League. It does four things:
-1. **Pays off the field campaign.** DJ *refuses the meeting* until 4 fields are liberated
+1. **Pays off the field campaign.** DJ *refuses the meeting* until 6 fields are liberated
    — *the monopoly holds; starve it first*. The player already learned this from DJ's own
    `monopoly_holds` line (shipped in `acting_ceo_dj.json`) and from the main-line sidebar
    stage *Liberate wheat fields, then raid HQ*.
@@ -46,7 +50,7 @@ Royal League. It does four things:
 4. **Plants the next hook.** Post-DJ, Volt/Cyber already tease the Stadium; the raid exit
    points the player at Ryujin Keep (gym 8) and the League.
 
-**Place on the route.** After gym 7 (Cyber / Volt) and after ≥4 field liberations.
+**Place on the route.** After gym 7 (Cyber / Volt) and after ≥6 field liberations.
 Clearing it opens the gym-8–10 stretch at `cd_instability 25`. It is the last villain
 content before the Royal League; the Board and The Founder are Act 3.
 
@@ -137,8 +141,8 @@ every floor let you leave freely before you commit.
 ### 3.1 The Refusal & The Ascent (entrance beat)
 
 **Concept.** The player walks into the HQ lobby. Two states: **below the gate** (badges <7
-OR fields <4) the desk stonewalls and DJ upstairs refuses; **at the gate** (badges ≥7 AND
-fields ≥4) the desk is nervous, the propaganda is glitching, and the stairs are open. This
+OR fields <6) the desk stonewalls and DJ upstairs refuses; **at the gate** (badges ≥7 AND
+fields ≥6) the desk is nervous, the propaganda is glitching, and the stairs are open. This
 is the opt-in commit point for the whole raid, and the **rumor-hub** for it.
 
 **Forward hook:** names the climb — *four floors, four signatures, and the man in your
@@ -194,7 +198,7 @@ only feels the money breaking, per canon.
       "label": "open",
       "name": "Front Desk - the stairs are open",
       "priority": 30,
-      "gate": { "fields_liberated": { "op": "gte", "value": 4 }, "badges": { "op": "gte", "value": 7 } },
+      "gate": { "fields_liberated": { "op": "gte", "value": 6 }, "badges": { "op": "gte", "value": 7 } },
       "say": [
         "You are not on the visitor log and I am not going to add you. Four floors of people upstairs are having a very bad morning and I would rather you were their problem than mine.",
         "The fields stopped answering our memos, so the acting CEO will actually see you now. He is at the top. He has your chair. Go up, and mind the ones who go quiet when they see your face."
@@ -374,7 +378,7 @@ opt-in (dialog button + `leave_button`).
 
 **Concept.** The climax. Below the field gate DJ **refuses** (the shipped `monopoly_holds`
 entry — *come back when the fields stop answering our memos*). At the gate he fights (the
-shipped `default` entry, gated `fields_liberated gte 4`). His defeat: `defeated_villain_boss`
+shipped `default` entry, gated `fields_liberated gte 6`). His defeat: `defeated_villain_boss`
 + `hq_stabilize` clamps `cd_instability` to 25 + the **CURRENCY STABILIZED** title card +
 DJ despawns (`easy_npc delete @2` via `despawn_on_win`).
 
@@ -460,7 +464,7 @@ is fully optional — the raid plays without it. Flagged in Open Questions.
 ### 3.7 SIDE quest_targets holder — the floor-by-floor climb
 
 The main line (`q.main`) already carries *Raid Company HQ [1590 51 1028]* (badges ≥7,
-fields ≥4, not `defeated_villain_boss`) and, below the field gate, *Liberate wheat fields,
+fields ≥6, not `defeated_villain_boss`) and, below the field gate, *Liberate wheat fields,
 then raid HQ*. This new **side** holder `q.side_raid` steps the waypoint through the four
 floors **once the player is inside** (`hq_raid_active` set by the lobby ascend button), so
 the marker climbs with them instead of re-pointing at the building anchor. It self-moots

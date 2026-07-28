@@ -33,9 +33,10 @@ ledgers under new signatures, revised org charts.
 | Economy voice | **Act-2 slipping → corrupting.** `economy#reassurance` (nervous over-explaining), `economy#instability` tier `gte 56` (vaults echoing, folk paying in grain). | `registers/economy.json` |
 
 **The arc job.** Cyber City **SETS UP THE HQ RAID.** Three jobs, all done in-town:
-1. **Establish the gate** — the player learns the raid needs **badges ≥ 7 AND `fields_liberated ≥ 4`**
+1. **Establish the gate** — the player learns the raid needs **badges ≥ 7 AND `fields_liberated ≥ 6`**
    (of 10). DJ's off-screen refusal — *the monopoly holds* — is echoed town-side. **The gate number is
-   OWNED by `10_hq_raid.md` (canon = 4); this doc mirrors it and must not re-litigate it.**
+   OWNED by `10_hq_raid.md` (canon = 6, alpha.26 audit rulings); this doc mirrors it and must not
+   re-litigate it.**
 2. **The push to liberate the last fields** — a quest literally points the player south to **Fenceline
    Acres (`farm_6`, `[1565 65 1732]`)** and east to **Coldfurrow (`farm_7`, `[1925 64 963]`)**, the
    nearest un-liberated feeders.
@@ -64,7 +65,7 @@ these duplicate the shipped gym cast (`cyber_leader`, `cyber_guide`, `cyber_trai
 | `cyber_exchange_teller` | Verified Value Teller | civilian | **DATA quest** — a CobbleDollar money-changer sweating the peak index; begs you to re-verify 3 nether-star reserve tags the Company stopped verifying. | Exchange kiosk `~[1500, 65, 1120]` |
 | `cyber_signal_tech` | Signal Tech Rell | civilian | **SURVEILLANCE quest** — municipal comms tech; three downtown propaganda billboards are glitching (`§k`) and one is broadcasting a *scrubbing* memo in the clear. Scrub the three. | Comms van, plaza `~[1470, 65, 1140]` |
 | `cyber_defector_maren` | Off-Records Clerk Maren | quest_giver | **WHISTLEBLOWER quest** — a burned-out access-control clerk (NOT the keycard defector; a *different*, earlier defector) who wants the scrubbed personnel file recovered from three archive drops before the Company incinerates it. **She recognizes the FACE (late), never the name.** | Records annex doorstep `~[1520, 66, 1100]` (PLACEHOLDER) |
-| `cyber_grid_broker` | Grid Broker Ohmond | quest_giver | **HQ-POINTER + optional wager** — a downtown fixer who read the field ledgers; tells you the raid gate math out loud (badges 7, fields 4), points you at Fenceline/Coldfurrow, and offers an **opt-in above-cap wager** on his hoarded electric team (decline-able, stake printed). | Downtown fixer stall `~[1555, 65, 1108]` (PLACEHOLDER — near HQ seam) |
+| `cyber_grid_broker` | Grid Broker Ohmond | quest_giver | **HQ-POINTER + optional wager** — a downtown fixer who read the field ledgers; tells you the raid gate math out loud (badges 7, fields 6), points you at Fenceline/Coldfurrow, and offers an **opt-in above-cap wager** on his hoarded electric team (decline-able, stake printed). | Downtown fixer stall `~[1555, 65, 1108]` (PLACEHOLDER — near HQ seam) |
 | `cyber_reserve_1/2/3` | Reserve Tag (prop) | civilian | **DATA targets** — three re-signed nether-star reserve placards (disguised-prop `station_moss` pattern). Interact to re-verify. | scattered downtown, `~[1490,64,1128]` / `~[1560,64,1092]` / `~[1610,64,1112]` (PLACEHOLDER) |
 | `cyber_board_1/2/3` | Glitching Billboard (prop) | civilian | **SURVEILLANCE targets** — three glitching propaganda boards (disguised-prop pattern). Interact to scrub. | `~[1490,66,1132]` / `~[1560,66,1090]` / `~[1610,66,1110]` (PLACEHOLDER) |
 | `cyber_archive_1/2/3` | Archive Drop (prop) | civilian | **WHISTLEBLOWER targets** — three archive boxes flagged for quality review (disguised-prop pattern). Interact to recover a file page. | records annex, `~[1518,65,1096]` / `~[1524,65,1104]` / `~[1512,65,1092]` (PLACEHOLDER) |
@@ -673,7 +674,7 @@ Each `say[]` line stands alone:
 
 **Concept.** The quest that **literally points the player at the HQ gate.** Grid Broker Ohmond reads
 the field ledgers for sport. He tells the player the raid-gate math out loud — **badges ≥ 7 AND
-`fields_liberated ≥ 4`** — echoes **DJ's off-screen refusal** (*the monopoly holds*), and points at the
+`fields_liberated ≥ 6`** — echoes **DJ's off-screen refusal** (*the monopoly holds*), and points at the
 nearest un-liberated feeders (**Fenceline `farm_6`** south, **Coldfurrow `farm_7`** east) and at the
 tower lobby `[1590 51 1028]`. As a corporate-dread flourish he offers an **opt-in, decline-able wager**
 on his hoarded electric team (above-cap → stake printed, fail-soft, decline costs CD). This is the
@@ -738,7 +739,7 @@ alone:
       "priority": 40,
       "gate": { "tag": "hq_pointer_done", "not_tag": "defeated_sq_cyber_broker_wager" },
       "say": [
-        "You have the math now. Seven badges, four fields flipped, and the tower door stops being a wall. The acting man upstairs is praying you cannot count that high.",
+        "You have the math now. Seven badges, six fields flipped, and the tower door stops being a wall. The acting man upstairs is praying you cannot count that high.",
         "Fenceline Acres is south of town, Coldfurrow is east on the Ryujin road. Both still feed his desk. Empty them and the number opens. Fancy a wager while you decide."
       ],
       "buttons": [
@@ -781,7 +782,7 @@ alone:
     @s[tag=hq_pointer_done] run ...`; deliver the gate math + the two field pointers + the lobby coord
     via `{do:"announce"}`-style title/chat (gold; **mirror the roadmap keycard `announce` text so both
     land the same line — clean text, no `"`/`'`/`%`**); `tag @s add hq_pointer_done`; **title sting**
-    *THE DOOR DOWNTOWN* subtitle *badges seven, fields four, then the tower*; swap the main HUD toward
+    *THE DOOR DOWNTOWN* subtitle *badges seven, fields six, then the tower*; swap the main HUD toward
     *Liberate the fields, then raid HQ* (defer HUD ownership to `10_hq_raid.md`/`mainline_spine`);
     `quest/refresh`.
   - `decline_wager.mcfunction` — the paid-decline: **charge 300 CD via the pay-probe rail** (balance-safe,
@@ -970,4 +971,4 @@ trainer; 4 register stages; 4 HUD render blocks.
    (`10_hq_raid.md`) also delivers a pointer. If they overlap too much, Quest 4 could drop the pointer
    and keep only the wager + field-nudge. Recommend **ship both** — the admin fires on Volt's defeat as
    the marquee; Ohmond is the re-visitable remind-me-the-math NPC + optional wager. Both mirror the same
-   `fields_liberated ≥ 4` gate text.
+   `fields_liberated ≥ 6` gate text.
