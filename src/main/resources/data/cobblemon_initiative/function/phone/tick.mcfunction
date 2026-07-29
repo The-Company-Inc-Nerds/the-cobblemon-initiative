@@ -8,6 +8,10 @@
 scoreboard players add #phone_tick ci_dawn 1
 execute unless score #phone_tick ci_dawn matches 40.. run return 0
 scoreboard players set #phone_tick ci_dawn 0
+# a7: orphan-caller sweep ("make sure to despawn them"). A caller spawns right behind the player and
+# despawns on hang-up (ON_CLOSE_DIALOG delete); this backstops that — any ci_phone_caller with no
+# player within 12 blocks (the call ended / the player walked off, but the delete missed) is removed.
+execute as @e[type=easy_npc:humanoid,tag=ci_phone_caller] at @s unless entity @a[distance=..12] run easy_npc delete @s
 # Mom — "I want to watch your Pokémon" (after the 3rd badge, Mystic Marsh).
 execute as @a[tag=defeated_mystic_leader] unless entity @s[tag=call_mom_watch_done] run function cobblemon_initiative:phone/ring_mom
 # Mayor Liang — "a beacon came in" (freed the first field, and you can now afford the next beacon).

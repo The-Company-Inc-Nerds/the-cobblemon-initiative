@@ -102,3 +102,8 @@ execute unless score #repair_a22 ci_ambient matches 1 run function cobblemon_ini
 #    Lucia -> docks), daycare pen keepers (Alessia/Paolo), Zwiggo re-couple (Rocco mudkip yes/no +
 #    water-emerge), Renato -> Gaviota gym guide (uuid re-cast, no repairs) ──
 execute unless score #repair_a23 ci_ambient matches 1 run function cobblemon_initiative:install/repairs_a23_arm
+
+# ── wave a24 (0.7.0-alpha.7): playtest wave — Kyogre Warning Buoy moved out onto the water's edge
+#    (259.5/62/2351.5) + the arena/body-spawn moved to the water behind it (Kyogre rises from the
+#    harbour) ──
+execute unless score #repair_a24 ci_ambient matches 1 run function cobblemon_initiative:install/repairs_a24_arm

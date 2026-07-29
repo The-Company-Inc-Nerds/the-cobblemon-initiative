@@ -796,7 +796,7 @@
 | **A Giggle in the Grass** `noble_giver_mew_wisp` | Kalahar Reach - Oasis - 1788.5 114 4212.5 (latch) | runs: noble/mew_wings | skin `single/mystic_trainer_1` |
 | **Grid Warden Cass** `noble_giver_zapdos_warden` | Cyber City - Grid Edge - 1393.5 77 1065.5 (latch) | flavor / lore dialog | skin `groups/cyber` |
 | **Crater Warding Stone** `noble_monument_groudon` | Volcano Peak - South Rim - 3793.6 299 3789.1 (latch) | flavor / lore dialog | skin `single/prop_stone_marker` |
-| **Warning Buoy** `noble_monument_kyogre` | Mystic Island - Shore - 234.5 65 2347.5 (latch) | flavor / lore dialog | skin `single/prop_stone_marker` |
+| **Warning Buoy** `noble_monument_kyogre` | Mystic Island - Shore - 259.5 62 2351.5 (latch) | flavor / lore dialog | skin `single/prop_stone_marker` |
 | **Sky-Altar** `noble_monument_rayquaza` | Sky Ring - Deck - 744.5 77 4589.5 (latch) | flavor / lore dialog | skin `single/prop_stone_marker` |
 
 ## Elemental Shrines

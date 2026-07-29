@@ -1157,23 +1157,21 @@ def compile_character(ch: dict, dialogs: dict, registers: dict, lore: dict):
         lst = ",".join('"%s"' % t for t in tags)
         out = sm.set_path(out, ["data", "Tags"], sm.parse_snbt("{K:[%s]}" % lst)["K"])
         out = sm.set_path(out, ["data", "CustomNameVisible"], sm.parse_snbt("{K:1b}")["K"])
-    # PokéPhone caller bodies. a6 playtest: "the phones show no people because they are invisible."
-    # The a22 design deliberately hid the caller (master VISIBLE 0b -> handleIsInvisible returns
-    # invisible; the intent was a GUI-portrait-only "video call" with no world body in-frame), but
-    # the player expects to SEE who is calling. So the caller body is now VISIBLE — full default
-    # visibility set (VISIBLE 1b + all mode/owner/team flags 1b, EASY_NPC_REFERENCE:1281 partial-list
-    # rule means every flag must be listed to stay on), NAME_VISIBILITY ALWAYS + CustomNameVisible 1b
-    # so the caller's name shows. phone/deliver now spawns the body ~2 blocks IN FRONT of the player
-    # facing them (was ~ ~ ~ inside the player), so a visible caller reads as standing there, not
-    # clipping the camera. Still despawned on hang-up (ON_CLOSE_DIALOG delete + deliver pre-sweep).
+    # PokéPhone caller bodies. a7 playtest (showrunner call): the a6 "visible + in front" caller read
+    # badly, so go back to INVISIBLE — the call is carried by the dialog, the world body is just the
+    # Easy NPC host that the dialog opens on. master VISIBLE 0b (handleIsInvisible returns invisible)
+    # + mode/owner/team flags 0b (VISIBLE_IN_CREATIVE 1b keeps a debug ghost), NAME_VISIBILITY NEVER +
+    # CustomNameVisible 0b. phone/deliver spawns it 2 blocks BEHIND the player (out of the camera) and
+    # phone/tick sweeps any orphan caller with no player nearby — "make sure to despawn them" on top of
+    # the ON_CLOSE_DIALOG delete + the deliver pre-sweep.
     if "ci_phone_caller" in tags:
         out = sm.set_path(out, ["data", "DisplayAttribute"], sm.parse_snbt(
-            '{K:[{Bool:1b,Type:"VISIBLE"},{Bool:1b,Type:"VISIBLE_AT_DAY"},'
+            '{K:[{Bool:0b,Type:"VISIBLE"},{Bool:1b,Type:"VISIBLE_AT_DAY"},'
             '{Bool:1b,Type:"VISIBLE_AT_NIGHT"},{Bool:1b,Type:"VISIBLE_IN_CREATIVE"},'
-            '{Bool:1b,Type:"VISIBLE_IN_SPECTATOR"},{Bool:1b,Type:"VISIBLE_IN_STANDARD"},'
-            '{Bool:1b,Type:"VISIBLE_TO_OWNER"},{Bool:1b,Type:"VISIBLE_TO_TEAM"},'
-            '{Int:7,Type:"LIGHT_LEVEL"},{Text:"ALWAYS",Type:"NAME_VISIBILITY"}]}')["K"])
-        out = sm.set_path(out, ["data", "CustomNameVisible"], sm.parse_snbt("{K:1b}")["K"])
+            '{Bool:0b,Type:"VISIBLE_IN_SPECTATOR"},{Bool:0b,Type:"VISIBLE_IN_STANDARD"},'
+            '{Bool:0b,Type:"VISIBLE_TO_OWNER"},{Bool:0b,Type:"VISIBLE_TO_TEAM"},'
+            '{Int:7,Type:"LIGHT_LEVEL"},{Text:"NEVER",Type:"NAME_VISIBILITY"}]}')["K"])
+        out = sm.set_path(out, ["data", "CustomNameVisible"], sm.parse_snbt("{K:0b}")["K"])
     return out
 
 

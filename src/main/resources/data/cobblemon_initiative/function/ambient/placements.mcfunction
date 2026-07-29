@@ -180,7 +180,7 @@ execute if score #amb_manaphy_giver ci_ambient matches 0 if entity @a[x=2760.5,y
 execute if score #amb_noble_giver_mew_wisp ci_ambient matches 0 if entity @a[x=1788.5,y=114,z=4212.5,distance=..40] run function cobblemon_initiative:ambient/place/noble_giver_mew_wisp
 execute if score #amb_noble_giver_zapdos_warden ci_ambient matches 0 if entity @a[x=1393.5,y=77,z=1065.5,distance=..40] run function cobblemon_initiative:ambient/place/noble_giver_zapdos_warden
 execute if score #amb_noble_monument_groudon ci_ambient matches 0 if entity @a[x=3793.6,y=299,z=3789.1,distance=..40] run function cobblemon_initiative:ambient/place/noble_monument_groudon
-execute if score #amb_noble_monument_kyogre ci_ambient matches 0 if entity @a[x=234.5,y=65,z=2347.5,distance=..40] run function cobblemon_initiative:ambient/place/noble_monument_kyogre
+execute if score #amb_noble_monument_kyogre ci_ambient matches 0 if entity @a[x=259.5,y=62,z=2351.5,distance=..40] run function cobblemon_initiative:ambient/place/noble_monument_kyogre
 execute if score #amb_noble_monument_rayquaza ci_ambient matches 0 if entity @a[x=744.5,y=77,z=4589.5,distance=..40] run function cobblemon_initiative:ambient/place/noble_monument_rayquaza
 execute if score #amb_bramblea_mossglen ci_ambient matches 0 if entity @a[x=1028.5,y=75,z=2505.5,distance=..40] run function cobblemon_initiative:ambient/place/bramblea_mossglen
 execute if score #amb_mystic_cottonee ci_ambient matches 0 unless entity @e[tag=ci_amb_companion_mystic_cottonee] if entity @a[x=1177.5,y=65,z=2522.5,distance=..40] run function cobblemon_initiative:ambient/place/mystic_cottonee
