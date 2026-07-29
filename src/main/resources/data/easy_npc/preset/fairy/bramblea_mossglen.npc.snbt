@@ -33,14 +33,96 @@
         CanPickUpLoot: 0b,
         CustomNameVisible: 1b,
         DialogData: {
-            Type: "BASIC",
+            Type: "STANDARD",
             DialogDataSet: [
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "bramblea_charm_asked"
+                        }
+                    ],
+                    Priority: 20,
+                    Buttons: [
+                        {
+                            Name: "Keep your knees dry",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "You and I have had our one question, dearie. A charm is a once-at-dusk thing and I do not repeat myself where the reeds can hear."
+                        },
+                        {
+                            Text: "Rain by moonrise, mark me. My knees know it and my knees have never once been wrong about weather or in-laws."
+                        },
+                        {
+                            Text: "Yes, dear, the wings. A glamour slips at my age the way a shawl slips — you tug it back up and carry on with the kettle. If anyone asks, I am a nice old lady with charms. Which is also true."
+                        }
+                    ],
+                    Name: "Bramblea Mossglen",
+                    Label: "done"
+                },
                 {
                     Priority: 10,
                     Buttons: [
                         {
-                            Name: "Accept the charm — no arguing with an auntie",
+                            Name: "There is a charm in it? Ask your question",
                             Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "riddle"
+                                }
+                            ],
+                            Label: "riddle_button"
+                        },
+                        {
+                            Name: "Keep your knees dry",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "You want a charm before you go? They are not GIVEN at dusk, dearie — they are earned, with one right answer to one old question. Willow-twist and a togepi feather, if your ears have been open on this boardwalk."
+                        },
+                        {
+                            Text: "You heard the Company man up the bank yet? Selling us coin. Coin! In a marsh! We told him the pale lights past the third willow would show him the way to riches, and off he trotted. There is nothing past the third willow but a very deep hole. Ha."
+                        },
+                        {
+                            Text: "Rain by moonrise, mark me. My knees know it and my knees have never once been wrong about weather or in-laws."
+                        },
+                        {
+                            Text: "They say Titania trains blindfolded, so her own charm cannot catch her eyes. I had it from Maren, who had it from the reeds, so it is as good as sworn. Remember that, if I ever put it to you as a question."
+                        },
+                        {
+                            Text: "Yes, dear, the wings. Sharp eyes. A glamour slips at my age the way a shawl slips — you tug it back up and carry on with the kettle. The fair folk always did like a good boardwalk, and SOMEBODY respectable has to mind the gossip. If anyone asks, I am a nice old lady with charms. Which is also true. Everything about me is true, that is the trick of it."
+                        }
+                    ],
+                    Name: "Bramblea Mossglen",
+                    Label: "default"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Blindfolded",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add bramblea_charm_asked"
+                                },
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
@@ -68,39 +150,61 @@
                                         ]
                                     },
                                     Cmd: "tag @s add gift_bramblea_dusk_charm_claimed"
-                                }
-                            ],
-                            Label: "charm_button"
-                        },
-                        {
-                            Name: "Keep your knees dry",
-                            Actions: [
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "tellraw @initiator [{\"text\":\"Bramblea beams — you listen to the reeds, dearie. The dusk charm is yours.\",\"color\":\"light_purple\"}]"
+                                },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "leave_button"
+                            Label: "answer_blindfold"
+                        },
+                        {
+                            Name: "In the pitch dark",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add bramblea_charm_asked"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "tellraw @initiator [{\"text\":\"Bramblea tuts. Close, dearie, but not what the reeds say. The charm stays with me tonight.\",\"color\":\"gray\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "answer_dark"
+                        },
+                        {
+                            Name: "Underwater in the fen",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add bramblea_charm_asked"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "tellraw @initiator [{\"text\":\"Bramblea shakes her head. No, no, dearie. The charm stays with me tonight.\",\"color\":\"gray\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "answer_water"
                         }
                     ],
                     Texts: [
                         {
-                            Text: "Take a charm before you go — no, take it, it is bad luck to refuse one at dusk. Willow-twist and a togepi feather. Keeps the mist honest, mostly. My mother swore by it and my mother drowned a very respectable old age."
-                        },
-                        {
-                            Text: "You heard the Company man up the bank yet? Selling us coin. Coin! In a marsh! We told him the pale lights past the third willow would show him the way to riches, and off he trotted. There is nothing past the third willow but a very deep hole. Ha."
-                        },
-                        {
-                            Text: "Rain by moonrise, mark me. My knees know it and my knees have never once been wrong about weather or in-laws."
-                        },
-                        {
-                            Text: "They say Titania trains blindfolded, so her own charm cannot catch her eyes. I had it from Maren, who had it from the reeds, so it is as good as sworn."
-                        },
-                        {
-                            Text: "Yes, dear, the wings. Sharp eyes. A glamour slips at my age the way a shawl slips — you tug it back up and carry on with the kettle. The fair folk always did like a good boardwalk, and SOMEBODY respectable has to mind the gossip. If anyone asks, I am a nice old lady with charms. Which is also true. Everything about me is true, that is the trick of it."
+                            Text: "One question, one answer, no second guesses — that is how a dusk charm is earned. They say your Leader Titania trains a certain way, so her own charm can never catch her own eyes. HOW does the marsh say she trains? Answer true and the charm is yours."
                         }
                     ],
-                    Name: "Bramblea Mossglen",
-                    Label: "default"
+                    Name: "Bramblea — one question, dearie",
+                    Label: "riddle"
                 }
             ]
         },

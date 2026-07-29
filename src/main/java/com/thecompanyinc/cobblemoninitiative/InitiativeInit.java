@@ -217,8 +217,24 @@ public class InitiativeInit implements ModInitializer {
     UseBlockCallback.EVENT.register((player, level, hand, hit) ->
       homesteadManager.onUseBlock(player, level, hand, hit)
     );
+
+    // Wisp-Lantern: hold up Bryn's ci_wisp_lantern keepsake at the Sunken Ship after dark to
+    // wake the marsh-shadow (a wild Lv20 Marshadow). Fast PASS anywhere else.
+    UseBlockCallback.EVENT.register(
+      com.thecompanyinc.cobblemoninitiative.wisp.WispLanternManager::onUseBlock
+    );
     PlayerBlockBreakEvents.AFTER.register((level, player, pos, state, blockEntity) ->
       lootChestManager.onBlockBroken(state, pos)
+    );
+
+    // Town build-lock: no placing/breaking blocks inside a TOWN safe zone (interactions
+    // still work; creative players exempt). Placement itself is cancelled by BlockItemMixin;
+    // BEFORE-break and fluid-bucket use are caught here.
+    PlayerBlockBreakEvents.BEFORE.register((level, player, pos, state, blockEntity) ->
+      com.thecompanyinc.cobblemoninitiative.protection.TownBuildProtection.onBlockBreak(level, player, pos, state)
+    );
+    UseBlockCallback.EVENT.register(
+      com.thecompanyinc.cobblemoninitiative.protection.TownBuildProtection::onUseBlock
     );
 
     // Pack-only first-join auto-install: runs `install run` once per fresh world when

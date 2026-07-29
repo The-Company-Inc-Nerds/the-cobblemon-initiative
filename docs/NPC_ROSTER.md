@@ -180,7 +180,7 @@
 | NPC | Where | Does | Looks |
 |---|---|---|---|
 | **Aelric Moonfen** `aelric_moonfen` | Mystic Marsh - East Gate - 1202 64 2420 (body) | flavor / lore dialog | world-body look |
-| **Bramblea Mossglen** `bramblea_mossglen` | Mystic Marsh - West Boardwalk - 1028.5 75 2505.5 (latch) | gift: one_time `bramblea_dusk_charm` | fairy (GREEN) |
+| **Bramblea Mossglen** `bramblea_mossglen` | Mystic Marsh - West Boardwalk - 1028.5 76 2505.5 (latch) | gift: one_time `bramblea_dusk_charm` | fairy (GREEN) |
 | **Branith Lumenveil** `branith_lumenveil` | Mystic Marsh - Gym Plaza - 1094.5 66 2421.5 (body, moved by repairs) | flavor / lore dialog | world-body look |
 | **Spindle** `companion_mystic_cottonee` | Mystic Marsh - South Lane - 1177.5 65 2522.5 (latch) | flavor / lore dialog | Cobblemon model: cottonee |
 | **Basso** `companion_mystic_croagunk` | Mystic Marsh - Southeast Lane - 1215.5 66 2498.5 (latch) | flavor / lore dialog | Cobblemon model: croagunk |
@@ -193,13 +193,13 @@
 | **Faelara Moonwhisper** `faelara_moonwhisper` | Mystic Marsh - Herb Terrace - 1212 87 2442 (body) | runs: sidequest/faelara/show_pair | world-body look |
 | **Faelrin Nightreed** `faelrin_nightreed` | Mystic Marsh - Central Boardwalk - 1146 65 2494 (body) | gifts mon: morelull level=25; fetch: 16x torch -> `faelrin_torches_in` | world-body look |
 | **Ilyana Mossveil** `ilyana_mossveil` | Mystic Marsh - Pokemart machine counter - 1176 65 2522 (body) | sells (6): tr_drainingkiss, tr_mudshot, tr_waterpulse, tm_venoshock, tm_gigadrain... | world-body look |
-| **Korrin Reedshade** `korrin_reedshade` | Mystic Marsh - North Boardwalk - 1130 67 2396 (body) | fetch: 5x blue_orchid -> `korrin_flowers_in`; gives: super_potion x2; runs: economy/payout, economy/reward/minor | world-body look |
-| **Liora Starquill** `liora_starquill` | Mystic Marsh - Pokemon Center - 1176 69 2360 (body) | runs: economy/heal_paid, pc/open | world-body look |
+| **Korrin Reedshade** `korrin_reedshade` | Mystic Marsh - North Boardwalk - 1165.5 69 2375.5 (body, moved by repairs) | fetch: 5x blue_orchid -> `korrin_flowers_in`; gives: super_potion x2; runs: economy/payout, economy/reward/minor | world-body look |
+| **Liora Starquill** `liora_starquill` | Mystic Marsh - Pokemon Center - 1175.5 69 2361.5 (body, moved by repairs) | runs: economy/heal_paid, pc/open | world-body look |
 | **Lysara Moonfen** `lysara_moonfen` | Mystic Marsh - West Lane - 1046 65 2466 (body) | flavor / lore dialog | world-body look |
 | **Lysira Dewfen** `lysira_dewfen` | Mystic Marsh - Boardwalk - 1096 80 2520 (body) | fetch: 8x glowstone_dust -> `lysira_round_in`; runs: sidequest/lysira/reward | world-body look |
 | **Charm-Weaver Marigold** `mm_charm_seller` | Mystic Marsh - Charm Stall - 1076.5 66 2452.5 (latch) | battles `sq_marigold_charm` (2x lv28-29: clefable, granbull), prize 200; runs: sidequest/marigold/turn_in_charm | skin `single/mystic_trainer_1` |
 | **Verified Clerk Osric** `mm_exchange_clerk` | Mystic Marsh - Exchange Board - 1111.5 66 2444.5 (latch) | runs: sidequest/exchange_board/price_read | skin `single/town_shopkeeper` |
-| **Thimble** `mm_fairy_thimble` | Mystic Marsh - West Boardwalk Stilt-House - 1026.5 75 2503.5 (latch) | flavor / lore dialog | fairy (RED) |
+| **Thimble** `mm_fairy_thimble` | Mystic Marsh - West Boardwalk Stilt-House - 1039.5 68 2510.5 (latch) | flavor / lore dialog | fairy (RED) |
 | **Wick** `mm_fairy_wick` | Mystic Marsh - West Boardwalk Stilt-House - 1030.5 75 2507.5 (latch) | flavor / lore dialog | fairy (BLUE) |
 | **Steward Halvard** `mm_field_guard` | Mirebloom Paddies - 1222.5 91 2821.5 (latch) | runs: liberation/free_field | skin `single/wheat_factor` |
 | **Sedge** `mm_wheat_trader` | Mystic Marsh - Willowmire Causeway - 1058.5 78 2478.5 (latch) | battles `wheat_trader_ambush` (2x lv38-39: miltank, tauros), prize 400; native trade window (trade_wheat_trader); native trade window (trade_wheat_trader); gift: one_time `sedge_perch_gift` | skin `single/wheat_factor` |
@@ -211,7 +211,7 @@
 | **Sylthra Veilsting** `sylthra_veilsting` | Mystic Marsh - South Ferry - 942 63 2558 (body) | flavor / lore dialog | world-body look |
 | **Sylvara Dewshade** `sylvara_dewshade` | Mystic Marsh - Southeast Lane - 1214 65 2498 (body) | flavor / lore dialog | world-body look |
 | **Thalorin Wispbrook** `thalorin_wispbrook` | Mystic Marsh - High Stilt - 1232 102 2438 (body) | sells (4): ench_depthstrider2, ench_unbreaking3, ench_protection2, ench_efficiency3 | world-body look |
-| **Thalvess Murkmantle** `thalvess_murkmantle` | Mystic Marsh - Stilt Market - 1030 65 2434 (body) | gifts mon: feebas level=25; fetch: 8x lily_pad -> `thalvess_feebas_in`; fetch: 8x lily_pad -> `thalvess_feebas_in` | world-body look |
+| **Thalvess Murkmantle** `thalvess_murkmantle` | Mystic Marsh - Stilt Market - 1030 65 2434 (body) | mon trade: your feebas -> mareanie | world-body look |
 | **Thistrel Fogroot** `thistrel_fogroot` | Mystic Marsh - North Reeds, Brewing-Supplies Shelf - 1122.5 65 2330.5 (body, moved by repairs) | sells (6): blaze_rod, nether_wart, glowstone_dust, redstone_dust, gunpowder... | world-body look |
 | **Veyric Ashenmark** `veyric_ashenmark_b` | Mystic Marsh - Southeast Boardwalk - 1100 67 2516 (body) | sells (4): mushroom_red, mushroom_brown, mushroom_stew, glow_berries | world-body look |
 

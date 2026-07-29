@@ -182,7 +182,7 @@ execute if score #amb_noble_giver_zapdos_warden ci_ambient matches 0 if entity @
 execute if score #amb_noble_monument_groudon ci_ambient matches 0 if entity @a[x=3793.6,y=299,z=3789.1,distance=..40] run function cobblemon_initiative:ambient/place/noble_monument_groudon
 execute if score #amb_noble_monument_kyogre ci_ambient matches 0 if entity @a[x=259.5,y=62,z=2351.5,distance=..40] run function cobblemon_initiative:ambient/place/noble_monument_kyogre
 execute if score #amb_noble_monument_rayquaza ci_ambient matches 0 if entity @a[x=744.5,y=77,z=4589.5,distance=..40] run function cobblemon_initiative:ambient/place/noble_monument_rayquaza
-execute if score #amb_bramblea_mossglen ci_ambient matches 0 if entity @a[x=1028.5,y=75,z=2505.5,distance=..40] run function cobblemon_initiative:ambient/place/bramblea_mossglen
+execute if score #amb_bramblea_mossglen ci_ambient matches 0 if entity @a[x=1028.5,y=76,z=2505.5,distance=..40] run function cobblemon_initiative:ambient/place/bramblea_mossglen
 execute if score #amb_mystic_cottonee ci_ambient matches 0 unless entity @e[tag=ci_amb_companion_mystic_cottonee] if entity @a[x=1177.5,y=65,z=2522.5,distance=..40] run function cobblemon_initiative:ambient/place/mystic_cottonee
 execute if score #amb_mystic_croagunk ci_ambient matches 0 unless entity @e[tag=ci_amb_companion_mystic_croagunk] if entity @a[x=1215.5,y=66,z=2498.5,distance=..40] run function cobblemon_initiative:ambient/place/mystic_croagunk
 execute if score #amb_mystic_marill ci_ambient matches 0 unless entity @e[tag=ci_amb_companion_mystic_marill] if entity @a[x=1237.5,y=65,z=2442.5,distance=..40] run function cobblemon_initiative:ambient/place/mystic_marill
@@ -191,7 +191,7 @@ execute if score #amb_mystic_ralts ci_ambient matches 0 unless entity @e[tag=ci_
 execute if score #amb_mystic_wooper ci_ambient matches 0 unless entity @e[tag=ci_amb_companion_mystic_wooper] if entity @a[x=1123.5,y=65,z=2330.5,distance=..40] run function cobblemon_initiative:ambient/place/mystic_wooper
 execute if score #amb_mm_charm_seller ci_ambient matches 0 if entity @a[x=1076.5,y=66,z=2452.5,distance=..40] run function cobblemon_initiative:ambient/place/mm_charm_seller
 execute if score #amb_mm_exchange_clerk ci_ambient matches 0 if entity @a[x=1111.5,y=66,z=2444.5,distance=..40] run function cobblemon_initiative:ambient/place/mm_exchange_clerk
-execute if score #amb_mm_fairy_thimble ci_ambient matches 0 if entity @a[x=1026.5,y=75,z=2503.5,distance=..40] run function cobblemon_initiative:ambient/place/mm_fairy_thimble
+execute if score #amb_mm_fairy_thimble ci_ambient matches 0 if entity @a[x=1039.5,y=68,z=2510.5,distance=..40] run function cobblemon_initiative:ambient/place/mm_fairy_thimble
 execute if score #amb_mm_fairy_wick ci_ambient matches 0 if entity @a[x=1030.5,y=75,z=2507.5,distance=..40] run function cobblemon_initiative:ambient/place/mm_fairy_wick
 execute if score #amb_mm_field_guard ci_ambient matches 0 if entity @a[x=1222.5,y=91,z=2821.5,distance=..40] run function cobblemon_initiative:ambient/place/mm_field_guard
 execute if score #amb_mm_wheat_trader ci_ambient matches 0 if entity @a[x=1058.5,y=78,z=2478.5,distance=..40] run function cobblemon_initiative:ambient/place/mm_wheat_trader

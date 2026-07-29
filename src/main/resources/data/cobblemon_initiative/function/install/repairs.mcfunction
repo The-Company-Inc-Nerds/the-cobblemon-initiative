@@ -107,3 +107,8 @@ execute unless score #repair_a23 ci_ambient matches 1 run function cobblemon_ini
 #    (259.5/62/2351.5) + the arena/body-spawn moved to the water behind it (Kyogre rises from the
 #    harbour) ──
 execute unless score #repair_a24 ci_ambient matches 1 run function cobblemon_initiative:install/repairs_a24_arm
+
+# ── wave a25 (0.7.0-alpha.8): playtest wave — Liora nurse nudge (+1 z into the Center doorway),
+#    Korrin moved to the north-boardwalk corner toward Route 3, Mystic Marsh fairy household
+#    re-latches (Thimble down onto the fen bank, Bramblea +1 y) ──
+execute unless score #repair_a25 ci_ambient matches 1 run function cobblemon_initiative:install/repairs_a25_arm

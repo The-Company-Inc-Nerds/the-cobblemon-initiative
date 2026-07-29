@@ -20,6 +20,7 @@ import com.thecompanyinc.cobblemoninitiative.data.PlayerProgress;
 import com.thecompanyinc.cobblemoninitiative.questtrack.QuestTrackManager;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.MinecraftServer;
@@ -196,6 +197,19 @@ public class StreamSyncManager {
     json.addProperty("level", pokemon.getLevel());
     json.addProperty("shiny", pokemon.getShiny());
     json.addProperty("gender", pokemon.getGender().name().toLowerCase(Locale.ROOT));
+    // Cobblemon aspects (e.g. "hisuian", "alolan", "shiny", …). The overlay maps
+    // the regional-form aspects to a pokesprite form slug (growlithe + "hisuian"
+    // → growlithe-hisui) and the shiny flag to the shiny sprite set; unknown/
+    // cosmetic aspects are ignored overlay-side, so we send the set verbatim.
+    // Omitted when empty (the overlay defaults aspects to []).
+    Set<String> aspects = pokemon.getAspects();
+    if (aspects != null && !aspects.isEmpty()) {
+      JsonArray aspectsArray = new JsonArray();
+      for (String aspect : aspects) {
+        aspectsArray.add(aspect);
+      }
+      json.add("aspects", aspectsArray);
+    }
     return json;
   }
 

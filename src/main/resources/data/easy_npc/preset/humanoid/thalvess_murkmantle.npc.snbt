@@ -40,100 +40,13 @@
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
-                            Name: "thalvess_feebas_in"
-                        },
-                        {
-                            Type: "PLAYER_TAG",
-                            Operation: "EQUALS",
-                            Name: "no_thalvess_feebas_done"
-                        }
-                    ],
-                    Priority: 25,
-                    Buttons: [
-                        {
-                            Name: "Take the Feebas",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "cobblemon-initiative givemon feebas level=25"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "tag @s add thalvess_feebas_done"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    Cmd: "tellraw @initiator [{\"text\":\"Feebas joined you — the marsh keeps a longer ledger, and today it paid out.\",\"color\":\"aqua\"}]"
-                                },
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "feebas_button"
-                        },
-                        {
-                            Name: "Hold it for me a moment",
-                            Actions: [
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "leave_button"
-                        }
-                    ],
-                    Texts: [
-                        {
-                            Text: "Eight dried marsh-lily, counted twice. That is a real favour, the kind my grandmother would have written in the good ledger. So here is mine. Fished this little one out of the fog a month back — ugliest fish in the marsh and I say that with love. Feed it, drag it through a few badges, and one day it turns into the sort of thing that makes harbour towns write poems. Gaviota will not know what hit it."
-                        }
-                    ],
-                    Name: "Thalvess — a favour repaid",
-                    Label: "feebas_ready"
-                },
-                {
-                    Conditions: [
-                        {
-                            Type: "PLAYER_TAG",
-                            Operation: "EQUALS",
-                            Name: "badges_gte_3"
+                            Name: "thalvess_traded"
                         }
                     ],
                     Priority: 20,
                     Buttons: [
                         {
-                            Name: "Show me the stock",
-                            Actions: [
-                                {
-                                    Type: "OPEN_NAMED_DIALOG",
-                                    Cmd: "shop"
-                                }
-                            ],
-                            Label: "shop_button"
-                        },
-                        {
-                            Name: "Offer a favour — 8 dried marsh-lily",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "cobblemon-initiative turnin minecraft:lily_pad 8 thalvess_feebas_in"
-                                },
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Conditions: [
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "no_thalvess_feebas_done"
-                                }
-                            ],
-                            Label: "favour_button"
-                        },
-                        {
-                            Name: "Later",
+                            Name: "A fair trade",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -144,51 +57,41 @@
                     ],
                     Texts: [
                         {
-                            Text: "Prices moved on me again this week and I did not touch a single tag. That is the money doing it, not the man. My grandmother traded eels for lantern-oil and never once watched a number climb overnight. I am starting to think she had the right idea and I have the wrong currency."
+                            Text: "The little fog-fish is settling into my tank already — ugliest thing in the marsh and I say it with love. And you walked off carrying venom. Point that Mareanie at anything with wings and it will thank you for the introduction. A fair trade. My grandmother would have written it in the good ledger."
                         },
                         {
-                            Text: "Half my regulars pay me in favours and dried marsh-lily anyway, which suits me. It is the folk who insist on CobbleDollars I worry for — they hand me coins that are worth a little less every dawn, and neither of us can say why out loud."
+                            Text: "Come back when Gaviota is behind you. If that Feebas of mine ever turns into what Feebas turn into, I will name the tank after you."
                         }
                     ],
-                    Name: "Thalvess — the martkeeper",
-                    Label: "mid"
+                    Name: "Thalvess — a fair exchange",
+                    Label: "traded"
                 },
                 {
                     Priority: 10,
                     Buttons: [
                         {
-                            Name: "Show me the stock",
-                            Actions: [
-                                {
-                                    Type: "OPEN_NAMED_DIALOG",
-                                    Cmd: "shop"
-                                }
-                            ],
-                            Label: "shop_button"
-                        },
-                        {
-                            Name: "Offer a favour — 8 dried marsh-lily",
+                            Name: "Trade a Feebas for a Mareanie",
                             Actions: [
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "cobblemon-initiative turnin minecraft:lily_pad 8 thalvess_feebas_in"
+                                    Cmd: "cobblemon-initiative trade feebas mareanie 25 thalvess_traded"
                                 },
                                 {
-                                    Type: "CLOSE_DIALOG"
+                                    Type: "OPEN_DEFAULT_DIALOG"
                                 }
                             ],
                             Conditions: [
                                 {
                                     Type: "PLAYER_TAG",
                                     Operation: "EQUALS",
-                                    Name: "no_thalvess_feebas_done"
+                                    Name: "no_thalvess_traded"
                                 }
                             ],
-                            Label: "favour_button"
+                            Label: "trade_button"
                         },
                         {
-                            Name: "Just browsing",
+                            Name: "Not today",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -199,38 +102,14 @@
                     ],
                     Texts: [
                         {
-                            Text: "Welcome to the only stall in the marsh that still takes coin — and I am sorry that it does, truly. This town runs on favours and superstition, and I am the poor soul the Company made keep a till. Potions, revives, the odd repel. What do you need."
+                            Text: "You have the look of someone about to walk into the Charm Badge undergunned. Fairies fear little in this world — but they fear POISON, and the marsh grows a lovely one. So here is the only deal I keep these days: bring me a Feebas — the fog-fish, you can pull one out of the marsh water yourself if you are patient — and I will trade you something with real venom in it."
                         },
                         {
-                            Text: "Do not mind the damp on the shelves. Everything here has been fished out of fog at least once. It works. Probably. Buy quick before the price on the little chalkboard decides to breathe."
+                            Text: "One fog-fish for one Mareanie. She is uncommon, she is mean, and a single jab from her ruins a Fairy leaders whole afternoon. I keep the fish, you keep your badge run alive. The marsh runs on favours, and this is a good one — no coin changes hands at my counter anymore."
                         }
                     ],
-                    Name: "Thalvess — the martkeeper",
+                    Name: "Thalvess Murkmantle",
                     Label: "default"
-                },
-                {
-                    Priority: -1,
-                    Buttons: [
-                        {
-                            Name: "That is all",
-                            Actions: [
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "leave_button"
-                        }
-                    ],
-                    Texts: [
-                        {
-                            Text: "Take your time. If a price looks steeper than last visit, that is not me — that is the coin curdling. Blame the folk who back it with nether-stars in a counting-house I will never see."
-                        },
-                        {
-                            Text: "Pay in favours if you can. Pay in coin if you must. The marsh keeps a longer ledger than the Company does, and it never forgets who was kind at the counter."
-                        }
-                    ],
-                    Name: "Thalvess — the stock",
-                    Label: "shop"
                 }
             ]
         },

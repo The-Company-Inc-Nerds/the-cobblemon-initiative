@@ -714,6 +714,9 @@ public class CobblemonInitiativeCommands {
     }
     player.addTag(leadTag);
     player.addTag("mm_declared");
+    // Titania's ace becomes a level-cap mirror of the lead the marsh just read — you fight
+    // your own strongest across the field. Fails soft (her own Gardevoir stands).
+    com.thecompanyinc.cobblemoninitiative.mystic.TitaniaAceManager.injectAce(player);
     return 1;
   }
 

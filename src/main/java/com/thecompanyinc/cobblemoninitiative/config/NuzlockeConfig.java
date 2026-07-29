@@ -43,6 +43,13 @@ public class NuzlockeConfig {
   private DuplicateHandling duplicateHandling = DuplicateHandling.OFF;
   private Set<String> caughtSpecies = new HashSet<>();
   private boolean enableSafeZones = true;
+  /**
+   * Town-build protection: when true, players cannot PLACE or BREAK blocks inside a
+   * TOWN-type safe zone. Interactions (chests, doors, buttons, furnaces, NPCs) still work.
+   * Creative-mode players are exempt so the curated map can still be edited in dev. Off =
+   * towns are freely buildable. Gated on {@link #enableSafeZones} being true.
+   */
+  private boolean enableTownBuildProtection = true;
   private List<SafeZone> safeZones = new ArrayList<>();
   private boolean enableAreaAnnouncements = true;
   // ACTIONBAR by default: a small line above the hotbar ("▶ Zone Name — subtitle"),
@@ -271,6 +278,8 @@ public class NuzlockeConfig {
   public DuplicateHandling getDuplicateHandling() { return duplicateHandling; }
   public Set<String> getCaughtSpecies() { return caughtSpecies; }
   public boolean isEnableSafeZones() { return enableSafeZones; }
+
+  public boolean isEnableTownBuildProtection() { return enableTownBuildProtection; }
   public List<SafeZone> getSafeZones() { return safeZones; }
   public boolean isEnableAreaAnnouncements() { return enableAreaAnnouncements; }
   public AnnouncementStyle getAnnouncementStyle() { return announcementStyle; }
@@ -407,6 +416,28 @@ public class NuzlockeConfig {
       if (zone.contains(dimension, x, y, z) && isZoneActive(zone, server)) return true;
     }
     return false;
+  }
+
+  /**
+   * True if the position sits inside an ACTIVE {@code TOWN}-type safe zone. Used by the
+   * build-protection guard. Iterates every zone (not just the first match) so a TOWN listed
+   * after an overlapping non-town zone is still honoured. Returns the containing zone's name
+   * via {@link #townZoneNameAt} for the player-facing message.
+   */
+  public boolean isInTownZone(String dimension, int x, int y, int z, MinecraftServer server) {
+    return townZoneNameAt(dimension, x, y, z, server) != null;
+  }
+
+  /** The name of the active TOWN-type zone containing the position, or null if none. */
+  public String townZoneNameAt(String dimension, int x, int y, int z, MinecraftServer server) {
+    if (!enableSafeZones) return null;
+    for (SafeZone zone : safeZones) {
+      if (zone.type != null && zone.type.equalsIgnoreCase("TOWN")
+          && zone.contains(dimension, x, y, z) && isZoneActive(zone, server)) {
+        return zone.name;
+      }
+    }
+    return null;
   }
 
   public SafeZone getSafeZoneAt(String dimension, int x, int y, int z) {
