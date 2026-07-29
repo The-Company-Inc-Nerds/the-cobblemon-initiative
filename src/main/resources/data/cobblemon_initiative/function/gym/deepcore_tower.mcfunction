@@ -9,21 +9,13 @@ execute as @a[tag=defeated_deepcore_trainer_1] run scoreboard players add @s dee
 execute as @a[tag=defeated_deepcore_trainer_2] run scoreboard players add @s deepcore_tower 1
 execute as @a[tag=defeated_deepcore_trainer_3] run scoreboard players add @s deepcore_tower 1
 execute as @a[tag=defeated_deepcore_trainer_4] run scoreboard players add @s deepcore_tower 1
-# ALPHA.27 floor stand-down (Bruno two-track): dc_floor_N_down = the player has
-# defeated floor master N OR chose the pit-only route (dc_track_pit from Bruno's
-# choice entry). The floor trainers' sight.stop_tag points at these derived tags
-# (npcsight stopTag is a SINGLE player tag — the OR lives here, not in the already
-# 4-condition forced-battle gates). Recomputed from scratch every tick, same style
-# as the tower count above.
-tag @a remove dc_floor_1_down
-tag @a remove dc_floor_2_down
-tag @a remove dc_floor_3_down
-tag @a remove dc_floor_4_down
-execute as @a[tag=defeated_deepcore_trainer_1] run tag @s add dc_floor_1_down
-execute as @a[tag=defeated_deepcore_trainer_2] run tag @s add dc_floor_2_down
-execute as @a[tag=defeated_deepcore_trainer_3] run tag @s add dc_floor_3_down
-execute as @a[tag=defeated_deepcore_trainer_4] run tag @s add dc_floor_4_down
-execute as @a[tag=dc_track_pit] run tag @s add dc_floor_1_down
-execute as @a[tag=dc_track_pit] run tag @s add dc_floor_2_down
-execute as @a[tag=dc_track_pit] run tag @s add dc_floor_3_down
-execute as @a[tag=dc_track_pit] run tag @s add dc_floor_4_down
+# a22 PVP (playtest N5-N10): dc_pit_ready = the challenger may face the pit now. TRUE if they
+# took the pit-only route (dc_track_pit), OR the whole dojo (dc_track_full) AND all four floor
+# masters are down (deepcore_tower gte 4). gym/deepcore_pvp_tick reads this single derived tag to
+# raise Striker on approach, so the OR stays out of the raise line. Recomputed each tick, same
+# style as the tower count above. (The alpha.27 dc_floor_N_down stand-down is GONE: the floor
+# masters no longer pursue/force a battle — they are passive flavor bodies until the whole-dojo
+# gauntlet spawns the hostile duel bodies, so nothing needs standing down for the pit route.)
+tag @a remove dc_pit_ready
+execute as @a[tag=dc_track_pit] run tag @s add dc_pit_ready
+execute as @a[tag=dc_track_full] if score @s deepcore_tower matches 4.. run tag @s add dc_pit_ready

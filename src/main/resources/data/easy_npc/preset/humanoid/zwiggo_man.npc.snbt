@@ -6,7 +6,7 @@
         description: "civilian at Gaviota Port - West Quay (act 1). Compiled from dialog-src.",
         entityTypeId: "easy_npc:humanoid",
         modified: 0L,
-        name: "Zwiggo Man",
+        name: "Deckhand Rocco",
         variantType: "STEVE",
         version: "1.0.0"
     },
@@ -36,173 +36,27 @@
             Type: "STANDARD",
             DialogDataSet: [
                 {
-                    Conditions: [
-                        {
-                            Type: "PLAYER_TAG",
-                            Operation: "EQUALS",
-                            Name: "zwiggo_refused"
-                        }
-                    ],
-                    Priority: 30,
-                    Buttons: [
-                        {
-                            Name: "Leave him to the water",
-                            Actions: [
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "leave_button"
-                        }
-                    ],
-                    Texts: [
-                        {
-                            Text: "(He does not look up. The water slaps the stone. Whatever was on offer here, the offer is closed.)"
-                        },
-                        {
-                            Text: "Tide went out on that conversation. It is not coming back in."
-                        },
-                        {
-                            Text: "(He watches the harbour like you are not standing there. You gave your answer once. He is a man of exactly one question.)"
-                        }
-                    ],
-                    Name: "Zwiggo Man",
-                    Label: "refused"
-                },
-                {
-                    Conditions: [
-                        {
-                            Type: "PLAYER_TAG",
-                            Operation: "EQUALS",
-                            Name: "zwiggo_joined"
-                        }
-                    ],
-                    Priority: 25,
-                    Buttons: [
-                        {
-                            Name: "He is in good fins",
-                            Actions: [
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "leave_button"
-                        }
-                    ],
-                    Texts: [
-                        {
-                            Text: "Keep him damp and let him nap in the rain and he will move mountains for you. Slowly. Mostly into the water. Best friend I ever had, and now he is yours — go on, before I change my mind and swim after the both of you."
-                        },
-                        {
-                            Text: "(He looks lighter without looking happier. The spot beside him on the stone stays empty on purpose.) He liked you on sight. He does not do that. Treat it like the rare drop it is."
-                        },
-                        {
-                            Text: "How is he? Do not answer. I can hear him from here. That is the sound of a swampert who found his person."
-                        }
-                    ],
-                    Name: "Zwiggo Man",
-                    Label: "joined"
-                },
-                {
-                    Conditions: [
-                        {
-                            Type: "PLAYER_TAG",
-                            Operation: "EQUALS",
-                            Name: "zwiggo_summoned"
-                        }
-                    ],
-                    Priority: 20,
-                    Buttons: [
-                        {
-                            Name: "Go meet Zwiggo",
-                            Actions: [
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "leave_button"
-                        },
-                        {
-                            Name: "I do not see him. Whistle again?",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "function cobblemon_initiative:gaviota/zwiggo_summon"
-                                },
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "whistle_button"
-                        }
-                    ],
-                    Texts: [
-                        {
-                            Text: "(He points past the quay edge without looking.) He is out there now. Came up the moment I whistled. Walk down and say hello — his name is Zwiggo. He decides the rest. He always has."
-                        },
-                        {
-                            Text: "You said the right thing, so I called him. Big fellow, blue, currently pretending he is not watching you. Go and meet him. What happens next is between you two."
-                        }
-                    ],
-                    Name: "Zwiggo Man",
-                    Label: "summoned"
-                },
-                {
                     Priority: 10,
                     Buttons: [
                         {
-                            Name: "I do like mudkips",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "tag @s add zwiggo_summoned"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "function cobblemon_initiative:gaviota/zwiggo_summon"
-                                },
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "yes_button"
-                        },
-                        {
-                            Name: "Not really my thing",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "tag @s add zwiggo_refused"
-                                },
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "no_button"
-                        },
-                        {
-                            Name: "That is a strange question. Later.",
+                            Name: "Fair winds",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "later_button"
+                            Label: "leave_button"
                         }
                     ],
                     Texts: [
                         {
-                            Text: "(A man sits on the quay edge, boots over the water, grown through with moss like the harbour planted him here years ago.) You walk like somebody who appreciates the finer amphibians. So let me ask you the only question that has ever mattered on this stone. Do you like mudkips?"
+                            Text: "(A weathered deckhand leans on a bollard, watching the west quay like the tide owes him money.) Mind the edge. Stone's slick where the harbour spits over it. Lost a good pair of boots to that gap and I was still wearing them."
                         },
                         {
-                            Text: "So. I herd u liek mudkipz. That is the question. That is the whole question. Everything else in this life is detail."
+                            Text: "Half the crews out of this port sail short a hand these days. Wages come up light, so the able-bodied sign on somewhere the coin still weighs what it says. Me, I know this quay too well to leave it. Every plank has a grudge and I know all their names."
                         }
                     ],
-                    Name: "Zwiggo Man",
+                    Name: "Deckhand Rocco",
                     Label: "default"
                 }
             ]
@@ -276,11 +130,13 @@
         Invulnerable: 0b,
         LeftHanded: 0b,
         ModelData: {
-            Pose: "CUSTOM",
             DefaultPose: "STANDING",
-            Rotation: {
-                RightLeg: [-1.6f, 0.0f, 0.0f, 1.0f],
-                LeftLeg: [-1.6f, 0.0f, 0.0f, 1.0f]
+            Pose: "VANILLA",
+            Position: {},
+            Rotation: {},
+            Scale: {},
+            Visible: {
+                Boots: 1b
             }
         },
         Navigation: {
@@ -329,7 +185,7 @@
             Timestamp: 0L,
             Type: "CUSTOM",
             URL: "",
-            UUID: [I; 735987081, 922705700, -1793735974, -2143222155]
+            UUID: [I; 1218692125, -549564162, -2020808761, -2061344609]
         },
         SoundData: {
             SoundDataSet: [
@@ -360,6 +216,6 @@
             }
         ],
         id: "easy_npc:humanoid",
-        CustomName: '{"text": "Zwiggo Man", "color": "#FFFFFF"}'
+        CustomName: '{"text": "Deckhand Rocco", "color": "#FFFFFF"}'
     }
 }

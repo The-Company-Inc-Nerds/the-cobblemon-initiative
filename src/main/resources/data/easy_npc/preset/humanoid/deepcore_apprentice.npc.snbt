@@ -36,125 +36,10 @@
             Type: "STANDARD",
             DialogDataSet: [
                 {
-                    Conditions: [
-                        {
-                            Type: "PLAYER_TAG",
-                            Operation: "EQUALS",
-                            Name: "defeated_deepcore_apprentice"
-                        }
-                    ],
-                    Priority: 30,
+                    Priority: 10,
                     Buttons: [
                         {
-                            Name: "Goodbye",
-                            Actions: [
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "goodbye_button"
-                        }
-                    ],
-                    Texts: [
-                        {
-                            Text: "Two of us in the pit at once, and you still walked out standing. Take the last of the floor to Bruno - and tell him the iron rang for you."
-                        },
-                        {
-                            Text: "His team is older and heavier than ours. Bring something that does not mind taking a hit. Free advice - the only thing in Deepcore not sold by the ton."
-                        }
-                    ],
-                    Name: "Ken - the pit remembers",
-                    Label: "beaten"
-                },
-                {
-                    Conditions: [
-                        {
-                            Type: "PLAYER_TAG",
-                            Operation: "EQUALS",
-                            Name: "deepcore_tower_gte_2"
-                        }
-                    ],
-                    Priority: 25,
-                    Buttons: [
-                        {
-                            Name: "Face the pit - two on two",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "defeated_deepcore_apprentice"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "say You cleared our pit already. The Leader waits past the floor."
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_defeated_deepcore_apprentice"
-                                            },
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_defeated_deepcore_jr_apprentice"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tbcs attach rctmod:deepcore_apprentice_weak @s"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_defeated_deepcore_apprentice"
-                                            },
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_defeated_deepcore_jr_apprentice"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tbcs attach rctmod:deepcore_jr_apprentice @e[tag=dc_jr_body,limit=1]"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_defeated_deepcore_apprentice"
-                                            },
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_defeated_deepcore_jr_apprentice"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tbcs battle GEN_9_MULTI @s rctmod:deepcore_second vs rctmod:deepcore_apprentice_weak rctmod:deepcore_jr_apprentice onwin {1: ['tag @1 add defeated_deepcore_apprentice', 'tag @1 add defeated_deepcore_jr_apprentice', '@3 say Both of us at once, and the pit still cleared. Bruno will see you now - go on.'], 2: ['@1 say Two on two, and the iron held. Rest, then return to the pit.']}"
-                                },
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "battle_button"
-                        },
-                        {
-                            Name: "Not yet",
+                            Name: "I'll be back for the pit",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -165,115 +50,17 @@
                     ],
                     Texts: [
                         {
-                            Text: "Half the floor came through here sore and grumbling about you. My best partners drilled with them this morning - you caught me on a slow day. Striker lent nobody anything, though. He is fresh, and he is standing right beside me."
+                            Text: "Apprentice Ken. The pit rule is simple now: Striker opens at range, and when he drops I step in — fists, no battle, no Poke Balls, just the two of us and the stone."
                         },
                         {
-                            Text: "The pit rule does not bend - Striker and I fight as one side, and Rocky of the sparring floor takes your corner. Say the word."
-                        }
-                    ],
-                    Name: "Ken - the pit, two on two",
-                    Label: "ready_weakened"
-                },
-                {
-                    Priority: 20,
-                    Buttons: [
-                        {
-                            Name: "Face the pit - two on two",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "defeated_deepcore_apprentice"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "say You cleared our pit already. The Leader waits past the floor."
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_defeated_deepcore_apprentice"
-                                            },
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_defeated_deepcore_jr_apprentice"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tbcs attach rctmod:deepcore_apprentice @s"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_defeated_deepcore_apprentice"
-                                            },
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_defeated_deepcore_jr_apprentice"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tbcs attach rctmod:deepcore_jr_apprentice @e[tag=dc_jr_body,limit=1]"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_defeated_deepcore_apprentice"
-                                            },
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_defeated_deepcore_jr_apprentice"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tbcs battle GEN_9_MULTI @s rctmod:deepcore_second vs rctmod:deepcore_apprentice rctmod:deepcore_jr_apprentice onwin {1: ['tag @1 add defeated_deepcore_apprentice', 'tag @1 add defeated_deepcore_jr_apprentice', '@3 say Both of us at once, and the pit still cleared. Bruno will see you now - go on.'], 2: ['@1 say Two on two, and the iron held. Rest, then return to the pit.']}"
-                                },
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "battle_button"
+                            Text: "Past me it is Bruno, and his team is older and heavier than anything you have hit down here. Bring something that does not mind taking a hit. Free advice — the only thing in Deepcore not sold by the ton."
                         },
                         {
-                            Name: "Not yet",
-                            Actions: [
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "leave_button"
+                            Text: "Nobody stands in a lobby down here. Find the pit, and the pit finds you back."
                         }
                     ],
-                    Texts: [
-                        {
-                            Text: "Found the pit, did you. Bruno does not keep his apprentices standing in a lobby - we train where the pit is deep and the iron is loud. Apprentice Ken, and beside me Jr. Apprentice Striker. Down here the rule is one bout, both of us across from you at once."
-                        },
-                        {
-                            Text: "The gym lends every challenger a second - Rocky of the sparring floor stands your corner. The masters on the floor are optional: each one you put down leaves my side of the pit a little more tired, or you take us at full strength right now. The choice is the lesson. Say the word."
-                        }
-                    ],
-                    Name: "Ken - the pit, two on two",
-                    Label: "ready"
+                    Name: "Apprentice Ken",
+                    Label: "default"
                 }
             ]
         },

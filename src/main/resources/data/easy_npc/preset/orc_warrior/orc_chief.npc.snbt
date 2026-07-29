@@ -1,0 +1,238 @@
+{
+    PresetMetadata: {
+        author: "TheCompanyInc",
+        category: "Duelist",
+        created: 0L,
+        description: "duelist at Wilderness ridges (rotating orc camp) (act n/a). Compiled from dialog-src.",
+        entityTypeId: "easy_npc:orc_warrior",
+        modified: 0L,
+        name: "Orc War-Chief",
+        variantType: "ORC_WARRIOR",
+        version: "1.0.0"
+    },
+    data: {
+        ActionData: {
+            ActionEventSet: {
+                ON_INTERACTION: [
+                    {
+                        Type: "OPEN_DEFAULT_DIALOG"
+                    }
+                ]
+            }
+        },
+        ArmorDropChances: [0.085f, 0.085f, 0.085f, 0.085f],
+        ArmorItems: [
+            {
+                id: "minecraft:iron_boots",
+                count: 1
+            },
+            {
+                id: "minecraft:iron_leggings",
+                count: 1
+            },
+            {
+                id: "minecraft:iron_chestplate",
+                count: 1
+            },
+            {
+                id: "minecraft:iron_helmet",
+                count: 1
+            }
+        ],
+        Brain: {
+            memories: {}
+        },
+        CanPickUpLoot: 0b,
+        CustomNameVisible: 1b,
+        DialogData: {
+            Type: "STANDARD",
+            DialogDataSet: [
+                {
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "Back away",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "(The War-Chief points its cleaver at your throat. It has nothing to say to prey.)"
+                        }
+                    ],
+                    Name: "Orc War-Chief",
+                    Label: "default"
+                }
+            ]
+        },
+        DisplayAttribute: [
+            {
+                Bool: 1b,
+                Type: "VISIBLE"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_AT_DAY"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_AT_NIGHT"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_IN_CREATIVE"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_IN_SPECTATOR"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_IN_STANDARD"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_TO_OWNER"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_TO_TEAM"
+            },
+            {
+                Int: 7,
+                Type: "LIGHT_LEVEL"
+            },
+            {
+                Text: "ALWAYS",
+                Type: "NAME_VISIBILITY"
+            }
+        ],
+        EasyNPCVersion: 3,
+        EntityAttribute: {
+            CanBeHitByProjectile: 1b,
+            CanFloat: 1b,
+            CanPassDoor: 1b,
+            IsAttackableByMonsters: 0b,
+            IsAttackableByPlayers: 1b,
+            IsInvulnerable: 0b,
+            IsPushable: 1b,
+            NoGravity: 0b,
+            PushEntities: 1b,
+            IsKnockbackResistant: 1b
+        },
+        HandDropChances: [0.085f, 0.085f],
+        HandItems: [
+            {
+                id: "minecraft:iron_axe",
+                count: 1
+            },
+            {}
+        ],
+        Invulnerable: 0b,
+        LeftHanded: 0b,
+        ModelData: {
+            DefaultPose: "STANDING",
+            Pose: "VANILLA"
+        },
+        Navigation: {
+            Home: {
+                X: 0,
+                Y: 0,
+                Z: 0
+            }
+        },
+        ObjectiveData: {
+            HasObjectives: 1b,
+            HasTravelTarget: 0b,
+            ObjectiveDataSet: [
+                {
+                    Type: "ATTACK_PLAYER",
+                    Prio: 2,
+                    Id: "orc_attack_player"
+                },
+                {
+                    Type: "MELEE_ATTACK",
+                    Prio: 2,
+                    Id: "orc_melee",
+                    SpeedModifier: 1.15d
+                },
+                {
+                    Type: "WATER_AVOIDING_RANDOM_STROLL",
+                    Prio: 6,
+                    Id: "orc_stroll",
+                    SpeedModifier: 0.85d
+                },
+                {
+                    Type: "LOOK_AT_PLAYER",
+                    Prio: 9,
+                    Id: "orc_look",
+                    LookDistance: 16.0f
+                },
+                {
+                    Type: "LOOK_RANDOM_AROUND",
+                    Prio: 10,
+                    Id: "orc_look_random"
+                }
+            ]
+        },
+        OnGround: 1b,
+        PersistenceRequired: 0b,
+        PresetUUID: [I; 0, 0, 0, 0],
+        Profession: "NONE",
+        Progression: {
+            AttributeScalingEnabled: 0b,
+            EntityExperience: 1,
+            EntityExperienceLevel: 1
+        },
+        RenderData: {},
+        SkinData: {
+            Content: "",
+            DisableLayers: 0b,
+            Name: "",
+            Timestamp: 0L,
+            Type: "DEFAULT",
+            URL: "",
+            UUID: [I; 0, 0, 0, 0]
+        },
+        SoundData: {
+            SoundDataSet: [
+                {
+                    Name: "minecraft:entity.player.death",
+                    Type: "DEATH"
+                },
+                {
+                    Name: "minecraft:entity.player.hurt",
+                    Type: "HURT"
+                }
+            ]
+        },
+        Status: {
+            finalized: 0b,
+            npc_data_last_saved: 0L,
+            npc_data_last_update: 0L
+        },
+        VariantType: "ORC_WARRIOR",
+        attributes: [
+            {
+                base: 70.0d,
+                id: "minecraft:generic.max_health"
+            },
+            {
+                base: 0.32d,
+                id: "minecraft:generic.movement_speed"
+            },
+            {
+                base: 9.0d,
+                id: "minecraft:generic.attack_damage"
+            }
+        ],
+        id: "easy_npc:orc_warrior",
+        CustomName: '{"text": "Orc War-Chief", "color": "#FFFFFF"}',
+        Tags: ["ci_orc"]
+    }
+}

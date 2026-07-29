@@ -17,79 +17,6 @@
                     {
                         Type: "OPEN_DEFAULT_DIALOG"
                     }
-                ],
-                ON_DISTANCE_VERY_CLOSE: [
-                    {
-                        Type: "COMMAND",
-                        ConditionDataSet: {
-                            ConditionDataSet: [
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "dex_gte_2"
-                                },
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "no_recent_flee"
-                                },
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "no_defeated_deepcore_trainer_3"
-                                }
-                            ]
-                        },
-                        Cmd: "tbcs attach rctmod:deepcore_trainer_3 @s"
-                    },
-                    {
-                        Type: "COMMAND",
-                        ExecAsUser: 1b,
-                        ConditionDataSet: {
-                            ConditionDataSet: [
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "dex_gte_2"
-                                },
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "no_recent_flee"
-                                },
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "no_defeated_deepcore_trainer_3"
-                                }
-                            ]
-                        },
-                        Cmd: "tag @s add in_trainer_battle"
-                    },
-                    {
-                        Type: "COMMAND",
-                        ExecAsUser: 1b,
-                        ConditionDataSet: {
-                            ConditionDataSet: [
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "dex_gte_2"
-                                },
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "no_recent_flee"
-                                },
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "no_defeated_deepcore_trainer_3"
-                                }
-                            ]
-                        },
-                        Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:deepcore_trainer_3 onwin {1: ['tag @1 add defeated_deepcore_trainer_3', '@2 say Discipline and power, together. The ring is yours.', 'tag @1 remove in_trainer_battle'], 2: ['@1 say Slow down. Find the form, then find me again.', 'tag @2 remove in_trainer_battle']}"
-                    }
                 ]
             }
         },
@@ -109,106 +36,8 @@
             Type: "STANDARD",
             DialogDataSet: [
                 {
-                    Conditions: [
-                        {
-                            Type: "PLAYER_TAG",
-                            Operation: "EQUALS",
-                            Name: "defeated_deepcore_trainer_3"
-                        }
-                    ],
-                    Priority: 20,
-                    Buttons: [
-                        {
-                            Name: "Onward",
-                            Actions: [
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "leave_button"
-                        }
-                    ],
-                    Texts: [
-                        {
-                            Text: "Your form does not break under pressure. Rare. Rio keeps the last mat on the floor - mind his footwork. Past us it is the pit, and the pit fights two on two."
-                        }
-                    ],
-                    Name: "Kenji - the form holds",
-                    Label: "beaten"
-                },
-                {
                     Priority: 10,
                     Buttons: [
-                        {
-                            Name: "Battle Martial Artist Kenji",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "defeated_deepcore_trainer_3"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "say You held your form against me already. Go on to Rio."
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_defeated_deepcore_trainer_3"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tbcs attach rctmod:deepcore_trainer_3 @s"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_defeated_deepcore_trainer_3"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tag @s add in_trainer_battle"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_defeated_deepcore_trainer_3"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:deepcore_trainer_3 onwin {1: ['tag @1 add defeated_deepcore_trainer_3', '@2 say Discipline and power, together. The ring is yours.', 'tag @1 remove in_trainer_battle'], 2: ['@1 say Slow down. Find the form, then find me again.', 'tag @2 remove in_trainer_battle']}"
-                                },
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Conditions: [
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "no_defeated_deepcore_trainer_3"
-                                }
-                            ],
-                            Label: "battle_button"
-                        },
                         {
                             Name: "Not yet",
                             Actions: [
@@ -221,10 +50,7 @@
                     ],
                     Texts: [
                         {
-                            Text: "Discipline first, power second. Most challengers have it backward. Which are you?"
-                        },
-                        {
-                            Text: "Third of the floor. Beat me and you are almost to the apprentice. Ready?"
+                            Text: "Third of the floor. Discipline first, power second — most challengers have it backward. When the Gauntlet runs I settle it hand to hand, no battle between us, just who is still standing."
                         },
                         {
                             Text: "The Machamp story. It was a Machoke, it was one arm, and Bruno lost on purpose to end the bet. He tells that part himself. The story grows anyway."
@@ -233,7 +59,7 @@
                             Text: "Every morning I practice the same kick until it bores me. Then I do it again. Boredom is the final opponent."
                         }
                     ],
-                    Name: "Kenji - warden of the inner ring",
+                    Name: "Martial Artist Kenji",
                     Label: "default"
                 }
             ]
@@ -327,18 +153,6 @@
             HasObjectives: 1b,
             HasTravelTarget: 0b,
             ObjectiveDataSet: [
-                {
-                    Type: "RANDOM_STROLL_AROUND_HOME",
-                    Prio: 2,
-                    Id: "ambient_stroll_home",
-                    SpeedModifier: 0.8d
-                },
-                {
-                    Type: "MOVE_BACK_TO_HOME",
-                    Prio: 3,
-                    Id: "ambient_back_home",
-                    SpeedModifier: 1.0d
-                },
                 {
                     Type: "LOOK_AT_PLAYER",
                     Prio: 9,

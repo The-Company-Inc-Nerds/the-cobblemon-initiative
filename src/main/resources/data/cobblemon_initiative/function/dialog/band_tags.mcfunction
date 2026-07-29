@@ -70,9 +70,6 @@ execute as @a unless score @s cyber_tower matches 2.. run tag @s remove cyber_to
 execute as @a if score @s cyber_tower matches 4.. run tag @s add cyber_tower_gte_4
 execute as @a unless score @s cyber_tower matches 4.. run tag @s remove cyber_tower_gte_4
 
-execute as @a if score @s deepcore_tower matches 2.. run tag @s add deepcore_tower_gte_2
-execute as @a unless score @s deepcore_tower matches 2.. run tag @s remove deepcore_tower_gte_2
-
 execute as @a if score @s deepcore_tower matches 4.. run tag @s add deepcore_tower_gte_4
 execute as @a unless score @s deepcore_tower matches 4.. run tag @s remove deepcore_tower_gte_4
 
@@ -1239,12 +1236,12 @@ tag @a[tag=!took_deep_manifest] add no_took_deep_manifest
 tag @a[tag=took_deep_manifest] remove no_took_deep_manifest
 tag @a[tag=!took_route_manifest] add no_took_route_manifest
 tag @a[tag=took_route_manifest] remove no_took_route_manifest
+tag @a[tag=!traded_fuslie] add no_traded_fuslie
+tag @a[tag=traded_fuslie] remove no_traded_fuslie
 tag @a[tag=!traded_nessa] add no_traded_nessa
 tag @a[tag=traded_nessa] remove no_traded_nessa
 tag @a[tag=!traded_sefu] add no_traded_sefu
 tag @a[tag=traded_sefu] remove no_traded_sefu
-tag @a[tag=!traded_selith] add no_traded_selith
-tag @a[tag=traded_selith] remove no_traded_selith
 tag @a[tag=!transition_paid] add no_transition_paid
 tag @a[tag=transition_paid] remove no_transition_paid
 tag @a[tag=!verification_bonus_paid] add no_verification_bonus_paid

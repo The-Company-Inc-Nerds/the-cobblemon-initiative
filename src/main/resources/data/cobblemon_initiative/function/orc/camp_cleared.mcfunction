@@ -1,0 +1,11 @@
+# Active orc camp CLEARED (a22) — run POSITIONED at the active pin from orc/tick when the absence
+# poll finds no ci_orc mob left. Record the pin as #orc_last_pin (rerolled against next dawn), clear
+# #orc_active to 0 (a fresh pin rolls at the NEXT dawn — "each day after one is cleared out"), reset
+# #orc_raised. Then the shared ceremony + spoils (major for the three high ridges P2-P4, minor for
+# the rest). Audience @a[distance=..64] is positioned at the pin (wide enough for a mid-fight backpedal).
+scoreboard players operation #orc_last_pin ci_ambient = #orc_active ci_ambient
+scoreboard players set #orc_active ci_ambient 0
+scoreboard players set #orc_raised ci_ambient 0
+function cobblemon_initiative:orc/cleared_ceremony
+execute if score #orc_last_pin ci_ambient matches 2..4 run loot give @a[distance=..64,limit=1,sort=nearest] loot cobblemon_initiative:npc_gift/orc_spoils_major
+execute if score #orc_last_pin ci_ambient matches 5..9 run loot give @a[distance=..64,limit=1,sort=nearest] loot cobblemon_initiative:npc_gift/orc_spoils_minor

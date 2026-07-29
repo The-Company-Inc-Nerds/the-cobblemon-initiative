@@ -6,6 +6,14 @@
 scoreboard objectives add takehara_tower dummy
 # ci_gym — shared gym-mechanics scratch scores (Cicada hover lift latch + Y tracking).
 scoreboard objectives add ci_gym dummy
+# Deepcore dojo PVP latches (a22): floor masters #dc_floor_1..4 (0 armed / 1 hostile live /
+# 2 cleared) + the pit #dc_pit_stage (0 none / 1 Striker live / 2 Ken live / 3 cleared).
+# Init-if-unset (orc/load idiom) — a live/cleared value survives relog, never re-arms progress.
+execute unless score #dc_floor_1 ci_gym matches 0.. run scoreboard players set #dc_floor_1 ci_gym 0
+execute unless score #dc_floor_2 ci_gym matches 0.. run scoreboard players set #dc_floor_2 ci_gym 0
+execute unless score #dc_floor_3 ci_gym matches 0.. run scoreboard players set #dc_floor_3 ci_gym 0
+execute unless score #dc_floor_4 ci_gym matches 0.. run scoreboard players set #dc_floor_4 ci_gym 0
+execute unless score #dc_pit_stage ci_gym matches 0.. run scoreboard players set #dc_pit_stage ci_gym 0
 # gaviota_tide — the port gym's world tide clock (gym/gaviota_tide tick fn).
 scoreboard objectives add gaviota_tide dummy
 # nifl_wo — whiteout-approach taunt cooldown (per-player, gym/nifl_whiteout — off_record obs_cd precedent).

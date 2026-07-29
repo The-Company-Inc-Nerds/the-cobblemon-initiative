@@ -8,7 +8,7 @@
 >
 > DEV DOCUMENT - full spoilers. The player-facing wiki lives in `wiki/`.
 
-**750 characters** - 355 persisted world bodies, 345 latch-spawned, 50 unplaced (no body, no latch - phone callers, script-spawned bodies like the transformed Hua Zhan leader, dead content, act-2/3 casting).
+**760 characters** - 355 persisted world bodies, 347 latch-spawned, 58 unplaced (no body, no latch - phone callers, script-spawned bodies like the transformed Hua Zhan leader, dead content, act-2/3 casting).
 
 **Reading the tables:** *(body)* = persisted world entity (moves only via repairs tp);
 *(latch)* = spawned at the authored coords when a player first comes within 40 blocks;
@@ -135,7 +135,7 @@
 | **Acorn** `companion_hua_zhan_seedot` | Hua Zhan City - Hilltop Dojo, The Steps - 1447.5 93 2056.5 (latch) | flavor / lore dialog | Cobblemon model: seedot |
 | **Ridge** `companion_hua_zhan_skiddo` | Hua Zhan City - Hilltop Dojo, Upper Terrace - 1413.5 112 2054.5 (latch) | flavor / lore dialog | Cobblemon model: skiddo |
 | **Nub** `companion_hua_zhan_sunkern` | Hua Zhan City - North Edge, The Family Plot - 1425.5 85 1960.5 (latch) | flavor / lore dialog | Cobblemon model: sunkern |
-| **Ludwig** `companion_ludwig` | Hua Zhan City - Wool House roof - 1537.8 102.1 2114.6 (latch) | runs: easteregg/ludwig_mogul | Cobblemon model: jigglypuff |
+| **Ludwig** `companion_ludwig` | Hua Zhan City - Wool House top room (bedroom) - 1537.8 102.1 2114.6 (latch) | runs: easteregg/ludwig_mogul | Cobblemon model: jigglypuff |
 | **Coins** `companion_meowth` | Hua Zhan City - 1543.5 88 2109.5 (latch) | flavor / lore dialog | Cobblemon model: meowth |
 | **Cloud** `companion_wooloo` | Hua Zhan City - 1502.5 84 2085.5 (latch) | flavor / lore dialog | Cobblemon model: wooloo |
 | **Lan** `hz_analyst` | Hua Zhan City — Company Branch Office, mezzanine - 1532.5 93 2005.5 (latch) | battles `sq_hz_analyst` (2x lv25-26: kadabra, gothorita), prize 300; runs: route/stake_sq_hz_analyst, route/decline_sq_hz_analyst | skin `single/thecompany_grunt_1` |
@@ -207,7 +207,7 @@
 | **Morveth Marshbloom** `morveth_marshbloom` | Mystic Marsh - North Rise - 1123.5 75 2335.5 (latch) | runs: sidequest/morveth/feed | bogged (BOGGED) |
 | **Nyxen Shadowfen** `nyxen_shadowfen` | Mystic Marsh - 942 91 2420 (body) | flavor / lore dialog | world-body look |
 | **Orinthal Runehart** `orinthal_runehart` | Mystic Marsh - Willowmire Mouth - 970 92 2460 (body) | flavor / lore dialog | skin `single/thecompany_grunt_3` |
-| **Selith Emberveil** `selith_emberveil` | Mystic Marsh - West Edge Hut - 918 70 2444 (body) | mon trade: your barboach -> salandit | world-body look |
+| **Fuslie** `selith_emberveil` | Mystic Marsh - West Edge Hut - 918 70 2444 (body) | mon trade: your barboach -> basculegion | world-body look |
 | **Sylthra Veilsting** `sylthra_veilsting` | Mystic Marsh - South Ferry - 942 63 2558 (body) | flavor / lore dialog | world-body look |
 | **Sylvara Dewshade** `sylvara_dewshade` | Mystic Marsh - Southeast Lane - 1214 65 2498 (body) | flavor / lore dialog | world-body look |
 | **Thalorin Wispbrook** `thalorin_wispbrook` | Mystic Marsh - High Stilt - 1232 102 2438 (body) | sells (4): ench_depthstrider2, ench_unbreaking3, ench_protection2, ench_efficiency3 | world-body look |
@@ -274,7 +274,7 @@
 
 ## Gaviota Port — Gym 5 (Water, cap 50)
 
-`characters/gaviota/` - 39 NPCs
+`characters/gaviota/` - 40 NPCs
 
 | NPC | Where | Does | Looks |
 |---|---|---|---|
@@ -297,12 +297,13 @@
 | **Tally Clerk Pell** `gaviota_manifest_a` | Gaviota Port - Main Pier Freight Stack - 566.5 85 3564.5 (latch) | runs: sidequest/manifest/note_1 | skin `groups/gaviota` |
 | **Tally Clerk Odile** `gaviota_manifest_b` | Gaviota Port - Wharf Crates - 588.5 86 3600.5 (latch) | runs: sidequest/manifest/note_2 | skin `groups/gaviota` |
 | **Tally Clerk Bram** `gaviota_manifest_c` | Gaviota Port - Deep Pier, Dunewind Load - 605.5 87 3650.5 (latch) | runs: sidequest/manifest/note_3 | skin `groups/gaviota` |
-| **Lucia Marelli** `gaviota_nurse` | Gaviota Port - Pokemon Center - 560.5 82 3540.5 (body, moved by repairs) | heals your party; runs: economy/heal_paid, pc/open, sidequest/rumors/coralie | skin `single/nurse_center` |
+| **Nurse Marina** `gaviota_nurse` | Gaviota Port - Pokemon Center - 560.5 82 3540.5 (body, moved by repairs) | heals your party; runs: economy/heal_paid, pc/open, sidequest/rumors/coralie | skin `single/nurse_center` |
 | **Sable** `gaviota_smuggler` | Gaviota Port - Westwind Fields Sea Dock - 700.5 103 3255.5 (latch) | battles `wheat_trader_ambush` (2x lv38-39: miltank, tauros), prize 500; native trade window (trade_wheat_trader); native trade window (trade_wheat_trader) | skin `single/wheat_factor` |
 | **Dock Hand Mattias** `gaviota_union_hand` | Gaviota Port - The Wharf - 580.5 86 3600.5 (latch) | flavor / lore dialog | skin `groups/gaviota` |
 | **Tide-Caller Gianna** `gianna_ondina` | Gaviota Port - North Pier - 600 92 3666 (body) | flavor / lore dialog | world-body look |
 | **Luca Pietrafonda** `luca_pietrafonda` | Gaviota Port - East Boardwalk - 622 83 3474 (body) | flavor / lore dialog | world-body look |
 | **Luca Scarpelli** `luca_scarpelli` | Gaviota Port - Upper Terrace - 612 92 3640 (body) | flavor / lore dialog | world-body look |
+| **Lucia Marelli** `lucia_marelli` | Gaviota Port - Open Podium - 585.5 90 3435.5 (latch) | flavor / lore dialog | skin `groups/gaviota` |
 | **Titleholder Marlin** `marco_rinaldi` | Gaviota Port - Pokemart counter - 656.5 83 3533.5 (body, moved by repairs) | opens the Pokemart shop | world-body look |
 | **Matteo Lucente** `matteo_lucente` | Gaviota Port - Lower Docks - 414 68 3546 (body) | flavor / lore dialog | world-body look |
 | **Mira Pescara** `mira_pescara` | Gaviota Port - North Pier - 586 103 3608 (body) | flavor / lore dialog | world-body look |
@@ -315,8 +316,8 @@
 | **Sofia Bellmare** `sofia_bellmare` | Gaviota Port - East Boardwalk - 650 83 3546 (body) | flavor / lore dialog | world-body look |
 | **Tessa Corallo** `tessa_corallo` | Gaviota Port - North Pier - 606 88 3588 (body) | flavor / lore dialog | world-body look |
 | **Vittorio Salmare** `vittorio_salmare` | Gaviota Port - North Pier - 560 103 3646 (body) | flavor / lore dialog | world-body look |
-| **Zwiggo Man** `zwiggo_man` | Gaviota Port - West Quay - 410.7 64 3501.4 (latch) | runs: gaviota/zwiggo_summon | skin `single/fairy_shrine_keeper` |
-| **Zwiggo** `zwiggo_swampert` | Gaviota Port - West Quay (summoned) - UNPLACED | gifts mon: swampert level=40 nickname=Zwiggo | Cobblemon model: swampert |
+| **Deckhand Rocco** `zwiggo_man` | Gaviota Port - West Quay - 410.7 64 3501.4 (latch) | flavor / lore dialog | skin `groups/gaviota` |
+| **Zwiggo** `zwiggo_swampert` | Gaviota Port - West Quay - 406.8 64 3501.2 (latch) | gifts mon: swampert level=40 nickname=Zwiggo | Cobblemon model: swampert |
 
 ## Battle Bay
 
@@ -820,7 +821,7 @@
 
 ## Gym staff — leaders, guides & gym trainers (all towns)
 
-`characters/gym/` - 83 NPCs
+`characters/gym/` - 89 NPCs
 
 | NPC | Where | Does | Looks |
 |---|---|---|---|
@@ -832,14 +833,20 @@
 | **Engineer Watt** `cyber_trainer_2` | Cyber City - Gym, the lower deck - 1309.5 100 1188.5 (latch) | battles `cyber_trainer_2` (2x lv51-51: magnemite, electrike) | skin `groups/cyber` |
 | **Rocker Static** `cyber_trainer_3` | Cyber City - Gym, the upper deck - 1303.5 100 1192.5 (latch) | battles `cyber_trainer_3` (2x lv50-51: elekid, pachirisu) | skin `groups/cyber` |
 | **Mechanic Gigabyte** `cyber_trainer_4` | Cyber City - Gym, the upper deck - 1309.5 100 1192.5 (latch) | battles `cyber_trainer_4` (2x lv51-51: emolga, luxio) | skin `groups/cyber` |
-| **Apprentice Ken** `deepcore_apprentice` | Deepcore City - Gym, the deep pit - 984.3 129 3173.2 (latch) | battles `deepcore_apprentice` (3x lv34-35: machoke, hariyama, primeape) | skin `single/deepcore_apprentice` |
+| **Apprentice Ken** `deepcore_apprentice` | Deepcore City - Gym, the deep pit - 984.3 129 3173.2 (latch) | flavor / lore dialog | skin `single/deepcore_apprentice` |
+| **Black Belt Ryu** `deepcore_duelist_1` | Deepcore City - Gym, the training floor - UNPLACED | flavor / lore dialog | skin `single/deepcore_trainer_1` |
+| **Battle Girl Mika** `deepcore_duelist_2` | Deepcore City - Gym, the training floor - UNPLACED | flavor / lore dialog | skin `single/deepcore_trainer_2` |
+| **Martial Artist Kenji** `deepcore_duelist_3` | Deepcore City - Gym, the upper floor - UNPLACED | flavor / lore dialog | skin `single/deepcore_trainer_1` |
+| **Capoeira Rio** `deepcore_duelist_4` | Deepcore City - Gym, the upper floor - UNPLACED | flavor / lore dialog | skin `single/deepcore_trainer_2` |
 | **Mavrik Bedrock** `deepcore_guide` | Deepcore City - Sparring Shaft - 1020 129 3188 (body) | gym-guide info pages | world-body look |
-| **Jr. Apprentice Striker** `deepcore_jr_apprentice` | Deepcore City - Gym, the deep pit - 997.7 129 3174.5 (latch) | battles `deepcore_jr_apprentice` (2x lv33-33: machoke, hariyama) | skin `single/deepcore_apprentice` |
+| **Jr. Apprentice Striker** `deepcore_jr_apprentice` | Deepcore City - Gym, the deep pit - 997.7 129 3174.5 (latch) | flavor / lore dialog | skin `single/deepcore_apprentice` |
 | **Leader Bruno** `deepcore_leader` | Deepcore City - 992 129 3192 (body) | battles `deepcore_leader` (4x lv37-39: lucario, medicham, machamp, toxicroak), prize 2800; cutscene: deepcore_leader_intro; runs: gym/engage_deepcore_pit | skin `single/deepcore_leader` |
-| **Black Belt Ryu** `deepcore_trainer_1` | Deepcore City - Gym, the training floor - 1016.5 129 3158.3 (latch) | battles `deepcore_trainer_1` (2x lv31-32: machop, makuhita), pursues on sight r8, forced at close range | skin `single/deepcore_trainer_1` |
-| **Battle Girl Mika** `deepcore_trainer_2` | Deepcore City - Gym, the training floor - 958.4 129 3156.7 (latch) | battles `deepcore_trainer_2` (2x lv32-32: meditite, riolu), pursues on sight r8, forced at close range | skin `single/deepcore_trainer_2` |
-| **Martial Artist Kenji** `deepcore_trainer_3` | Deepcore City - Gym, the inner ring - 965.8 141.5 3187.7 (latch) | battles `deepcore_trainer_3` (2x lv32-32: croagunk, riolu), pursues on sight r8, forced at close range | skin `single/deepcore_trainer_1` |
-| **Capoeira Rio** `deepcore_trainer_4` | Deepcore City - Gym, the inner ring - 965.9 141.5 3183.6 (latch) | battles `deepcore_trainer_4` (2x lv32-33: pancham, crabrawler), pursues on sight r8, forced at close range | skin `single/deepcore_trainer_2` |
+| **Apprentice Ken** `deepcore_pit_ken` | Deepcore City - Gym, the deep pit - UNPLACED | flavor / lore dialog | skin `single/deepcore_apprentice` |
+| **Jr. Apprentice Striker** `deepcore_pit_striker` | Deepcore City - Gym, the deep pit - UNPLACED | flavor / lore dialog | skin `single/deepcore_apprentice` |
+| **Black Belt Ryu** `deepcore_trainer_1` | Deepcore City - Gym, the training floor - 1016.5 129 3158.3 (latch) | flavor / lore dialog | skin `single/deepcore_trainer_1` |
+| **Battle Girl Mika** `deepcore_trainer_2` | Deepcore City - Gym, the training floor - 958.4 129 3156.7 (latch) | flavor / lore dialog | skin `single/deepcore_trainer_2` |
+| **Martial Artist Kenji** `deepcore_trainer_3` | Deepcore City - Gym, the inner ring - 965.8 141.5 3187.7 (latch) | flavor / lore dialog | skin `single/deepcore_trainer_1` |
+| **Capoeira Rio** `deepcore_trainer_4` | Deepcore City - Gym, the inner ring - 965.9 141.5 3183.6 (latch) | flavor / lore dialog | skin `single/deepcore_trainer_2` |
 | **Garden Master Wei** `garden_master_wei` | Hua Zhan City - West Hill Garden - 1404 105 2054 (body) | runs: sidequest/pilgrimage/hud | world-body look |
 | **Apprentice Marina** `gaviota_apprentice` | Gaviota Port - Gym, the deep slip - 598.5 87 3643.5 (latch) | battles `gaviota_apprentice` (3x lv41-42: tentacruel, sharpedo, starmie) | skin `single/gaviota_apprentice` |
 | **Gaviota Gym Guide** `gaviota_guide` | Gaviota Port - UNPLACED | gym-guide info pages | STEVE default |
@@ -1016,4 +1023,14 @@
 | **Mayor Liang** `phone_liang` | PokéPhone (spawned on-call) - UNPLACED | cmd: homestead buy | skin `single/phone_liang` |
 | **Mom** `phone_mom` | PokéPhone (spawned on-call) - UNPLACED | flavor / lore dialog | skin `single/phone_mom` |
 | **Unknown Number** `phone_unknown` | PokéPhone (spawned on-call) - UNPLACED | flavor / lore dialog | skin `single/phone_silhouette` |
+
+## Orc
+
+`characters/orc/` - 3 NPCs
+
+| NPC | Where | Does | Looks |
+|---|---|---|---|
+| **Orc War-Chief** `orc_chief` | Wilderness ridges (rotating orc camp) - UNPLACED | flavor / lore dialog | orc_warrior (ORC_WARRIOR) |
+| **Orc Raider** `orc_raider` | Wilderness ridges (rotating orc camp) - UNPLACED | flavor / lore dialog | orc (ORC) |
+| **Orc Warrior** `orc_warrior` | Wilderness ridges (rotating orc camp) - UNPLACED | flavor / lore dialog | orc_warrior (ORC_WARRIOR) |
 

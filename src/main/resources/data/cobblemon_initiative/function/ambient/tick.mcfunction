@@ -59,22 +59,11 @@ kill @e[tag=ci_mirage_popped]
 # dialog; next tick, positioned at her body, spawn Leader Blossom + despawn the groundskeeper.
 # Guard: skip once the leader body already exists, so it happens exactly once.
 execute as @a[tag=aya_transformed] at @e[tag=aya_groundskeeper,type=!minecraft:player,limit=1] unless entity @e[tag=hz_leader_body,type=!minecraft:player] run function cobblemon_initiative:hua_zhan/aya_transform
-# ── Zwiggo, the mudkip man's swampert (Gaviota easter egg, a21) ──
-# Pop: the join button tags the body zwiggo_pop ENTITY-PATH with a self-selecting
-# @e[tag=zwiggo_body,distance=..3] (never @s — the compiler rewrites dialog @s to the
-# player); killing it here, one tick later, avoids racing the deferred CLOSE_DIALOG
-# packet, same as the starter stand-ins / mirage sweep above. FX first, then the kill;
-# the walk-counter holder is reset at pop so a mid-walk join leaves no residue.
-execute at @e[tag=zwiggo_pop] run particle minecraft:splash ~ ~0.8 ~ 0.6 0.6 0.6 0 60 force
-execute at @e[tag=zwiggo_pop] run particle minecraft:poof ~ ~0.8 ~ 0.4 0.6 0.4 0.03 30 force
-execute at @e[tag=zwiggo_pop] run playsound minecraft:entity.fishing_bobber.splash player @a[distance=..24] ~ ~ ~ 1 0.8
-execute if entity @e[tag=zwiggo_pop] run scoreboard players reset #zwiggo_walk ci_ambient
-kill @e[type=easy_npc:cobblemon_npc,tag=zwiggo_pop]
-# Walk-nudge: MOVE_BACK_TO_HOME should path him from the summon water (400.8 62 3500.6)
-# up onto the quay home (406/64/3501), but ground-nav out of water up two blocks is
-# UNVERIFIED — count while a body exists and is still far from the quay spot, and tp him
-# up after ~200t (10s). The holder resets once he is close (walked there OR tp'd — the
-# reset line runs after the tp in the same tick), so the tp fires at most once per stall.
-execute if entity @e[tag=zwiggo_body,type=easy_npc:cobblemon_npc] unless entity @e[tag=zwiggo_body,x=406.8,y=64.0,z=3501.2,distance=..1.5] run scoreboard players add #zwiggo_walk ci_ambient 1
-execute if score #zwiggo_walk ci_ambient matches 200.. run tp @e[tag=zwiggo_body,type=easy_npc:cobblemon_npc,limit=1] 406.8 64 3501.2
-execute if entity @e[tag=zwiggo_body,x=406.8,y=64.0,z=3501.2,distance=..1.5] run scoreboard players reset #zwiggo_walk ci_ambient
+# ── Zwiggo, the swampert (Gaviota easter egg; a22: latch-placed + robust vanish) ──
+# The recruitable Swampert now stands on the quay as its own latch body (place/zwiggo_swampert
+# at 406.8/64/3501.2 — no more water-summon + walk-up, which was the "large jump" bug). On
+# recruit the player gets zwiggo_joined; here, POSITION-INDEPENDENT (the old distance=..3
+# pop-tag missed when the body drifted, so it never vanished), FX+kill the body every tick a
+# joined player exists. Also self-heals the double-recruit case: if repairs_a22 re-latches a
+# body for an already-joined player, this removes it before it can be recruited twice.
+execute as @e[type=easy_npc:cobblemon_npc,tag=zwiggo_body] at @s if entity @a[tag=zwiggo_joined] run function cobblemon_initiative:gaviota/zwiggo_pop

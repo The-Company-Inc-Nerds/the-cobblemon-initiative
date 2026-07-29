@@ -91,3 +91,9 @@ execute unless score #repair_a20 ci_ambient matches 1 run function cobblemon_ini
 #    both latches re-armed), Deepcore Sten/Rilka re-latches + Osei cut + Ken pit-lead
 #    re-latch, Gaviota Coralie cut -> Lucia nurse tp + Marlin to the mart register ──
 execute unless score #repair_a21 ci_ambient matches 1 run function cobblemon_initiative:install/repairs_a21_arm
+
+# ── wave a22 (0.7.0-alpha.4): playtest wave — Deepcore dojo -> real PVP (floor masters + pit
+#    apprentices re-latched to passive flavor bodies; whole-dojo/pit spawns hostile duel bodies),
+#    Zwiggo Man -> Deckhand Rocko + swampert quay latch, orc camps -> one rotating easy_npc camp,
+#    Gaviota nurse -> Nurse Marina + Lucia to the Open podium, Fuslie trade, Ludwig lore ──
+execute unless score #repair_a22 ci_ambient matches 1 run function cobblemon_initiative:install/repairs_a22_arm

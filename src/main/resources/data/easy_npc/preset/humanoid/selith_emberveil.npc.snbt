@@ -6,7 +6,7 @@
         description: "civilian at Mystic Marsh - West Edge Hut (act 1). Compiled from dialog-src.",
         entityTypeId: "easy_npc:humanoid",
         modified: 0L,
-        name: "Selith Emberveil",
+        name: "Fuslie",
         variantType: "STEVE",
         version: "1.0.0"
     },
@@ -40,7 +40,7 @@
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
-                            Name: "traded_selith"
+                            Name: "traded_fuslie"
                         }
                     ],
                     Priority: 20,
@@ -67,25 +67,25 @@
                     ],
                     Texts: [
                         {
-                            Text: "How is the fire keeping? Do not let her sweet-talk you — she eats better than I do and she knows it. Meanwhile the whisker-fish has already called tomorrow for rain. I am delighted with it."
+                            Text: "How is she settling in? Do not let the scarf fool you — she commits to exactly one idea at a time, and every so often that idea is just 'do not get hit,' which, honestly, relatable. She will carry you. She carried me through worse than a marsh."
                         },
                         {
-                            Text: "The hut is damper without her and I find I do not mind. The Barboach naps in the rain barrel and twitches before every storm. A fish that tells the weather is worth ten that only look pretty."
+                            Text: "The hut is quieter now and I can hear myself think, which is its own kind of horror. Take her somewhere with a real current. She was never going to be happy in a puddle. Neither was I, but that is a different arc."
                         }
                     ],
-                    Name: "Selith — the whisker-fish",
+                    Name: "Fuslie — the ghost fish",
                     Label: "after"
                 },
                 {
                     Priority: 10,
                     Buttons: [
                         {
-                            Name: "Trade a Barboach for the Salandit",
+                            Name: "Trade a Barboach for the Basculegion",
                             Actions: [
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "cobblemon-initiative trade barboach salandit 28 traded_selith"
+                                    Cmd: "cobblemon-initiative trade barboach basculegion 28 traded_fuslie held_item=cobblemon:choice_scarf moves=waterfall,aquajet,aquatail,protect"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -95,7 +95,7 @@
                                 {
                                     Type: "PLAYER_TAG",
                                     Operation: "EQUALS",
-                                    Name: "no_traded_selith"
+                                    Name: "no_traded_fuslie"
                                 }
                             ],
                             Label: "trade_button"
@@ -112,20 +112,23 @@
                     ],
                     Texts: [
                         {
-                            Text: "See the lamp by the door? Not a lamp. Salandit. Ember hatched in my firebox two winters back and the damp has never once put her out. But a fire in a marsh is a guest, not a resident, and I am tired of apologizing to the bog for her. So — bring me a Barboach. The mud-whisker fish, the one that feels weather coming through its face. Straight across: your fish out of the pools, my flame to somewhere with more to burn."
+                            Text: "Oh thank god, a face. I have been out here 'communing with the wetlands' for weeks and the wetlands do not clap. You want to see something genuinely cool? Come here. Look at the water."
                         },
                         {
-                            Text: "No coin in this. Coin gets counted, and a counted trade belongs to whoever prints the coin — hand to hand is the only exchange the Company cannot see. A Barboach from your party for my Salandit, even trade. She is the only flame that likes the wet, and I am asking you to take her somewhere drier anyway. That is the whole deal and I will not be improving it."
+                            Text: "That is a Basculegion. My Basculegion. She swam upstream until it killed her, and then she just — kept swimming. A whole school of stubborn wearing one fish like a coat. I love her, but she is a lot, and this hut is small. Bring me a Barboach — any mud-whiskered one out of the pools — and she is yours. Straight across, no coin. Coin gets counted, and I am trying very hard to stay off a certain ledger."
+                        },
+                        {
+                            Text: "She comes wearing a Choice Scarf so she outruns basically everything, and she knows Protect for the days the whole plan is 'exist, but carefully.' It is a bit. It is a very good bit. Take the fish."
                         }
                     ],
-                    Name: "Selith — the ember keeper",
+                    Name: "Fuslie — the west-edge hermit bit",
                     Label: "default"
                 },
                 {
                     Priority: -1,
                     Buttons: [
                         {
-                            Name: "Warm on both counts",
+                            Name: "Good luck out here",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -136,10 +139,10 @@
                     ],
                     Texts: [
                         {
-                            Text: "Struck, hand to hand, and no ledger the wiser. Keep her warm and she will keep you warm back. That is not marsh poetry, that is a fire safety notice."
+                            Text: "Struck — no coin, no counter, no clip. Keep her fed and keep her moving and she will keep you standing. That is not marsh wisdom, that is just what works. Now shoo, I have wetlands to not-vlog."
                         }
                     ],
-                    Name: "Selith — struck",
+                    Name: "Fuslie — struck",
                     Label: "seal"
                 }
             ]
@@ -260,13 +263,13 @@
         },
         RenderData: {},
         SkinData: {
-            Type: "SECURE_REMOTE_URL",
-            URL: "https://www.minecraftskins.com/uploads/skins/2021/07/18/my-minecraft-skin-as-a-human-18427865.png?v940",
-            UUID: [I; -827560000, -2138358575, -2104638198, -1896033201],
-            Name: "",
             Content: "",
-            Timestamp: 1771755808671L,
-            DisableLayers: 0b
+            DisableLayers: 0b,
+            Name: "",
+            Timestamp: 0L,
+            Type: "CUSTOM",
+            URL: "",
+            UUID: [I; -1678142577, -1613475197, -1933986493, 1131393030]
         },
         SoundData: {
             SoundDataSet: [
@@ -313,6 +316,6 @@
             }
         ],
         id: "easy_npc:humanoid",
-        CustomName: '{"text": "Selith Emberveil", "color": "#BFFF00"}'
+        CustomName: '{"text": "Fuslie", "color": "#BFFF00"}'
     }
 }

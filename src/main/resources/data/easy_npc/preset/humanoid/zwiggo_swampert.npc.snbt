@@ -3,7 +3,7 @@
         author: "TheCompanyInc",
         category: "Civilian",
         created: 0L,
-        description: "civilian at Gaviota Port - West Quay (summoned) (act 1). Compiled from dialog-src.",
+        description: "civilian at Gaviota Port - West Quay (act 1). Compiled from dialog-src.",
         entityTypeId: "easy_npc:cobblemon_npc",
         modified: 0L,
         name: "Zwiggo",
@@ -70,20 +70,6 @@
                                     Cmd: "tag @s add zwiggo_joined"
                                 },
                                 {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_zwiggo_joined"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tag @e[tag=zwiggo_body,distance=..3] add zwiggo_pop"
-                                },
-                                {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
@@ -101,10 +87,10 @@
                     ],
                     Texts: [
                         {
-                            Text: "Zwig? (The swampert looks from you to the mossy man on the quay and back again. It seems to have already decided something about you.)"
+                            Text: "Zwig? (The swampert hauls itself half onto the quay and looks you over, from boots to eyes and back. It seems to have already decided something about you.)"
                         },
                         {
-                            Text: "(It plants both fins on the stone and waits, tail dripping harbour water. Somewhere behind you, the man is very carefully not watching.)"
+                            Text: "(It plants both fins on the stone and waits, tail dripping harbour water. Down the quay a deckhand is very carefully not watching.)"
                         },
                         {
                             Text: "Zwig-go. (It says it the way you would offer a handshake.)"
@@ -195,21 +181,15 @@
         },
         Navigation: {
             Home: {
-                X: 406,
-                Y: 64,
-                Z: 3501
+                X: 0,
+                Y: 0,
+                Z: 0
             }
         },
         ObjectiveData: {
             HasObjectives: 1b,
             HasTravelTarget: 0b,
             ObjectiveDataSet: [
-                {
-                    Type: "MOVE_BACK_TO_HOME",
-                    Prio: 2,
-                    Id: "ambient_back_home_only",
-                    SpeedModifier: 1.0d
-                },
                 {
                     Type: "LOOK_AT_PLAYER",
                     Prio: 9,
@@ -271,6 +251,6 @@
         ],
         id: "easy_npc:cobblemon_npc",
         CustomName: '{"text": "Zwiggo", "color": "#FFFFFF"}',
-        Tags: ["zwiggo_body"]
+        Tags: ["zwiggo_body", "ci_amb_zwiggo_swampert"]
     }
 }

@@ -17,79 +17,6 @@
                     {
                         Type: "OPEN_DEFAULT_DIALOG"
                     }
-                ],
-                ON_DISTANCE_VERY_CLOSE: [
-                    {
-                        Type: "COMMAND",
-                        ConditionDataSet: {
-                            ConditionDataSet: [
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "dex_gte_2"
-                                },
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "no_recent_flee"
-                                },
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "no_defeated_deepcore_trainer_4"
-                                }
-                            ]
-                        },
-                        Cmd: "tbcs attach rctmod:deepcore_trainer_4 @s"
-                    },
-                    {
-                        Type: "COMMAND",
-                        ExecAsUser: 1b,
-                        ConditionDataSet: {
-                            ConditionDataSet: [
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "dex_gte_2"
-                                },
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "no_recent_flee"
-                                },
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "no_defeated_deepcore_trainer_4"
-                                }
-                            ]
-                        },
-                        Cmd: "tag @s add in_trainer_battle"
-                    },
-                    {
-                        Type: "COMMAND",
-                        ExecAsUser: 1b,
-                        ConditionDataSet: {
-                            ConditionDataSet: [
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "dex_gte_2"
-                                },
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "no_recent_flee"
-                                },
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "no_defeated_deepcore_trainer_4"
-                                }
-                            ]
-                        },
-                        Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:deepcore_trainer_4 onwin {1: ['tag @1 add defeated_deepcore_trainer_4', '@2 say You kept the rhythm. The floor is all yours now.', 'tag @1 remove in_trainer_battle'], 2: ['@1 say You lost the beat. Find it again and come back.', 'tag @2 remove in_trainer_battle']}"
-                    }
                 ]
             }
         },
@@ -109,106 +36,8 @@
             Type: "STANDARD",
             DialogDataSet: [
                 {
-                    Conditions: [
-                        {
-                            Type: "PLAYER_TAG",
-                            Operation: "EQUALS",
-                            Name: "defeated_deepcore_trainer_4"
-                        }
-                    ],
-                    Priority: 20,
-                    Buttons: [
-                        {
-                            Name: "Onward",
-                            Actions: [
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "leave_button"
-                        }
-                    ],
-                    Texts: [
-                        {
-                            Text: "You dance as hard as you hit. The challenger who cleared the whole floor. The pit is next - Ken and Striker together, and a second from the gym at your corner."
-                        }
-                    ],
-                    Name: "Rio - the last mat yields",
-                    Label: "beaten"
-                },
-                {
                     Priority: 10,
                     Buttons: [
-                        {
-                            Name: "Battle Capoeira Rio",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "defeated_deepcore_trainer_4"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "say We already danced. Go on to the pit."
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_defeated_deepcore_trainer_4"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tbcs attach rctmod:deepcore_trainer_4 @s"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_defeated_deepcore_trainer_4"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tag @s add in_trainer_battle"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_defeated_deepcore_trainer_4"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:deepcore_trainer_4 onwin {1: ['tag @1 add defeated_deepcore_trainer_4', '@2 say You kept the rhythm. The floor is all yours now.', 'tag @1 remove in_trainer_battle'], 2: ['@1 say You lost the beat. Find it again and come back.', 'tag @2 remove in_trainer_battle']}"
-                                },
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Conditions: [
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "no_defeated_deepcore_trainer_4"
-                                }
-                            ],
-                            Label: "battle_button"
-                        },
                         {
                             Name: "Not yet",
                             Actions: [
@@ -221,10 +50,7 @@
                     ],
                     Texts: [
                         {
-                            Text: "Down here we fight to a rhythm. Keep up with mine and I might be impressed."
-                        },
-                        {
-                            Text: "Last of the floor. Beat me and the apprentice will see you. Ready?"
+                            Text: "Last of the floor. Down here we fight to a rhythm, and in the Gauntlet that rhythm is fists, not Poke Balls. Clear the whole floor and the pit opens for you."
                         },
                         {
                             Text: "Ryu says Bruno benched a Golem. Mika says a Machamp. Give it a year and it will be a Regigigas. That is how a legend does its reps."
@@ -233,7 +59,7 @@
                             Text: "You cannot hit what never stops dancing. My entire strategy fits on one drum."
                         }
                     ],
-                    Name: "Rio - warden of the inner ring",
+                    Name: "Capoeira Rio",
                     Label: "default"
                 }
             ]
@@ -327,18 +153,6 @@
             HasObjectives: 1b,
             HasTravelTarget: 0b,
             ObjectiveDataSet: [
-                {
-                    Type: "RANDOM_STROLL_AROUND_HOME",
-                    Prio: 2,
-                    Id: "ambient_stroll_home",
-                    SpeedModifier: 0.8d
-                },
-                {
-                    Type: "MOVE_BACK_TO_HOME",
-                    Prio: 3,
-                    Id: "ambient_back_home",
-                    SpeedModifier: 1.0d
-                },
                 {
                     Type: "LOOK_AT_PLAYER",
                     Prio: 9,

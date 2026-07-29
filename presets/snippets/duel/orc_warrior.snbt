@@ -1,0 +1,37 @@
+EntityAttribute: {
+    CanBeHitByProjectile: 1b,
+    CanFloat: 1b,
+    CanPassDoor: 1b,
+    IsAttackableByMonsters: 0b,
+    IsAttackableByPlayers: 1b,
+    IsInvulnerable: 0b,
+    IsPushable: 1b,
+    NoGravity: 0b,
+    PushEntities: 1b
+}
+attributes: [
+    {base: 44.0d, id: "minecraft:generic.max_health"},
+    {base: 0.33d, id: "minecraft:generic.movement_speed"},
+    {base: 7.0d, id: "minecraft:generic.attack_damage"}
+]
+HandItems: [
+    {id: "minecraft:iron_axe", count: 1},
+    {}
+]
+ArmorItems: [
+    {id: "minecraft:iron_boots", count: 1},
+    {id: "minecraft:iron_leggings", count: 1},
+    {id: "minecraft:iron_chestplate", count: 1},
+    {id: "minecraft:chainmail_helmet", count: 1}
+]
+ObjectiveData: {
+    HasObjectives: 1b,
+    HasTravelTarget: 0b,
+    ObjectiveDataSet: [
+        {Type: "ATTACK_PLAYER", Prio: 2, Id: "orc_attack_player"},
+        {Type: "MELEE_ATTACK", Prio: 2, Id: "orc_melee", SpeedModifier: 1.15d},
+        {Type: "WATER_AVOIDING_RANDOM_STROLL", Prio: 6, Id: "orc_stroll", SpeedModifier: 0.85d},
+        {Type: "LOOK_AT_PLAYER", Prio: 9, Id: "orc_look", LookDistance: 16.0f},
+        {Type: "LOOK_RANDOM_AROUND", Prio: 10, Id: "orc_look_random"}
+    ]
+}

@@ -67,7 +67,12 @@ public class CobblemonInitiativeCommands {
         // Species-verified party trade (Cobblemon API): removes the FIRST party Pokémon
         // matching <take> and gives a <give> in its place. If the player has no <take>,
         // it's a safe no-op. OP-2 so only NPC dialogs (perm-2 context) can call it, never
-        // a player cheesing a free upgrade. /cobblemon-initiative trade <take> <give> [level]
+        // a player cheesing a free upgrade.
+        // /cobblemon-initiative trade <take> <give> [level] [tag] [props...]
+        // <props> is an optional trailing PokemonProperties tail (greedy) appended to the
+        // given mon's "<give> level=<level>" string — e.g. held_item=cobblemon:choice_scarf
+        // moves=liquidation,aquajet,protect. Lets a dialog hand over a held item / moveset
+        // (Fuslie's Choice Scarf + Protect Basculegion) without a second givemon call.
         .then(
           Commands.literal("trade")
             .requires(source -> source.hasPermission(2))
@@ -80,6 +85,7 @@ public class CobblemonInitiativeCommands {
                       StringArgumentType.getString(ctx, "take"),
                       StringArgumentType.getString(ctx, "give"),
                       -1,
+                      null,
                       null
                     ))
                     .then(
@@ -89,6 +95,7 @@ public class CobblemonInitiativeCommands {
                           StringArgumentType.getString(ctx, "take"),
                           StringArgumentType.getString(ctx, "give"),
                           IntegerArgumentType.getInteger(ctx, "level"),
+                          null,
                           null
                         ))
                         .then(
@@ -98,8 +105,20 @@ public class CobblemonInitiativeCommands {
                               StringArgumentType.getString(ctx, "take"),
                               StringArgumentType.getString(ctx, "give"),
                               IntegerArgumentType.getInteger(ctx, "level"),
-                              StringArgumentType.getString(ctx, "tag")
+                              StringArgumentType.getString(ctx, "tag"),
+                              null
                             ))
+                            .then(
+                              Commands.argument("props", StringArgumentType.greedyString())
+                                .executes(ctx -> trade(
+                                  ctx,
+                                  StringArgumentType.getString(ctx, "take"),
+                                  StringArgumentType.getString(ctx, "give"),
+                                  IntegerArgumentType.getInteger(ctx, "level"),
+                                  StringArgumentType.getString(ctx, "tag"),
+                                  StringArgumentType.getString(ctx, "props")
+                                ))
+                            )
                         )
                     )
                 )
@@ -1033,14 +1052,17 @@ public class CobblemonInitiativeCommands {
    * is non-null it is added to the player ONLY on a completed trade — so the caller's quest
    * latch stays all-or-nothing. Safe no-op with a message when the player has no {@code take}.
    * Backs the NPC trade dialogs (e.g. Old Sefu's Magikarp→Feebas) so no fixed party slot is
-   * assumed and nothing else is ever removed.
+   * assumed and nothing else is ever removed. {@code extraProps}, when non-blank, is a trailing
+   * PokemonProperties tail (e.g. {@code held_item=cobblemon:choice_scarf moves=protect}) appended
+   * to the given mon so a dialog can hand over a held item / moveset in one call.
    */
   private static int trade(
     CommandContext<CommandSourceStack> context,
     String take,
     String give,
     int level,
-    String successTag
+    String successTag,
+    String extraProps
   ) {
     ServerPlayer player;
     try {
@@ -1066,7 +1088,7 @@ public class CobblemonInitiativeCommands {
 
     int giveLevel = level > 0 ? level : toTake.getLevel();
     party.remove(toTake);
-    giveSpecies(player, give, giveLevel);
+    giveSpecies(player, give, giveLevel, extraProps);
     if (successTag != null && !successTag.isBlank()) {
       player.addTag(successTag);
     }
@@ -1202,7 +1224,19 @@ public class CobblemonInitiativeCommands {
 
   /** Create {@code species} at {@code level} and add it to the party (used by {@code trade}). */
   private static Pokemon giveSpecies(ServerPlayer player, String species, int level) {
-    return giveProperties(player, species + " level=" + level);
+    return giveSpecies(player, species, level, null);
+  }
+
+  /**
+   * Create {@code species} at {@code level} (plus an optional trailing PokemonProperties
+   * {@code extraProps} tail, e.g. {@code held_item=... moves=...}) and add it to the party.
+   */
+  private static Pokemon giveSpecies(ServerPlayer player, String species, int level, String extraProps) {
+    String props = species + " level=" + level;
+    if (extraProps != null && !extraProps.isBlank()) {
+      props += " " + extraProps.trim();
+    }
+    return giveProperties(player, props);
   }
 
   private static int showProgress(CommandContext<CommandSourceStack> context) {
