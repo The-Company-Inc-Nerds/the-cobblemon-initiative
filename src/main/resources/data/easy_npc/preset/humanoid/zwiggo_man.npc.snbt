@@ -36,10 +36,17 @@
             Type: "STANDARD",
             DialogDataSet: [
                 {
-                    Priority: 10,
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "zwiggo_refused"
+                        }
+                    ],
+                    Priority: 30,
                     Buttons: [
                         {
-                            Name: "Fair winds",
+                            Name: "Leave him to the water",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -50,10 +57,134 @@
                     ],
                     Texts: [
                         {
-                            Text: "(A weathered deckhand leans on a bollard, watching the west quay like the tide owes him money.) Mind the edge. Stone's slick where the harbour spits over it. Lost a good pair of boots to that gap and I was still wearing them."
+                            Text: "(He does not look up. The water slaps the stone. You answered the question once, and it was the wrong answer.)"
                         },
                         {
-                            Text: "Half the crews out of this port sail short a hand these days. Wages come up light, so the able-bodied sign on somewhere the coin still weighs what it says. Me, I know this quay too well to leave it. Every plank has a grudge and I know all their names."
+                            Text: "Tide went out on that conversation. It is not coming back in."
+                        }
+                    ],
+                    Name: "Deckhand Rocco",
+                    Label: "refused"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "zwiggo_joined"
+                        }
+                    ],
+                    Priority: 25,
+                    Buttons: [
+                        {
+                            Name: "He is in good fins",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Keep him damp and let him nap in the rain and he will move mountains for you. Slowly. Mostly into the water. Best friend I ever had, and now he is yours."
+                        },
+                        {
+                            Text: "He liked you on sight. He does not do that. Treat it like the rare drop it is."
+                        }
+                    ],
+                    Name: "Deckhand Rocco",
+                    Label: "joined"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "zwiggo_summoned"
+                        }
+                    ],
+                    Priority: 20,
+                    Buttons: [
+                        {
+                            Name: "Go meet Zwiggo",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        },
+                        {
+                            Name: "I do not see him yet. Call again?",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:gaviota/zwiggo_summon"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "whistle_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "(He points past the quay edge.) He is coming up now — give him a second, he takes the stairs. Big fellow, blue. Walk down to the water and say hello. His name is Zwiggo. He decides the rest."
+                        },
+                        {
+                            Text: "You said the right thing, so I called him up from the harbour. Go and meet him."
+                        }
+                    ],
+                    Name: "Deckhand Rocco",
+                    Label: "summoned"
+                },
+                {
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "I do like mudkips",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add zwiggo_summoned"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:gaviota/zwiggo_summon"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "yes_button"
+                        },
+                        {
+                            Name: "Not really my thing",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add zwiggo_refused"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "no_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "(A weathered deckhand leans on a bollard, watching the west quay like it owes him money.) Hold on. Before you walk off — let me ask you the only question that has ever mattered on this stone."
+                        },
+                        {
+                            Text: "Do you like mudkips?"
                         }
                     ],
                     Name: "Deckhand Rocco",

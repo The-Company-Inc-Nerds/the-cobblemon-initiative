@@ -16,3 +16,6 @@ execute unless score #orc_active ci_ambient matches -2147483648.. run scoreboard
 execute unless score #orc_raised ci_ambient matches -2147483648.. run scoreboard players set #orc_raised ci_ambient 0
 execute unless score #orc_last_pin ci_ambient matches -2147483648.. run scoreboard players set #orc_last_pin ci_ambient 0
 execute unless score #orc_last_day ci_ambient matches -2147483648.. run scoreboard players set #orc_last_day ci_ambient -1
+# a6: reward roll count (ModMenu OrcConfig.spoilsRolls). Default 1; DojoDifficultyManager overwrites
+# it from the config on server start + config save. Init-if-unset so camp_cleared always has a value.
+execute unless score #cfg_orc_spoils_rolls ci_ambient matches -2147483648.. run scoreboard players set #cfg_orc_spoils_rolls ci_ambient 1

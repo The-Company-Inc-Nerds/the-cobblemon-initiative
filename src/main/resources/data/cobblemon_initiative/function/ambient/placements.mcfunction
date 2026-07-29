@@ -76,9 +76,8 @@ execute if score #amb_gaviota_manifest_b ci_ambient matches 0 if entity @a[x=588
 execute if score #amb_gaviota_manifest_c ci_ambient matches 0 if entity @a[x=605.5,y=87,z=3650.5,distance=..40] run function cobblemon_initiative:ambient/place/gaviota_manifest_c
 execute if score #amb_gaviota_smuggler ci_ambient matches 0 if entity @a[x=700.5,y=103,z=3255.5,distance=..40] run function cobblemon_initiative:ambient/place/gaviota_smuggler
 execute if score #amb_gaviota_union_hand ci_ambient matches 0 if entity @a[x=580.5,y=86,z=3600.5,distance=..40] run function cobblemon_initiative:ambient/place/gaviota_union_hand
-execute if score #amb_lucia_marelli ci_ambient matches 0 if entity @a[x=585.5,y=90,z=3435.5,distance=..40] run function cobblemon_initiative:ambient/place/lucia_marelli
-execute if score #amb_zwiggo_man ci_ambient matches 0 if entity @a[x=410.7,y=64,z=3501.4,distance=..40] run function cobblemon_initiative:ambient/place/zwiggo_man
-execute if score #amb_zwiggo_swampert ci_ambient matches 0 unless entity @e[tag=ci_amb_zwiggo_swampert] if entity @a[x=406.8,y=64,z=3501.2,distance=..40] run function cobblemon_initiative:ambient/place/zwiggo_swampert
+execute if score #amb_lucia_marelli ci_ambient matches 0 if entity @a[x=474.5,y=66,z=3552.5,distance=..40] run function cobblemon_initiative:ambient/place/lucia_marelli
+execute if score #amb_zwiggo_man ci_ambient matches 0 if entity @a[x=405.5,y=64,z=3499.5,distance=..40] run function cobblemon_initiative:ambient/place/zwiggo_man
 execute if score #amb_cyber_apprentice ci_ambient matches 0 if entity @a[x=1306.5,y=100,z=1187.5,distance=..40] run function cobblemon_initiative:ambient/place/cyber_apprentice
 execute if score #amb_cyber_jr_apprentice ci_ambient matches 0 if entity @a[x=1306.5,y=100,z=1193.5,distance=..40] run function cobblemon_initiative:ambient/place/cyber_jr_apprentice
 execute if score #amb_cyber_trainer_1 ci_ambient matches 0 if entity @a[x=1303.5,y=100,z=1188.5,distance=..40] run function cobblemon_initiative:ambient/place/cyber_trainer_1

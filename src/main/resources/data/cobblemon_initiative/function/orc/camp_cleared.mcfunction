@@ -7,5 +7,12 @@ scoreboard players operation #orc_last_pin ci_ambient = #orc_active ci_ambient
 scoreboard players set #orc_active ci_ambient 0
 scoreboard players set #orc_raised ci_ambient 0
 function cobblemon_initiative:orc/cleared_ceremony
-execute if score #orc_last_pin ci_ambient matches 2..4 run loot give @a[distance=..64,limit=1,sort=nearest] loot cobblemon_initiative:npc_gift/orc_spoils_major
-execute if score #orc_last_pin ci_ambient matches 5..9 run loot give @a[distance=..64,limit=1,sort=nearest] loot cobblemon_initiative:npc_gift/orc_spoils_minor
+# a6: reward rolls scale with the ModMenu OrcConfig spoilsRolls (#cfg_orc_spoils_rolls — pushed by
+# DojoDifficultyManager on server start / config save, init 1 in orc/load). Roll 1 keeps the pin
+# tier (major P2-4 / minor P5-9); each extra roll (2..5) adds a major bundle. 0 = no reward.
+execute if score #cfg_orc_spoils_rolls ci_ambient matches 1.. if score #orc_last_pin ci_ambient matches 2..4 run loot give @a[distance=..64,limit=1,sort=nearest] loot cobblemon_initiative:npc_gift/orc_spoils_major
+execute if score #cfg_orc_spoils_rolls ci_ambient matches 1.. if score #orc_last_pin ci_ambient matches 5..9 run loot give @a[distance=..64,limit=1,sort=nearest] loot cobblemon_initiative:npc_gift/orc_spoils_minor
+execute if score #cfg_orc_spoils_rolls ci_ambient matches 2.. run loot give @a[distance=..64,limit=1,sort=nearest] loot cobblemon_initiative:npc_gift/orc_spoils_major
+execute if score #cfg_orc_spoils_rolls ci_ambient matches 3.. run loot give @a[distance=..64,limit=1,sort=nearest] loot cobblemon_initiative:npc_gift/orc_spoils_major
+execute if score #cfg_orc_spoils_rolls ci_ambient matches 4.. run loot give @a[distance=..64,limit=1,sort=nearest] loot cobblemon_initiative:npc_gift/orc_spoils_major
+execute if score #cfg_orc_spoils_rolls ci_ambient matches 5.. run loot give @a[distance=..64,limit=1,sort=nearest] loot cobblemon_initiative:npc_gift/orc_spoils_major

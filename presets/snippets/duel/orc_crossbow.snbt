@@ -1,0 +1,36 @@
+EntityAttribute: {
+    CanBeHitByProjectile: 1b,
+    CanFloat: 1b,
+    CanPassDoor: 1b,
+    IsAttackableByMonsters: 0b,
+    IsAttackableByPlayers: 1b,
+    IsInvulnerable: 0b,
+    IsPushable: 1b,
+    NoGravity: 0b,
+    PushEntities: 1b
+}
+attributes: [
+    {base: 22.0d, id: "minecraft:generic.max_health"},
+    {base: 0.3d, id: "minecraft:generic.movement_speed"}
+]
+HandItems: [
+    {id: "minecraft:crossbow", count: 1},
+    {}
+]
+ArmorItems: [
+    {},
+    {id: "minecraft:chainmail_leggings", count: 1},
+    {id: "minecraft:chainmail_chestplate", count: 1},
+    {}
+]
+ObjectiveData: {
+    HasObjectives: 1b,
+    HasTravelTarget: 0b,
+    ObjectiveDataSet: [
+        {Type: "ATTACK_PLAYER", Prio: 2, Id: "orc_attack_player"},
+        {Type: "CROSSBOW_ATTACK", Prio: 3, Id: "orc_crossbow", SpeedModifier: 1.0d, AttackRadius: 16.0f},
+        {Type: "WATER_AVOIDING_RANDOM_STROLL", Prio: 6, Id: "orc_stroll", SpeedModifier: 0.8d},
+        {Type: "LOOK_AT_PLAYER", Prio: 9, Id: "orc_look", LookDistance: 18.0f},
+        {Type: "LOOK_RANDOM_AROUND", Prio: 10, Id: "orc_look_random"}
+    ]
+}

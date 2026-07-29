@@ -79,7 +79,6 @@ execute unless score #amb_gaviota_smuggler ci_ambient matches 0.. run scoreboard
 execute unless score #amb_gaviota_union_hand ci_ambient matches 0.. run scoreboard players set #amb_gaviota_union_hand ci_ambient 0
 execute unless score #amb_lucia_marelli ci_ambient matches 0.. run scoreboard players set #amb_lucia_marelli ci_ambient 0
 execute unless score #amb_zwiggo_man ci_ambient matches 0.. run scoreboard players set #amb_zwiggo_man ci_ambient 0
-execute unless score #amb_zwiggo_swampert ci_ambient matches 0.. run scoreboard players set #amb_zwiggo_swampert ci_ambient 0
 execute unless score #amb_cyber_apprentice ci_ambient matches 0.. run scoreboard players set #amb_cyber_apprentice ci_ambient 0
 execute unless score #amb_cyber_jr_apprentice ci_ambient matches 0.. run scoreboard players set #amb_cyber_jr_apprentice ci_ambient 0
 execute unless score #amb_cyber_trainer_1 ci_ambient matches 0.. run scoreboard players set #amb_cyber_trainer_1 ci_ambient 0

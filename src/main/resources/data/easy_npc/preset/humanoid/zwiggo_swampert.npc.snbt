@@ -3,7 +3,7 @@
         author: "TheCompanyInc",
         category: "Civilian",
         created: 0L,
-        description: "civilian at Gaviota Port - West Quay (act 1). Compiled from dialog-src.",
+        description: "civilian at Gaviota Port - West Quay (surfaces on call) (act 1). Compiled from dialog-src.",
         entityTypeId: "easy_npc:cobblemon_npc",
         modified: 0L,
         name: "Zwiggo",
@@ -191,20 +191,25 @@
             HasTravelTarget: 0b,
             ObjectiveDataSet: [
                 {
+                    Type: "FLOAT",
+                    Prio: 0,
+                    Id: "float_rise"
+                },
+                {
                     Type: "LOOK_AT_PLAYER",
                     Prio: 9,
-                    Id: "ambient_look_player",
-                    LookDistance: 8.0f
+                    Id: "float_look_player",
+                    LookDistance: 12.0f
                 },
                 {
                     Type: "LOOK_RANDOM_AROUND",
                     Prio: 10,
-                    Id: "ambient_look_random"
+                    Id: "float_look_random"
                 },
                 {
                     Type: "LOOK_AT_RESET",
                     Prio: 9,
-                    Id: "ambient_look_reset"
+                    Id: "float_look_reset"
                 }
             ]
         },
@@ -251,6 +256,6 @@
         ],
         id: "easy_npc:cobblemon_npc",
         CustomName: '{"text": "Zwiggo", "color": "#FFFFFF"}',
-        Tags: ["zwiggo_body", "ci_amb_zwiggo_swampert"]
+        Tags: ["zwiggo_body"]
     }
 }

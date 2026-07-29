@@ -1157,31 +1157,23 @@ def compile_character(ch: dict, dialogs: dict, registers: dict, lore: dict):
         lst = ",".join('"%s"' % t for t in tags)
         out = sm.set_path(out, ["data", "Tags"], sm.parse_snbt("{K:[%s]}" % lst)["K"])
         out = sm.set_path(out, ["data", "CustomNameVisible"], sm.parse_snbt("{K:1b}")["K"])
-    # PokéPhone caller bodies are video-call props: never rendered in survival/spectator, so
-    # the physical body never stands in-frame during a call — the dialog GUI still renders the
-    # caller's face (that's the menu ScreenData, not the world entity). BYTECODE (Easy NPC
-    # 6.25.0 VisibilityHandler + vanilla LivingEntityRenderer): the a22 premise ("master
-    # VISIBLE must stay true, gamemode flags do the hiding") was WRONG for rendering — the
-    # client only consults isInvisibleTo(player) (the per-gamemode logic) AFTER isInvisible()
-    # is already true, and handleIsInvisible returns invisible only when the master VISIBLE
-    # attribute is present AND false. With VISIBLE:1b the body rendered SOLID everywhere
-    # (live-verified on the alpha.2 stray Mom body). So: master VISIBLE must be 0b; then
-    # survival/spectator skip the body entirely and VISIBLE_IN_CREATIVE:1b leaves a
-    # translucent debug ghost in creative. Missing-entry default is FALSE (EASY_NPC_REFERENCE
-    # 1281) — keep the explicit 0b mode/owner/team list, do not trim it. NAME_VISIBILITY
-    # NEVER + CustomNameVisible 0b (overriding the generic entity_tags 1b above): the "Mom"
-    # nametag renders even on invisible entities. INTERACTION_WHEN_INVISIBLE absent->false is
-    # fine — calls open via the server command path (easy_npc dialog open), not interaction.
-    # (No uuid, no visuals export -> DisplayAttribute is the base template's, so this
-    # override is final.)
+    # PokéPhone caller bodies. a6 playtest: "the phones show no people because they are invisible."
+    # The a22 design deliberately hid the caller (master VISIBLE 0b -> handleIsInvisible returns
+    # invisible; the intent was a GUI-portrait-only "video call" with no world body in-frame), but
+    # the player expects to SEE who is calling. So the caller body is now VISIBLE — full default
+    # visibility set (VISIBLE 1b + all mode/owner/team flags 1b, EASY_NPC_REFERENCE:1281 partial-list
+    # rule means every flag must be listed to stay on), NAME_VISIBILITY ALWAYS + CustomNameVisible 1b
+    # so the caller's name shows. phone/deliver now spawns the body ~2 blocks IN FRONT of the player
+    # facing them (was ~ ~ ~ inside the player), so a visible caller reads as standing there, not
+    # clipping the camera. Still despawned on hang-up (ON_CLOSE_DIALOG delete + deliver pre-sweep).
     if "ci_phone_caller" in tags:
         out = sm.set_path(out, ["data", "DisplayAttribute"], sm.parse_snbt(
-            '{K:[{Bool:0b,Type:"VISIBLE"},{Bool:1b,Type:"VISIBLE_AT_DAY"},'
+            '{K:[{Bool:1b,Type:"VISIBLE"},{Bool:1b,Type:"VISIBLE_AT_DAY"},'
             '{Bool:1b,Type:"VISIBLE_AT_NIGHT"},{Bool:1b,Type:"VISIBLE_IN_CREATIVE"},'
-            '{Bool:0b,Type:"VISIBLE_IN_SPECTATOR"},{Bool:0b,Type:"VISIBLE_IN_STANDARD"},'
-            '{Bool:0b,Type:"VISIBLE_TO_OWNER"},{Bool:0b,Type:"VISIBLE_TO_TEAM"},'
-            '{Int:7,Type:"LIGHT_LEVEL"},{Text:"NEVER",Type:"NAME_VISIBILITY"}]}')["K"])
-        out = sm.set_path(out, ["data", "CustomNameVisible"], sm.parse_snbt("{K:0b}")["K"])
+            '{Bool:1b,Type:"VISIBLE_IN_SPECTATOR"},{Bool:1b,Type:"VISIBLE_IN_STANDARD"},'
+            '{Bool:1b,Type:"VISIBLE_TO_OWNER"},{Bool:1b,Type:"VISIBLE_TO_TEAM"},'
+            '{Int:7,Type:"LIGHT_LEVEL"},{Text:"ALWAYS",Type:"NAME_VISIBILITY"}]}')["K"])
+        out = sm.set_path(out, ["data", "CustomNameVisible"], sm.parse_snbt("{K:1b}")["K"])
     return out
 
 

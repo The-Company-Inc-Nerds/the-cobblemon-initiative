@@ -20,7 +20,11 @@
 # tracks the body. phone/open re-issues the open each tick and stops on a spent try budget.
 # Single-player only (CLAUDE.md), so the open targets @a[limit=1] = the player.
 execute at @s run easy_npc delete @e[type=easy_npc:humanoid,tag=ci_phone_caller,distance=..64]
-$execute at @s run easy_npc preset import_new data easy_npc:preset/humanoid/$(caller).npc.snbt ~ ~ ~
+# a6: the caller is VISIBLE now (playtest — "phones show no people"), so spawn it ~2 blocks IN
+# FRONT of the player at foot level (local ^ ^-1.6 ^2 from eye height) instead of ~ ~ ~ inside the
+# player, then turn it to face the player — reads as a caller standing there, not clipping the camera.
+$execute at @s anchored eyes positioned ^ ^-1.6 ^2 run easy_npc preset import_new data easy_npc:preset/humanoid/$(caller).npc.snbt ~ ~ ~
+$execute as @e[type=easy_npc:humanoid,tag=$(tag),limit=1] at @s run tp @s ~ ~ ~ facing entity @p feet
 $data modify storage cobblemon_initiative:phone open set value {tag:"$(tag)",label:"$(label)"}
 scoreboard players set #phone_open_tries ci_dawn 4
 schedule function cobblemon_initiative:phone/open_tick 3t

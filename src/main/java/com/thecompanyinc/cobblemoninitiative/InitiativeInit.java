@@ -231,6 +231,10 @@ public class InitiativeInit implements ModInitializer {
     // Mirror daycare custody into ci_daycare (Bianca's state-aware dialog ladder, a3).
     com.thecompanyinc.cobblemoninitiative.daycare.DaycareScoreManager.init();
 
+    // Apply the ModMenu DojoConfig health/damage multipliers to the datapack-spawned
+    // Deepcore dojo PVP bodies (dc_*_hostile), once per body on load (a22).
+    DojoDifficultyManager.init();
+
     CommandRegistrationCallback.EVENT.register(
       (dispatcher, registryAccess, environment) -> {
         CobblemonInitiativeCommands.register(dispatcher);

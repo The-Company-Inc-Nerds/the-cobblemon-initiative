@@ -21,6 +21,9 @@ execute if score #dc_floor_4 ci_gym matches 1 if entity @a[x=965.9,y=141.5,z=318
 # THE PIT (dc_pit_ready = pit-track chosen OR full-track with all 4 floors down; derived per tick in
 # gym/deepcore_tower). Stage 0 -> raise Striker on approach; stage 1 (Striker down) -> Ken; stage 2
 # (Ken down) -> cleared. Pit center ~990/129/3174 for the poll (Striker 997.7, Ken 984.3).
+# Whole-dojo challengers must beat all four floor masters before the pit opens (dc_pit_ready needs
+# deepcore_tower>=4). A full-track player who reaches the pit early gets a nudge, not a spawn.
+execute if score #dc_pit_stage ci_gym matches 0 as @a[tag=dc_track_full,x=990,y=129,z=3174,distance=..24] if score @s deepcore_tower matches ..3 run title @s actionbar [{"text":"The pit stays shut — drop all four floor masters first","color":"gray"}]
 execute if score #dc_pit_stage ci_gym matches 0 if entity @a[tag=dc_pit_ready,x=997.7,y=129,z=3174.5,distance=..40] positioned 997.7 129 3174.5 run function cobblemon_initiative:gym/dojo_pit_striker
 execute if score #dc_pit_stage ci_gym matches 1 if entity @a[x=990,y=129,z=3174,distance=..48] positioned 990 129 3174 unless entity @e[type=easy_npc:humanoid,tag=dc_striker_hostile] run function cobblemon_initiative:gym/dojo_pit_ken
 execute if score #dc_pit_stage ci_gym matches 2 if entity @a[x=990,y=129,z=3174,distance=..48] positioned 990 129 3174 unless entity @e[type=easy_npc:humanoid,tag=dc_ken_hostile] run function cobblemon_initiative:gym/dojo_pit_done

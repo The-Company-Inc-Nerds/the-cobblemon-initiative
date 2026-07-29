@@ -1447,8 +1447,76 @@ public class InitiativeConfigScreen {
         .setTooltip(Component.literal("The daycare's 'not Company' framing (the shipped say-line stays either way)."))
         .setSaveConsumer(flavorScreenConfig::setDaycareIndependentFlavor).build());
 
+    // -------------------------------------------------------------------------
+    // Deepcore Dojo
+    // -------------------------------------------------------------------------
+    DojoConfig dojoConfig = DojoConfig.load();
+    DojoConfig dojoDefaults = new DojoConfig();
+    ConfigCategory dojo = builder.getOrCreateCategory(Component.literal("Deepcore Dojo"));
+
+    dojo.addEntry(
+      entryBuilder
+        .startFloatField(Component.literal("Fighter Health Multiplier"), dojoConfig.getFighterHealthMultiplier())
+        .setDefaultValue(dojoDefaults.getFighterHealthMultiplier())
+        .setMin(0.25f).setMax(4.0f)
+        .setTooltip(Component.literal(
+          "Scales the HP of the Deepcore dojo PVP fighters (floor masters + pit apprentices). 1.0 = the baked preset values (~40 HP masters, 24 HP Striker). Applies to fighters spawned after the change."))
+        .setSaveConsumer(dojoConfig::setFighterHealthMultiplier)
+        .build()
+    );
+    dojo.addEntry(
+      entryBuilder
+        .startFloatField(Component.literal("Fighter Strength Multiplier"), dojoConfig.getFighterDamageMultiplier())
+        .setDefaultValue(dojoDefaults.getFighterDamageMultiplier())
+        .setMin(0.25f).setMax(4.0f)
+        .setTooltip(Component.literal(
+          "Scales the melee attack damage of the dojo fighters (fists; the ranged Striker's bow is unaffected). 1.0 = the baked preset value (5.0 = 2.5 hearts/hit). Applies to fighters spawned after the change."))
+        .setSaveConsumer(dojoConfig::setFighterDamageMultiplier)
+        .build()
+    );
+
+    // -------------------------------------------------------------------------
+    // Orc Camps
+    // -------------------------------------------------------------------------
+    OrcConfig orcConfig = OrcConfig.load();
+    OrcConfig orcDefaults = new OrcConfig();
+    ConfigCategory orc = builder.getOrCreateCategory(Component.literal("Orc Camps"));
+
+    orc.addEntry(
+      entryBuilder
+        .startFloatField(Component.literal("Orc Health Multiplier"), orcConfig.getHealthMultiplier())
+        .setDefaultValue(orcDefaults.getHealthMultiplier())
+        .setMin(0.25f).setMax(4.0f)
+        .setTooltip(Component.literal(
+          "Scales the HP of the rotating orc-camp raiders/warriors/chief. 1.0 = the baked preset values. Applies to orcs spawned after the change."))
+        .setSaveConsumer(orcConfig::setHealthMultiplier)
+        .build()
+    );
+    orc.addEntry(
+      entryBuilder
+        .startFloatField(Component.literal("Orc Strength Multiplier"), orcConfig.getDamageMultiplier())
+        .setDefaultValue(orcDefaults.getDamageMultiplier())
+        .setMin(0.25f).setMax(4.0f)
+        .setTooltip(Component.literal(
+          "Scales the melee attack damage of the orcs (the crossbow marksman's bolt is unaffected). 1.0 = the baked preset values. Applies to orcs spawned after the change."))
+        .setSaveConsumer(orcConfig::setDamageMultiplier)
+        .build()
+    );
+    orc.addEntry(
+      entryBuilder
+        .startIntField(Component.literal("Camp Spoils Rolls"), orcConfig.getSpoilsRolls())
+        .setDefaultValue(orcDefaults.getSpoilsRolls())
+        .setMin(0).setMax(5)
+        .setTooltip(Component.literal(
+          "How many times the camp-cleared spoils table is rolled (the reward knob). 1 = one bundle (default), 0 = no reward, up to 5. Takes effect on the next camp cleared."))
+        .setSaveConsumer(orcConfig::setSpoilsRolls)
+        .build()
+    );
+
     builder.setSavingRunnable(() -> {
       config.save();
+      dojoConfig.save();
+      orcConfig.save();
       sightConfig.save();
       shrineConfig.save();
       lootChestConfig.save();
@@ -1466,6 +1534,10 @@ public class InitiativeConfigScreen {
       ShrineConfig.reload();
       LootChestConfig.reload();
       NobleConfig.reload();
+      DojoConfig.reload();
+      OrcConfig.reload();
+      com.thecompanyinc.cobblemoninitiative.DojoDifficultyManager.pushOrcSpoils(
+        net.minecraft.client.Minecraft.getInstance().getSingleplayerServer());
       ProgressionConfig.reload();
       // Session start/stop stays lifecycle-gated (/streamsync reload applies it live).
       StreamSyncConfig.reload();

@@ -8,7 +8,7 @@
 >
 > DEV DOCUMENT - full spoilers. The player-facing wiki lives in `wiki/`.
 
-**760 characters** - 355 persisted world bodies, 347 latch-spawned, 58 unplaced (no body, no latch - phone callers, script-spawned bodies like the transformed Hua Zhan leader, dead content, act-2/3 casting).
+**760 characters** - 355 persisted world bodies, 346 latch-spawned, 59 unplaced (no body, no latch - phone callers, script-spawned bodies like the transformed Hua Zhan leader, dead content, act-2/3 casting).
 
 **Reading the tables:** *(body)* = persisted world entity (moves only via repairs tp);
 *(latch)* = spawned at the authored coords when a player first comes within 40 blocks;
@@ -274,11 +274,11 @@
 
 ## Gaviota Port — Gym 5 (Water, cap 50)
 
-`characters/gaviota/` - 40 NPCs
+`characters/gaviota/` - 39 NPCs
 
 | NPC | Where | Does | Looks |
 |---|---|---|---|
-| **Alessia Corrente** `alessia_corrente` | Gaviota Port - Boardwalk - 550 87 3476 (body) | flavor / lore dialog | world-body look |
+| **Alessia Corrente** `alessia_corrente` | Gaviota Port - Daycare (Pen 2) - 549.7 87.1 3477.2 (body, moved by repairs) | flavor / lore dialog | world-body look |
 | **Antonio Bracci** `antonio_bracci` | Gaviota Port - Lower Docks - 452 64 3502 (body) | flavor / lore dialog | world-body look |
 | **Bianca Litorra** `bianca_litorra` | Gaviota Port - Boardwalk - 540 86 3490 (body) | cmd: daycare withdraw 1; daycare withdraw 2; daycare status; daycare deposit | skin `single/hua_zhan_apprentice` |
 | **Carlo Retezza** `carlo_retezza` | Gaviota Port - Lower Docks - 486 68 3506 (body) | flavor / lore dialog | world-body look |
@@ -297,27 +297,26 @@
 | **Tally Clerk Pell** `gaviota_manifest_a` | Gaviota Port - Main Pier Freight Stack - 566.5 85 3564.5 (latch) | runs: sidequest/manifest/note_1 | skin `groups/gaviota` |
 | **Tally Clerk Odile** `gaviota_manifest_b` | Gaviota Port - Wharf Crates - 588.5 86 3600.5 (latch) | runs: sidequest/manifest/note_2 | skin `groups/gaviota` |
 | **Tally Clerk Bram** `gaviota_manifest_c` | Gaviota Port - Deep Pier, Dunewind Load - 605.5 87 3650.5 (latch) | runs: sidequest/manifest/note_3 | skin `groups/gaviota` |
-| **Nurse Marina** `gaviota_nurse` | Gaviota Port - Pokemon Center - 560.5 82 3540.5 (body, moved by repairs) | heals your party; runs: economy/heal_paid, pc/open, sidequest/rumors/coralie | skin `single/nurse_center` |
+| **Nurse Marina** `gaviota_nurse` | Gaviota Port - Pokemon Center (585.5/90/3435.5) - 585.5 90 3435.5 (body, moved by repairs) | heals your party; runs: economy/heal_paid, pc/open, sidequest/rumors/coralie | skin `single/nurse_center` |
 | **Sable** `gaviota_smuggler` | Gaviota Port - Westwind Fields Sea Dock - 700.5 103 3255.5 (latch) | battles `wheat_trader_ambush` (2x lv38-39: miltank, tauros), prize 500; native trade window (trade_wheat_trader); native trade window (trade_wheat_trader) | skin `single/wheat_factor` |
 | **Dock Hand Mattias** `gaviota_union_hand` | Gaviota Port - The Wharf - 580.5 86 3600.5 (latch) | flavor / lore dialog | skin `groups/gaviota` |
 | **Tide-Caller Gianna** `gianna_ondina` | Gaviota Port - North Pier - 600 92 3666 (body) | flavor / lore dialog | world-body look |
 | **Luca Pietrafonda** `luca_pietrafonda` | Gaviota Port - East Boardwalk - 622 83 3474 (body) | flavor / lore dialog | world-body look |
 | **Luca Scarpelli** `luca_scarpelli` | Gaviota Port - Upper Terrace - 612 92 3640 (body) | flavor / lore dialog | world-body look |
-| **Lucia Marelli** `lucia_marelli` | Gaviota Port - Open Podium - 585.5 90 3435.5 (latch) | flavor / lore dialog | skin `groups/gaviota` |
+| **Lucia Marelli** `lucia_marelli` | Gaviota Port - Lower Docks - 474.5 66 3552.5 (latch) | flavor / lore dialog | skin `groups/gaviota` |
 | **Titleholder Marlin** `marco_rinaldi` | Gaviota Port - Pokemart counter - 656.5 83 3533.5 (body, moved by repairs) | opens the Pokemart shop | world-body look |
 | **Matteo Lucente** `matteo_lucente` | Gaviota Port - Lower Docks - 414 68 3546 (body) | flavor / lore dialog | world-body look |
 | **Mira Pescara** `mira_pescara` | Gaviota Port - North Pier - 586 103 3608 (body) | flavor / lore dialog | world-body look |
 | **Nina Soldini** `nina_soldini` | Gaviota Port - Waterfront Cafe - 500 68 3498 (body) | flavor / lore dialog | world-body look |
-| **Paolo Neretti** `paolo_neretti` | Gaviota Port - Boardwalk - 550 87 3508 (body) | flavor / lore dialog | world-body look |
-| **Renato Guidoni** `renato_guidoni` | Gaviota Port - Upper Terrace - 596 92 3598 (body) | flavor / lore dialog | world-body look |
+| **Paolo Neretti** `paolo_neretti` | Gaviota Port - Daycare (Pen 1) - 556.7 87.2 3493.8 (body, moved by repairs) | flavor / lore dialog | world-body look |
 | **Romano Bellmare** `romano_bellmare` | Gaviota Port - East Boardwalk - 616 83 3496 (body) | flavor / lore dialog | world-body look |
 | **Open Liaison Rosa** `rosa_ferrata` | Gaviota Port - Sponsor Podium - 594 82 3518 (body) | flavor / lore dialog | world-body look |
 | **Silvio Mercato** `silvio_mercato` | Gaviota Port - Fish Market - 518 70 3554 (body) | flavor / lore dialog | world-body look |
 | **Sofia Bellmare** `sofia_bellmare` | Gaviota Port - East Boardwalk - 650 83 3546 (body) | flavor / lore dialog | world-body look |
 | **Tessa Corallo** `tessa_corallo` | Gaviota Port - North Pier - 606 88 3588 (body) | flavor / lore dialog | world-body look |
 | **Vittorio Salmare** `vittorio_salmare` | Gaviota Port - North Pier - 560 103 3646 (body) | flavor / lore dialog | world-body look |
-| **Deckhand Rocco** `zwiggo_man` | Gaviota Port - West Quay - 410.7 64 3501.4 (latch) | flavor / lore dialog | skin `groups/gaviota` |
-| **Zwiggo** `zwiggo_swampert` | Gaviota Port - West Quay - 406.8 64 3501.2 (latch) | gifts mon: swampert level=40 nickname=Zwiggo | Cobblemon model: swampert |
+| **Deckhand Rocco** `zwiggo_man` | Gaviota Port - West Quay - 405.5 64 3499.5 (latch) | runs: gaviota/zwiggo_summon | skin `groups/gaviota` |
+| **Zwiggo** `zwiggo_swampert` | Gaviota Port - West Quay (surfaces on call) - UNPLACED | gifts mon: swampert level=40 nickname=Zwiggo | Cobblemon model: swampert |
 
 ## Battle Bay
 
@@ -849,7 +848,7 @@
 | **Capoeira Rio** `deepcore_trainer_4` | Deepcore City - Gym, the inner ring - 965.9 141.5 3183.6 (latch) | flavor / lore dialog | skin `single/deepcore_trainer_2` |
 | **Garden Master Wei** `garden_master_wei` | Hua Zhan City - West Hill Garden - 1404 105 2054 (body) | runs: sidequest/pilgrimage/hud | world-body look |
 | **Apprentice Marina** `gaviota_apprentice` | Gaviota Port - Gym, the deep slip - 598.5 87 3643.5 (latch) | battles `gaviota_apprentice` (3x lv41-42: tentacruel, sharpedo, starmie) | skin `single/gaviota_apprentice` |
-| **Gaviota Gym Guide** `gaviota_guide` | Gaviota Port - UNPLACED | gym-guide info pages | STEVE default |
+| **Renato Guidoni** `gaviota_guide` | Gaviota Port - Upper Terrace - 596 92 3598 (body) | gym-guide info pages | world-body look |
 | **Jr. Apprentice Tide** `gaviota_jr_apprentice` | Gaviota Port - Gym, the apprentice slip - 594.5 87 3649.5 (latch) | battles `gaviota_jr_apprentice` (2x lv39-40: tentacruel, azumarill) | skin `single/gaviota_apprentice` |
 | **Leader Neptune** `gaviota_leader` | Gaviota Port - 596 87 3646 (body) | battles `gaviota_leader` (4x lv44-46: cloyster, lapras, gyarados, starmie), prize 3200; cutscene: gaviota_leader_intro | skin `single/gaviota_leader` |
 | **Sailor Marco** `gaviota_trainer_1` | Gaviota Port - Gym, the wharf - 593.5 87 3644.5 (latch) | battles `gaviota_trainer_1` (2x lv38-39: tentacool, carvanha) | skin `groups/gaviota` |
@@ -1026,11 +1025,12 @@
 
 ## Orc
 
-`characters/orc/` - 3 NPCs
+`characters/orc/` - 4 NPCs
 
 | NPC | Where | Does | Looks |
 |---|---|---|---|
 | **Orc War-Chief** `orc_chief` | Wilderness ridges (rotating orc camp) - UNPLACED | flavor / lore dialog | orc_warrior (ORC_WARRIOR) |
+| **Orc Marksman** `orc_crossbow` | Wilderness ridges (rotating orc camp) - UNPLACED | flavor / lore dialog | orc (ORC) |
 | **Orc Raider** `orc_raider` | Wilderness ridges (rotating orc camp) - UNPLACED | flavor / lore dialog | orc (ORC) |
 | **Orc Warrior** `orc_warrior` | Wilderness ridges (rotating orc camp) - UNPLACED | flavor / lore dialog | orc_warrior (ORC_WARRIOR) |
 

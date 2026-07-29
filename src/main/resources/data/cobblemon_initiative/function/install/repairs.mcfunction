@@ -97,3 +97,8 @@ execute unless score #repair_a21 ci_ambient matches 1 run function cobblemon_ini
 #    Zwiggo Man -> Deckhand Rocko + swampert quay latch, orc camps -> one rotating easy_npc camp,
 #    Gaviota nurse -> Nurse Marina + Lucia to the Open podium, Fuslie trade, Ludwig lore ──
 execute unless score #repair_a22 ci_ambient matches 1 run function cobblemon_initiative:install/repairs_a22_arm
+
+# ── wave a23 (0.7.0-alpha.6): playtest wave — Gaviota Center/podium swap (Nurse Marina -> podium,
+#    Lucia -> docks), daycare pen keepers (Alessia/Paolo), Zwiggo re-couple (Rocco mudkip yes/no +
+#    water-emerge), Renato -> Gaviota gym guide (uuid re-cast, no repairs) ──
+execute unless score #repair_a23 ci_ambient matches 1 run function cobblemon_initiative:install/repairs_a23_arm
