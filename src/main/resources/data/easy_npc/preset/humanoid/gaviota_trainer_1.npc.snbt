@@ -17,6 +17,99 @@
                     {
                         Type: "OPEN_DEFAULT_DIALOG"
                     }
+                ],
+                ON_DISTANCE_CLOSE: [
+                    {
+                        Type: "COMMAND",
+                        ConditionDataSet: {
+                            ConditionDataSet: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_gaviota_trainer_1"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_recent_flee"
+                                }
+                            ]
+                        },
+                        Cmd: "say New face on my wharf - and the tide is out! Prove you do not sink!"
+                    }
+                ],
+                ON_DISTANCE_VERY_CLOSE: [
+                    {
+                        Type: "COMMAND",
+                        ConditionDataSet: {
+                            ConditionDataSet: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "dex_gte_2"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_recent_flee"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_gaviota_trainer_1"
+                                }
+                            ]
+                        },
+                        Cmd: "tbcs attach rctmod:gaviota_trainer_1 @s"
+                    },
+                    {
+                        Type: "COMMAND",
+                        ExecAsUser: 1b,
+                        ConditionDataSet: {
+                            ConditionDataSet: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "dex_gte_2"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_recent_flee"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_gaviota_trainer_1"
+                                }
+                            ]
+                        },
+                        Cmd: "tag @s add in_trainer_battle"
+                    },
+                    {
+                        Type: "COMMAND",
+                        ExecAsUser: 1b,
+                        ConditionDataSet: {
+                            ConditionDataSet: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "dex_gte_2"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_recent_flee"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_gaviota_trainer_1"
+                                }
+                            ]
+                        },
+                        Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:gaviota_trainer_1 onwin {1: ['tag @1 add defeated_gaviota_trainer_1', '@2 say Fair winds to you. The wharf is yours to cross.', 'tag @1 remove in_trainer_battle'], 2: ['@1 say The sea is patient. Come back when your legs are steadier.', 'tag @2 remove in_trainer_battle']}"
+                    }
                 ]
             }
         },
@@ -117,7 +210,21 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:gaviota_trainer_1_hightide onwin {1: ['tag @1 add defeated_gaviota_trainer_1', '@2 say Fair winds to you. The wharf is yours to cross.'], 2: ['@1 say The sea is patient. Come back when your legs are steadier.']}"
+                                    Cmd: "tag @s add in_trainer_battle"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_gaviota_trainer_1"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:gaviota_trainer_1_hightide onwin {1: ['tag @1 add defeated_gaviota_trainer_1', '@2 say Fair winds to you. The wharf is yours to cross.', 'tag @1 remove in_trainer_battle'], 2: ['@1 say The sea is patient. Come back when your legs are steadier.', 'tag @2 remove in_trainer_battle']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -197,7 +304,21 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:gaviota_trainer_1 onwin {1: ['tag @1 add defeated_gaviota_trainer_1', '@2 say Fair winds to you. The wharf is yours to cross.'], 2: ['@1 say The sea is patient. Come back when your legs are steadier.']}"
+                                    Cmd: "tag @s add in_trainer_battle"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_gaviota_trainer_1"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:gaviota_trainer_1 onwin {1: ['tag @1 add defeated_gaviota_trainer_1', '@2 say Fair winds to you. The wharf is yours to cross.', 'tag @1 remove in_trainer_battle'], 2: ['@1 say The sea is patient. Come back when your legs are steadier.', 'tag @2 remove in_trainer_battle']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -396,6 +517,7 @@
             }
         ],
         id: "easy_npc:humanoid",
-        CustomName: '{"text": "Sailor Marco", "color": "#FFFFFF"}'
+        CustomName: '{"text": "Sailor Marco", "color": "#FFFFFF"}',
+        Tags: ["gaviota_sight_marco"]
     }
 }

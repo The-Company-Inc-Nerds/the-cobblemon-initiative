@@ -1,0 +1,20 @@
+{
+  "_comment": "Gaviota gym water drain/raise cutscene (playtest P27 base spot 582.9/90.6/3646.5). Plays when a pump pair drains a level and on a mismatch reset — the water animation runs underneath, so keep it long enough to watch the level move. Absolute coords; keyframe y is feet-level (camera eye ~1.78 above). SHOWRUNNER: retune the arc/yaws/pitch in-world; endBack 0 returns the player to where they stood.",
+  "relative": false,
+  "skippable": true,
+  "endBack": 0.0,
+  "startTitle": "§bThe Harbour Locks",
+  "startSubtitle": "§7The pumps answer",
+  "startTitleFadeIn": 10,
+  "startTitleStay": 40,
+  "startTitleFadeOut": 15,
+  "keyframes": [
+    { "x": 582.9, "y": 90.6, "z": 3646.5, "yaw": -90.0, "pitch": 30.0, "ticks": 30 },
+    { "x": 590.0, "y": 97.0, "z": 3646.5, "yaw": -90.0, "pitch": 50.0, "ticks": 45 },
+    { "x": 600.0, "y": 94.0, "z": 3646.5, "yaw": 90.0, "pitch": 35.0, "ticks": 40 }
+  ],
+  "cues": [
+    { "tick": 0, "sound": "minecraft:block.conduit.activate", "volume": 0.8, "pitch": 0.9 },
+    { "tick": 40, "sound": "minecraft:block.water.ambient", "volume": 1.0, "pitch": 0.8 }
+  ]
+}

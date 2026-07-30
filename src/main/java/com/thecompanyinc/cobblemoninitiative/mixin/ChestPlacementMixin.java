@@ -33,6 +33,13 @@ public class ChestPlacementMixin {
     CallbackInfo ci
   ) {
     if (level.isClientSide()) return;
+
+    // Count every player block-placement toward the "built a home" reward (town placement is
+    // blocked upstream, so this only ever counts a player's own base out in the wild).
+    if (placer instanceof ServerPlayer builder) {
+      com.thecompanyinc.cobblemoninitiative.homestead.HomeBaseManager.onBlockPlaced(builder);
+    }
+
     if (!(state.getBlock() instanceof ChestBlock)) return;
     if (!(placer instanceof ServerPlayer)) return;
 

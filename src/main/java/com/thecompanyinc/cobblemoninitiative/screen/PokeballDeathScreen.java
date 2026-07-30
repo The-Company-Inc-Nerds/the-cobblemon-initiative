@@ -86,9 +86,10 @@ public class PokeballDeathScreen extends Screen {
         Component.literal("§a⚔ Die with Honor"),
         b -> {
           if (this.minecraft != null && this.minecraft.player != null) {
-            this.minecraft.player.connection.send(
-              new ServerboundClientCommandPacket(
-                ServerboundClientCommandPacket.Action.PERFORM_RESPAWN));
+            // Server-side respawn (spectator) + TP to the town spawn — the command mirrors the
+            // vanilla PERFORM_RESPAWN spectate but also snaps you to Sango instead of the roof.
+            this.minecraft.player.connection.sendCommand(
+              "cobblemon-initiative honorable-respawn");
             this.minecraft.setScreen(null);
           }
         })

@@ -220,6 +220,8 @@ execute if score farm_10 field_freed matches 1 run tag @a add field_10_liberated
 # inverse tags (no_<X> == player does NOT have X)
 tag @a[tag=!anselm_brass_waxed] add no_anselm_brass_waxed
 tag @a[tag=anselm_brass_waxed] remove no_anselm_brass_waxed
+tag @a[tag=!aquarium_tier1_done] add no_aquarium_tier1_done
+tag @a[tag=aquarium_tier1_done] remove no_aquarium_tier1_done
 tag @a[tag=!asset_recovery_clear] add no_asset_recovery_clear
 tag @a[tag=asset_recovery_clear] remove no_asset_recovery_clear
 tag @a[tag=!assist_coal_in] add no_assist_coal_in
@@ -970,6 +972,8 @@ tag @a[tag=!frontier_registered] add no_frontier_registered
 tag @a[tag=frontier_registered] remove no_frontier_registered
 tag @a[tag=!frontier_tower_cleared] add no_frontier_tower_cleared
 tag @a[tag=frontier_tower_cleared] remove no_frontier_tower_cleared
+tag @a[tag=!gaviota_drained] add no_gaviota_drained
+tag @a[tag=gaviota_drained] remove no_gaviota_drained
 tag @a[tag=!gaviota_manifest_1] add no_gaviota_manifest_1
 tag @a[tag=gaviota_manifest_1] remove no_gaviota_manifest_1
 tag @a[tag=!gaviota_manifest_2] add no_gaviota_manifest_2
@@ -1098,8 +1102,6 @@ tag @a[tag=!mc_gym3_done] add no_mc_gym3_done
 tag @a[tag=mc_gym3_done] remove no_mc_gym3_done
 tag @a[tag=!mc_gym4_done] add no_mc_gym4_done
 tag @a[tag=mc_gym4_done] remove no_mc_gym4_done
-tag @a[tag=!mc_gym5_done] add no_mc_gym5_done
-tag @a[tag=mc_gym5_done] remove no_mc_gym5_done
 tag @a[tag=!mc_gym6_done] add no_mc_gym6_done
 tag @a[tag=mc_gym6_done] remove no_mc_gym6_done
 tag @a[tag=!mc_gym7_done] add no_mc_gym7_done

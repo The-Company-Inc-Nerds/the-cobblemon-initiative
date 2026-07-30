@@ -1,8 +1,10 @@
 # Deepcore dojo PVP driver (a22, playtest N5-N10 + "make the fighting gym actual minecraft fights").
 # Registered in #minecraft:tick. Orc-camp idiom: each floor + the pit is a 0/1/2 latch on ci_gym,
-# every line behind ONE score check so idle state costs a single failed test. FULLY LETHAL per the
-# showrunner ruling — the duel bodies deal real damage and the player can die (hardcore permadeath);
-# no health floor. Bruno (the leader) stays a Cobblemon battle — only the floor masters + pit are PVP.
+# every line behind ONE score check so idle state costs a single failed test. LETHALITY is governed by
+# DojoConfig.knockoutMode (0.7.0-alpha.10, ModMenu, DEFAULT ON = non-lethal): ON, a defeated fighter is
+# left lying at the spot and a player a fighter would kill is knocked out (half a heart + CobbleDollars,
+# DojoKnockoutManager); OFF, the old FULLY LETHAL path stands (real damage, hardcore permadeath ->
+# PokeballDeathScreen). Bruno (the leader) stays a Cobblemon battle — only the floor masters + pit are PVP.
 #
 # FLOOR MASTERS (dc_track_full). RAISE on approach (chunk-safe): latch 0 + a whole-dojo player within
 # 40 of the post -> spawn the hostile (dojo_raise_N sets latch 1 first). CLEARED poll: latch 1 + a

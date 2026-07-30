@@ -17,6 +17,99 @@
                     {
                         Type: "OPEN_DEFAULT_DIALOG"
                     }
+                ],
+                ON_DISTANCE_CLOSE: [
+                    {
+                        Type: "COMMAND",
+                        ConditionDataSet: {
+                            ConditionDataSet: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_gaviota_trainer_3"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_recent_flee"
+                                }
+                            ]
+                        },
+                        Cmd: "say You are on my line now! Fight better than a marlin or get reeled in!"
+                    }
+                ],
+                ON_DISTANCE_VERY_CLOSE: [
+                    {
+                        Type: "COMMAND",
+                        ConditionDataSet: {
+                            ConditionDataSet: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "dex_gte_2"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_recent_flee"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_gaviota_trainer_3"
+                                }
+                            ]
+                        },
+                        Cmd: "tbcs attach rctmod:gaviota_trainer_3 @s"
+                    },
+                    {
+                        Type: "COMMAND",
+                        ExecAsUser: 1b,
+                        ConditionDataSet: {
+                            ConditionDataSet: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "dex_gte_2"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_recent_flee"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_gaviota_trainer_3"
+                                }
+                            ]
+                        },
+                        Cmd: "tag @s add in_trainer_battle"
+                    },
+                    {
+                        Type: "COMMAND",
+                        ExecAsUser: 1b,
+                        ConditionDataSet: {
+                            ConditionDataSet: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "dex_gte_2"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_recent_flee"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_gaviota_trainer_3"
+                                }
+                            ]
+                        },
+                        Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:gaviota_trainer_3 onwin {1: ['tag @1 add defeated_gaviota_trainer_3', '@2 say You slipped my line clean. Go on to Tide.', 'tag @1 remove in_trainer_battle'], 2: ['@1 say Reeled you right in. Toughen up and cast off again.', 'tag @2 remove in_trainer_battle']}"
+                    }
                 ]
             }
         },
@@ -114,7 +207,21 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:gaviota_trainer_3_hightide onwin {1: ['tag @1 add defeated_gaviota_trainer_3', '@2 say You slipped my line clean. Go on to Tide.'], 2: ['@1 say Reeled you right in. Toughen up and cast off again.']}"
+                                    Cmd: "tag @s add in_trainer_battle"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_gaviota_trainer_3"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:gaviota_trainer_3_hightide onwin {1: ['tag @1 add defeated_gaviota_trainer_3', '@2 say You slipped my line clean. Go on to Tide.', 'tag @1 remove in_trainer_battle'], 2: ['@1 say Reeled you right in. Toughen up and cast off again.', 'tag @2 remove in_trainer_battle']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -194,7 +301,21 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:gaviota_trainer_3 onwin {1: ['tag @1 add defeated_gaviota_trainer_3', '@2 say You slipped my line clean. Go on to Tide.'], 2: ['@1 say Reeled you right in. Toughen up and cast off again.']}"
+                                    Cmd: "tag @s add in_trainer_battle"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_gaviota_trainer_3"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:gaviota_trainer_3 onwin {1: ['tag @1 add defeated_gaviota_trainer_3', '@2 say You slipped my line clean. Go on to Tide.', 'tag @1 remove in_trainer_battle'], 2: ['@1 say Reeled you right in. Toughen up and cast off again.', 'tag @2 remove in_trainer_battle']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -393,6 +514,7 @@
             }
         ],
         id: "easy_npc:humanoid",
-        CustomName: '{"text": "Fisherman Ivan", "color": "#FFFFFF"}'
+        CustomName: '{"text": "Fisherman Ivan", "color": "#FFFFFF"}',
+        Tags: ["gaviota_sight_ivan"]
     }
 }

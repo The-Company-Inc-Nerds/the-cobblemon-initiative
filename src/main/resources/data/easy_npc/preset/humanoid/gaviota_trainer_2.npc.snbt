@@ -17,6 +17,99 @@
                     {
                         Type: "OPEN_DEFAULT_DIALOG"
                     }
+                ],
+                ON_DISTANCE_CLOSE: [
+                    {
+                        Type: "COMMAND",
+                        ConditionDataSet: {
+                            ConditionDataSet: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_gaviota_trainer_2"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_recent_flee"
+                                }
+                            ]
+                        },
+                        Cmd: "say You dropped into my channel! Nobody swims through here for free!"
+                    }
+                ],
+                ON_DISTANCE_VERY_CLOSE: [
+                    {
+                        Type: "COMMAND",
+                        ConditionDataSet: {
+                            ConditionDataSet: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "dex_gte_2"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_recent_flee"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_gaviota_trainer_2"
+                                }
+                            ]
+                        },
+                        Cmd: "tbcs attach rctmod:gaviota_trainer_2 @s"
+                    },
+                    {
+                        Type: "COMMAND",
+                        ExecAsUser: 1b,
+                        ConditionDataSet: {
+                            ConditionDataSet: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "dex_gte_2"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_recent_flee"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_gaviota_trainer_2"
+                                }
+                            ]
+                        },
+                        Cmd: "tag @s add in_trainer_battle"
+                    },
+                    {
+                        Type: "COMMAND",
+                        ExecAsUser: 1b,
+                        ConditionDataSet: {
+                            ConditionDataSet: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "dex_gte_2"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_recent_flee"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_gaviota_trainer_2"
+                                }
+                            ]
+                        },
+                        Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:gaviota_trainer_2 onwin {1: ['tag @1 add defeated_gaviota_trainer_2', '@2 say The channel is yours. You held your breath and you held your ground.', 'tag @1 remove in_trainer_battle'], 2: ['@1 say The current took you under. Come back up for air and try again.', 'tag @2 remove in_trainer_battle']}"
+                    }
                 ]
             }
         },
@@ -114,7 +207,21 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:gaviota_trainer_2_hightide onwin {1: ['tag @1 add defeated_gaviota_trainer_2', '@2 say The channel is yours. You held your breath and you held your ground.'], 2: ['@1 say The current took you under. Come back up for air and try again.']}"
+                                    Cmd: "tag @s add in_trainer_battle"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_gaviota_trainer_2"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:gaviota_trainer_2_hightide onwin {1: ['tag @1 add defeated_gaviota_trainer_2', '@2 say The channel is yours. You held your breath and you held your ground.', 'tag @1 remove in_trainer_battle'], 2: ['@1 say The current took you under. Come back up for air and try again.', 'tag @2 remove in_trainer_battle']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -194,7 +301,21 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:gaviota_trainer_2 onwin {1: ['tag @1 add defeated_gaviota_trainer_2', '@2 say The channel is yours. You held your breath and you held your ground.'], 2: ['@1 say The current took you under. Come back up for air and try again.']}"
+                                    Cmd: "tag @s add in_trainer_battle"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_gaviota_trainer_2"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:gaviota_trainer_2 onwin {1: ['tag @1 add defeated_gaviota_trainer_2', '@2 say The channel is yours. You held your breath and you held your ground.', 'tag @1 remove in_trainer_battle'], 2: ['@1 say The current took you under. Come back up for air and try again.', 'tag @2 remove in_trainer_battle']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -393,6 +514,7 @@
             }
         ],
         id: "easy_npc:humanoid",
-        CustomName: '{"text": "Swimmer Coral", "color": "#FFFFFF"}'
+        CustomName: '{"text": "Swimmer Coral", "color": "#FFFFFF"}',
+        Tags: ["gaviota_sight_coral"]
     }
 }

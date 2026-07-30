@@ -36,10 +36,10 @@ public class DaycareConfig {
    * body — move her or nudge this coord if they clash in-world.
    */
   private int penX = 549;
-  private int penY = 86;
+  private int penY = 87;
   private int penZ = 3505;
   private int pen2X = 550;
-  private int pen2Y = 87;
+  private int pen2Y = 88;
   private int pen2Z = 3476;
 
   /** Pickup fee: feeBase + feePerLevel × levels gained while boarded. */

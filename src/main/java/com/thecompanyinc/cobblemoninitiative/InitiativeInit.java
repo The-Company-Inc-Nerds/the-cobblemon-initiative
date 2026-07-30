@@ -200,6 +200,14 @@ public class InitiativeInit implements ModInitializer {
       achievementManager.tick(server)
     );
 
+    // Wisp-Lantern lead: while a player holds the lantern at night in the marsh, a bright guide
+    // light leads them from the gym west gate to the Sunken Ship.
+    ServerTickEvents.END_SERVER_TICK.register(server -> {
+      for (ServerPlayer sp : server.getPlayerList().getPlayers()) {
+        com.thecompanyinc.cobblemoninitiative.wisp.WispLanternManager.guideTick(sp);
+      }
+    });
+
     // THE INCOMPLETE FILE props: click the ledger barrel / portrait chest to "find" the
     // document. Registered BEFORE LootChest so it wins at the portrait chest during the
     // pickup window (a non-PASS result short-circuits later UseBlock handlers).
@@ -219,9 +227,15 @@ public class InitiativeInit implements ModInitializer {
     );
 
     // Wisp-Lantern: hold up Bryn's ci_wisp_lantern keepsake at the Sunken Ship after dark to
-    // wake the marsh-shadow (a wild Lv20 Marshadow). Fast PASS anywhere else.
+    // wake the marsh-shadow (Marshadow). Fast PASS anywhere else.
     UseBlockCallback.EVENT.register(
       com.thecompanyinc.cobblemoninitiative.wisp.WispLanternManager::onUseBlock
+    );
+
+    // Town utility fee: using a public workstation (furnace, crafting table, brewing stand, …)
+    // inside a town costs CobbleDollars, scaled by badges. Fast PASS outside towns / for storage.
+    UseBlockCallback.EVENT.register(
+      com.thecompanyinc.cobblemoninitiative.economy.UtilityFeeManager::onUseBlock
     );
     PlayerBlockBreakEvents.AFTER.register((level, player, pos, state, blockEntity) ->
       lootChestManager.onBlockBroken(state, pos)
@@ -233,8 +247,11 @@ public class InitiativeInit implements ModInitializer {
     PlayerBlockBreakEvents.BEFORE.register((level, player, pos, state, blockEntity) ->
       com.thecompanyinc.cobblemoninitiative.protection.TownBuildProtection.onBlockBreak(level, player, pos, state)
     );
+    net.fabricmc.fabric.api.event.player.UseItemCallback.EVENT.register(
+      com.thecompanyinc.cobblemoninitiative.protection.TownBuildProtection::onUseItem
+    );
     UseBlockCallback.EVENT.register(
-      com.thecompanyinc.cobblemoninitiative.protection.TownBuildProtection::onUseBlock
+      com.thecompanyinc.cobblemoninitiative.protection.TownBuildProtection::onUseBlockFire
     );
 
     // Pack-only first-join auto-install: runs `install run` once per fresh world when
@@ -250,6 +267,12 @@ public class InitiativeInit implements ModInitializer {
     // Apply the ModMenu DojoConfig health/damage multipliers to the datapack-spawned
     // Deepcore dojo PVP bodies (dc_*_hostile), once per body on load (a22).
     DojoDifficultyManager.init();
+
+    // Non-lethal dojo (gym 4): knock fighters/players out instead of killing (ModMenu-tuned).
+    DojoKnockoutManager.init();
+
+    // Gaviota Port (gym 5): the drainable water gym + the donation aquarium (config-driven).
+    com.thecompanyinc.cobblemoninitiative.gaviota.GaviotaManager.init();
 
     CommandRegistrationCallback.EVENT.register(
       (dispatcher, registryAccess, environment) -> {
@@ -523,6 +546,11 @@ public class InitiativeInit implements ModInitializer {
       }
       return Unit.INSTANCE;
     });
+
+    // Special-Pokemon natural-spawn guard: keep the curated legendaries/mythicals/noble lines out
+    // of the wild spawner so they stay obtainable only through their scripted encounter. Cancels on
+    // Cobblemon's ENTITY_SPAWN (natural spawner only) — scripted spawns bypass it. ModMenu-toggled.
+    com.thecompanyinc.cobblemoninitiative.spawn.NaturalSpawnGuard.register();
 
     // Capture clamp: a caught Pokemon that comes in ABOVE the current level cap is lowered to
     // the cap; a below-cap catch is left as-is (the cap is a CEILING, not a floor). Nobles are

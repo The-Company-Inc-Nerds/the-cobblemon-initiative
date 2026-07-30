@@ -10,8 +10,12 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BucketItem;
+import net.minecraft.world.item.FireChargeItem;
+import net.minecraft.world.item.FlintAndSteelItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -74,17 +78,38 @@ public final class TownBuildProtection {
   }
 
   /**
-   * {@code UseBlockCallback} handler — cancels fluid buckets inside a town and passes
-   * everything else (block placement is handled by the mixin, so interactions are untouched).
+   * {@code UseItemCallback} handler for FLUID BUCKETS. A filled/empty bucket acts via
+   * {@code BucketItem.use} (its own raycast — the item-use path), NOT the block-click path, so
+   * {@code UseBlockCallback} never catches it and a {@code FAIL} there is ignored anyway (the client
+   * still runs {@code useItem}); this is the only hook that stops buckets. Fire items go through the
+   * separate block hook below, and block placement proper through {@code BlockItemMixin}.
    */
-  public static InteractionResult onUseBlock(Player player, Level level, InteractionHand hand, BlockHitResult hit) {
-    if (!active(level) || exempt(player)) return InteractionResult.PASS;
+  public static InteractionResultHolder<ItemStack> onUseItem(Player player, Level level, InteractionHand hand) {
     ItemStack stack = player.getItemInHand(hand);
-    if (!(stack.getItem() instanceof BucketItem)) return InteractionResult.PASS;
+    if (!active(level) || exempt(player)) return InteractionResultHolder.pass(stack);
+    if (!(stack.getItem() instanceof BucketItem)) return InteractionResultHolder.pass(stack);
+    // The player stands inside the town they are altering (buckets reach ~5 blocks — a town-wide
+    // lock does not need the exact fluid cell).
+    String town = townAt(level, player.blockPosition());
+    if (town == null) return InteractionResultHolder.pass(stack);
+    notify(player, town, "build");
+    resync(player);
+    return InteractionResultHolder.fail(stack);
+  }
+
+  /**
+   * {@code UseBlockCallback} handler for FIRE items. Flint-and-steel and fire charges light fires via
+   * {@code Item.useOn} (the block-click path), which dispatches {@code UseBlockCallback}; a
+   * {@code FAIL} here cancels them server-side. (Buckets do NOT go through {@code useOn}, which is
+   * why they are handled on {@code UseItemCallback} above.)
+   */
+  public static InteractionResult onUseBlockFire(Player player, Level level, InteractionHand hand, BlockHitResult hit) {
+    if (!active(level) || exempt(player)) return InteractionResult.PASS;
+    Item item = player.getItemInHand(hand).getItem();
+    if (!(item instanceof FlintAndSteelItem || item instanceof FireChargeItem)) return InteractionResult.PASS;
     String town = townAt(level, hit.getBlockPos());
     if (town == null) return InteractionResult.PASS;
     notify(player, town, "build");
-    resync(player);
     return InteractionResult.FAIL;
   }
 

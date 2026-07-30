@@ -278,6 +278,28 @@ public class CobblemonInitiativeCommands {
           Commands.literal("dishonored-respawn")
             .executes(CobblemonInitiativeCommands::dishonoredRespawn)
         )
+        // "Die with Honor" — respawn as a spectator at the town spawn (the one-life ending).
+        .then(
+          Commands.literal("honorable-respawn")
+            .executes(CobblemonInitiativeCommands::honorableRespawn)
+        )
+        // Gaviota Port set-pieces. flood/raise/reload are op set-up; drain/donate are dialog buttons.
+        .then(
+          Commands.literal("gaviota")
+            .then(Commands.literal("flood").executes(ctx ->
+              com.thecompanyinc.cobblemoninitiative.gaviota.GaviotaManager.flood(ctx.getSource().getServer())))
+            .then(Commands.literal("raise").executes(ctx ->
+              com.thecompanyinc.cobblemoninitiative.gaviota.GaviotaManager.raise(ctx.getSource().getServer())))
+            .then(Commands.literal("reload").executes(ctx -> {
+              com.thecompanyinc.cobblemoninitiative.gaviota.GaviotaConfig.reload();
+              ctx.getSource().sendSuccess(() -> Component.literal("Gaviota config reloaded."), false);
+              return 1;
+            }))
+            .then(Commands.literal("donate").executes(ctx -> {
+              ServerPlayer p = ctx.getSource().getPlayer();
+              return p != null ? com.thecompanyinc.cobblemoninitiative.gaviota.GaviotaManager.donate(p) : 0;
+            }))
+        )
         // Daycare — player-facing (perm 0) AND dialog-button-ready: like `track`, targets
         // resolve at runtime (getPlayer() null-check), with NO parse-time entity requires —
         // an Easy NPC ExecAsUser source carries the player, but requires() is evaluated
@@ -1676,42 +1698,50 @@ public class CobblemonInitiativeCommands {
     return 1;
   }
 
-  /**
-   * Dishonorable Respawn (PokeballDeathScreen button, showrunner 2026-07-17). Brings a
-   * dead hardcore player back in SURVIVAL and brands them: hardcore stays ARMED (the next
-   * death is final again), a permanent {@code dishonored} tag is set, and a
-   * {@code dishonorable_respawns} score is incremented. The trick: vanilla
-   * {@code PlayerList.respawn} forces SPECTATOR when the world is hardcore, so we flip the
-   * hardcore flag OFF across the respawn call, then restore it — the same live
-   * {@link LevelSettingsAccessor} mutation the install command uses to promote a world.
-   */
+  /** Shared: drop a just-respawned (bedless) player onto the Sango town spawn, not the spawn
+   *  column / house roof (JOIN never fires on a respawn, so InitiativeInit's snap does not run). */
+  private static void teleportToTownSpawn(net.minecraft.server.MinecraftServer server, ServerPlayer revived) {
+    net.minecraft.server.level.ServerLevel overworld = server.overworld();
+    if (revived.serverLevel() == overworld) {
+      net.minecraft.core.BlockPos spawn = overworld.getSharedSpawnPos();
+      revived.teleportTo(
+        overworld, spawn.getX() + 0.5, spawn.getY(), spawn.getZ() + 0.5,
+        overworld.getSharedSpawnAngle(), 0.0f);
+    }
+  }
+
+  /** "Die with Honor" — the true one-life ending: respawn the dead player, TP to the town spawn, and
+   *  set SPECTATOR explicitly (this bypasses the vanilla PERFORM_RESPAWN handler, so nothing forces
+   *  spectator for us) — the player spectates the rest of the run from Sango. */
+  private static int honorableRespawn(CommandContext<CommandSourceStack> context) {
+    ServerPlayer dead = context.getSource().getPlayer();
+    if (dead == null) return 0;
+    net.minecraft.server.MinecraftServer server = dead.getServer();
+    if (server == null) return 0;
+    ServerPlayer revived = server.getPlayerList().respawn(
+      dead, false, net.minecraft.world.entity.Entity.RemovalReason.KILLED);
+    teleportToTownSpawn(server, revived);
+    revived.setGameMode(net.minecraft.world.level.GameType.SPECTATOR); // the run is over
+    return 1;
+  }
+
   private static int dishonoredRespawn(CommandContext<CommandSourceStack> context) {
     ServerPlayer dead = context.getSource().getPlayer();
     if (dead == null) return 0;
     net.minecraft.server.MinecraftServer server = dead.getServer();
     if (server == null) return 0;
 
-    net.minecraft.world.level.storage.WorldData worldData = server.getWorldData();
-    net.minecraft.world.level.LevelSettings settings =
-      (worldData instanceof net.minecraft.world.level.storage.PrimaryLevelData pld)
-        ? ((com.thecompanyinc.cobblemoninitiative.mixin.PrimaryLevelDataAccessor) (Object) pld).getSettings()
-        : null;
-    boolean wasHardcore = settings != null && settings.hardcore();
+    // Respawn the dead player (PlayerList.respawn copies the prior game mode; because this bypasses
+    // the vanilla PERFORM_RESPAWN handler there is no spectator-forcing, so we set the mode
+    // explicitly below). Then TP to the town spawn and — ONLY once they have spawned in and been
+    // positioned — swap them to survival. The old approach flipped the world's hardcore flag off
+    // around respawn(); that raced the respawn packet and "acted up". Spawn-first-then-swap is the fix.
+    ServerPlayer revived = server.getPlayerList().respawn(
+      dead, false, net.minecraft.world.entity.Entity.RemovalReason.KILLED);
 
-    if (wasHardcore) {
-      ((com.thecompanyinc.cobblemoninitiative.mixin.LevelSettingsAccessor) (Object) settings).setHardcore(false);
-    }
-    ServerPlayer revived;
-    try {
-      revived = server.getPlayerList().respawn(
-        dead, false, net.minecraft.world.entity.Entity.RemovalReason.KILLED);
-    } finally {
-      if (wasHardcore) {
-        ((com.thecompanyinc.cobblemoninitiative.mixin.LevelSettingsAccessor) (Object) settings).setHardcore(true);
-      }
-    }
+    teleportToTownSpawn(server, revived);
 
-    // Back on their feet, and marked for it.
+    // Now that they are spawned in and positioned, claw them back from spectator to survival.
     revived.setGameMode(net.minecraft.world.level.GameType.SURVIVAL);
     revived.setHealth(revived.getMaxHealth());
     revived.getFoodData().setFoodLevel(20);
@@ -1742,19 +1772,6 @@ public class CobblemonInitiativeCommands {
     net.minecraft.world.scores.ScoreAccess score =
       board.getOrCreatePlayerScore(revived, obj);
     score.set(score.get() + 1);
-
-    // Vanilla PlayerList.respawn drops a bedless player on the spawn COLUMN, whose
-    // MOTION_BLOCKING heightmap scan lands on the Sango spawn-house ROOF — the exact bug
-    // InitiativeInit.snapFirstJoinToSpawn fixes for first join, except JOIN never fires on
-    // a respawn. Snap the revive to the shared town spawn so a dishonored respawn lands
-    // inside Sango, not on the roof.
-    net.minecraft.server.level.ServerLevel overworld = server.overworld();
-    if (revived.serverLevel() == overworld) {
-      net.minecraft.core.BlockPos spawn = overworld.getSharedSpawnPos();
-      revived.teleportTo(
-        overworld, spawn.getX() + 0.5, spawn.getY(), spawn.getZ() + 0.5,
-        overworld.getSharedSpawnAngle(), 0.0f);
-    }
 
     revived.sendSystemMessage(Component.literal(
       "§8You claw back from the dark. That was not how it was meant to end — and the ledger remembers."));

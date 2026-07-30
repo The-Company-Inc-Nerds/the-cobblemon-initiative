@@ -1,12 +1,12 @@
 package com.thecompanyinc.cobblemoninitiative.wisp;
 
-import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.thecompanyinc.cobblemoninitiative.InitiativeInit;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -15,19 +15,16 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.AABB;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 
 /**
- * The Wisp-Lantern (N7 / P1 / P2 playtest). The keepsake Bryn hands you — a soul lantern
- * carrying the {@code ci_wisp_lantern} custom-data marker — becomes a verb: hold it up at the
- * Sunken Ship in Mystic Marsh <b>after dark</b> and the wisps rise, waking the marsh-shadow that
- * sleeps in the wreck. A wild <b>Marshadow</b> (Lv&nbsp;20) coalesces inside the hull for you to
- * battle and catch — the marsh keeps one secret for the trainer who walks the dark with a lantern.
- *
- * <p>The lantern is NOT consumed (it re-summons if the wisp remembers to fade). Away from the ship
- * the item behaves like a normal soul lantern; near the ship in daylight it just gives a hint.
+ * The Wisp-Lantern set-piece (Mystic Marsh). Bryn's keepsake — a soul lantern carrying the
+ * {@code ci_wisp_lantern} marker — cannot be placed anywhere ordinary. Held up at the gym's WEST
+ * GATE after dark, the wisps rise and LEAD the player (a bright guide light) through the marsh to
+ * the Sunken Ship. Placed at that one spot, the lantern lights, a cutscene plays, and a <b>Marshadow
+ * (Lv&nbsp;35)</b> emerges — an interact-to-join gift (dialog {@code marshadow_gift}).
  */
 public final class WispLanternManager {
 
@@ -35,60 +32,126 @@ public final class WispLanternManager {
 
   private static final String MARKER = "ci_wisp_lantern";
 
-  /** Sunken Ship anchor — where the player holds up the lantern (playtest pin P1). */
-  private static final Vec3 SHIP = new Vec3(740.3, 63.0, 2500.6);
-  private static final double SHIP_RADIUS = 18.0;
+  /** Guide origin — the gym's west gate (where Bryn sends the player). */
+  private static final Vec3 LEAD_START = new Vec3(899.5, 69.0, 2439.5);
+  /** The one spot the lantern will rest (the Sunken Ship — matches the cutscene focus). */
+  private static final Vec3 SPOT = new Vec3(741.5, 64.0, 2502.5);
+  private static final double SPOT_TOL_H = 6.0;
+  private static final double SPOT_TOL_Y = 5.0;
+  /** Where the Marshadow gift body is imported (on the wreck, under the cutscene camera). */
+  private static final BlockPos MARSHADOW_POS = new BlockPos(741, 63, 2503);
+  private static final String MARSHADOW_PRESET =
+    "easy_npc:preset/humanoid/marshadow_lantern.npc.snbt";
 
-  /** Ghost spawn inside the wreck (playtest pin P2). */
-  private static final BlockPos GHOST_POS = new BlockPos(740, 62, 2508);
-  private static final String GHOST_SPECIES = "marshadow";
-  private static final int GHOST_LEVEL = 20;
-  /** Skip the summon if this species is already loitering in the wreck (no stacking). */
-  private static final double GHOST_PRESENT_RADIUS = 10.0;
+  /** The lead shows this far from the spot (covers west gate -> ship). */
+  private static final double GUIDE_RANGE = 220.0;
+  private static final double LEAD_DISTANCE = 6.0;
+  private static final int GUIDE_PERIOD = 4;
 
-  /** {@code UseBlockCallback} handler. Fast PASS for anything that is not a wisp-lantern. */
-  public static InteractionResult onUseBlock(
-    Player player,
-    Level level,
-    InteractionHand hand,
-    BlockHitResult hit
-  ) {
-    if (level.isClientSide() || !(level instanceof ServerLevel serverLevel)) {
-      return InteractionResult.PASS;
-    }
+  private static final String TAG_PLACED = "marsh_lantern_placed";
+  private static final String TAG_JOINED = "marshadow_joined";
+
+  // ── Placement handler (UseBlockCallback) ─────────────────────────────────────────
+
+  public static InteractionResult onUseBlock(Player player, Level level, InteractionHand hand, BlockHitResult hit) {
+    if (level.isClientSide() || !(level instanceof ServerLevel serverLevel)) return InteractionResult.PASS;
+    if (!(player instanceof ServerPlayer sp)) return InteractionResult.PASS;
     ItemStack stack = player.getItemInHand(hand);
     if (!isWispLantern(stack)) return InteractionResult.PASS;
 
-    // Only special near the Sunken Ship; anywhere else it is a plain lantern.
-    if (player.position().distanceToSqr(SHIP) > SHIP_RADIUS * SHIP_RADIUS) {
-      return InteractionResult.PASS;
-    }
+    // Once the shadow has joined, the lantern is just a lantern again.
+    if (sp.getTags().contains(TAG_JOINED)) return InteractionResult.PASS;
 
-    // Consume the interaction near the ship so the keepsake is never placed/depleted there.
-    if (!isNight(serverLevel)) {
-      player.displayClientMessage(
-        Component.literal("§7The wisp-lantern hangs quiet. The marsh only answers it after dark."),
-        true
-      );
+    Vec3 place = Vec3.atCenterOf(hit.getBlockPos());
+    boolean atSpot = Math.abs(place.x - SPOT.x) <= SPOT_TOL_H
+                  && Math.abs(place.z - SPOT.z) <= SPOT_TOL_H
+                  && Math.abs(place.y - SPOT.y) <= SPOT_TOL_Y;
+
+    if (!atSpot) {
+      hint(sp, "The lantern will not rest here. Take it to the gym's west gate after dark and follow the wisps.");
+      return InteractionResult.FAIL; // block placement everywhere but the spot
+    }
+    if (sp.getTags().contains(TAG_PLACED)) {
+      hint(sp, "The lantern is already lit. The shadow is waiting where the wisps gathered.");
       return InteractionResult.SUCCESS;
     }
-
-    revealWisps(serverLevel, player);
-
-    if (!ghostPresent(serverLevel)) {
-      summonGhost(serverLevel);
-      player.displayClientMessage(
-        Component.literal("§dThe wisps gather in the wreck — and something old wakes to their light."),
-        true
-      );
-    } else {
-      player.displayClientMessage(
-        Component.literal("§7The wisps drift toward the sunken ship. Something is already stirring there."),
-        true
-      );
+    if (!isNight(serverLevel)) {
+      hint(sp, "The wisp-lantern hangs quiet. The marsh only answers it after dark.");
+      return InteractionResult.SUCCESS; // keep the lantern
     }
+
+    placeAndReveal(serverLevel, sp, hit, hand);
     return InteractionResult.SUCCESS;
   }
+
+  private static void placeAndReveal(ServerLevel level, ServerPlayer sp, BlockHitResult hit, InteractionHand hand) {
+    sp.addTag(TAG_PLACED);
+
+    // Rest the lantern on the aimed face (guaranteed placeable — they clicked a solid block).
+    BlockPos lanternPos = hit.getBlockPos().relative(hit.getDirection());
+    if (level.getBlockState(lanternPos).canBeReplaced()) {
+      level.setBlockAndUpdate(lanternPos, Blocks.SOUL_LANTERN.defaultBlockState());
+    }
+    sp.getItemInHand(hand).shrink(1);
+
+    revealEffect(level);
+    runAsPlayer(sp, "cutscene play lantern_reveal");
+    spawnMarshadow(level);
+    InitiativeInit.LOGGER.info("[WispLantern] {} lit the lantern — Marshadow revealed.", sp.getName().getString());
+  }
+
+  private static void spawnMarshadow(ServerLevel level) {
+    Vec3 at = Vec3.atBottomCenterOf(MARSHADOW_POS);
+    level.getServer().getCommands().performPrefixedCommand(
+      level.getServer().createCommandSourceStack().withPosition(at).withPermission(2).withSuppressedOutput(),
+      "easy_npc preset import_new data " + MARSHADOW_PRESET
+        + " " + MARSHADOW_POS.getX() + " " + MARSHADOW_POS.getY() + " " + MARSHADOW_POS.getZ());
+  }
+
+  private static void revealEffect(ServerLevel level) {
+    double x = MARSHADOW_POS.getX() + 0.5, y = MARSHADOW_POS.getY() + 0.6, z = MARSHADOW_POS.getZ() + 0.5;
+    level.sendParticles(ParticleTypes.SOUL_FIRE_FLAME, x, y, z, 90, 1.2, 1.0, 1.2, 0.02);
+    level.sendParticles(ParticleTypes.SOUL, x, y, z, 60, 1.0, 1.2, 1.0, 0.02);
+    level.sendParticles(ParticleTypes.END_ROD, x, y + 0.5, z, 40, 0.8, 1.0, 0.8, 0.05);
+    level.sendParticles(ParticleTypes.SQUID_INK, x, y, z, 40, 0.9, 0.7, 0.9, 0.01);
+    level.playSound(null, MARSHADOW_POS, SoundEvents.SOUL_ESCAPE.value(), SoundSource.HOSTILE, 1.2f, 0.5f);
+    level.playSound(null, MARSHADOW_POS, SoundEvents.WARDEN_AMBIENT, SoundSource.HOSTILE, 0.7f, 1.4f);
+    level.playSound(null, MARSHADOW_POS, SoundEvents.BEACON_ACTIVATE, SoundSource.HOSTILE, 0.8f, 0.7f);
+  }
+
+  // ── The lead / guide light (per-player tick) ─────────────────────────────────────
+
+  public static void guideTick(ServerPlayer sp) {
+    if (sp.getTags().contains(TAG_JOINED) || sp.getTags().contains(TAG_PLACED)) return;
+    if (!holdsWispLantern(sp)) return;
+    ServerLevel level = sp.serverLevel();
+    if (!isNight(level)) return;
+    if (sp.position().distanceToSqr(SPOT) > GUIDE_RANGE * GUIDE_RANGE) return;
+    long t = level.getGameTime();
+    if (t % GUIDE_PERIOD != 0) return;
+
+    Vec3 eye = sp.getEyePosition();
+    double dx = SPOT.x - sp.getX(), dz = SPOT.z - sp.getZ();
+    double distH = Math.sqrt(dx * dx + dz * dz);
+    Vec3 guide;
+    if (distH <= LEAD_DISTANCE) {
+      guide = SPOT.add(0.0, 1.0, 0.0); // converge on the spot
+    } else {
+      double nx = dx / distH, nz = dz / distH;
+      guide = new Vec3(eye.x + nx * LEAD_DISTANCE, eye.y + 0.3, eye.z + nz * LEAD_DISTANCE);
+    }
+    double bob = Math.sin(t * 0.2) * 0.3;
+    double gy = guide.y + bob;
+    level.sendParticles(ParticleTypes.SOUL_FIRE_FLAME, guide.x, gy, guide.z, 4, 0.15, 0.2, 0.15, 0.0);
+    level.sendParticles(ParticleTypes.END_ROD, guide.x, gy, guide.z, 2, 0.1, 0.1, 0.1, 0.0);
+    level.sendParticles(ParticleTypes.SOUL, guide.x, gy, guide.z, 2, 0.2, 0.2, 0.2, 0.005);
+    if (t % 40 == 0) {
+      level.playSound(null, BlockPos.containing(guide), SoundEvents.CANDLE_AMBIENT,
+        SoundSource.AMBIENT, 0.5f, 1.5f);
+    }
+  }
+
+  // ── helpers ──────────────────────────────────────────────────────────────────────
 
   private static boolean isWispLantern(ItemStack stack) {
     if (stack.isEmpty()) return false;
@@ -96,60 +159,21 @@ public final class WispLanternManager {
     return data != null && data.copyTag().getBoolean(MARKER);
   }
 
+  private static boolean holdsWispLantern(ServerPlayer sp) {
+    return isWispLantern(sp.getMainHandItem()) || isWispLantern(sp.getOffhandItem());
+  }
+
   private static boolean isNight(ServerLevel level) {
     long t = level.getDayTime() % 24000L;
     return t >= 13000L && t <= 23000L;
   }
 
-  private static boolean ghostPresent(ServerLevel level) {
-    AABB box = new AABB(GHOST_POS).inflate(GHOST_PRESENT_RADIUS);
-    for (PokemonEntity mon : level.getEntitiesOfClass(PokemonEntity.class, box)) {
-      // Match the species by its resource id path (what `spawnpokemon` uses), NOT the localized
-      // display name, so the dedup stays correct for any id whose name differs from its path.
-      if (GHOST_SPECIES.equalsIgnoreCase(
-            mon.getPokemon().getSpecies().getResourceIdentifier().getPath())) {
-        return true;
-      }
-    }
-    return false;
+  private static void runAsPlayer(ServerPlayer sp, String cmd) {
+    sp.getServer().getCommands().performPrefixedCommand(
+      sp.createCommandSourceStack().withPermission(2).withSuppressedOutput(), cmd);
   }
 
-  private static void summonGhost(ServerLevel level) {
-    Vec3 at = Vec3.atBottomCenterOf(GHOST_POS);
-    level.getServer().getCommands().performPrefixedCommand(
-      level.getServer().createCommandSourceStack()
-        .withPosition(at)
-        .withPermission(4)
-        .withSuppressedOutput(),
-      "spawnpokemon " + GHOST_SPECIES + " level=" + GHOST_LEVEL
-    );
-    InitiativeInit.LOGGER.info(
-      "[WispLantern] Summoned {} L{} at {}", GHOST_SPECIES, GHOST_LEVEL, GHOST_POS
-    );
-    level.playSound(
-      null, GHOST_POS, SoundEvents.SOUL_ESCAPE.value(), SoundSource.HOSTILE, 1.0f, 0.6f
-    );
-  }
-
-  private static void revealWisps(ServerLevel level, Player player) {
-    Vec3 c = player.position();
-    level.playSound(
-      null, player.blockPosition(), SoundEvents.CANDLE_AMBIENT,
-      SoundSource.PLAYERS, 1.0f, 0.7f
-    );
-    // A ring of soul flame + soul particles drifting up around the player and toward the wreck.
-    for (int i = 0; i < 60; i++) {
-      double ox = (level.random.nextDouble() - 0.5) * SHIP_RADIUS;
-      double oz = (level.random.nextDouble() - 0.5) * SHIP_RADIUS;
-      double oy = level.random.nextDouble() * 3.0;
-      level.sendParticles(
-        ParticleTypes.SOUL_FIRE_FLAME,
-        c.x + ox, c.y + oy, c.z + oz, 1, 0, 0.02, 0, 0.01
-      );
-      level.sendParticles(
-        ParticleTypes.SOUL,
-        c.x + ox, c.y + oy, c.z + oz, 1, 0, 0.03, 0, 0.01
-      );
-    }
+  private static void hint(ServerPlayer sp, String msg) {
+    sp.displayClientMessage(Component.literal("§7" + msg), true);
   }
 }

@@ -17,6 +17,99 @@
                     {
                         Type: "OPEN_DEFAULT_DIALOG"
                     }
+                ],
+                ON_DISTANCE_CLOSE: [
+                    {
+                        Type: "COMMAND",
+                        ConditionDataSet: {
+                            ConditionDataSet: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_gaviota_trainer_4"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_recent_flee"
+                                }
+                            ]
+                        },
+                        Cmd: "say I read your face and it says wipeout! Drop in and prove me wrong!"
+                    }
+                ],
+                ON_DISTANCE_VERY_CLOSE: [
+                    {
+                        Type: "COMMAND",
+                        ConditionDataSet: {
+                            ConditionDataSet: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "dex_gte_2"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_recent_flee"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_gaviota_trainer_4"
+                                }
+                            ]
+                        },
+                        Cmd: "tbcs attach rctmod:gaviota_trainer_4 @s"
+                    },
+                    {
+                        Type: "COMMAND",
+                        ExecAsUser: 1b,
+                        ConditionDataSet: {
+                            ConditionDataSet: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "dex_gte_2"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_recent_flee"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_gaviota_trainer_4"
+                                }
+                            ]
+                        },
+                        Cmd: "tag @s add in_trainer_battle"
+                    },
+                    {
+                        Type: "COMMAND",
+                        ExecAsUser: 1b,
+                        ConditionDataSet: {
+                            ConditionDataSet: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "dex_gte_2"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_recent_flee"
+                                },
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_gaviota_trainer_4"
+                                }
+                            ]
+                        },
+                        Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:gaviota_trainer_4 onwin {1: ['tag @1 add defeated_gaviota_trainer_4', '@2 say Clean ride, all the way to the sand. The pier is all yours now.', 'tag @1 remove in_trainer_battle'], 2: ['@1 say Wiped out. Paddle back out when you are ready.', 'tag @2 remove in_trainer_battle']}"
+                    }
                 ]
             }
         },
@@ -114,7 +207,21 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:gaviota_trainer_4_hightide onwin {1: ['tag @1 add defeated_gaviota_trainer_4', '@2 say Clean ride, all the way to the sand. The pier is all yours now.'], 2: ['@1 say Wiped out. Paddle back out when you are ready.']}"
+                                    Cmd: "tag @s add in_trainer_battle"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_gaviota_trainer_4"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:gaviota_trainer_4_hightide onwin {1: ['tag @1 add defeated_gaviota_trainer_4', '@2 say Clean ride, all the way to the sand. The pier is all yours now.', 'tag @1 remove in_trainer_battle'], 2: ['@1 say Wiped out. Paddle back out when you are ready.', 'tag @2 remove in_trainer_battle']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -194,7 +301,21 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:gaviota_trainer_4 onwin {1: ['tag @1 add defeated_gaviota_trainer_4', '@2 say Clean ride, all the way to the sand. The pier is all yours now.'], 2: ['@1 say Wiped out. Paddle back out when you are ready.']}"
+                                    Cmd: "tag @s add in_trainer_battle"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_gaviota_trainer_4"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:gaviota_trainer_4 onwin {1: ['tag @1 add defeated_gaviota_trainer_4', '@2 say Clean ride, all the way to the sand. The pier is all yours now.', 'tag @1 remove in_trainer_battle'], 2: ['@1 say Wiped out. Paddle back out when you are ready.', 'tag @2 remove in_trainer_battle']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -393,6 +514,7 @@
             }
         ],
         id: "easy_npc:humanoid",
-        CustomName: '{"text": "Surfer Paz", "color": "#FFFFFF"}'
+        CustomName: '{"text": "Surfer Paz", "color": "#FFFFFF"}',
+        Tags: ["gaviota_sight_paz"]
     }
 }

@@ -67,6 +67,37 @@
                     Label: "beaten"
                 },
                 {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "no_gaviota_drained"
+                        }
+                    ],
+                    Priority: 28,
+                    Buttons: [
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "You cannot fight me treading water, challenger. The arena is still flooded - work the pump-bots in matched pairs until it drains to the boards, then come find me down here."
+                        },
+                        {
+                            Text: "The crew out on the ring will still take you on. Me, Marina, and the Leader wait for dry ground."
+                        }
+                    ],
+                    Name: "Tide - the water is too high",
+                    Label: "flooded"
+                },
+                {
                     Priority: 10,
                     Buttons: [
                         {

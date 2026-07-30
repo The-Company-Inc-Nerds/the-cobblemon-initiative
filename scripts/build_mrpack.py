@@ -78,6 +78,21 @@ def bake_install_into_level_dat(level_dat: str, level_name: str = None) -> None:
             dtag["hardcore"] = (TAG_BYTE, 1)
             dtag["Difficulty"] = (TAG_BYTE, DIFFICULTY_BYTE["hard"])
 
+        # Pin the world spawn from install.json (worldSpawn) so ANY builder export starts
+        # the player at the canonical Sango spawn — a fresh creative export parks its
+        # SpawnX/Y/Z wherever the builder last stood. We overwrite the level.dat spawn
+        # tags here; the sanitized host below then anchors to them, and vanilla places the
+        # singleplayer host exactly there on first join. Absent worldSpawn → keep the
+        # export's own spawn (old behaviour).
+        ws = install.get("worldSpawn") or {}
+        if all(k in ws for k in ("x", "y", "z")):
+            dtag["SpawnX"] = (TAG_INT, int(ws["x"]))
+            dtag["SpawnY"] = (TAG_INT, int(ws["y"]))
+            dtag["SpawnZ"] = (TAG_INT, int(ws["z"]))
+            dtag["SpawnAngle"] = (TAG_FLOAT, float(ws.get("angle", 0.0)))
+            print(f"    pinned world spawn → ({ws['x']}, {ws['y']}, {ws['z']}, "
+                  f"yaw {ws.get('angle', 0.0)})")
+
         # Reset the host player. Builders send full saves they've PLAYED/TESTED on, so
         # Data.Player carries THEIR inventory, position, XP, effects (incl. the map's
         # old baked infinite speed — this replacement permanently supersedes that

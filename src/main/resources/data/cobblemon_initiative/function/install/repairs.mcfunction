@@ -112,3 +112,19 @@ execute unless score #repair_a24 ci_ambient matches 1 run function cobblemon_ini
 #    Korrin moved to the north-boardwalk corner toward Route 3, Mystic Marsh fairy household
 #    re-latches (Thimble down onto the fen bank, Bramblea +1 y) ──
 execute unless score #repair_a25 ci_ambient matches 1 run function cobblemon_initiative:install/repairs_a25_arm
+
+# ── wave a26 (0.7.0-alpha.10): playtest wave — Apprentice Faye nudged 922.4->921.5 at the
+#    gym still pool ──
+execute unless score #repair_a26 ci_ambient matches 1 run function cobblemon_initiative:install/repairs_a26_arm
+
+# ── wave a27 (0.7.0-alpha.11): Gaviota water-gym playtest wave — the 6 gym trainers move onto the
+#    flooded-arena ring (stale bodies killed + latches reset so the recompiled presets re-spawn),
+#    plus the a11 civilian nudges: Paolo/Alessia daycare pens, Vittorio north-pier watch post. NOTE:
+#    a27 originally made all 6 eyesight; wave a28 (below) reverts the Jr. Apprentice + Apprentice to
+#    talk-to-battle, so on a fresh world they re-latch from the current (talk-to-battle) presets ──
+execute unless score #repair_a27 ci_ambient matches 1 run function cobblemon_initiative:install/repairs_a27_arm
+
+# ── wave a28 (0.7.0-alpha.11 follow-up): Gaviota gym corrections — Jr. Apprentice + Apprentice
+#    reverted from eyesight back to talk-to-battle (gaviota_drained-gated), so their a27 eyesight
+#    bodies die + re-latch from the new presets; Tally Clerk Bram moved to 436.5/64/3491.5 ──
+execute unless score #repair_a28 ci_ambient matches 1 run function cobblemon_initiative:install/repairs_a28_arm

@@ -94,6 +94,89 @@ public class InitiativeConfigScreen {
         .build()
     );
 
+    SpecialSpawnConfig specialSpawnConfig = SpecialSpawnConfig.load();
+    general.addEntry(
+      entryBuilder
+        .startBooleanToggle(
+          Component.literal("Prevent Special Pokemon Natural Spawns"),
+          specialSpawnConfig.isPreventNaturalSpawns()
+        )
+        .setDefaultValue(true)
+        .setTooltip(
+          Component.literal(
+            "Keep legendaries, mythicals, and noble-exclusive species out of natural wild spawns, "
+            + "so they are only obtainable through their scripted encounter (nobles, shrine "
+            + "crystals, the Wisp-Lantern, story gifts). Edit the species list in "
+            + "config/cobblemon-initiative-special-spawns.json."
+          )
+        )
+        .setSaveConsumer(specialSpawnConfig::setPreventNaturalSpawns)
+        .build()
+    );
+
+    HomeBaseConfig homeBaseConfig = HomeBaseConfig.load();
+    general.addEntry(
+      entryBuilder
+        .startBooleanToggle(
+          Component.literal("Home-Base Latios Reward"),
+          homeBaseConfig.isEnabled()
+        )
+        .setDefaultValue(true)
+        .setTooltip(Component.literal(
+          "When enabled, placing enough of your own blocks (building a home) makes a Latios appear "
+          + "near the home town and Mom calls about it."))
+        .setSaveConsumer(homeBaseConfig::setEnabled)
+        .build()
+    );
+    general.addEntry(
+      entryBuilder
+        .startIntField(
+          Component.literal("Home-Base Block Threshold"),
+          homeBaseConfig.getBlockThreshold()
+        )
+        .setDefaultValue(75)
+        .setMin(10)
+        .setMax(1000)
+        .setTooltip(Component.literal(
+          "How many blocks you must place before the game counts it as a home and gives the Latios "
+          + "(the showrunner band is 50-100)."))
+        .setSaveConsumer(homeBaseConfig::setBlockThreshold)
+        .build()
+    );
+
+    WildLevelConfig wildLevelConfig = WildLevelConfig.load();
+    general.addEntry(
+      entryBuilder
+        .startBooleanToggle(Component.literal("Scale Wild Pokemon Levels"), wildLevelConfig.isEnabled())
+        .setDefaultValue(true)
+        .setTooltip(Component.literal(
+          "When enabled, a wild Pokemon keeps its natural biome level but CLAMPED into "
+          + "[floor, cap+ceiling] below — only over-cap or sub-floor spawns are pulled in range."))
+        .setSaveConsumer(wildLevelConfig::setEnabled)
+        .build()
+    );
+    general.addEntry(
+      entryBuilder
+        .startIntField(Component.literal("Wild Level Floor (absolute)"), wildLevelConfig.getMinLevel())
+        .setDefaultValue(0)
+        .setMin(0).setMax(100)
+        .setTooltip(Component.literal(
+          "Lowest level a wild spawn may keep — an ABSOLUTE floor, not cap-relative. 0 = no floor "
+            + "(anything naturally below your cap spawns unchanged); e.g. 25 raises anything below 25 to 25."))
+        .setSaveConsumer(wildLevelConfig::setMinLevel)
+        .build()
+    );
+    general.addEntry(
+      entryBuilder
+        .startIntField(Component.literal("Wild Level Ceiling (cap +)"), wildLevelConfig.getMaxOffset())
+        .setDefaultValue(10)
+        .setMin(-100).setMax(100)
+        .setTooltip(Component.literal(
+          "Ceiling relative to your cap (+10 = clamp anything above cap+10 down to cap+10)."))
+        .setSaveConsumer(wildLevelConfig::setMaxOffset)
+        .build()
+    );
+
     // -------------------------------------------------------------------------
     // Nuzlocke Rules
     // -------------------------------------------------------------------------
@@ -1474,6 +1557,36 @@ public class InitiativeConfigScreen {
         .setSaveConsumer(dojoConfig::setFighterDamageMultiplier)
         .build()
     );
+    dojo.addEntry(
+      entryBuilder
+        .startBooleanToggle(Component.literal("Knockout Mode (non-lethal)"), dojoConfig.isKnockoutMode())
+        .setDefaultValue(dojoDefaults.isKnockoutMode())
+        .setTooltip(Component.literal(
+          "ON: a defeated dojo fighter is left lying at the spot, and a player a fighter would kill is "
+          + "knocked out (see below) instead of dying. OFF: the dojo is fully lethal both ways."))
+        .setSaveConsumer(dojoConfig::setKnockoutMode)
+        .build()
+    );
+    dojo.addEntry(
+      entryBuilder
+        .startFloatField(Component.literal("Player Health After Knockout"), dojoConfig.getKnockoutPlayerHealth())
+        .setDefaultValue(dojoDefaults.getKnockoutPlayerHealth())
+        .setMin(0.5f).setMax(20.0f)
+        .setTooltip(Component.literal(
+          "HP the player is left on after a dojo knockout (2.0 = 1 heart, 1.0 = half a heart)."))
+        .setSaveConsumer(dojoConfig::setKnockoutPlayerHealth)
+        .build()
+    );
+    dojo.addEntry(
+      entryBuilder
+        .startIntField(Component.literal("Knockout CobbleDollar Cost"), dojoConfig.getKnockoutCost())
+        .setDefaultValue(dojoDefaults.getKnockoutCost())
+        .setMin(0).setMax(100000)
+        .setTooltip(Component.literal(
+          "CobbleDollars taken from the player each time the dojo knocks them out."))
+        .setSaveConsumer(dojoConfig::setKnockoutCost)
+        .build()
+    );
 
     // -------------------------------------------------------------------------
     // Orc Camps
@@ -1515,6 +1628,9 @@ public class InitiativeConfigScreen {
 
     builder.setSavingRunnable(() -> {
       config.save();
+      specialSpawnConfig.save();
+      homeBaseConfig.save();
+      wildLevelConfig.save();
       dojoConfig.save();
       orcConfig.save();
       sightConfig.save();
@@ -1531,6 +1647,9 @@ public class InitiativeConfigScreen {
       flavorScreenConfig.save();
       NuzlockeInit.reloadConfig();
       NpcSightInit.reloadConfig();
+      SpecialSpawnConfig.reload();
+      HomeBaseConfig.reload();
+      WildLevelConfig.reload();
       ShrineConfig.reload();
       LootChestConfig.reload();
       NobleConfig.reload();

@@ -35,6 +35,16 @@ public class DojoConfig {
   /** Multiplier on every melee dojo fighter's baked attack_damage (applied once, at body load). */
   private float fighterDamageMultiplier = 1.0f;
 
+  /** If true, dojo fights are non-lethal: a defeated fighter is knocked out (left lying at the
+   *  spot) instead of killed, and a player who would die in the dojo is knocked out instead. */
+  private boolean knockoutMode = true;
+
+  /** Player health (in half-hearts, HP points) left after a dojo knockout — 1.0 = half a heart. */
+  private float knockoutPlayerHealth = 1.0f;
+
+  /** CobbleDollars taken from the player on a dojo knockout. */
+  private int knockoutCost = 100;
+
   // ── Singleton / lifecycle ─────────────────────────────────────────────────────
 
   public static DojoConfig get() {
@@ -80,6 +90,14 @@ public class DojoConfig {
 
   public void setFighterHealthMultiplier(float v) { this.fighterHealthMultiplier = clamp(v, 0.25f, 4.0f); }
   public void setFighterDamageMultiplier(float v) { this.fighterDamageMultiplier = clamp(v, 0.25f, 4.0f); }
+
+  public boolean isKnockoutMode() { return knockoutMode; }
+  public float getKnockoutPlayerHealth() { return clamp(knockoutPlayerHealth, 0.5f, 20.0f); }
+  public int getKnockoutCost() { return Math.max(0, knockoutCost); }
+
+  public void setKnockoutMode(boolean v) { this.knockoutMode = v; }
+  public void setKnockoutPlayerHealth(float v) { this.knockoutPlayerHealth = clamp(v, 0.5f, 20.0f); }
+  public void setKnockoutCost(int v) { this.knockoutCost = Math.max(0, v); }
 
   private static float clamp(float v, float min, float max) { return Math.max(min, Math.min(max, v)); }
 }

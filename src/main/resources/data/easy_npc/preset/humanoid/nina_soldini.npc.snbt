@@ -3,7 +3,7 @@
         author: "TheCompanyInc",
         category: "Civilian",
         created: 0L,
-        description: "civilian at Gaviota Port - Waterfront Cafe (act 1). Compiled from dialog-src.",
+        description: "civilian at Gaviota Port - Waterfront Cafe / Aquarium (act 1). Compiled from dialog-src.",
         entityTypeId: "easy_npc:humanoid",
         modified: 0L,
         name: "Nina Soldini",
@@ -33,33 +33,75 @@
         CanPickUpLoot: 0b,
         CustomNameVisible: 1b,
         DialogData: {
-            Type: "BASIC",
+            Type: "STANDARD",
             DialogDataSet: [
                 {
-                    Priority: 10,
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "aquarium_complete"
+                        }
+                    ],
+                    Priority: 30,
                     Buttons: [
                         {
-                            Name: "Goodbye",
+                            Name: "It was my pleasure",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "goodbye_button"
+                            Label: "leave_button"
                         }
                     ],
                     Texts: [
                         {
-                            Text: "Sea-salt coffee, kelp bun, or the fried corphish if you are brave. Prices went up again and I hate it, but the beans cost what the Company says they cost this week. That is the game now."
+                            Text: "Look at them all - every tank in the aquarium singing, and half my regulars come to watch them over their coffee now. You filled it, one catch at a time, and the whole port knows it."
                         },
                         {
-                            Text: "Everybody talks at my cart, so I hear everything. The Liaison lost a night arguing with head office about the purse skim. Even the Company man thinks the skim is too greedy. Chew on that with your bun."
+                            Text: "First cup is on me forever. No, do not argue. You have earned a permanent scandal at this cart."
+                        }
+                    ],
+                    Name: "Nina Soldini",
+                    Label: "complete"
+                },
+                {
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "Donate a fish to the tanks",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative gaviota donate"
+                                }
+                            ],
+                            Label: "donate_button"
                         },
                         {
-                            Text: "You have kind eyes and a tired road behind you. First cup is on me. No, do not argue. In this port a free cup is practically a scandal. Enjoy the scandal."
+                            Name: "I will bring you more",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Sea-salt coffee, kelp bun, or the fried corphish if you are brave - and yes, I mind the aquarium behind the cart too. Somebody has to, and the harbourmaster does not pay in anything but gossip."
                         },
                         {
-                            Text: "Depending which stool you ask, Leader Neptune once wrestled a wailord to a draw, or he is secretly afraid of deep water and that is why he lives up a lighthouse. Somewhere between sits a man, probably."
+                            Text: "Here is the arrangement, trainer: donate a fish you caught with your own hands - a water Pokemon, or a plain cod, salmon, tropical fish, or pufferfish out of your creel - one of each kind, and it takes up residence in a tank for good. I even let it keep a silly name."
+                        },
+                        {
+                            Text: "Fill three tanks and the harbourmaster tells Leader Neptune you are serious about water. Fill more and I set you up with bait. Fill every last one and I hand you a rod that makes the whole sea feel small."
+                        },
+                        {
+                            Text: "Everybody talks at my cart, so I hear everything. Even the Company man thinks the purse skim is too greedy this season. Chew on that with your bun."
                         }
                     ],
                     Name: "Nina Soldini",
@@ -236,6 +278,7 @@
             }
         ],
         id: "easy_npc:humanoid",
+        Tags: ["gaviota_curator"],
         CustomName: '{"text": "Nina Soldini", "color": "#FFFF00"}'
     }
 }

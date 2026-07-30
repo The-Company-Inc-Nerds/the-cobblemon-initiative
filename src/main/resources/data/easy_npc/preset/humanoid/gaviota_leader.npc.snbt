@@ -71,23 +71,13 @@
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
-                            Name: "defeated_gaviota_apprentice"
-                        },
-                        {
-                            Type: "PLAYER_TAG",
-                            Operation: "EQUALS",
-                            Name: "no_mc_gym5_done"
-                        },
-                        {
-                            Type: "PLAYER_TAG",
-                            Operation: "EQUALS",
-                            Name: "no_cfg_gym_gate_off"
+                            Name: "no_gaviota_drained"
                         }
                     ],
-                    Priority: 18,
+                    Priority: 19,
                     Buttons: [
                         {
-                            Name: "I'll go do that",
+                            Name: "I will drain it first",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -98,10 +88,51 @@
                     ],
                     Texts: [
                         {
-                            Text: "No one rides my current who has never sat still over water. Take a rod down to the pier, cast a line, and reel in a catch before you come asking for a badge."
+                            Text: "You reach me across open water, challenger. No. My gym is the drained pit and the boards beneath it. Work the pump-bots in matched pairs until the harbour empties, then walk down to me on dry ground."
                         },
                         {
-                            Text: "Water-types wear a thing down wave by wave. Go learn the patience of the tide. Come back with a fish on your line."
+                            Text: "The crew hold the ring while it floods. Tide, Marina, and I wait for the water to drop. That is the order of the tide."
+                        }
+                    ],
+                    Name: "Neptune — the arena is drowned",
+                    Label: "flooded"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "defeated_gaviota_apprentice"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "no_aquarium_tier1_done"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "no_cfg_gym_gate_off"
+                        }
+                    ],
+                    Priority: 18,
+                    Buttons: [
+                        {
+                            Name: "I will go stock the tanks",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "No one rides my current who has not first earned the trust of the tide. Go to the aquarium and stock its empty tanks — donate three kinds of fish you have caught with your own hands, and the harbourmaster will send word that you are ready."
+                        },
+                        {
+                            Text: "Water-types remember every hand that ever fed them. Fill the tanks, and the badge is the next thing between us. Not before."
                         }
                     ],
                     Name: "Neptune — prove yourself in the world",
