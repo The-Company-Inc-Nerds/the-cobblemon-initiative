@@ -10,7 +10,7 @@ All three layers are implemented and run green against the real map.
 | Headless harness | `scripts/test_harness` | `scripts/test_harness [--static\|--client]` | yes (static + server phases) |
 | Offline placement | `scripts/npc_placement_audit.py` | `python3 scripts/npc_placement_audit.py [--source trainers\|dialog\|both]` | no (informational) |
 | Dialog lint | `scripts/dialog_lint.py` | `python3 scripts/dialog_lint.py [--quiet]` (see section below) | yes (exit≠0 on DEAD/ORPHAN/NEGATION) |
-| In-mod test cmds | `command/TestCommands.java` | `/cobblemon-initiative test reload\|registry\|data\|placement` | reload/registry/data yes; placement info |
+| In-mod test cmds | `command/TestCommands.java` | `/ca-dev test reload\|registry\|data\|placement` | reload/registry/data yes; placement info |
 | Fake player | `build.gradle.kts` (Carpet, dev-only) | `player Tester spawn` then `execute as Tester run …` | enabler |
 
 **Setup gotchas found & fixed:**
@@ -342,7 +342,7 @@ three in sync):
 | `interact.entity` | look at + right-click by uuid/name | THE walk-up-talk path; server rejects >6 blocks — walk first |
 | `attack.entity` / `interact.block` / `use.item` | left-click / block use / item use | |
 | `look.at` / `move.to` / `move.status` / `move.stop` | steer camera; REAL walking (keys+yaw per tick, hop on collision) | latch radii + zone triggers fire like for a human; dumb straight-line — for anything non-trivial use `move.path` |
-| `move.path` | follow a vanilla-A* node list (`nodes=[[x,y,z],…]`) node-to-node | pair with the server probe `cobblemon-initiative dev path <player> <x> <y> <z>` (PathProbe: mob-grade GroundPathNavigation on a throwaway zombie, water unwalkable, doors allowed; emits `[PATH] reached=… route=…` + a happy-villager particle trail). Fails fast with `stuck:node=i/n`. e2e step: `path_to` — hop-chains: a `reached=false` partial (the probe's visited-node budget, not geometry, is usually what truncates) is walked, then re-probed from where it ends, until reached / no progress (`max_hops`, default 6) |
+| `move.path` | follow a vanilla-A* node list (`nodes=[[x,y,z],…]`) node-to-node | pair with the server probe `ca-dev path <player> <x> <y> <z>` (PathProbe: mob-grade GroundPathNavigation on a throwaway zombie, water unwalkable, doors allowed; emits `[PATH] reached=… route=…` + a happy-villager particle trail). Fails fast with `stuck:node=i/n`. e2e step: `path_to` — hop-chains: a `reached=false` partial (the probe's visited-node budget, not geometry, is usually what truncates) is walked, then re-probed from where it ends, until reached / no progress (`max_hops`, default 6) |
 | `input.key` | hold forward/back/left/right/jump/sneak/sprint | |
 | `hud.chat` | ring buffer: chat/system/overlay/title/subtitle, seq-cursored | titles+actionbar captured by GuiTitleMixin at the Gui setters (`/title actionbar` bypasses ChatListener) |
 | `hud.sidebar` | rendered sidebar title+lines | E2E check for the quest tracker ▶ line |
@@ -374,7 +374,7 @@ The authoring loop is: write scenario → `scenario_lint` → live `e2e_run`.
 `--all` lints everything in `scripts/scenarios/`.
 
 **Battle beats are free**: enroll the REAL client player in the auto-battler —
-`execute as <PlayerN> run cobblemon-initiative dev bot autobattle on` (AutoBattler takes
+`execute as <PlayerN> run ca-dev bot autobattle on` (AutoBattler takes
 any ServerPlayer) — then the scenario just clicks the challenge button and
 `wait_chat`s for the victory line; the server picks moves.
 

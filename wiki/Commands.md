@@ -164,7 +164,7 @@ Root command for all Cobblemon Initiative features. `/ca` is a literal redirect 
 > `/ca reset` wipes campaign progress for the executing player. On a live hardcore run this is destructive — treat it as a debug/setup tool only.
 
 > [!CAUTION]
-> **Known inconsistency:** `/ca reset` hard-sets the level cap to **20**, but the actual starting cap defined by `levelcaps.json` (and `ProgressionConfig.baseLevelCap`) is **15**. The 20 is a stale hardcode from an older ladder — after a reset, the first cap recalculation (any badge grant, or `/ca dev badges 0`) restores the true base. Do not read the post-reset `20` as the intended starting cap.
+> **Known inconsistency:** `/ca reset` hard-sets the level cap to **20**, but the actual starting cap defined by `levelcaps.json` (and `ProgressionConfig.baseLevelCap`) is **15**. The 20 is a stale hardcode from an older ladder — after a reset, the first cap recalculation (any badge grant, or `/ca-dev badges 0`) restores the true base. Do not read the post-reset `20` as the intended starting cap.
 
 ### Trainer inspection
 
@@ -243,17 +243,17 @@ Warps and progression levers for testing — all OP-2.
 
 | Command | Description | Args |
 |---------|-------------|------|
-| `/ca dev goto <trainer>` | Teleport to a trainer's configured coordinates. | trainer ID (autocompletes only trainers that have coordinates) |
-| `/ca dev badges <n>` | Set progression to **exactly** N gym badges: grants/removes the badge achievements *and* their gym leaders' defeated flags, then recalculates the level cap. | `n` 0–10 |
-| `/ca dev grant <achievement>` | Grant a single achievement and refresh the level cap. | achievement ID (autocompletes the level-cap achievement ids, e.g. `badge_fire`, `royal_league_champion`, `board_cleared`) |
-| `/ca dev kit` | Gives the 5 shrine crystals + 16 Rare Candy + 16 Potions. | — |
-| `/ca dev team <stage>` | Banks your party to the PC and provisions the bundled counter team for the stage: level = era entry cap, perfect 31 IVs, EV spreads, authored against the real enemy team files (deliberately overpowered — a lost test is a permadeath). | stage ∈ `gym_1..gym_10`, `shrine_fairy/ground/dragon/ice/fire`, `hq`, `royal`, `board`, `founder` |
-| `/ca dev stage <stage>` | One-shot progression setup for the same stage names: badges (cap follows), gate scores (`fields_liberated`), champion/board defeat tags + achievements, and a teleport to the stage anchor when its coords are authored. | same stage ids |
-| `/ca dev place next\|prev\|goto <id>` | Guided placement walk: teleport through the bundled 51-proposal plan (surface-height tp) and print each NPC's name, purpose, and ideal-spot direction. | plan id (autocompletes) |
-| `/ca dev tool` | **The Producer's Tool** (one item for the whole walk = placement plan + gym-mark slots): hold = fly + invulnerable (airborne-grace on unhold); left-click = set primary (block = stand-spot, NPC = adopt); right-click = secondary (box corners; air = feet); F (swap-hands) = primary at your feet; shift+left/right = confirm; **Q = skip**; chat after a set = notes on the current stop; the item **glints** when the current stop already has anything recorded. Writes the same files as `dev place` / `gym-mark`. | — |
-| `/ca dev place here\|adopt\|skip [id]` | `here` records your feet as the NPC's latch placement; `adopt` records the builder body you are **looking at** as a uuid takeover; `skip` defers. Defaults to the current walk entry. Results accumulate in `{world}/data/npc_placements.json` (`list`/`export` show progress / the handoff). | optional plan id |
+| `/ca-dev goto <trainer>` | Teleport to a trainer's configured coordinates. | trainer ID (autocompletes only trainers that have coordinates) |
+| `/ca-dev badges <n>` | Set progression to **exactly** N gym badges: grants/removes the badge achievements *and* their gym leaders' defeated flags, then recalculates the level cap. | `n` 0–10 |
+| `/ca-dev grant <achievement>` | Grant a single achievement and refresh the level cap. | achievement ID (autocompletes the level-cap achievement ids, e.g. `badge_fire`, `royal_league_champion`, `board_cleared`) |
+| `/ca-dev kit` | Gives the 5 shrine crystals + 16 Rare Candy + 16 Potions. | — |
+| `/ca-dev team <stage>` | Banks your party to the PC and provisions the bundled counter team for the stage: level = era entry cap, perfect 31 IVs, EV spreads, authored against the real enemy team files (deliberately overpowered — a lost test is a permadeath). | stage ∈ `gym_1..gym_10`, `shrine_fairy/ground/dragon/ice/fire`, `hq`, `royal`, `board`, `founder` |
+| `/ca-dev stage <stage>` | One-shot progression setup for the same stage names: badges (cap follows), gate scores (`fields_liberated`), champion/board defeat tags + achievements, and a teleport to the stage anchor when its coords are authored. | same stage ids |
+| `/ca-dev place next\|prev\|goto <id>` | Guided placement walk: teleport through the bundled 51-proposal plan (surface-height tp) and print each NPC's name, purpose, and ideal-spot direction. | plan id (autocompletes) |
+| `/ca-dev tool` | **The Producer's Tool** (one item for the whole walk = placement plan + gym-mark slots): hold = fly + invulnerable (airborne-grace on unhold); left-click = set primary (block = stand-spot, NPC = adopt); right-click = secondary (box corners; air = feet); F (swap-hands) = primary at your feet; shift+left/right = confirm; **Q = skip**; chat after a set = notes on the current stop; the item **glints** when the current stop already has anything recorded. Writes the same files as `dev place` / `gym-mark`. | — |
+| `/ca-dev place here\|adopt\|skip [id]` | `here` records your feet as the NPC's latch placement; `adopt` records the builder body you are **looking at** as a uuid takeover; `skip` defers. Defaults to the current walk entry. Results accumulate in `{world}/data/npc_placements.json` (`list`/`export` show progress / the handoff). | optional plan id |
 
-The **GymMark wand** (`/ca gym-mark wand|set|start|stop|list|export`) is the gym-gimmick
+The **GymMark wand** (`/ca-dev gym-mark wand|set|start|stop|list|export`) is the gym-gimmick
 coordinate pass — see the TODO gym-gimmicks section for the 33-slot walkthrough; it exports
 `{world}/data/gym_marks.json`.
 
@@ -327,11 +327,10 @@ Playtest aids added while smoke-testing content. All dev tooling now lives in th
 
 | Command | Description | Args |
 |---------|-------------|------|
-| `/ca pos ["title"] [note…]` | Prints your x/y/z to chat and records it, with an optional quoted title + trailing note — used to capture placement coords in-world (paste the `npcnote log` dump back to the author). | title, note |
-| `/ca npcnote stick` | Gives the "NPC Noter" stick: whack an NPC to select it (no damage), then `note <text>` / `move` (or right-click a block) to record a comment / relocation. | — |
-| `/ca npcnote log \| clear \| undo` | `log` dumps every recorded note + position to chat (copy-pasteable); `clear`/`undo` manage them. Persists to `<world>/data/npc_notes.json` (survives a relog). | — |
-| `/ca smoke list \| next \| show \| pass \| comment \| fail \| log \| reset` | In-world checklist compiled from `SMOKETEST.md` R-items: mark each pass/comment/fail with a note, then `log` dumps them copy-pasteable to fill back into the file. | id, note |
-| `/ca debug victini` | Prints the **Victini gate** for you: ✔/✗ per condition (`victor_hint`, `docs_filed`, `lane_done`, `census_refused`) plus the overall verdict (VALID / not-yet / TRANSFORMED / JOINED). Reads your tags live. | — |
+| `/ca-dev pos ["title"] [note…]` | Prints your x/y/z to chat and records it, with an optional quoted title + trailing note — used to capture placement coords in-world (paste the `npcnote log` dump back to the author). | title, note |
+| `/ca-dev npcnote stick` | Gives the "NPC Noter" stick: whack an NPC to select it (no damage), then `note <text>` / `move` (or right-click a block) to record a comment / relocation. | — |
+| `/ca-dev npcnote log \| clear \| undo` | `log` dumps every recorded note + position to chat (copy-pasteable); `clear`/`undo` manage them. Persists to `<world>/data/npc_notes.json` (survives a relog). | — |
+| `/ca-dev debug victini` | Prints the **Victini gate** for you: ✔/✗ per condition (`victor_hint`, `docs_filed`, `lane_done`, `census_refused`) plus the overall verdict (VALID / not-yet / TRANSFORMED / JOINED). Reads your tags live. | — |
 
 ## `/cobblemon-initiative npc-map` &nbsp;— *removed at 1.0.0*
 

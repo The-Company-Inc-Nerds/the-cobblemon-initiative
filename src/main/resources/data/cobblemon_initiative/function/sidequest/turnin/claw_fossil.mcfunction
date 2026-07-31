@@ -1,11 +1,19 @@
-# Curator Kenji resurrection machine — claw fossil -> Anorith, on the museum platform
-# (float at 1902.5/116/2313.8). Run AS THE PLAYER from the revive_claw button (gated not_tag
-# sq_revived_anorith — per-species). PHASE 0: consume, latch, float the item, kick off the shared
-# cinematic (museum/revive_begin -> revive_mid -> revive_finish). See dome_fossil for the pattern.
+# Curator Kenji resurrection machine - Claw Fossil -> Anorith, on the museum platform (top 1902.5/115/
+# 2313.8; the fossil floats at +1 = 1902.5/116/2313.8). Run AS THE PLAYER from the revive_anorith dialog
+# button (gated not_tag sq_revived_anorith - per-species, so each dug fossil revives once). Consume-probe
+# idiom: `clear @s <item> 0` counts without removing; only latch + float + begin if the player holds
+# one. Carry tags: shared ci_reviving (generic mid/finish beats) + ci_reviving_anorith (finish branches
+# on it to spawn the right revived_anorith gift body). Kept as a literal turnin (not a macro) so
+# dialog_lint sees the sq_revived_anorith grant.
+# Guard: one revive at a time. If the tank is already mid-cinematic (shared ci_reviving tag), reject
+# BEFORE the consume so a rapid second click can't consume a fossil the in-flight finish then discards.
+execute if entity @s[tag=ci_reviving] run title @s actionbar [{"text":"The tank is still working - wait for it to finish.","color":"red"}]
+execute if entity @s[tag=ci_reviving] run return 0
 execute store result score #turnin ci_item run clear @s cobblemon:claw_fossil 0
-execute if score #turnin ci_item matches ..0 run title @s actionbar [{"text":"You have no Claw Fossil to revive.","color":"red"}]
+execute if score #turnin ci_item matches ..0 run title @s actionbar [{"text":"You have no Anorith to revive.","color":"red"}]
 execute if score #turnin ci_item matches 1.. run clear @s cobblemon:claw_fossil 1
 execute if score #turnin ci_item matches 1.. run tag @s add sq_revived_anorith
+execute if score #turnin ci_item matches 1.. run tag @s add ci_reviving
 execute if score #turnin ci_item matches 1.. run tag @s add ci_reviving_anorith
-execute if score #turnin ci_item matches 1.. positioned 1902.5 116 2313.8 run summon minecraft:item ~ ~ ~ {Item:{id:"cobblemon:claw_fossil",count:1},NoGravity:1b,Invulnerable:1b,PickupDelay:32767s,Age:-32768s,Tags:["ci_fossil_float"],CustomName:'{"text":"Claw Fossil","color":"gold"}'}
+execute if score #turnin ci_item matches 1.. positioned 1902.5 116 2313.8 run summon minecraft:item ~ ~ ~ {Item:{id:"cobblemon:claw_fossil",count:1},NoGravity:1b,Invulnerable:1b,PickupDelay:32767s,Age:-32768s,Tags:["ci_fossil_float"],CustomName:'{"text":"Anorith","color":"gold"}'}
 execute if score #turnin ci_item matches 1.. run function cobblemon_initiative:sidequest/museum/revive_begin

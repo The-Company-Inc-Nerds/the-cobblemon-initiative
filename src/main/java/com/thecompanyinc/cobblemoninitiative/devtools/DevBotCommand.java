@@ -27,7 +27,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 
 /**
- * {@code /cobblemon-initiative dev bot …} — synthetic player interactions for headless
+ * {@code /ca-dev bot …} — synthetic player interactions for headless
  * (Carpet fake-player) testing. Carpet's own {@code player X use} silently NO-OPS for
  * block/item interaction, so bots cannot right-click blocks, open dialogs, or throw
  * Pokéballs — these subcommands go through the REAL server-side interaction entry points
@@ -35,7 +35,7 @@ import net.minecraft.world.phys.Vec3;
  *
  * <p>Like the {@code track} subtree (and {@code givemon}), the acting player is resolved
  * at RUNTIME from the command SOURCE — no parse-time entity argument — so
- * {@code execute as <bot> run cobblemon-initiative dev bot …} drives any bot. Use
+ * {@code execute as <bot> run ca-dev bot …} drives any bot. Use
  * {@code execute as <bot> at @s run …} when passing relative coordinates.
  *
  * <p>Verified against the loom-remapped jars (mojmap):
@@ -66,14 +66,13 @@ public final class DevBotCommand {
 
   public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
     dispatcher.register(
-      Commands.literal("cobblemon-initiative").then(
-        // requires() repeated here so the perm-2 gate survives any brigadier merge
-        // order with DevCommands' "dev" literal (merge keeps the FIRST node's gate).
-        Commands.literal("dev")
-          .requires(source -> source.hasPermission(2))
-          .then(
-            Commands.literal("bot")
-              .requires(source -> source.hasPermission(2))
+      Commands.literal("ca-dev")
+        // requires() repeated on ca-dev so the perm-2 gate survives brigadier merge order
+        // (merge keeps the FIRST-registered node's gate).
+        .requires(source -> source.hasPermission(2))
+        .then(
+          Commands.literal("bot")
+            .requires(source -> source.hasPermission(2))
               // dev bot use <x> <y> <z> [face] — synthetic right-click-on-block.
               .then(
                 Commands.literal("use").then(
@@ -123,7 +122,6 @@ public final class DevBotCommand {
               // choice state (which side a stalled TBCS battle is waiting on).
               .then(Commands.literal("battlestate").executes(DevBotCommand::battleState))
           )
-      )
     );
   }
 
@@ -273,7 +271,7 @@ public final class DevBotCommand {
     ServerPlayer p = ctx.getSource().getPlayer();
     if (p == null) {
       ctx.getSource().sendFailure(Component.literal(
-        "[BOT] result=NO_PLAYER (run as a player: execute as <bot> run cobblemon-initiative dev bot …)"
+        "[BOT] result=NO_PLAYER (run as a player: execute as <bot> run ca-dev bot …)"
       ));
     }
     return p;

@@ -34,7 +34,7 @@ import net.minecraft.world.phys.BlockHitResult;
  *
  * <p>Everything lands in the same per-world storage as the {@code gym-mark} commands
  * ({@code data/gym_marks.json}); {@code gym-mark list}/{@code export} work unchanged.
- * Get the wand with {@code /cobblemon-initiative gym-mark wand}. Dev-only — ships and
+ * Get the wand with {@code /ca-dev gym-mark wand}. Dev-only — ships and
  * dies with the field-mark tool (see the dev-only cleanup checklist).
  */
 public final class GymMarkWand {
@@ -84,7 +84,7 @@ public final class GymMarkWand {
     });
   }
 
-  /** /cobblemon-initiative gym-mark wand — hand over a wand aimed at the first open slot. */
+  /** /ca-dev gym-mark wand — hand over a wand aimed at the first open slot. */
   public static void give(ServerPlayer player, GymMarkStorage stor) {
     storage = stor;
     ItemStack wand = new ItemStack(Items.AMETHYST_SHARD);

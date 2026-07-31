@@ -316,6 +316,7 @@
     port=8099
     open=1
     rerender=0
+    norender=0
     world=""
     out=""
     dimension=""
@@ -329,6 +330,7 @@
         --dimension) dimension="$2"; shift 2 ;;
         --unmined)   unmined="$2"; shift 2 ;;
         --rerender)  rerender=1; shift ;;
+        --no-render) norender=1; shift ;;
         --no-open)   open=0; shift ;;
         -h|--help)
           echo "Usage: zone-mapper [<world-or-export-dir>] [options]"
@@ -337,12 +339,17 @@
           echo "serves the zone editor over it. With no world given, auto-detects"
           echo "the one staged in mrpack/maps/."
           echo ""
+          echo "The render is REFRESHED every run by default (uNmINeD incremental —"
+          echo "only changed chunks, fast after the first full render), so the map is"
+          echo "always current. Use --no-render to skip and just serve existing tiles."
+          echo ""
           echo "  -w, --world <dir>   world save to render (must contain level.dat)"
           echo "  -o, --out <dir>     render/serve dir (default: dev/zone-map, untracked)"
           echo "  -p, --port <n>      http port (default: 8099)"
           echo "      --dimension <d> uNmINeD dimension (default: overworld)"
           echo "      --unmined <bin> path to unmined-cli (or the UNMINED env var)"
-          echo "      --rerender      re-run uNmINeD even if a render already exists"
+          echo "      --rerender      (now the default) force a render pass; kept for compat"
+          echo "      --no-render     skip rendering; serve the existing tiles as-is"
           echo "      --no-open       don't open a browser"
           exit 0 ;;
         *)
@@ -360,11 +367,24 @@
       done
     fi
 
-    if [ ! -f "$out/unmined.map.properties.js" ] || [ "$rerender" -eq 1 ]; then
+    # Refresh the render EVERY run by default so the served map is always current — the old
+    # "render once, then only on --rerender" behaviour is what made stale maps confusing. uNmINeD's
+    # web render is incremental (only changed chunks), so this is cheap after the first full render.
+    # --no-render skips it and serves whatever tiles already exist.
+    if [ "$norender" -eq 1 ]; then
+      if [ ! -f "$out/unmined.map.properties.js" ]; then
+        echo "No existing render in $out to serve (--no-render given, but nothing rendered yet)."
+        echo "  Drop --no-render so it renders first."
+        exit 1
+      fi
+      echo "Serving the EXISTING render in $out (--no-render) — terrain NOT refreshed this run."
+      echo ""
+    else
       if [ -z "$world" ] || [ ! -f "$world/level.dat" ]; then
         echo "No Minecraft world found to render."
         echo "  Looked in: $root/mrpack/maps/*/  (each must contain level.dat)"
         echo "  Or pass one:  zone-mapper --world \"/path/to/save\""
+        echo "  (or --no-render to serve an existing render without a world)"
         exit 1
       fi
       if ! command -v "$unmined" >/dev/null 2>&1; then
@@ -374,7 +394,11 @@
         echo "  (or:     UNMINED=/path/to/unmined-cli zone-mapper)"
         exit 1
       fi
-      echo "Rendering with uNmINeD (incremental; first run can take a while)..."
+      if [ -f "$out/unmined.map.properties.js" ]; then
+        echo "Refreshing the render (uNmINeD incremental — only changed chunks; --no-render to skip)..."
+      else
+        echo "Rendering with uNmINeD (first run — full render, can take a while)..."
+      fi
       echo "  world:  $world"
       echo "  output: $out"
       mkdir -p "$out"
@@ -386,6 +410,20 @@
 
     cp "$src/zone-editor.html" "$src/README.md" "$out/"
     [ -d "$src/vendor" ] && cp -r "$src/vendor" "$out/"
+
+    # Stage the live install.json so the editor auto-loads the CURRENT zones on open
+    # (no copy/paste). Refreshed every launch so it always reflects the source tree.
+    if cp "$root/src/main/resources/data/cobblemon_initiative/install.json" "$out/" 2>/dev/null; then
+      echo "Staged install.json  (editor will auto-load current zones)"
+    else
+      echo "warn: install.json not found — zones won't auto-import"
+    fi
+    # Refresh the NPC overlay (green=wired, gray=flavor, orange=planned) into the serve dir.
+    # Positions come from the builders' CSV (see the overlay's staleness note); wired/flavor
+    # status is joined live from npc_presets.json.
+    ZONE_MAP_OUT="$out" ${pkgs.python3}/bin/python3 "$root/scripts/generate_npc_overlay" \
+      || echo "warn: npc overlay skipped (CSV / npc_presets.json missing?)"
+
     url="http://localhost:$port/zone-editor.html"
     echo "Zone Mapper  ->  $url"
     echo "Serving      $out   (Ctrl-C to stop)"

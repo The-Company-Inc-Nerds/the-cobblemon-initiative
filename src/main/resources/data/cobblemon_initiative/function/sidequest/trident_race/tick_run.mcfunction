@@ -18,21 +18,24 @@ execute if score #time ci_trace matches 20 run title @a[tag=ci_trident_racing] a
 execute if score #time ci_trace matches 20 as @a[tag=ci_trident_racing] at @s run playsound minecraft:block.note_block.pling player @s ~ ~ ~ 1 2
 # Ocean ring marker at the current target ring (that runner only).
 execute as @a[tag=ci_trident_racing] at @s run function cobblemon_initiative:sidequest/trident_race/rings
-# ORDERED rings — PLACEHOLDER coords heading west off Gianna's beach (475/63/3589) into open water.
-# NEEDS in-world F3 tuning like the cascade course (walk it, re-record each ring + the finish box).
-# Boxes ~3-wide; dy widened to 4 so a fast riptide pass still registers on a tick. Gated on the
-# immediately-prior counter so rings must be cleared in sequence (no skipping).
-# Ring 1 462/61/3589
-execute as @a[tag=ci_trident_racing] if score @s ci_trace_cp matches 0 if entity @s[x=460.5,dx=3,y=59.5,dy=4,z=3587.5,dz=3] run function cobblemon_initiative:sidequest/trident_race/cp {n:1,total:5}
-# Ring 2 450/60/3592
-execute as @a[tag=ci_trident_racing] if score @s ci_trace_cp matches 1 if entity @s[x=448.5,dx=3,y=58.5,dy=4,z=3590.5,dz=3] run function cobblemon_initiative:sidequest/trident_race/cp {n:2,total:5}
-# Ring 3 438/60/3585
-execute as @a[tag=ci_trident_racing] if score @s ci_trace_cp matches 2 if entity @s[x=436.5,dx=3,y=58.5,dy=4,z=3583.5,dz=3] run function cobblemon_initiative:sidequest/trident_race/cp {n:3,total:5}
-# Ring 4 426/61/3591
-execute as @a[tag=ci_trident_racing] if score @s ci_trace_cp matches 3 if entity @s[x=424.5,dx=3,y=59.5,dy=4,z=3589.5,dz=3] run function cobblemon_initiative:sidequest/trident_race/cp {n:4,total:5}
-# Ring 5 414/61/3587
-execute as @a[tag=ci_trident_racing] if score @s ci_trace_cp matches 4 if entity @s[x=412.5,dx=3,y=59.5,dy=4,z=3585.5,dz=3] run function cobblemon_initiative:sidequest/trident_race/cp {n:5,total:5}
-# FINISH 402/62/3589 — only once all five rings are behind you.
-execute as @a[tag=ci_trident_racing] if score @s ci_trace_cp matches 5 at @s if entity @s[x=400.5,dx=3,y=60.5,dy=4,z=3587.5,dz=3] run function cobblemon_initiative:sidequest/trident_race/win
+# ORDERED ocean rings — an out-and-back loop off Gianna's Westwind beach. Start is the P7 buoy
+# (465/61/3600, the marked "ocean start"); rings 1-3 sweep WEST into open water, ring 4 is the far
+# turn, ring 5 returns, and the FINISH sits back by the buoy in front of Gianna. Boxes are ~3 wide;
+# dy widened to 4 so a fast riptide pass still registers on a tick. Sea level ~y62, so boxes span
+# y60.5..64.5 (swimmer at/just under the surface where Riptide fires). Gated on the immediately-prior
+# counter so rings must be cleared in sequence (no skipping). Desk-placed from the P7 mark — a
+# showrunner should riptide the loop once and nudge any ring that lands on a piling or dry shore.
+# Ring 1 455/62/3598
+execute as @a[tag=ci_trident_racing] if score @s ci_trace_cp matches 0 if entity @s[x=453.5,dx=3,y=60.5,dy=4,z=3596.5,dz=3] run function cobblemon_initiative:sidequest/trident_race/cp {n:1,total:5}
+# Ring 2 440/62/3592
+execute as @a[tag=ci_trident_racing] if score @s ci_trace_cp matches 1 if entity @s[x=438.5,dx=3,y=60.5,dy=4,z=3590.5,dz=3] run function cobblemon_initiative:sidequest/trident_race/cp {n:2,total:5}
+# Ring 3 425/62/3588
+execute as @a[tag=ci_trident_racing] if score @s ci_trace_cp matches 2 if entity @s[x=423.5,dx=3,y=60.5,dy=4,z=3586.5,dz=3] run function cobblemon_initiative:sidequest/trident_race/cp {n:3,total:5}
+# Ring 4 412/62/3595 (far turn)
+execute as @a[tag=ci_trident_racing] if score @s ci_trace_cp matches 3 if entity @s[x=410.5,dx=3,y=60.5,dy=4,z=3593.5,dz=3] run function cobblemon_initiative:sidequest/trident_race/cp {n:4,total:5}
+# Ring 5 424/62/3606 (return)
+execute as @a[tag=ci_trident_racing] if score @s ci_trace_cp matches 4 if entity @s[x=422.5,dx=3,y=60.5,dy=4,z=3604.5,dz=3] run function cobblemon_initiative:sidequest/trident_race/cp {n:5,total:5}
+# FINISH 458/62/3603 — back by the buoy, only once all five rings are behind you.
+execute as @a[tag=ci_trident_racing] if score @s ci_trace_cp matches 5 at @s if entity @s[x=456.5,dx=3,y=60.5,dy=4,z=3601.5,dz=3] run function cobblemon_initiative:sidequest/trident_race/win
 # Expiry: clock hits zero.
 execute if score #time ci_trace matches ..0 run function cobblemon_initiative:sidequest/trident_race/expire

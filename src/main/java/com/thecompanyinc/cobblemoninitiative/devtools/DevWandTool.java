@@ -415,7 +415,7 @@ public final class DevWandTool {
   }
 
   private static void hintNoItem(ServerPlayer player) {
-    player.sendSystemMessage(Component.literal("§cNo current walk stop — run `/ca dev tool` to start."));
+    player.sendSystemMessage(Component.literal("§cNo current walk stop — run `/ca-dev tool` to start."));
   }
 
   private static String shortPos(BlockPos pos) {

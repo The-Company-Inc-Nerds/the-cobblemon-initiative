@@ -529,7 +529,7 @@ the tag-profile session cache, `reload` clears all sessions.
   (`dev showdown status` → context=ALIVE) — the poison is JS-side battle state.
   Exceptions unwinding through the JS bridge are the crash-class culprit (zero
   try/catch in sendToShowdown/sendFromShowdown; the FancyMenu NaN kill is the same
-  family). **RECOVERY VERIFIED LIVE:** `/cobblemon-initiative dev showdown revive` —
+  family). **RECOVERY VERIFIED LIVE:** `/ca-dev showdown revive` —
   (1) blinds rctapi's static battleToManager + battleStates + BATTLE_QUERY_TO_CANCEL
   by reflection (MANDATORY FIRST: rctapi's tick forceEnd on a stale id against a fresh
   context = "TypeError: Cannot read property 'write' of undefined" = SERVER CRASH,
@@ -627,7 +627,7 @@ build` for the Java/rctmod half):**
   is the **top floor** → lore + a **Master Ball** pickup, and the **post-game Founder mirror** arena.
   ✅ recorded in `LORE_BIBLE §4/§5`; dev-tool slots added (`hq_basement_dj`, `hq_penthouse_lore`,
   `hq_penthouse_masterball`, `hq_penthouse_mirror`). *Remaining 🧱:* build the basement + penthouse
-  floors, mark the slots (`/ca gym-mark`), then Claude wires the Master Ball chest + Founder spawn
+  floors, mark the slots (`/ca-dev gym-mark`), then Claude wires the Master Ball chest + Founder spawn
   in the penthouse (champion-gated spawn latch).
 
 **New 🧱→💻 (this round):**
@@ -1105,8 +1105,8 @@ Author in batches; each batch unblocks Claude wiring the same day:
 
 **CONSOLIDATED 2026-07-11:** all surviving dev tooling now lives in ONE package
 (`devtools/`) behind ONE entrypoint (`DevToolsInit`) — GymMark wand (gym-gimmick
-coordinate pass), NPC Noter stick + `pos` capture + `smoke` checklist, and the whole
-`/ca dev` subtree (goto/badges/grant/kit + `team`/`stage` test harness + `place` guided
+coordinate pass), NPC Noter stick + `pos` capture + `debug` readouts, and the whole
+`/ca-dev` subtree (badges/grant/heal/glow/phone/stage/place/note/marker/log + `bot`/`test` harness + `place` guided
 placement walk). Command surface unchanged. Already deleted outright (superseded):
 `zonetrace/` (browser zone-mapper won — 58 zones baked), `fieldmark/`'s field-mark half
 (farm polygons canonical in install.json), and the `function/dev/npc_tour_*` datapack

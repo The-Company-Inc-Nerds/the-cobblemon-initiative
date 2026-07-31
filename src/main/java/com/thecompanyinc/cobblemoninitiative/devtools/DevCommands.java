@@ -20,10 +20,12 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 
 /**
- * The {@code /cobblemon-initiative dev …} subtree — every dev-only command in one
- * registration (strips with the devtools package at 1.0.0, TODO §2). Brigadier merges the
- * re-registered {@code cobblemon-initiative} root literal into the shipping tree (the same
- * pattern DevNoteCommand has always used), so the {@code /ca} alias reaches these too.
+ * The {@code /ca-dev …} subtree — every dev-only command in one registration under the
+ * dedicated top-level {@code ca-dev} root (strips with the devtools package at 1.0.0, TODO §2).
+ * Brigadier merges the separate {@code ca-dev} registrations from the other devtools files
+ * (DevBotCommand, DevNoteCommand, GymMarkCommand, TestCommands) into one tree; keeping the whole
+ * dev surface off the shipping {@code cobblemon-initiative}/{@code /ca} tree makes it a single
+ * strip target on release.
  *
  * <p>Handlers for badges/grant moved verbatim from CobblemonInitiativeCommands
  * (2026-07-11 consolidation); stage/place delegate to
@@ -36,11 +38,10 @@ public final class DevCommands {
 
   public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
     dispatcher.register(
-      Commands.literal("cobblemon-initiative").then(
-        Commands.literal("dev")
-          .requires(source -> source.hasPermission(2))
-          .then(
-            Commands.literal("badges").then(
+      Commands.literal("ca-dev")
+        .requires(source -> source.hasPermission(2))
+        .then(
+          Commands.literal("badges").then(
               Commands.argument("count", IntegerArgumentType.integer(0, 10))
                 .executes(DevCommands::devBadges)
             )
@@ -110,7 +111,7 @@ public final class DevCommands {
                 .then(placeIdArg().executes(
                   ctx -> withPlayer(ctx, p -> DevPlaceManager.cmdSkip(p, StringArgumentType.getString(ctx, "id"))))))
           )
-          // Quick freeform playtest note: /ca dev note <text>.
+          // Quick freeform playtest note: /ca-dev note <text>.
           .then(
             Commands.literal("note").then(
               Commands.argument("text", StringArgumentType.greedyString())
@@ -146,7 +147,6 @@ public final class DevCommands {
           .then(
             Commands.literal("log").executes(ctx -> withPlayer(ctx, DevNoteInit::devLog))
           )
-      )
     );
   }
 
@@ -162,7 +162,7 @@ public final class DevCommands {
     return ids;
   }
 
-  /** /cobblemon-initiative dev badges &lt;n&gt; — set progression to exactly N gym badges. */
+  /** /ca-dev badges &lt;n&gt; — set progression to exactly N gym badges. */
   private static int devBadges(CommandContext<CommandSourceStack> context) {
     ServerPlayer player = context.getSource().getPlayer();
     if (player == null) {
@@ -225,7 +225,7 @@ public final class DevCommands {
       () ->
         Component.literal(
           "§aSet progression to §e" + n + "§a badge(s) + defeated tags; level cap now §e"
-            + cap + "§a. §7(endgame story flags: /ca dev stage <era>)"
+            + cap + "§a. §7(endgame story flags: /ca-dev stage <era>)"
         ),
       true
     );
@@ -256,7 +256,7 @@ public final class DevCommands {
     return 1;
   }
 
-  /** /cobblemon-initiative dev grant &lt;achievement&gt; — grant one achievement + refresh cap. */
+  /** /ca-dev grant &lt;achievement&gt; — grant one achievement + refresh cap. */
   private static int devGrant(CommandContext<CommandSourceStack> context) {
     ServerPlayer player = context.getSource().getPlayer();
     if (player == null) {
@@ -278,7 +278,7 @@ public final class DevCommands {
   }
 
   /**
-   * /cobblemon-initiative dev heal — fully heal the player's whole party AND the player
+   * /ca-dev heal — fully heal the player's whole party AND the player
    * (health, hunger, fire, effects), usable mid-battle. Party uses the shipped healParty
    * idiom; the {@code healpokemon} console command resyncs a currently sent-out mon into
    * the running showdown side (the FrontierManager pattern), avoiding fragile BattlePokemon
@@ -311,7 +311,7 @@ public final class DevCommands {
   }
 
   /**
-   * /cobblemon-initiative dev glow [on|off] — toggle the vanilla GLOWING outline on every
+   * /ca-dev glow [on|off] — toggle the vanilla GLOWING outline on every
    * Easy NPC entity across all levels (namespace {@code easy_npc}: humanoid + cobblemon_npc
    * + fairy). One-shot sweep — re-run after chunks load elsewhere. Defaults to on.
    */
@@ -356,7 +356,7 @@ public final class DevCommands {
     java.util.Map.entry("founder", "call_founder_done"));
 
   /**
-   * /cobblemon-initiative dev phone &lt;call&gt; — preview a PokéPhone call (the datapack
+   * /ca-dev phone &lt;call&gt; — preview a PokéPhone call (the datapack
    * {@code phone/ring_<call>} function: ☎ actionbar + chime + tellraw lines) on demand.
    * NON-CONSUMING: clears the call's done tag, fires it, then clears the tag again so the real
    * condition-driven call still rings later in normal play.

@@ -1,5 +1,6 @@
 package com.thecompanyinc.cobblemoninitiative.command;
 
+import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -33,7 +34,19 @@ import java.util.Set;
 public final class TestCommands {
     private TestCommands() {}
 
-    /** Wired into CobblemonInitiativeCommands via .then(TestCommands.build()). */
+    /**
+     * Register the {@code test} diagnostics under the dev-only {@code /ca-dev} root
+     * (moved off the shipping {@code cobblemon-initiative} tree 2026-07-31 so the whole
+     * dev surface strips in one place). Called from {@link com.thecompanyinc.cobblemoninitiative.devtools.DevToolsInit}.
+     */
+    public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
+        dispatcher.register(
+            Commands.literal("ca-dev")
+                .requires(s -> s.hasPermission(2))
+                .then(build()));
+    }
+
+    /** The {@code test} subtree — hung under {@code /ca-dev} by {@link #register}. */
     static LiteralArgumentBuilder<CommandSourceStack> build() {
         return Commands.literal("test")
             .requires(s -> s.hasPermission(2))

@@ -353,7 +353,7 @@ Victor is **Victini in hiding**, and he reveals himself only to someone who walk
 Sell the papers or sign the census and Victor stays silent forever. Victini is the reward for siding **fully** against the Company across Sango *and* believing a worthless thing can be a Victory. **Elder Nuru** gives a token **3 oran berries** for the anti-Company trio alone (papers / lane / census — she does not care about the fish): deliberately underwhelming, because the real prize is the one nobody tells you about.
 
 > [!NOTE]
-> *Testing aid:* `/cobblemon-initiative debug victini` (OP-only) prints a ✔/✗ for each of the **five** conditions and the overall verdict. Gate revised in 0.5.0-alpha.4 onto the three accessible anti-Company quests (was tied to Off the Record, which is easy to miss) plus the Kesi hint and the Magikarp-faith flag.
+> *Testing aid:* `/ca-dev debug victini` (OP-only) prints a ✔/✗ for each of the **five** conditions and the overall verdict. Gate revised in 0.5.0-alpha.4 onto the three accessible anti-Company quests (was tied to Off the Record, which is easy to miss) plus the Kesi hint and the Magikarp-faith flag.
 
 ---
 

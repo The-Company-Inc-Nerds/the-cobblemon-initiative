@@ -139,7 +139,7 @@ Real-time boss fights with a two-phase body-swap. Phase 1 is an **Easy NPC `cobb
 | Entrypoint | Package | Purpose |
 |---|---|---|
 | `NpcMapInit` | `npcmap/` | UUID ↔ Easy NPC preset mapping for batch preset application (hosts the SHIPPING `NpcPresetRefreshManager`, whose `init()` now runs from `InitiativeInit`) |
-| `DevToolsInit` | `devtools/` | THE consolidated dev entrypoint (2026-07-11): GymMark coordinate wand, NPC Noter stick + `pos` capture + `smoke` checklist, and the `/ca dev` subtree (goto/badges/grant/kit, `team`/`stage` test harness, `place` guided placement walk) |
+| `DevToolsInit` | `devtools/` | THE consolidated dev entrypoint: every dev command now hangs off the single top-level `/ca-dev` root (2026-07-31) — GymMark coordinate wand (`/ca-dev gym-mark`), NPC Noter stick + `pos` capture + `debug` readouts, the `bot`/`test` harnesses, and the `/ca-dev` subtree (badges/grant/heal/glow/phone/stage/place/note/marker/log). Strips in one place on release; the shipping `/ca` tree carries no dev subtrees |
 
 These are authoring scaffolds — all OP-only, all slated for deletion before 1.0.0 (strip = remove the two entrypoints + delete `devtools/` and the npcmap dev classes). `zonetrace/` and `fieldmark/`'s field-mark half were deleted 2026-07-11, superseded by the browser zone-mapper (58 zones + farm polygons baked into `install.json`).
 

@@ -53,13 +53,15 @@ into **`dev/zone-map/`** (gitignored — renders are never committed), copies th
 editor in, serves it, and opens your browser at
 <http://localhost:8099/zone-editor.html>.
 
-- First run renders the whole world (can take a while); later runs skip the render
-  and just serve. Pass `--rerender` to refresh after the world changes (incremental
-  — only changed regions re-render).
+- The render is **refreshed on every run** so the map is always current. The first run
+  is a full render (can take a while); after that it's incremental (uNmINeD only re-does
+  changed chunks — fast). Pass `--no-render` to skip and just serve the existing tiles.
+  (This is a change from the old "render once, then only on `--rerender`" behaviour that
+  made stale maps confusing; `--rerender` is still accepted as a no-op.)
 - Render a different save: `zone-mapper --world "/path/to/save"`.
-- Re-open an existing render without re-rendering: `zone-mapper <export-dir>`.
+- Re-open an existing render without re-rendering: `zone-mapper <export-dir> --no-render`.
 - Options: `-o/--out <dir>` (default `dev/zone-map`), `-p/--port <n>` (default 8099),
-  `--dimension <d>` (default overworld), `--no-open`. See `zone-mapper --help`.
+  `--dimension <d>` (default overworld), `--no-render`, `--no-open`. See `zone-mapper --help`.
 
 **Do not pass a zoom-in render** (the launcher renders at default zoom, which keeps
 coordinates block-exact — see Caveats). A local server is used because some browsers
@@ -101,14 +103,36 @@ gradle build          # bakes install.json into the jar
 `install run` registers each zone as a `SafeZone` (mob-spawn suppression +
 announcements) and draws it on JourneyMap via Map Frontiers.
 
+## Auto-loaded current zones + NPC overlay
+
+On launch, `zone-mapper` stages two things beside the editor so you open straight
+onto the **current** data — no copy/paste:
+
+- **`install.json`** is copied in, and the editor **auto-imports it on load** (same
+  path as the Import button; a blue banner confirms the zone count). Edit the zones,
+  then **Copy** the export back into
+  `src/main/resources/data/cobblemon_initiative/install.json`. If you'd already drawn
+  something, the auto-import no-ops so it never clobbers your work.
+- **`npc-overlay.js`** is regenerated (`scripts/generate_npc_overlay`) and drawn as
+  labeled dots (toggle in the panel): green = wired/authored cast, gray = builder
+  flavor, orange = planned. Positions come from the builders' CSV (uuid bodies) layered
+  with the **live latch-placed cast** read straight from `dialog-src/characters/`, so
+  recently-added NPCs show up. **Caveat:** a uuid body moved by a later
+  `repairs_a*_apply` tp still shows at its *CSV* spot (`scripts/npc_roster` is the
+  repairs-aware source if exact live body coords ever matter for a zone edge).
+
+These, the terrain render, and the zones are all refreshed every launch, so the
+whole view always reflects the source tree (`--no-render` skips just the terrain
+re-render if you want a faster, serve-only launch).
+
 ## Editing existing zones
 
-Use **Import** to load your current `install.json` (or a bare zones array). Every
-zone becomes an editable shape on the map — polygons from their `vertices`, circles
-from their center+radius. This is also the fastest **calibration check**: your known
-zones (Sango Town at `0/0`, The Company HQ at `1590/1028`, Royal League at
-`3528/2773`) should land exactly on the right spots. If they do, the export is
-aligned for that render.
+You can also **Import** manually to load an `install.json` (or a bare zones array) —
+useful for a file that isn't the staged one. Every zone becomes an editable shape on
+the map — polygons from their `vertices`, circles from their center+radius. This is
+also the fastest **calibration check**: your known zones (Sango Town at `0/0`, The
+Company HQ at `1590/1028`, Royal League at `3528/2773`) should land exactly on the
+right spots. If they do, the export is aligned for that render.
 
 ## Caveats (verified against uNmINeD 1.18 & 1.20.1 exports)
 

@@ -628,8 +628,9 @@ public class CobblemonInitiativeCommands {
                 .executes(CobblemonInitiativeCommands::applyShopTier)
             )
         )
-        .then(TestCommands.build())
     );
+    // NOTE: the `test` diagnostics subtree moved to the dev-only /ca-dev root (TestCommands.register,
+    // wired from DevToolsInit) 2026-07-31, so it strips with the rest of the dev surface on release.
 
     dispatcher.register(
       Commands.literal("ca")

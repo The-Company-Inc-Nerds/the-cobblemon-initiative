@@ -941,6 +941,29 @@ cd "&lt;export dir&gt;" &amp;&amp; python3 -m http.server 8099
     URL.revokeObjectURL(a.href);
   };
 
+  // ---- auto-load current install.json zones (staged next to this page by the launcher) ----
+  // Runs the same path as the Import button, so the editor opens on the CURRENT zones with no
+  // copy/paste. No-ops if install.json isn't served (a bare export) or if zones were already
+  // drawn/imported this session; importZones() fits the view to the loaded zones.
+  (function autoImportInstall() {
+    if (drawSource.getFeatures().length) return;            // don't clobber manual work
+    fetch("install.json", { cache: "no-store" })
+      .then(function (r) { if (!r.ok) throw new Error(r.status); return r.text(); })
+      .then(function (text) {
+        var data = JSON.parse(text);                          // pre-check so importZones never alerts
+        var zones = Array.isArray(data) ? data : (data && data.zones);
+        if (!zones || !zones.length) return;
+        importZones(text);                                   // reuse the existing importer
+        var w = document.getElementById("warn");
+        if (w && w.style.display !== "block") {
+          w.style.display = "block";
+          w.style.background = "#12303a"; w.style.color = "#8fd3ff";
+          w.textContent = "Loaded " + zones.length + " current zones from install.json — edit and Copy back into install.json when done.";
+        }
+      })
+      .catch(function () { /* install.json not served — leave the canvas empty */ });
+  })();
+
   refreshExport();
 })();
 </script>

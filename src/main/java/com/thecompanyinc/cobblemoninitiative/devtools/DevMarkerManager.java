@@ -27,7 +27,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.joml.Vector3f;
 
 /**
- * Dev-only block-MARKER tool ({@code /ca dev marker}). Hold the Marker Tool, then:
+ * Dev-only block-MARKER tool ({@code /ca-dev marker}). Hold the Marker Tool, then:
  * <ul>
  *   <li><b>Left-click a block</b> → set the anchor (a pending position; does not break the block).</li>
  *   <li><b>Right-click a block</b> → add to the selection: the SAME block as the anchor confirms a
@@ -35,7 +35,7 @@ import org.joml.Vector3f;
  *       quick-adds that one block. Repeat to build any shape.</li>
  * </ul>
  * Selected blocks are highlighted in-world (green dust; the pending anchor is red).
- * {@code /ca dev marker save <title> [description]} saves the accumulated block array to the shared
+ * {@code /ca-dev marker save <title> [description]} saves the accumulated block array to the shared
  * dev journal (see {@link DevNoteInit}) and resets; {@code clear} / {@code undo} manage the take.
  * Registered by {@link DevToolsInit}; strips with the devtools package at 1.0.0.
  */
@@ -111,7 +111,7 @@ public final class DevMarkerManager {
     player.getInventory().add(makeTool());
     player.sendSystemMessage(Component.literal(
       "§6Marker Tool §7given. §fLeft-click§7 a block to set the anchor, §fright-click§7 another to add "
-      + "the box (same block = single). §f/ca dev marker save <title> [desc]§7 to save, §fclear§7/§fundo§7."));
+      + "the box (same block = single). §f/ca-dev marker save <title> [desc]§7 to save, §fclear§7/§fundo§7."));
   }
 
   // ── selection ──────────────────────────────────────────────────────────────────
@@ -209,7 +209,7 @@ public final class DevMarkerManager {
     selections.remove(p.getUUID());
     p.sendSystemMessage(Component.literal(
       "§6Marker §asaved §f\"" + title + "\" §7(" + n + " block(s))"
-      + (m.description != null ? " §8— " + m.description : "") + "§7. Selection reset. §f/ca dev log§7 to export."));
+      + (m.description != null ? " §8— " + m.description : "") + "§7. Selection reset. §f/ca-dev log§7 to export."));
     return true;
   }
 

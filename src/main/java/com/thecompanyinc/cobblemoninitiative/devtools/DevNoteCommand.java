@@ -8,8 +8,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 
 /**
- * Dev-only: {@code /cobblemon-initiative npcnote stick|note|move|log|clear|undo}.
- * See {@link DevNoteInit} for the whack / right-click workflow.
+ * Dev-only, under the {@code /ca-dev} root: {@code /ca-dev pos …}, {@code /ca-dev npcnote
+ * stick|note|move|log|clear|undo}, and {@code /ca-dev debug victini}. (The {@code smoke}
+ * checklist was retired 2026-07-31.) See {@link DevNoteInit} for the whack / right-click workflow.
  */
 public final class DevNoteCommand {
 
@@ -18,7 +19,9 @@ public final class DevNoteCommand {
   public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
     // Quick position capture: /cobblemon-initiative pos [ "title" [note...] ]
     dispatcher.register(
-      Commands.literal("cobblemon-initiative").then(
+      Commands.literal("ca-dev")
+        .requires(src -> src.hasPermission(2))
+        .then(
         Commands.literal("pos")
           .requires(src -> src.hasPermission(2))
           .executes(ctx -> {
@@ -42,7 +45,9 @@ public final class DevNoteCommand {
     );
 
     dispatcher.register(
-      Commands.literal("cobblemon-initiative").then(
+      Commands.literal("ca-dev")
+        .requires(src -> src.hasPermission(2))
+        .then(
         Commands.literal("npcnote")
           .requires(src -> src.hasPermission(2))
           .then(Commands.literal("stick").executes(ctx -> {
@@ -88,70 +93,11 @@ public final class DevNoteCommand {
       )
     );
 
-    // Smoke-test checklist: /cobblemon-initiative smoke list|next|show|pass|comment|fail|log|reset
+    // Debug readouts: /ca-dev debug victini
     dispatcher.register(
-      Commands.literal("cobblemon-initiative").then(
-        Commands.literal("smoke")
-          .requires(src -> src.hasPermission(2))
-          .then(Commands.literal("list").executes(ctx -> {
-            DevNoteInit.smokeList(ctx.getSource().getPlayerOrException());
-            return 1;
-          }))
-          .then(Commands.literal("next").executes(ctx -> {
-            DevNoteInit.smokeNext(ctx.getSource().getPlayerOrException());
-            return 1;
-          }))
-          .then(Commands.literal("show")
-            .then(Commands.argument("id", StringArgumentType.word()).executes(ctx -> {
-              DevNoteInit.smokeShow(ctx.getSource().getPlayerOrException(),
-                StringArgumentType.getString(ctx, "id"));
-              return 1;
-            })))
-          .then(Commands.literal("pass")
-            .then(Commands.argument("id", StringArgumentType.word())
-              .executes(ctx -> {
-                DevNoteInit.smokeMark(ctx.getSource().getPlayerOrException(),
-                  StringArgumentType.getString(ctx, "id"), "PASS", null);
-                return 1;
-              })
-              .then(Commands.argument("note", StringArgumentType.greedyString()).executes(ctx -> {
-                DevNoteInit.smokeMark(ctx.getSource().getPlayerOrException(),
-                  StringArgumentType.getString(ctx, "id"), "PASS",
-                  StringArgumentType.getString(ctx, "note"));
-                return 1;
-              }))))
-          .then(Commands.literal("comment")
-            .then(Commands.argument("id", StringArgumentType.word())
-              .then(Commands.argument("note", StringArgumentType.greedyString()).executes(ctx -> {
-                DevNoteInit.smokeMark(ctx.getSource().getPlayerOrException(),
-                  StringArgumentType.getString(ctx, "id"), "COMMENT",
-                  StringArgumentType.getString(ctx, "note"));
-                return 1;
-              }))))
-          .then(Commands.literal("fail")
-            .then(Commands.argument("id", StringArgumentType.word())
-              .then(Commands.argument("note", StringArgumentType.greedyString()).executes(ctx -> {
-                DevNoteInit.smokeMark(ctx.getSource().getPlayerOrException(),
-                  StringArgumentType.getString(ctx, "id"), "FAIL",
-                  StringArgumentType.getString(ctx, "note"));
-                return 1;
-              }))))
-          .then(Commands.literal("log").executes(ctx -> {
-            DevNoteInit.smokeLog(ctx.getSource().getPlayerOrException());
-            return 1;
-          }))
-          .then(Commands.literal("reset").executes(ctx -> {
-            ServerPlayer p = ctx.getSource().getPlayerOrException();
-            int n = DevNoteInit.smokeReset(p);
-            p.sendSystemMessage(Component.literal("§bSmoke §7reset " + n + " result(s)."));
-            return 1;
-          }))
-      )
-    );
-
-    // Debug readouts: /cobblemon-initiative debug victini
-    dispatcher.register(
-      Commands.literal("cobblemon-initiative").then(
+      Commands.literal("ca-dev")
+        .requires(src -> src.hasPermission(2))
+        .then(
         Commands.literal("debug")
           .requires(src -> src.hasPermission(2))
           .then(Commands.literal("victini").executes(ctx -> {

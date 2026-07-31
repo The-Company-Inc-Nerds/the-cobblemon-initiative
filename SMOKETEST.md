@@ -162,15 +162,9 @@ line under it for anything you notice.
   are plain battle trainers now.)
   - ✅ [ ]   💬 [ ]   ❌ [ ]
   - comment:
-- **R22** — **NPC noter dev tool**: `/cobblemon-initiative npcnote stick` → whack a statue/NPC
+- **R22** — **NPC noter dev tool**: `/ca-dev npcnote stick` → whack a statue/NPC
   (it selects, no damage) → `npcnote note <text>` + `npcnote move` (or right-click a block) →
   `npcnote log` pastes all notes to chat; relog then `npcnote log` still lists them
-  - ✅ [ ]   💬 [ ]   ❌ [ ]
-  - comment:
-- **R23** — **In-world smoke-test command**: `/cobblemon-initiative smoke list` shows all
-  R-items with status glyphs; `smoke next` gives the first unmarked one; `smoke pass|comment|fail
-  <id> [note]` records a result; `smoke log` dumps them copy-pasteable; results survive a relog
-  (stored in npc_notes.json); startup log reads "DevNote loaded N smoke-test item(s)"
   - ✅ [ ]   💬 [ ]   ❌ [ ]
   - comment:
 - **R24** — **Sango secret, Victor → Victini**: Kesi at the granary talks up his silent
@@ -182,7 +176,7 @@ line under it for anything you notice.
   five, talking to Victor → "Reach out" → he despawns in an end-rod/beacon flourish and a
   Victini NPC appears → talk to it → "Take my hand" → **Victini joins at level 15**, no
   duplicate. Elder Nuru, for the anti-Company **trio only** (papers/lane/census, not the fish),
-  gives **3 oran berries once**. Dev aid: `/cobblemon-initiative debug victini` prints ✔/✗ per
+  gives **3 oran berries once**. Dev aid: `/ca-dev debug victini` prints ✔/✗ per
   condition + verdict — confirm all five land. Also: Kele's lane gift is now a free **Eevee
   with a 1/20 shiny chance** (not a Magikarp).
   - ✅ [ ]   💬 [ ]   ❌ [ ]

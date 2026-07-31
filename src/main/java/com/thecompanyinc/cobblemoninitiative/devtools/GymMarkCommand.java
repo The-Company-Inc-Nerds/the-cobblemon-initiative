@@ -23,7 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * {@code /cobblemon-initiative gym-mark} — dev tool to capture the gym-gimmick placeholder
+ * {@code /ca-dev gym-mark} — dev tool to capture the gym-gimmick placeholder
  * coordinates in-world, so the showrunner never has to read F3 into chat.
  *
  * <p>POINT marks: stand on the spot, {@code set <slot>}. BOX marks (vine walls, corridors,
@@ -135,7 +135,8 @@ public class GymMarkCommand {
     storage = stor;
 
     dispatcher.register(
-      Commands.literal("cobblemon-initiative")
+      Commands.literal("ca-dev")
+        .requires(src -> src.hasPermission(2))
         .then(Commands.literal("gym-mark")
           .requires(src -> src.hasPermission(2))
 
@@ -213,7 +214,7 @@ public class GymMarkCommand {
     previewPoint(player.serverLevel(), pos);
     ctx.getSource().sendSuccess(() -> Component.literal(
       "§a[GymMark] §f" + slot + " §7start corner at §e" + fmt(pos)
-        + "§7 — walk to the far corner and run §f/cobblemon-initiative gym-mark stop " + slot), false);
+        + "§7 — walk to the far corner and run §f/ca-dev gym-mark stop " + slot), false);
     return 1;
   }
 

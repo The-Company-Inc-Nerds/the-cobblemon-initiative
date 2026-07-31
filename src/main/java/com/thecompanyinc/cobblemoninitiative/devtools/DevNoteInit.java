@@ -1,14 +1,10 @@
 package com.thecompanyinc.cobblemoninitiative.devtools;
 
-import com.google.gson.Gson;
 import java.io.File;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,19 +49,9 @@ public final class DevNoteInit {
   // Each player's currently-selected NPC uuid (the target of note/move commands).
   private static final Map<UUID, String> selection = new HashMap<>();
 
-  // The smoke-test checklist, compiled from SMOKETEST.md into a jar resource.
-  private static final List<SmokeItem> SMOKE_ITEMS = new ArrayList<>();
-
-  /** One compiled smoke-test line: an R-id and its (trimmed) description. */
-  public static class SmokeItem {
-    public String id;
-    public String text;
-  }
-
   /** Wire commands, item callbacks, and storage — called once by DevToolsInit. */
   public static void register() {
     storage = new DevNoteStorage();
-    loadSmokeItems();
 
     CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) ->
       DevNoteCommand.register(dispatcher));
@@ -382,162 +368,6 @@ public final class DevNoteInit {
   private static DevNoteStorage.NpcNote selected(Player player) {
     String uuid = selection.get(player.getUUID());
     return uuid == null ? null : storage.find(uuid);
-  }
-
-  // ── Smoke test ────────────────────────────────────────────────────────────────
-
-  /** Read the compiled checklist (data/cobblemon_initiative/smoketest_items.json) from the jar. */
-  private static void loadSmokeItems() {
-    SMOKE_ITEMS.clear();
-    try (InputStream in = DevNoteInit.class.getClassLoader()
-        .getResourceAsStream("data/cobblemon_initiative/smoketest_items.json")) {
-      if (in == null) {
-        LOGGER.warn("DevNote: smoketest_items.json not on classpath — smoke checklist empty.");
-        return;
-      }
-      SmokeItem[] items = new Gson().fromJson(
-        new InputStreamReader(in, StandardCharsets.UTF_8), SmokeItem[].class);
-      if (items != null) {
-        for (SmokeItem it : items) {
-          if (it != null && it.id != null) SMOKE_ITEMS.add(it);
-        }
-      }
-      LOGGER.info("DevNote loaded {} smoke-test item(s).", SMOKE_ITEMS.size());
-    } catch (Exception e) {
-      LOGGER.warn("DevNote: could not load smoketest_items.json: {}", e.getMessage());
-    }
-  }
-
-  private static SmokeItem smokeItem(String id) {
-    for (SmokeItem it : SMOKE_ITEMS) {
-      if (it.id.equalsIgnoreCase(id)) return it;
-    }
-    return null;
-  }
-
-  private static String statusColor(String status) {
-    if (status == null) return "§7";
-    return switch (status) {
-      case "PASS" -> "§a";
-      case "FAIL" -> "§c";
-      case "COMMENT" -> "§e";
-      default -> "§7";
-    };
-  }
-
-  /** Overview: how many marked, plus each item's id + status glyph + first words. */
-  public static int smokeList(Player player) {
-    if (SMOKE_ITEMS.isEmpty()) {
-      player.sendSystemMessage(Component.literal(
-        "§cNo smoke-test items compiled. Run content_compile after editing SMOKETEST.md."));
-      return 0;
-    }
-    var results = storage.getSmoke();
-    long done = SMOKE_ITEMS.stream().filter(it -> results.containsKey(it.id)).count();
-    player.sendSystemMessage(Component.literal(
-      "§b===== SMOKE TEST §7(" + done + "/" + SMOKE_ITEMS.size() + " marked) ====="));
-    for (SmokeItem it : SMOKE_ITEMS) {
-      DevNoteStorage.SmokeResult r = results.get(it.id);
-      String glyph = r == null ? "§8☐" : statusColor(r.status) + "▣";
-      player.sendSystemMessage(Component.literal(
-        glyph + " §f" + it.id + " §7" + trim(it.text, 60)));
-    }
-    player.sendSystemMessage(Component.literal(
-      "§7Use §f/ca smoke next §7for the first unmarked item, or §f/ca smoke show <id>§7."));
-    return SMOKE_ITEMS.size();
-  }
-
-  /** Show the full text of one item (so you know what to test). */
-  public static boolean smokeShow(Player player, String id) {
-    SmokeItem it = smokeItem(id);
-    if (it == null) {
-      player.sendSystemMessage(Component.literal("§cNo smoke item §f" + id + "§c."));
-      return false;
-    }
-    DevNoteStorage.SmokeResult r = storage.getSmoke().get(it.id);
-    player.sendSystemMessage(Component.literal("§b" + it.id + " §f" + it.text));
-    if (r != null) {
-      player.sendSystemMessage(Component.literal(
-        "  " + statusColor(r.status) + r.status
-        + (r.note != null && !r.note.isBlank() ? " §7— " + r.note : "")));
-    }
-    return true;
-  }
-
-  /** Show the first item that has no result yet. */
-  public static int smokeNext(Player player) {
-    if (SMOKE_ITEMS.isEmpty()) {
-      player.sendSystemMessage(Component.literal(
-        "§cNo smoke-test items compiled. Run content_compile after editing SMOKETEST.md."));
-      return 0;
-    }
-    var results = storage.getSmoke();
-    for (SmokeItem it : SMOKE_ITEMS) {
-      if (!results.containsKey(it.id)) {
-        player.sendSystemMessage(Component.literal("§b» NEXT §f" + it.id + " §7" + it.text));
-        player.sendSystemMessage(Component.literal(
-          "§7  /ca smoke pass " + it.id + " §8| §7comment " + it.id
-          + " <note> §8| §7fail " + it.id + " <note>"));
-        return 1;
-      }
-    }
-    player.sendSystemMessage(Component.literal(
-      "§aAll " + SMOKE_ITEMS.size() + " smoke items marked. §7Run §f/ca smoke log§7 to dump them."));
-    return 0;
-  }
-
-  /** Record PASS / COMMENT / FAIL (+ optional note) for an item. Returns false if id unknown. */
-  public static boolean smokeMark(Player player, String id, String status, String note) {
-    SmokeItem it = smokeItem(id);
-    if (it == null) {
-      player.sendSystemMessage(Component.literal(
-        "§cNo smoke item §f" + id + "§c. Try /ca smoke list."));
-      return false;
-    }
-    DevNoteStorage.SmokeResult r = new DevNoteStorage.SmokeResult();
-    r.status = status;
-    r.note = (note != null && !note.isBlank()) ? note : null;
-    storage.getSmoke().put(it.id, r);
-    storage.save();
-    player.sendSystemMessage(Component.literal(
-      statusColor(status) + status + " §7" + it.id
-      + (r.note != null ? " §f— " + r.note : "")));
-    return true;
-  }
-
-  /** Dump every recorded result in a copy-pasteable form (paste back to fill SMOKETEST.md). */
-  public static int smokeLog(Player player) {
-    var results = storage.getSmoke();
-    player.sendSystemMessage(Component.literal(
-      "§b===== SMOKE RESULTS (" + results.size() + "/" + SMOKE_ITEMS.size()
-      + ") — copy the lines below ====="));
-    if (results.isEmpty()) {
-      player.sendSystemMessage(Component.literal("§7(nothing marked yet)"));
-    }
-    // Emit in checklist order so the paste reads top-to-bottom.
-    for (SmokeItem it : SMOKE_ITEMS) {
-      DevNoteStorage.SmokeResult r = results.get(it.id);
-      if (r == null) continue;
-      String line = it.id + " " + r.status + (r.note != null ? " — " + r.note : "");
-      player.sendSystemMessage(Component.literal("§f" + line));
-    }
-    // Any results whose id no longer matches a compiled item (checklist changed).
-    for (var e : results.entrySet()) {
-      if (smokeItem(e.getKey()) == null) {
-        DevNoteStorage.SmokeResult r = e.getValue();
-        player.sendSystemMessage(Component.literal(
-          "§8" + e.getKey() + " " + r.status + (r.note != null ? " — " + r.note : "") + " (stale)"));
-      }
-    }
-    player.sendSystemMessage(Component.literal("§b===== end ====="));
-    return results.size();
-  }
-
-  public static int smokeReset(Player player) {
-    int n = storage.getSmoke().size();
-    storage.getSmoke().clear();
-    storage.save();
-    return n;
   }
 
   // ── Victini gate check ──────────────────────────────────────────────────────────

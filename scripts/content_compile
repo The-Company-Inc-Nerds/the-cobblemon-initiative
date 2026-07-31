@@ -1658,42 +1658,6 @@ def load_kind(folder: str, kinds: tuple) -> dict:
 # or literal {"x","y","z"}. Emitted for QuestTrackManager as quest_waypoints.json.
 
 QUEST_TARGETS_SRC   = DIALOG_SRC / "registers" / "quest_targets.json"
-SMOKETEST_MD  = PROJECT_ROOT / "SMOKETEST.md"
-SMOKETEST_OUT = (PROJECT_ROOT
-                 / "src/main/resources/data/cobblemon_initiative/smoketest_items.json")
-
-
-def emit_smoketest_items() -> int:
-    """Parse SMOKETEST.md's R-items into a runtime list the in-game `smoke` dev command
-    reads, so SMOKETEST.md stays the single source of truth. Each item: {id, text}. Text
-    is the R-line summary (markdown stripped), continuation lines joined, truncated."""
-    if not SMOKETEST_MD.is_file():
-        return -1
-    items = []
-    cur = None
-    for line in SMOKETEST_MD.read_text().splitlines():
-        m = re.match(r"- \*\*(R\d+)\*\* [—-]+ (.*)", line)
-        if m:
-            if cur:
-                items.append(cur)                       # flush the previous item
-            cur = {"id": m.group(1), "text": m.group(2)}
-        elif cur is not None:
-            st = line.strip()
-            if st.startswith("- ✅") or st.startswith("- comment") \
-                    or st.startswith(">") or st.startswith("|"):
-                continue                                # checkbox/comment/formatting — skip
-            if st:
-                cur["text"] += " " + st                 # a wrapped description line
-    if cur:
-        items.append(cur)
-    # strip markdown bold + collapse whitespace; cap length for chat legibility
-    for it in items:
-        it["text"] = re.sub(r"\*\*(.*?)\*\*", r"\1", it["text"]).strip()
-        it["text"] = re.sub(r"\s+", " ", it["text"])
-        if len(it["text"]) > 220:
-            it["text"] = it["text"][:217] + "..."
-    SMOKETEST_OUT.write_text(json.dumps(items, indent=2, ensure_ascii=False) + "\n")
-    return len(items)
 
 
 QUEST_WAYPOINTS_OUT = (PROJECT_ROOT
@@ -1940,9 +1904,6 @@ def main() -> None:
             json.dumps(list(SIGHT_PROFILES.values()), indent=2, ensure_ascii=False) + "\n")
         print(f"Wrote {profiles_out.relative_to(PROJECT_ROOT)} "
               f"({len(SIGHT_PROFILES)} tag-keyed sight profiles)")
-        n_smoke = emit_smoketest_items()
-        if n_smoke >= 0:
-            print(f"Wrote {SMOKETEST_OUT.relative_to(PROJECT_ROOT)} ({n_smoke} smoke items)")
 
     # npc_presets.json (merged)
     NPC_PRESETS.write_text(json.dumps({"mappings": mappings}, indent=2) + "\n")

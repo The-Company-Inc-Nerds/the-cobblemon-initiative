@@ -38,7 +38,7 @@ that changes how you approach the leader — layered on top of two rules that ho
 
 The rank-and-file trainers (`trainer_1..4`, plus `jr_apprentice` / `apprentice` on gyms 3–10) latch
 in a default cluster around the leader. To spread them through the actual gym layout, use the dev
-wand: `/cobblemon-initiative gym-mark wand` (or `set gym_<town>_<slot>`) — each slot's item name
+wand: `/ca-dev gym-mark wand` (or `set gym_<town>_<slot>`) — each slot's item name
 calls out **which trainer** and that gym's **gimmick**, so you place with the mechanic in mind.
 Boxes (the whiteout corridor, the heat volume) and points (rift crystals, mirages, garden wardens,
 sentinels, the leader stage-back spot) are all in the same registry. `gym-mark export` hands the
