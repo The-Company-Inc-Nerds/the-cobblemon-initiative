@@ -8,7 +8,7 @@
 >
 > DEV DOCUMENT - full spoilers. The player-facing wiki lives in `wiki/`.
 
-**764 characters** - 355 persisted world bodies, 346 latch-spawned, 63 unplaced (no body, no latch - phone callers, script-spawned bodies like the transformed Hua Zhan leader, dead content, act-2/3 casting).
+**769 characters** - 355 persisted world bodies, 349 latch-spawned, 65 unplaced (no body, no latch - phone callers, script-spawned bodies like the transformed Hua Zhan leader, dead content, act-2/3 casting).
 
 **Reading the tables:** *(body)* = persisted world entity (moves only via repairs tp);
 *(latch)* = spawned at the authored coords when a player first comes within 40 blocks;
@@ -92,7 +92,7 @@
 | **Spool** `companion_takehara_sewaddle` | Takehara Falls - Silk Weavers Stall - 1817.5 115 2558.5 (latch) | flavor / lore dialog | Cobblemon model: sewaddle |
 | **Puddle** `companion_takehara_wooper` | Takehara Falls - Plunge Pool Rocks - 1927.5 105 2576.5 (latch) | flavor / lore dialog | Cobblemon model: wooper |
 | **Kazuo** `company_canvasser` | Takehara Falls - Notice Patrol - 1940 105 2470 (body) | battles `sq_canvasser` (2x lv19-20: meowth, koffing), prize 280 | skin `single/thecompany_grunt_1` |
-| **Curator Kenji** `curator_tamiko` | Takehara Falls - Museum - 1902 114 2338 (body) | gives: brush x1; runs: sidequest/turnin/dome_fossil, sidequest/turnin/claw_fossil | world-body look |
+| **Curator Kenji** `curator_tamiko` | Takehara Falls - Museum - 1899.5 114 2318.5 (body, moved by repairs) | gives: brush x1; runs: sidequest/turnin/dome_fossil, sidequest/turnin/claw_fossil | world-body look |
 | **Elder Sefu** `elder_sefu` | Takehara Falls - Upper Overlook - 2022 151 2468 (body) | gift: one_time `elder_sefu_overlook_keepsake` | world-body look |
 | **Falls Warden Shou** `falls_warden_ayame` | Takehara Falls - Plunge Pool - 1908 105 2428 (body) | runs: sidequest/cascade/start | world-body look |
 | **Fisherman Genji** `fisherman_genji` | Takehara Falls - Plunge Pool - 1892 105 2472 (body) | battles `sq_genji_wager` (2x lv16-17: poliwag, goldeen), prize 200; runs: sidequest/genji/turn_in_rod | world-body look (slim) |
@@ -246,13 +246,13 @@
 | **Helka Dustmantle** `helka_dustmantle` | Deepcore City — Dust Ward - 1194 107 3168 (body) | fetch: 3x oran_berry -> `helka_poultice_done`; sells (6): redstone, redstone_torch, repeater, hopper, observer... | world-body look |
 | **Karn Tunnelwatch** `karn_tunnelwatch` | Deepcore City — North Watch - 1076 122 3250 (body) | flavor / lore dialog | world-body look |
 | **Kelda Stoneforge** `kelda_stoneforge` | Deepcore City — Old Pit-Head - 974 129 3198 (body) | flavor / lore dialog | world-body look |
-| **Mirek Coalstain** `mirek_coalstain` | Deepcore City — Coal Landing - 1128 108 3162 (body) | flavor / lore dialog | world-body look |
+| **Mirek Coalstain** `mirek_coalstain` | Deepcore City — Coal Landing - 1128 108 3162 (body) | sells (3): raw_iron, raw_copper, raw_gold | world-body look |
 | **Nessa Corelight** `nessa_corelight` | Deepcore City — Assay Window - 1210 125 3234 (body) | mon trade: your roggenrola -> hawlucha; mon trade: your roggenrola -> hawlucha | world-body look |
 | **Orrin Stonelace** `orrin_stonelace` | Deepcore City - Pokemon Center - 1216 125 3244 (body) | runs: economy/heal_paid, pc/open | world-body look |
 | **Rurik Deepdelve** `rurik_deepdelve` | Deepcore City — Deep Gallery - 1020 129 3216 (body) | flavor / lore dialog | world-body look |
 | **Rurik Tunnelguard** `rurik_tunnelguard` | Deepcore City — Vault Approach - 1178 108 3152 (body) | flavor / lore dialog | world-body look |
-| **Roderick** `sq_deepcore_assessor` | Deepcore City - Company Field Office - 1150.5 146 3282.5 (latch) | battles `sq_deepcore_assessor` (2x lv34-35: watchog, mightyena), prize 500; runs: sidequest/deepcore/stake_assessor, route/decline_sq_deepcore_assessor | skin `single/thecompany_grunt_1` |
-| **Syla Ironchalk** `syla_ironchalk` | Deepcore City — Survey Landing - 1102 129 3260 (body) | flavor / lore dialog | world-body look |
+| **Roderick** `sq_deepcore_assessor` | Deepcore City - Company Field Office - 1102.5 129 3259.5 (latch) | battles `sq_deepcore_assessor` (2x lv34-35: watchog, mightyena), prize 500; runs: sidequest/deepcore/stake_assessor, route/decline_sq_deepcore_assessor | skin `single/thecompany_grunt_1` |
+| **Syla Ironchalk** `syla_ironchalk` | Deepcore City — Survey Landing - 1143.5 92 3180.5 (body, moved by repairs) | flavor / lore dialog | world-body look |
 | **Thrain Coalbreaker** `thrain_coalbreaker` | Deepcore City — High Pit-Head - 994 143 3206 (body) | flavor / lore dialog | world-body look |
 | **Tilda Oreweaver** `tilda_oreweaver` | Deepcore City — Sorting Floor - 1062 119 3202 (body) | flavor / lore dialog | world-body look |
 | **Vorn Gravelhand** `vorn_gravelhand` | Deepcore City — Rubble Chute - 1200 112 3196 (body) | sells (5): torches, coal, iron_ingot, rails, iron_pickaxe | skin `single/kalahar_trainer_1` |
@@ -277,7 +277,7 @@
 
 ## Gaviota Port — Gym 5 (Water, cap 50)
 
-`characters/gaviota/` - 40 NPCs
+`characters/gaviota/` - 41 NPCs
 
 | NPC | Where | Does | Looks |
 |---|---|---|---|
@@ -296,15 +296,16 @@
 | **Fabio Corrente** `fabio_corrente` | Gaviota Port - Lower Docks - 420 67 3554 (body) | flavor / lore dialog | world-body look |
 | **Dockmaster Kaito** `gaviota_dockmaster` | Gaviota Port - Harbourmaster Shack - 566.5 84 3560.5 (latch) | runs: sidequest/manifest/turn_in, sidequest/manifest/start | skin `groups/gaviota` |
 | **Fence Odessa** `gaviota_fence` | Gaviota Port - Under the Boardwalk - 552.5 81 3552.5 (latch) | native trade window (trade_black_market); runs: sidequest/odessa/start_crate | skin `groups/gaviota` |
-| **Netmender Bosun Rui** `gaviota_fisher` | Gaviota Port - The Deep Pier - 605.5 93 3660.5 (latch) | battles `sq_rui_wager` (2x lv52-52: starmie, lapras), prize 200; runs: sidequest/rui/turn_in_net | skin `groups/gaviota` |
+| **Netmender Bosun Rui** `gaviota_fisher` | Gaviota Port - The Deep Pier - 561.5 84 3563.5 (latch) | battles `sq_rui_wager` (2x lv52-52: starmie, lapras), prize 200; runs: sidequest/rui/turn_in_net | skin `groups/gaviota` |
 | **Tally Clerk Pell** `gaviota_manifest_a` | Gaviota Port - Main Pier Freight Stack - 566.5 85 3564.5 (latch) | runs: sidequest/manifest/note_1 | skin `groups/gaviota` |
 | **Tally Clerk Odile** `gaviota_manifest_b` | Gaviota Port - Wharf Crates - 588.5 86 3600.5 (latch) | runs: sidequest/manifest/note_2 | skin `groups/gaviota` |
 | **Tally Clerk Bram** `gaviota_manifest_c` | Gaviota Port - Deep Pier, Dunewind Load - 436.5 64 3491.5 (latch) | runs: sidequest/manifest/note_3 | skin `groups/gaviota` |
 | **Nurse Marina** `gaviota_nurse` | Gaviota Port - Pokemon Center (585.5/90/3435.5) - 585.5 90 3435.5 (body, moved by repairs) | heals your party; runs: economy/heal_paid, pc/open, sidequest/rumors/coralie | skin `single/nurse_center` |
-| **Pump-Bot** `gaviota_pump` | Gaviota Port - Gym (flooded arena) - UNPLACED | flavor / lore dialog | skin `single/prop_screen` |
-| **Sable** `gaviota_smuggler` | Gaviota Port - Westwind Fields Sea Dock - 700.5 103 3255.5 (latch) | battles `wheat_trader_ambush` (2x lv38-39: miltank, tauros), prize 500; native trade window (trade_wheat_trader); native trade window (trade_wheat_trader) | skin `single/wheat_factor` |
+| **Pump-Bot** `gaviota_pump` | Gaviota Port - Gym (flooded arena) - UNPLACED | cmd: gaviota pump | skin `single/prop_screen` |
+| **Pump-Bot** `gaviota_pump_spent` | Gaviota Port - Gym (flooded arena) - UNPLACED | flavor / lore dialog | skin `single/prop_screen` |
+| **Sable** `gaviota_smuggler` | Gaviota Port - Westwind Fields Sea Dock - 653.5 91 3265.5 (latch) | runs: liberation/free_field | skin `single/wheat_factor` |
 | **Dock Hand Mattias** `gaviota_union_hand` | Gaviota Port - The Wharf - 580.5 86 3600.5 (latch) | flavor / lore dialog | skin `groups/gaviota` |
-| **Tide-Caller Gianna** `gianna_ondina` | Gaviota Port - North Pier - 600 92 3666 (body) | flavor / lore dialog | world-body look |
+| **Tide-Caller Gianna** `gianna_ondina` | Gaviota Port - North Pier - 475.5 63 3589.5 (body, moved by repairs) | runs: sidequest/trident_race/start | world-body look |
 | **Luca Pietrafonda** `luca_pietrafonda` | Gaviota Port - East Boardwalk - 622 83 3474 (body) | flavor / lore dialog | world-body look |
 | **Luca Scarpelli** `luca_scarpelli` | Gaviota Port - Upper Terrace - 612 92 3640 (body) | flavor / lore dialog | world-body look |
 | **Lucia Marelli** `lucia_marelli` | Gaviota Port - Lower Docks - 474.5 66 3552.5 (latch) | flavor / lore dialog | skin `groups/gaviota` |
@@ -339,14 +340,17 @@
 
 ## Route 7
 
-`characters/route7/` - 4 NPCs
+`characters/route7/` - 7 NPCs
 
 | NPC | Where | Does | Looks |
 |---|---|---|---|
 | **Gull-Keeper Hano** `r7_spotter_coast` | Gullwing Coast - 801.5 64 3323.5 (latch) | battles `r7_spotter_coast` (3x lv46-48: wingull, mantine, pelipper), prize 560, pursues on sight r8, forced at close range | skin `groups/gaviota` |
+| **Bruno Reteforte** `r7_trainer_bruno` | Gullwing Coast - net-hauler's jetty (gym4 -> gym5 road) - 714.5 104 3266.5 (latch) | battles `r7_trainer_bruno` (3x lv43-45: chinchou, tentacruel, lanturn), prize 560, pursues on sight r9, forced at close range | skin `groups/gaviota` |
+| **Lino Passavento** `r7_trainer_lino` | Coast Road - the quarry cut (gym4 -> gym5 road) - 971.5 106 3311.5 (latch) | battles `r7_trainer_lino` (3x lv41-43: graveler, sandslash, golem), prize 500, pursues on sight r9, forced at close range | skin `groups/gaviota` |
+| **Serena Altacosta** `r7_trainer_serena` | Gullwing Coast - tidepool shelf (gym4 -> gym5 road) - 637.5 77 3365.5 (latch) | battles `r7_trainer_serena` (3x lv43-45: wingull, corphish, kingler), prize 540, pursues on sight r9, forced at close range | skin `groups/gaviota` |
 | **Tidepool Walker Sena** `r7_traveler_tidepool` | Gullwing Coast - tidepools - 815.5 64 3345.5 (latch) | gift: one_time `sena_tidepool_find` | skin `single/gaviota_apprentice` |
 | **Sora** `villain_site_manager_3` | Westwind Fields - The Silo (R7) - 657.5 90 3279.5 (latch) | battles `villain_site_manager_3` (2x lv42-43: liepard, mightyena), prize 950 | skin `single/thecompany_grunt_3` |
-| **Ren** `villain_yield_officer_3` | Westwind Fields - Coast Fence (R7) - 640.5 85 3310.5 (latch) | battles `villain_yield_officer_3` (2x lv41-42: stoutland, weezing), prize 520 | skin `single/thecompany_grunt_2` |
+| **Ren** `villain_yield_officer_3` | Westwind Fields - Coast Fence (R7) - 670.5 95 3267.5 (latch) | battles `villain_yield_officer_3` (2x lv41-42: stoutland, weezing), prize 520 | skin `single/thecompany_grunt_2` |
 
 ## Kalahar Reach — Gym 6 (Ground, cap 56)
 
@@ -792,10 +796,11 @@
 
 ## Legendary encounters
 
-`characters/legendary/` - 6 NPCs
+`characters/legendary/` - 7 NPCs
 
 | NPC | Where | Does | Looks |
 |---|---|---|---|
+| **Cyclops** `cyclops` | Mushroom island (config-spawned) - UNPLACED | flavor / lore dialog | skin `single/cyclops` |
 | **The Deep Chamber** `manaphy_giver` | Sunken Ocean Monument - 2760.5 63 3490.5 (latch) | gifts mon: manaphy level=30 | skin `groups/gaviota` |
 | **A Giggle in the Grass** `noble_giver_mew_wisp` | Kalahar Reach - Oasis - 1788.5 114 4212.5 (latch) | runs: noble/mew_wings | skin `single/mystic_trainer_1` |
 | **Grid Warden Cass** `noble_giver_zapdos_warden` | Cyber City - Grid Edge - 1393.5 77 1065.5 (latch) | flavor / lore dialog | skin `groups/cyber` |

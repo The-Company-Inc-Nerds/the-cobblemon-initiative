@@ -299,6 +299,48 @@ public class CobblemonInitiativeCommands {
               ServerPlayer p = ctx.getSource().getPlayer();
               return p != null ? com.thecompanyinc.cobblemoninitiative.gaviota.GaviotaManager.donate(p) : 0;
             }))
+            // Pump-bot "Turn on pump" dialog button. Run as @initiator (as_player), so getPlayer() is
+            // the player at the pump; GaviotaManager resolves which pump by their position.
+            .then(Commands.literal("pump").executes(ctx -> {
+              ServerPlayer p = ctx.getSource().getPlayer();
+              return p != null ? com.thecompanyinc.cobblemoninitiative.gaviota.GaviotaManager.pumpButton(p) : 0;
+            }))
+            // Dev debug — toggle the per-pair pump colour hints at runtime (off by default).
+            .then(Commands.literal("debug")
+              .requires(source -> source.hasPermission(2))
+              .then(Commands.literal("on").executes(ctx -> {
+                com.thecompanyinc.cobblemoninitiative.gaviota.GaviotaConfig.get().drain.debugPumpColors = true;
+                ctx.getSource().sendSuccess(() -> Component.literal("§aGaviota pump pair-colours ON."), false);
+                return 1;
+              }))
+              .then(Commands.literal("off").executes(ctx -> {
+                com.thecompanyinc.cobblemoninitiative.gaviota.GaviotaConfig.get().drain.debugPumpColors = false;
+                ctx.getSource().sendSuccess(() -> Component.literal("§7Gaviota pump pair-colours OFF."), false);
+                return 1;
+              })))
+        )
+        // Giant mushroom-island cyclops: op set-up. spawn = import_new a body at each config
+        // spawnPoint (run once after latching the coords); clear = remove them; reload = re-read config.
+        .then(
+          Commands.literal("cyclops")
+            .requires(source -> source.hasPermission(2))
+            .then(Commands.literal("spawn").executes(ctx -> {
+              int n = com.thecompanyinc.cobblemoninitiative.CyclopsManager.spawnAll(ctx.getSource().getServer());
+              ctx.getSource().sendSuccess(() -> Component.literal(n > 0
+                ? "§aSpawned §e" + n + "§a cyclops at the config spawn points."
+                : "§eNo cyclops spawned — fill config/cobblemon-initiative-cyclops.json spawnPoints (or enable)."), false);
+              return n;
+            }))
+            .then(Commands.literal("clear").executes(ctx -> {
+              com.thecompanyinc.cobblemoninitiative.CyclopsManager.clearAll(ctx.getSource().getServer());
+              ctx.getSource().sendSuccess(() -> Component.literal("§7Cleared all cyclops bodies."), false);
+              return 1;
+            }))
+            .then(Commands.literal("reload").executes(ctx -> {
+              com.thecompanyinc.cobblemoninitiative.config.CyclopsConfig.reload();
+              ctx.getSource().sendSuccess(() -> Component.literal("§aCyclops config reloaded."), false);
+              return 1;
+            }))
         )
         // Daycare — player-facing (perm 0) AND dialog-button-ready: like `track`, targets
         // resolve at runtime (getPlayer() null-check), with NO parse-time entity requires —

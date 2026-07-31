@@ -39,18 +39,32 @@
                     Priority: 10,
                     Buttons: [
                         {
-                            Name: "Goodbye",
+                            Name: "Turn on pump",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative gaviota pump"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "on_button"
+                        },
+                        {
+                            Name: "Walk away",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "goodbye_button"
+                            Label: "leave_button"
                         }
                     ],
                     Texts: [
                         {
-                            Text: "TURN ON PUMP. Beep. The Company drainage unit blinks a coloured light and waits for its paired unit. Beep beep."
+                            Text: "TURN ON PUMP? Beep. The Company drainage unit hums, ready to run. It waits for its paired unit to run in sync. Beep beep."
                         }
                     ],
                     Name: "Pump-Bot",

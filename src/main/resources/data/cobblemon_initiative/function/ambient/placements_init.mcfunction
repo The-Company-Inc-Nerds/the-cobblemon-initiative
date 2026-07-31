@@ -250,6 +250,9 @@ execute unless score #amb_villain_route_agent_5 ci_ambient matches 0.. run score
 execute unless score #amb_villain_site_manager_2 ci_ambient matches 0.. run scoreboard players set #amb_villain_site_manager_2 ci_ambient 0
 execute unless score #amb_villain_yield_officer_2 ci_ambient matches 0.. run scoreboard players set #amb_villain_yield_officer_2 ci_ambient 0
 execute unless score #amb_r7_spotter_coast ci_ambient matches 0.. run scoreboard players set #amb_r7_spotter_coast ci_ambient 0
+execute unless score #amb_r7_trainer_bruno ci_ambient matches 0.. run scoreboard players set #amb_r7_trainer_bruno ci_ambient 0
+execute unless score #amb_r7_trainer_lino ci_ambient matches 0.. run scoreboard players set #amb_r7_trainer_lino ci_ambient 0
+execute unless score #amb_r7_trainer_serena ci_ambient matches 0.. run scoreboard players set #amb_r7_trainer_serena ci_ambient 0
 execute unless score #amb_r7_traveler_tidepool ci_ambient matches 0.. run scoreboard players set #amb_r7_traveler_tidepool ci_ambient 0
 execute unless score #amb_villain_site_manager_3 ci_ambient matches 0.. run scoreboard players set #amb_villain_site_manager_3 ci_ambient 0
 execute unless score #amb_villain_yield_officer_3 ci_ambient matches 0.. run scoreboard players set #amb_villain_yield_officer_3 ci_ambient 0

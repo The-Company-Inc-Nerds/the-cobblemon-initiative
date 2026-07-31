@@ -274,6 +274,10 @@ public class InitiativeInit implements ModInitializer {
     // Gaviota Port (gym 5): the drainable water gym + the donation aquarium (config-driven).
     com.thecompanyinc.cobblemoninitiative.gaviota.GaviotaManager.init();
 
+    // Giant mushroom-island cyclops: scales the summon-only body on load + drives its
+    // grab->squeeze->throw player attack and chase water-avoidance (config-driven).
+    CyclopsManager.init();
+
     CommandRegistrationCallback.EVENT.register(
       (dispatcher, registryAccess, environment) -> {
         CobblemonInitiativeCommands.register(dispatcher);

@@ -1626,8 +1626,75 @@ public class InitiativeConfigScreen {
         .build()
     );
 
+    CyclopsConfig cyclopsConfig = CyclopsConfig.load();
+    CyclopsConfig cyclopsDefaults = new CyclopsConfig();
+    ConfigCategory cyclops = builder.getOrCreateCategory(Component.literal("Cyclops"));
+    cyclops.addEntry(
+      entryBuilder
+        .startBooleanToggle(Component.literal("Cyclops Enabled"), cyclopsConfig.enabled)
+        .setDefaultValue(cyclopsDefaults.enabled)
+        .setTooltip(Component.literal("Master switch for the giant mushroom-island cyclops AI (spawn, hostility, grab-throw)."))
+        .setSaveConsumer(v -> cyclopsConfig.enabled = v)
+        .build()
+    );
+    cyclops.addEntry(
+      entryBuilder
+        .startFloatField(Component.literal("Health Multiplier"), cyclopsConfig.getHealthMultiplier())
+        .setDefaultValue(cyclopsDefaults.getHealthMultiplier())
+        .setMin(0.25f).setMax(6.0f)
+        .setTooltip(Component.literal("Scales the baked 50 HP, applied once when a cyclops loads. 1.0 = 50 HP."))
+        .setSaveConsumer(cyclopsConfig::setHealthMultiplier)
+        .build()
+    );
+    cyclops.addEntry(
+      entryBuilder
+        .startFloatField(Component.literal("Melee Damage Multiplier"), cyclopsConfig.getDamageMultiplier())
+        .setDefaultValue(cyclopsDefaults.getDamageMultiplier())
+        .setMin(0.0f).setMax(4.0f)
+        .setTooltip(Component.literal("Scales the native melee it uses against hostile MOBS (the player attack is the grab-throw). 1.0 = 8 damage."))
+        .setSaveConsumer(cyclopsConfig::setDamageMultiplier)
+        .build()
+    );
+    cyclops.addEntry(
+      entryBuilder
+        .startFloatField(Component.literal("Squeeze Damage / pulse"), cyclopsConfig.getSqueezeDamage())
+        .setDefaultValue(cyclopsDefaults.getSqueezeDamage())
+        .setMin(0.0f).setMax(20.0f)
+        .setTooltip(Component.literal("Damage per squeeze pulse while a grabbed player is held (every Squeeze Interval ticks)."))
+        .setSaveConsumer(cyclopsConfig::setSqueezeDamage)
+        .build()
+    );
+    cyclops.addEntry(
+      entryBuilder
+        .startIntField(Component.literal("Grab Duration (ticks)"), cyclopsConfig.getGrabDurationTicks())
+        .setDefaultValue(cyclopsDefaults.getGrabDurationTicks())
+        .setMin(10).setMax(200)
+        .setTooltip(Component.literal("How long the cyclops holds + squeezes a player before throwing (20 ticks = 1 second)."))
+        .setSaveConsumer(cyclopsConfig::setGrabDurationTicks)
+        .build()
+    );
+    cyclops.addEntry(
+      entryBuilder
+        .startDoubleField(Component.literal("Throw Strength"), cyclopsConfig.getThrowHorizontal())
+        .setDefaultValue(cyclopsDefaults.getThrowHorizontal())
+        .setMin(0.0).setMax(5.0)
+        .setTooltip(Component.literal("Horizontal launch velocity when the cyclops throws a player (fall damage comes on landing)."))
+        .setSaveConsumer(cyclopsConfig::setThrowHorizontal)
+        .build()
+    );
+    cyclops.addEntry(
+      entryBuilder
+        .startDoubleField(Component.literal("Grab Range"), cyclopsConfig.getGrabRange())
+        .setDefaultValue(cyclopsDefaults.getGrabRange())
+        .setMin(2.0).setMax(8.0)
+        .setTooltip(Component.literal("How close (blocks) a targeted player must be for the cyclops to grab them."))
+        .setSaveConsumer(cyclopsConfig::setGrabRange)
+        .build()
+    );
+
     builder.setSavingRunnable(() -> {
       config.save();
+      cyclopsConfig.save();
       specialSpawnConfig.save();
       homeBaseConfig.save();
       wildLevelConfig.save();
@@ -1655,6 +1722,7 @@ public class InitiativeConfigScreen {
       NobleConfig.reload();
       DojoConfig.reload();
       OrcConfig.reload();
+      CyclopsConfig.reload();
       com.thecompanyinc.cobblemoninitiative.DojoDifficultyManager.pushOrcSpoils(
         net.minecraft.client.Minecraft.getInstance().getSingleplayerServer());
       ProgressionConfig.reload();

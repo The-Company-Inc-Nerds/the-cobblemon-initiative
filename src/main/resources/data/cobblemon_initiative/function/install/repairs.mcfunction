@@ -128,3 +128,8 @@ execute unless score #repair_a27 ci_ambient matches 1 run function cobblemon_ini
 #    reverted from eyesight back to talk-to-battle (gaviota_drained-gated), so their a27 eyesight
 #    bodies die + re-latch from the new presets; Tally Clerk Bram moved to 436.5/64/3491.5 ──
 execute unless score #repair_a28 ci_ambient matches 1 run function cobblemon_initiative:install/repairs_a28_arm
+
+# ── wave a29 (0.7.0-alpha.14): playtest wave — uuid-body relocations: Gianna onto the Westwind
+#    beach (trident tide-ring race host), Syla to the Deepcore gallery landing (ore trader),
+#    Curator Kenji beside the museum resurrection platform ──
+execute unless score #repair_a29 ci_ambient matches 1 run function cobblemon_initiative:install/repairs_a29_arm

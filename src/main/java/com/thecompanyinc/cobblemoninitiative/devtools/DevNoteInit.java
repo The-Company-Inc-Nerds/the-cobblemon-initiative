@@ -1,9 +1,13 @@
 package com.thecompanyinc.cobblemoninitiative.devtools;
 
 import com.google.gson.Gson;
+import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -200,6 +204,156 @@ public final class DevNoteInit {
     }
     player.sendSystemMessage(Component.literal("§b===== end ====="));
     return notes.size() + positions.size();
+  }
+
+  // ── /ca dev note + marker + log (freeform notes, block markers, file export) ─────
+
+  /** Shared storage accessor so the marker tool + dev commands write to the same journal. */
+  public static DevNoteStorage getStorage() {
+    return storage;
+  }
+
+  /** /ca dev note &lt;text&gt; — jot a quick freeform note with the player's position + a timestamp. */
+  public static void addFreeNote(net.minecraft.server.level.ServerPlayer player, String text) {
+    DevNoteStorage.FreeNote fn = new DevNoteStorage.FreeNote();
+    fn.stamp = stamp();
+    fn.text = text;
+    fn.x = round(player.getX());
+    fn.y = round(player.getY());
+    fn.z = round(player.getZ());
+    fn.dim = player.level().dimension().location().toString();
+    storage.getFreeNotes().add(fn);
+    storage.save();
+    player.sendSystemMessage(Component.literal(
+      "§bNote §7saved §8(" + storage.getFreeNotes().size() + ") §f" + text));
+  }
+
+  /**
+   * /ca dev log — dump every dev record (freeform notes, markers, npc notes, position marks,
+   * and the list of cutscene recordings) to chat AND write a markdown file next to the save at
+   * {@code <world>/dev_playtest_notes/dev_log_<stamp>.md} for easy upload.
+   */
+  public static int devLog(net.minecraft.server.level.ServerPlayer player) {
+    String when = stamp();
+    var free = storage.getFreeNotes();
+    var markers = storage.getMarkers();
+    var npc = storage.getNotes();
+    var pos = storage.getPositions();
+
+    StringBuilder md = new StringBuilder();
+    md.append("# Dev playtest log — ").append(when).append("\n\n");
+
+    md.append("## Notes (").append(free.size()).append(")\n\n");
+    int i = 0;
+    for (DevNoteStorage.FreeNote fn : free) {
+      i++;
+      md.append("- ").append(i).append(". [").append(fn.stamp).append("] ").append(fn.text)
+        .append("  (@ ").append(fmt(fn.x, fn.y, fn.z)).append(")\n");
+    }
+    md.append("\n## Markers (").append(markers.size()).append(")\n\n");
+    int mi = 0;
+    for (DevNoteStorage.Marker m : markers) {
+      mi++;
+      md.append("### M").append(mi).append(". ").append(m.title == null ? "(untitled)" : m.title);
+      if (m.description != null && !m.description.isBlank()) md.append(" — ").append(m.description);
+      md.append("\n- ").append(m.blocks.size()).append(" block(s)");
+      if (!m.blocks.isEmpty()) md.append(", bounds ").append(bounds(m.blocks));
+      if (m.stamp != null) md.append(", ").append(m.stamp);
+      md.append("\n- blocks: ").append(blocksJson(m.blocks)).append("\n\n");
+    }
+    md.append("## NPC notes (").append(npc.size()).append(")\n\n");
+    int ni = 0;
+    for (DevNoteStorage.NpcNote note : npc) {
+      ni++;
+      StringBuilder sb = new StringBuilder("N").append(ni).append(". ").append(note.name)
+        .append(" @ ").append(fmt(note.ox, note.oy, note.oz));
+      if (note.nx != null) sb.append(" -> MOVE ").append(fmt(note.nx, note.ny, note.nz));
+      if (!note.tags.isEmpty()) sb.append(" tags=").append(note.tags);
+      if (note.comment != null && !note.comment.isBlank()) sb.append(" | ").append(note.comment);
+      md.append("- ").append(sb).append("\n");
+    }
+    md.append("\n## Position marks (").append(pos.size()).append(")\n\n");
+    int pi = 0;
+    for (DevNoteStorage.PosMark m : pos) {
+      pi++;
+      StringBuilder sb = new StringBuilder("P").append(pi).append(". @ ").append(fmt(m.x, m.y, m.z));
+      if (m.title != null) sb.append(" \"").append(m.title).append("\"");
+      if (m.note != null) sb.append(" | ").append(m.note);
+      md.append("- ").append(sb).append("\n");
+    }
+
+    md.append("\n## Cutscene recordings\n\n");
+    int cs = 0;
+    try {
+      java.nio.file.Path dir = com.thecompanyinc.cobblemoninitiative.cutscene.CutsceneManager.overrideDir();
+      if (dir != null && Files.isDirectory(dir)) {
+        try (var stream = Files.list(dir)) {
+          for (java.nio.file.Path f : stream.filter(p -> p.toString().endsWith(".json")).sorted().toList()) {
+            cs++;
+            md.append("- ").append(f.getFileName().toString()).append("\n");
+          }
+        }
+      }
+    } catch (Exception e) {
+      md.append("- (could not list cutscenes: ").append(e.getMessage()).append(")\n");
+    }
+
+    // Write the file next to the save.
+    String path = "(not written — no world dir)";
+    try {
+      File root = storage.worldRoot();
+      if (root != null) {
+        File outDir = new File(root, "dev_playtest_notes");
+        outDir.mkdirs();
+        File out = new File(outDir, "dev_log_" + fileStamp() + ".md");
+        Files.writeString(out.toPath(), md.toString(), StandardCharsets.UTF_8);
+        path = out.getAbsolutePath();
+      }
+    } catch (Exception e) {
+      path = "(write failed: " + e.getMessage() + ")";
+    }
+
+    // Chat summary (the file has the full detail).
+    player.sendSystemMessage(Component.literal("§b===== DEV LOG (" + when + ") ====="));
+    for (DevNoteStorage.FreeNote fn : free) {
+      player.sendSystemMessage(Component.literal("§7[note] §f" + fn.text + " §8(" + fmt(fn.x, fn.y, fn.z) + ")"));
+    }
+    for (DevNoteStorage.Marker m : markers) {
+      player.sendSystemMessage(Component.literal("§7[marker] §f" + (m.title == null ? "(untitled)" : m.title)
+        + " §8(" + m.blocks.size() + " blocks)"));
+    }
+    player.sendSystemMessage(Component.literal("§b===== §7" + free.size() + " notes, " + markers.size()
+      + " markers, " + npc.size() + " npc, " + pos.size() + " pos, " + cs + " cutscene(s) ====="));
+    player.sendSystemMessage(Component.literal("§aWrote §f" + path));
+    return free.size() + markers.size();
+  }
+
+  private static String stamp() {
+    return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+  }
+
+  private static String fileStamp() {
+    return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
+  }
+
+  private static String bounds(List<int[]> blocks) {
+    int minx = Integer.MAX_VALUE, miny = Integer.MAX_VALUE, minz = Integer.MAX_VALUE;
+    int maxx = Integer.MIN_VALUE, maxy = Integer.MIN_VALUE, maxz = Integer.MIN_VALUE;
+    for (int[] b : blocks) {
+      minx = Math.min(minx, b[0]); miny = Math.min(miny, b[1]); minz = Math.min(minz, b[2]);
+      maxx = Math.max(maxx, b[0]); maxy = Math.max(maxy, b[1]); maxz = Math.max(maxz, b[2]);
+    }
+    return "[" + minx + "," + miny + "," + minz + "] .. [" + maxx + "," + maxy + "," + maxz + "]";
+  }
+
+  private static String blocksJson(List<int[]> blocks) {
+    StringBuilder sb = new StringBuilder("[");
+    for (int i = 0; i < blocks.size(); i++) {
+      int[] b = blocks.get(i);
+      if (i > 0) sb.append(", ");
+      sb.append("[").append(b[0]).append(",").append(b[1]).append(",").append(b[2]).append("]");
+    }
+    return sb.append("]").toString();
   }
 
   public static int clearNotes(Player player) {

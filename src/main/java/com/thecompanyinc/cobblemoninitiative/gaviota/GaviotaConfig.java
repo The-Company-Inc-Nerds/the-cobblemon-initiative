@@ -47,10 +47,11 @@ public class GaviotaConfig {
 
   /** The flooded gym arena + its pump-pair drain puzzle (playtest coords, 2026-07-30). */
   public static class Drain {
-    /** The water box (inclusive), from the playtest water-level corners P12/P13. */
-    public Box region = new Box(570, 87, 3632, 611, 92, 3661);
+    /** The water box (inclusive), from the playtest water-level corners P12/P13. Top layer lowered
+     *  to Y91 (2026-07-30 playtest: the flooded surface sat one block too high). */
+    public Box region = new Box(570, 87, 3632, 611, 91, 3661);
     /** Starting (full) water surface Y. */
-    public int waterTopY = 92;
+    public int waterTopY = 91;
     /** Y the water bottoms out at when fully drained. */
     public int waterBottomY = 87;
     /** The pump-bot positions (playtest P15-P26). Randomly paired at flood; activate BOTH pumps of a
@@ -61,8 +62,11 @@ public class GaviotaConfig {
       new Pos(619.6, 103, 3633.3), new Pos(619.6, 103, 3659.7), new Pos(603.7, 103, 3675.5),
       new Pos(577.6, 103, 3675.4), new Pos(561.5, 103, 3659.5), new Pos(570.8, 92, 3660.1),
       new Pos(610.8, 92, 3632.5), new Pos(570.2, 92, 3632.2), new Pos(610.7, 92, 3660.8)));
-    /** Easy NPC preset spawned at each pump on flood (tagged gaviota_pump + gaviota_gym_npc). */
+    /** Easy NPC preset spawned at each pump on flood (tagged gaviota_pump). */
     public String pumpPreset = "easy_npc:preset/humanoid/gaviota_pump.npc.snbt";
+    /** Easy NPC preset a pump is swapped to once its pair completes (a "spent" bot whose dialog has no
+     *  "Turn on pump" button, only "Walk away"). Tagged gaviota_pump + gaviota_pump_spent. */
+    public String pumpSpentPreset = "easy_npc:preset/humanoid/gaviota_pump_spent.npc.snbt";
     /** Entity tag every gym NPC (pumps + trainers) carries, so the interaction gate water-locks any
      *  body below the current surface. */
     public String gymNpcTag = "gaviota_gym_npc";
@@ -76,6 +80,10 @@ public class GaviotaConfig {
       "defeated_gaviota_trainer_3", "defeated_gaviota_trainer_4"));
     /** Ticks between each 1-block water layer move during the smooth drain/raise (lower = faster). */
     public int animPeriodTicks = 4;
+    /** DEV DEBUG ONLY — per-pair dust-particle colour hints above each pump. OFF by default (the
+     *  puzzle is meant to be solved by exploration, not colour-matching); flip on at runtime with
+     *  {@code /cobblemon-initiative gaviota debug on} to see the pairs while tuning placement. */
+    public boolean debugPumpColors = false;
     /** Cutscene id played when the water drains a level (P27 spot; blank = none). */
     public String drainCutscene = "gaviota_water";
     /** Cutscene id played when the water raises/resets (blank = none). */

@@ -63,7 +63,10 @@ public class DevToolsInit implements ModInitializer {
     // npcnote stick + pos capture + smoke checklist (registers its own callbacks).
     DevNoteInit.register();
 
-    LOGGER.info("Dev tools initialized (gym-mark, npcnote/pos/smoke, dev subtree).");
+    // /ca dev marker — block-marker tool (left=anchor, right=confirm/box) + in-world highlight.
+    DevMarkerManager.register();
+
+    LOGGER.info("Dev tools initialized (gym-mark, npcnote/pos/smoke, marker, dev subtree).");
   }
 
   public static GymMarkStorage getGymMarks() {

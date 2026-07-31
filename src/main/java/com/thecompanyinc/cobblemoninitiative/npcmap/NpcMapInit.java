@@ -1,7 +1,6 @@
 package com.thecompanyinc.cobblemoninitiative.npcmap;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,9 +17,8 @@ public class NpcMapInit implements ModInitializer {
 
     storage = new NpcMapStorage();
 
-    CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) ->
-      NpcMapCommand.register(dispatcher, registryAccess, storage)
-    );
+    // The /npc-map command was pruned 2026-07-30 (unused in playtest). The storage below is
+    // still SHIPPING infra — InstallCommand reads it to apply presets to UUIDs on install.
 
     // NpcPresetRefreshManager.init() moved to InitiativeInit (2026-07-11): the refresh is
     // SHIPPING code and must survive this dev entrypoint's 1.0.0 strip (TODO §2).

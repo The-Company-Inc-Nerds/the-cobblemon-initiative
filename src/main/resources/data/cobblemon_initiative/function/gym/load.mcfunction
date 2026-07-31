@@ -14,8 +14,6 @@ execute unless score #dc_floor_2 ci_gym matches 0.. run scoreboard players set #
 execute unless score #dc_floor_3 ci_gym matches 0.. run scoreboard players set #dc_floor_3 ci_gym 0
 execute unless score #dc_floor_4 ci_gym matches 0.. run scoreboard players set #dc_floor_4 ci_gym 0
 execute unless score #dc_pit_stage ci_gym matches 0.. run scoreboard players set #dc_pit_stage ci_gym 0
-# gaviota_tide — the port gym's world tide clock (gym/gaviota_tide tick fn).
-scoreboard objectives add gaviota_tide dummy
 # nifl_wo — whiteout-approach taunt cooldown (per-player, gym/nifl_whiteout — off_record obs_cd precedent).
 scoreboard objectives add nifl_wo dummy
 # scorchspire_heat/_away — Banked Coals heat gauge + away-cooldown (gym/scorchspire_heat tick fn).

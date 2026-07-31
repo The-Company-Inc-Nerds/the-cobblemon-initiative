@@ -1,27 +1,32 @@
 {
-  "_comment": "NEPTUNE — Gaviota Port (gym 5, Water) leader intro. A per-leader copy of leader_intro.json (the shared scene cannot carry a name title), reusing Cicada's takehara_leader_intro geometry VERBATIM: the SAME relative+facingFrame+endBack:7 chaining so gym/engage_gaviota_leader still opens the battle from the endBack stage. Structure mirrors Cicada: pull up over the challenger's shoulder, a TIGHT ZOOM-IN dolly to Neptune's face (the two z:-8.5 -> z:-6.8 close holds mirror the push-in), cross high for a side profile, then drop home. startTitle names him; a WATER-type effect cue (splash + bubble particles anchored ON the leader via `execute at <uuid>`) plus dolphin/underwater sounds sell the Tidemaster reveal. Particles anchor on Neptune's uuid so they land ON him (fixes Cicada's rough challenger-offset placement). IN-WORLD TUNING NEEDED: air-verify + nudge the zoom-keyframe framing and the ~ ~1 ~ particle height at the real Gaviota arena. endBack 7 MUST match leader_intro so the post-scene battle opens correctly.",
-  "relative": true,
-  "facingFrame": true,
+  "_comment": "NEPTUNE — Gaviota Port (gym 5, Water) leader intro. Camera path RE-RECORDED in-game (2026-07-30, /cutscene record): an ABSOLUTE dolly straight down the DRAINED arena floor (x 572 -> 594 at z 3646.5, y ~87.5) pushing east onto Neptune at the pier anchor (~596 87 3646, uuid 0517452a...), ending on a climax HOLD in his face. relative:false so the recorded world coords are used verbatim; endBack:7 is KEPT and works off the PLAYER's trigger position/facing (NOT the camera), so gym/engage_gaviota_leader still opens the battle from the endBack stage on end AND on skip (CutsceneManager.end line ~177). Effects heavily expanded per playtest note: rising underwater/dolphin/bubble bed on the approach, then a conduit-activate + trident-riptide + splash/bubble/falling-water/glow BURST anchored ON Neptune (execute at <uuid>) as the camera lands, with a mid-scene title. IN-WORLD TUNING: air-verify the ~ ~1 ~ particle heights + climax timing at the real arena; the leader stays chunk-loaded for the whole scene so the `execute at <uuid>` cues resolve.",
+  "relative": false,
   "skippable": true,
   "endBack": 7.0,
   "startTitle": "§bLeader Neptune",
   "startSubtitle": "§3Tidemaster of Gaviota §8— §bWater",
   "keyframes": [
-    { "x": 0.0, "y": 2.5, "z": -4.0, "yaw": 0.0, "pitch": 12.0, "ticks": 30 },
-    { "x": -1.2, "y": 2.2, "z": -8.5, "yaw": 0.0, "pitch": 6.0, "ticks": 45 },
-    { "x": -1.2, "y": 2.2, "z": -8.5, "yaw": 0.0, "pitch": 6.0, "ticks": 20 },
-    { "x": -0.4, "y": 2.6, "z": -6.8, "yaw": 0.0, "pitch": 8.0, "ticks": 18 },
-    { "x": -0.4, "y": 2.6, "z": -6.8, "yaw": 0.0, "pitch": 8.0, "ticks": 30 },
-    { "x": 6.5, "y": 4.5, "z": 1.5, "yaw": -55.0, "pitch": 22.0, "ticks": 50 },
-    { "x": 0.0, "y": 1.0, "z": -6.5, "yaw": 0.0, "pitch": 4.0, "ticks": 40 }
+    { "x": 572.4, "y": 87.5, "z": 3646.5, "yaw": -88.5, "pitch": 0.5, "ticks": 30 },
+    { "x": 583.7, "y": 87.5, "z": 3646.5, "yaw": -88.5, "pitch": 0.5, "ticks": 20 },
+    { "x": 589.1, "y": 87.9, "z": 3646.5, "yaw": -88.5, "pitch": 0.5, "ticks": 20 },
+    { "x": 594.0, "y": 88.3, "z": 3646.6, "yaw": -88.5, "pitch": 0.5, "ticks": 20 },
+    { "x": 594.0, "y": 88.3, "z": 3646.6, "yaw": -88.5, "pitch": 0.5, "ticks": 45 }
   ],
   "cues": [
-    { "tick": 8, "sound": "minecraft:entity.dolphin.ambient_water", "volume": 0.9, "pitch": 1.0 },
-    { "tick": 10, "sound": "minecraft:block.bubble_column.bubble_pop", "volume": 0.5, "pitch": 1.0 },
-    { "tick": 70, "sound": "minecraft:block.bubble_column.upwards_ambient", "volume": 0.8, "pitch": 1.0 },
-    { "tick": 78, "command": "execute at 0517452a-51a8-4a51-91e1-364a0c6765b6 run particle minecraft:splash ~ ~1 ~ 0.6 0.8 0.6 0.02 32 force" },
-    { "tick": 96, "command": "execute at 0517452a-51a8-4a51-91e1-364a0c6765b6 run particle minecraft:bubble ~ ~1 ~ 0.6 0.8 0.6 0.02 32 force" },
-    { "tick": 100, "sound": "minecraft:ambient.underwater.loop", "volume": 0.6, "pitch": 1.0 },
-    { "tick": 190, "sound": "minecraft:entity.player.levelup", "volume": 0.6, "pitch": 0.5 }
+    { "tick": 3, "sound": "minecraft:ambient.underwater.enter", "volume": 0.7, "pitch": 1.0 },
+    { "tick": 6, "sound": "minecraft:entity.dolphin.ambient_water", "volume": 0.8, "pitch": 1.0 },
+    { "tick": 22, "command": "execute at 0517452a-51a8-4a51-91e1-364a0c6765b6 run particle minecraft:bubble_column_up ~ ~0.5 ~ 0.7 1.0 0.7 0.02 40 force" },
+    { "tick": 40, "sound": "minecraft:block.bubble_column.upwards_ambient", "volume": 0.8, "pitch": 1.0 },
+    { "tick": 55, "sound": "minecraft:entity.dolphin.splash", "volume": 0.7, "pitch": 1.1 },
+    { "tick": 70, "sound": "minecraft:block.conduit.ambient", "volume": 0.9, "pitch": 1.0 },
+    { "tick": 74, "command": "execute at 0517452a-51a8-4a51-91e1-364a0c6765b6 run particle minecraft:bubble ~ ~1 ~ 0.6 1.0 0.6 0.03 40 force" },
+    { "tick": 90, "title": "§bThe tide answers.", "subtitle": "§3Neptune rises to meet the challenge." },
+    { "tick": 90, "sound": "minecraft:block.conduit.activate", "volume": 1.0, "pitch": 1.0 },
+    { "tick": 92, "sound": "minecraft:item.trident.riptide_3", "volume": 0.9, "pitch": 1.0 },
+    { "tick": 92, "command": "execute at 0517452a-51a8-4a51-91e1-364a0c6765b6 run particle minecraft:splash ~ ~1 ~ 0.9 1.2 0.9 0.06 70 force" },
+    { "tick": 94, "command": "execute at 0517452a-51a8-4a51-91e1-364a0c6765b6 run particle minecraft:bubble ~ ~1 ~ 0.9 1.2 0.9 0.06 70 force" },
+    { "tick": 98, "command": "execute at 0517452a-51a8-4a51-91e1-364a0c6765b6 run particle minecraft:falling_water ~ ~2.2 ~ 1.0 0.4 1.0 0.0 50 force" },
+    { "tick": 105, "sound": "minecraft:entity.player.levelup", "volume": 0.7, "pitch": 0.6 },
+    { "tick": 112, "command": "execute at 0517452a-51a8-4a51-91e1-364a0c6765b6 run particle minecraft:glow ~ ~1 ~ 0.6 1.0 0.6 0.0 24 force" }
   ]
 }

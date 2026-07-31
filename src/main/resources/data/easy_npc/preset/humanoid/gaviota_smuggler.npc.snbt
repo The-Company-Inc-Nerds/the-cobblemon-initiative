@@ -1,9 +1,9 @@
 {
     PresetMetadata: {
         author: "TheCompanyInc",
-        category: "Villain",
+        category: "Civilian",
         created: 0L,
-        description: "wheat_trader at Gaviota Port - Westwind Fields Sea Dock (act 1). Compiled from dialog-src.",
+        description: "civilian at Gaviota Port - Westwind Fields Sea Dock (act 1). Compiled from dialog-src.",
         entityTypeId: "easy_npc:humanoid",
         modified: 0L,
         name: "Sable",
@@ -16,65 +16,6 @@
                 ON_INTERACTION: [
                     {
                         Type: "OPEN_DEFAULT_DIALOG"
-                    }
-                ],
-                ON_DISTANCE_VERY_CLOSE: [
-                    {
-                        Type: "COMMAND",
-                        ConditionDataSet: {
-                            ConditionDataSet: [
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "wheat_trader_hostile"
-                                },
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "dex_gte_2"
-                                },
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "no_recent_flee"
-                                },
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "no_defeated_gaviota_wheat_sea"
-                                }
-                            ]
-                        },
-                        Cmd: "tbcs attach rctmod:wheat_trader_ambush @s"
-                    },
-                    {
-                        Type: "COMMAND",
-                        ExecAsUser: 1b,
-                        ConditionDataSet: {
-                            ConditionDataSet: [
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "wheat_trader_hostile"
-                                },
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "dex_gte_2"
-                                },
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "no_recent_flee"
-                                },
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "no_defeated_gaviota_wheat_sea"
-                                }
-                            ]
-                        },
-                        Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:wheat_trader_ambush onwin {1: ['cobbledollars give @1 500', 'tag @1 add defeated_gaviota_wheat_sea', '@2 say Fine - take the hulls, take the field. It was never grain to me anyway, just a number that floated.', 'execute as @1 run function cobblemon_initiative:liberation/free_field {field:farm_3}'], 2: ['@1 say Logged. The Company thanks you for the tonnage.']}"
                     }
                 ]
             }
@@ -99,168 +40,76 @@
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
-                            Name: "wheat_trader_hostile"
+                            Name: "field_3_liberated"
                         }
                     ],
-                    Priority: 30,
+                    Priority: 40,
                     Buttons: [
                         {
-                            Name: "…",
+                            Name: "The coast remembers",
                             Actions: [
                                 {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "tag @s add heard_wheat_pitch"
-                                },
-                                {
-                                    Type: "OPEN_NAMED_DIALOG",
-                                    Cmd: "wt_host_2"
+                                    Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "continue"
+                            Label: "leave_button"
                         }
                     ],
                     Texts: [
                         {
-                            Text: "Wait. I know that face. Verified tru§kvalue§r — you are the one the memos warned us about. The founder. You are supposed to be filed."
-                        }
-                    ],
-                    Name: "Wheat Trader — recognises you",
-                    Label: "hostile"
-                },
-                {
-                    Priority: -1,
-                    Buttons: [
-                        {
-                            Name: "…",
-                            Actions: [
-                                {
-                                    Type: "OPEN_NAMED_DIALOG",
-                                    Cmd: "wt_host_3"
-                                }
-                            ],
-                            Label: "continue"
+                            Text: "The tide runs where it likes again and the salt-rows stand up straighter every dawn. You gave an old hand her coast back — Westwind is a field again, not a number that floats. It will not forget it, and neither will I."
                         },
                         {
-                            Name: "Goodbye",
-                            Actions: [
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "goodbye_button"
+                            Text: "Grain by sea for the town now, not for a ledger. If the Company floats another fence out here, they will find the whole dock against them. Mind the road east — the dry country is Company ground too."
                         }
                     ],
-                    Texts: [
-                        {
-                            Text: "There was never a founder. That is what they told us to say. So how are you standing in my field, counting my grain with his eyes."
-                        }
-                    ],
-                    Name: "Wheat Trader — recognises you",
-                    Label: "wt_host_2"
-                },
-                {
-                    Priority: -1,
-                    Buttons: [
-                        {
-                            Name: "Stand and fight",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "defeated_gaviota_wheat_sea"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "say No. The tide already took me once. Word went down the coast about you."
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_defeated_gaviota_wheat_sea"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tbcs attach rctmod:wheat_trader_ambush @s"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    ConditionDataSet: {
-                                        ConditionDataSet: [
-                                            {
-                                                Type: "PLAYER_TAG",
-                                                Operation: "EQUALS",
-                                                Name: "no_defeated_gaviota_wheat_sea"
-                                            }
-                                        ]
-                                    },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:wheat_trader_ambush onwin {1: ['cobbledollars give @1 500', 'tag @1 add defeated_gaviota_wheat_sea', '@2 say Fine - take the hulls, take the field. It was never grain to me anyway, just a number that floated.', 'execute as @1 run function cobblemon_initiative:liberation/free_field {field:farm_3}'], 2: ['@1 say Logged. The Company thanks you for the tonnage.']}"
-                                },
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "fight_button"
-                        },
-                        {
-                            Name: "Goodbye",
-                            Actions: [
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "goodbye_button"
-                        }
-                    ],
-                    Texts: [
-                        {
-                            Text: "I am not selling to a closed file. The fields are ours now. You do not get to walk away from this one."
-                        }
-                    ],
-                    Name: "Wheat Trader — recognises you",
-                    Label: "wt_host_3"
+                    Name: "Sable - the tide runs",
+                    Label: "liberated"
                 },
                 {
                     Conditions: [
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
-                            Name: "wheat_trader_suspicious"
-                        }
-                    ],
-                    Priority: 20,
-                    Buttons: [
-                        {
-                            Name: "Browse wares",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "tag @s add heard_wheat_pitch"
-                                },
-                                {
-                                    Type: "OPEN_TRADING_SCREEN"
-                                }
-                            ],
-                            Label: "trade_button"
+                            Name: "defeated_villain_site_manager_3"
                         },
                         {
-                            Name: "Just passing",
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "no_field_3_liberated"
+                        }
+                    ],
+                    Priority: 30,
+                    Buttons: [
+                        {
+                            Name: "The fence is down - open the sea-gate",
                             Actions: [
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "tag @s add heard_wheat_pitch"
+                                    Cmd: "function cobblemon_initiative:liberation/free_field {field:farm_3}"
                                 },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "title @initiator title [{\"text\":\"WESTWIND LIBERATED\",\"color\":\"gold\"}]"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "title @initiator subtitle [{\"text\":\"ADJUSTMENT reversed - the parcel is off the ledger and back on the map\",\"color\":\"gray\"}]"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "tellraw @initiator [{\"text\":\"Sable hauls the sea-gate wide - the Westwind Fields run free, and the coast takes its field back.\",\"color\":\"green\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "open_gate_button"
+                        },
+                        {
+                            Name: "Hold the tide a moment",
+                            Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
@@ -270,46 +119,18 @@
                     ],
                     Texts: [
                         {
-                            Text: "You again. Hands where I can see the ledger. I will still take your trade — coin is coin, for now."
-                        },
-                        {
-                            Text: "Something about you sits wrong, like a number that will not add. Buy what you came for and keep walking."
-                        },
-                        {
-                            Text: "I have heard the talk. A face from the old company, walking the routes. Probably nothing. Probably. Wares are open."
-                        },
-                        {
-                            Text: "Head office circulated a sketch this week. Poor likeness. Mostly. (the trader looks from a folded memo to you and back, twice, then puts the memo away.)"
+                            Text: "You moved that Manager off my silo. I watched the whole bout from the dyke and I have not breathed this easy in a season. Say the word and I haul the sea-gate wide — Westwind takes its field back the moment the tide runs."
                         }
                     ],
-                    Name: "Wheat Trader — wary",
-                    Label: "suspicious"
+                    Name: "Sable - say the word",
+                    Label: "fence_down"
                 },
                 {
                     Priority: 10,
                     Buttons: [
                         {
-                            Name: "See the wares",
+                            Name: "Look toward the silo",
                             Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "tag @s add heard_wheat_pitch"
-                                },
-                                {
-                                    Type: "OPEN_TRADING_SCREEN"
-                                }
-                            ],
-                            Label: "trade_button"
-                        },
-                        {
-                            Name: "I will keep my coin",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "tag @s add heard_wheat_pitch"
-                                },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
@@ -319,25 +140,19 @@
                     ],
                     Texts: [
                         {
-                            Text: "Friend. Back your savings in something you can hold. Something you can eat. Wheat does not lie, and wheat does not vanish from a vault overnight."
+                            Text: "Keep your voice down at the dock. That is a Company Manager up on my silo, and these salt-rows fed the coast for three generations before he stapled a receipt to the tide. Now I sign for the right to walk my own dyke."
                         },
                         {
-                            Text: "Stars are pretty. Stars are far away. Grain is here, in your hand, today. Trade with me before the paper money learns it is worthless."
+                            Text: "I worked this wet field before the fence went up. The Company calls it verification. The rice and the sea call it drowning on a schedule, and I can do nothing while that man holds the silo."
                         },
                         {
-                            Text: "When the CobbleDollar fails — and it will, the smart money knows it will — the people with the fields will be the only people who matter. Come in early."
+                            Text: "They fenced the water first, then the field, then me. If somebody were to move that Manager off my silo, the sea-gate could run inside the hour. I did not say that out loud."
                         },
                         {
-                            Text: "Head office sends a fresh pitch script every week. This one opens with the word Friend. (the trader says Friend the way you would read it off a laminated card.)"
-                        },
-                        {
-                            Text: "Ask me what backs the wheat. Go on, ask. Wheat. Wheat is backed by wheat. A closed loop — which I am told is the strongest shape in finance."
-                        },
-                        {
-                            Text: "A founder built the Company, you have heard? You heard wrong. Head office audited the histories and there was no founder. The audit was very thorough. Buy grain."
+                            Text: "Strange thing - the Manager squints at you like a memo he was told to shred. I stopped asking what the Company forgets on purpose. Safer, on this coast, not to know."
                         }
                     ],
-                    Name: "Wheat Trader — the pitch",
+                    Name: "Sable",
                     Label: "default"
                 }
             ]
@@ -497,94 +312,6 @@
             }
         ],
         id: "easy_npc:humanoid",
-        Offers: {
-            Inventory: {},
-            Recipes: {
-                Recipes: [
-                    {
-                        buy: {
-                            id: "minecraft:paper",
-                            count: 1,
-                            components: {
-                                "minecraft:custom_data": {
-                                    ci_scrip: 1b
-                                },
-                                "minecraft:custom_name": '{"color":"gold","italic":false,"text":"Company Wheat Scrip"}',
-                                "minecraft:lore": ['{"color":"gray","italic":true,"text":"Redeemable only at Company grain stalls."}']
-                            }
-                        },
-                        sell: {
-                            id: "cobblemon:potion",
-                            count: 1
-                        },
-                        uses: 0,
-                        maxUses: 16,
-                        rewardExp: 0b,
-                        specialPrice: 0,
-                        demand: 0,
-                        priceMultiplier: 0.0f,
-                        xp: 0
-                    },
-                    {
-                        buy: {
-                            id: "minecraft:paper",
-                            count: 2,
-                            components: {
-                                "minecraft:custom_data": {
-                                    ci_scrip: 1b
-                                },
-                                "minecraft:custom_name": '{"color":"gold","italic":false,"text":"Company Wheat Scrip"}',
-                                "minecraft:lore": ['{"color":"gray","italic":true,"text":"Redeemable only at Company grain stalls."}']
-                            }
-                        },
-                        sell: {
-                            id: "cobblemon:great_ball",
-                            count: 1
-                        },
-                        uses: 0,
-                        maxUses: 16,
-                        rewardExp: 0b,
-                        specialPrice: 0,
-                        demand: 0,
-                        priceMultiplier: 0.0f,
-                        xp: 0
-                    },
-                    {
-                        buy: {
-                            id: "minecraft:wheat",
-                            count: 32
-                        },
-                        sell: {
-                            id: "minecraft:paper",
-                            count: 1,
-                            components: {
-                                "minecraft:custom_data": {
-                                    ci_scrip: 1b
-                                },
-                                "minecraft:custom_name": '{"color":"gold","italic":false,"text":"Company Wheat Scrip"}',
-                                "minecraft:lore": ['{"color":"gray","italic":true,"text":"Redeemable only at Company grain stalls."}']
-                            }
-                        },
-                        uses: 0,
-                        maxUses: 16,
-                        rewardExp: 0b,
-                        specialPrice: 0,
-                        demand: 0,
-                        priceMultiplier: 0.0f,
-                        xp: 0
-                    }
-                ]
-            }
-        },
-        TradingData: {
-            TradingDataSet: {
-                Type: "BASIC",
-                MaxUses: 16,
-                RewardedXP: 0,
-                ResetsEveryMin: 10,
-                LastReset: 0L
-            }
-        },
         CustomName: '{"text": "Sable", "color": "#FFFFFF"}'
     }
 }

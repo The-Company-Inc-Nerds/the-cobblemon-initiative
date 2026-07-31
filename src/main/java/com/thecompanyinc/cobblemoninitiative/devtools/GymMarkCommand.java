@@ -61,7 +61,6 @@ public class GymMarkCommand {
     SLOTS.put("nifl_sentry_2", new String[] {"point", "Frost Sentinel 2 (nifl_sentry_2 placement)"});
     SLOTS.put("nifl_sentry_3", new String[] {"point", "Frost Sentinel 3 (nifl_sentry_3 placement)"});
     SLOTS.put("nifl_clear", new String[] {"point", "Nifl whiteout clean-crossing point (gym/nifl_whiteout.mcfunction)"});
-    SLOTS.put("gaviota_bell", new String[] {"point", "Gaviota pier tide-bell anchor (gym/gaviota_tide.mcfunction)"});
     SLOTS.put("deepcore_marshal", new String[] {"point", "Gauntlet Marshal Osei (deepcore_marshal placement)"});
     SLOTS.put("kalahar_mirage_1", new String[] {"point", "Kalahar mirage 1 (kalahar_mirage_1 placement)"});
     SLOTS.put("kalahar_mirage_2", new String[] {"point", "Kalahar mirage 2 (kalahar_mirage_2 placement)"});

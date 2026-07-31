@@ -1,8 +1,5 @@
 package com.thecompanyinc.cobblemoninitiative.devtools;
 
-import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
-import com.cobblemon.mod.common.battles.BattleRegistry;
-import com.cobblemon.mod.common.battles.runner.ShowdownService;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -19,8 +16,6 @@ import java.util.Set;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
-import net.minecraft.commands.arguments.EntityArgument;
-import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 
@@ -30,9 +25,10 @@ import net.minecraft.server.level.ServerPlayer;
  * re-registered {@code cobblemon-initiative} root literal into the shipping tree (the same
  * pattern DevNoteCommand has always used), so the {@code /ca} alias reaches these too.
  *
- * <p>Handlers for goto/badges/grant/kit moved verbatim from CobblemonInitiativeCommands
- * (2026-07-11 consolidation); team/stage/place delegate to
- * {@link DevTestManager}/{@link DevPlaceManager}.
+ * <p>Handlers for badges/grant moved verbatim from CobblemonInitiativeCommands
+ * (2026-07-11 consolidation); stage/place delegate to
+ * {@link DevTestManager}/{@link DevPlaceManager}. (goto/tool/path/kit/showdown/team pruned
+ * 2026-07-30 — unused in playtest.)
  */
 public final class DevCommands {
 
@@ -44,28 +40,10 @@ public final class DevCommands {
         Commands.literal("dev")
           .requires(source -> source.hasPermission(2))
           .then(
-            Commands.literal("goto").then(
-              Commands.argument("trainer", StringArgumentType.word())
-                .suggests((context, builder) ->
-                  SharedSuggestionProvider.suggest(trainerIdsWithCoords(), builder)
-                )
-                .executes(DevCommands::devGoto)
-            )
-          )
-          .then(
             Commands.literal("badges").then(
               Commands.argument("count", IntegerArgumentType.integer(0, 10))
                 .executes(DevCommands::devBadges)
             )
-          )
-          // dev showdown status|revive — the TBCS-stall recovery pair: status probes the
-          // shared Graal JS context; revive closes stuck battles and rebuilds the context
-          // (closeConnection -> openConnection = unbundle + createContext + boot).
-          .then(
-            Commands.literal("showdown")
-              .then(Commands.literal("status").executes(DevCommands::showdownStatus))
-              .then(Commands.literal("revive").executes(DevCommands::showdownRevive))
-              .then(Commands.literal("trap").executes(DevCommands::showdownTrap))
           )
           .then(
             Commands.literal("grant").then(
@@ -75,9 +53,6 @@ public final class DevCommands {
                 )
                 .executes(DevCommands::devGrant)
             )
-          )
-          .then(
-            Commands.literal("kit").executes(DevCommands::devKit)
           )
           // Full-heal the party + self, in or out of battle (playtest convenience).
           .then(
@@ -101,33 +76,6 @@ public final class DevCommands {
                 .suggests((c, b) -> SharedSuggestionProvider.suggest(PHONE_DONE_TAG.keySet(), b))
                 .executes(ctx ->
                   withPlayer(ctx, p -> devPhone(p, StringArgumentType.getString(ctx, "call"))))
-            )
-          )
-          // Vanilla-A* route probe for the client driver (see PathProbe).
-          .then(
-            Commands.literal("path").then(
-              Commands.argument("player", EntityArgument.player()).then(
-                Commands.argument("target", BlockPosArgument.blockPos())
-                  .executes(ctx -> PathProbe.cmdPath(
-                    ctx.getSource(),
-                    EntityArgument.getPlayer(ctx, "player"),
-                    BlockPosArgument.getLoadedBlockPos(ctx, "target")))
-              )
-            )
-          )
-          // THE PRODUCER'S TOOL — one item for the whole marking walk (see DevWandTool).
-          .then(
-            Commands.literal("tool").executes(ctx -> withPlayer(ctx, DevWandTool::cmdTool))
-          )
-          // Test harness: bank party → bundled counter team / one-shot stage setup.
-          .then(
-            Commands.literal("team").then(
-              Commands.argument("stage", StringArgumentType.word())
-                .suggests((context, builder) ->
-                  SharedSuggestionProvider.suggest(DevTestManager.stageIds(), builder)
-                )
-                .executes(ctx -> withPlayer(ctx, p ->
-                  DevTestManager.giveTeam(p, StringArgumentType.getString(ctx, "stage"))))
             )
           )
           .then(
@@ -162,6 +110,42 @@ public final class DevCommands {
                 .then(placeIdArg().executes(
                   ctx -> withPlayer(ctx, p -> DevPlaceManager.cmdSkip(p, StringArgumentType.getString(ctx, "id"))))))
           )
+          // Quick freeform playtest note: /ca dev note <text>.
+          .then(
+            Commands.literal("note").then(
+              Commands.argument("text", StringArgumentType.greedyString())
+                .executes(ctx -> withPlayer(ctx, p -> {
+                  DevNoteInit.addFreeNote(p, StringArgumentType.getString(ctx, "text"));
+                  return 1;
+                }))
+            )
+          )
+          // Block-marker tool: give it (no arg), or manage the live selection.
+          .then(
+            Commands.literal("marker")
+              .executes(ctx -> withPlayer(ctx, p -> { DevMarkerManager.giveTool(p); return 1; }))
+              .then(Commands.literal("give")
+                .executes(ctx -> withPlayer(ctx, p -> { DevMarkerManager.giveTool(p); return 1; })))
+              .then(Commands.literal("status")
+                .executes(ctx -> withPlayer(ctx, p -> { DevMarkerManager.status(p); return 1; })))
+              .then(Commands.literal("undo")
+                .executes(ctx -> withPlayer(ctx, p -> { DevMarkerManager.undo(p); return 1; })))
+              .then(Commands.literal("clear")
+                .executes(ctx -> withPlayer(ctx, p -> { DevMarkerManager.clear(p); return 1; })))
+              .then(Commands.literal("save").then(
+                Commands.argument("title", StringArgumentType.string())
+                  .executes(ctx -> withPlayer(ctx, p ->
+                    DevMarkerManager.save(p, StringArgumentType.getString(ctx, "title"), null) ? 1 : 0))
+                  .then(Commands.argument("description", StringArgumentType.greedyString())
+                    .executes(ctx -> withPlayer(ctx, p -> DevMarkerManager.save(p,
+                      StringArgumentType.getString(ctx, "title"),
+                      StringArgumentType.getString(ctx, "description")) ? 1 : 0)))
+              ))
+          )
+          // Aggregate dev log -> chat + a markdown file next to the save (upload it for notes).
+          .then(
+            Commands.literal("log").executes(ctx -> withPlayer(ctx, DevNoteInit::devLog))
+          )
       )
     );
   }
@@ -170,50 +154,12 @@ public final class DevCommands {
   // Handlers (moved verbatim from CobblemonInitiativeCommands)
   // ---------------------------------------------------------------------------
 
-  private static List<String> trainerIdsWithCoords() {
-    List<String> ids = new ArrayList<>();
-    for (TrainerConfig t : InitiativeInit.getConfigLoader().getAllTrainers()) {
-      int[] c = t.getCoordinates();
-      if (c != null && c.length >= 3) ids.add(t.getId());
-    }
-    return ids;
-  }
-
   private static List<String> badgeAchievementIds() {
     List<String> ids = new ArrayList<>();
     for (LevelCapConfig cap : InitiativeInit.getConfigLoader().getLevelCaps()) {
       if (cap.getAchievementId() != null) ids.add(cap.getAchievementId());
     }
     return ids;
-  }
-
-  /** /cobblemon-initiative dev goto &lt;trainer&gt; — teleport to a trainer's coordinates. */
-  private static int devGoto(CommandContext<CommandSourceStack> context) {
-    ServerPlayer player = context.getSource().getPlayer();
-    if (player == null) {
-      context.getSource().sendFailure(Component.literal("Must be run by a player."));
-      return 0;
-    }
-    String id = StringArgumentType.getString(context, "trainer");
-    TrainerConfig t = InitiativeInit.getConfigLoader().getTrainer(id);
-    if (t == null || t.getCoordinates() == null || t.getCoordinates().length < 3) {
-      context.getSource().sendFailure(
-        Component.literal("§cNo coordinates for trainer: " + id)
-      );
-      return 0;
-    }
-    int[] c = t.getCoordinates();
-    player.connection.teleport(
-      c[0] + 0.5, c[1], c[2] + 0.5, player.getYRot(), player.getXRot()
-    );
-    context.getSource().sendSuccess(
-      () ->
-        Component.literal(
-          "§aTeleported to §e" + id + "§a (" + c[0] + " " + c[1] + " " + c[2] + ")."
-        ),
-      true
-    );
-    return 1;
   }
 
   /** /cobblemon-initiative dev badges &lt;n&gt; — set progression to exactly N gym badges. */
@@ -326,37 +272,6 @@ public final class DevCommands {
     }
     context.getSource().sendSuccess(
       () -> Component.literal("§aGranted achievement §e" + achievement + "§a."),
-      true
-    );
-    return 1;
-  }
-
-  /** /cobblemon-initiative dev kit — give the shrine crystals + test items. */
-  private static int devKit(CommandContext<CommandSourceStack> context) {
-    ServerPlayer player = context.getSource().getPlayer();
-    if (player == null) {
-      context.getSource().sendFailure(Component.literal("Must be run by a player."));
-      return 0;
-    }
-    var server = player.getServer();
-    if (server == null) return 0;
-
-    String name = player.getName().getString();
-    String[] gives = {
-      "cobblemon-initiative:fire_shrine_crystal",
-      "cobblemon-initiative:ground_shrine_crystal",
-      "cobblemon-initiative:ice_shrine_crystal",
-      "cobblemon-initiative:dragon_shrine_crystal",
-      "cobblemon-initiative:fairy_shrine_crystal",
-      "cobblemon:rare_candy 16",
-      "cobblemon:potion 16",
-    };
-    var source = server.createCommandSourceStack().withPermission(4).withSuppressedOutput();
-    for (String give : gives) {
-      server.getCommands().performPrefixedCommand(source, "give " + name + " " + give);
-    }
-    context.getSource().sendSuccess(
-      () -> Component.literal("§aDev kit granted: 5 shrine crystals + rare candy + potions."),
       true
     );
     return 1;
@@ -489,160 +404,4 @@ public final class DevCommands {
     return fn.applyAsInt(p);
   }
 
-  // ---------------------------------------------------------------------------
-  // Showdown engine probes — the wedge signature (2026-07-17 bisect): a battle whose
-  // actors all read mustChoose=false with request=true, frozen forever, after a Java
-  // exception unwound through the Graal context mid-interpretMessage. The context stays
-  // poisoned for every later battle until rebuilt. Graal types are jar-in-jar (not on
-  // the compile classpath), so the eval probe goes through reflection.
-
-  /** dev showdown trap — dump the wedge trap's contained faults (trigger evidence). */
-  private static int showdownTrap(CommandContext<CommandSourceStack> ctx) {
-    var reports = com.thecompanyinc.cobblemoninitiative.compat.ShowdownWedgeTrap.reportsSnapshot();
-    int total = com.thecompanyinc.cobblemoninitiative.compat.ShowdownWedgeTrap.totalTrapped();
-    if (reports.isEmpty()) {
-      ctx.getSource().sendSuccess(() -> Component.literal(
-        "[Showdown] No interpret faults trapped this session."), false);
-      return 0;
-    }
-    StringBuilder sb = new StringBuilder("[Showdown] Trapped faults: " + total
-      + " total, last " + reports.size() + ":\n");
-    for (var r : reports) {
-      String firstStackLine = r.stack().lines().limit(2).reduce("", (a, b) -> a.isEmpty() ? b : a + " / " + b);
-      sb.append("  #").append(r.ordinal())
-        .append(" battle=").append(r.battleId())
-        .append("\n    msg=").append(r.message().length() > 160
-          ? r.message().substring(0, 157) + "…" : r.message())
-        .append("\n    ").append(firstStackLine).append("\n");
-    }
-    String out = sb.toString().trim();
-    ctx.getSource().sendSuccess(() -> Component.literal(out), false);
-    return total;
-  }
-
-  /** Try a trivial JS eval on the live showdown context. Returns null if healthy, else the failure. */
-  private static String probeShowdownContext() {
-    try {
-      Object svc = ShowdownService.Companion.getService();
-      Object ctx = svc.getClass().getMethod("getContext").invoke(svc);
-      Object result = ctx.getClass().getMethod("eval", String.class, CharSequence.class)
-          .invoke(ctx, "js", "1+1");
-      return result == null ? "eval returned null" : null;
-    } catch (Exception e) {
-      Throwable root = e.getCause() != null ? e.getCause() : e;
-      return root.getClass().getSimpleName() + ": " + String.valueOf(root.getMessage());
-    }
-  }
-
-  @SuppressWarnings("unchecked")
-  private static java.util.Map<java.util.UUID, PokemonBattle> battleMap() throws Exception {
-    java.lang.reflect.Field f = BattleRegistry.class.getDeclaredField("battleMap");
-    f.setAccessible(true);
-    return (java.util.Map<java.util.UUID, PokemonBattle>) f.get(null);
-  }
-
-  private static int showdownStatus(CommandContext<CommandSourceStack> context) {
-    String probe = probeShowdownContext();
-    StringBuilder sb = new StringBuilder("[TEST] showdown status context=")
-        .append(probe == null ? "ALIVE" : "DEAD(" + probe + ")");
-    try {
-      java.util.Map<java.util.UUID, PokemonBattle> map = battleMap();
-      sb.append(" battles=").append(map.size());
-      for (PokemonBattle b : map.values()) {
-        sb.append(" | ").append(b.getBattleId().toString(), 0, 8)
-          .append(" ended=").append(b.getEnded());
-      }
-    } catch (Exception e) {
-      sb.append(" battles=? (").append(e.getClass().getSimpleName()).append(')');
-    }
-    sb.append(" rctapiTracked=").append(rctapiTrackedCount());
-    String line = sb.toString();
-    context.getSource().sendSuccess(() -> Component.literal(line), false);
-    return 1;
-  }
-
-  /**
-   * rctapi's static battleToManager map is the second battle registry in play: its
-   * static tick() force-ends battles it still tracks, and doing that against a REBUILT
-   * showdown context sends into a battle id the fresh JS side has never seen —
-   * "TypeError: Cannot read property 'write' of undefined" in sendBattleMessage,
-   * uncaught on the server thread = server crash (reproduced 2026-07-17). Revive must
-   * therefore blind rctapi BEFORE cycling the context. Reflection because rctapi's
-   * internals are not API.
-   */
-  private static int rctapiTrackedCount() {
-    try {
-      Class<?> bm = Class.forName("com.gitlab.srcmc.rctapi.api.battle.BattleManager");
-      java.lang.reflect.Field f = bm.getDeclaredField("battleToManager");
-      f.setAccessible(true);
-      return ((java.util.Map<?, ?>) f.get(null)).size();
-    } catch (Exception e) {
-      return -1;
-    }
-  }
-
-  private static void clearRctapiBattles(StringBuilder sb) {
-    try {
-      Class<?> bm = Class.forName("com.gitlab.srcmc.rctapi.api.battle.BattleManager");
-      java.lang.reflect.Field mapF = bm.getDeclaredField("battleToManager");
-      mapF.setAccessible(true);
-      java.util.Map<?, ?> battleToManager = (java.util.Map<?, ?>) mapF.get(null);
-      java.lang.reflect.Field statesF = bm.getDeclaredField("battleStates");
-      statesF.setAccessible(true);
-      int managers = 0;
-      for (Object mgr : new java.util.HashSet<>(battleToManager.values())) {
-        ((java.util.Map<?, ?>) statesF.get(mgr)).clear();
-        managers++;
-      }
-      int tracked = battleToManager.size();
-      battleToManager.clear();
-      java.lang.reflect.Field cancelF = bm.getDeclaredField("BATTLE_QUERY_TO_CANCEL");
-      cancelF.setAccessible(true);
-      ((java.util.Map<?, ?>) cancelF.get(null)).clear();
-      sb.append(" rctapiCleared=").append(tracked).append('/').append(managers).append("mgr");
-    } catch (Exception e) {
-      sb.append(" rctapiClear=FAIL(").append(e.getClass().getSimpleName()).append(')');
-    }
-  }
-
-  private static int showdownRevive(CommandContext<CommandSourceStack> context) {
-    StringBuilder sb = new StringBuilder("[TEST] showdown revive");
-    // Blind rctapi's static tick FIRST — its forceEnd on a stale battle id against the
-    // rebuilt context is a server-crash (see clearRctapiBattles javadoc).
-    clearRctapiBattles(sb);
-    int closed = 0;
-    try {
-      for (PokemonBattle b : new ArrayList<>(battleMap().values())) {
-        try {
-          BattleRegistry.closeBattle(b);
-          closed++;
-        } catch (Exception e) {
-          sb.append(" closeFail=").append(e.getClass().getSimpleName());
-        }
-      }
-    } catch (Exception e) {
-      sb.append(" mapFail=").append(e.getClass().getSimpleName());
-    }
-    sb.append(" battlesClosed=").append(closed);
-    // Cobblemon's own /reloadshowdown = closeConnection + openConnection +
-    // resetAllRegistries + re-send of every registry (abilities/bagItems/heldItems/
-    // moves/species). A bare context cycle leaves the fresh JS with NO registry data —
-    // battles then start Java-side but the sim never answers (verified live). NOTE:
-    // /reloadshowdown ALONE is crash-bait with live rctapi battles (its stale tick
-    // touches dead ids in the fresh context) — the cleanup above is the safety.
-    try {
-      var server = context.getSource().getServer();
-      server.getCommands().performPrefixedCommand(
-          server.createCommandSourceStack().withSuppressedOutput(), "reloadshowdown");
-      sb.append(" reloadshowdown=dispatched");
-    } catch (Exception e) {
-      sb.append(" reloadshowdown=FAIL(").append(e.getClass().getSimpleName()).append(')');
-    }
-    String probe = probeShowdownContext();
-    sb.append(" context=").append(probe == null ? "ALIVE" : "DEAD(" + probe + ")");
-    sb.append(" — note: datapack species_additions may need a restart for full fidelity");
-    String line = sb.toString();
-    context.getSource().sendSuccess(() -> Component.literal(line), false);
-    return 1;
-  }
 }

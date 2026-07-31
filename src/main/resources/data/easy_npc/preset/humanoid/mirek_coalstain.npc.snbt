@@ -33,19 +33,52 @@
         CanPickUpLoot: 0b,
         CustomNameVisible: 1b,
         DialogData: {
-            Type: "BASIC",
+            Type: "STANDARD",
             DialogDataSet: [
                 {
                     Priority: 10,
                     Buttons: [
                         {
-                            Name: "Goodbye",
+                            Name: "Raw Iron x4 — 40 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/market/buy_raw_iron"
+                                }
+                            ],
+                            Label: "buy_raw_iron_button"
+                        },
+                        {
+                            Name: "Raw Copper x4 — 24 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/market/buy_raw_copper"
+                                }
+                            ],
+                            Label: "buy_raw_copper_button"
+                        },
+                        {
+                            Name: "Raw Gold x4 — 64 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/market/buy_raw_gold"
+                                }
+                            ],
+                            Label: "buy_raw_gold_button"
+                        },
+                        {
+                            Name: "That is all for now",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "goodbye_button"
+                            Label: "leave_button"
                         }
                     ],
                     Texts: [
@@ -53,7 +86,7 @@
                             Text: "You hear the one about the auditor? Bramm down at the ledger office swears his own signature got scratched off the star-count and somebody else verified it in his place. Wild, right? Do not tell him I told you, he is touchy about it."
                         },
                         {
-                            Text: "Everyone down here has a theory about the money. Mine is simple: when the accountants start smiling at you, hold your purse. And they have been smiling for months."
+                            Text: "I haul more than coal off this landing, friend — I run raw ore off the reject pile the Company will not weigh. Straight off the wagons, cheaper than the mart, no questions and no verified surcharge. What are you smelting?"
                         },
                         {
                             Text: "Sorry, I talk when I haul, it passes the time. Watch your step on the coal — it is loose here and blacker than a Company promise."

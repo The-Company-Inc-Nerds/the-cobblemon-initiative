@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:chest",
+  "_comment": "Trident Tide-Race grant — the Tide-Caller's Trident (Riptide III, unbreakable) handed out at the start of every trident race (trident_race/start.mcfunction) and kept after the first clean run. Riptide III gives the strongest dash through the ocean rings; riptide only fires while the wielder is IN water or rain (the course is submerged). set_name aqua, dyed n/a (trident has no dye). Component shape is 1.21.1 — verify in-game.",
+  "pools": [
+    {
+      "name": "riptide_trident",
+      "rolls": 1,
+      "bonus_rolls": 0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:trident",
+          "functions": [
+            {
+              "function": "minecraft:set_name",
+              "name": { "text": "Tide-Caller's Trident", "color": "aqua", "italic": false }
+            },
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "minecraft:enchantments": { "levels": { "minecraft:riptide": 3 } },
+                "minecraft:unbreakable": {}
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

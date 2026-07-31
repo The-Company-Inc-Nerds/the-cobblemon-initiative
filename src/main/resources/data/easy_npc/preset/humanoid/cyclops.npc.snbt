@@ -1,0 +1,221 @@
+{
+    PresetMetadata: {
+        author: "TheCompanyInc",
+        category: "Duelist",
+        created: 0L,
+        description: "duelist at Mushroom island (config-spawned) (act n/a). Compiled from dialog-src.",
+        entityTypeId: "easy_npc:humanoid",
+        modified: 0L,
+        name: "Cyclops",
+        variantType: "STEVE",
+        version: "1.0.0"
+    },
+    data: {
+        ActionData: {
+            ActionEventSet: {
+                ON_INTERACTION: [
+                    {
+                        Type: "OPEN_DEFAULT_DIALOG"
+                    }
+                ]
+            }
+        },
+        ArmorDropChances: [0.085f, 0.085f, 0.085f, 0.085f],
+        ArmorItems: [
+            {},
+            {},
+            {},
+            {}
+        ],
+        Brain: {
+            memories: {}
+        },
+        CanPickUpLoot: 0b,
+        CustomNameVisible: 1b,
+        DialogData: {
+            Type: "NONE",
+            DialogDataSet: []
+        },
+        DisplayAttribute: [
+            {
+                Bool: 1b,
+                Type: "VISIBLE"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_AT_DAY"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_AT_NIGHT"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_IN_CREATIVE"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_IN_SPECTATOR"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_IN_STANDARD"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_TO_OWNER"
+            },
+            {
+                Bool: 1b,
+                Type: "VISIBLE_TO_TEAM"
+            },
+            {
+                Int: 7,
+                Type: "LIGHT_LEVEL"
+            },
+            {
+                Text: "ALWAYS",
+                Type: "NAME_VISIBILITY"
+            }
+        ],
+        EasyNPCVersion: 3,
+        EntityAttribute: {
+            CanBeHitByProjectile: 1b,
+            CanBreatheUnderwater: 0b,
+            CanFloat: 1b,
+            CanPassDoor: 0b,
+            IsAttackableByMonsters: 1b,
+            IsAttackableByPlayers: 1b,
+            IsInvulnerable: 0b,
+            IsKnockbackResistant: 1b,
+            IsPushable: 0b,
+            NoGravity: 0b,
+            PushEntities: 1b
+        },
+        HandDropChances: [0.085f, 0.085f],
+        HandItems: [
+            {},
+            {}
+        ],
+        Invulnerable: 0b,
+        LeftHanded: 0b,
+        ModelData: {
+            DefaultPose: "STANDING",
+            Pose: "DEFAULT",
+            Root: {
+                Rotation: [0.0f, 0.0f, 0.0f, 0.0f],
+                Scale: [3.0f, 3.0f, 3.0f]
+            }
+        },
+        Navigation: {
+            Home: {
+                X: 0,
+                Y: 0,
+                Z: 0
+            }
+        },
+        ObjectiveData: {
+            HasObjectives: 1b,
+            HasTravelTarget: 0b,
+            ObjectiveDataSet: [
+                {
+                    Type: "FLOAT",
+                    Prio: 0,
+                    Id: "cyclops_float"
+                },
+                {
+                    Type: "HURT_BY_TARGET",
+                    Prio: 1,
+                    Id: "cyclops_hurt_by"
+                },
+                {
+                    Type: "ATTACK_MOB",
+                    Prio: 2,
+                    Id: "cyclops_target_mob"
+                },
+                {
+                    Type: "ATTACK_PLAYER",
+                    Prio: 2,
+                    Id: "cyclops_target_player"
+                },
+                {
+                    Type: "MELEE_ATTACK",
+                    Prio: 2,
+                    Id: "cyclops_melee",
+                    SpeedModifier: 1.1d
+                },
+                {
+                    Type: "WATER_AVOIDING_RANDOM_STROLL",
+                    Prio: 6,
+                    Id: "cyclops_stroll",
+                    SpeedModifier: 0.7d
+                },
+                {
+                    Type: "LOOK_AT_PLAYER",
+                    Prio: 9,
+                    Id: "cyclops_look",
+                    LookDistance: 20.0f
+                },
+                {
+                    Type: "LOOK_RANDOM_AROUND",
+                    Prio: 10,
+                    Id: "cyclops_look_random"
+                }
+            ]
+        },
+        OnGround: 1b,
+        PersistenceRequired: 0b,
+        PresetUUID: [I; 0, 0, 0, 0],
+        Profession: "NONE",
+        Progression: {
+            AttributeScalingEnabled: 0b,
+            EntityExperience: 1,
+            EntityExperienceLevel: 1
+        },
+        RenderData: {},
+        SkinData: {
+            Content: "",
+            DisableLayers: 0b,
+            Name: "",
+            Timestamp: 0L,
+            Type: "CUSTOM",
+            URL: "",
+            UUID: [I; 1134946072, 945770650, -1354737461, -646796360]
+        },
+        SoundData: {
+            SoundDataSet: [
+                {
+                    Name: "minecraft:entity.player.death",
+                    Type: "DEATH"
+                },
+                {
+                    Name: "minecraft:entity.player.hurt",
+                    Type: "HURT"
+                }
+            ]
+        },
+        Status: {
+            finalized: 0b,
+            npc_data_last_saved: 0L,
+            npc_data_last_update: 0L
+        },
+        VariantType: "STEVE",
+        attributes: [
+            {
+                base: 50.0d,
+                id: "minecraft:generic.max_health"
+            },
+            {
+                base: 0.30d,
+                id: "minecraft:generic.movement_speed"
+            },
+            {
+                base: 8.0d,
+                id: "minecraft:generic.attack_damage"
+            }
+        ],
+        id: "easy_npc:humanoid",
+        CustomName: '{"text": "Cyclops", "color": "#FFFFFF"}',
+        Tags: ["ci_cyclops"]
+    }
+}

@@ -117,7 +117,29 @@ public final class GaviotaManager {
     return 1;
   }
 
-  /** A pump bot was right-clicked (from onInteractEntity). Prime it, complete its pair, or reset. */
+  /** {@code /cobblemon-initiative gaviota pump} — the pump bot's "Turn on pump" dialog button. Run as
+   *  {@code @initiator}, so the command source IS the player standing at the pump; which pump is
+   *  resolved by the player's position (pumps are ≥16 blocks apart, so the nearest within 4 blocks is
+   *  unambiguous). Primes the pump / completes its pair / resets the gym via {@link #activatePump}. */
+  public static int pumpButton(ServerPlayer player) {
+    GaviotaConfig cfg = GaviotaConfig.get();
+    if (!cfg.enabled) return 0;
+    MinecraftServer server = player.getServer();
+    if (server == null || get(server, H_FLOODED) != 1) {
+      player.displayClientMessage(Component.literal("§9The pumps sit dead — the arena is not flooded."), true);
+      return 0;
+    }
+    int idx = nearestPumpIndex(cfg, player);
+    if (idx < 0) {
+      player.displayClientMessage(Component.literal("§9No pump within reach."), true);
+      return 0;
+    }
+    activatePump(player, idx);
+    return 1;
+  }
+
+  /** A pump bot's "Turn on pump" button was pressed (from pumpButton). Prime it, complete its pair,
+   *  or reset. */
   private static void activatePump(ServerPlayer player, int idx) {
     MinecraftServer server = player.getServer();
     if (server == null) return;
@@ -128,7 +150,11 @@ public final class GaviotaManager {
       return;
     }
     int primed = get(server, H_PRIMED);
-    if (primed == idx) return; // same pump — ignore
+    if (primed == idx) { // same pump — already running, remind where to go
+      player.displayClientMessage(Component.literal(
+        "§bThis pump is already running — go find and start its twin."), true);
+      return;
+    }
     if (primed < 0) {
       set(server, H_PRIMED, idx);
       player.level().playSound(null, player.blockPosition(),
@@ -144,6 +170,10 @@ public final class GaviotaManager {
     if (pairA == pairB) {
       set(server, "#gav_pdone_" + primed, 1);
       set(server, "#gav_pdone_" + idx, 1);
+      // Both pumps of the pair are now spent — swap them to the "spent" bot (its dialog has no
+      // "Turn on pump" button, only "Walk away"), so a drained pump can't be re-toggled.
+      ServerLevel plevel = levelFor(server, cfg);
+      if (plevel != null) { swapToSpent(server, plevel, cfg, primed); swapToSpent(server, plevel, cfg, idx); }
       int progress = get(server, H_PROGRESS) + 1;
       set(server, H_PROGRESS, progress);
       int pairs = Math.max(1, cfg.drain.pumps.size() / 2);
@@ -170,6 +200,11 @@ public final class GaviotaManager {
     set(server, H_PROGRESS, 0);
     set(server, H_PRIMED, -1);
     for (int i = 0; i < cfg.drain.pumps.size(); i++) set(server, "#gav_pdone_" + i, 0);
+    // Restore all-active pumps: spawnPumps kills every gaviota_pump body (active OR spent) and
+    // re-imports the 12 active pumps at their positions. Pair assignments (#gav_pump_i) are
+    // untouched, so the puzzle comes back with the same pairs.
+    ServerLevel level = levelFor(server, cfg);
+    if (level != null) spawnPumps(server, level, cfg);
     startAnim(server, cfg.drain.waterTopY, true);
     var src = server.createCommandSourceStack().withPermission(2).withSuppressedOutput();
     for (String tag : cfg.drain.gymTrainerDefeatedTags) {
@@ -187,11 +222,27 @@ public final class GaviotaManager {
 
   private static void spawnPumps(MinecraftServer server, ServerLevel level, GaviotaConfig cfg) {
     var src = server.createCommandSourceStack().withLevel(level).withPermission(2).withSuppressedOutput();
+    // gaviota_pump is carried by BOTH the active and the spent preset, so this sweeps either.
     server.getCommands().performPrefixedCommand(src, "kill @e[tag=gaviota_pump]");
     for (GaviotaConfig.Pos p : cfg.drain.pumps) {
       server.getCommands().performPrefixedCommand(src, String.format(Locale.ROOT,
         "easy_npc preset import_new data %s %.2f %.2f %.2f", cfg.drain.pumpPreset, p.x, p.y, p.z));
     }
+  }
+
+  /** Pair complete: kill the still-active pump at config index {@code i} and drop the "spent" bot
+   *  there (its dialog offers no "Turn on pump"). Positioned at the pump so the nearest-active kill
+   *  targets exactly that body; excludes already-spent bodies so it never re-swaps one. */
+  private static void swapToSpent(MinecraftServer server, ServerLevel level, GaviotaConfig cfg, int i) {
+    if (i < 0 || i >= cfg.drain.pumps.size()) return;
+    GaviotaConfig.Pos p = cfg.drain.pumps.get(i);
+    var src = server.createCommandSourceStack().withLevel(level)
+      .withPosition(new net.minecraft.world.phys.Vec3(p.x, p.y, p.z))
+      .withPermission(2).withSuppressedOutput();
+    server.getCommands().performPrefixedCommand(src,
+      "kill @e[tag=gaviota_pump,tag=!gaviota_pump_spent,distance=..1.6,limit=1,sort=nearest]");
+    server.getCommands().performPrefixedCommand(src, String.format(Locale.ROOT,
+      "easy_npc preset import_new data %s %.2f %.2f %.2f", cfg.drain.pumpSpentPreset, p.x, p.y, p.z));
   }
 
   private static void startAnim(MinecraftServer server, int targetSurface, boolean raising) {
@@ -236,8 +287,9 @@ public final class GaviotaManager {
       }
     }
 
-    // (2) Pump pair-colour hints (every 10 ticks).
-    if (now % 10 == 0) {
+    // (2) Pump pair-colour hints — DEV DEBUG only, off by default (GaviotaConfig.debugPumpColors,
+    //     toggle at runtime with `/cobblemon-initiative gaviota debug on`). Every 10 ticks.
+    if (cfg.drain.debugPumpColors && now % 10 == 0) {
       for (int i = 0; i < cfg.drain.pumps.size(); i++) {
         if (get(server, "#gav_pdone_" + i) == 1) continue;
         int pair = get(server, "#gav_pump_" + i);
@@ -250,9 +302,12 @@ public final class GaviotaManager {
     }
   }
 
-  /** The config pump nearest {@code entity} (within 4 blocks), or -1. */
+  /** The config pump nearest {@code entity} (within 8 blocks), or -1. Called with the interacting
+   *  PLAYER (via ExecAsUser), who stands adjacent to the pump they clicked; the closest two pumps are
+   *  ~14 blocks apart, so an 8-block cap resolves the clicked pump unambiguously while tolerating the
+   *  player's reach distance to the pump's feet. */
   private static int nearestPumpIndex(GaviotaConfig cfg, Entity entity) {
-    double best = 16.0; int bestI = -1; // 4 blocks squared
+    double best = 64.0; int bestI = -1; // 8 blocks squared
     for (int i = 0; i < cfg.drain.pumps.size(); i++) {
       GaviotaConfig.Pos p = cfg.drain.pumps.get(i);
       double dx = entity.getX() - p.x, dy = entity.getY() - p.y, dz = entity.getZ() - p.z;
@@ -390,11 +445,9 @@ public final class GaviotaManager {
     MinecraftServer server = level.getServer();
     if (server == null || get(server, H_FLOODED) != 1) return InteractionResult.PASS;
 
-    // Right-clicking a pump bot activates it (prime / complete pair / reset).
-    if (entity.getTags().contains("gaviota_pump") && player instanceof ServerPlayer pumpPlayer) {
-      int idx = nearestPumpIndex(cfg, entity);
-      if (idx >= 0) { activatePump(pumpPlayer, idx); return InteractionResult.SUCCESS; }
-    }
+    // Pump bots (tag gaviota_pump, no gaviota_gym_npc) fall through to their Easy NPC dialog, which
+    // offers "Turn on pump" (runs `gaviota pump`, see pumpButton) or "Walk away". They are never
+    // water-locked (the gate below only applies to gaviota_gym_npc bodies), so no branch here.
 
     // A gym NPC below the water surface cannot be talked to yet.
     if (entity.getTags().contains(cfg.drain.gymNpcTag)) {

@@ -5,8 +5,9 @@
 # quest_hud scratch pad (#-holders per the sidebar contract), serves it only while its
 # quest is still open, and falls back to a static page (with the Kalahar/Dunewind forward
 # hook) when the rolled quest is already done. All read-only: rumors gate on the quests own
-# done-latches, no new state. Spot 4 (Westwind) gates on the ambush-win tag defeated_gaviota_wheat_sea
-# (field_freed is a scoreboard not a tag). Spot 5 is a back-echo (always eligible, no gate).
+# done-latches, no new state. Spot 4 (Westwind) gates on field_3_liberated — the band_tags player-tag
+# mirror of field_freed[farm_3] (Sable re-role N5 retired the old defeated_gaviota_wheat_sea ambush
+# tag; the rumor now vanishes when the field is freed). Spot 5 is a back-echo (always eligible, no gate).
 execute store result score #rumor quest_hud run random value 1..5
 scoreboard players set #rumor_hit quest_hud 0
 
@@ -19,8 +20,8 @@ execute if score #rumor quest_hud matches 2 if entity @s[tag=!odessa_crate_recov
 execute if score #rumor quest_hud matches 3 if entity @s[tag=!gaviota_manifests_filed] run tellraw @s [{"text":"Lucia, quietly: ","color":"aqua"},{"text":"Kaito on the main pier is short three manifests and shorter three pays. He is counting barrels the Company already counted for him.","color":"gray"}]
 execute if score #rumor quest_hud matches 3 if entity @s[tag=!gaviota_manifests_filed] run scoreboard players set #rumor_hit quest_hud 1
 
-execute if score #rumor quest_hud matches 4 if entity @s[tag=!defeated_gaviota_wheat_sea] run tellraw @s [{"text":"Lucia, quietly: ","color":"aqua"},{"text":"They are barging grain out of Westwind Fields now, east along the coast. Wheat by sea. Somebody should cut the ropes.","color":"gray"}]
-execute if score #rumor quest_hud matches 4 if entity @s[tag=!defeated_gaviota_wheat_sea] run scoreboard players set #rumor_hit quest_hud 1
+execute if score #rumor quest_hud matches 4 if entity @s[tag=!field_3_liberated] run tellraw @s [{"text":"Lucia, quietly: ","color":"aqua"},{"text":"The Company fenced Westwind Fields east along the coast - a Manager on the silo and a farmer named Sable signing for her own tide. Clear the fence and she can open the sea-gate herself.","color":"gray"}]
+execute if score #rumor quest_hud matches 4 if entity @s[tag=!field_3_liberated] run scoreboard players set #rumor_hit quest_hud 1
 
 execute if score #rumor quest_hud matches 5 run tellraw @s [{"text":"Lucia, quietly: ","color":"aqua"},{"text":"The dock pays came up light again. Same as Deepcore, same story - the money is not the money it was. You feel it in the till before you feel it anywhere else.","color":"gray"}]
 execute if score #rumor quest_hud matches 5 run scoreboard players set #rumor_hit quest_hud 1
