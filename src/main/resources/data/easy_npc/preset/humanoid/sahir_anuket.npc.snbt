@@ -1,12 +1,12 @@
 {
     PresetMetadata: {
         author: "TheCompanyInc",
-        category: "Civilian",
+        category: "Service",
         created: 0L,
-        description: "civilian at Kalahar Reach (act 1). Compiled from dialog-src.",
+        description: "healer at Kalahar Reach - Pokemon Center (act 1). Compiled from dialog-src.",
         entityTypeId: "easy_npc:humanoid",
         modified: 0L,
-        name: "Sahir Anuket",
+        name: "Nurse Sahir Anuket",
         variantType: "STEVE",
         version: "1.0.0"
     },
@@ -33,37 +33,165 @@
         CanPickUpLoot: 0b,
         CustomNameVisible: 1b,
         DialogData: {
-            Type: "BASIC",
+            Type: "CUSTOM",
             DialogDataSet: [
                 {
-                    Priority: 10,
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "cd_instability_gte_24"
+                        }
+                    ],
+                    Priority: 25,
                     Buttons: [
                         {
-                            Name: "Goodbye",
+                            Name: "Heal my team - posted rate",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/heal_paid"
+                                },
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "healed"
+                                }
+                            ],
+                            Label: "heal_button"
+                        },
+                        {
+                            Name: "Use the PC",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:pc/open"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "pc_button"
+                        },
+                        {
+                            Name: "Just passing through",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "goodbye_button"
+                            Label: "leave_button"
                         }
                     ],
                     Texts: [
                         {
-                            Text: "I dug wells for this town for thirty years. I know exactly how deep the water sits — how deep it used to sit. When it dropped overnight, that was not the desert. Water does not fall a hundred feet in one night on its own. Someone put a pump on it."
+                            Text: "Set them down, I will patch them up. Posted rate, same as ever - though I will tell you plain, the rate does not buy what it did. My drawer comes up light at close and my supply crates come up shorter than the manifest. Adjusted, the courier says. Re-verified. I did not ask for it to be."
                         },
                         {
-                            Text: "You want to know where our water went? Follow the pipe. It runs northwest, out to the Oasis, and then north to their precious granary. I would follow it myself if these old knees would carry me."
-                        },
-                        {
-                            Text: "Sit a while in the shade, traveller. Standing in this sun is how the young ones learn what the old ones already know."
-                        },
-                        {
-                            Text: "When I started digging, the water sat at forty feet. Or forty fathoms. One of the forties. The number is not the point — the point is it took a lifetime to drop an inch and one night to drop out of reach."
+                            Text: "Company would not sponsor me, so my shipments arrive two crates thin and nothing you could point a finger at. Rest your team. If a cart tells you the water simply costs more today, that is not the desert talking. That is the ledger."
                         }
                     ],
-                    Name: "Sahir Anuket",
+                    Name: "Nurse Sahir Anuket - the drawer comes up short",
+                    Label: "post_badge"
+                },
+                {
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "Heal my team - posted rate",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/heal_paid"
+                                },
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "healed"
+                                }
+                            ],
+                            Label: "heal_button"
+                        },
+                        {
+                            Name: "Use the PC",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:pc/open"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "pc_button"
+                        },
+                        {
+                            Name: "Is there anything older than the gym here?",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:sidequest/rumors/shrine_ground"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_ground_shrine_leader"
+                                }
+                            ],
+                            Label: "shrine_rumor_button"
+                        },
+                        {
+                            Name: "Not right now",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Welcome to the Kalahar Center - mind the sand, it gets into everything, the machines most of all. Full restore is the posted rate, no account card needed, and the water cooler is free while it lasts. Set your team down."
+                        },
+                        {
+                            Text: "You look sun-beaten. The Dunewind Trail does that to a body. Rest here - the beds are cool and the ceiling fan still turns, which out here counts as luxury."
+                        }
+                    ],
+                    Name: "Nurse Sahir Anuket",
                     Label: "default"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Thank you, Nurse",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "There - rested and mended, billed at the posted rate, same as everyone who crosses my floor. Drink before you go back out; the Reach does not forgive a dry throat."
+                        },
+                        {
+                            Text: "Good as new. The gym is Gaias, Ground type, and he hits like the desert itself. Steady yourself before you climb that hill."
+                        }
+                    ],
+                    Name: "Nurse Sahir Anuket - rested",
+                    Label: "healed"
                 }
             ]
         },
@@ -183,13 +311,13 @@
         },
         RenderData: {},
         SkinData: {
-            Type: "SECURE_REMOTE_URL",
-            URL: "https://www.minecraftskins.com/uploads/skins/2025/10/21/horus---ennead----dont-repload--23594996.png?v945",
-            UUID: [I; -2009375566, 1168585508, -1818446037, 1148102334],
-            Name: "",
             Content: "",
-            Timestamp: 1772631302485L,
-            DisableLayers: 0b
+            DisableLayers: 0b,
+            Name: "",
+            Timestamp: 0L,
+            Type: "CUSTOM",
+            URL: "",
+            UUID: [I; -425646351, -1213243482, -1199358484, 336678084]
         },
         SoundData: {
             SoundDataSet: [
@@ -236,6 +364,6 @@
             }
         ],
         id: "easy_npc:humanoid",
-        CustomName: '{"text": "Sahir Anuket", "color": "#00FFFF"}'
+        CustomName: '{"text": "Nurse Sahir Anuket", "color": "#00FFFF"}'
     }
 }

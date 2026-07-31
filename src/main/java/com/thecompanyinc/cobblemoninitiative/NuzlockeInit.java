@@ -143,6 +143,30 @@ public class NuzlockeInit implements ModInitializer {
       }
     });
 
+    // Post-respawn takeover: the tick AFTER a respawn command runs — once the player has actually
+    // spawned in — apply the mod's game-mode change (see queueRespawnTakeover). This is what lets the
+    // Dishonorable Respawn go through the exact Die-with-Honor spawn-in and only THEN claw the player
+    // back to survival, instead of racing the respawn packet inside the command.
+    ServerTickEvents.END_SERVER_TICK.register(server -> {
+      if (pendingRespawnTakeover.isEmpty()) return;
+      var it = pendingRespawnTakeover.entrySet().iterator();
+      while (it.hasNext()) {
+        var e = it.next();
+        ServerPlayer p = server.getPlayerList().getPlayer(e.getKey());
+        if (p == null) { it.remove(); continue; } // disconnected before takeover — drop it
+        RespawnTakeover t = e.getValue();
+        p.setGameMode(t.mode);
+        if (t.restore) {
+          p.setHealth(p.getMaxHealth());
+          p.getFoodData().setFoodLevel(20);
+          p.level().playSound(null, p.blockPosition(),
+            net.minecraft.sounds.SoundEvents.WITHER_SPAWN,
+            net.minecraft.sounds.SoundSource.MASTER, 0.4f, 0.6f);
+        }
+        it.remove();
+      }
+    });
+
     registerCommands();
 
     LOGGER.info("Nuzlocke mechanics initialized!");
@@ -837,6 +861,35 @@ public class NuzlockeInit implements ModInitializer {
    */
   public static void grantWhiteoutGrace(ServerPlayer player, int ticks) {
     whiteoutGraceUntil.put(player.getUUID(), player.level().getGameTime() + ticks);
+  }
+
+  // ---------------------------------------------------------------------------
+  // Deferred post-respawn game-mode takeover
+  // ---------------------------------------------------------------------------
+
+  /** Player -> the game mode (and optional refill/brand) the mod applies one tick AFTER a respawn. */
+  private static final java.util.Map<java.util.UUID, RespawnTakeover> pendingRespawnTakeover =
+    new java.util.concurrent.ConcurrentHashMap<>();
+
+  private static final class RespawnTakeover {
+    final net.minecraft.world.level.GameType mode;
+    final boolean restore; // dishonorable claw-back: refill health/food + play the takeover sting
+    RespawnTakeover(net.minecraft.world.level.GameType mode, boolean restore) {
+      this.mode = mode;
+      this.restore = restore;
+    }
+  }
+
+  /**
+   * Queue the mod's post-spawn takeover for a just-respawned player. The mode switch (and, for the
+   * dishonorable claw-back, the health/food refill + sting) is applied on the NEXT server tick — once
+   * the respawn packet has been flushed and the player has spawned in — rather than synchronously
+   * inside the respawn command. Deferring past the respawn tick is what makes Dishonorable Respawn go
+   * through the exact same spawn-in as Die with Honor, and only THEN have the mod take over.
+   */
+  public static void queueRespawnTakeover(
+      ServerPlayer player, net.minecraft.world.level.GameType mode, boolean restore) {
+    pendingRespawnTakeover.put(player.getUUID(), new RespawnTakeover(mode, restore));
   }
 
   /** Drop a queued sacrifice prompt. Called on Dishonorable Respawn: a flee/forfeit event

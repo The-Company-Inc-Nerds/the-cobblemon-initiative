@@ -241,6 +241,10 @@ public class InitiativeInit implements ModInitializer {
       lootChestManager.onBlockBroken(state, pos)
     );
 
+    // "A Giggle in the Grass": a shimmering grass tuft in the Kalahar Oasis starts the Mew chase when
+    // broken (replaces the old wisp chase-giver NPC). Self-registers its shine tick + break trigger.
+    com.thecompanyinc.cobblemoninitiative.noble.MewGrassManager.register();
+
     // Town build-lock: no placing/breaking blocks inside a TOWN safe zone (interactions
     // still work; creative players exempt). Placement itself is cancelled by BlockItemMixin;
     // BEFORE-break and fluid-bucket use are caught here.

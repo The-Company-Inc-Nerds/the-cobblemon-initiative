@@ -88,12 +88,6 @@ execute as @a unless score @s defeated_noble_kyogre matches 1.. run tag @s remov
 execute as @a if score @s defeated_noble_kyogre matches ..0 run tag @s add defeated_noble_kyogre_lte_0
 execute as @a unless score @s defeated_noble_kyogre matches ..0 run tag @s remove defeated_noble_kyogre_lte_0
 
-execute as @a if score @s defeated_noble_mew matches 1.. run tag @s add defeated_noble_mew_gte_1
-execute as @a unless score @s defeated_noble_mew matches 1.. run tag @s remove defeated_noble_mew_gte_1
-
-execute as @a if score @s defeated_noble_mew matches ..0 run tag @s add defeated_noble_mew_lte_0
-execute as @a unless score @s defeated_noble_mew matches ..0 run tag @s remove defeated_noble_mew_lte_0
-
 execute as @a if score @s defeated_noble_moltres matches ..0 run tag @s add defeated_noble_moltres_lte_0
 execute as @a unless score @s defeated_noble_moltres matches ..0 run tag @s remove defeated_noble_moltres_lte_0
 
@@ -278,10 +272,16 @@ tag @a[tag=!dc_track_full] add no_dc_track_full
 tag @a[tag=dc_track_full] remove no_dc_track_full
 tag @a[tag=!dc_track_pit] add no_dc_track_pit
 tag @a[tag=dc_track_pit] remove no_dc_track_pit
+tag @a[tag=!declined_hakim_sefu] add no_declined_hakim_sefu
+tag @a[tag=declined_hakim_sefu] remove no_declined_hakim_sefu
+tag @a[tag=!declined_layla_zahira] add no_declined_layla_zahira
+tag @a[tag=declined_layla_zahira] remove no_declined_layla_zahira
 tag @a[tag=!declined_nifl_records_officer] add no_declined_nifl_records_officer
 tag @a[tag=declined_nifl_records_officer] remove no_declined_nifl_records_officer
 tag @a[tag=!declined_nifl_warrant_officer] add no_declined_nifl_warrant_officer
 tag @a[tag=declined_nifl_warrant_officer] remove no_declined_nifl_warrant_officer
+tag @a[tag=!declined_omar_tarek] add no_declined_omar_tarek
+tag @a[tag=declined_omar_tarek] remove no_declined_omar_tarek
 tag @a[tag=!declined_r10_spotter_caravan] add no_declined_r10_spotter_caravan
 tag @a[tag=declined_r10_spotter_caravan] remove no_declined_r10_spotter_caravan
 tag @a[tag=!declined_r12_spotter_pylon] add no_declined_r12_spotter_pylon
@@ -356,6 +356,8 @@ tag @a[tag=!declined_sq_ryujin_tetsu_wager] add no_declined_sq_ryujin_tetsu_wage
 tag @a[tag=declined_sq_ryujin_tetsu_wager] remove no_declined_sq_ryujin_tetsu_wager
 tag @a[tag=!declined_villain_yield_analyst] add no_declined_villain_yield_analyst
 tag @a[tag=declined_villain_yield_analyst] remove no_declined_villain_yield_analyst
+tag @a[tag=!declined_zahra_qadir] add no_declined_zahra_qadir
+tag @a[tag=declined_zahra_qadir] remove no_declined_zahra_qadir
 tag @a[tag=!deed_read_lucian] add no_deed_read_lucian
 tag @a[tag=deed_read_lucian] remove no_deed_read_lucian
 tag @a[tag=!deepcore_ledger_seen] add no_deepcore_ledger_seen
@@ -426,8 +428,6 @@ tag @a[tag=!defeated_deepcore_trainer_3] add no_defeated_deepcore_trainer_3
 tag @a[tag=defeated_deepcore_trainer_3] remove no_defeated_deepcore_trainer_3
 tag @a[tag=!defeated_deepcore_trainer_4] add no_defeated_deepcore_trainer_4
 tag @a[tag=defeated_deepcore_trainer_4] remove no_defeated_deepcore_trainer_4
-tag @a[tag=!defeated_deepcore_wheat_trader] add no_defeated_deepcore_wheat_trader
-tag @a[tag=defeated_deepcore_wheat_trader] remove no_defeated_deepcore_wheat_trader
 tag @a[tag=!defeated_dragon_hydra_1] add no_defeated_dragon_hydra_1
 tag @a[tag=defeated_dragon_hydra_1] remove no_defeated_dragon_hydra_1
 tag @a[tag=!defeated_dragon_hydra_2] add no_defeated_dragon_hydra_2
@@ -488,6 +488,8 @@ tag @a[tag=!defeated_ground_shrine_leader] add no_defeated_ground_shrine_leader
 tag @a[tag=defeated_ground_shrine_leader] remove no_defeated_ground_shrine_leader
 tag @a[tag=!defeated_groundskeeper_aya] add no_defeated_groundskeeper_aya
 tag @a[tag=defeated_groundskeeper_aya] remove no_defeated_groundskeeper_aya
+tag @a[tag=!defeated_hakim_sefu] add no_defeated_hakim_sefu
+tag @a[tag=defeated_hakim_sefu] remove no_defeated_hakim_sefu
 tag @a[tag=!defeated_hua_zhan_leader] add no_defeated_hua_zhan_leader
 tag @a[tag=defeated_hua_zhan_leader] remove no_defeated_hua_zhan_leader
 tag @a[tag=!defeated_hua_zhan_trainer_1] add no_defeated_hua_zhan_trainer_1
@@ -520,6 +522,8 @@ tag @a[tag=!defeated_kalahar_trainer_3] add no_defeated_kalahar_trainer_3
 tag @a[tag=defeated_kalahar_trainer_3] remove no_defeated_kalahar_trainer_3
 tag @a[tag=!defeated_kalahar_trainer_4] add no_defeated_kalahar_trainer_4
 tag @a[tag=defeated_kalahar_trainer_4] remove no_defeated_kalahar_trainer_4
+tag @a[tag=!defeated_layla_zahira] add no_defeated_layla_zahira
+tag @a[tag=defeated_layla_zahira] remove no_defeated_layla_zahira
 tag @a[tag=!defeated_market_challenger_1] add no_defeated_market_challenger_1
 tag @a[tag=defeated_market_challenger_1] remove no_defeated_market_challenger_1
 tag @a[tag=!defeated_market_challenger_2] add no_defeated_market_challenger_2
@@ -588,6 +592,8 @@ tag @a[tag=!defeated_offrec_musa] add no_defeated_offrec_musa
 tag @a[tag=defeated_offrec_musa] remove no_defeated_offrec_musa
 tag @a[tag=!defeated_offrec_tunde] add no_defeated_offrec_tunde
 tag @a[tag=defeated_offrec_tunde] remove no_defeated_offrec_tunde
+tag @a[tag=!defeated_omar_tarek] add no_defeated_omar_tarek
+tag @a[tag=defeated_omar_tarek] remove no_defeated_omar_tarek
 tag @a[tag=!defeated_port_challenger_1] add no_defeated_port_challenger_1
 tag @a[tag=defeated_port_challenger_1] remove no_defeated_port_challenger_1
 tag @a[tag=!defeated_port_challenger_2] add no_defeated_port_challenger_2
@@ -896,6 +902,8 @@ tag @a[tag=!defeated_wheat_trader_ambush] add no_defeated_wheat_trader_ambush
 tag @a[tag=defeated_wheat_trader_ambush] remove no_defeated_wheat_trader_ambush
 tag @a[tag=!defeated_wheat_trader_ambush_kalahar] add no_defeated_wheat_trader_ambush_kalahar
 tag @a[tag=defeated_wheat_trader_ambush_kalahar] remove no_defeated_wheat_trader_ambush_kalahar
+tag @a[tag=!defeated_zahra_qadir] add no_defeated_zahra_qadir
+tag @a[tag=defeated_zahra_qadir] remove no_defeated_zahra_qadir
 tag @a[tag=!delivered_1] add no_delivered_1
 tag @a[tag=delivered_1] remove no_delivered_1
 tag @a[tag=!delivered_2] add no_delivered_2
@@ -932,6 +940,8 @@ tag @a[tag=!field_2_liberated] add no_field_2_liberated
 tag @a[tag=field_2_liberated] remove no_field_2_liberated
 tag @a[tag=!field_3_liberated] add no_field_3_liberated
 tag @a[tag=field_3_liberated] remove no_field_3_liberated
+tag @a[tag=!field_4_liberated] add no_field_4_liberated
+tag @a[tag=field_4_liberated] remove no_field_4_liberated
 tag @a[tag=!field_5_liberated] add no_field_5_liberated
 tag @a[tag=field_5_liberated] remove no_field_5_liberated
 tag @a[tag=!file_closed_read] add no_file_closed_read
@@ -1000,6 +1010,8 @@ tag @a[tag=!gift_dagur_old_kit_claimed] add no_gift_dagur_old_kit_claimed
 tag @a[tag=gift_dagur_old_kit_claimed] remove no_gift_dagur_old_kit_claimed
 tag @a[tag=!gift_elder_sefu_overlook_keepsake_claimed] add no_gift_elder_sefu_overlook_keepsake_claimed
 tag @a[tag=gift_elder_sefu_overlook_keepsake_claimed] remove no_gift_elder_sefu_overlook_keepsake_claimed
+tag @a[tag=!gift_husk_quiz_wings_claimed] add no_gift_husk_quiz_wings_claimed
+tag @a[tag=gift_husk_quiz_wings_claimed] remove no_gift_husk_quiz_wings_claimed
 tag @a[tag=!gift_liora_good_tea_claimed] add no_gift_liora_good_tea_claimed
 tag @a[tag=gift_liora_good_tea_claimed] remove no_gift_liora_good_tea_claimed
 tag @a[tag=!gift_liora_route_kit_claimed] add no_gift_liora_route_kit_claimed

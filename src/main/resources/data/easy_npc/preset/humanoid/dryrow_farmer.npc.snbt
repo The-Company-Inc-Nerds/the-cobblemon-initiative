@@ -3,10 +3,10 @@
         author: "TheCompanyInc",
         category: "Civilian",
         created: 0L,
-        description: "civilian at Kalahar Reach - Pokemon Center (act 1). Compiled from dialog-src.",
+        description: "civilian at Dryrow Steading - The Field (R8) (act 1). Compiled from dialog-src.",
         entityTypeId: "easy_npc:humanoid",
         modified: 0L,
-        name: "Sabine",
+        name: "Tamar",
         variantType: "STEVE",
         version: "1.0.0"
     },
@@ -33,20 +33,20 @@
         CanPickUpLoot: 0b,
         CustomNameVisible: 1b,
         DialogData: {
-            Type: "BASIC",
+            Type: "STANDARD",
             DialogDataSet: [
                 {
                     Conditions: [
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
-                            Name: "cd_instability_gte_24"
+                            Name: "field_4_liberated"
                         }
                     ],
-                    Priority: 25,
+                    Priority: 40,
                     Buttons: [
                         {
-                            Name: "Take care, Sabine",
+                            Name: "The dust remembers",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -57,20 +57,79 @@
                     ],
                     Texts: [
                         {
-                            Text: "I aided at the Center counter for years, before they brought in someone with a proper posted rate. No hard feelings — the town needs healing more than it needs me fussing over crates. Though I will say the crates come up short now. Adjusted, the courier calls it. I call it a hole with a nicer name."
+                            Text: "The water runs in the ditch again — real water, not a promise inked on a clipboard. You gave a dry-country hand these rows back. Dryrow is a field again, not a line item that evaporates. The dust remembers a kindness far longer than the rain ever did."
                         },
                         {
-                            Text: "You count coins twice out here and they still come up light. Everyone tells me it is the sun, the sand, the season. Maybe. I dug through enough manifests to know a season does not re-verify a shipment two crates thin."
+                            Text: "Grain for the town now, not for a ledger that files a drought under adjustment. If the Company drops another fence on this steading, the whole dry country will be waiting for them. Mind the road east — Kalahar is thirsty and Company-watched both."
                         }
                     ],
-                    Name: "Sabine",
-                    Label: "post_badge"
+                    Name: "Tamar - the water runs",
+                    Label: "liberated"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "defeated_villain_site_manager_4"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "no_field_4_liberated"
+                        }
+                    ],
+                    Priority: 30,
+                    Buttons: [
+                        {
+                            Name: "The fence is down - let the water run",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:liberation/free_field {field:farm_4}"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "title @initiator title [{\"text\":\"DRYROW LIBERATED\",\"color\":\"gold\"}]"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "title @initiator subtitle [{\"text\":\"ADJUSTMENT reversed - the parcel is off the ledger and back on the map\",\"color\":\"gray\"}]"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "tellraw @initiator [{\"text\":\"Tamar breaks the fence and turns the water loose - the Dryrow Steading runs free, and the dry country takes its field back.\",\"color\":\"green\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "open_gate_button"
+                        },
+                        {
+                            Name: "Hold the water a moment",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "You moved that Manager off the granary. I watched the whole bout from the furrow with my heart in my throat. Say the word and I break the fence and turn the water loose — Dryrow takes its field back the moment the ditch fills."
+                        }
+                    ],
+                    Name: "Tamar - say the word",
+                    Label: "fence_down"
                 },
                 {
                     Priority: 10,
                     Buttons: [
                         {
-                            Name: "Just passing through",
+                            Name: "Look toward the granary",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -81,13 +140,19 @@
                     ],
                     Texts: [
                         {
-                            Text: "The nurse is Sahir now — Anuket, the old well-digger. Steady hands, oddly enough, for a man who spent his life underground. Set your team down with him; he keeps the machines clear of the sand better than I ever did."
+                            Text: "Keep it low out here. That is a Company Manager up on the granary, and this steading fed the dry country three generations before he stapled a receipt to the well. Now I sign for the right to walk my own rows."
                         },
                         {
-                            Text: "Me, I mind the shade and the water cooler. Out here that is a full-time trade. Mind the heat, traveller — the Dunewind Trail takes more folk than the gym does."
+                            Text: "I farmed this dust before the fence went up. The Company calls it verification. The dry rows and the empty ditch call it dying on a schedule, and I can do nothing while that man holds the granary."
+                        },
+                        {
+                            Text: "They fenced the well first, then the field, then me. If somebody were to move that Manager off the granary, the water could run inside the hour. I did not say that out loud."
+                        },
+                        {
+                            Text: "Odd thing - the Manager squints at you like a memo he was told to burn. Out here you learn not to ask what the Company forgets on purpose. The desert keeps enough secrets already."
                         }
                     ],
-                    Name: "Sabine",
+                    Name: "Tamar",
                     Label: "default"
                 }
             ]
@@ -216,7 +281,7 @@
             Timestamp: 0L,
             Type: "CUSTOM",
             URL: "",
-            UUID: [I; 2059541792, -780641235, -2075565011, 1832357418]
+            UUID: [I; 1546299784, 1843812191, -2145520553, -548260637]
         },
         SoundData: {
             SoundDataSet: [
@@ -247,6 +312,6 @@
             }
         ],
         id: "easy_npc:humanoid",
-        CustomName: '{"text": "Sabine", "color": "#FFFFFF"}'
+        CustomName: '{"text": "Tamar", "color": "#FFFFFF"}'
     }
 }

@@ -394,15 +394,16 @@
         echo "  (or:     UNMINED=/path/to/unmined-cli zone-mapper)"
         exit 1
       fi
-      if [ -f "$out/unmined.map.properties.js" ]; then
-        echo "Refreshing the render (uNmINeD incremental — only changed chunks; --no-render to skip)..."
-      else
-        echo "Rendering with uNmINeD (first run — full render, can take a while)..."
-      fi
-      echo "  world:  $world"
+      # --force re-renders ALL regions, not just "changed" ones. This is REQUIRED for the bundled
+      # map: build_mrpack bakes every region file to the same fixed mtime, so uNmINeD's incremental
+      # change-detection thinks nothing ever changed and silently skips (the map went stale after
+      # the UPM 2.5.0 swap for exactly this reason). Forcing costs a full render (~10s here) but
+      # guarantees the served map matches the world. Use --no-render for a fast serve-only launch.
+      echo "Rendering $world with uNmINeD (--force: all regions — the bundled map's baked mtimes"
+      echo "defeat incremental detection, so we re-render everything to stay correct)..."
       echo "  output: $out"
       mkdir -p "$out"
-      set -- web render --world "$world" --output "$out"
+      set -- web render --force --world "$world" --output "$out"
       if [ -n "$dimension" ]; then set -- "$@" --dimension "$dimension"; fi
       "$unmined" "$@"
       echo ""

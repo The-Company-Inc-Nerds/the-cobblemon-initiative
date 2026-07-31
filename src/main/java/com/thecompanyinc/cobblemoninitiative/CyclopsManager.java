@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
@@ -23,6 +24,11 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.scores.Objective;
+import net.minecraft.world.scores.ScoreAccess;
+import net.minecraft.world.scores.ScoreHolder;
+import net.minecraft.world.scores.Scoreboard;
+import net.minecraft.world.scores.criteria.ObjectiveCriteria;
 
 /**
  * Drives the giant mushroom-island cyclops (see {@link CyclopsConfig}). The BODY (3x humanoid, 50 HP,
@@ -33,8 +39,10 @@ import net.minecraft.world.phys.Vec3;
  * cyclops's fist), SQUEEZE (periodic damage), then THROW (outward+up velocity, synced to the client).
  *
  * <p>Static manager (mirrors {@code DojoDifficultyManager}): {@link #init()} from InitiativeInit registers
- * the ENTITY_LOAD scale-apply + the END_SERVER_TICK driver. Bodies are summon-only — {@link #spawnAll}
- * import_new's the preset at {@link CyclopsConfig#spawnPoints} ({@code /cobblemon-initiative cyclops spawn}).
+ * the ENTITY_LOAD scale-apply, the END_SERVER_TICK driver, and a SERVER_STARTED hook that auto-seeds one
+ * body at each {@link CyclopsConfig#spawnPoints} coord ONCE per world (no command needed — see
+ * {@link #seedOnServerStarted}). The 5x render scale + 50 HP + hostile AI are baked into the Easy NPC
+ * preset from dialog-src; {@code /cobblemon-initiative cyclops clear|reload} remain for dev.
  */
 public final class CyclopsManager {
 
@@ -54,6 +62,9 @@ public final class CyclopsManager {
   /** Post-throw re-grab cooldown: cyclops uuid -> gameTime it can grab again. */
   private static final Map<UUID, Long> cooldownUntil = new HashMap<>();
 
+  /** Per-world one-time seed flag (scoreboard) so a reboot never stacks a second set of bodies. */
+  private static final String SPAWN_FLAG_OBJ = "ci_cyclops_spawned";
+
   private static boolean initialized;
 
   private static final class Grab { UUID player; int ticks; }
@@ -63,6 +74,34 @@ public final class CyclopsManager {
     initialized = true;
     ServerEntityEvents.ENTITY_LOAD.register(CyclopsManager::onEntityLoad);
     ServerTickEvents.END_SERVER_TICK.register(CyclopsManager::tick);
+    ServerLifecycleEvents.SERVER_STARTED.register(CyclopsManager::seedOnServerStarted);
+  }
+
+  /** Auto-seed the config cyclops ONCE per world on server start — no command needed. The bodies are
+   *  persistent Easy NPC entities, so a per-world scoreboard flag stops every reboot from stacking a
+   *  fresh set (a killed cyclops stays dead until the flag is reset via {@code /... cyclops clear} + a
+   *  world reset). Each spawn-point chunk is loaded first so a far mushroom-island body still lands and
+   *  is saved even though those chunks are outside the startup spawn radius. */
+  private static void seedOnServerStarted(MinecraftServer server) {
+    CyclopsConfig cfg = CyclopsConfig.get();
+    if (!cfg.enabled || cfg.spawnPoints == null || cfg.spawnPoints.isEmpty()) return;
+    Scoreboard sb = server.getScoreboard();
+    Objective obj = sb.getObjective(SPAWN_FLAG_OBJ);
+    if (obj == null) {
+      obj = sb.addObjective(SPAWN_FLAG_OBJ, ObjectiveCriteria.DUMMY,
+        Component.literal("Cyclops Spawned"), ObjectiveCriteria.RenderType.INTEGER, false, null);
+    }
+    ScoreAccess flag = sb.getOrCreatePlayerScore(ScoreHolder.forNameOnly("#spawned"), obj);
+    if (flag.get() >= 1) return; // already seeded this world
+    ServerLevel level = levelFor(server, cfg);
+    if (level != null) {
+      for (CyclopsConfig.Pos p : cfg.spawnPoints) {
+        level.getChunk(((int) Math.floor(p.x)) >> 4, ((int) Math.floor(p.z)) >> 4); // load + persist target chunk
+      }
+      clearAll(server); // idempotent: drop any bodies already in those chunks before seeding the set
+      spawnAll(server);
+    }
+    flag.set(1);
   }
 
   private static void onEntityLoad(Entity entity, ServerLevel level) {
@@ -72,9 +111,9 @@ public final class CyclopsManager {
     if (!entity.getTags().contains(SCALED_TAG)) incoming.add(entity.getUUID());
   }
 
-  // ── spawn / clear (op commands) ──────────────────────────────────────────────────
+  // ── spawn / clear ────────────────────────────────────────────────────────────────
 
-  /** {@code /cobblemon-initiative cyclops spawn} — import_new one body at each config spawn point. */
+  /** Import_new one body at each config spawn point (called once by {@link #seedOnServerStarted}). */
   public static int spawnAll(MinecraftServer server) {
     CyclopsConfig cfg = CyclopsConfig.get();
     if (!cfg.enabled || cfg.spawnPoints == null || cfg.spawnPoints.isEmpty()) return 0;

@@ -36,7 +36,6 @@ execute if score #amb_deepcore_martkeeper ci_ambient matches 0 if entity @a[x=11
 execute if score #amb_deepcore_miner_rill ci_ambient matches 0 if entity @a[x=1110.5,y=109,z=3230.5,distance=..40] run function cobblemon_initiative:ambient/place/deepcore_miner_rill
 execute if score #amb_deepcore_nurse ci_ambient matches 0 if entity @a[x=1092.5,y=114,z=3208.5,distance=..40] run function cobblemon_initiative:ambient/place/deepcore_nurse
 execute if score #amb_sq_deepcore_assessor ci_ambient matches 0 if entity @a[x=1102.5,y=129,z=3259.5,distance=..40] run function cobblemon_initiative:ambient/place/sq_deepcore_assessor
-execute if score #amb_wheat_trader_deepcore ci_ambient matches 0 if entity @a[x=1180.5,y=123,z=3260.5,distance=..40] run function cobblemon_initiative:ambient/place/wheat_trader_deepcore
 execute if score #amb_arcade_challenger_1 ci_ambient matches 0 if entity @a[x=3782.5,y=159,z=2976.5,distance=..40] run function cobblemon_initiative:ambient/place/arcade_challenger_1
 execute if score #amb_arcade_challenger_2 ci_ambient matches 0 if entity @a[x=3788.5,y=159,z=2976.5,distance=..40] run function cobblemon_initiative:ambient/place/arcade_challenger_2
 execute if score #amb_castle_challenger_1 ci_ambient matches 0 if entity @a[x=3785.5,y=159,z=2962.5,distance=..40] run function cobblemon_initiative:ambient/place/castle_challenger_1
@@ -68,9 +67,9 @@ execute if score #amb_gaviota_corphish ci_ambient matches 0 unless entity @e[tag
 execute if score #amb_gaviota_shellder ci_ambient matches 0 unless entity @e[tag=ci_amb_companion_gaviota_shellder] if entity @a[x=607.5,y=88,z=3588.5,distance=..40] run function cobblemon_initiative:ambient/place/gaviota_shellder
 execute if score #amb_gaviota_staryu ci_ambient matches 0 unless entity @e[tag=ci_amb_companion_gaviota_staryu] if entity @a[x=587.5,y=104,z=3608.5,distance=..40] run function cobblemon_initiative:ambient/place/gaviota_staryu
 execute if score #amb_gaviota_wingull ci_ambient matches 0 unless entity @e[tag=ci_amb_companion_gaviota_wingull] if entity @a[x=501.5,y=68,z=3498.5,distance=..40] run function cobblemon_initiative:ambient/place/gaviota_wingull
-execute if score #amb_gaviota_dockmaster ci_ambient matches 0 if entity @a[x=566.5,y=84,z=3560.5,distance=..40] run function cobblemon_initiative:ambient/place/gaviota_dockmaster
+execute if score #amb_gaviota_dockmaster ci_ambient matches 0 if entity @a[x=444.5,y=66,z=3542.5,distance=..40] run function cobblemon_initiative:ambient/place/gaviota_dockmaster
 execute if score #amb_gaviota_fence ci_ambient matches 0 if entity @a[x=552.5,y=81,z=3552.5,distance=..40] run function cobblemon_initiative:ambient/place/gaviota_fence
-execute if score #amb_gaviota_fisher ci_ambient matches 0 if entity @a[x=561.5,y=84,z=3563.5,distance=..40] run function cobblemon_initiative:ambient/place/gaviota_fisher
+execute if score #amb_gaviota_fisher ci_ambient matches 0 if entity @a[x=527.5,y=73,z=3540.5,distance=..40] run function cobblemon_initiative:ambient/place/gaviota_fisher
 execute if score #amb_gaviota_manifest_a ci_ambient matches 0 if entity @a[x=566.5,y=85,z=3564.5,distance=..40] run function cobblemon_initiative:ambient/place/gaviota_manifest_a
 execute if score #amb_gaviota_manifest_b ci_ambient matches 0 if entity @a[x=588.5,y=86,z=3600.5,distance=..40] run function cobblemon_initiative:ambient/place/gaviota_manifest_b
 execute if score #amb_gaviota_manifest_c ci_ambient matches 0 if entity @a[x=436.5,y=64,z=3491.5,distance=..40] run function cobblemon_initiative:ambient/place/gaviota_manifest_c
@@ -169,6 +168,7 @@ execute if score #amb_kalahar_drilbur ci_ambient matches 0 unless entity @e[tag=
 execute if score #amb_kalahar_hippopotas ci_ambient matches 0 unless entity @e[tag=ci_amb_companion_kalahar_hippopotas] if entity @a[x=2078.5,y=121,z=3947.5,distance=..40] run function cobblemon_initiative:ambient/place/kalahar_hippopotas
 execute if score #amb_kalahar_sandshrew ci_ambient matches 0 unless entity @e[tag=ci_amb_companion_kalahar_sandshrew] if entity @a[x=2152.5,y=138,z=3985.5,distance=..40] run function cobblemon_initiative:ambient/place/kalahar_sandshrew
 execute if score #amb_grain_factor_kalahar ci_ambient matches 0 if entity @a[x=1972.5,y=117,z=3945.5,distance=..40] run function cobblemon_initiative:ambient/place/grain_factor_kalahar
+execute if score #amb_kalahar_husk ci_ambient matches 0 if entity @a[x=1861.4,y=174,z=4381.4,distance=..40] run function cobblemon_initiative:ambient/place/kalahar_husk
 execute if score #amb_kalahar_nurse ci_ambient matches 0 if entity @a[x=2058.5,y=126,z=4075.5,distance=..40] run function cobblemon_initiative:ambient/place/kalahar_nurse
 execute if score #amb_kalahar_rumor_marisol ci_ambient matches 0 if entity @a[x=2040.5,y=136,z=4100.5,distance=..40] run function cobblemon_initiative:ambient/place/kalahar_rumor_marisol
 execute if score #amb_kalahar_survey_stone_1 ci_ambient matches 0 if entity @a[x=1980.5,y=120,z=3960.5,distance=..40] run function cobblemon_initiative:ambient/place/kalahar_survey_stone_1
@@ -177,7 +177,6 @@ execute if score #amb_kalahar_survey_stone_3 ci_ambient matches 0 if entity @a[x
 execute if score #amb_oasis_pump_manifold ci_ambient matches 0 if entity @a[x=1740.5,y=116,z=4190.5,distance=..40] run function cobblemon_initiative:ambient/place/oasis_pump_manifold
 execute if score #amb_warden_ossa ci_ambient matches 0 if entity @a[x=2050.5,y=129,z=4085.5,distance=..40] run function cobblemon_initiative:ambient/place/warden_ossa
 execute if score #amb_manaphy_giver ci_ambient matches 0 if entity @a[x=2760.5,y=63,z=3490.5,distance=..40] run function cobblemon_initiative:ambient/place/manaphy_giver
-execute if score #amb_noble_giver_mew_wisp ci_ambient matches 0 if entity @a[x=1788.5,y=114,z=4212.5,distance=..40] run function cobblemon_initiative:ambient/place/noble_giver_mew_wisp
 execute if score #amb_noble_giver_zapdos_warden ci_ambient matches 0 if entity @a[x=1393.5,y=77,z=1065.5,distance=..40] run function cobblemon_initiative:ambient/place/noble_giver_zapdos_warden
 execute if score #amb_noble_monument_groudon ci_ambient matches 0 if entity @a[x=3793.6,y=299,z=3789.1,distance=..40] run function cobblemon_initiative:ambient/place/noble_monument_groudon
 execute if score #amb_noble_monument_kyogre ci_ambient matches 0 if entity @a[x=259.5,y=62,z=2351.5,distance=..40] run function cobblemon_initiative:ambient/place/noble_monument_kyogre
@@ -255,11 +254,16 @@ execute if score #amb_r7_trainer_serena ci_ambient matches 0 if entity @a[x=637.
 execute if score #amb_r7_traveler_tidepool ci_ambient matches 0 if entity @a[x=815.5,y=64,z=3345.5,distance=..40] run function cobblemon_initiative:ambient/place/r7_traveler_tidepool
 execute if score #amb_villain_site_manager_3 ci_ambient matches 0 if entity @a[x=657.5,y=90,z=3279.5,distance=..40] run function cobblemon_initiative:ambient/place/villain_site_manager_3
 execute if score #amb_villain_yield_officer_3 ci_ambient matches 0 if entity @a[x=670.5,y=95,z=3267.5,distance=..40] run function cobblemon_initiative:ambient/place/villain_yield_officer_3
+execute if score #amb_dryrow_farmer ci_ambient matches 0 if entity @a[x=1543.8,y=127,z=3844.6,distance=..40] run function cobblemon_initiative:ambient/place/dryrow_farmer
+execute if score #amb_hakim_sefu ci_ambient matches 0 if entity @a[x=1718.5,y=159,z=3939.5,distance=..40] run function cobblemon_initiative:ambient/place/hakim_sefu
+execute if score #amb_layla_zahira ci_ambient matches 0 if entity @a[x=1817.5,y=132,z=3906.5,distance=..40] run function cobblemon_initiative:ambient/place/layla_zahira
+execute if score #amb_omar_tarek ci_ambient matches 0 if entity @a[x=1343.5,y=105,z=3431.5,distance=..40] run function cobblemon_initiative:ambient/place/omar_tarek
 execute if score #amb_r8_flavor_caravan ci_ambient matches 0 if entity @a[x=1545.5,y=64,z=3760.5,distance=..40] run function cobblemon_initiative:ambient/place/r8_flavor_caravan
 execute if score #amb_r8_trainer_dune ci_ambient matches 0 if entity @a[x=1560.5,y=64,z=3700.5,distance=..40] run function cobblemon_initiative:ambient/place/r8_trainer_dune
 execute if score #amb_r8_typetip_dune ci_ambient matches 0 if entity @a[x=1575.5,y=64,z=3720.5,distance=..40] run function cobblemon_initiative:ambient/place/r8_typetip_dune
-execute if score #amb_villain_site_manager_4 ci_ambient matches 0 if entity @a[x=1535.5,y=78,z=3872.5,distance=..40] run function cobblemon_initiative:ambient/place/villain_site_manager_4
-execute if score #amb_villain_yield_officer_4 ci_ambient matches 0 if entity @a[x=1548.5,y=78,z=3822.5,distance=..40] run function cobblemon_initiative:ambient/place/villain_yield_officer_4
+execute if score #amb_villain_site_manager_4 ci_ambient matches 0 if entity @a[x=1532.2,y=126,z=3879.3,distance=..40] run function cobblemon_initiative:ambient/place/villain_site_manager_4
+execute if score #amb_villain_yield_officer_4 ci_ambient matches 0 if entity @a[x=1538.5,y=126,z=3851.1,distance=..40] run function cobblemon_initiative:ambient/place/villain_yield_officer_4
+execute if score #amb_zahra_qadir ci_ambient matches 0 if entity @a[x=1388.5,y=161,z=3695.5,distance=..40] run function cobblemon_initiative:ambient/place/zahra_qadir
 execute if score #amb_villain_route_agent_16 ci_ambient matches 0 if entity @a[x=3545.5,y=101,z=2460.5,distance=..40] run function cobblemon_initiative:ambient/place/villain_route_agent_16
 execute if score #amb_route_blitzle ci_ambient matches 0 unless entity @e[tag=ci_amb_companion_route_blitzle] if entity @a[x=1714.5,y=89,z=1202.5,distance=..40] run function cobblemon_initiative:ambient/place/route_blitzle
 execute if score #amb_route_buizel ci_ambient matches 0 unless entity @e[tag=ci_amb_companion_route_buizel] if entity @a[x=4276.5,y=68,z=2780.5,distance=..40] run function cobblemon_initiative:ambient/place/route_buizel

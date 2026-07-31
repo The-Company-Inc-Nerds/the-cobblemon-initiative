@@ -8,7 +8,7 @@
 >
 > DEV DOCUMENT - full spoilers. The player-facing wiki lives in `wiki/`.
 
-**769 characters** - 355 persisted world bodies, 349 latch-spawned, 65 unplaced (no body, no latch - phone callers, script-spawned bodies like the transformed Hua Zhan leader, dead content, act-2/3 casting).
+**784 characters** - 355 persisted world bodies, 353 latch-spawned, 76 unplaced (no body, no latch - phone callers, script-spawned bodies like the transformed Hua Zhan leader, dead content, act-2/3 casting).
 
 **Reading the tables:** *(body)* = persisted world entity (moves only via repairs tp);
 *(latch)* = spawned at the authored coords when a player first comes within 40 blocks;
@@ -76,7 +76,7 @@
 
 ## Takehara Falls — Gym 1 (Bug, cap 22)
 
-`characters/takehara/` - 29 NPCs
+`characters/takehara/` - 40 NPCs
 
 | NPC | Where | Does | Looks |
 |---|---|---|---|
@@ -92,7 +92,7 @@
 | **Spool** `companion_takehara_sewaddle` | Takehara Falls - Silk Weavers Stall - 1817.5 115 2558.5 (latch) | flavor / lore dialog | Cobblemon model: sewaddle |
 | **Puddle** `companion_takehara_wooper` | Takehara Falls - Plunge Pool Rocks - 1927.5 105 2576.5 (latch) | flavor / lore dialog | Cobblemon model: wooper |
 | **Kazuo** `company_canvasser` | Takehara Falls - Notice Patrol - 1940 105 2470 (body) | battles `sq_canvasser` (2x lv19-20: meowth, koffing), prize 280 | skin `single/thecompany_grunt_1` |
-| **Curator Kenji** `curator_tamiko` | Takehara Falls - Museum - 1899.5 114 2318.5 (body, moved by repairs) | gives: brush x1; runs: sidequest/turnin/dome_fossil, sidequest/turnin/claw_fossil | world-body look |
+| **Curator Kenji** `curator_tamiko` | Takehara Falls - Museum - 1899.5 114 2318.5 (body, moved by repairs) | gives: brush x1; runs: sidequest/turnin/dome_fossil, sidequest/turnin/helix_fossil, sidequest/turnin/old_amber_fossil | world-body look |
 | **Elder Sefu** `elder_sefu` | Takehara Falls - Upper Overlook - 2022 151 2468 (body) | gift: one_time `elder_sefu_overlook_keepsake` | world-body look |
 | **Falls Warden Shou** `falls_warden_ayame` | Takehara Falls - Plunge Pool - 1908 105 2428 (body) | runs: sidequest/cascade/start | world-body look |
 | **Fisherman Genji** `fisherman_genji` | Takehara Falls - Plunge Pool - 1892 105 2472 (body) | battles `sq_genji_wager` (2x lv16-17: poliwag, goldeen), prize 200; runs: sidequest/genji/turn_in_rod | world-body look (slim) |
@@ -106,6 +106,17 @@
 | **Printmaker Mei** `printmaker_ume` | Takehara Falls - Print House by the Gym - 1818 109 2506 (body) | gives: potion x3, net_ball x1; runs: economy/payout, economy/reward/standard, sidequest/bee_watch/start | world-body look (slim) |
 | **Ren** `ren` | Takehara Falls - Plunge Pool Rocks - 1926 105 2576 (body) | flavor / lore dialog | world-body look |
 | **Ren** `ren_b` | Takehara Falls - Town Bridge - 1820 115 2508 (body) | flavor / lore dialog | world-body look |
+| **Aerodactyl** `revived_aerodactyl` | Takehara Falls - Museum restoration tank - UNPLACED | gifts mon: aerodactyl level=10 | Cobblemon model: aerodactyl |
+| **Amaura** `revived_amaura` | Takehara Falls - Museum restoration tank - UNPLACED | gifts mon: amaura level=10 | Cobblemon model: amaura |
+| **Anorith** `revived_anorith` | Takehara Falls - Museum restoration tank - UNPLACED | gifts mon: anorith level=10 | Cobblemon model: anorith |
+| **Archen** `revived_archen` | Takehara Falls - Museum restoration tank - UNPLACED | gifts mon: archen level=10 | Cobblemon model: archen |
+| **Cranidos** `revived_cranidos` | Takehara Falls - Museum restoration tank - UNPLACED | gifts mon: cranidos level=10 | Cobblemon model: cranidos |
+| **Kabuto** `revived_kabuto` | Takehara Falls - Museum restoration tank - UNPLACED | gifts mon: kabuto level=10 | Cobblemon model: kabuto |
+| **Lileep** `revived_lileep` | Takehara Falls - Museum restoration tank - UNPLACED | gifts mon: lileep level=10 | Cobblemon model: lileep |
+| **Omanyte** `revived_omanyte` | Takehara Falls - Museum restoration tank - UNPLACED | gifts mon: omanyte level=10 | Cobblemon model: omanyte |
+| **Shieldon** `revived_shieldon` | Takehara Falls - Museum restoration tank - UNPLACED | gifts mon: shieldon level=10 | Cobblemon model: shieldon |
+| **Tirtouga** `revived_tirtouga` | Takehara Falls - Museum restoration tank - UNPLACED | gifts mon: tirtouga level=10 | Cobblemon model: tirtouga |
+| **Tyrunt** `revived_tyrunt` | Takehara Falls - Museum restoration tank - UNPLACED | gifts mon: tyrunt level=10 | Cobblemon model: tyrunt |
 | **Taro** `taro` | Takehara Falls - Silk Weavers Stall - 1816 115 2558 (body) | flavor / lore dialog | world-body look |
 | **Machine Counter Mika** `tm_counter_mika` | Takehara Falls - Pokemart machine counter - 1904.5 113 2606.5 (latch) | sells (13): tr_chargebeam, tr_lowsweep, tr_icywind, tr_facade, tr_voltswitch... | skin `single/town_shopkeeper` |
 | **Trader Mayu** `trader_mayu` | Takehara Falls - Falls Bridge - 1838 109 2586 (body) | gifts mon: elekid level=12 | world-body look (slim) |
@@ -219,7 +230,7 @@
 
 ## Deepcore City — Gym 4 (Fighting, cap 44)
 
-`characters/deepcore/` - 35 NPCs
+`characters/deepcore/` - 34 NPCs
 
 | NPC | Where | Does | Looks |
 |---|---|---|---|
@@ -256,7 +267,6 @@
 | **Thrain Coalbreaker** `thrain_coalbreaker` | Deepcore City — High Pit-Head - 994 143 3206 (body) | flavor / lore dialog | world-body look |
 | **Tilda Oreweaver** `tilda_oreweaver` | Deepcore City — Sorting Floor - 1062 119 3202 (body) | flavor / lore dialog | world-body look |
 | **Vorn Gravelhand** `vorn_gravelhand` | Deepcore City — Rubble Chute - 1200 112 3196 (body) | sells (5): torches, coal, iron_ingot, rails, iron_pickaxe | skin `single/kalahar_trainer_1` |
-| **Corliss** `wheat_trader_deepcore` | Deepcore City - Mine Commissary - 1180.5 123 3260.5 (latch) | battles `wheat_trader_ambush` (2x lv38-39: miltank, tauros), prize 400; native trade window (trade_wheat_trader); native trade window (trade_wheat_trader) | skin `single/wheat_factor` |
 | **Yorin Crateshift** `yorin_crateshift` | Deepcore City — Loading Dock - 1160 124 3278 (body) | flavor / lore dialog | world-body look |
 
 ## Route 5
@@ -294,9 +304,9 @@
 | **Keeper Elena** `elena_altavela` | Gaviota Port - Lighthouse Deck - 414 107 3546 (body) | flavor / lore dialog | world-body look |
 | **Weighmaster Enzo** `enzo_viatori` | Gaviota Port - Open Podium - 578 89 3440 (body) | runs: sidequest/gaviota_open/turnin, sidequest/gaviota_open/start | world-body look |
 | **Fabio Corrente** `fabio_corrente` | Gaviota Port - Lower Docks - 420 67 3554 (body) | flavor / lore dialog | world-body look |
-| **Dockmaster Kaito** `gaviota_dockmaster` | Gaviota Port - Harbourmaster Shack - 566.5 84 3560.5 (latch) | runs: sidequest/manifest/turn_in, sidequest/manifest/start | skin `groups/gaviota` |
+| **Dockmaster Kaito** `gaviota_dockmaster` | Gaviota Port - Harbourmaster Shack - 444.5 66 3542.5 (latch) | runs: sidequest/manifest/turn_in, sidequest/manifest/start | skin `groups/gaviota` |
 | **Fence Odessa** `gaviota_fence` | Gaviota Port - Under the Boardwalk - 552.5 81 3552.5 (latch) | native trade window (trade_black_market); runs: sidequest/odessa/start_crate | skin `groups/gaviota` |
-| **Netmender Bosun Rui** `gaviota_fisher` | Gaviota Port - The Deep Pier - 561.5 84 3563.5 (latch) | battles `sq_rui_wager` (2x lv52-52: starmie, lapras), prize 200; runs: sidequest/rui/turn_in_net | skin `groups/gaviota` |
+| **Netmender Bosun Rui** `gaviota_fisher` | Gaviota Port - The Deep Pier - 527.5 73 3540.5 (latch) | battles `sq_rui_wager` (2x lv52-52: starmie, lapras), prize 200; runs: sidequest/rui/turn_in_net | skin `groups/gaviota` |
 | **Tally Clerk Pell** `gaviota_manifest_a` | Gaviota Port - Main Pier Freight Stack - 566.5 85 3564.5 (latch) | runs: sidequest/manifest/note_1 | skin `groups/gaviota` |
 | **Tally Clerk Odile** `gaviota_manifest_b` | Gaviota Port - Wharf Crates - 588.5 86 3600.5 (latch) | runs: sidequest/manifest/note_2 | skin `groups/gaviota` |
 | **Tally Clerk Bram** `gaviota_manifest_c` | Gaviota Port - Deep Pier, Dunewind Load - 436.5 64 3491.5 (latch) | runs: sidequest/manifest/note_3 | skin `groups/gaviota` |
@@ -354,7 +364,7 @@
 
 ## Kalahar Reach — Gym 6 (Ground, cap 56)
 
-`characters/kalahar/` - 36 NPCs
+`characters/kalahar/` - 37 NPCs
 
 | NPC | Where | Does | Looks |
 |---|---|---|---|
@@ -373,7 +383,8 @@
 | **Grain Factor** `grain_factor_kalahar` | Kalahar Reach - Old Caravan Road - 1972.5 117 3945.5 (latch) | battles `wheat_trader_ambush_kalahar` (4x lv50-51: bouffalant, miltank, mudsdale, tauros), prize 500; native trade window (trade_wheat_trader); native trade window (trade_wheat_trader) | skin `single/wheat_factor` |
 | **Martkeeper Hassan Qadir** `hassan_qadir` | Kalahar Reach - Poke-Mart - 2152 138 3984 (body) | native trade window (trade_pokemart) | world-body look |
 | **Inaya Tahar** `inaya_tahar` | Kalahar Reach - 2046 129 4092 (body) | flavor / lore dialog | world-body look |
-| **Nurse Sabine** `kalahar_nurse` | Kalahar Reach - Pokemon Center - 2058.5 126 4075.5 (latch) | runs: economy/heal_paid, pc/open, sidequest/rumors/shrine_ground | skin `single/nurse_center` |
+| **The Sun-Dried Sentinel** `kalahar_husk` | Kalahar Reach - high dune (gym5 -> gym6 approach) - 1861.4 174 4381.4 (latch) | gift: one_time `husk_quiz_wings` | husk (HUSK) |
+| **Sabine** `kalahar_nurse` | Kalahar Reach - Pokemon Center - 2058.5 126 4075.5 (latch) | flavor / lore dialog | skin `single/town_shopkeeper` |
 | **Well-Keeper Marisol** `kalahar_rumor_marisol` | Kalahar Reach - The Dry Well - 2040.5 136 4100.5 (latch) | runs: sidequest/kalahar/water_reward | skin `single/kalahar_trainer_1` |
 | **Basalt Survey Stone** `kalahar_survey_stone_1` | Kalahar Reach - Dune Line - 1980.5 120 3960.5 (latch) | flavor / lore dialog | skin `single/prop_stone_marker` |
 | **Basalt Survey Stone** `kalahar_survey_stone_2` | Kalahar Reach - Dune Line - 2140.5 132 3900.5 (latch) | flavor / lore dialog | skin `single/prop_stone_marker` |
@@ -388,7 +399,7 @@
 | **Survey Bot** `oasis_pump_manifold` | Kalahar Reach - The Oasis - 1740.5 116 4190.5 (latch) | runs: sidequest/kalahar/shut_pump | skin `single/prop_screen` |
 | **Yield Liaison Omar Duneh** `omar_duneh` | Kalahar Reach - Company field office - 2116 140 4132 (body) | flavor / lore dialog | skin `single/thecompany_admin_1` |
 | **Rami Seti** `rami_seti` | Kalahar Reach - 2206 129 4210 (body) | fetch: 1x bone -> `rami_relic_done` | world-body look |
-| **Sahir Anuket** `sahir_anuket` | Kalahar Reach - 2088 121 3928 (body) | flavor / lore dialog | world-body look |
+| **Nurse Sahir Anuket** `sahir_anuket` | Kalahar Reach - Pokemon Center - 2088 121 3928 (body) | runs: economy/heal_paid, pc/open, sidequest/rumors/shrine_ground | skin `single/nurse_center` |
 | **Samira Nefer** `samira_nefer` | Kalahar Reach - 2148 138 3974 (body) | flavor / lore dialog | world-body look |
 | **Tarek Ramessu** `tarek_ramessu` | Kalahar Reach - 2032 136 4092 (body) | flavor / lore dialog | world-body look |
 | **Warden Ossa** `warden_ossa` | Kalahar Reach - Old Records Post - 2050.5 129 4085.5 (latch) | runs: sidequest/kalahar/file_claim | skin `single/kalahar_trainer_2` |
@@ -397,15 +408,20 @@
 
 ## Route 8
 
-`characters/route8/` - 5 NPCs
+`characters/route8/` - 10 NPCs
 
 | NPC | Where | Does | Looks |
 |---|---|---|---|
+| **Tamar** `dryrow_farmer` | Dryrow Steading - The Field (R8) - 1543.8 127 3844.6 (latch) | runs: liberation/free_field | skin `single/wheat_factor` |
+| **Hakim Sefu** `hakim_sefu` | Dunewind - shifting flats (gym5 -> gym6 road) - 1718.5 159 3939.5 (latch) | battles `hakim_sefu` (3x lv48-50: dugtrio, sandslash, hippowdon), prize 640, pursues on sight r9, forced at close range | skin `single/kalahar_trainer_2` |
+| **Layla Zahira** `layla_zahira` | Dunewind - the last rise before Kalahar (gym5 -> gym6 road) - 1817.5 132 3906.5 (latch) | battles `layla_zahira` (3x lv49-51: sandaconda, camerupt, flygon), prize 700, pursues on sight r9, forced at close range | skin `single/kalahar_apprentice` |
+| **Omar Tarek** `omar_tarek` | Dunewind - the wrack-line (gym5 -> gym6 road) - 1343.5 105 3431.5 (latch) | battles `omar_tarek` (3x lv47-49: pelipper, quagsire, floatzel), prize 560, pursues on sight r9, forced at close range | skin `groups/gaviota` |
 | **Waystone Keeper Idi** `r8_flavor_caravan` | Dunewind - waystone line - 1545.5 64 3760.5 (latch) | fetch: 1x cobblestone -> `waystone_stone_left` | skin `single/kalahar_apprentice` |
 | **Duneracer Kito** `r8_trainer_dune` | Dunewind - shifting flats - 1560.5 64 3700.5 (latch) | battles `r8_trainer_dune` (3x lv52-54: cacturne, sandslash, flygon), prize 700 | skin `single/kalahar_trainer_1` |
 | **Sandreader Mafu** `r8_typetip_dune` | Dunewind - shifting flats - 1575.5 64 3720.5 (latch) | battles `r8_typetip_dune` (2x lv52-53: gastrodon, excadrill), prize 650, pursues on sight r8, forced at close range | skin `single/kalahar_trainer_2` |
-| **Kenji** `villain_site_manager_4` | Dryrow Steading - The Granary (R8) - 1535.5 78 3872.5 (latch) | battles `villain_site_manager_4` (2x lv52-54: bisharp, krookodile), prize 1100 | skin `single/thecompany_grunt_4` |
-| **Taro** `villain_yield_officer_4` | Dryrow Steading - Sand Fence (R8) - 1548.5 78 3822.5 (latch) | battles `villain_yield_officer_4` (2x lv51-52: stoutland, scrafty), prize 600 | skin `single/thecompany_grunt_1` |
+| **Kenji** `villain_site_manager_4` | Dryrow Steading - The Granary (R8) - 1532.2 126 3879.3 (latch) | battles `villain_site_manager_4` (2x lv52-54: bisharp, krookodile), prize 1100 | skin `single/thecompany_grunt_4` |
+| **Taro** `villain_yield_officer_4` | Dryrow Steading - Sand Fence (R8) - 1538.5 126 3851.1 (latch) | battles `villain_yield_officer_4` (2x lv51-52: stoutland, scrafty), prize 600 | skin `single/thecompany_grunt_1` |
+| **Zahra Qadir** `zahra_qadir` | Dunewind - the last brackish pool (gym5 -> gym6 road) - 1388.5 161 3695.5 (latch) | battles `zahra_qadir` (3x lv48-50: gastrodon, whiscash, crawdaunt), prize 600, pursues on sight r9, forced at close range | skin `single/kalahar_trainer_1` |
 
 ## Cyber City — Gym 7 (Electric, cap 62)
 
@@ -796,13 +812,12 @@
 
 ## Legendary encounters
 
-`characters/legendary/` - 7 NPCs
+`characters/legendary/` - 6 NPCs
 
 | NPC | Where | Does | Looks |
 |---|---|---|---|
 | **Cyclops** `cyclops` | Mushroom island (config-spawned) - UNPLACED | flavor / lore dialog | skin `single/cyclops` |
 | **The Deep Chamber** `manaphy_giver` | Sunken Ocean Monument - 2760.5 63 3490.5 (latch) | gifts mon: manaphy level=30 | skin `groups/gaviota` |
-| **A Giggle in the Grass** `noble_giver_mew_wisp` | Kalahar Reach - Oasis - 1788.5 114 4212.5 (latch) | runs: noble/mew_wings | skin `single/mystic_trainer_1` |
 | **Grid Warden Cass** `noble_giver_zapdos_warden` | Cyber City - Grid Edge - 1393.5 77 1065.5 (latch) | flavor / lore dialog | skin `groups/cyber` |
 | **Crater Warding Stone** `noble_monument_groudon` | Volcano Peak - South Rim - 3793.6 299 3789.1 (latch) | flavor / lore dialog | skin `single/prop_stone_marker` |
 | **Warning Buoy** `noble_monument_kyogre` | Mystic Island - Shore - 259.5 62 2351.5 (latch) | flavor / lore dialog | skin `single/prop_stone_marker` |

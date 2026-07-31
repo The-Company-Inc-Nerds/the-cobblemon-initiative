@@ -216,8 +216,9 @@ public final class DevNoteInit {
 
   /**
    * /ca dev log — dump every dev record (freeform notes, markers, npc notes, position marks,
-   * and the list of cutscene recordings) to chat AND write a markdown file next to the save at
-   * {@code <world>/dev_playtest_notes/dev_log_<stamp>.md} for easy upload.
+   * and the list of cutscene recordings) to chat AND write a markdown file to the user's home
+   * directory at {@code ~/dev_log_<stamp>.md} for easy upload (falls back to next to the save if
+   * the home dir can't be resolved). The persistent notes JSON itself stays under {@code <world>/data}.
    */
   public static int devLog(net.minecraft.server.level.ServerPlayer player) {
     String when = stamp();
@@ -284,12 +285,19 @@ public final class DevNoteInit {
       md.append("- (could not list cutscenes: ").append(e.getMessage()).append(")\n");
     }
 
-    // Write the file next to the save.
-    String path = "(not written — no world dir)";
+    // Write the file to the user's home dir (~) by default — easiest place to grab it for upload.
+    // Fall back to a dev_playtest_notes/ folder next to the save if the home dir can't be resolved.
+    String path = "(not written — no output dir)";
     try {
-      File root = storage.worldRoot();
-      if (root != null) {
-        File outDir = new File(root, "dev_playtest_notes");
+      String home = System.getProperty("user.home");
+      File outDir;
+      if (home != null && !home.isEmpty()) {
+        outDir = new File(home);
+      } else {
+        File root = storage.worldRoot();
+        outDir = root != null ? new File(root, "dev_playtest_notes") : null;
+      }
+      if (outDir != null) {
         outDir.mkdirs();
         File out = new File(outDir, "dev_log_" + fileStamp() + ".md");
         Files.writeString(out.toPath(), md.toString(), StandardCharsets.UTF_8);

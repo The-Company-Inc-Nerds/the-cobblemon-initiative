@@ -53,11 +53,16 @@ into **`dev/zone-map/`** (gitignored — renders are never committed), copies th
 editor in, serves it, and opens your browser at
 <http://localhost:8099/zone-editor.html>.
 
-- The render is **refreshed on every run** so the map is always current. The first run
-  is a full render (can take a while); after that it's incremental (uNmINeD only re-does
-  changed chunks — fast). Pass `--no-render` to skip and just serve the existing tiles.
-  (This is a change from the old "render once, then only on `--rerender`" behaviour that
-  made stale maps confusing; `--rerender` is still accepted as a no-op.)
+- The render is **refreshed on every run** (with uNmINeD `--force`) so the map is always
+  current — pass `--no-render` to skip and just serve the existing tiles. Why `--force`:
+  `build_mrpack` bakes every region file to the same fixed mtime, so uNmINeD's *incremental*
+  change-detection thinks nothing ever changed and silently skips — which is exactly why the
+  map went stale after the UPM 2.5.0 swap. Forcing a full render (~10s for this world) is the
+  reliable fix. (This replaces the old "render once, then only on `--rerender`" behaviour;
+  `--rerender` is still accepted as a no-op.)
+- **A full map SWAP** (new UPM version → different region grid) can leave orphan tiles from
+  the old grid, since `--force` re-renders regions but doesn't delete removed ones. If the map
+  ever looks like a mix of old and new, `rm -rf dev/zone-map` and relaunch for a clean render.
 - Render a different save: `zone-mapper --world "/path/to/save"`.
 - Re-open an existing render without re-rendering: `zone-mapper <export-dir> --no-render`.
 - Options: `-o/--out <dir>` (default `dev/zone-map`), `-p/--port <n>` (default 8099),

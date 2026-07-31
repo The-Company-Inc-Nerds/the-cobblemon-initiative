@@ -319,18 +319,12 @@ public class CobblemonInitiativeCommands {
                 return 1;
               })))
         )
-        // Giant mushroom-island cyclops: op set-up. spawn = import_new a body at each config
-        // spawnPoint (run once after latching the coords); clear = remove them; reload = re-read config.
+        // Giant mushroom-island cyclops: bodies auto-seed ONCE per world on server start
+        // (CyclopsManager.seedOnServerStarted) — there is no spawn command. clear = remove them;
+        // reload = re-read config.
         .then(
           Commands.literal("cyclops")
             .requires(source -> source.hasPermission(2))
-            .then(Commands.literal("spawn").executes(ctx -> {
-              int n = com.thecompanyinc.cobblemoninitiative.CyclopsManager.spawnAll(ctx.getSource().getServer());
-              ctx.getSource().sendSuccess(() -> Component.literal(n > 0
-                ? "§aSpawned §e" + n + "§a cyclops at the config spawn points."
-                : "§eNo cyclops spawned — fill config/cobblemon-initiative-cyclops.json spawnPoints (or enable)."), false);
-              return n;
-            }))
             .then(Commands.literal("clear").executes(ctx -> {
               com.thecompanyinc.cobblemoninitiative.CyclopsManager.clearAll(ctx.getSource().getServer());
               ctx.getSource().sendSuccess(() -> Component.literal("§7Cleared all cyclops bodies."), false);
@@ -1774,21 +1768,22 @@ public class CobblemonInitiativeCommands {
     net.minecraft.server.MinecraftServer server = dead.getServer();
     if (server == null) return 0;
 
-    // Respawn the dead player (PlayerList.respawn copies the prior game mode; because this bypasses
-    // the vanilla PERFORM_RESPAWN handler there is no spectator-forcing, so we set the mode
-    // explicitly below). Then TP to the town spawn and — ONLY once they have spawned in and been
-    // positioned — swap them to survival. The old approach flipped the world's hardcore flag off
-    // around respawn(); that raced the respawn packet and "acted up". Spawn-first-then-swap is the fix.
+    // Act just like Die with Honor: respawn the dead player, TP to the town spawn, and set SPECTATOR
+    // — the identical spawn-in flow (PlayerList.respawn copies the prior game mode and, because this
+    // bypasses the vanilla PERFORM_RESPAWN handler, nothing forces spectator for us). Then — ONLY once
+    // the player has actually spawned in — the mod takes over and claws them back to survival, refilled.
+    // That takeover is deferred to the next server tick (queueRespawnTakeover); doing it synchronously
+    // here raced the respawn packet and "acted up".
     ServerPlayer revived = server.getPlayerList().respawn(
       dead, false, net.minecraft.world.entity.Entity.RemovalReason.KILLED);
 
     teleportToTownSpawn(server, revived);
 
-    // Now that they are spawned in and positioned, claw them back from spectator to survival.
-    revived.setGameMode(net.minecraft.world.level.GameType.SURVIVAL);
-    revived.setHealth(revived.getMaxHealth());
-    revived.getFoodData().setFoodLevel(20);
+    revived.setGameMode(net.minecraft.world.level.GameType.SPECTATOR); // spawn in exactly like Die with Honor
     revived.addTag("dishonored");
+    // The mod takes over next tick: SPECTATOR -> SURVIVAL + refill health/food + the claw-back sting.
+    com.thecompanyinc.cobblemoninitiative.NuzlockeInit.queueRespawnTakeover(
+      revived, net.minecraft.world.level.GameType.SURVIVAL, true);
 
     // The death screen pauses the single-player server, freezing the dying battle's remaining
     // showdown messages (more faints, the loss itself, queued whiteout kills). Cobblemon paces
@@ -1818,10 +1813,7 @@ public class CobblemonInitiativeCommands {
 
     revived.sendSystemMessage(Component.literal(
       "§8You claw back from the dark. That was not how it was meant to end — and the ledger remembers."));
-    revived.level().playSound(
-      null, revived.blockPosition(),
-      net.minecraft.sounds.SoundEvents.WITHER_SPAWN,
-      net.minecraft.sounds.SoundSource.MASTER, 0.4f, 0.6f);
+    // (game-mode swap, health/food refill, and the WITHER_SPAWN sting run in the deferred takeover)
     return 1;
   }
 }

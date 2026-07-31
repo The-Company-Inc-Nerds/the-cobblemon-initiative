@@ -37,7 +37,6 @@ execute unless score #amb_deepcore_martkeeper ci_ambient matches 0.. run scorebo
 execute unless score #amb_deepcore_miner_rill ci_ambient matches 0.. run scoreboard players set #amb_deepcore_miner_rill ci_ambient 0
 execute unless score #amb_deepcore_nurse ci_ambient matches 0.. run scoreboard players set #amb_deepcore_nurse ci_ambient 0
 execute unless score #amb_sq_deepcore_assessor ci_ambient matches 0.. run scoreboard players set #amb_sq_deepcore_assessor ci_ambient 0
-execute unless score #amb_wheat_trader_deepcore ci_ambient matches 0.. run scoreboard players set #amb_wheat_trader_deepcore ci_ambient 0
 execute unless score #amb_arcade_challenger_1 ci_ambient matches 0.. run scoreboard players set #amb_arcade_challenger_1 ci_ambient 0
 execute unless score #amb_arcade_challenger_2 ci_ambient matches 0.. run scoreboard players set #amb_arcade_challenger_2 ci_ambient 0
 execute unless score #amb_castle_challenger_1 ci_ambient matches 0.. run scoreboard players set #amb_castle_challenger_1 ci_ambient 0
@@ -170,6 +169,7 @@ execute unless score #amb_kalahar_drilbur ci_ambient matches 0.. run scoreboard 
 execute unless score #amb_kalahar_hippopotas ci_ambient matches 0.. run scoreboard players set #amb_kalahar_hippopotas ci_ambient 0
 execute unless score #amb_kalahar_sandshrew ci_ambient matches 0.. run scoreboard players set #amb_kalahar_sandshrew ci_ambient 0
 execute unless score #amb_grain_factor_kalahar ci_ambient matches 0.. run scoreboard players set #amb_grain_factor_kalahar ci_ambient 0
+execute unless score #amb_kalahar_husk ci_ambient matches 0.. run scoreboard players set #amb_kalahar_husk ci_ambient 0
 execute unless score #amb_kalahar_nurse ci_ambient matches 0.. run scoreboard players set #amb_kalahar_nurse ci_ambient 0
 execute unless score #amb_kalahar_rumor_marisol ci_ambient matches 0.. run scoreboard players set #amb_kalahar_rumor_marisol ci_ambient 0
 execute unless score #amb_kalahar_survey_stone_1 ci_ambient matches 0.. run scoreboard players set #amb_kalahar_survey_stone_1 ci_ambient 0
@@ -178,7 +178,6 @@ execute unless score #amb_kalahar_survey_stone_3 ci_ambient matches 0.. run scor
 execute unless score #amb_oasis_pump_manifold ci_ambient matches 0.. run scoreboard players set #amb_oasis_pump_manifold ci_ambient 0
 execute unless score #amb_warden_ossa ci_ambient matches 0.. run scoreboard players set #amb_warden_ossa ci_ambient 0
 execute unless score #amb_manaphy_giver ci_ambient matches 0.. run scoreboard players set #amb_manaphy_giver ci_ambient 0
-execute unless score #amb_noble_giver_mew_wisp ci_ambient matches 0.. run scoreboard players set #amb_noble_giver_mew_wisp ci_ambient 0
 execute unless score #amb_noble_giver_zapdos_warden ci_ambient matches 0.. run scoreboard players set #amb_noble_giver_zapdos_warden ci_ambient 0
 execute unless score #amb_noble_monument_groudon ci_ambient matches 0.. run scoreboard players set #amb_noble_monument_groudon ci_ambient 0
 execute unless score #amb_noble_monument_kyogre ci_ambient matches 0.. run scoreboard players set #amb_noble_monument_kyogre ci_ambient 0
@@ -256,11 +255,16 @@ execute unless score #amb_r7_trainer_serena ci_ambient matches 0.. run scoreboar
 execute unless score #amb_r7_traveler_tidepool ci_ambient matches 0.. run scoreboard players set #amb_r7_traveler_tidepool ci_ambient 0
 execute unless score #amb_villain_site_manager_3 ci_ambient matches 0.. run scoreboard players set #amb_villain_site_manager_3 ci_ambient 0
 execute unless score #amb_villain_yield_officer_3 ci_ambient matches 0.. run scoreboard players set #amb_villain_yield_officer_3 ci_ambient 0
+execute unless score #amb_dryrow_farmer ci_ambient matches 0.. run scoreboard players set #amb_dryrow_farmer ci_ambient 0
+execute unless score #amb_hakim_sefu ci_ambient matches 0.. run scoreboard players set #amb_hakim_sefu ci_ambient 0
+execute unless score #amb_layla_zahira ci_ambient matches 0.. run scoreboard players set #amb_layla_zahira ci_ambient 0
+execute unless score #amb_omar_tarek ci_ambient matches 0.. run scoreboard players set #amb_omar_tarek ci_ambient 0
 execute unless score #amb_r8_flavor_caravan ci_ambient matches 0.. run scoreboard players set #amb_r8_flavor_caravan ci_ambient 0
 execute unless score #amb_r8_trainer_dune ci_ambient matches 0.. run scoreboard players set #amb_r8_trainer_dune ci_ambient 0
 execute unless score #amb_r8_typetip_dune ci_ambient matches 0.. run scoreboard players set #amb_r8_typetip_dune ci_ambient 0
 execute unless score #amb_villain_site_manager_4 ci_ambient matches 0.. run scoreboard players set #amb_villain_site_manager_4 ci_ambient 0
 execute unless score #amb_villain_yield_officer_4 ci_ambient matches 0.. run scoreboard players set #amb_villain_yield_officer_4 ci_ambient 0
+execute unless score #amb_zahra_qadir ci_ambient matches 0.. run scoreboard players set #amb_zahra_qadir ci_ambient 0
 execute unless score #amb_villain_route_agent_16 ci_ambient matches 0.. run scoreboard players set #amb_villain_route_agent_16 ci_ambient 0
 execute unless score #amb_route_blitzle ci_ambient matches 0.. run scoreboard players set #amb_route_blitzle ci_ambient 0
 execute unless score #amb_route_buizel ci_ambient matches 0.. run scoreboard players set #amb_route_buizel ci_ambient 0
