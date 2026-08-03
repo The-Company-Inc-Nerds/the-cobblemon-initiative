@@ -107,7 +107,7 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:kalahar_trainer_1 onwin {1: ['tag @1 add defeated_kalahar_trainer_1', '@2 say The dune gives way. The path inward is yours.'], 2: ['@1 say The desert outwaited you today. It outwaits everyone. Come back heavier.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:kalahar_trainer_1 onwin {1: ['tag @1 add defeated_kalahar_trainer_1', '@2 say The dune gives way. The path inward is yours.', 'tp @e[tag=ci_kal_boulder,limit=1] 1974.5 131 4090.5'], 2: ['@1 say The desert outwaited you today. It outwaits everyone. Come back heavier.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -306,6 +306,7 @@
             }
         ],
         id: "easy_npc:humanoid",
-        CustomName: '{"text": "Hiker Boulder", "color": "#FFFFFF"}'
+        CustomName: '{"text": "Hiker Boulder", "color": "#FFFFFF"}',
+        Tags: ["ci_kal_boulder"]
     }
 }

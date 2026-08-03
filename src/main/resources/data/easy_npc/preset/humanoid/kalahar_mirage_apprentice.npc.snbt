@@ -3,10 +3,10 @@
         author: "TheCompanyInc",
         category: "Trainer",
         created: 0L,
-        description: "gym_trainer at Kalahar Reach - town, shimmer on the east ridge near Hassan Qadir (act 1). Compiled from dialog-src.",
+        description: "gym_trainer at Kalahar Reach - town, a shimmering apprentice double (act 1). Compiled from dialog-src.",
         entityTypeId: "easy_npc:humanoid",
         modified: 0L,
-        name: "Hiker Boulder",
+        name: "Apprentice",
         variantType: "STEVE",
         version: "1.0.0"
     },
@@ -43,27 +43,37 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "tag @e[tag=ci_mirage,distance=..1,limit=1,sort=nearest] add ci_mirage_popped"
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative kalahar reach"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
                             Label: "reach_button"
+                        },
+                        {
+                            Name: "Step back",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
                         }
                     ],
                     Texts: [
                         {
-                            Text: "A big man standing guard over an empty stretch of sand. The heat bends around him in slow ribbons."
+                            Text: "An apprentice of the Reach stands here, perfectly still. The air around their shoulders bends like heat off stone."
                         },
                         {
-                            Text: "Boulder again - or the shape of him, poured out of the afternoon light."
+                            Text: "They do not blink. The sand at their feet drifts through their boots instead of around them."
                         },
                         {
-                            Text: "His boots leave no prints. The sand under him is untouched."
+                            Text: "Something about the light is wrong. The desert is showing you what you expect to see - reach out and find out if it is real."
                         }
                     ],
-                    Name: "Boulder - no prints",
+                    Name: "the air bends",
                     Label: "shimmer"
                 }
             ]
@@ -192,7 +202,7 @@
             Timestamp: 0L,
             Type: "CUSTOM",
             URL: "",
-            UUID: [I; -1240199179, -107784559, -1937040431, 1432805729]
+            UUID: [I; -2016004819, 1737644102, -1836742879, -2018398151]
         },
         SoundData: {
             SoundDataSet: [
@@ -223,7 +233,7 @@
             }
         ],
         id: "easy_npc:humanoid",
-        CustomName: '{"text": "Hiker Boulder", "color": "#FFFFFF"}',
-        Tags: ["ci_mirage"]
+        CustomName: '{"text": "Apprentice", "color": "#FFFFFF"}',
+        Tags: ["ci_mirage_fake"]
     }
 }

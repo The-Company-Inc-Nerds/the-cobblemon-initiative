@@ -107,7 +107,7 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:kalahar_trainer_4 onwin {1: ['tag @1 add defeated_kalahar_trainer_4', '@2 say A find worth keeping. The reach is all yours now.'], 2: ['@1 say The claim is not yours yet. Come back and stake it again.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:kalahar_trainer_4 onwin {1: ['tag @1 add defeated_kalahar_trainer_4', '@2 say A find worth keeping. The reach is all yours now.', 'tp @e[tag=ci_kal_vince,limit=1] 1982.5 131 4094.5'], 2: ['@1 say The claim is not yours yet. Come back and stake it again.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -306,6 +306,7 @@
             }
         ],
         id: "easy_npc:humanoid",
-        CustomName: '{"text": "Prospector Vince", "color": "#FFFFFF"}'
+        CustomName: '{"text": "Prospector Vince", "color": "#FFFFFF"}',
+        Tags: ["ci_kal_vince"]
     }
 }

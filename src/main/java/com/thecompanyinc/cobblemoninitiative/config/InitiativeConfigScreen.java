@@ -1692,9 +1692,67 @@ public class InitiativeConfigScreen {
         .build()
     );
 
+    KalaharConfig kalaharConfig = KalaharConfig.load();
+    KalaharConfig kalaharDefaults = new KalaharConfig();
+    ConfigCategory kalahar = builder.getOrCreateCategory(Component.literal("Kalahar Mirage Hunt"));
+    kalahar.addEntry(
+      entryBuilder
+        .startBooleanToggle(Component.literal("Mirage Hunt Enabled"), kalaharConfig.enabled)
+        .setDefaultValue(kalaharDefaults.enabled)
+        .setTooltip(Component.literal("Master switch for the gym 6 mirage hunt (guide-triggered scatter, fake decoys, Dopplers)."))
+        .setSaveConsumer(v -> kalaharConfig.enabled = v)
+        .build()
+    );
+    kalahar.addEntry(
+      entryBuilder
+        .startIntField(Component.literal("Copies per Trainer"), kalaharConfig.getTrainerMirageCount())
+        .setDefaultValue(kalaharDefaults.getTrainerMirageCount())
+        .setMin(1).setMax(8)
+        .setTooltip(Component.literal("Total figures per dune trainer (1 real + fakes). 3 = one real trainer plus two decoys."))
+        .setSaveConsumer(kalaharConfig::setTrainerMirageCount)
+        .build()
+    );
+    kalahar.addEntry(
+      entryBuilder
+        .startIntField(Component.literal("Copies per Apprentice"), kalaharConfig.getApprenticeMirageCount())
+        .setDefaultValue(kalaharDefaults.getApprenticeMirageCount())
+        .setMin(1).setMax(8)
+        .setTooltip(Component.literal("Total figures per apprentice (Dune / Terra) — 1 real + fakes. Both reals must be found to face Gaia."))
+        .setSaveConsumer(kalaharConfig::setApprenticeMirageCount)
+        .build()
+    );
+    kalahar.addEntry(
+      entryBuilder
+        .startDoubleField(Component.literal("Doppler Chance"), kalaharConfig.getDopplerChance())
+        .setDefaultValue(kalaharDefaults.getDopplerChance())
+        .setMin(0.0).setMax(1.0)
+        .setTooltip(Component.literal("Chance a reached-out fake collapses into a hostile Doppler instead of poofing. 0.5 = 50/50."))
+        .setSaveConsumer(kalaharConfig::setDopplerChance)
+        .build()
+    );
+    kalahar.addEntry(
+      entryBuilder
+        .startFloatField(Component.literal("Doppler Health"), kalaharConfig.getDopplerHealth())
+        .setDefaultValue(kalaharDefaults.getDopplerHealth())
+        .setMin(1.0f).setMax(60.0f)
+        .setTooltip(Component.literal("Doppler max health, applied on spawn. Low so the player one/two-shots it. Default 8 (4 hearts)."))
+        .setSaveConsumer(kalaharConfig::setDopplerHealth)
+        .build()
+    );
+    kalahar.addEntry(
+      entryBuilder
+        .startFloatField(Component.literal("Doppler Damage"), kalaharConfig.getDopplerDamage())
+        .setDefaultValue(kalaharDefaults.getDopplerDamage())
+        .setMin(0.0f).setMax(20.0f)
+        .setTooltip(Component.literal("Doppler melee damage per hit. A real hardcore poke, not a killer. Default 2 (1 heart)."))
+        .setSaveConsumer(kalaharConfig::setDopplerDamage)
+        .build()
+    );
+
     builder.setSavingRunnable(() -> {
       config.save();
       cyclopsConfig.save();
+      kalaharConfig.save();
       specialSpawnConfig.save();
       homeBaseConfig.save();
       wildLevelConfig.save();
@@ -1723,6 +1781,7 @@ public class InitiativeConfigScreen {
       DojoConfig.reload();
       OrcConfig.reload();
       CyclopsConfig.reload();
+      KalaharConfig.reload();
       com.thecompanyinc.cobblemoninitiative.DojoDifficultyManager.pushOrcSpoils(
         net.minecraft.client.Minecraft.getInstance().getSingleplayerServer());
       ProgressionConfig.reload();

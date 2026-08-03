@@ -282,6 +282,10 @@ public class InitiativeInit implements ModInitializer {
     // grab->squeeze->throw player attack and chase water-avoidance (config-driven).
     CyclopsManager.init();
 
+    // Kalahar Reach (gym 6) mirage hunt: the gym guide scatters heat-shimmer decoys of the
+    // gym cast on sight; reaching out to a fake poofs it or collapses it into a hostile Doppler.
+    KalaharManager.init();
+
     CommandRegistrationCallback.EVENT.register(
       (dispatcher, registryAccess, environment) -> {
         CobblemonInitiativeCommands.register(dispatcher);

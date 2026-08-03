@@ -8,7 +8,7 @@
 >
 > DEV DOCUMENT - full spoilers. The player-facing wiki lives in `wiki/`.
 
-**784 characters** - 355 persisted world bodies, 353 latch-spawned, 76 unplaced (no body, no latch - phone callers, script-spawned bodies like the transformed Hua Zhan leader, dead content, act-2/3 casting).
+**782 characters** - 355 persisted world bodies, 348 latch-spawned, 79 unplaced (no body, no latch - phone callers, script-spawned bodies like the transformed Hua Zhan leader, dead content, act-2/3 casting).
 
 **Reading the tables:** *(body)* = persisted world entity (moves only via repairs tp);
 *(latch)* = spawned at the authored coords when a player first comes within 40 blocks;
@@ -844,7 +844,7 @@
 
 ## Gym staff — leaders, guides & gym trainers (all towns)
 
-`characters/gym/` - 89 NPCs
+`characters/gym/` - 87 NPCs
 
 | NPC | Where | Does | Looks |
 |---|---|---|---|
@@ -882,20 +882,18 @@
 | **Groundskeeper Aya** `groundskeeper_aya` | Hua Zhan City - West Stair - 1382 93 2060 (body) | battles `groundskeeper_aya` (2x lv21-22: sudowoodo, tangela), prize 300 | skin `single/groundskeeper_aya` |
 | **Lanying** `hua_zhan_guide` | Hua Zhan City - Gym Gate Square - 1492 86 2050 (body) | flavor / lore dialog | world-body look |
 | **Leader Blossom** `hua_zhan_leader` | Hua Zhan City - UNPLACED | battles `hua_zhan_leader` (6x lv22-25: sunflora, leafeon, tropius, roserade, vileplume, venusaur), prize 1800; cutscene: hua_zhan_leader_intro | skin `single/hua_zhan_leader` |
-| **Apprentice Terra** `kalahar_apprentice` | Kalahar Reach - Gym, the sandstorm hollow - 1980.5 131 4089.5 (latch) | battles `kalahar_apprentice` (3x lv47-48: sandslash, marowak, donphan) | skin `single/kalahar_apprentice` |
-| **Kalahar Gym Guide** `kalahar_guide` | Kalahar Reach - UNPLACED | gym-guide info pages | STEVE default |
-| **Jr. Apprentice Dune** `kalahar_jr_apprentice` | Kalahar Reach - Gym, the apprentice hollow - 1976.5 131 4095.5 (latch) | battles `kalahar_jr_apprentice` (2x lv45-46: sandslash, marowak) | skin `single/kalahar_apprentice` |
+| **Apprentice Terra** `kalahar_apprentice` | Kalahar Reach - Gym, the sandstorm hollow - 1998.5 136 4102.5 (latch) | battles `kalahar_apprentice` (3x lv47-48: sandslash, marowak, donphan) | skin `single/kalahar_apprentice` |
+| **Doppler** `kalahar_doppler` | Kalahar Reach - town, wherever a mirage was reached out to - UNPLACED | flavor / lore dialog | skin `single/kalahar_doppler` |
+| **Kalahar Gym Guide** `kalahar_guide` | Kalahar Reach - Gym entrance - 1978.5 131 4085.5 (latch) | cmd: kalahar start | skin `single/kalahar_trainer_1` |
+| **Jr. Apprentice Dune** `kalahar_jr_apprentice` | Kalahar Reach - Gym, the apprentice hollow - 1976.5 136 4134.5 (latch) | battles `kalahar_jr_apprentice` (2x lv45-46: sandslash, marowak) | skin `single/kalahar_apprentice` |
 | **Leader Gaia** `kalahar_leader` | Kalahar Reach - 1978 131 4092 (body) | battles `kalahar_leader` (4x lv50-52: flygon, hippowdon, garchomp, excadrill), prize 3700; cutscene: kalahar_leader_intro | skin `single/kalahar_leader` |
-| **Apprentice Terra** `kalahar_mirage_1` | Kalahar Reach - town, shimmer near the Amara Bastet house - 1998.5 136 4102.5 (latch) | flavor / lore dialog | skin `single/kalahar_apprentice` |
-| **Apprentice Terra** `kalahar_mirage_2` | Kalahar Reach - town, shimmer on the south lane near Zaid Khonsu - 1976.5 136 4134.5 (latch) | flavor / lore dialog | skin `single/kalahar_apprentice` |
-| **Hiker Boulder** `kalahar_mirage_3` | Kalahar Reach - town, shimmer on the north market row near Bassem Ra - 2022.5 127 3974.5 (latch) | flavor / lore dialog | skin `single/kalahar_trainer_1` |
-| **Hiker Boulder** `kalahar_mirage_4` | Kalahar Reach - town, shimmer on the east ridge near Hassan Qadir - 2149.5 138 3986.5 (latch) | flavor / lore dialog | skin `single/kalahar_trainer_1` |
-| **Ruin Maniac Dustin** `kalahar_mirage_5` | Kalahar Reach - town, shimmer by the west walk near Farid Sobek - 1984.5 136 4056.5 (latch) | flavor / lore dialog | skin `single/kalahar_trainer_2` |
-| **Ruin Maniac Dustin** `kalahar_mirage_6` | Kalahar Reach - town, shimmer at the northwest edge near Layla Meret - 2076.5 121 3948.5 (latch) | flavor / lore dialog | skin `single/kalahar_trainer_2` |
-| **Hiker Boulder** `kalahar_trainer_1` | Kalahar Reach - Gym, the outer dunes - 1974.5 131 4090.5 (latch) | battles `kalahar_trainer_1` (2x lv45-45: cubone, phanpy) | skin `single/kalahar_trainer_1` |
-| **Ruin Maniac Dustin** `kalahar_trainer_2` | Kalahar Reach - Gym, the outer dunes - 1982.5 131 4090.5 (latch) | battles `kalahar_trainer_2` (2x lv44-45: sandshrew, trapinch) | skin `single/kalahar_trainer_2` |
-| **Archaeologist Juno** `kalahar_trainer_3` | Kalahar Reach - Gym, the inner cut - 1974.5 131 4094.5 (latch) | battles `kalahar_trainer_3` (2x lv44-45: cubone, baltoy) | skin `single/kalahar_trainer_1` |
-| **Prospector Vince** `kalahar_trainer_4` | Kalahar Reach - Gym, the inner cut - 1982.5 131 4094.5 (latch) | battles `kalahar_trainer_4` (2x lv44-45: trapinch, stunfisk) | skin `single/kalahar_trainer_2` |
+| **Apprentice** `kalahar_mirage_apprentice` | Kalahar Reach - town, a shimmering apprentice double - UNPLACED | cmd: kalahar reach | skin `single/kalahar_apprentice` |
+| **Dune Trainer** `kalahar_mirage_digger` | Kalahar Reach - town, a shimmering dune-trainer double - UNPLACED | cmd: kalahar reach | skin `single/kalahar_trainer_2` |
+| **Dune Trainer** `kalahar_mirage_hiker` | Kalahar Reach - town, a shimmering dune-trainer double - UNPLACED | cmd: kalahar reach | skin `single/kalahar_trainer_1` |
+| **Hiker Boulder** `kalahar_trainer_1` | Kalahar Reach - Gym, the outer dunes - 2022.5 127 3974.5 (latch) | battles `kalahar_trainer_1` (2x lv45-45: cubone, phanpy) | skin `single/kalahar_trainer_1` |
+| **Ruin Maniac Dustin** `kalahar_trainer_2` | Kalahar Reach - Gym, the outer dunes - 1984.5 136 4056.5 (latch) | battles `kalahar_trainer_2` (2x lv44-45: sandshrew, trapinch) | skin `single/kalahar_trainer_2` |
+| **Archaeologist Juno** `kalahar_trainer_3` | Kalahar Reach - Gym, the inner cut - 2149.5 138 3986.5 (latch) | battles `kalahar_trainer_3` (2x lv44-45: cubone, baltoy) | skin `single/kalahar_trainer_1` |
+| **Prospector Vince** `kalahar_trainer_4` | Kalahar Reach - Gym, the inner cut - 2076.5 121 3948.5 (latch) | battles `kalahar_trainer_4` (2x lv44-45: trapinch, stunfisk) | skin `single/kalahar_trainer_2` |
 | **Apprentice Faye** `mystic_apprentice` | Mystic Marsh - Gym, the still pool - 921.5 92 2439.5 (latch) | battles `mystic_apprentice` (3x lv27-28: kirlia, granbull, togetic) | skin `single/mystic_apprentice` |
 | **Veyric Ashenmark** `mystic_guide` | Mystic Marsh - West Gym Approach - 974 70 2442 (body) | gym-guide info pages | world-body look |
 | **Jr. Apprentice Nixie** `mystic_jr_apprentice` | Mystic Marsh - Gym, the apprentice pool - 965.5 92 2439.5 (latch) | battles `mystic_jr_apprentice` (2x lv26-26: kirlia, granbull) | skin `single/mystic_apprentice` |

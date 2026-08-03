@@ -41,6 +41,10 @@ public class NuzlockeClientInit implements ClientModInitializer {
     // Quest tracking — ] / [ keybinds + the in-process waypoint poller.
     QuestTrackClient.init();
 
+    // High/Low graphics toggle — /gfx command, an (unbound) keybind, and the tick that
+    // detects the FancyMenu main-menu pack swap and syncs shaders + video settings to it.
+    com.thecompanyinc.cobblemoninitiative.graphics.GraphicsPresetManager.init();
+
     // Server-driven picker opens. Not opened here directly: the tick poll below waits
     // for screen == null so it sequences AFTER Easy NPC's deferred CLOSE_DIALOG — a
     // dialog-button deposit flows straight into the picker (same behaviour as the old

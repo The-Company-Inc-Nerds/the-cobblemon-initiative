@@ -1,9 +1,9 @@
 {
     PresetMetadata: {
         author: "TheCompanyInc",
-        category: "Gym Guide",
+        category: "Trainer",
         created: 0L,
-        description: "gym_guide at Kalahar Reach (act 1). Compiled from dialog-src.",
+        description: "gym_trainer at Kalahar Reach - Gym entrance (act 1). Compiled from dialog-src.",
         entityTypeId: "easy_npc:humanoid",
         modified: 0L,
         name: "Kalahar Gym Guide",
@@ -33,138 +33,51 @@
         CanPickUpLoot: 0b,
         CustomNameVisible: 1b,
         DialogData: {
-            Type: "CUSTOM",
+            Type: "STANDARD",
             DialogDataSet: [
                 {
                     Priority: 10,
                     Buttons: [
                         {
-                            Name: "Explain the gym",
-                            Actions: [
-                                {
-                                    Type: "OPEN_NAMED_DIALOG",
-                                    Cmd: "explain"
-                                }
-                            ],
-                            Label: "explain_button"
-                        },
-                        {
-                            Name: "I know what I am doing",
-                            Actions: [
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "leave_button"
-                        },
-                        {
-                            Name: "Heard anything interesting?",
-                            Actions: [
-                                {
-                                    Type: "OPEN_NAMED_DIALOG",
-                                    Cmd: "guide_gossip"
-                                }
-                            ],
-                            Label: "gossip_button"
-                        }
-                    ],
-                    Texts: [
-                        {
-                            Text: "Welcome, challenger. I am the gym guide — every trainer who walks through that door comes to me first, and the smart ones listen. The rest I meet again at the healing machine."
-                        },
-                        {
-                            Text: "Looks like you mean business. Want the lay of the land before you face the leader?"
-                        },
-                        {
-                            Text: "Have we met? You have the posture of somebody who used to be announced into rooms. Anyway — questions about the gym, or are you here to loom impressively?"
-                        },
-                        {
-                            Text: "Free advice on the gym, no charge. The League classifies me as signage."
-                        }
-                    ],
-                    Name: "Gym Guide Greeting",
-                    Label: "default"
-                },
-                {
-                    Priority: -1,
-                    Buttons: [
-                        {
-                            Name: "Got it",
-                            Actions: [
-                                {
-                                    Type: "OPEN_NAMED_DIALOG",
-                                    Cmd: "default"
-                                }
-                            ],
-                            Label: "back_button"
-                        },
-                        {
-                            Name: "Thanks",
-                            Actions: [
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "leave_button"
-                        }
-                    ],
-                    Texts: [
-                        {
-                            Text: "Beat the leader and you earn the badge. Each badge you collect raises your level cap, so your team can keep pace with the road ahead. Skip a gym and you will hit a wall you cannot train through."
-                        },
-                        {
-                            Text: "The leader specialises in one type, so build a team that answers it. Heal up at the center before you challenge, and remember — out here a fainted partner does not come back. Choose your battles like they are permanent. Because for you, they are."
-                        },
-                        {
-                            Text: "One more thing the new ones never hear. The badges are not just for show. The whole region runs on a single currency these days, and a single name behind it. The further you climb, the more that name seems to lean your way. I would keep my eyes open if I were you."
-                        }
-                    ],
-                    Name: "How Gyms Work",
-                    Label: "explain"
-                },
-                {
-                    Priority: -1,
-                    Buttons: [
-                        {
-                            Name: "Good to know",
-                            Actions: [
-                                {
-                                    Type: "OPEN_NAMED_DIALOG",
-                                    Cmd: "default"
-                                }
-                            ],
-                            Label: "gossip_back_button"
-                        },
-                        {
-                            Name: "My lips are sealed",
+                            Name: "Begin the hunt",
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "title @initiator actionbar [{\"text\":\"The guide mouths silently — you did not hear it from me.\"}]"
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative kalahar start"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "gossip_leave_button"
+                            Label: "start_button"
+                        },
+                        {
+                            Name: "Understood",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
                         }
                     ],
                     Texts: [
                         {
-                            Text: "There are ten of us guides, one per gym, and we share a newsletter. This month it is mostly a dispute over who invented saying — you got this."
+                            Text: "Challenger. Before you ask - the hollow is empty. Leader Gaia is still inside, but her students scattered the moment word of you reached the Reach."
                         },
                         {
-                            Text: "One of the other guides swears the healing machine runs on a Chansey in the back room. I have seen the back room. I am not saying anything about the back room."
+                            Text: "It is an old desert trick. The diggers, Jr. Apprentice Dune, and Apprentice Terra each threw a handful of mirages of themselves across town. One of each is real - the rest are heat and expectation."
                         },
                         {
-                            Text: "Prize money used to come straight from the League. Now every payout routes through one office. I asked which office. I was told that was a good question, in the tone that means stop asking."
+                            Text: "Find the true Dune and the true Terra and beat them, and Gaia will see you. Hunt down the real diggers too and Gaia fights tired - her herd will have spent the day chasing yours."
                         },
                         {
-                            Text: "A guide remembers every challenger. Even the ones whose parties walk out smaller than they walked in. Especially those."
+                            Text: "One warning. Reach for a mirage that is not real and it may just drift apart as sand - or it may turn on you. A mirage casts no shadow. That is the only tell the desert gives."
                         }
                     ],
-                    Name: "Guide Gossip",
-                    Label: "guide_gossip"
+                    Name: "the guide of the Reach",
+                    Label: "intro"
                 }
             ]
         },
@@ -290,9 +203,9 @@
             DisableLayers: 0b,
             Name: "",
             Timestamp: 0L,
-            Type: "DEFAULT",
+            Type: "CUSTOM",
             URL: "",
-            UUID: [I; 0, 0, 0, 0]
+            UUID: [I; -1240199179, -107784559, -1937040431, 1432805729]
         },
         SoundData: {
             SoundDataSet: [
@@ -323,6 +236,7 @@
             }
         ],
         id: "easy_npc:humanoid",
-        CustomName: '{"text": "Kalahar Gym Guide", "color": "#FFFFFF"}'
+        CustomName: '{"text": "Kalahar Gym Guide", "color": "#FFFFFF"}',
+        Tags: ["ci_kalahar_guide"]
     }
 }

@@ -42,12 +42,13 @@ execute as @a[tag=victor_transformed,tag=!victor_transform_fired] run function c
 execute as @a[tag=victor_transformed,tag=victor_transform_fired,tag=!victini_joined,gamemode=!spectator] unless entity @e[tag=victor_victini,type=!minecraft:player] if entity @e[tag=victor_apprentice,type=!minecraft:player] run tag @s remove victor_transform_fired
 # Once Victini has joined the player's party, remove the reveal-site Victini NPC.
 execute if entity @a[tag=victini_joined] run kill @e[type=easy_npc:cobblemon_npc,tag=victor_victini]
-# Kalahar mirage sweep — the gym 6 hunt scatters heat-shimmer doubles of the gym cast
-# across the Reach (tag ci_mirage, baked into their presets via entity_tags). The
-# Reach out button tags the double ci_mirage_popped ENTITY-PATH with a self-selecting
-# @e[tag=ci_mirage,distance=..1] (never @s — the compiler rewrites dialog @s to the
-# player); killing it here, one tick later, avoids racing the deferred CLOSE_DIALOG
-# packet, same as the starter stand-ins above. FX lines first, then the kill.
+# Kalahar mirage sweep — the gym 6 hunt scatters heat-shimmer fake doubles of the gym cast
+# (tag ci_mirage_fake, baked into the summon-only kalahar_mirage_* presets; KalaharManager
+# import_new's them on the guide-triggered scatter). The Reach out button runs the Java
+# command cobblemon-initiative kalahar reach; on the poof roll KalaharManager.reach() adds
+# ci_mirage_popped to that fake, and this sweep plays the FX then kills it one tick later
+# (the hostile-Doppler roll instead discards the fake and import_new's a Doppler in Java).
+# FX lines first, then the kill.
 execute at @e[tag=ci_mirage_popped] run particle minecraft:block{block_state:{Name:"minecraft:sand"}} ~ ~1 ~ 0.4 0.8 0.4 0 50 force
 execute at @e[tag=ci_mirage_popped] run particle minecraft:cloud ~ ~1.2 ~ 0.35 0.7 0.35 0.02 30 force
 execute at @e[tag=ci_mirage_popped] run particle minecraft:poof ~ ~1 ~ 0.3 0.8 0.3 0.05 40 force

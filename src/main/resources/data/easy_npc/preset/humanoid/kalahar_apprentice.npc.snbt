@@ -120,7 +120,7 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:kalahar_apprentice onwin {1: ['tag @1 add defeated_kalahar_apprentice', '@2 say The storm clears for you. Gaia felt that match through the ground - he is already waiting.'], 2: ['@1 say The heavy ones held. Rest, then return to the hollow.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:kalahar_apprentice onwin {1: ['tag @1 add defeated_kalahar_apprentice', '@2 say The storm clears for you. Gaia felt that match through the ground - he is already waiting.', 'tp @e[tag=ci_kal_terra,limit=1] 1980.5 131 4089.5'], 2: ['@1 say The heavy ones held. Rest, then return to the hollow.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -232,7 +232,7 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:kalahar_apprentice_weak onwin {1: ['tag @1 add defeated_kalahar_apprentice', '@2 say The storm clears for you. Gaia felt that match through the ground - he is already waiting.'], 2: ['@1 say The heavy ones held. Rest, then return to the hollow.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:kalahar_apprentice_weak onwin {1: ['tag @1 add defeated_kalahar_apprentice', '@2 say The storm clears for you. Gaia felt that match through the ground - he is already waiting.', 'tp @e[tag=ci_kal_terra,limit=1] 1980.5 131 4089.5'], 2: ['@1 say The heavy ones held. Rest, then return to the hollow.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -452,6 +452,7 @@
             }
         ],
         id: "easy_npc:humanoid",
-        CustomName: '{"text": "Apprentice Terra", "color": "#FFFFFF"}'
+        CustomName: '{"text": "Apprentice Terra", "color": "#FFFFFF"}',
+        Tags: ["ci_kal_terra"]
     }
 }

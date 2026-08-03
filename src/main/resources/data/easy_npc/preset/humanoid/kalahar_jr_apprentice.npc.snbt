@@ -110,7 +110,7 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:kalahar_jr_apprentice onwin {1: ['tag @1 add defeated_kalahar_jr_apprentice', '@2 say Cleanly done. The hollow is yours to reach - Terra is waiting.'], 2: ['@1 say Not yet. The reach folk train hard out here. Come back ready.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:kalahar_jr_apprentice onwin {1: ['tag @1 add defeated_kalahar_jr_apprentice', '@2 say Cleanly done. The hollow is yours to reach - Terra is waiting.', 'tp @e[tag=ci_kal_dune,limit=1] 1976.5 131 4095.5'], 2: ['@1 say Not yet. The reach folk train hard out here. Come back ready.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -196,7 +196,7 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:kalahar_jr_apprentice_weak onwin {1: ['tag @1 add defeated_kalahar_jr_apprentice', '@2 say Cleanly done. The hollow is yours to reach - Terra is waiting.'], 2: ['@1 say Not yet. The reach folk train hard out here. Come back ready.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:kalahar_jr_apprentice_weak onwin {1: ['tag @1 add defeated_kalahar_jr_apprentice', '@2 say Cleanly done. The hollow is yours to reach - Terra is waiting.', 'tp @e[tag=ci_kal_dune,limit=1] 1976.5 131 4095.5'], 2: ['@1 say Not yet. The reach folk train hard out here. Come back ready.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -379,6 +379,7 @@
             }
         ],
         id: "easy_npc:humanoid",
-        CustomName: '{"text": "Jr. Apprentice Dune", "color": "#FFFFFF"}'
+        CustomName: '{"text": "Jr. Apprentice Dune", "color": "#FFFFFF"}',
+        Tags: ["ci_kal_dune"]
     }
 }

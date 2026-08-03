@@ -3,10 +3,10 @@
         author: "TheCompanyInc",
         category: "Trainer",
         created: 0L,
-        description: "gym_trainer at Kalahar Reach - town, shimmer by the west walk near Farid Sobek (act 1). Compiled from dialog-src.",
+        description: "gym_trainer at Kalahar Reach - town, a shimmering dune-trainer double (act 1). Compiled from dialog-src.",
         entityTypeId: "easy_npc:humanoid",
         modified: 0L,
-        name: "Ruin Maniac Dustin",
+        name: "Dune Trainer",
         variantType: "STEVE",
         version: "1.0.0"
     },
@@ -43,27 +43,37 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "tag @e[tag=ci_mirage,distance=..1,limit=1,sort=nearest] add ci_mirage_popped"
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative kalahar reach"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
                             Label: "reach_button"
+                        },
+                        {
+                            Name: "Step back",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
                         }
                     ],
                     Texts: [
                         {
-                            Text: "The ruin maniac crouches over a dig that is not there. His trowel never quite touches the ground."
+                            Text: "A ruin-hand of the Reach crouches over the sand here, sifting for nothing. Their outline wavers like a reflection on hot glass."
                         },
                         {
-                            Text: "Dustin, or a heat-drawn sketch of him. The edges of his hat dissolve when the wind passes."
+                            Text: "The grit they lift never leaves their fingers. The wind goes through them and does not stir their coat."
                         },
                         {
-                            Text: "He mutters about ruins, but no sound reaches you. The air bends around the shape of his voice."
+                            Text: "Half the town has met a Reach trainer who was not really there. Reach out - the desert only keeps the honest ones solid."
                         }
                     ],
-                    Name: "Dustin - a dig that is not there",
+                    Name: "the outline wavers",
                     Label: "shimmer"
                 }
             ]
@@ -223,7 +233,7 @@
             }
         ],
         id: "easy_npc:humanoid",
-        CustomName: '{"text": "Ruin Maniac Dustin", "color": "#FFFFFF"}',
-        Tags: ["ci_mirage"]
+        CustomName: '{"text": "Dune Trainer", "color": "#FFFFFF"}',
+        Tags: ["ci_mirage_fake"]
     }
 }

@@ -3,10 +3,10 @@
         author: "TheCompanyInc",
         category: "Trainer",
         created: 0L,
-        description: "gym_trainer at Kalahar Reach - town, shimmer near the Amara Bastet house (act 1). Compiled from dialog-src.",
+        description: "gym_trainer at Kalahar Reach - town, a shimmering dune-trainer double (act 1). Compiled from dialog-src.",
         entityTypeId: "easy_npc:humanoid",
         modified: 0L,
-        name: "Apprentice Terra",
+        name: "Dune Trainer",
         variantType: "STEVE",
         version: "1.0.0"
     },
@@ -43,27 +43,37 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "tag @e[tag=ci_mirage,distance=..1,limit=1,sort=nearest] add ci_mirage_popped"
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative kalahar reach"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
                             Label: "reach_button"
+                        },
+                        {
+                            Name: "Step back",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
                         }
                     ],
                     Texts: [
                         {
-                            Text: "The apprentice stands among the houses, perfectly still. The air around her shoulders bends like heat off stone."
+                            Text: "A digger of the Reach leans on a boulder here, waiting. The stone behind them shows through where their arm should block it."
                         },
                         {
-                            Text: "She does not blink. The sand at her feet drifts through her boots instead of around them."
+                            Text: "They cast no shadow. The noon sun stands straight overhead and the sand under them stays bright."
                         },
                         {
-                            Text: "Something about the light is wrong here. The desert is showing you what you expect to see."
+                            Text: "A mirage cannot cast a shadow - that is how you spot one. Reach out and see if the desert lied to you."
                         }
                     ],
-                    Name: "Terra - the air bends",
+                    Name: "no shadow at their feet",
                     Label: "shimmer"
                 }
             ]
@@ -192,7 +202,7 @@
             Timestamp: 0L,
             Type: "CUSTOM",
             URL: "",
-            UUID: [I; -2016004819, 1737644102, -1836742879, -2018398151]
+            UUID: [I; -1240199179, -107784559, -1937040431, 1432805729]
         },
         SoundData: {
             SoundDataSet: [
@@ -223,7 +233,7 @@
             }
         ],
         id: "easy_npc:humanoid",
-        CustomName: '{"text": "Apprentice Terra", "color": "#FFFFFF"}',
-        Tags: ["ci_mirage"]
+        CustomName: '{"text": "Dune Trainer", "color": "#FFFFFF"}',
+        Tags: ["ci_mirage_fake"]
     }
 }

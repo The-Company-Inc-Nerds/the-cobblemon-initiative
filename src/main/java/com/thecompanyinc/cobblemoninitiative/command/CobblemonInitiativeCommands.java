@@ -336,6 +336,32 @@ public class CobblemonInitiativeCommands {
               return 1;
             }))
         )
+        // Kalahar Reach (gym 6) mirage hunt. start/reach are dialog-button-ready (no .requires so an
+        // Easy NPC ExecAsUser source reaches them — getPlayer() null-check at runtime); clear/reload op.
+        .then(
+          Commands.literal("kalahar")
+            .then(Commands.literal("start").executes(ctx ->
+              com.thecompanyinc.cobblemoninitiative.KalaharManager.start(
+                ctx.getSource().getServer(), ctx.getSource().getPlayer())))
+            .then(Commands.literal("reach").executes(ctx -> {
+              ServerPlayer p = ctx.getSource().getPlayer();
+              return p != null ? com.thecompanyinc.cobblemoninitiative.KalaharManager.reach(p) : 0;
+            }))
+            .then(Commands.literal("clear")
+              .requires(source -> source.hasPermission(2))
+              .executes(ctx -> {
+                com.thecompanyinc.cobblemoninitiative.KalaharManager.clear(ctx.getSource().getServer());
+                ctx.getSource().sendSuccess(() -> Component.literal("§7Cleared the Kalahar mirage hunt (re-armed)."), false);
+                return 1;
+              }))
+            .then(Commands.literal("reload")
+              .requires(source -> source.hasPermission(2))
+              .executes(ctx -> {
+                com.thecompanyinc.cobblemoninitiative.config.KalaharConfig.reload();
+                ctx.getSource().sendSuccess(() -> Component.literal("§aKalahar config reloaded."), false);
+                return 1;
+              }))
+        )
         // Daycare — player-facing (perm 0) AND dialog-button-ready: like `track`, targets
         // resolve at runtime (getPlayer() null-check), with NO parse-time entity requires —
         // an Easy NPC ExecAsUser source carries the player, but requires() is evaluated

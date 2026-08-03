@@ -107,7 +107,7 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:kalahar_trainer_3 onwin {1: ['tag @1 add defeated_kalahar_trainer_3', '@2 say Catalogued and cleared. The cut is yours to cross.'], 2: ['@1 say Logged as a partial excavation. Come back and finish what you started.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:kalahar_trainer_3 onwin {1: ['tag @1 add defeated_kalahar_trainer_3', '@2 say Catalogued and cleared. The cut is yours to cross.', 'tp @e[tag=ci_kal_juno,limit=1] 1974.5 131 4094.5'], 2: ['@1 say Logged as a partial excavation. Come back and finish what you started.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -306,6 +306,7 @@
             }
         ],
         id: "easy_npc:humanoid",
-        CustomName: '{"text": "Archaeologist Juno", "color": "#FFFFFF"}'
+        CustomName: '{"text": "Archaeologist Juno", "color": "#FFFFFF"}',
+        Tags: ["ci_kal_juno"]
     }
 }
