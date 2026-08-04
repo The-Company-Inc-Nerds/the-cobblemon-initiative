@@ -7,6 +7,31 @@ function cobblemon_initiative:ambient/placements
 execute if entity @a[tag=claimed_starter_skiddo] run kill @e[type=easy_npc:cobblemon_npc,tag=ci_standin_skiddo]
 execute if entity @a[tag=claimed_starter_totodile] run kill @e[type=easy_npc:cobblemon_npc,tag=ci_standin_totodile]
 execute if entity @a[tag=claimed_starter_hisuian_growlithe] run kill @e[type=easy_npc:cobblemon_npc,tag=ci_standin_growlithe]
+# ── Gift-body despawn sweeps (a18) ──
+# Every interact-to-join gift body dies here ONE TICK after its joined tag lands — the dialogs'
+# old ExecAsUser `kill` actions were SILENTLY BLOCKED (kill is not an allowlisted ExecAsUser root
+# in easy_npc security.cfg), which is why joined bodies lingered (playtest N1). The body-tag guard
+# runs first so a long-joined player costs one cheap `if entity` miss per line, not a kill scan.
+execute if entity @e[tag=marshadow_lantern_gift] if entity @a[tag=marshadow_joined] run kill @e[tag=marshadow_lantern_gift]
+execute if entity @e[tag=latios_gift] if entity @a[tag=latios_joined] run kill @e[tag=latios_gift]
+execute if entity @e[tag=ci_manaphy_gift] if entity @a[tag=manaphy_joined] run kill @e[tag=ci_manaphy_gift]
+execute if entity @e[tag=ci_revived_kabuto] if entity @a[tag=revived_kabuto_joined] run kill @e[tag=ci_revived_kabuto]
+execute if entity @e[tag=ci_revived_omanyte] if entity @a[tag=revived_omanyte_joined] run kill @e[tag=ci_revived_omanyte]
+execute if entity @e[tag=ci_revived_aerodactyl] if entity @a[tag=revived_aerodactyl_joined] run kill @e[tag=ci_revived_aerodactyl]
+execute if entity @e[tag=ci_revived_lileep] if entity @a[tag=revived_lileep_joined] run kill @e[tag=ci_revived_lileep]
+execute if entity @e[tag=ci_revived_anorith] if entity @a[tag=revived_anorith_joined] run kill @e[tag=ci_revived_anorith]
+execute if entity @e[tag=ci_revived_cranidos] if entity @a[tag=revived_cranidos_joined] run kill @e[tag=ci_revived_cranidos]
+execute if entity @e[tag=ci_revived_shieldon] if entity @a[tag=revived_shieldon_joined] run kill @e[tag=ci_revived_shieldon]
+execute if entity @e[tag=ci_revived_tirtouga] if entity @a[tag=revived_tirtouga_joined] run kill @e[tag=ci_revived_tirtouga]
+execute if entity @e[tag=ci_revived_archen] if entity @a[tag=revived_archen_joined] run kill @e[tag=ci_revived_archen]
+execute if entity @e[tag=ci_revived_tyrunt] if entity @a[tag=revived_tyrunt_joined] run kill @e[tag=ci_revived_tyrunt]
+execute if entity @e[tag=ci_revived_amaura] if entity @a[tag=revived_amaura_joined] run kill @e[tag=ci_revived_amaura]
+# ── Gravel-quarry suspicious-gravel seeding (a18, Hiro's brush task) ──
+# Once per world, when a BRUSH-CARRYING player first reaches the quarry benches (~2035/70/2620)
+# — proximity means the chunks are loaded, so seed_quarry's setblocks all land. Zero-init first
+# (unset scores fail every matches test).
+execute unless score #quarry_seeded ci_ambient matches 0.. run scoreboard players set #quarry_seeded ci_ambient 0
+execute if score #quarry_seeded ci_ambient matches 0 if entity @a[tag=sq_museum_brush,x=2035,y=72,z=2620,distance=..48] run function cobblemon_initiative:sidequest/museum/seed_quarry
 # ── Victor's descent + reveal (Sango) ──
 # Victor waits UP on the grain tower (his placement) until the player earns the transform: the
 # five anti-Company completions. On qualifying he comes DOWN to the reveal path — the player

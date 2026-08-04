@@ -21,8 +21,8 @@ import net.minecraft.world.scores.Scoreboard;
 /**
  * "A Giggle in the Grass" — replaces the old wisp NPC (deleted 2026-07-31) with a shimmering tuft of
  * grass in the Kalahar Oasis (P5 dev note). A single grass block at {@link #GRASS_POS} shines with
- * enchant / end-rod particles every few ticks; BREAKING it lends the player the borrowed wings
- * ({@code noble/mew_wings}) and starts the Mew chase. One-shot by nature — once the tuft is broken it
+ * enchant / end-rod particles every few ticks; BREAKING it starts the Mew chase (on foot — the old
+ * borrowed-elytra {@code noble/mew_wings} grant was cut, playtest 2026-08-03). Once the tuft is broken it
  * stops shining, and it only re-triggers if grass grows back AND Mew is not yet befriended
  * ({@code defeated_noble_mew} storyFlag &lt; 1). The tuft sits inside the Mew arena
  * (center 1780/114/4220, r20), so {@link NobleEncounterManager#start} finds its ring.
@@ -70,12 +70,8 @@ public final class MewGrassManager {
     if (server == null) return;
     if (nobleMewDefeated(server, sp)) return; // already befriended — no re-chase
 
-    // Lend the borrowed wings (aid for the chase, guarded against re-grant), then start the chase.
-    // Runs the same mew_wings function + noble start the old chase-giver's button used, so the beat
-    // is unchanged — only its trigger moved from an NPC to breaking the shimmering grass.
-    var src = server.createCommandSourceStack()
-      .withEntity(sp).withLevel(serverLevel).withPermission(2).withSuppressedOutput();
-    server.getCommands().performPrefixedCommand(src, "function cobblemon_initiative:noble/mew_wings");
+    // The chase is on foot — no borrowed elytra/rockets (playtest 2026-08-03 note 7 cut the
+    // mew_wings grant; the encounter itself paces the wisp so it stays catchable on the ground).
     if (NobleEncounterInit.getManager().start(sp, "mew")) {
       sp.displayClientMessage(Component.literal("§d§oA giggle in the grass…"), true);
     }

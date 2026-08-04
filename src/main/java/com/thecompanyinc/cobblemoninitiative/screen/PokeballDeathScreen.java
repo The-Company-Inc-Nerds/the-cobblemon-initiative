@@ -8,7 +8,6 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.DeathScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.game.ServerboundClientCommandPacket;
 
 public class PokeballDeathScreen extends Screen {
 
@@ -35,6 +34,17 @@ public class PokeballDeathScreen extends Screen {
     int mouseY,
     float delta
   ) {}
+
+  /**
+   * The regular death sequence keeps running underneath (playtest 2026-08-03 note 8): vanilla's
+   * DeathScreen does NOT pause the integrated server, and neither do we — the old inherited
+   * pause froze Cobblemon's showdown backlog under the screen (the root cause the 1200t
+   * post-revive grace patches over) and hid the world behind opaque black.
+   */
+  @Override
+  public boolean isPauseScreen() {
+    return false;
+  }
 
   @Override
   public void tick() {
@@ -70,10 +80,14 @@ public class PokeballDeathScreen extends Screen {
   }
 
   /**
-   * Hardcore death choice (showrunner 2026-07-17): accept the ending, or claw back at a
-   * cost. "Die with Honor" spectates the world (the true one-life end — same PERFORM_RESPAWN
-   * the vanilla hardcore Spectate button sends). "Dishonorable Respawn" runs the server
-   * command that revives the player in survival, keeps hardcore armed, and brands them.
+   * Hardcore death choice (showrunner 2026-07-17; reworked 2026-08-03 note 8): accept the
+   * ending, or claw back at a cost. BOTH buttons now run the REGULAR death sequence first —
+   * {@code player.respawn()} sends vanilla PERFORM_RESPAWN, whose hardcore server path
+   * respawns the body and forces SPECTATOR (+ spectatorsGenerateChunks false) — so the
+   * player spectates the world exactly like vanilla hardcore. The follow-up chat command
+   * (processed after the respawn packet, same serverbound ordering) is where the mod takes
+   * over: honor = telemetry only (the ghost stays free), dishonor = a delayed takeover that
+   * TPs to the town spawn and flips SURVIVAL after a short spectate beat.
    */
   private void showHardcoreChoice() {
     int cx = this.width / 2;
@@ -86,8 +100,7 @@ public class PokeballDeathScreen extends Screen {
         Component.literal("§a⚔ Die with Honor"),
         b -> {
           if (this.minecraft != null && this.minecraft.player != null) {
-            // Server-side respawn (spectator) + TP to the town spawn — the command mirrors the
-            // vanilla PERFORM_RESPAWN spectate but also snaps you to Sango instead of the roof.
+            this.minecraft.player.respawn(); // vanilla PERFORM_RESPAWN → hardcore spectator
             this.minecraft.player.connection.sendCommand(
               "cobblemon-initiative honorable-respawn");
             this.minecraft.setScreen(null);
@@ -102,6 +115,7 @@ public class PokeballDeathScreen extends Screen {
           Component.literal("§4☠ Dishonorable Respawn"),
           b -> {
             if (this.minecraft != null && this.minecraft.player != null) {
+              this.minecraft.player.respawn(); // vanilla PERFORM_RESPAWN → hardcore spectator
               this.minecraft.player.connection.sendCommand(
                 "cobblemon-initiative dishonored-respawn");
               this.minecraft.setScreen(null);
@@ -135,7 +149,9 @@ public class PokeballDeathScreen extends Screen {
     int mouseY,
     float delta
   ) {
-    graphics.fill(0, 0, this.width, this.height, 0xFF000000);
+    // Translucent, vanilla-DeathScreen-style dim — the world (and the death camera tilt) stays
+    // visible behind the pokeball, per "let the regular death sequence happen".
+    graphics.fillGradient(0, 0, this.width, this.height, 0x70000000, 0xB0000000);
 
     int centerX = this.width / 2;
     int centerY = this.height / 2;

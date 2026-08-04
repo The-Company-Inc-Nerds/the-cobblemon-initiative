@@ -264,6 +264,15 @@ nix develop -c javap -p -c <extracted>.class
 - Unset scoreboard scores FAIL every `matches` test — zero-init before `matches 0`.
 - `performPrefixedCommand` is void and swallows command errors (suppressed source);
   the honest success signal is `CommandSourceStack.withCallback((success, result) -> …)`.
+  **NESTED-DISPATCH TRAP (bytecode-verified 1.21.1, cost the a18 utility-fee confirm):** a
+  `performPrefixedCommand` issued while ANOTHER command is executing (e.g. inside a brigadier
+  executor reached from a chat command / chat-click RUN_COMMAND) does NOT run synchronously —
+  `Commands.executeCommandInContext` sees the non-null CURRENT_EXECUTION_CONTEXT ThreadLocal
+  and only QUEUES the entry into the outer context, so the withCallback fires AFTER your code
+  reads the result. Probes are trustworthy only from plain tick/event paths
+  (NpcSightManager.runVerifiedCommand documents the same rule); a command-context caller must
+  defer its probe body to END_SERVER_TICK (UtilityFeeManager.PENDING_CONFIRMS pattern).
+  Datapack `execute store result … run` inside functions is unaffected.
 - Bash `sort` is locale-dependent — generators use `LC_ALL=C` to match Python `sorted()`.
 
 ### Verified 2026-07-10 (alpha.9–.11 round: gimmicks, rift dragon, cutscene, MF bake)
@@ -397,6 +406,24 @@ nix develop -c javap -p -c <extracted>.class
   toward players. Compiler: a dialog-src/visuals override now OWNS ModelData through the
   world merge (mirrors the skin rule); character `entity_tags` bake vanilla Tags into
   the preset (replaces every manual tag-at-placement protocol).
+- **ExecAsUser `kill` is NOT allowlisted** (neither `EasyNpcSecurityConfig.REQUIRED_ROOTS`
+  nor `mrpack/overrides/config/easy_npc/security.cfg`), so a dialog-button `kill` action is
+  SILENTLY dropped — this is why interact-to-join gift bodies (Marshadow, Latios, the revived
+  fossils) never despawned (found a18). The fix is NOT to allowlist kill: despawn rides
+  `ambient/tick` sweeps keyed on the joined player tag + the body tag (one-tick-later, which
+  also dodges the deferred-CLOSE_DIALOG race the starter stand-ins documented). Repeatable
+  gifts (the revived fossils, lockout removed a18) need the spawner (`museum/revive_finish`)
+  to CLEAR that species' `revived_<sp>_joined` tag when a fresh body spawns, or the sweep
+  insta-kills the repeat body.
+- **`hide_name_tag` character flag (a18)**: sets `data.CustomNameVisible: 0b` AFTER the
+  entity_tags branch (which forces it 1b); pair with a FULL `DisplayAttribute` list carrying
+  `NAME_VISIBILITY NEVER` in the character's visuals file — a PARTIAL DisplayAttribute list
+  silently zeroes every unlisted visibility flag. First user: the giant cyclops.
+- **dialog_lint sees tag grants ONLY as string literals** (it scans presets, mcfunctions, and
+  Java string literals). A Java-side `player.addTag("found_" + id)` reads as granted-nowhere →
+  false ORPHAN_TAG on every `no_<tag>` gate. Store the FULL tag literals in the Java data table
+  (KalaharManager `STUDENTS.foundTag` precedent) — same class as the a15 `$(species)`
+  macro-grant blindness in mcfunctions.
 - **Every dialog entry gets an auto-`Goodbye` close button** unless it has a close
   action or sets `"no_goodbye": true` (forced encounters).
 - **Action gates use the DOUBLED key `ConditionDataSet:{ConditionDataSet:[…]}`** —

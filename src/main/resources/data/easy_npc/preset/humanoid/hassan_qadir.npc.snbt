@@ -51,6 +51,16 @@
                             Label: "shop_button"
                         },
                         {
+                            Name: "Ask about the machine shelf",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "tm_shelf"
+                                }
+                            ],
+                            Label: "tm_button"
+                        },
+                        {
                             Name: "Just looking",
                             Actions: [
                                 {
@@ -83,6 +93,80 @@
                     ],
                     Name: "Martkeeper Hassan Qadir",
                     Label: "default"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "TM Earthquake — 8000 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/market/buy_tm_earthquake"
+                                }
+                            ],
+                            Label: "buy_earthquake_button"
+                        },
+                        {
+                            Name: "TM Stone Edge — 6500 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/market/buy_tm_stoneedge"
+                                }
+                            ],
+                            Label: "buy_stoneedge_button"
+                        },
+                        {
+                            Name: "TM Drill Run — 4500 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/market/buy_tm_drillrun"
+                                }
+                            ],
+                            Label: "buy_drillrun_button"
+                        },
+                        {
+                            Name: "TM Sandstorm — 2500 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/market/buy_tm_sandstorm"
+                                }
+                            ],
+                            Label: "buy_sandstorm_button"
+                        },
+                        {
+                            Name: "Back",
+                            Actions: [
+                                {
+                                    Type: "OPEN_DEFAULT_DIALOG"
+                                }
+                            ],
+                            Label: "back_button"
+                        },
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The back shelf, for people who fight the ground on its own terms. Four machines, all desert-proofed, all priced like the caravan risked its axles for them — because it did. Eight uses a disc, no refunds when the sand eats one."
+                        }
+                    ],
+                    Name: "Hassan — the machine shelf",
+                    Label: "tm_shelf"
                 },
                 {
                     Priority: -1,

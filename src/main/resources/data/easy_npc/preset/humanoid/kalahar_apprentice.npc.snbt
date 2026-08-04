@@ -3,7 +3,7 @@
         author: "TheCompanyInc",
         category: "Trainer",
         created: 0L,
-        description: "gym_trainer at Kalahar Reach - Gym, the sandstorm hollow (act 1). Compiled from dialog-src.",
+        description: "gym_trainer at Kalahar Reach - scattered into town (mirage hunt); fights in the gym hollow once found (act 1). Compiled from dialog-src.",
         entityTypeId: "easy_npc:humanoid",
         modified: 0L,
         name: "Apprentice Terra",
@@ -35,6 +35,54 @@
         DialogData: {
             Type: "STANDARD",
             DialogDataSet: [
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "no_found_kalahar_apprentice"
+                        }
+                    ],
+                    Priority: 40,
+                    Buttons: [
+                        {
+                            Name: "Reach out",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative kalahar reach"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "reach_button"
+                        },
+                        {
+                            Name: "Step back",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "An apprentice of the Reach stands here, hood up against the glare. In this heat everyone shimmers a little - the honest and the mirage alike."
+                        },
+                        {
+                            Text: "They hold still the way desert folk do at noon. Or the way the desert holds a picture it wants you to believe. From here you cannot tell."
+                        },
+                        {
+                            Text: "Half the town has met a Reach student who was not really there. There is exactly one way to know - reach out."
+                        }
+                    ],
+                    Name: "the air bends",
+                    Label: "mirage"
+                },
                 {
                     Conditions: [
                         {
@@ -120,7 +168,7 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:kalahar_apprentice onwin {1: ['tag @1 add defeated_kalahar_apprentice', '@2 say The storm clears for you. Gaia felt that match through the ground - he is already waiting.', 'tp @e[tag=ci_kal_terra,limit=1] 1980.5 131 4089.5'], 2: ['@1 say The heavy ones held. Rest, then return to the hollow.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:kalahar_apprentice onwin {1: ['tag @1 add defeated_kalahar_apprentice', '@2 say The storm clears for you. Gaia felt that match through the ground - he is already waiting.', 'tag @1 add found_kalahar_apprentice'], 2: ['@1 say The heavy ones held. Rest, then return to the hollow.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -151,30 +199,6 @@
                     ],
                     Name: "Terra - the apprentice in the hollow",
                     Label: "ready"
-                },
-                {
-                    Priority: 10,
-                    Buttons: [
-                        {
-                            Name: "Goodbye",
-                            Actions: [
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "goodbye_button"
-                        }
-                    ],
-                    Texts: [
-                        {
-                            Text: "The reach has an order. My junior Dune is out on the dunes - settle with him first, and the hollow will make room for you."
-                        },
-                        {
-                            Text: "You skipped a rung. Dune, then me, then Gaia. That is not pride, it is the way the sand runs."
-                        }
-                    ],
-                    Name: "Terra - a skipped rung",
-                    Label: "default"
                 },
                 {
                     Conditions: [
@@ -232,7 +256,7 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:kalahar_apprentice_weak onwin {1: ['tag @1 add defeated_kalahar_apprentice', '@2 say The storm clears for you. Gaia felt that match through the ground - he is already waiting.', 'tp @e[tag=ci_kal_terra,limit=1] 1980.5 131 4089.5'], 2: ['@1 say The heavy ones held. Rest, then return to the hollow.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:kalahar_apprentice_weak onwin {1: ['tag @1 add defeated_kalahar_apprentice', '@2 say The storm clears for you. Gaia felt that match through the ground - he is already waiting.', 'tag @1 add found_kalahar_apprentice'], 2: ['@1 say The heavy ones held. Rest, then return to the hollow.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -259,13 +283,6 @@
                     Label: "ready_weakened"
                 },
                 {
-                    Conditions: [
-                        {
-                            Type: "PLAYER_TAG",
-                            Operation: "EQUALS",
-                            Name: "no_defeated_kalahar_apprentice"
-                        }
-                    ],
                     Priority: 15,
                     Buttons: [
                         {

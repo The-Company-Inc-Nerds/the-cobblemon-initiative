@@ -234,8 +234,14 @@ public class InitiativeInit implements ModInitializer {
 
     // Town utility fee: using a public workstation (furnace, crafting table, brewing stand, …)
     // inside a town costs CobbleDollars, scaled by badges. Fast PASS outside towns / for storage.
+    // a18: the click is cancelled + confirmed via a chat [Pay] link; the confirm body drains on
+    // END_SERVER_TICK because a nested performPrefixedCommand only QUEUES (the pay-probe callback
+    // would fire after the read — review-found HIGH).
     UseBlockCallback.EVENT.register(
       com.thecompanyinc.cobblemoninitiative.economy.UtilityFeeManager::onUseBlock
+    );
+    ServerTickEvents.END_SERVER_TICK.register(
+      com.thecompanyinc.cobblemoninitiative.economy.UtilityFeeManager::tick
     );
     PlayerBlockBreakEvents.AFTER.register((level, player, pos, state, blockEntity) ->
       lootChestManager.onBlockBroken(state, pos)

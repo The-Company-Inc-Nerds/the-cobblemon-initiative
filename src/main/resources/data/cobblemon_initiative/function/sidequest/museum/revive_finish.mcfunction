@@ -9,7 +9,21 @@ playsound cobblemon:block.fossil_machine.retrieve_pokemon master @a[distance=..2
 playsound minecraft:entity.player.levelup master @a[distance=..24] 1902.5 116 2313.8 0.7 0.8
 execute positioned 1902.5 116 2313.8 run particle minecraft:end_rod ~ ~ ~ 0.5 0.7 0.5 0.06 60
 execute positioned 1902.5 116 2313.8 run particle minecraft:glow ~ ~ ~ 0.4 0.6 0.4 0.0 24
-# Spawn the revived-species gift body in front of the tank (per species).
+# Spawn the revived-species gift body in front of the tank (per species). A fresh waking RESETS
+# that species' joined claim (a18 — the lockout is gone, the tank re-wakes any fossil type): without
+# the reset, the ambient/tick sweep on revived_<sp>_joined would insta-kill a repeat body, and the
+# gift dialog would show its post-join entry instead of the offer.
+execute if entity @a[tag=ci_reviving_kabuto] run tag @a remove revived_kabuto_joined
+execute if entity @a[tag=ci_reviving_omanyte] run tag @a remove revived_omanyte_joined
+execute if entity @a[tag=ci_reviving_aerodactyl] run tag @a remove revived_aerodactyl_joined
+execute if entity @a[tag=ci_reviving_lileep] run tag @a remove revived_lileep_joined
+execute if entity @a[tag=ci_reviving_anorith] run tag @a remove revived_anorith_joined
+execute if entity @a[tag=ci_reviving_cranidos] run tag @a remove revived_cranidos_joined
+execute if entity @a[tag=ci_reviving_shieldon] run tag @a remove revived_shieldon_joined
+execute if entity @a[tag=ci_reviving_tirtouga] run tag @a remove revived_tirtouga_joined
+execute if entity @a[tag=ci_reviving_archen] run tag @a remove revived_archen_joined
+execute if entity @a[tag=ci_reviving_tyrunt] run tag @a remove revived_tyrunt_joined
+execute if entity @a[tag=ci_reviving_amaura] run tag @a remove revived_amaura_joined
 execute if entity @a[tag=ci_reviving_kabuto] run easy_npc preset import_new data easy_npc:preset/humanoid/revived_kabuto.npc.snbt 1902.5 115 2315.5
 execute if entity @a[tag=ci_reviving_omanyte] run easy_npc preset import_new data easy_npc:preset/humanoid/revived_omanyte.npc.snbt 1902.5 115 2315.5
 execute if entity @a[tag=ci_reviving_aerodactyl] run easy_npc preset import_new data easy_npc:preset/humanoid/revived_aerodactyl.npc.snbt 1902.5 115 2315.5

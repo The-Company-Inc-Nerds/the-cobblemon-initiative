@@ -3,7 +3,7 @@
         author: "TheCompanyInc",
         category: "Trainer",
         created: 0L,
-        description: "gym_trainer at Kalahar Reach - Gym, the apprentice hollow (act 1). Compiled from dialog-src.",
+        description: "gym_trainer at Kalahar Reach - scattered into town (mirage hunt); fights in the gym hollow once found (act 1). Compiled from dialog-src.",
         entityTypeId: "easy_npc:humanoid",
         modified: 0L,
         name: "Jr. Apprentice Dune",
@@ -40,6 +40,54 @@
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
+                            Name: "no_found_kalahar_jr_apprentice"
+                        }
+                    ],
+                    Priority: 40,
+                    Buttons: [
+                        {
+                            Name: "Reach out",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative kalahar reach"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "reach_button"
+                        },
+                        {
+                            Name: "Step back",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "An apprentice of the Reach stands here, hood up against the glare. In this heat everyone shimmers a little - the honest and the mirage alike."
+                        },
+                        {
+                            Text: "They hold still the way desert folk do at noon. Or the way the desert holds a picture it wants you to believe. From here you cannot tell."
+                        },
+                        {
+                            Text: "Half the town has met a Reach student who was not really there. There is exactly one way to know - reach out."
+                        }
+                    ],
+                    Name: "the air bends",
+                    Label: "mirage"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
                             Name: "defeated_kalahar_jr_apprentice"
                         }
                     ],
@@ -57,7 +105,7 @@
                     ],
                     Texts: [
                         {
-                            Text: "Terra is the apprentice proper - she waits in the sandstorm hollow with the heavy hitters. She digs deeper than me and forgives less."
+                            Text: "Terra is the apprentice proper - and the desert is still wearing her face all over town. Find the true her, reach out, and the hollow will receive her."
                         },
                         {
                             Text: "The order is the lesson: the diggers, then me, then Terra, then Gaia. You are most of the way in."
@@ -83,7 +131,7 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "say You cleared my rung already. Terra waits in the sandstorm hollow."
+                                    Cmd: "say You cleared my rung already. Find the true Terra out in town - the hollow waits for her."
                                 },
                                 {
                                     Type: "COMMAND",
@@ -110,7 +158,7 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:kalahar_jr_apprentice onwin {1: ['tag @1 add defeated_kalahar_jr_apprentice', '@2 say Cleanly done. The hollow is yours to reach - Terra is waiting.', 'tp @e[tag=ci_kal_dune,limit=1] 1976.5 131 4095.5'], 2: ['@1 say Not yet. The reach folk train hard out here. Come back ready.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:kalahar_jr_apprentice onwin {1: ['tag @1 add defeated_kalahar_jr_apprentice', '@2 say Cleanly done. Now find the true Terra among her reflections - the hollow will receive her when you do.', 'tag @1 add found_kalahar_jr_apprentice'], 2: ['@1 say Not yet. The reach folk train hard out here. Come back ready.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -169,7 +217,7 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "say You cleared my rung already. Terra waits in the sandstorm hollow."
+                                    Cmd: "say You cleared my rung already. Find the true Terra out in town - the hollow waits for her."
                                 },
                                 {
                                     Type: "COMMAND",
@@ -196,7 +244,7 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:kalahar_jr_apprentice_weak onwin {1: ['tag @1 add defeated_kalahar_jr_apprentice', '@2 say Cleanly done. The hollow is yours to reach - Terra is waiting.', 'tp @e[tag=ci_kal_dune,limit=1] 1976.5 131 4095.5'], 2: ['@1 say Not yet. The reach folk train hard out here. Come back ready.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:kalahar_jr_apprentice_weak onwin {1: ['tag @1 add defeated_kalahar_jr_apprentice', '@2 say Cleanly done. Now find the true Terra among her reflections - the hollow will receive her when you do.', 'tag @1 add found_kalahar_jr_apprentice'], 2: ['@1 say Not yet. The reach folk train hard out here. Come back ready.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

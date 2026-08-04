@@ -1,59 +1,27 @@
 {
-  "_comment": "The opening — plays once on the very first join of a fresh pack world, right after the auto-install provisions it (AutoInstall dispatches cutscene play opening). SMOOTH FLOW (2026-07-23): no more built-in pauses — the old scene froze on a still HOLD (two duplicate keyframes, 90t+30t at the same spot) over the title card while install streamed chunks; that pause is removed. The FIRST segment is now a SLOW, LOCAL establishing drift (ticks:120) that stays near the spawn / Mom's house (over the chunks that load first, so it does not sweep ungenerated terrain) — the title card sits over gentle motion rather than a dead freeze — THEN the camera flows continuously through lift → drift → settle with no repeated keyframes. The camera lifts from outside Mom's house (2607.5/109/2847.5), drifts high over Sango Town, glances toward the lab hill (2674.5/128/2901.5), and settles back at the door. Corporate cold open — the game title card §eThe Cobblemon Initiative§r over a Company, Inc. internal-memo subtitle (foreshadows the villain org without naming the Founder). startTitleStay:130 (vs the 10/70/20 engine default) holds the title across the ~120t install hold so it does not fade off a still shot — showrunner 2026-07-21, 'show it a little longer'. NOTE: 'The Cobblemon Initiative' is 24 chars, right at the ~24-char clip limit for vanilla 4x titles at GUI scale 3 — kept non-bold so it fits; if it clips on a narrow window, shorten or drop GUI scale. FLAG: the 90-tick hold is a fixed guess — on a slow disk/first-gen world it may need lengthening (chunks still popping in when the camera starts moving); on a fast SSD it may feel long. Tune the hold's ticks after a real fresh-install run. TODO(showrunner): nudge keyframes to the town skyline.",
+  "_comment": "The opening — plays once on the very first join of a fresh pack world (AutoInstall dispatches cutscene play opening). RE-RECORDED IN-WORLD 2026-08-03 (playtest note 5, intro_scene recording promoted verbatim — recorder y values are play-verified, do NOT subtract 1.78): a ground-level walk up the lane from the town gate toward Mom's house, then a lift over the rooflines and a settle back facing the door. Title card restored as startTitle (was described in the old comment but the fields had been dropped): §eThe Cobblemon Initiative§r over a Company, Inc. internal-memo subtitle (foreshadows the villain org without naming the Founder); startTitleStay 130 holds it across the install chunk-stream. Cue ticks retimed to the new ~254t length.",
   "relative": false,
   "skippable": true,
+  "startTitle": "§eThe Cobblemon Initiative",
+  "startSubtitle": "§8Company, Inc. internal memo — re: a missing asset",
+  "startTitleFadeIn": 10,
+  "startTitleStay": 130,
+  "startTitleFadeOut": 20,
   "keyframes": [
-    {
-      "x": 2606.5,
-      "y": 121.0,
-      "z": 2857.0,
-      "yaw": 179.0,
-      "pitch": 24.0,
-      "ticks": 65
-    },
-    {
-      "x": 2600.0,
-      "y": 150.0,
-      "z": 2895.0,
-      "yaw": 158.0,
-      "pitch": 45.0,
-      "ticks": 55
-    },
-    {
-      "x": 2560.0,
-      "y": 140.0,
-      "z": 2900.0,
-      "yaw": -87.0,
-      "pitch": 8.0,
-      "ticks": 70
-    },
-    {
-      "x": 2607.5,
-      "y": 112.0,
-      "z": 2852.0,
-      "yaw": 180.0,
-      "pitch": 10.0,
-      "ticks": 50
-    }
+    { "x": 2615.6, "y": 110.6, "z": 2846.2, "yaw": 12.2, "pitch": -6.8, "ticks": 30 },
+    { "x": 2609.9, "y": 110.6, "z": 2852.2, "yaw": 41.0, "pitch": 0.3, "ticks": 20 },
+    { "x": 2605.4, "y": 110.6, "z": 2857.9, "yaw": -2.5, "pitch": 3.6, "ticks": 20 },
+    { "x": 2605.4, "y": 112.5, "z": 2864.4, "yaw": 19.3, "pitch": -3.8, "ticks": 20 },
+    { "x": 2593.3, "y": 123.4, "z": 2875.1, "yaw": -44.6, "pitch": 7.3, "ticks": 29 },
+    { "x": 2580.6, "y": 133.9, "z": 2889.5, "yaw": -106.6, "pitch": 13.0, "ticks": 33 },
+    { "x": 2586.9, "y": 133.9, "z": 2902.5, "yaw": -139.9, "pitch": 13.6, "ticks": 22 },
+    { "x": 2612.4, "y": 115.5, "z": 2886.0, "yaw": 158.6, "pitch": 4.9, "ticks": 53 },
+    { "x": 2618.5, "y": 115.5, "z": 2869.3, "yaw": 138.7, "pitch": 4.8, "ticks": 27 }
   ],
   "cues": [
-    {
-      "tick": 15,
-      "sound": "minecraft:block.note_block.chime",
-      "volume": 0.8,
-      "pitch": 0.6
-    },
-    {
-      "tick": 50,
-      "title": "§7SANGO TOWN",
-      "subtitle": "§8Off the books. Off the map."
-    },
-    {
-      "tick": 80,
-      "sound": "minecraft:block.amethyst_block.resonate",
-      "volume": 0.7,
-      "pitch": 0.7
-    },
-    { "tick": 170, "subtitle": "§7Mom is waiting inside" }
+    { "tick": 15, "sound": "minecraft:block.note_block.chime", "volume": 0.8, "pitch": 0.6 },
+    { "tick": 60, "title": "§7SANGO TOWN", "subtitle": "§8Off the books. Off the map." },
+    { "tick": 100, "sound": "minecraft:block.amethyst_block.resonate", "volume": 0.7, "pitch": 0.7 },
+    { "tick": 215, "subtitle": "§7Mom is waiting inside" }
   ]
 }

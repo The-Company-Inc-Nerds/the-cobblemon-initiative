@@ -271,6 +271,25 @@ public class CobblemonInitiativeCommands {
               )
             )
         )
+        // Utility-fee confirm — fired by the [Pay N CD] chat click UtilityFeeManager sends when a
+        // town workstation is used (the first click is cancelled; this charges + opens the menu).
+        // Perm 0, player resolved at runtime (the track pattern).
+        .then(
+          Commands.literal("utility")
+            .then(Commands.literal("confirm")
+              .then(Commands.argument("x", IntegerArgumentType.integer())
+                .then(Commands.argument("y", IntegerArgumentType.integer())
+                  .then(Commands.argument("z", IntegerArgumentType.integer())
+                    .executes(ctx -> {
+                      ServerPlayer sp = ctx.getSource().getPlayer();
+                      if (sp == null) return 0;
+                      return com.thecompanyinc.cobblemoninitiative.economy.UtilityFeeManager
+                        .confirmAndOpen(sp, new net.minecraft.core.BlockPos(
+                          IntegerArgumentType.getInteger(ctx, "x"),
+                          IntegerArgumentType.getInteger(ctx, "y"),
+                          IntegerArgumentType.getInteger(ctx, "z")));
+                    })))))
+        )
         // Dishonorable Respawn — fired by the PokeballDeathScreen button. Perm 0, resolves
         // the (dead) player from the source at runtime. Brings them back in SURVIVAL while
         // leaving hardcore armed, and brands them permanently.
@@ -1762,8 +1781,9 @@ public class CobblemonInitiativeCommands {
   }
 
   /** Shared: drop a just-respawned (bedless) player onto the Sango town spawn, not the spawn
-   *  column / house roof (JOIN never fires on a respawn, so InitiativeInit's snap does not run). */
-  private static void teleportToTownSpawn(net.minecraft.server.MinecraftServer server, ServerPlayer revived) {
+   *  column / house roof (JOIN never fires on a respawn, so InitiativeInit's snap does not run).
+   *  Public: the delayed respawn takeover (NuzlockeInit END_SERVER_TICK) calls this too. */
+  public static void teleportToTownSpawn(net.minecraft.server.MinecraftServer server, ServerPlayer revived) {
     net.minecraft.server.level.ServerLevel overworld = server.overworld();
     if (revived.serverLevel() == overworld) {
       net.minecraft.core.BlockPos spawn = overworld.getSharedSpawnPos();
@@ -1773,51 +1793,66 @@ public class CobblemonInitiativeCommands {
     }
   }
 
-  /** "Die with Honor" — the true one-life ending: respawn the dead player, TP to the town spawn, and
-   *  set SPECTATOR explicitly (this bypasses the vanilla PERFORM_RESPAWN handler, so nothing forces
-   *  spectator for us) — the player spectates the rest of the run from Sango. */
+  /** Shared by both endings (playtest 2026-08-03 note 8): the CLIENT now sends vanilla
+   *  PERFORM_RESPAWN first ({@code LocalPlayer.respawn()}), so by the time this command runs the
+   *  player has normally ALREADY gone through the regular hardcore death sequence — respawned at
+   *  the world spawn and forced SPECTATOR by the vanilla handler. This is only a fallback for
+   *  paths that reach the command with the player still dead (dev dispatch, packet loss). */
+  private static ServerPlayer ensureRespawnedSpectator(
+      net.minecraft.server.MinecraftServer server, ServerPlayer player) {
+    ServerPlayer revived = player;
+    if (player.isDeadOrDying()) {
+      revived = server.getPlayerList().respawn(
+        player, false, net.minecraft.world.entity.Entity.RemovalReason.KILLED);
+    }
+    if (!revived.isSpectator()) {
+      revived.setGameMode(net.minecraft.world.level.GameType.SPECTATOR);
+    }
+    return revived;
+  }
+
+  /** "Die with Honor" — the true one-life ending. The vanilla death sequence already ran
+   *  (PERFORM_RESPAWN → hardcore spectator); the run is over and the ghost stays FREE — no
+   *  teleport, no takeover. They spectate the world they could not keep. */
   private static int honorableRespawn(CommandContext<CommandSourceStack> context) {
-    ServerPlayer dead = context.getSource().getPlayer();
-    if (dead == null) return 0;
-    net.minecraft.server.MinecraftServer server = dead.getServer();
+    ServerPlayer player = context.getSource().getPlayer();
+    if (player == null) return 0;
+    net.minecraft.server.MinecraftServer server = player.getServer();
     if (server == null) return 0;
-    ServerPlayer revived = server.getPlayerList().respawn(
-      dead, false, net.minecraft.world.entity.Entity.RemovalReason.KILLED);
-    teleportToTownSpawn(server, revived);
-    revived.setGameMode(net.minecraft.world.level.GameType.SPECTATOR); // the run is over
+    ServerPlayer revived = ensureRespawnedSpectator(server, player);
+    revived.addTag("died_with_honor");
+    revived.sendSystemMessage(Component.literal(
+      "§7The run ends with honor. The world keeps turning — drift through it as long as you like."));
     return 1;
   }
 
   private static int dishonoredRespawn(CommandContext<CommandSourceStack> context) {
-    ServerPlayer dead = context.getSource().getPlayer();
-    if (dead == null) return 0;
-    net.minecraft.server.MinecraftServer server = dead.getServer();
+    ServerPlayer player = context.getSource().getPlayer();
+    if (player == null) return 0;
+    net.minecraft.server.MinecraftServer server = player.getServer();
     if (server == null) return 0;
 
-    // Act just like Die with Honor: respawn the dead player, TP to the town spawn, and set SPECTATOR
-    // — the identical spawn-in flow (PlayerList.respawn copies the prior game mode and, because this
-    // bypasses the vanilla PERFORM_RESPAWN handler, nothing forces spectator for us). Then — ONLY once
-    // the player has actually spawned in — the mod takes over and claws them back to survival, refilled.
-    // That takeover is deferred to the next server tick (queueRespawnTakeover); doing it synchronously
-    // here raced the respawn packet and "acted up".
-    ServerPlayer revived = server.getPlayerList().respawn(
-      dead, false, net.minecraft.world.entity.Entity.RemovalReason.KILLED);
-
-    teleportToTownSpawn(server, revived);
-
-    revived.setGameMode(net.minecraft.world.level.GameType.SPECTATOR); // spawn in exactly like Die with Honor
+    // The regular death sequence already ran client-side (PERFORM_RESPAWN → vanilla hardcore
+    // spectator at the world spawn). Let them SPECTATE THE WORLD for a beat, then the mod takes
+    // over: the delayed takeover (NuzlockeInit END_SERVER_TICK) TPs them to the Sango town spawn
+    // and flips SURVIVAL + refill + the claw-back sting. Deferring also definitively out-waits
+    // the respawn packet (the old same-tick flow "acted up").
+    ServerPlayer revived = ensureRespawnedSpectator(server, player);
     revived.addTag("dishonored");
-    // The mod takes over next tick: SPECTATOR -> SURVIVAL + refill health/food + the claw-back sting.
+    // Persistent intent marker (review-found): the pending takeover lives in an in-memory map, and
+    // a quit/crash inside the 60t spectate window would otherwise strand the save as a hardcore
+    // spectator forever. The tag survives in player NBT; NuzlockeInit re-arms the takeover on JOIN
+    // and clears the tag when the takeover applies.
+    revived.addTag("ci_takeover_pending");
     com.thecompanyinc.cobblemoninitiative.NuzlockeInit.queueRespawnTakeover(
-      revived, net.minecraft.world.level.GameType.SURVIVAL, true);
+      revived, net.minecraft.world.level.GameType.SURVIVAL, true,
+      com.thecompanyinc.cobblemoninitiative.NuzlockeInit.RESPAWN_TAKEOVER_DELAY_TICKS);
 
-    // The death screen pauses the single-player server, freezing the dying battle's remaining
-    // showdown messages (more faints, the loss itself, queued whiteout kills). Cobblemon paces
-    // those out over several seconds AFTER revive — the old 100-tick grace could expire before
-    // they landed, and it only gated the whiteout kill anyway (queued faint hurt() damage
-    // killed the revived player outright: the "respawns then kills you moments later" playtest
-    // bug). Open a generous 60s grace that suppresses ALL Nuzlocke battle fallout; it is safe
-    // because BATTLE_STARTED_POST revokes it the moment a genuinely new battle begins.
+    // Cobblemon paces the dying battle's remaining showdown messages out over several seconds
+    // AFTER revive (more faints, the loss itself, queued whiteout kills) — queued faint hurt()
+    // damage killed the revived player outright in the old flow ("respawns then kills you
+    // moments later"). Keep the generous 60s grace that suppresses ALL Nuzlocke battle fallout;
+    // it is safe because BATTLE_STARTED_POST revokes it the moment a genuinely new battle begins.
     com.thecompanyinc.cobblemoninitiative.NuzlockeInit.grantWhiteoutGrace(revived, 1200);
     // A flee/forfeit event frozen behind the death screen may have queued a sacrifice prompt
     // for the now-wiped party — never pop it on the revived player.

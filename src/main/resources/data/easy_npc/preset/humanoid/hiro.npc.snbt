@@ -1,9 +1,9 @@
 {
     PresetMetadata: {
         author: "TheCompanyInc",
-        category: "Civilian",
+        category: "Quest",
         created: 0L,
-        description: "civilian at Takehara Falls - South Approach (act 1). Compiled from dialog-src.",
+        description: "quest_giver at Takehara Falls - South Approach (act 1). Compiled from dialog-src.",
         entityTypeId: "easy_npc:humanoid",
         modified: 0L,
         name: "Hiro",
@@ -33,19 +33,83 @@
         CanPickUpLoot: 0b,
         CustomNameVisible: 1b,
         DialogData: {
-            Type: "BASIC",
+            Type: "STANDARD",
             DialogDataSet: [
                 {
-                    Priority: 10,
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "sq_museum_brush"
+                        }
+                    ],
+                    Priority: 20,
                     Buttons: [
                         {
-                            Name: "Goodbye",
+                            Name: "On it",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "goodbye_button"
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "You still have the brush? Good. The gravel quarry is EAST of town, past the benches the diggers cut. Some of the gravel out there looks wrong - soft, pale, like the falls strata. Brush it before you shovel it."
+                        },
+                        {
+                            Text: "Curator Kenji says a real field worker brushes slow. I say a real field worker finds the weird gravel first. The quarry east of here is FULL of weird gravel. Go look, I would go myself but I am on lookout duty. Self-appointed."
+                        },
+                        {
+                            Text: "If the brush turns up a fossil, take it to the museum tank. Kenji seals it in and the machine wakes it up. I have watched it twice. Both times I forgot to blink."
+                        }
+                    ],
+                    Name: "Hiro - field staff",
+                    Label: "has_brush"
+                },
+                {
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "Take the spare brush",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "give @s minecraft:brush 1"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add sq_museum_brush"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "title @initiator actionbar [{\"text\":\"Received a brush. Hiro points EAST - the gravel quarry benches have gone strange.\",\"color\":\"gold\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_sq_museum_brush"
+                                }
+                            ],
+                            Label: "brush_button"
+                        },
+                        {
+                            Name: "Later",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
                         }
                     ],
                     Texts: [
@@ -53,13 +117,10 @@
                             Text: "One day I am going to catch a Cicada like the gym leader has. A real loud one. Then I will be so good the whole town has to be quiet when I walk by. That is the plan. Do not tell my mother the part about the noise."
                         },
                         {
-                            Text: "You came in from the south, huh. Everybody does. The waterfall is the loud part but the bugs live down here in the grass where it is quiet. If you want a Bug type before the gym, look low and look slow."
-                        },
-                        {
                             Text: "The clipboard people counted me twice on their survey. I stood in two spots on purpose to see if they would notice. They did not. My mother says do not annoy the Company. I say if they cannot count one kid, that is on them."
                         },
                         {
-                            Text: "Taro the silk man makes his thread stronger by yelling at it. That is a fact. I have personally heard him yell."
+                            Text: "Kenji at the museum made me field staff. Unofficially. Officially I hold his spare brushes. But I know where the ground has gone strange - the gravel quarry east of town. Want a brush? Say yes."
                         }
                     ],
                     Name: "Hiro",

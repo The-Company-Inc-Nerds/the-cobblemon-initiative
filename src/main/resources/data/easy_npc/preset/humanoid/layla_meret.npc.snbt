@@ -1,9 +1,9 @@
 {
     PresetMetadata: {
         author: "TheCompanyInc",
-        category: "Civilian",
+        category: "Merchant",
         created: 0L,
-        description: "civilian at Kalahar Reach - the dry well (act 1). Compiled from dialog-src.",
+        description: "merchant at Kalahar Reach - the dry well (act 1). Compiled from dialog-src.",
         entityTypeId: "easy_npc:humanoid",
         modified: 0L,
         name: "Well-Keeper Layla Meret",
@@ -40,37 +40,13 @@
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
-                            Name: "oasis_restored"
+                            Name: "layla_traded"
                         }
                     ],
                     Priority: 20,
                     Buttons: [
                         {
-                            Name: "Glad the water is back",
-                            Actions: [
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "thanks_button"
-                        }
-                    ],
-                    Texts: [
-                        {
-                            Text: "You shut their valve. The wells are coming back — slow, brown at first, but coming back. A crew of pump-men drained a whole town to grow the Company more wheat, and they called it agricultural yield optimization. I call it theft with a permit."
-                        },
-                        {
-                            Text: "Drink your fill, traveller, you earned it. The Reach owes you every clean cup it draws from now on."
-                        }
-                    ],
-                    Name: "Layla — the wells come back",
-                    Label: "restored"
-                },
-                {
-                    Priority: 10,
-                    Buttons: [
-                        {
-                            Name: "I will look at the Oasis",
+                            Name: "A fair trade",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -81,16 +57,58 @@
                     ],
                     Texts: [
                         {
-                            Text: "This well ran a thousand years and died in one night. The Company put a pump crew out at the Oasis, southwest, and turned our aquifer north to water their stolen granary. Filed it as yield optimization. There is no optimizing a child going thirsty."
+                            Text: "The Sandshrew has already claimed the cool sand at the bottom of my shaft — a well needs a keeper who fits it, and I am getting too stiff for the ladder. And you walked off with the last thing my well ever raised. Feed the whiskered one mud sometimes. It is not a request, it is a recipe."
                         },
                         {
-                            Text: "You have the look of someone who walks into other people problems. Good. The Oasis is a wild trek and a nasty one, but if you can make that crew shut their valve, this town will draw breath again."
-                        },
-                        {
-                            Text: "I do not care whose face is on what memo. I care that my bucket comes up dry. Go west to the Oasis and turn our water back."
+                            Text: "When the Company circus is done with this town, come back and tell the well what you did with its fish. Wells keep everything you tell them. That is what they are for."
                         }
                     ],
-                    Name: "Layla — the dry well",
+                    Name: "Layla — a fair exchange",
+                    Label: "traded"
+                },
+                {
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "Trade a Sandshrew for the Whiscash",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative trade sandshrew whiscash 50 layla_traded"
+                                },
+                                {
+                                    Type: "OPEN_DEFAULT_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_layla_traded"
+                                }
+                            ],
+                            Label: "trade_button"
+                        },
+                        {
+                            Name: "Not today",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "This well ran a thousand years and died in one night. But the bottom of a thousand-year well is never quite empty — something whiskered has been thumping down there since before my grandmother kept the rope. A Whiscash, fat on centuries of offerings, and it deserves better than a dead shaft."
+                        },
+                        {
+                            Text: "Here is my price, and it is not coin: bring me a Sandshrew. A dry well still wants a keeper, and nothing keeps cool sand like a Sandshrew does. One digger for one whiskered old god — the fairest trade this town has seen since the Company came."
+                        }
+                    ],
+                    Name: "Well-Keeper Layla Meret",
                     Label: "default"
                 }
             ]

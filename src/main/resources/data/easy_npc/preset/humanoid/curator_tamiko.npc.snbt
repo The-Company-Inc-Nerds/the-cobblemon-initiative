@@ -49,11 +49,15 @@
                             Name: "Use the resurrection machine",
                             Actions: [
                                 {
-                                    Type: "OPEN_NAMED_DIALOG",
-                                    Cmd: "revive"
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:sidequest/turnin/use_machine"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "revive_button"
+                            Label: "machine_button"
                         },
                         {
                             Name: "Ask about the machine",
@@ -90,36 +94,6 @@
                     Priority: 10,
                     Buttons: [
                         {
-                            Name: "Take the field brush",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "give @s minecraft:brush 1"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "tag @s add sq_museum_brush"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    Cmd: "title @initiator actionbar [{\"text\":\"Received a brush. Soft gravel waits in the strata below the falls.\",\"color\":\"gold\"}]"
-                                },
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Conditions: [
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "no_sq_museum_brush"
-                                }
-                            ],
-                            Label: "brush_button"
-                        },
-                        {
                             Name: "Where do I dig?",
                             Actions: [
                                 {
@@ -133,11 +107,15 @@
                             Name: "Use the resurrection machine",
                             Actions: [
                                 {
-                                    Type: "OPEN_NAMED_DIALOG",
-                                    Cmd: "revive"
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:sidequest/turnin/use_machine"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "revive_button"
+                            Label: "machine_button"
                         },
                         {
                             Name: "Just browsing",
@@ -155,320 +133,13 @@
                         },
                         {
                             Text: "The falls have been cutting these cliffs for ten thousand years. Everything the water uncovers ends up in my strata - what the Company calls pre-verification assets, and I call fossils. Bring me one and the tank will wake it."
+                        },
+                        {
+                            Text: "Young Hiro at the south approach carries my spare brushes these days - he has appointed himself field staff. If you want to dig, start with him."
                         }
                     ],
                     Name: "Kenji - welcome to natural history",
                     Label: "default"
-                },
-                {
-                    Priority: -1,
-                    Buttons: [
-                        {
-                            Name: "Dome Fossil → Kabuto",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "function cobblemon_initiative:sidequest/turnin/dome_fossil"
-                                },
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Conditions: [
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "no_sq_revived_kabuto"
-                                }
-                            ],
-                            Label: "revive_kabuto_button"
-                        },
-                        {
-                            Name: "Helix Fossil → Omanyte",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "function cobblemon_initiative:sidequest/turnin/helix_fossil"
-                                },
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Conditions: [
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "no_sq_revived_omanyte"
-                                }
-                            ],
-                            Label: "revive_omanyte_button"
-                        },
-                        {
-                            Name: "Old Amber → Aerodactyl",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "function cobblemon_initiative:sidequest/turnin/old_amber_fossil"
-                                },
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Conditions: [
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "no_sq_revived_aerodactyl"
-                                }
-                            ],
-                            Label: "revive_aerodactyl_button"
-                        },
-                        {
-                            Name: "Root Fossil → Lileep",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "function cobblemon_initiative:sidequest/turnin/root_fossil"
-                                },
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Conditions: [
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "no_sq_revived_lileep"
-                                }
-                            ],
-                            Label: "revive_lileep_button"
-                        },
-                        {
-                            Name: "Claw Fossil → Anorith",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "function cobblemon_initiative:sidequest/turnin/claw_fossil"
-                                },
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Conditions: [
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "no_sq_revived_anorith"
-                                }
-                            ],
-                            Label: "revive_anorith_button"
-                        },
-                        {
-                            Name: "More specimens →",
-                            Actions: [
-                                {
-                                    Type: "OPEN_NAMED_DIALOG",
-                                    Cmd: "revive_more"
-                                }
-                            ],
-                            Label: "more_button"
-                        }
-                    ],
-                    Texts: [
-                        {
-                            Text: "The restoration tank still runs, whatever the board relabeled it. Set a fossil on the plate and I seal it in; the machine gives back what the sediment kept. One waking per stone - I do not press my luck twice on the same fossil."
-                        },
-                        {
-                            Text: "Show me what you found."
-                        }
-                    ],
-                    Name: "Kenji - the revival bench",
-                    Label: "revive"
-                },
-                {
-                    Priority: -1,
-                    Buttons: [
-                        {
-                            Name: "Skull Fossil → Cranidos",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "function cobblemon_initiative:sidequest/turnin/skull_fossil"
-                                },
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Conditions: [
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "no_sq_revived_cranidos"
-                                }
-                            ],
-                            Label: "revive_cranidos_button"
-                        },
-                        {
-                            Name: "Armor Fossil → Shieldon",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "function cobblemon_initiative:sidequest/turnin/armor_fossil"
-                                },
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Conditions: [
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "no_sq_revived_shieldon"
-                                }
-                            ],
-                            Label: "revive_shieldon_button"
-                        },
-                        {
-                            Name: "Cover Fossil → Tirtouga",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "function cobblemon_initiative:sidequest/turnin/cover_fossil"
-                                },
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Conditions: [
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "no_sq_revived_tirtouga"
-                                }
-                            ],
-                            Label: "revive_tirtouga_button"
-                        },
-                        {
-                            Name: "Plume Fossil → Archen",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "function cobblemon_initiative:sidequest/turnin/plume_fossil"
-                                },
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Conditions: [
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "no_sq_revived_archen"
-                                }
-                            ],
-                            Label: "revive_archen_button"
-                        },
-                        {
-                            Name: "← Back",
-                            Actions: [
-                                {
-                                    Type: "OPEN_NAMED_DIALOG",
-                                    Cmd: "revive"
-                                }
-                            ],
-                            Label: "back_button"
-                        },
-                        {
-                            Name: "More specimens →",
-                            Actions: [
-                                {
-                                    Type: "OPEN_NAMED_DIALOG",
-                                    Cmd: "revive_more2"
-                                }
-                            ],
-                            Label: "more_button"
-                        }
-                    ],
-                    Texts: [
-                        {
-                            Text: "Plenty of drawers back here. Which stone?"
-                        }
-                    ],
-                    Name: "Kenji - the revival bench",
-                    Label: "revive_more"
-                },
-                {
-                    Priority: -1,
-                    Buttons: [
-                        {
-                            Name: "Jaw Fossil → Tyrunt",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "function cobblemon_initiative:sidequest/turnin/jaw_fossil"
-                                },
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Conditions: [
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "no_sq_revived_tyrunt"
-                                }
-                            ],
-                            Label: "revive_tyrunt_button"
-                        },
-                        {
-                            Name: "Sail Fossil → Amaura",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "function cobblemon_initiative:sidequest/turnin/sail_fossil"
-                                },
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Conditions: [
-                                {
-                                    Type: "PLAYER_TAG",
-                                    Operation: "EQUALS",
-                                    Name: "no_sq_revived_amaura"
-                                }
-                            ],
-                            Label: "revive_amaura_button"
-                        },
-                        {
-                            Name: "← Back",
-                            Actions: [
-                                {
-                                    Type: "OPEN_NAMED_DIALOG",
-                                    Cmd: "revive_more"
-                                }
-                            ],
-                            Label: "back_button"
-                        }
-                    ],
-                    Texts: [
-                        {
-                            Text: "The last of the odd ones. Even these the tank will wake."
-                        }
-                    ],
-                    Name: "Kenji - the revival bench",
-                    Label: "revive_more2"
                 },
                 {
                     Priority: -1,
@@ -528,6 +199,9 @@
                     Texts: [
                         {
                             Text: "Follow the spray to the strata shelf below the falls. Look for a ring of soft pale gravel - brush slowly and lift what the water hid. Bones and sherds mostly. And, if the water is generous, a fossil for the tank."
+                        },
+                        {
+                            Text: "Hiro swears the gravel quarry east of town has gone strange too - soft patches in the benches that were not there last season. Take a brush before you take a shovel."
                         }
                     ],
                     Name: "Kenji - reading the strata",

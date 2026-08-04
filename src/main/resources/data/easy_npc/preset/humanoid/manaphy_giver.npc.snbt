@@ -3,11 +3,11 @@
         author: "TheCompanyInc",
         category: "Civilian",
         created: 0L,
-        description: "civilian at Sunken Ocean Monument (act n/a). Compiled from dialog-src.",
-        entityTypeId: "easy_npc:humanoid",
+        description: "civilian at Sunken Ocean Monument - treasure room (act n/a). Compiled from dialog-src.",
+        entityTypeId: "easy_npc:cobblemon_npc",
         modified: 0L,
-        name: "The Deep Chamber",
-        variantType: "STEVE",
+        name: "Manaphy",
+        variantType: "COBBLEMON_NPC",
         version: "1.0.0"
     },
     data: {
@@ -72,7 +72,7 @@
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "cobblemon-initiative givemon manaphy level=30"
+                                    Cmd: "cobblemon-initiative givemon manaphy level=50"
                                 },
                                 {
                                     Type: "COMMAND",
@@ -137,11 +137,15 @@
                 Type: "VISIBLE_TO_TEAM"
             },
             {
+                Bool: 1b,
+                Type: "INTERACTION_WHEN_INVISIBLE"
+            },
+            {
                 Int: 7,
                 Type: "LIGHT_LEVEL"
             },
             {
-                Text: "ALWAYS",
+                Text: "MOUSE_OVER",
                 Type: "NAME_VISIBILITY"
             }
         ],
@@ -159,7 +163,9 @@
             HealthRegeneration: 0.0d,
             IsAttackableByMonsters: 0b,
             IsAttackableByPlayers: 0b,
+            IsExplosionResistant: 0b,
             IsInvulnerable: 1b,
+            IsKnockbackResistant: 0b,
             IsPushable: 0b,
             NoGravity: 0b,
             PushEntities: 0b
@@ -173,13 +179,7 @@
         LeftHanded: 0b,
         ModelData: {
             DefaultPose: "STANDING",
-            Pose: "VANILLA",
-            Position: {},
-            Rotation: {},
-            Scale: {},
-            Visible: {
-                Boots: 1b
-            }
+            Pose: "VANILLA"
         },
         Navigation: {
             Home: {
@@ -219,45 +219,40 @@
             EntityExperience: 1,
             EntityExperienceLevel: 1
         },
-        RenderData: {},
+        RenderData: {
+            EntityModel: "cobblemon:manaphy",
+            Type: "COBBLEMON_ENTITY"
+        },
         SkinData: {
             Content: "",
             DisableLayers: 0b,
             Name: "",
             Timestamp: 0L,
-            Type: "CUSTOM",
+            Type: "DEFAULT",
             URL: "",
-            UUID: [I; 1218692125, -549564162, -2020808761, -2061344609]
+            UUID: [I; 0, 0, 0, 0]
         },
         SoundData: {
-            SoundDataSet: [
-                {
-                    Name: "minecraft:entity.player.death",
-                    Type: "DEATH"
-                },
-                {
-                    Name: "minecraft:entity.player.hurt",
-                    Type: "HURT"
-                }
-            ]
+            SoundDataSet: []
         },
         Status: {
             finalized: 0b,
             npc_data_last_saved: 0L,
             npc_data_last_update: 0L
         },
-        VariantType: "STEVE",
+        VariantType: "COBBLEMON_NPC",
         attributes: [
             {
-                base: 20.0d,
-                id: "minecraft:generic.max_health"
+                base: 0.6d,
+                id: "minecraft:generic.movement_speed"
             },
             {
-                base: 0.5d,
-                id: "minecraft:generic.movement_speed"
+                base: 32.0d,
+                id: "minecraft:generic.follow_range"
             }
         ],
-        id: "easy_npc:humanoid",
-        CustomName: '{"text": "The Deep Chamber", "color": "#FFFFFF"}'
+        id: "easy_npc:cobblemon_npc",
+        CustomName: '{"text": "Manaphy", "color": "#FFFFFF"}',
+        Tags: ["ci_manaphy_gift", "ci_amb_manaphy_giver"]
     }
 }

@@ -8,7 +8,7 @@
 >
 > DEV DOCUMENT - full spoilers. The player-facing wiki lives in `wiki/`.
 
-**782 characters** - 355 persisted world bodies, 348 latch-spawned, 79 unplaced (no body, no latch - phone callers, script-spawned bodies like the transformed Hua Zhan leader, dead content, act-2/3 casting).
+**788 characters** - 359 persisted world bodies, 347 latch-spawned, 82 unplaced (no body, no latch - phone callers, script-spawned bodies like the transformed Hua Zhan leader, dead content, act-2/3 casting).
 
 **Reading the tables:** *(body)* = persisted world entity (moves only via repairs tp);
 *(latch)* = spawned at the authored coords when a player first comes within 40 blocks;
@@ -92,12 +92,12 @@
 | **Spool** `companion_takehara_sewaddle` | Takehara Falls - Silk Weavers Stall - 1817.5 115 2558.5 (latch) | flavor / lore dialog | Cobblemon model: sewaddle |
 | **Puddle** `companion_takehara_wooper` | Takehara Falls - Plunge Pool Rocks - 1927.5 105 2576.5 (latch) | flavor / lore dialog | Cobblemon model: wooper |
 | **Kazuo** `company_canvasser` | Takehara Falls - Notice Patrol - 1940 105 2470 (body) | battles `sq_canvasser` (2x lv19-20: meowth, koffing), prize 280 | skin `single/thecompany_grunt_1` |
-| **Curator Kenji** `curator_tamiko` | Takehara Falls - Museum - 1899.5 114 2318.5 (body, moved by repairs) | gives: brush x1; runs: sidequest/turnin/dome_fossil, sidequest/turnin/helix_fossil, sidequest/turnin/old_amber_fossil | world-body look |
+| **Curator Kenji** `curator_tamiko` | Takehara Falls - Museum - 1899.5 114 2318.5 (body, moved by repairs) | runs: sidequest/turnin/use_machine | world-body look |
 | **Elder Sefu** `elder_sefu` | Takehara Falls - Upper Overlook - 2022 151 2468 (body) | gift: one_time `elder_sefu_overlook_keepsake` | world-body look |
 | **Falls Warden Shou** `falls_warden_ayame` | Takehara Falls - Plunge Pool - 1908 105 2428 (body) | runs: sidequest/cascade/start | world-body look |
 | **Fisherman Genji** `fisherman_genji` | Takehara Falls - Plunge Pool - 1892 105 2472 (body) | battles `sq_genji_wager` (2x lv16-17: poliwag, goldeen), prize 200; runs: sidequest/genji/turn_in_rod | world-body look (slim) |
 | **Hana** `hana` | Takehara Falls - Blossom Path - 1818 109 2544 (body) | flavor / lore dialog | world-body look (slim) |
-| **Hiro** `hiro` | Takehara Falls - South Approach - 1902 123 2356 (body) | flavor / lore dialog | world-body look |
+| **Hiro** `hiro` | Takehara Falls - South Approach - 1902 123 2356 (body) | gives: brush x1 | world-body look |
 | **Jr. Apprentice Sora** `jr_apprentice_sora` | Takehara Falls - Greenhouse - 1880 109 2520 (body) | battles `takehara_jr_apprentice` (2x lv12-12: beedrill, beautifly) | world-body look (slim) |
 | **Kito** `kito` | Takehara Falls - Upper Terrace - 2064 161 2486 (body) | flavor / lore dialog | world-body look |
 | **Mayor Liang** `mayor_suzune` | Takehara Falls - Gym Roof Balcony - 2012 169 2466 (body) | gives: beacon x1, super_potion x2, great_ball x1; cmd: homestead buy; homestead status; homestead claim; runs: economy/reward/major, economy/payout | skin `single/phone_liang` |
@@ -364,7 +364,7 @@
 
 ## Kalahar Reach — Gym 6 (Ground, cap 56)
 
-`characters/kalahar/` - 37 NPCs
+`characters/kalahar/` - 36 NPCs
 
 | NPC | Where | Does | Looks |
 |---|---|---|---|
@@ -381,19 +381,18 @@
 | **Dalia Sefet** `dalia_sefet` | Kalahar Reach - 2178 132 4144 (body) | flavor / lore dialog | world-body look |
 | **Farid Sobek** `farid_sobek` | Kalahar Reach - 1982 136 4058 (body) | flavor / lore dialog | world-body look |
 | **Grain Factor** `grain_factor_kalahar` | Kalahar Reach - Old Caravan Road - 1972.5 117 3945.5 (latch) | battles `wheat_trader_ambush_kalahar` (4x lv50-51: bouffalant, miltank, mudsdale, tauros), prize 500; native trade window (trade_wheat_trader); native trade window (trade_wheat_trader) | skin `single/wheat_factor` |
-| **Martkeeper Hassan Qadir** `hassan_qadir` | Kalahar Reach - Poke-Mart - 2152 138 3984 (body) | native trade window (trade_pokemart) | world-body look |
+| **Martkeeper Hassan Qadir** `hassan_qadir` | Kalahar Reach - Poke-Mart - 2152 138 3984 (body) | native trade window (trade_pokemart); sells (4): tm_earthquake, tm_stoneedge, tm_drillrun, tm_sandstorm | world-body look |
 | **Inaya Tahar** `inaya_tahar` | Kalahar Reach - 2046 129 4092 (body) | flavor / lore dialog | world-body look |
-| **The Sun-Dried Sentinel** `kalahar_husk` | Kalahar Reach - high dune (gym5 -> gym6 approach) - 1861.4 174 4381.4 (latch) | gift: one_time `husk_quiz_wings` | husk (HUSK) |
+| **The Sun-Dried Sentinel** `kalahar_husk` | Kalahar Reach - high dune (gym5 -> gym6 approach) - 1861.4 172.75 4381.4 (latch) | gift: one_time `husk_quiz_wings` | husk (HUSK) |
 | **Sabine** `kalahar_nurse` | Kalahar Reach - Pokemon Center - 2058.5 126 4075.5 (latch) | flavor / lore dialog | skin `single/town_shopkeeper` |
-| **Well-Keeper Marisol** `kalahar_rumor_marisol` | Kalahar Reach - The Dry Well - 2040.5 136 4100.5 (latch) | runs: sidequest/kalahar/water_reward | skin `single/kalahar_trainer_1` |
+| **Well-Keeper Marisol** `kalahar_rumor_marisol` | Kalahar Reach - The Dry Well - 2040.5 136 4100.5 (latch) | flavor / lore dialog | skin `single/kalahar_trainer_1` |
 | **Basalt Survey Stone** `kalahar_survey_stone_1` | Kalahar Reach - Dune Line - 1980.5 120 3960.5 (latch) | flavor / lore dialog | skin `single/prop_stone_marker` |
 | **Basalt Survey Stone** `kalahar_survey_stone_2` | Kalahar Reach - Dune Line - 2140.5 132 3900.5 (latch) | flavor / lore dialog | skin `single/prop_stone_marker` |
-| **Guarded Survey Stone** `kalahar_survey_stone_3` | Kalahar Reach - Old Caravan Road - 2318.5 83 3542.5 (latch) | battles `sq_boundary_surveyor` (2x lv50-51: donphan, camerupt), prize 400; runs: sidequest/kalahar/cite_surveyor | skin `single/prop_stone_marker` |
 | **Karim Zahur** `karim_zahur` | Kalahar Reach - 2164 127 4244 (body) | flavor / lore dialog | world-body look |
-| **Well-Keeper Layla Meret** `layla_meret` | Kalahar Reach - the dry well - 2078 121 3946 (body) | flavor / lore dialog | world-body look |
-| **Leila Safiya** `leila_safiya` | Kalahar Reach - 2074 125 4044 (body) | flavor / lore dialog | world-body look |
+| **Well-Keeper Layla Meret** `layla_meret` | Kalahar Reach - the dry well - 2078 121 3946 (body) | mon trade: your sandshrew -> whiscash | world-body look |
+| **Leila Safiya** `leila_safiya` | Kalahar Reach - the town well - 2074 125 4044 (body) | runs: sidequest/kalahar/water_reward | world-body look |
 | **Malik Horus** `malik_horus` | Kalahar Reach - 2156 126 4210 (body) | flavor / lore dialog | world-body look |
-| **Nurse Nadia Khepra** `nadia_khepra` | Kalahar Reach - Pokecenter - 2204 137 4202 (body) | heals your party | world-body look |
+| **Nadia Khepra** `nadia_khepra` | Kalahar Reach - the kiln quarter - 2204 137 4202 (body) | flavor / lore dialog | world-body look |
 | **Nefira Zahra** `nefira_zahra` | Kalahar Reach - 1946 114 3936 (body) | gift: one_time `nefira_cactus_strip` | world-body look |
 | **Noura Ma-at** `noura_maat` | Kalahar Reach - 1940 136 4048 (body) | flavor / lore dialog | world-body look |
 | **Survey Bot** `oasis_pump_manifold` | Kalahar Reach - The Oasis - 1740.5 116 4190.5 (latch) | runs: sidequest/kalahar/shut_pump | skin `single/prop_screen` |
@@ -514,15 +513,20 @@
 
 ## Route 10
 
-`characters/route10/` - 5 NPCs
+`characters/route10/` - 10 NPCs
 
 | NPC | Where | Does | Looks |
 |---|---|---|---|
+| **Azim Kadar** `azim_kadar` | Old Caravan Road - the last rise before the wires (gym6 -> gym7 leg) - 2432 87 3134 (body) | battles `azim_kadar` (3x lv53-55: staraptor, hippowdon, krookodile), prize 700, pursues on sight r9, forced at close range | world-body look |
+| **Suhail** `crossroads_farmer` | Crossroads Granary - The Field (R10) - 2318.5 83 3542.5 (latch) | runs: liberation/free_field | skin `single/wheat_factor` |
+| **Nadir Khemet** `nadir_khemet` | Old Caravan Road - the scree bend (gym6 -> gym7 leg) - 2088 121 3648 (body) | battles `nadir_khemet` (3x lv52-54: sudowoodo, gigalith, lycanroc), prize 620, pursues on sight r9, forced at close range | world-body look |
 | **Peddler Ndulu** `r10_merchant_wagon` | Old Caravan - the crossroads - 2245.5 64 3520.5 (latch) | native trade window (trade_pokemart); native trade window (trade_pokemart) | skin `single/kalahar_apprentice` |
 | **Caravan Guard Boro** `r10_spotter_caravan` | Old Caravan road - 2235.5 64 3510.5 (latch) | battles `r10_spotter_caravan` (3x lv48-50: mightyena, manectric, tauros), prize 520, pursues on sight r8, forced at close range | skin `single/kalahar_trainer_1` |
+| **Rashid Anwar** `rashid_anwar` | Old Caravan Road - the dune shoulder (gym6 -> gym7 leg) - 1963.5 113 3839.5 (body, moved by repairs) | battles `rashid_anwar` (3x lv52-54: maractus, sandaconda, cacturne), prize 620, pursues on sight r9, forced at close range | world-body look |
+| **Soraya Neith** `soraya_neith` | Old Caravan Road - the ruin gate (gym6 -> gym7 leg) - 2390 75 3442 (body) | battles `soraya_neith` (3x lv53-54: claydol, cofagrigus, sigilyph), prize 650, pursues on sight r9, forced at close range | world-body look |
 | **Soo** `villain_route_agent_10` | Old Caravan - toll straight - 2210.5 110 3490.5 (latch) | battles `villain_grunt_4` (2x lv18-20: mightyena, sneasel), prize 560 | skin `single/thecompany_grunt_2` |
-| **Nao** `villain_site_manager_5` | Crossroads Granary - The Silo (R10) - 2309.5 83 3540.5 (latch) | battles `villain_site_manager_5` (2x lv27-28: mightyena, watchog), prize 650 | skin `single/thecompany_grunt_3` |
-| **Aki** `villain_yield_officer_5` | Crossroads Granary - Perimeter Gate (R10) - 2262.5 96 3500.5 (latch) | battles `villain_yield_officer_5` (2x lv26-26: herdier, koffing), prize 350 | skin `single/thecompany_grunt_1` |
+| **Nao** `villain_site_manager_5` | Crossroads Granary - The Silo (R10) - 2309.5 83 3540.5 (latch) | battles `villain_site_manager_5` (3x lv54-56: mightyena, watchog, krookodile), prize 650 | skin `single/thecompany_grunt_3` |
+| **Aki** `villain_yield_officer_5` | Crossroads Granary - Perimeter Gate (R10) - 2316.2 83 3519.6 (latch) | battles `villain_yield_officer_5` (2x lv53-54: stoutland, weezing), prize 350 | skin `single/thecompany_grunt_1` |
 
 ## Ironwave
 
@@ -817,7 +821,7 @@
 | NPC | Where | Does | Looks |
 |---|---|---|---|
 | **Cyclops** `cyclops` | Mushroom island (config-spawned) - UNPLACED | flavor / lore dialog | skin `single/cyclops` |
-| **The Deep Chamber** `manaphy_giver` | Sunken Ocean Monument - 2760.5 63 3490.5 (latch) | gifts mon: manaphy level=30 | skin `groups/gaviota` |
+| **Manaphy** `manaphy_giver` | Sunken Ocean Monument - treasure room - 2767.9 33 3490.5 (latch) | gifts mon: manaphy level=50 | Cobblemon model: manaphy |
 | **Grid Warden Cass** `noble_giver_zapdos_warden` | Cyber City - Grid Edge - 1393.5 77 1065.5 (latch) | flavor / lore dialog | skin `groups/cyber` |
 | **Crater Warding Stone** `noble_monument_groudon` | Volcano Peak - South Rim - 3793.6 299 3789.1 (latch) | flavor / lore dialog | skin `single/prop_stone_marker` |
 | **Warning Buoy** `noble_monument_kyogre` | Mystic Island - Shore - 259.5 62 2351.5 (latch) | flavor / lore dialog | skin `single/prop_stone_marker` |
@@ -844,7 +848,7 @@
 
 ## Gym staff — leaders, guides & gym trainers (all towns)
 
-`characters/gym/` - 87 NPCs
+`characters/gym/` - 89 NPCs
 
 | NPC | Where | Does | Looks |
 |---|---|---|---|
@@ -882,18 +886,20 @@
 | **Groundskeeper Aya** `groundskeeper_aya` | Hua Zhan City - West Stair - 1382 93 2060 (body) | battles `groundskeeper_aya` (2x lv21-22: sudowoodo, tangela), prize 300 | skin `single/groundskeeper_aya` |
 | **Lanying** `hua_zhan_guide` | Hua Zhan City - Gym Gate Square - 1492 86 2050 (body) | flavor / lore dialog | world-body look |
 | **Leader Blossom** `hua_zhan_leader` | Hua Zhan City - UNPLACED | battles `hua_zhan_leader` (6x lv22-25: sunflora, leafeon, tropius, roserade, vileplume, venusaur), prize 1800; cutscene: hua_zhan_leader_intro | skin `single/hua_zhan_leader` |
-| **Apprentice Terra** `kalahar_apprentice` | Kalahar Reach - Gym, the sandstorm hollow - 1998.5 136 4102.5 (latch) | battles `kalahar_apprentice` (3x lv47-48: sandslash, marowak, donphan) | skin `single/kalahar_apprentice` |
-| **Doppler** `kalahar_doppler` | Kalahar Reach - town, wherever a mirage was reached out to - UNPLACED | flavor / lore dialog | skin `single/kalahar_doppler` |
-| **Kalahar Gym Guide** `kalahar_guide` | Kalahar Reach - Gym entrance - 1978.5 131 4085.5 (latch) | cmd: kalahar start | skin `single/kalahar_trainer_1` |
-| **Jr. Apprentice Dune** `kalahar_jr_apprentice` | Kalahar Reach - Gym, the apprentice hollow - 1976.5 136 4134.5 (latch) | battles `kalahar_jr_apprentice` (2x lv45-46: sandslash, marowak) | skin `single/kalahar_apprentice` |
+| **Apprentice Terra** `kalahar_apprentice` | Kalahar Reach - scattered into town (mirage hunt); fights in the gym hollow once found - 1978.5 136 4032.5 (latch) | battles `kalahar_apprentice` (3x lv47-48: sandslash, marowak, donphan); cmd: kalahar reach | skin `single/kalahar_apprentice` |
+| **Doppler** `kalahar_doppler` | Kalahar Reach - town, wherever a mirage was reached out to - UNPLACED | flavor / lore dialog | doppler (DOPPLER) |
+| **Jr. Apprentice Dune** `kalahar_jr_apprentice` | Kalahar Reach - scattered into town (mirage hunt); fights in the gym hollow once found - 1978.5 136 4142.5 (latch) | battles `kalahar_jr_apprentice` (2x lv45-46: sandslash, marowak); cmd: kalahar reach | skin `single/kalahar_apprentice` |
 | **Leader Gaia** `kalahar_leader` | Kalahar Reach - 1978 131 4092 (body) | battles `kalahar_leader` (4x lv50-52: flygon, hippowdon, garchomp, excadrill), prize 3700; cutscene: kalahar_leader_intro | skin `single/kalahar_leader` |
-| **Apprentice** `kalahar_mirage_apprentice` | Kalahar Reach - town, a shimmering apprentice double - UNPLACED | cmd: kalahar reach | skin `single/kalahar_apprentice` |
-| **Dune Trainer** `kalahar_mirage_digger` | Kalahar Reach - town, a shimmering dune-trainer double - UNPLACED | cmd: kalahar reach | skin `single/kalahar_trainer_2` |
-| **Dune Trainer** `kalahar_mirage_hiker` | Kalahar Reach - town, a shimmering dune-trainer double - UNPLACED | cmd: kalahar reach | skin `single/kalahar_trainer_1` |
-| **Hiker Boulder** `kalahar_trainer_1` | Kalahar Reach - Gym, the outer dunes - 2022.5 127 3974.5 (latch) | battles `kalahar_trainer_1` (2x lv45-45: cubone, phanpy) | skin `single/kalahar_trainer_1` |
-| **Ruin Maniac Dustin** `kalahar_trainer_2` | Kalahar Reach - Gym, the outer dunes - 1984.5 136 4056.5 (latch) | battles `kalahar_trainer_2` (2x lv44-45: sandshrew, trapinch) | skin `single/kalahar_trainer_2` |
-| **Archaeologist Juno** `kalahar_trainer_3` | Kalahar Reach - Gym, the inner cut - 2149.5 138 3986.5 (latch) | battles `kalahar_trainer_3` (2x lv44-45: cubone, baltoy) | skin `single/kalahar_trainer_1` |
-| **Prospector Vince** `kalahar_trainer_4` | Kalahar Reach - Gym, the inner cut - 2076.5 121 3948.5 (latch) | battles `kalahar_trainer_4` (2x lv44-45: trapinch, stunfisk) | skin `single/kalahar_trainer_2` |
+| **Hiker Boulder** `kalahar_mirage_boulder` | Kalahar Reach - town, a shimmering double - UNPLACED | cmd: kalahar reach | skin `single/kalahar_trainer_1` |
+| **Jr. Apprentice Dune** `kalahar_mirage_dune` | Kalahar Reach - town, a shimmering double - UNPLACED | cmd: kalahar reach | skin `single/kalahar_apprentice` |
+| **Ruin Maniac Dustin** `kalahar_mirage_dustin` | Kalahar Reach - town, a shimmering double - UNPLACED | cmd: kalahar reach | skin `single/kalahar_trainer_2` |
+| **Archaeologist Juno** `kalahar_mirage_juno` | Kalahar Reach - town, a shimmering double - UNPLACED | cmd: kalahar reach | skin `single/kalahar_trainer_1` |
+| **Apprentice Terra** `kalahar_mirage_terra` | Kalahar Reach - town, a shimmering double - UNPLACED | cmd: kalahar reach | skin `single/kalahar_apprentice` |
+| **Prospector Vince** `kalahar_mirage_vince` | Kalahar Reach - town, a shimmering double - UNPLACED | cmd: kalahar reach | skin `single/kalahar_trainer_2` |
+| **Hiker Boulder** `kalahar_trainer_1` | Kalahar Reach - scattered into town (mirage hunt); fights in the gym hollow once found - 1934.5 136 4043.5 (latch) | battles `kalahar_trainer_1` (2x lv45-45: cubone, phanpy); cmd: kalahar reach | skin `single/kalahar_trainer_1` |
+| **Ruin Maniac Dustin** `kalahar_trainer_2` | Kalahar Reach - scattered into town (mirage hunt); fights in the gym hollow once found - 2022.5 136 4043.5 (latch) | battles `kalahar_trainer_2` (2x lv44-45: sandshrew, trapinch); cmd: kalahar reach | skin `single/kalahar_trainer_2` |
+| **Archaeologist Juno** `kalahar_trainer_3` | Kalahar Reach - scattered into town (mirage hunt); fights in the gym hollow once found - 1934.5 136 4131.5 (latch) | battles `kalahar_trainer_3` (2x lv44-45: cubone, baltoy); cmd: kalahar reach | skin `single/kalahar_trainer_1` |
+| **Prospector Vince** `kalahar_trainer_4` | Kalahar Reach - scattered into town (mirage hunt); fights in the gym hollow once found - 2022.5 136 4131.5 (latch) | battles `kalahar_trainer_4` (2x lv44-45: trapinch, stunfisk); cmd: kalahar reach | skin `single/kalahar_trainer_2` |
 | **Apprentice Faye** `mystic_apprentice` | Mystic Marsh - Gym, the still pool - 921.5 92 2439.5 (latch) | battles `mystic_apprentice` (3x lv27-28: kirlia, granbull, togetic) | skin `single/mystic_apprentice` |
 | **Veyric Ashenmark** `mystic_guide` | Mystic Marsh - West Gym Approach - 974 70 2442 (body) | gym-guide info pages | world-body look |
 | **Jr. Apprentice Nixie** `mystic_jr_apprentice` | Mystic Marsh - Gym, the apprentice pool - 965.5 92 2439.5 (latch) | battles `mystic_jr_apprentice` (2x lv26-26: kirlia, granbull) | skin `single/mystic_apprentice` |

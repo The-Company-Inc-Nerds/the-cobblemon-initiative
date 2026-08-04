@@ -180,11 +180,9 @@ public class InitiativeConfigScreen {
     // -------------------------------------------------------------------------
     // Nuzlocke Rules
     // -------------------------------------------------------------------------
-    ConfigCategory nuzlocke = builder.getOrCreateCategory(
-      Component.literal("Nuzlocke Rules")
-    );
+    var nuzlockeSub = entryBuilder.startSubCategory(Component.literal("Nuzlocke Rules")).setExpanded(false);
 
-    nuzlocke.addEntry(
+    nuzlockeSub.add(
       entryBuilder
         .startBooleanToggle(
           Component.literal("Remove Fainted Pokémon"),
@@ -198,7 +196,7 @@ public class InitiativeConfigScreen {
         .build()
     );
 
-    nuzlocke.addEntry(
+    nuzlockeSub.add(
       entryBuilder
         .startBooleanToggle(
           Component.literal("Sacrifice on Flee"),
@@ -212,7 +210,7 @@ public class InitiativeConfigScreen {
         .build()
     );
 
-    nuzlocke.addEntry(
+    nuzlockeSub.add(
       entryBuilder
         .startBooleanToggle(
           Component.literal("Mystery Sacrifice"),
@@ -227,7 +225,7 @@ public class InitiativeConfigScreen {
         .setSaveConsumer(config::setMysterySacrifice)
         .build()
     );
-    nuzlocke.addEntry(
+    nuzlockeSub.add(
       entryBuilder
         .startBooleanToggle(
           Component.literal("Offer Dishonorable Respawn"),
@@ -246,11 +244,9 @@ public class InitiativeConfigScreen {
     // -------------------------------------------------------------------------
     // Capture Rules
     // -------------------------------------------------------------------------
-    ConfigCategory capture = builder.getOrCreateCategory(
-      Component.literal("Capture Rules")
-    );
+    var captureSub = entryBuilder.startSubCategory(Component.literal("Capture Rules")).setExpanded(false);
 
-    capture.addEntry(
+    captureSub.add(
       entryBuilder
         .startBooleanToggle(
           Component.literal("Send Caught to PC"),
@@ -264,7 +260,7 @@ public class InitiativeConfigScreen {
         .build()
     );
 
-    capture.addEntry(
+    captureSub.add(
       entryBuilder
         .startBooleanToggle(
           Component.literal("Caught Pokémon Start Fainted"),
@@ -276,7 +272,7 @@ public class InitiativeConfigScreen {
         .build()
     );
 
-    capture.addEntry(
+    captureSub.add(
       entryBuilder
         .startBooleanToggle(
           Component.literal("Nickname Prompt"),
@@ -293,7 +289,7 @@ public class InitiativeConfigScreen {
         .build()
     );
 
-    capture.addEntry(
+    captureSub.add(
       entryBuilder
         .startEnumSelector(
           Component.literal("Duplicate Handling"),
@@ -315,11 +311,9 @@ public class InitiativeConfigScreen {
     // -------------------------------------------------------------------------
     // Battle Types
     // -------------------------------------------------------------------------
-    ConfigCategory battleTypes = builder.getOrCreateCategory(
-      Component.literal("Battle Types")
-    );
+    var battleTypesSub = entryBuilder.startSubCategory(Component.literal("Battle Types")).setExpanded(false);
 
-    battleTypes.addEntry(
+    battleTypesSub.add(
       entryBuilder
         .startBooleanToggle(
           Component.literal("Apply in Wild Battles"),
@@ -333,7 +327,7 @@ public class InitiativeConfigScreen {
         .build()
     );
 
-    battleTypes.addEntry(
+    battleTypesSub.add(
       entryBuilder
         .startBooleanToggle(
           Component.literal("Apply in Trainer Battles"),
@@ -350,11 +344,9 @@ public class InitiativeConfigScreen {
     // -------------------------------------------------------------------------
     // Messages
     // -------------------------------------------------------------------------
-    ConfigCategory messages = builder.getOrCreateCategory(
-      Component.literal("Messages")
-    );
+    var messagesSub = entryBuilder.startSubCategory(Component.literal("Messages")).setExpanded(false);
 
-    messages.addEntry(
+    messagesSub.add(
       entryBuilder
         .startStrField(
           Component.literal("Damage Message"),
@@ -373,11 +365,9 @@ public class InitiativeConfigScreen {
     // -------------------------------------------------------------------------
     // Area Announcements
     // -------------------------------------------------------------------------
-    ConfigCategory announce = builder.getOrCreateCategory(
-      Component.literal("Area Announcements")
-    );
+    var announceSub = entryBuilder.startSubCategory(Component.literal("Area Announcements")).setExpanded(false);
 
-    announce.addEntry(
+    announceSub.add(
       entryBuilder
         .startBooleanToggle(
           Component.literal("Enable Area Announcements"),
@@ -394,7 +384,7 @@ public class InitiativeConfigScreen {
         .build()
     );
 
-    announce.addEntry(
+    announceSub.add(
       entryBuilder
         .startEnumSelector(
           Component.literal("Announcement Style"),
@@ -413,7 +403,7 @@ public class InitiativeConfigScreen {
         .build()
     );
 
-    announce.addEntry(
+    announceSub.add(
       entryBuilder
         .startEnumSelector(
           Component.literal("Overlay Content"),
@@ -434,7 +424,7 @@ public class InitiativeConfigScreen {
         .build()
     );
 
-    announce.addEntry(
+    announceSub.add(
       entryBuilder
         .startBooleanToggle(
           Component.literal("Announce on Exit"),
@@ -446,7 +436,7 @@ public class InitiativeConfigScreen {
         .build()
     );
 
-    announce.addEntry(
+    announceSub.add(
       entryBuilder
         .startIntSlider(
           Component.literal("Title Fade In (ticks)"),
@@ -460,7 +450,7 @@ public class InitiativeConfigScreen {
         .build()
     );
 
-    announce.addEntry(
+    announceSub.add(
       entryBuilder
         .startIntSlider(
           Component.literal("Title Stay (ticks)"),
@@ -474,7 +464,7 @@ public class InitiativeConfigScreen {
         .build()
     );
 
-    announce.addEntry(
+    announceSub.add(
       entryBuilder
         .startIntSlider(
           Component.literal("Title Fade Out (ticks)"),
@@ -494,11 +484,9 @@ public class InitiativeConfigScreen {
     NpcSightConfig sightConfig = NpcSightConfig.load();
     NpcSightConfig sightDefaults = new NpcSightConfig();
 
-    ConfigCategory npcSight = builder.getOrCreateCategory(
-      Component.literal("NPC Sight")
-    );
+    var npcSightSub = entryBuilder.startSubCategory(Component.literal("NPC Sight")).setExpanded(false);
 
-    npcSight.addEntry(
+    npcSightSub.add(
       entryBuilder
         .startIntSlider(
           Component.literal("Default Sight Range"),
@@ -516,7 +504,7 @@ public class InitiativeConfigScreen {
         .build()
     );
 
-    npcSight.addEntry(
+    npcSightSub.add(
       entryBuilder
         .startBooleanToggle(
           Component.literal("Debug Mode"),
@@ -532,7 +520,7 @@ public class InitiativeConfigScreen {
         .build()
     );
 
-    npcSight.addEntry(
+    npcSightSub.add(
       entryBuilder
         .startStrField(
           Component.literal("Default Dialog Name"),
@@ -549,7 +537,7 @@ public class InitiativeConfigScreen {
         .build()
     );
 
-    npcSight.addEntry(
+    npcSightSub.add(
       entryBuilder
         .startIntSlider(
           Component.literal("Dialog Trigger Range"),
@@ -573,11 +561,9 @@ public class InitiativeConfigScreen {
     ShrineConfig shrineConfig = ShrineConfig.load();
     ShrineConfig shrineDefaults = new ShrineConfig();
 
-    ConfigCategory iceTrial = builder.getOrCreateCategory(
-      Component.literal("Ice Trial")
-    );
+    var iceTrialSub = entryBuilder.startSubCategory(Component.literal("Ice Trial")).setExpanded(false);
 
-    iceTrial.addEntry(
+    iceTrialSub.add(
       entryBuilder
         .startBooleanToggle(
           Component.literal("Enable Ice Floor Hazard"),
@@ -595,7 +581,7 @@ public class InitiativeConfigScreen {
         .build()
     );
 
-    iceTrial.addEntry(
+    iceTrialSub.add(
       entryBuilder
         .startFloatField(
           Component.literal("Ice Floor Damage"),
@@ -615,7 +601,7 @@ public class InitiativeConfigScreen {
         .build()
     );
 
-    iceTrial.addEntry(
+    iceTrialSub.add(
       entryBuilder
         .startIntSlider(
           Component.literal("Ice Hit Cooldown (ticks)"),
@@ -637,11 +623,9 @@ public class InitiativeConfigScreen {
     // -------------------------------------------------------------------------
     // Trial Timers (fire + ice parkour) — live calibration sliders
     // -------------------------------------------------------------------------
-    ConfigCategory trialTimers = builder.getOrCreateCategory(
-      Component.literal("Trial Timers")
-    );
+    var trialTimersSub = entryBuilder.startSubCategory(Component.literal("Trial Timers")).setExpanded(false);
 
-    trialTimers.addEntry(
+    trialTimersSub.add(
       entryBuilder
         .startIntSlider(
           Component.literal("Fire Trial Time Limit (seconds)"),
@@ -662,7 +646,7 @@ public class InitiativeConfigScreen {
         .build()
     );
 
-    trialTimers.addEntry(
+    trialTimersSub.add(
       entryBuilder
         .startIntSlider(
           Component.literal("Ice Trial Time Limit (seconds)"),
@@ -688,11 +672,9 @@ public class InitiativeConfigScreen {
     LootChestConfig lootChestConfig = LootChestConfig.load();
     LootChestConfig lootChestDefaults = new LootChestConfig();
 
-    ConfigCategory lootChests = builder.getOrCreateCategory(
-      Component.literal("Unplaced Chests")
-    );
+    var lootChestsSub = entryBuilder.startSubCategory(Component.literal("Unplaced Chests")).setExpanded(false);
 
-    lootChests.addEntry(
+    lootChestsSub.add(
       entryBuilder
         .startBooleanToggle(
           Component.literal("Enable Unplaced-Chest Loot"),
@@ -710,7 +692,7 @@ public class InitiativeConfigScreen {
         .build()
     );
 
-    lootChests.addEntry(
+    lootChestsSub.add(
       entryBuilder
         .startBooleanToggle(
           Component.literal("Give Minecraft Pool"),
@@ -724,7 +706,7 @@ public class InitiativeConfigScreen {
         .build()
     );
 
-    lootChests.addEntry(
+    lootChestsSub.add(
       entryBuilder
         .startBooleanToggle(
           Component.literal("Give Cobblemon Pool"),
@@ -738,7 +720,7 @@ public class InitiativeConfigScreen {
         .build()
     );
 
-    lootChests.addEntry(
+    lootChestsSub.add(
       entryBuilder
         .startBooleanToggle(
           Component.literal("One-Time Per Chest"),
@@ -755,7 +737,7 @@ public class InitiativeConfigScreen {
         .build()
     );
 
-    lootChests.addEntry(
+    lootChestsSub.add(
       entryBuilder
         .startBooleanToggle(
           Component.literal("Overwrite Existing Content"),
@@ -773,7 +755,7 @@ public class InitiativeConfigScreen {
         .build()
     );
 
-    lootChests.addEntry(
+    lootChestsSub.add(
       entryBuilder
         .startIntSlider(
           Component.literal("Empty Chest Chance"),
@@ -793,7 +775,7 @@ public class InitiativeConfigScreen {
         .build()
     );
 
-    lootChests.addEntry(
+    lootChestsSub.add(
       entryBuilder
         .startBooleanToggle(
           Component.literal("Announce Supply Caches"),
@@ -810,7 +792,7 @@ public class InitiativeConfigScreen {
         .build()
     );
 
-    lootChests.addEntry(
+    lootChestsSub.add(
       entryBuilder
         .startIntSlider(
           Component.literal("Loot Stacks (×)"),
@@ -830,7 +812,7 @@ public class InitiativeConfigScreen {
         .build()
     );
 
-    lootChests.addEntry(
+    lootChestsSub.add(
       entryBuilder
         .startIntSlider(
           Component.literal("Items Per Stack (×)"),
@@ -853,9 +835,9 @@ public class InitiativeConfigScreen {
     // -------------------------------------------------------------------------
     // Dark Urge (whisper-on-faint flavour)
     // -------------------------------------------------------------------------
-    ConfigCategory darkUrge = builder.getOrCreateCategory(Component.literal("Dark Urge"));
+    var darkUrgeSub = entryBuilder.startSubCategory(Component.literal("Dark Urge")).setExpanded(false);
 
-    darkUrge.addEntry(
+    darkUrgeSub.add(
       entryBuilder
         .startBooleanToggle(Component.literal("Enable Dark Urge Whispers"), config.isEnableDarkUrgeWhispers())
         .setDefaultValue(defaults.isEnableDarkUrgeWhispers())
@@ -863,7 +845,7 @@ public class InitiativeConfigScreen {
         .setSaveConsumer(config::setEnableDarkUrgeWhispers)
         .build()
     );
-    darkUrge.addEntry(
+    darkUrgeSub.add(
       entryBuilder
         .startFloatField(Component.literal("Whisper Chance"), config.getDarkUrgeChance())
         .setDefaultValue(defaults.getDarkUrgeChance())
@@ -872,7 +854,7 @@ public class InitiativeConfigScreen {
         .setSaveConsumer(config::setDarkUrgeChance)
         .build()
     );
-    darkUrge.addEntry(
+    darkUrgeSub.add(
       entryBuilder
         .startIntSlider(Component.literal("Whisper Cooldown (ticks)"), config.getDarkUrgeCooldownTicks(), 0, 24000)
         .setDefaultValue(defaults.getDarkUrgeCooldownTicks())
@@ -880,7 +862,7 @@ public class InitiativeConfigScreen {
         .setSaveConsumer(config::setDarkUrgeCooldownTicks)
         .build()
     );
-    darkUrge.addEntry(
+    darkUrgeSub.add(
       entryBuilder
         .startIntSlider(Component.literal("Tier 1 Level-Cap Threshold"), config.getDarkUrgeTier1LevelCap(), 1, 100)
         .setDefaultValue(defaults.getDarkUrgeTier1LevelCap())
@@ -888,7 +870,7 @@ public class InitiativeConfigScreen {
         .setSaveConsumer(config::setDarkUrgeTier1LevelCap)
         .build()
     );
-    darkUrge.addEntry(
+    darkUrgeSub.add(
       entryBuilder
         .startIntSlider(Component.literal("Tier 2 Level-Cap Threshold"), config.getDarkUrgeTier2LevelCap(), 1, 100)
         .setDefaultValue(defaults.getDarkUrgeTier2LevelCap())
@@ -896,7 +878,7 @@ public class InitiativeConfigScreen {
         .setSaveConsumer(config::setDarkUrgeTier2LevelCap)
         .build()
     );
-    darkUrge.addEntry(
+    darkUrgeSub.add(
       entryBuilder
         .startIntSlider(Component.literal("Tier 3 Level-Cap Threshold"), config.getDarkUrgeTier3LevelCap(), 1, 100)
         .setDefaultValue(defaults.getDarkUrgeTier3LevelCap())
@@ -906,7 +888,7 @@ public class InitiativeConfigScreen {
     );
 
     // Wilderness announcements (Area Announcements category)
-    announce.addEntry(
+    announceSub.add(
       entryBuilder
         .startBooleanToggle(Component.literal("Announce Wilderness"), config.isAnnounceWilderness())
         .setDefaultValue(defaults.isAnnounceWilderness())
@@ -914,7 +896,7 @@ public class InitiativeConfigScreen {
         .setSaveConsumer(config::setAnnounceWilderness)
         .build()
     );
-    announce.addEntry(
+    announceSub.add(
       entryBuilder
         .startStrField(Component.literal("Wilderness Name"), config.getWildernessName())
         .setDefaultValue(defaults.getWildernessName())
@@ -922,7 +904,7 @@ public class InitiativeConfigScreen {
         .setSaveConsumer(config::setWildernessName)
         .build()
     );
-    announce.addEntry(
+    announceSub.add(
       entryBuilder
         .startStrField(Component.literal("Wilderness Subtitle"), config.getWildernessSubtitle())
         .setDefaultValue(defaults.getWildernessSubtitle())
@@ -930,7 +912,7 @@ public class InitiativeConfigScreen {
         .setSaveConsumer(config::setWildernessSubtitle)
         .build()
     );
-    announce.addEntry(
+    announceSub.add(
       entryBuilder
         .startStrField(Component.literal("Wilderness Color"), config.getWildernessColor())
         .setDefaultValue(defaults.getWildernessColor())
@@ -950,7 +932,7 @@ public class InitiativeConfigScreen {
     );
 
     // NPC Sight internals (NPC Sight category)
-    npcSight.addEntry(
+    npcSightSub.add(
       entryBuilder
         .startIntSlider(Component.literal("Field of View (degrees)"), sightConfig.getFovDegrees(), 30, 360)
         .setDefaultValue(sightDefaults.getFovDegrees())
@@ -958,7 +940,7 @@ public class InitiativeConfigScreen {
         .setSaveConsumer(sightConfig::setFovDegrees)
         .build()
     );
-    npcSight.addEntry(
+    npcSightSub.add(
       entryBuilder
         .startIntSlider(Component.literal("Sight Check Interval (ticks)"), sightConfig.getTickInterval(), 1, 40)
         .setDefaultValue(sightDefaults.getTickInterval())
@@ -966,7 +948,7 @@ public class InitiativeConfigScreen {
         .setSaveConsumer(sightConfig::setTickInterval)
         .build()
     );
-    npcSight.addEntry(
+    npcSightSub.add(
       entryBuilder
         .startDoubleField(Component.literal("Debug Ray Step"), sightConfig.getDebugRayStep())
         .setDefaultValue(sightDefaults.getDebugRayStep())
@@ -975,7 +957,7 @@ public class InitiativeConfigScreen {
         .setSaveConsumer(sightConfig::setDebugRayStep)
         .build()
     );
-    npcSight.addEntry(
+    npcSightSub.add(
       entryBuilder
         .startIntSlider(Component.literal("Debug Ray Max Particles"), sightConfig.getDebugRayMaxSteps(), 32, 2048)
         .setDefaultValue(sightDefaults.getDebugRayMaxSteps())
@@ -985,7 +967,7 @@ public class InitiativeConfigScreen {
     );
 
     // Ice crack SFX (Ice Trial category)
-    iceTrial.addEntry(
+    iceTrialSub.add(
       entryBuilder
         .startFloatField(Component.literal("Ice Crack Sound Volume"), shrineConfig.getIceCrackSoundVolume())
         .setDefaultValue(shrineDefaults.getIceCrackSoundVolume())
@@ -994,7 +976,7 @@ public class InitiativeConfigScreen {
         .setSaveConsumer(shrineConfig::setIceCrackSoundVolume)
         .build()
     );
-    iceTrial.addEntry(
+    iceTrialSub.add(
       entryBuilder
         .startFloatField(Component.literal("Ice Crack Sound Pitch"), shrineConfig.getIceCrackSoundPitch())
         .setDefaultValue(shrineDefaults.getIceCrackSoundPitch())
@@ -1007,9 +989,9 @@ public class InitiativeConfigScreen {
     // -------------------------------------------------------------------------
     // Ground Shrine (The Buried Maze — dark gauntlet)
     // -------------------------------------------------------------------------
-    ConfigCategory groundShrine = builder.getOrCreateCategory(Component.literal("Ground Shrine"));
+    var groundShrineSub = entryBuilder.startSubCategory(Component.literal("Ground Shrine")).setExpanded(false);
 
-    groundShrine.addEntry(
+    groundShrineSub.add(
       entryBuilder
         .startFloatField(Component.literal("Start Health Fraction"), shrineConfig.getDarkGauntletStartHealthFraction())
         .setDefaultValue(shrineDefaults.getDarkGauntletStartHealthFraction())
@@ -1018,7 +1000,7 @@ public class InitiativeConfigScreen {
         .setSaveConsumer(shrineConfig::setDarkGauntletStartHealthFraction)
         .build()
     );
-    groundShrine.addEntry(
+    groundShrineSub.add(
       entryBuilder
         .startIntSlider(Component.literal("Blindness Duration (ticks)"), shrineConfig.getDarkGauntletBlindnessDurationTicks(), 20, 400)
         .setDefaultValue(shrineDefaults.getDarkGauntletBlindnessDurationTicks())
@@ -1026,7 +1008,7 @@ public class InitiativeConfigScreen {
         .setSaveConsumer(shrineConfig::setDarkGauntletBlindnessDurationTicks)
         .build()
     );
-    groundShrine.addEntry(
+    groundShrineSub.add(
       entryBuilder
         .startIntSlider(Component.literal("Blindness Refresh (ticks)"), shrineConfig.getDarkGauntletBlindnessRefreshTicks(), 20, 200)
         .setDefaultValue(shrineDefaults.getDarkGauntletBlindnessRefreshTicks())
@@ -1034,7 +1016,7 @@ public class InitiativeConfigScreen {
         .setSaveConsumer(shrineConfig::setDarkGauntletBlindnessRefreshTicks)
         .build()
     );
-    groundShrine.addEntry(
+    groundShrineSub.add(
       entryBuilder
         .startIntSlider(Component.literal("Earthquake Nausea (ticks)"), shrineConfig.getEarthquakeNauseaTicks(), 0, 200)
         .setDefaultValue(shrineDefaults.getEarthquakeNauseaTicks())
@@ -1042,7 +1024,7 @@ public class InitiativeConfigScreen {
         .setSaveConsumer(shrineConfig::setEarthquakeNauseaTicks)
         .build()
     );
-    groundShrine.addEntry(
+    groundShrineSub.add(
       entryBuilder
         .startFloatField(Component.literal("Earthquake Sound Volume"), shrineConfig.getEarthquakeSoundVolume())
         .setDefaultValue(shrineDefaults.getEarthquakeSoundVolume())
@@ -1051,7 +1033,7 @@ public class InitiativeConfigScreen {
         .setSaveConsumer(shrineConfig::setEarthquakeSoundVolume)
         .build()
     );
-    groundShrine.addEntry(
+    groundShrineSub.add(
       entryBuilder
         .startFloatField(Component.literal("Earthquake Sound Pitch"), shrineConfig.getEarthquakeSoundPitch())
         .setDefaultValue(shrineDefaults.getEarthquakeSoundPitch())
@@ -1066,9 +1048,9 @@ public class InitiativeConfigScreen {
     // -------------------------------------------------------------------------
     NobleConfig nobleConfig = NobleConfig.load();
     NobleConfig nobleDefaults = new NobleConfig();
-    ConfigCategory nobles = builder.getOrCreateCategory(Component.literal("Noble Encounters"));
+    var noblesSub = entryBuilder.startSubCategory(Component.literal("Noble Encounters")).setExpanded(false);
 
-    nobles.addEntry(
+    noblesSub.add(
       entryBuilder
         .startBooleanToggle(Component.literal("Nobles Enabled"), nobleConfig.isNoblesEnabled())
         .setDefaultValue(nobleDefaults.isNoblesEnabled())
@@ -1076,7 +1058,7 @@ public class InitiativeConfigScreen {
         .setSaveConsumer(nobleConfig::setNoblesEnabled)
         .build()
     );
-    nobles.addEntry(
+    noblesSub.add(
       entryBuilder
         .startFloatField(Component.literal("Arena Size Multiplier"), nobleConfig.getArenaRadiusMultiplier())
         .setDefaultValue(nobleDefaults.getArenaRadiusMultiplier())
@@ -1086,7 +1068,7 @@ public class InitiativeConfigScreen {
         .setSaveConsumer(nobleConfig::setArenaRadiusMultiplier)
         .build()
     );
-    nobles.addEntry(
+    noblesSub.add(
       entryBuilder
         .startFloatField(Component.literal("Boss Health Multiplier"), nobleConfig.getBossHealthMultiplier())
         .setDefaultValue(nobleDefaults.getBossHealthMultiplier())
@@ -1095,7 +1077,7 @@ public class InitiativeConfigScreen {
         .setSaveConsumer(nobleConfig::setBossHealthMultiplier)
         .build()
     );
-    nobles.addEntry(
+    noblesSub.add(
       entryBuilder
         .startFloatField(Component.literal("Boss Attack Damage Multiplier"), nobleConfig.getAttackDamageMultiplier())
         .setDefaultValue(nobleDefaults.getAttackDamageMultiplier())
@@ -1104,7 +1086,7 @@ public class InitiativeConfigScreen {
         .setSaveConsumer(nobleConfig::setAttackDamageMultiplier)
         .build()
     );
-    nobles.addEntry(
+    noblesSub.add(
       entryBuilder
         .startFloatField(Component.literal("Boss Melee Damage Multiplier"), nobleConfig.getBossMeleeDamageMultiplier())
         .setDefaultValue(nobleDefaults.getBossMeleeDamageMultiplier())
@@ -1113,7 +1095,7 @@ public class InitiativeConfigScreen {
         .setSaveConsumer(nobleConfig::setBossMeleeDamageMultiplier)
         .build()
     );
-    nobles.addEntry(
+    noblesSub.add(
       entryBuilder
         .startBooleanToggle(Component.literal("Boss Bar Enabled"), nobleConfig.isBossBarEnabled())
         .setDefaultValue(nobleDefaults.isBossBarEnabled())
@@ -1121,7 +1103,7 @@ public class InitiativeConfigScreen {
         .setSaveConsumer(nobleConfig::setBossBarEnabled)
         .build()
     );
-    nobles.addEntry(
+    noblesSub.add(
       entryBuilder
         .startFloatField(Component.literal("Ring Pushback"), nobleConfig.getRingPushback())
         .setDefaultValue(nobleDefaults.getRingPushback())
@@ -1130,7 +1112,7 @@ public class InitiativeConfigScreen {
         .setSaveConsumer(nobleConfig::setRingPushback)
         .build()
     );
-    nobles.addEntry(
+    noblesSub.add(
       entryBuilder
         .startFloatField(Component.literal("SFX Volume"), nobleConfig.getSfxVolume())
         .setDefaultValue(nobleDefaults.getSfxVolume())
@@ -1139,7 +1121,7 @@ public class InitiativeConfigScreen {
         .setSaveConsumer(nobleConfig::setSfxVolume)
         .build()
     );
-    nobles.addEntry(
+    noblesSub.add(
       entryBuilder
         .startFloatField(Component.literal("SFX Pitch"), nobleConfig.getSfxPitch())
         .setDefaultValue(nobleDefaults.getSfxPitch())
@@ -1148,7 +1130,7 @@ public class InitiativeConfigScreen {
         .setSaveConsumer(nobleConfig::setSfxPitch)
         .build()
     );
-    nobles.addEntry(
+    noblesSub.add(
       entryBuilder
         .startBooleanToggle(Component.literal("Wandering Mini Nobles"), nobleConfig.isWanderingMinisEnabled())
         .setDefaultValue(nobleDefaults.isWanderingMinisEnabled())
@@ -1157,7 +1139,7 @@ public class InitiativeConfigScreen {
         .setSaveConsumer(nobleConfig::setWanderingMinisEnabled)
         .build()
     );
-    nobles.addEntry(
+    noblesSub.add(
       entryBuilder
         .startFloatField(Component.literal("Wandering Mini Frequency"), nobleConfig.getAmbientChanceMultiplier())
         .setDefaultValue(nobleDefaults.getAmbientChanceMultiplier())
@@ -1167,7 +1149,7 @@ public class InitiativeConfigScreen {
         .setSaveConsumer(nobleConfig::setAmbientChanceMultiplier)
         .build()
     );
-    nobles.addEntry(
+    noblesSub.add(
       entryBuilder
         .startBooleanToggle(Component.literal("Town Bird Attacks"), nobleConfig.isTownBirdAttacksEnabled())
         .setDefaultValue(nobleDefaults.isTownBirdAttacksEnabled())
@@ -1176,7 +1158,7 @@ public class InitiativeConfigScreen {
         .setSaveConsumer(nobleConfig::setTownBirdAttacksEnabled)
         .build()
     );
-    nobles.addEntry(
+    noblesSub.add(
       entryBuilder
         .startIntField(Component.literal("Town Bird Cooldown (min)"), nobleConfig.getTownBirdCooldownMinutes())
         .setDefaultValue(nobleDefaults.getTownBirdCooldownMinutes())
@@ -1186,7 +1168,7 @@ public class InitiativeConfigScreen {
         .setSaveConsumer(nobleConfig::setTownBirdCooldownMinutes)
         .build()
     );
-    nobles.addEntry(
+    noblesSub.add(
       entryBuilder
         .startBooleanToggle(Component.literal("Perfect-IV Noble Prizes"), nobleConfig.isPerfectIvPrizes())
         .setDefaultValue(nobleDefaults.isPerfectIvPrizes())
@@ -1195,7 +1177,7 @@ public class InitiativeConfigScreen {
         .setSaveConsumer(nobleConfig::setPerfectIvPrizes)
         .build()
     );
-    nobles.addEntry(
+    noblesSub.add(
       entryBuilder
         .startBooleanToggle(Component.literal("Nobles Can Kill You"), nobleConfig.isLethalNobleFights())
         .setDefaultValue(nobleDefaults.isLethalNobleFights())
@@ -1210,9 +1192,9 @@ public class InitiativeConfigScreen {
     // -------------------------------------------------------------------------
     ProgressionConfig progressionConfig = ProgressionConfig.load();
     ProgressionConfig progressionDefaults = new ProgressionConfig();
-    ConfigCategory progression = builder.getOrCreateCategory(Component.literal("Progression"));
+    var progressionSub = entryBuilder.startSubCategory(Component.literal("Progression")).setExpanded(false);
 
-    progression.addEntry(
+    progressionSub.add(
       entryBuilder
         .startIntSlider(Component.literal("Base Level Cap"), progressionConfig.getBaseLevelCap(), 5, 50)
         .setDefaultValue(progressionDefaults.getBaseLevelCap())
@@ -1220,7 +1202,7 @@ public class InitiativeConfigScreen {
         .setSaveConsumer(progressionConfig::setBaseLevelCap)
         .build()
     );
-    progression.addEntry(
+    progressionSub.add(
       entryBuilder
         .startIntSlider(Component.literal("Champion Level Cap"), progressionConfig.getChampionLevelCap(), 50, 100)
         .setDefaultValue(progressionDefaults.getChampionLevelCap())
@@ -1228,7 +1210,7 @@ public class InitiativeConfigScreen {
         .setSaveConsumer(progressionConfig::setChampionLevelCap)
         .build()
     );
-    progression.addEntry(
+    progressionSub.add(
       entryBuilder
         .startIntSlider(Component.literal("Spawn-on-Defeat Y Offset"), progressionConfig.getSpawnOnDefeatYOffset(), -5, 5)
         .setDefaultValue(progressionDefaults.getSpawnOnDefeatYOffset())
@@ -1243,33 +1225,33 @@ public class InitiativeConfigScreen {
     DaycareConfig daycareConfig = DaycareConfig.load();
     DaycareConfig daycareDefaults = new DaycareConfig();
 
-    ConfigCategory daycare = builder.getOrCreateCategory(Component.literal("Daycare"));
+    var daycareSub = entryBuilder.startSubCategory(Component.literal("Daycare")).setExpanded(false);
 
-    daycare.addEntry(
+    daycareSub.add(
       entryBuilder.startBooleanToggle(Component.literal("Enabled"), daycareConfig.isEnabled())
         .setDefaultValue(daycareDefaults.isEnabled())
         .setTooltip(Component.literal("Turn the daycare XP drip on or off."))
         .setSaveConsumer(daycareConfig::setEnabled).build());
-    daycare.addEntry(
+    daycareSub.add(
       entryBuilder.startIntField(Component.literal("XP per interval"), daycareConfig.getXpPerInterval())
         .setMin(0)
         .setDefaultValue(daycareDefaults.getXpPerInterval())
         .setTooltip(Component.literal("XP each boarded Pokémon gains per drip (always clamped to the live level cap)."))
         .setSaveConsumer(daycareConfig::setXpPerInterval).build());
-    daycare.addEntry(
+    daycareSub.add(
       entryBuilder.startIntField(Component.literal("Interval ticks"), daycareConfig.getIntervalTicks())
         .setMin(1)
         .setDefaultValue(daycareDefaults.getIntervalTicks())
         .setTooltip(Component.literal("Ticks between XP drips (1200 = once a minute)."))
         .setSaveConsumer(daycareConfig::setIntervalTicks).build());
     // Pen coordinates live in the daycare config JSON, not here — ModMenu is toggles/sliders only.
-    daycare.addEntry(
+    daycareSub.add(
       entryBuilder.startIntField(Component.literal("Pickup fee — base (CD)"), daycareConfig.getFeeBase())
         .setMin(0)
         .setDefaultValue(daycareDefaults.getFeeBase())
         .setTooltip(Component.literal("Withdraw fee = base + per-level × levels gained while boarded."))
         .setSaveConsumer(daycareConfig::setFeeBase).build());
-    daycare.addEntry(
+    daycareSub.add(
       entryBuilder.startIntField(Component.literal("Pickup fee — per level (CD)"), daycareConfig.getFeePerLevel())
         .setMin(0)
         .setDefaultValue(daycareDefaults.getFeePerLevel())
@@ -1281,53 +1263,53 @@ public class InitiativeConfigScreen {
     SafariConfig safariConfig = SafariConfig.load();
     SafariConfig safariDefaults = new SafariConfig();
 
-    ConfigCategory safari = builder.getOrCreateCategory(Component.literal("Safari Zone"));
+    var safariSub = entryBuilder.startSubCategory(Component.literal("Safari Zone")).setExpanded(false);
 
-    safari.addEntry(
+    safariSub.add(
       entryBuilder.startIntField(Component.literal("Day Permit fee (CD)"), safariConfig.permitFee)
         .setMin(0)
         .setDefaultValue(safariDefaults.permitFee)
         .setTooltip(Component.literal("Cost of a Day Permit (the pay-probe amount)."))
         .setSaveConsumer(v -> safariConfig.permitFee = v).build());
-    safari.addEntry(
+    safariSub.add(
       entryBuilder.startIntField(Component.literal("Safari Balls per permit"), safariConfig.balls)
         .setMin(1)
         .setDefaultValue(safariDefaults.balls)
         .setTooltip(Component.literal("Marked Safari Balls issued per permit (clawed back at exit)."))
         .setSaveConsumer(v -> safariConfig.balls = v).build());
-    safari.addEntry(
+    safariSub.add(
       entryBuilder.startIntField(Component.literal("Site clock (seconds)"), safariConfig.clockSeconds)
         .setMin(1)
         .setDefaultValue(safariDefaults.clockSeconds)
         .setTooltip(Component.literal("How long a permit lasts. 900 = 15 minutes."))
         .setSaveConsumer(v -> safariConfig.clockSeconds = v).build());
-    safari.addEntry(
+    safariSub.add(
       entryBuilder.startIntField(Component.literal("Lure catch window (seconds)"), safariConfig.windowSeconds)
         .setMin(1)
         .setDefaultValue(safariDefaults.windowSeconds)
         .setTooltip(Component.literal("How long lured Pokémon linger before wandering off."))
         .setSaveConsumer(v -> safariConfig.windowSeconds = v).build());
-    safari.addEntry(
+    safariSub.add(
       entryBuilder.startIntSlider(Component.literal("Badges required"), safariConfig.gateBadges, 0, 10)
         .setDefaultValue(safariDefaults.gateBadges)
         .setTooltip(Component.literal("Gym badges needed before Intake will sell a permit."))
         .setSaveConsumer(v -> safariConfig.gateBadges = v).build());
-    safari.addEntry(
+    safariSub.add(
       entryBuilder.startIntField(Component.literal("Suspense min (seconds)"), safariConfig.suspenseMinSeconds)
         .setMin(0)
         .setDefaultValue(safariDefaults.suspenseMinSeconds)
         .setTooltip(Component.literal("Shortest delay between a scatter and the spawn roll."))
         .setSaveConsumer(v -> safariConfig.suspenseMinSeconds = v).build());
-    safari.addEntry(
+    safariSub.add(
       entryBuilder.startIntField(Component.literal("Suspense max (seconds)"), safariConfig.suspenseMaxSeconds)
         .setMin(0)
         .setDefaultValue(safariDefaults.suspenseMaxSeconds)
         .setSaveConsumer(v -> safariConfig.suspenseMaxSeconds = v).build());
-    safari.addEntry(
+    safariSub.add(
       entryBuilder.startIntSlider(Component.literal("Spawns per scatter — min"), safariConfig.spawnsMin, 1, 6)
         .setDefaultValue(safariDefaults.spawnsMin)
         .setSaveConsumer(v -> safariConfig.spawnsMin = v).build());
-    safari.addEntry(
+    safariSub.add(
       entryBuilder.startIntSlider(Component.literal("Spawns per scatter — max"), safariConfig.spawnsMax, 1, 6)
         .setDefaultValue(safariDefaults.spawnsMax)
         .setSaveConsumer(v -> safariConfig.spawnsMax = v).build());
@@ -1339,15 +1321,15 @@ public class InitiativeConfigScreen {
     StadiumConfig stadiumConfig = StadiumConfig.load();
     StadiumConfig stadiumDefaults = new StadiumConfig();
 
-    ConfigCategory stadium = builder.getOrCreateCategory(Component.literal("Stadium"));
+    var stadiumSub = entryBuilder.startSubCategory(Component.literal("Stadium")).setExpanded(false);
 
-    stadium.addEntry(
+    stadiumSub.add(
       entryBuilder.startIntField(Component.literal("Ticks between waves"), stadiumConfig.getTicksBetweenWaves())
         .setMin(1)
         .setDefaultValue(100)
         .setTooltip(Component.literal("Countdown between clearing a wave and the next dispatch (20 = 1s)."))
         .setSaveConsumer(stadiumConfig::setTicksBetweenWaves).build());
-    stadium.addEntry(
+    stadiumSub.add(
       entryBuilder.startIntField(Component.literal("Completion bonus (CD)"), stadiumConfig.getCompletionPurse())
         .setMin(0)
         .setDefaultValue(1500)
@@ -1361,76 +1343,76 @@ public class InitiativeConfigScreen {
     HomesteadConfig homesteadDefaults = new HomesteadConfig();
     int[] hsTier = homesteadConfig.getBeaconYieldTier();
 
-    ConfigCategory homestead = builder.getOrCreateCategory(Component.literal("Homestead"));
-    homestead.addEntry(
+    var homesteadSub = entryBuilder.startSubCategory(Component.literal("Homestead")).setExpanded(false);
+    homesteadSub.add(
       entryBuilder.startBooleanToggle(Component.literal("Enabled"), homesteadConfig.isEnabled())
         .setDefaultValue(homesteadDefaults.isEnabled())
         .setTooltip(Component.literal("Master switch for the homestead-beacon income loop."))
         .setSaveConsumer(homesteadConfig::setEnabled).build());
-    homestead.addEntry(
+    homesteadSub.add(
       entryBuilder.startDoubleField(Component.literal("Income multiplier"), homesteadConfig.getIncomeMultiplier())
         .setMin(0.0).setDefaultValue(homesteadDefaults.getIncomeMultiplier())
         .setTooltip(Component.literal("Global scale on all homestead income."))
         .setSaveConsumer(homesteadConfig::setIncomeMultiplier).build());
-    homestead.addEntry(
+    homesteadSub.add(
       entryBuilder.startIntField(Component.literal("Beacon yield — Tier 1 (CD/day)"), hsTier[0])
         .setMin(0).setDefaultValue(25)
         .setSaveConsumer(v -> homesteadConfig.setBeaconYieldTier(0, v)).build());
-    homestead.addEntry(
+    homesteadSub.add(
       entryBuilder.startIntField(Component.literal("Beacon yield — Tier 2 (CD/day)"), hsTier[1])
         .setMin(0).setDefaultValue(50)
         .setSaveConsumer(v -> homesteadConfig.setBeaconYieldTier(1, v)).build());
-    homestead.addEntry(
+    homesteadSub.add(
       entryBuilder.startIntField(Component.literal("Beacon yield — Tier 3 (CD/day)"), hsTier[2])
         .setMin(0).setDefaultValue(100)
         .setSaveConsumer(v -> homesteadConfig.setBeaconYieldTier(2, v)).build());
-    homestead.addEntry(
+    homesteadSub.add(
       entryBuilder.startIntField(Component.literal("Beacon yield — Tier 4 (CD/day)"), hsTier[3])
         .setMin(0).setDefaultValue(175)
         .setTooltip(Component.literal("Top tier — unlocked by a nether star when 'Star for top tier' is on."))
         .setSaveConsumer(v -> homesteadConfig.setBeaconYieldTier(3, v)).build());
-    homestead.addEntry(
+    homesteadSub.add(
       entryBuilder.startDoubleField(Component.literal("Material mult — iron"), homesteadConfig.getMaterialMultIron())
         .setMin(0.0).setDefaultValue(1.0).setSaveConsumer(homesteadConfig::setMaterialMultIron).build());
-    homestead.addEntry(
+    homesteadSub.add(
       entryBuilder.startDoubleField(Component.literal("Material mult — gold"), homesteadConfig.getMaterialMultGold())
         .setMin(0.0).setDefaultValue(1.25).setSaveConsumer(homesteadConfig::setMaterialMultGold).build());
-    homestead.addEntry(
+    homesteadSub.add(
       entryBuilder.startDoubleField(Component.literal("Material mult — diamond"), homesteadConfig.getMaterialMultDiamond())
         .setMin(0.0).setDefaultValue(1.6).setSaveConsumer(homesteadConfig::setMaterialMultDiamond).build());
-    homestead.addEntry(
+    homesteadSub.add(
       entryBuilder.startDoubleField(Component.literal("Material mult — emerald"), homesteadConfig.getMaterialMultEmerald())
         .setMin(0.0).setDefaultValue(1.8).setSaveConsumer(homesteadConfig::setMaterialMultEmerald).build());
-    homestead.addEntry(
+    homesteadSub.add(
       entryBuilder.startDoubleField(Component.literal("Material mult — netherite"), homesteadConfig.getMaterialMultNetherite())
         .setMin(0.0).setDefaultValue(2.5).setSaveConsumer(homesteadConfig::setMaterialMultNetherite).build());
-    homestead.addEntry(
+    homesteadSub.add(
       entryBuilder.startIntField(Component.literal("Per-field cap (CD/day)"), homesteadConfig.getFieldCap())
         .setMin(0).setDefaultValue(450).setSaveConsumer(homesteadConfig::setFieldCap).build());
-    homestead.addEntry(
+    homesteadSub.add(
       entryBuilder.startIntField(Component.literal("Total cap (CD/day)"), homesteadConfig.getTotalCap())
         .setMin(0).setDefaultValue(1500).setSaveConsumer(homesteadConfig::setTotalCap).build());
-    homestead.addEntry(
+    homesteadSub.add(
       entryBuilder.startIntField(Component.literal("Beacon price — base (CD)"), homesteadConfig.getPriceBase())
         .setMin(0).setDefaultValue(2000)
         .setTooltip(Component.literal("Suzune's price for the second beacon onward (first is a gift)."))
         .setSaveConsumer(homesteadConfig::setPriceBase).build());
-    homestead.addEntry(
+    homesteadSub.add(
       entryBuilder.startDoubleField(Component.literal("Beacon price — growth ×"), homesteadConfig.getPriceGrowth())
         .setMin(1.0).setDefaultValue(1.5)
         .setTooltip(Component.literal("Each beacon costs this multiple of the last."))
         .setSaveConsumer(homesteadConfig::setPriceGrowth).build());
-    homestead.addEntry(
+    homesteadSub.add(
       entryBuilder.startBooleanToggle(Component.literal("Star for top tier"), homesteadConfig.isStarForTopTier())
         .setDefaultValue(homesteadDefaults.isStarForTopTier())
         .setTooltip(Component.literal("A nether star unlocks the top tier (right-click the beacon holding one)."))
         .setSaveConsumer(homesteadConfig::setStarForTopTier).build());
-    homestead.addEntry(
+    homesteadSub.add(
       entryBuilder.startBooleanToggle(Component.literal("Liberated fields are safe zones"), homesteadConfig.isHomesteadSafeZone())
         .setDefaultValue(homesteadDefaults.isHomesteadSafeZone())
         .setTooltip(Component.literal("Freed fields become no-death build zones."))
         .setSaveConsumer(homesteadConfig::setHomesteadSafeZone).build());
-    homestead.addEntry(
+    homesteadSub.add(
       entryBuilder.startIntField(Component.literal("Claim radius (blocks)"), homesteadConfig.getClaimRadius())
         .setMin(1).setMax(48).setDefaultValue(16)
         .setTooltip(Component.literal("Search range when running 'homestead claim'."))
@@ -1442,8 +1424,8 @@ public class InitiativeConfigScreen {
     StreamSyncConfig streamSyncConfig = StreamSyncConfig.load();
     StreamSyncConfig streamSyncDefaults = new StreamSyncConfig();
 
-    ConfigCategory streamSync = builder.getOrCreateCategory(Component.literal("Stream Sync"));
-    streamSync.addEntry(
+    var streamSyncSub = entryBuilder.startSubCategory(Component.literal("Stream Sync")).setExpanded(false);
+    streamSyncSub.add(
       entryBuilder.startBooleanToggle(Component.literal("Enabled"), streamSyncConfig.isEnabled())
         .setDefaultValue(streamSyncDefaults.isEnabled())
         .setTooltip(Component.literal(
@@ -1451,25 +1433,25 @@ public class InitiativeConfigScreen {
           + "service. Off = no thread, no network. Takes effect on world load or "
           + "/streamsync reload."))
         .setSaveConsumer(streamSyncConfig::setEnabled).build());
-    streamSync.addEntry(
+    streamSyncSub.add(
       entryBuilder.startStrField(Component.literal("Endpoint URL"), streamSyncConfig.getEndpointUrl())
         .setDefaultValue(streamSyncDefaults.getEndpointUrl())
         .setTooltip(Component.literal("The overlay service's ingest endpoint (HTTP POST)."))
         .setSaveConsumer(streamSyncConfig::setEndpointUrl).build());
-    streamSync.addEntry(
+    streamSyncSub.add(
       entryBuilder.startStrField(Component.literal("Auth Token"), streamSyncConfig.getAuthToken())
         .setDefaultValue(streamSyncDefaults.getAuthToken())
         .setTooltip(Component.literal(
           "Optional bearer token sent with every push. Blank = none (the firewall is the gate)."))
         .setSaveConsumer(streamSyncConfig::setAuthToken).build());
-    streamSync.addEntry(
+    streamSyncSub.add(
       entryBuilder.startIntSlider(
           Component.literal("Snapshot Interval (ticks)"), streamSyncConfig.getSnapshotIntervalTicks(), 10, 200)
         .setDefaultValue(streamSyncDefaults.getSnapshotIntervalTicks())
         .setTooltip(Component.literal(
           "How often game state is checked for changes (only changes are pushed). 40 = every 2s."))
         .setSaveConsumer(streamSyncConfig::setSnapshotIntervalTicks).build());
-    streamSync.addEntry(
+    streamSyncSub.add(
       entryBuilder.startIntSlider(
           Component.literal("Heartbeat (seconds)"), streamSyncConfig.getHeartbeatSeconds(), 5, 120)
         .setDefaultValue(streamSyncDefaults.getHeartbeatSeconds())
@@ -1483,24 +1465,24 @@ public class InitiativeConfigScreen {
     MomCareConfig momConfig = MomCareConfig.load();
     MomCareConfig momDefaults = new MomCareConfig();
 
-    ConfigCategory momCare = builder.getOrCreateCategory(Component.literal("Mom's Care"));
-    momCare.addEntry(
+    var momCareSub = entryBuilder.startSubCategory(Component.literal("Mom's Care")).setExpanded(false);
+    momCareSub.add(
       entryBuilder.startBooleanToggle(Component.literal("Enabled"), momConfig.isEnabled())
         .setDefaultValue(momDefaults.isEnabled())
         .setTooltip(Component.literal("Mom's 1-slot friendship-caretaker service."))
         .setSaveConsumer(momConfig::setEnabled).build());
-    momCare.addEntry(
+    momCareSub.add(
       entryBuilder.startIntField(Component.literal("Friendship per day"), momConfig.getFriendshipPerDay())
         .setMin(0).setDefaultValue(5)
         .setTooltip(Component.literal("Friendship gained per in-game day (0→cap; a friendship evo needs ~160+)."))
         .setSaveConsumer(momConfig::setFriendshipPerDay).build());
-    momCare.addEntry(
+    momCareSub.add(
       entryBuilder.startDoubleField(Component.literal("Rate multiplier"), momConfig.getRateMultiplier())
         .setMin(0.0).setDefaultValue(1.0).setSaveConsumer(momConfig::setRateMultiplier).build());
-    momCare.addEntry(
+    momCareSub.add(
       entryBuilder.startIntField(Component.literal("Friendship cap"), momConfig.getCap())
         .setMin(0).setMax(255).setDefaultValue(255).setSaveConsumer(momConfig::setCap).build());
-    momCare.addEntry(
+    momCareSub.add(
       entryBuilder.startIntField(Component.literal("Pickup fee (CD)"), momConfig.getFee())
         .setMin(0).setDefaultValue(0)
         .setTooltip(Component.literal("0 = free (recommended — she's your mom)."))
@@ -1513,18 +1495,18 @@ public class InitiativeConfigScreen {
     MinecraftFlavorConfig flavorScreenConfig = MinecraftFlavorConfig.load();
     MinecraftFlavorConfig flavorDefaults = new MinecraftFlavorConfig();
 
-    ConfigCategory flavor = builder.getOrCreateCategory(Component.literal("Minecraft Flavor"));
-    flavor.addEntry(
+    var flavorSub = entryBuilder.startSubCategory(Component.literal("Minecraft Flavor")).setExpanded(false);
+    flavorSub.add(
       entryBuilder.startBooleanToggle(Component.literal("Minecraft achievements required for gyms"), flavorScreenConfig.isGymMcAchievementsRequired())
         .setDefaultValue(flavorDefaults.isGymMcAchievementsRequired())
         .setTooltip(Component.literal("On: each gym requires its Minecraft task (mine a diamond, harvest honey, …) before you may challenge the leader — and the tasks fire flavor. Off: gyms open, tasks silent. (Gym 8 is always the Ender Dragon.)"))
         .setSaveConsumer(flavorScreenConfig::setGymMcAchievementsRequired).build());
-    flavor.addEntry(
+    flavorSub.add(
       entryBuilder.startBooleanToggle(Component.literal("Milestone loot"), flavorScreenConfig.isMilestoneLootEnabled())
         .setDefaultValue(flavorDefaults.isMilestoneLootEnabled())
         .setTooltip(Component.literal("Diamond/badge, beacon/Champion, netherite/Board."))
         .setSaveConsumer(flavorScreenConfig::setMilestoneLootEnabled).build());
-    flavor.addEntry(
+    flavorSub.add(
       entryBuilder.startBooleanToggle(Component.literal("Daycare independence cues"), flavorScreenConfig.isDaycareIndependentFlavor())
         .setDefaultValue(flavorDefaults.isDaycareIndependentFlavor())
         .setTooltip(Component.literal("The daycare's 'not Company' framing (the shipped say-line stays either way)."))
@@ -1535,9 +1517,9 @@ public class InitiativeConfigScreen {
     // -------------------------------------------------------------------------
     DojoConfig dojoConfig = DojoConfig.load();
     DojoConfig dojoDefaults = new DojoConfig();
-    ConfigCategory dojo = builder.getOrCreateCategory(Component.literal("Deepcore Dojo"));
+    var dojoSub = entryBuilder.startSubCategory(Component.literal("Deepcore Dojo")).setExpanded(false);
 
-    dojo.addEntry(
+    dojoSub.add(
       entryBuilder
         .startFloatField(Component.literal("Fighter Health Multiplier"), dojoConfig.getFighterHealthMultiplier())
         .setDefaultValue(dojoDefaults.getFighterHealthMultiplier())
@@ -1547,7 +1529,7 @@ public class InitiativeConfigScreen {
         .setSaveConsumer(dojoConfig::setFighterHealthMultiplier)
         .build()
     );
-    dojo.addEntry(
+    dojoSub.add(
       entryBuilder
         .startFloatField(Component.literal("Fighter Strength Multiplier"), dojoConfig.getFighterDamageMultiplier())
         .setDefaultValue(dojoDefaults.getFighterDamageMultiplier())
@@ -1557,7 +1539,7 @@ public class InitiativeConfigScreen {
         .setSaveConsumer(dojoConfig::setFighterDamageMultiplier)
         .build()
     );
-    dojo.addEntry(
+    dojoSub.add(
       entryBuilder
         .startBooleanToggle(Component.literal("Knockout Mode (non-lethal)"), dojoConfig.isKnockoutMode())
         .setDefaultValue(dojoDefaults.isKnockoutMode())
@@ -1567,7 +1549,7 @@ public class InitiativeConfigScreen {
         .setSaveConsumer(dojoConfig::setKnockoutMode)
         .build()
     );
-    dojo.addEntry(
+    dojoSub.add(
       entryBuilder
         .startFloatField(Component.literal("Player Health After Knockout"), dojoConfig.getKnockoutPlayerHealth())
         .setDefaultValue(dojoDefaults.getKnockoutPlayerHealth())
@@ -1577,7 +1559,7 @@ public class InitiativeConfigScreen {
         .setSaveConsumer(dojoConfig::setKnockoutPlayerHealth)
         .build()
     );
-    dojo.addEntry(
+    dojoSub.add(
       entryBuilder
         .startIntField(Component.literal("Knockout CobbleDollar Cost"), dojoConfig.getKnockoutCost())
         .setDefaultValue(dojoDefaults.getKnockoutCost())
@@ -1593,9 +1575,9 @@ public class InitiativeConfigScreen {
     // -------------------------------------------------------------------------
     OrcConfig orcConfig = OrcConfig.load();
     OrcConfig orcDefaults = new OrcConfig();
-    ConfigCategory orc = builder.getOrCreateCategory(Component.literal("Orc Camps"));
+    var orcSub = entryBuilder.startSubCategory(Component.literal("Orc Camps")).setExpanded(false);
 
-    orc.addEntry(
+    orcSub.add(
       entryBuilder
         .startFloatField(Component.literal("Orc Health Multiplier"), orcConfig.getHealthMultiplier())
         .setDefaultValue(orcDefaults.getHealthMultiplier())
@@ -1605,7 +1587,7 @@ public class InitiativeConfigScreen {
         .setSaveConsumer(orcConfig::setHealthMultiplier)
         .build()
     );
-    orc.addEntry(
+    orcSub.add(
       entryBuilder
         .startFloatField(Component.literal("Orc Strength Multiplier"), orcConfig.getDamageMultiplier())
         .setDefaultValue(orcDefaults.getDamageMultiplier())
@@ -1615,7 +1597,7 @@ public class InitiativeConfigScreen {
         .setSaveConsumer(orcConfig::setDamageMultiplier)
         .build()
     );
-    orc.addEntry(
+    orcSub.add(
       entryBuilder
         .startIntField(Component.literal("Camp Spoils Rolls"), orcConfig.getSpoilsRolls())
         .setDefaultValue(orcDefaults.getSpoilsRolls())
@@ -1628,8 +1610,8 @@ public class InitiativeConfigScreen {
 
     CyclopsConfig cyclopsConfig = CyclopsConfig.load();
     CyclopsConfig cyclopsDefaults = new CyclopsConfig();
-    ConfigCategory cyclops = builder.getOrCreateCategory(Component.literal("Cyclops"));
-    cyclops.addEntry(
+    var cyclopsSub = entryBuilder.startSubCategory(Component.literal("Cyclops")).setExpanded(false);
+    cyclopsSub.add(
       entryBuilder
         .startBooleanToggle(Component.literal("Cyclops Enabled"), cyclopsConfig.enabled)
         .setDefaultValue(cyclopsDefaults.enabled)
@@ -1637,7 +1619,7 @@ public class InitiativeConfigScreen {
         .setSaveConsumer(v -> cyclopsConfig.enabled = v)
         .build()
     );
-    cyclops.addEntry(
+    cyclopsSub.add(
       entryBuilder
         .startFloatField(Component.literal("Health Multiplier"), cyclopsConfig.getHealthMultiplier())
         .setDefaultValue(cyclopsDefaults.getHealthMultiplier())
@@ -1646,7 +1628,7 @@ public class InitiativeConfigScreen {
         .setSaveConsumer(cyclopsConfig::setHealthMultiplier)
         .build()
     );
-    cyclops.addEntry(
+    cyclopsSub.add(
       entryBuilder
         .startFloatField(Component.literal("Melee Damage Multiplier"), cyclopsConfig.getDamageMultiplier())
         .setDefaultValue(cyclopsDefaults.getDamageMultiplier())
@@ -1655,7 +1637,7 @@ public class InitiativeConfigScreen {
         .setSaveConsumer(cyclopsConfig::setDamageMultiplier)
         .build()
     );
-    cyclops.addEntry(
+    cyclopsSub.add(
       entryBuilder
         .startFloatField(Component.literal("Squeeze Damage / pulse"), cyclopsConfig.getSqueezeDamage())
         .setDefaultValue(cyclopsDefaults.getSqueezeDamage())
@@ -1664,7 +1646,7 @@ public class InitiativeConfigScreen {
         .setSaveConsumer(cyclopsConfig::setSqueezeDamage)
         .build()
     );
-    cyclops.addEntry(
+    cyclopsSub.add(
       entryBuilder
         .startIntField(Component.literal("Grab Duration (ticks)"), cyclopsConfig.getGrabDurationTicks())
         .setDefaultValue(cyclopsDefaults.getGrabDurationTicks())
@@ -1673,16 +1655,25 @@ public class InitiativeConfigScreen {
         .setSaveConsumer(cyclopsConfig::setGrabDurationTicks)
         .build()
     );
-    cyclops.addEntry(
+    cyclopsSub.add(
       entryBuilder
         .startDoubleField(Component.literal("Throw Strength"), cyclopsConfig.getThrowHorizontal())
         .setDefaultValue(cyclopsDefaults.getThrowHorizontal())
-        .setMin(0.0).setMax(5.0)
+        .setMin(0.0).setMax(12.0)
         .setTooltip(Component.literal("Horizontal launch velocity when the cyclops throws a player (fall damage comes on landing)."))
         .setSaveConsumer(cyclopsConfig::setThrowHorizontal)
         .build()
     );
-    cyclops.addEntry(
+    cyclopsSub.add(
+      entryBuilder
+        .startDoubleField(Component.literal("Throw Lift"), cyclopsConfig.getThrowVertical())
+        .setDefaultValue(cyclopsDefaults.getThrowVertical())
+        .setMin(0.0).setMax(6.0)
+        .setTooltip(Component.literal("Upward launch velocity of the throw — more lift means more airtime and a longer arc."))
+        .setSaveConsumer(cyclopsConfig::setThrowVertical)
+        .build()
+    );
+    cyclopsSub.add(
       entryBuilder
         .startDoubleField(Component.literal("Grab Range"), cyclopsConfig.getGrabRange())
         .setDefaultValue(cyclopsDefaults.getGrabRange())
@@ -1694,8 +1685,8 @@ public class InitiativeConfigScreen {
 
     KalaharConfig kalaharConfig = KalaharConfig.load();
     KalaharConfig kalaharDefaults = new KalaharConfig();
-    ConfigCategory kalahar = builder.getOrCreateCategory(Component.literal("Kalahar Mirage Hunt"));
-    kalahar.addEntry(
+    var kalaharSub = entryBuilder.startSubCategory(Component.literal("Kalahar Mirage Hunt")).setExpanded(false);
+    kalaharSub.add(
       entryBuilder
         .startBooleanToggle(Component.literal("Mirage Hunt Enabled"), kalaharConfig.enabled)
         .setDefaultValue(kalaharDefaults.enabled)
@@ -1703,7 +1694,7 @@ public class InitiativeConfigScreen {
         .setSaveConsumer(v -> kalaharConfig.enabled = v)
         .build()
     );
-    kalahar.addEntry(
+    kalaharSub.add(
       entryBuilder
         .startIntField(Component.literal("Copies per Trainer"), kalaharConfig.getTrainerMirageCount())
         .setDefaultValue(kalaharDefaults.getTrainerMirageCount())
@@ -1712,7 +1703,7 @@ public class InitiativeConfigScreen {
         .setSaveConsumer(kalaharConfig::setTrainerMirageCount)
         .build()
     );
-    kalahar.addEntry(
+    kalaharSub.add(
       entryBuilder
         .startIntField(Component.literal("Copies per Apprentice"), kalaharConfig.getApprenticeMirageCount())
         .setDefaultValue(kalaharDefaults.getApprenticeMirageCount())
@@ -1721,7 +1712,7 @@ public class InitiativeConfigScreen {
         .setSaveConsumer(kalaharConfig::setApprenticeMirageCount)
         .build()
     );
-    kalahar.addEntry(
+    kalaharSub.add(
       entryBuilder
         .startDoubleField(Component.literal("Doppler Chance"), kalaharConfig.getDopplerChance())
         .setDefaultValue(kalaharDefaults.getDopplerChance())
@@ -1730,7 +1721,7 @@ public class InitiativeConfigScreen {
         .setSaveConsumer(kalaharConfig::setDopplerChance)
         .build()
     );
-    kalahar.addEntry(
+    kalaharSub.add(
       entryBuilder
         .startFloatField(Component.literal("Doppler Health"), kalaharConfig.getDopplerHealth())
         .setDefaultValue(kalaharDefaults.getDopplerHealth())
@@ -1739,7 +1730,7 @@ public class InitiativeConfigScreen {
         .setSaveConsumer(kalaharConfig::setDopplerHealth)
         .build()
     );
-    kalahar.addEntry(
+    kalaharSub.add(
       entryBuilder
         .startFloatField(Component.literal("Doppler Damage"), kalaharConfig.getDopplerDamage())
         .setDefaultValue(kalaharDefaults.getDopplerDamage())
@@ -1749,8 +1740,66 @@ public class InitiativeConfigScreen {
         .build()
     );
 
+
+    // ─── Economy: the Company fee multiplier (showrunner 2026-08-03) ─────────────────
+    EconomyConfig economyConfig = EconomyConfig.load();
+    EconomyConfig economyDefaults = new EconomyConfig();
+    var economySub = entryBuilder.startSubCategory(Component.literal("Company Fees")).setExpanded(true);
+    economySub.add(
+      entryBuilder
+        .startIntSlider(Component.literal("Company Fee Multiplier (%)"),
+          economyConfig.getFeeMultiplierPercent(), 10, 1000)
+        .setDefaultValue(economyDefaults.getFeeMultiplierPercent())
+        .setTooltip(Component.literal(
+          "Scales BOTH recurring Company fees: the Pokecenter heal (200 + 100 per badge + instability) "
+          + "and the flat 2000 CD town workstation fee. 100 = tuned defaults, 200 = double the pain, "
+          + "50 = half. Reaches the running world within ~10 seconds."))
+        .setSaveConsumer(economyConfig::setFeeMultiplierPercent)
+        .build()
+    );
+
+    // ─── Tab layout: 25 legacy categories regrouped into 6 tabs of collapsible ───────
+    // sections (ModMenu cleanup, showrunner 2026-08-03). Section content is unchanged —
+    // only the parenting moved; tab order = creation order (General was created first).
+    general.addEntry(progressionSub.build());
+    general.addEntry(flavorSub.build());
+    general.addEntry(streamSyncSub.build());
+
+    ConfigCategory nuzlockeTab = builder.getOrCreateCategory(Component.literal("Nuzlocke & Battle"));
+    nuzlockeTab.addEntry(nuzlockeSub.build());
+    nuzlockeTab.addEntry(captureSub.build());
+    nuzlockeTab.addEntry(battleTypesSub.build());
+    nuzlockeTab.addEntry(messagesSub.build());
+    nuzlockeTab.addEntry(announceSub.build());
+    nuzlockeTab.addEntry(darkUrgeSub.build());
+
+    ConfigCategory economyTab = builder.getOrCreateCategory(Component.literal("Economy & Services"));
+    economyTab.addEntry(economySub.build());
+    economyTab.addEntry(daycareSub.build());
+    economyTab.addEntry(safariSub.build());
+    economyTab.addEntry(stadiumSub.build());
+    economyTab.addEntry(homesteadSub.build());
+    economyTab.addEntry(momCareSub.build());
+
+    ConfigCategory encountersTab = builder.getOrCreateCategory(Component.literal("Encounters & Bosses"));
+    encountersTab.addEntry(noblesSub.build());
+    encountersTab.addEntry(dojoSub.build());
+    encountersTab.addEntry(orcSub.build());
+    encountersTab.addEntry(cyclopsSub.build());
+    encountersTab.addEntry(kalaharSub.build());
+
+    ConfigCategory trialsTab = builder.getOrCreateCategory(Component.literal("Shrines & Trials"));
+    trialsTab.addEntry(iceTrialSub.build());
+    trialsTab.addEntry(trialTimersSub.build());
+    trialsTab.addEntry(groundShrineSub.build());
+
+    ConfigCategory worldTab = builder.getOrCreateCategory(Component.literal("World & NPCs"));
+    worldTab.addEntry(npcSightSub.build());
+    worldTab.addEntry(lootChestsSub.build());
+
     builder.setSavingRunnable(() -> {
       config.save();
+      economyConfig.save();
       cyclopsConfig.save();
       kalaharConfig.save();
       specialSpawnConfig.save();
@@ -1771,6 +1820,7 @@ public class InitiativeConfigScreen {
       streamSyncConfig.save();
       flavorScreenConfig.save();
       NuzlockeInit.reloadConfig();
+      EconomyConfig.reload();
       NpcSightInit.reloadConfig();
       SpecialSpawnConfig.reload();
       HomeBaseConfig.reload();

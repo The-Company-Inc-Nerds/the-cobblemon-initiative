@@ -38,8 +38,9 @@ public final class WispLanternManager {
   private static final Vec3 SPOT = new Vec3(741.5, 64.0, 2502.5);
   private static final double SPOT_TOL_H = 6.0;
   private static final double SPOT_TOL_Y = 5.0;
-  /** Where the Marshadow gift body is imported (on the wreck, under the cutscene camera). */
-  private static final BlockPos MARSHADOW_POS = new BlockPos(741, 63, 2503);
+  /** Where the Marshadow gift body is imported (playtest pin 2026-08-03 P1 — the re-recorded
+   *  lantern_reveal camera settles looking at this exact spot; decimal coords, do not floor). */
+  private static final Vec3 MARSHADOW_POS = new Vec3(740.4, 62.0, 2508.4);
   private static final String MARSHADOW_PRESET =
     "easy_npc:preset/humanoid/marshadow_lantern.npc.snbt";
 
@@ -101,22 +102,22 @@ public final class WispLanternManager {
   }
 
   private static void spawnMarshadow(ServerLevel level) {
-    Vec3 at = Vec3.atBottomCenterOf(MARSHADOW_POS);
     level.getServer().getCommands().performPrefixedCommand(
-      level.getServer().createCommandSourceStack().withPosition(at).withPermission(2).withSuppressedOutput(),
+      level.getServer().createCommandSourceStack().withPosition(MARSHADOW_POS).withPermission(2).withSuppressedOutput(),
       "easy_npc preset import_new data " + MARSHADOW_PRESET
-        + " " + MARSHADOW_POS.getX() + " " + MARSHADOW_POS.getY() + " " + MARSHADOW_POS.getZ());
+        + " " + MARSHADOW_POS.x + " " + MARSHADOW_POS.y + " " + MARSHADOW_POS.z);
   }
 
   private static void revealEffect(ServerLevel level) {
-    double x = MARSHADOW_POS.getX() + 0.5, y = MARSHADOW_POS.getY() + 0.6, z = MARSHADOW_POS.getZ() + 0.5;
+    double x = MARSHADOW_POS.x, y = MARSHADOW_POS.y + 0.6, z = MARSHADOW_POS.z;
+    BlockPos soundPos = BlockPos.containing(MARSHADOW_POS);
     level.sendParticles(ParticleTypes.SOUL_FIRE_FLAME, x, y, z, 90, 1.2, 1.0, 1.2, 0.02);
     level.sendParticles(ParticleTypes.SOUL, x, y, z, 60, 1.0, 1.2, 1.0, 0.02);
     level.sendParticles(ParticleTypes.END_ROD, x, y + 0.5, z, 40, 0.8, 1.0, 0.8, 0.05);
     level.sendParticles(ParticleTypes.SQUID_INK, x, y, z, 40, 0.9, 0.7, 0.9, 0.01);
-    level.playSound(null, MARSHADOW_POS, SoundEvents.SOUL_ESCAPE.value(), SoundSource.HOSTILE, 1.2f, 0.5f);
-    level.playSound(null, MARSHADOW_POS, SoundEvents.WARDEN_AMBIENT, SoundSource.HOSTILE, 0.7f, 1.4f);
-    level.playSound(null, MARSHADOW_POS, SoundEvents.BEACON_ACTIVATE, SoundSource.HOSTILE, 0.8f, 0.7f);
+    level.playSound(null, soundPos, SoundEvents.SOUL_ESCAPE.value(), SoundSource.HOSTILE, 1.2f, 0.5f);
+    level.playSound(null, soundPos, SoundEvents.WARDEN_AMBIENT, SoundSource.HOSTILE, 0.7f, 1.4f);
+    level.playSound(null, soundPos, SoundEvents.BEACON_ACTIVATE, SoundSource.HOSTILE, 0.8f, 0.7f);
   }
 
   // ── The lead / guide light (per-player tick) ─────────────────────────────────────

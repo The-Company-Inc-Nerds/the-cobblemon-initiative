@@ -3,10 +3,10 @@
         author: "TheCompanyInc",
         category: "Civilian",
         created: 0L,
-        description: "civilian at Kalahar Reach - Oasis (act n/a). Compiled from dialog-src.",
+        description: "civilian at Crossroads Granary - The Field (R10) (act 1). Compiled from dialog-src.",
         entityTypeId: "easy_npc:humanoid",
         modified: 0L,
-        name: "A Giggle in the Grass",
+        name: "Suhail",
         variantType: "STEVE",
         version: "1.0.0"
     },
@@ -40,13 +40,13 @@
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
-                            Name: "defeated_noble_mew_gte_1"
+                            Name: "field_5_liberated"
                         }
                     ],
-                    Priority: 20,
+                    Priority: 40,
                     Buttons: [
                         {
-                            Name: "Rest a while",
+                            Name: "Keep the crossing open",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -57,51 +57,58 @@
                     ],
                     Texts: [
                         {
-                            Text: "It still visits, you know - on the days you are kind to yourself. Some friends only come when you are not chasing them."
+                            Text: "Listen to that. Wagons paying nobody. My grandfather ran this crossing on a handshake and a water barrel, and as of today, so do I."
                         },
                         {
-                            Text: "The grass is quiet now. It remembers being chased and it did not mind at all - come back and it may play again."
+                            Text: "The Company clipboard is in my compost, where it is finally improving a yield. Pass through any time - travelers eat free at my crossing, and so do their teams."
                         }
                     ],
-                    Name: "the wisp - befriended",
-                    Label: "after"
+                    Name: "Suhail - the crossing runs free",
+                    Label: "liberated"
                 },
                 {
                     Conditions: [
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
-                            Name: "badges_gte_3"
+                            Name: "defeated_villain_site_manager_5"
                         },
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
-                            Name: "defeated_noble_mew_lte_0"
+                            Name: "no_field_5_liberated"
                         }
                     ],
-                    Priority: 10,
+                    Priority: 30,
                     Buttons: [
                         {
-                            Name: "Chase the wisp",
+                            Name: "The fence is down - open the crossing",
                             Actions: [
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "function cobblemon_initiative:noble/mew_wings"
+                                    Cmd: "function cobblemon_initiative:liberation/free_field {field:farm_5}"
                                 },
                                 {
                                     Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "noble start mew"
+                                    Cmd: "title @initiator title [{\"text\":\"CROSSROADS GRANARY LIBERATED\",\"color\":\"gold\"}]"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "title @initiator subtitle [{\"text\":\"ADJUSTMENT reversed - the parcel is off the ledger and back on the map\",\"color\":\"gray\"}]"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "tellraw @initiator [{\"text\":\"Suhail rips the toll fence out post by post - the Crossroads runs free, and the busiest road in the region owes the Company nothing.\",\"color\":\"green\"}]"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "chase_button"
+                            Label: "open_gate_button"
                         },
                         {
-                            Name: "Maybe later",
+                            Name: "Hold a moment",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -112,41 +119,41 @@
                     ],
                     Texts: [
                         {
-                            Text: "Hee. Something pink and impossible flits where the tall grass hides it. It will not stand and fight - it will run, and blink, and giggle. Touch it enough times and it tires itself silly, and then it is yours if you are gentle."
-                        },
-                        {
-                            Text: "You felt that too, did you. It wants to play, not to fight. Chase it, corner it, be kind - and mind the keep up north where the sky has a temper, for that is no game at all."
-                        },
-                        {
-                            Text: "The Company men logged it as an inventory discrepancy and trudged back down the hill. Imagine meeting a miracle and calling it a discrepancy. Hee."
+                            Text: "The Manager walked off the parcel with his clipboard upside down. That means the paper is dead and only the fence is left - and a fence is just wood once nobody official is holding it up. Say the word and I pull it."
                         }
                     ],
-                    Name: "the wisp",
-                    Label: "default"
+                    Name: "Suhail - the fence is down",
+                    Label: "fence_down"
                 },
                 {
-                    Priority: 5,
+                    Priority: 10,
                     Buttons: [
                         {
-                            Name: "Goodbye",
+                            Name: "Look toward the silo",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "goodbye_button"
+                            Label: "leave_button"
                         }
                     ],
                     Texts: [
                         {
-                            Text: "Hee. Not yet, little one. Come back when you have walked a badge or three - the grass only plays with someone it has seen around."
+                            Text: "This was my family crossing - the busiest wagon junction in the Reach, which is exactly why the Company wanted it. Now every cart that rolls through pays a little at the fence and nobody quite notices they are being farmed."
                         },
                         {
-                            Text: "The tall grass keeps its secret from strangers. Earn a badge or two and it may forget you are one."
+                            Text: "The Manager by the silo runs the parcel off one clipboard, and the one at the fence keeps the perimeter. Two of them, one of me, and the old boundary stone I used to lean on got read right out from under the sand."
+                        },
+                        {
+                            Text: "I do not want a war. I want my gate back, my water barrel out front, and travelers who stop because they like the shade. Deal with the clipboards and I will handle the fence myself."
+                        },
+                        {
+                            Text: "Warden Ossa filed paper saying this land was never theirs. Paper is a start. But paper never pulled a fence post."
                         }
                     ],
-                    Name: "the wisp - too soon",
-                    Label: "locked"
+                    Name: "Suhail",
+                    Label: "default"
                 }
             ]
         },
@@ -274,7 +281,7 @@
             Timestamp: 0L,
             Type: "CUSTOM",
             URL: "",
-            UUID: [I; -268839485, 2041139829, -1730001176, 1285175526]
+            UUID: [I; 1546299784, 1843812191, -2145520553, -548260637]
         },
         SoundData: {
             SoundDataSet: [
@@ -305,6 +312,6 @@
             }
         ],
         id: "easy_npc:humanoid",
-        CustomName: '{"text": "A Giggle in the Grass", "color": "#FFFFFF"}'
+        CustomName: '{"text": "Suhail", "color": "#FFFFFF"}'
     }
 }

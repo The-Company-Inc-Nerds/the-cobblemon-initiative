@@ -1,9 +1,9 @@
 {
     PresetMetadata: {
         author: "TheCompanyInc",
-        category: "Civilian",
+        category: "Quest",
         created: 0L,
-        description: "civilian at Kalahar Reach (act 1). Compiled from dialog-src.",
+        description: "quest_giver at Kalahar Reach - the town well (act 1). Compiled from dialog-src.",
         entityTypeId: "easy_npc:humanoid",
         modified: 0L,
         name: "Leila Safiya",
@@ -33,33 +33,155 @@
         CanPickUpLoot: 0b,
         CustomNameVisible: 1b,
         DialogData: {
-            Type: "BASIC",
+            Type: "STANDARD",
             DialogDataSet: [
                 {
-                    Priority: 10,
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "dry_season_done"
+                        }
+                    ],
+                    Priority: 40,
                     Buttons: [
                         {
-                            Name: "Goodbye",
+                            Name: "Glad the water is back",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "goodbye_button"
+                            Label: "leave_button"
                         }
                     ],
                     Texts: [
                         {
-                            Text: "Two cups a day per household, and I have to look each neighbor in the eye while I measure it. Do you know what it does to a town, rationing the one thing the desert already tried to take? The Company just finished the job."
+                            Text: "I did what I promised. The ration ledger is out there in the sand, face down, and I danced on it. Badly. The town well holds water again and nobody measures it into cups anymore."
                         },
                         {
-                            Text: "I keep the tally honest. Nobody gets a third cup, not even me. When the wells come back — if the wells come back — I will pour this whole ledger out into the sand and dance on it."
+                            Text: "Drink your fill whenever you pass through. The Reach keeps its water because of you, and I intend to remind everyone of that until it annoys them."
+                        }
+                    ],
+                    Name: "Leila — the ledger goes in the sand",
+                    Label: "done"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "oasis_pump_off"
                         },
                         {
-                            Text: "You look like you could carry your own weight in trouble. Good. Trouble is exactly what the Company deserves for what it did to our water."
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "no_dry_season_done"
+                        }
+                    ],
+                    Priority: 30,
+                    Buttons: [
+                        {
+                            Name: "The Oasis holds - the water is yours again",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:sidequest/kalahar/water_reward"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "claim_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Look at it. LOOK at it. The well is filling — brown at first, then clear, the way my grandmother said it came back after the last drought. You spiked their survey and the desert took its water back the same hour. Sit down, let me pay you what the town can spare — the drawer is light, but this is the best purchase the Reach ever made."
+                        }
+                    ],
+                    Name: "Leila — the well is seeping back",
+                    Label: "report"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "dry_season_active"
+                        }
+                    ],
+                    Priority: 20,
+                    Buttons: [
+                        {
+                            Name: "On my way",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The Oasis is SOUTHWEST, out in the live sand — a Company survey crew and their sampling machine. Drive the crew off, then ruin the samples in the machine so their assessment reads worthless. The moment their numbers die, our water comes home."
                         },
                         {
-                            Text: "The Company mailed us a survey asking each household to itemize its thirst. I stamped it REVERT TO SENDER and mailed it back. That is the correct stamp, yes? It felt correct."
+                            Text: "Two cups a day per household until you get back. I keep measuring, you keep walking. That is the deal we did not shake on."
+                        }
+                    ],
+                    Name: "Leila — the crew at the Oasis",
+                    Label: "active"
+                },
+                {
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "I will clear the Oasis",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add dry_season_active"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "title @initiator actionbar [{\"text\":\"Dry Season: find the Company survey crew at the Oasis, southwest.\",\"color\":\"gold\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_dry_season_active"
+                                }
+                            ],
+                            Label: "accept_button"
+                        },
+                        {
+                            Name: "Not yet",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Two cups a day per household, and I have to look each neighbor in the eye while I measure it. This well ran a thousand years and went dry the week the Company put a survey crew on our Oasis. That is not a coincidence, that is a schedule."
+                        },
+                        {
+                            Text: "Their test-bores cut the feed that kept this well alive. The crew is still out there, southwest, sampling our water into their paperwork so they can certify the sand worth seizing. Clear them off the Oasis and spike their samples, and this well fills again."
+                        },
+                        {
+                            Text: "I keep the tally honest. Nobody gets a third cup, not even me. When the wells come back — and they will, if someone with your kind of trouble walks southwest — I will pour this whole ledger out into the sand and dance on it."
                         }
                     ],
                     Name: "Leila Safiya",

@@ -32,6 +32,5 @@ scoreboard players set #amb_kalahar_trainer_1 ci_ambient 0
 scoreboard players set #amb_kalahar_trainer_2 ci_ambient 0
 scoreboard players set #amb_kalahar_trainer_3 ci_ambient 0
 scoreboard players set #amb_kalahar_trainer_4 ci_ambient 0
-scoreboard players set #amb_kalahar_guide ci_ambient 0
 
 tellraw @a {"text":"[Kalahar] Old hollow bodies cleared and latches re-armed. Walk the town to re-place the scattered cast.","color":"gold"}

@@ -1,6 +1,6 @@
 # Curator Kenji resurrection machine - Claw Fossil -> Anorith, on the museum platform (top 1902.5/115/
-# 2313.8; the fossil floats at +1 = 1902.5/116/2313.8). Run AS THE PLAYER from the revive_anorith dialog
-# button (gated not_tag sq_revived_anorith - per-species, so each dug fossil revives once). Consume-probe
+# 2313.8; the fossil floats at +1 = 1902.5/116/2313.8). Run AS THE PLAYER via turnin/use_machine (one-button flow, a18)
+# — sq_revived_anorith is now TELEMETRY ONLY (a18: the per-species lockout is removed). Consume-probe
 # idiom: `clear @s <item> 0` counts without removing; only latch + float + begin if the player holds
 # one. Carry tags: shared ci_reviving (generic mid/finish beats) + ci_reviving_anorith (finish branches
 # on it to spawn the right revived_anorith gift body). Kept as a literal turnin (not a macro) so

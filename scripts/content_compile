@@ -1172,6 +1172,13 @@ def compile_character(ch: dict, dialogs: dict, registers: dict, lore: dict):
             '{Bool:0b,Type:"VISIBLE_TO_OWNER"},{Bool:0b,Type:"VISIBLE_TO_TEAM"},'
             '{Int:7,Type:"LIGHT_LEVEL"},{Text:"NEVER",Type:"NAME_VISIBILITY"}]}')["K"])
         out = sm.set_path(out, ["data", "CustomNameVisible"], sm.parse_snbt("{K:0b}")["K"])
+    # hide_name_tag: keep CustomName (dialog @npc placeholder) but never float the tag.
+    # The entity_tags branch above forces CustomNameVisible 1b, so this must run AFTER it.
+    # The Easy NPC-side gate (DisplayAttribute NAME_VISIBILITY NEVER) rides the character's
+    # visuals file — a FULL list, since a partial DisplayAttribute zeroes unlisted flags.
+    # First user: the giant cyclops (a nameplate over a 5x body reads as a UI bug).
+    if ch.get("hide_name_tag"):
+        out = sm.set_path(out, ["data", "CustomNameVisible"], sm.parse_snbt("{K:0b}")["K"])
     return out
 
 

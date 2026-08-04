@@ -82,23 +82,18 @@
                     Priority: 30,
                     Buttons: [
                         {
-                            Name: "The survey is spiked - the Oasis holds",
+                            Name: "Goodbye",
                             Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "function cobblemon_initiative:sidequest/kalahar/water_reward"
-                                },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "claim_button"
+                            Label: "goodbye_button"
                         }
                     ],
                     Texts: [
                         {
-                            Text: "You are back - dust to your knees, which means you walked the Oasis. Then it is over: their sampling bot reads mud and their numbers do not add up. The Oasis is not worth their while now. Sit, drink, let me pay you what the town can spare. It is not what your legs are worth, but the drawer comes up light these days for everyone."
+                            Text: "You are back - dust to your knees, which means you walked the Oasis. Then it is over: their sampling bot reads mud and their numbers do not add up. Go show your face at the TOWN WELL - Leila keeps the ration ledger there, and she has been promising the town a celebration on the day the water came home. Let her pay you; it is her ledger to close."
                         }
                     ],
                     Name: "Marisol - the survey is spiked",
@@ -254,39 +249,30 @@
                     Priority: -1,
                     Buttons: [
                         {
-                            Name: "I will spike their survey",
+                            Name: "I will find Leila at the well",
                             Actions: [
                                 {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "tag @s add dry_season_active"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    Cmd: "title @initiator actionbar [{\"text\":\"Dry Season: find the Company survey crew at the Oasis, southwest.\",\"color\":\"gold\"}]"
-                                },
-                                {
-                                    Type: "CLOSE_DIALOG"
+                                    Type: "OPEN_DEFAULT_DIALOG"
                                 }
                             ],
-                            Label: "accept_button"
+                            Label: "back_button"
                         },
                         {
-                            Name: "Not yet",
+                            Name: "Later",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "later_button"
+                            Label: "leave_button"
                         }
                     ],
                     Texts: [
                         {
-                            Text: "The Oasis, southwest of town, out in the open sand where the mobs still roam. There is a Company survey crew out there with a sampling machine, taking water and soil, running an assessment. They mean to certify whether the Oasis is worth seizing and paving into a wheat farm."
+                            Text: "The Oasis, southwest of town, out in the open sand where the mobs still roam. There is a Company survey crew out there with a sampling machine, running an assessment on our last free water. And the same week they set up, the TOWN WELL went dry - walk past it, you will see the stone standing empty."
                         },
                         {
-                            Text: "The Oasis is the last free water in the Reach - everything else the Company already prices out of reach. If their survey reads green, they drain it for grain and we go dry for good. Drive off the crew, then ruin the samples so their assessment reads worthless. It is a walk through live country and they will not thank you for it. But the Reach will."
+                            Text: "Leila Safiya keeps the ration ledger at that well. Two cups a day per household, and she is organizing the answer - if you mean to do something about the Oasis, she is the one to say it to. She pays attention, and these days she pays in more than attention."
                         }
                     ],
                     Name: "Marisol - the survey at the Oasis",

@@ -3,7 +3,7 @@
         author: "TheCompanyInc",
         category: "Trainer",
         created: 0L,
-        description: "gym_trainer at Kalahar Reach - Gym, the outer dunes (act 1). Compiled from dialog-src.",
+        description: "gym_trainer at Kalahar Reach - scattered into town (mirage hunt); fights in the gym hollow once found (act 1). Compiled from dialog-src.",
         entityTypeId: "easy_npc:humanoid",
         modified: 0L,
         name: "Hiker Boulder",
@@ -35,6 +35,54 @@
         DialogData: {
             Type: "STANDARD",
             DialogDataSet: [
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "no_found_kalahar_trainer_1"
+                        }
+                    ],
+                    Priority: 40,
+                    Buttons: [
+                        {
+                            Name: "Reach out",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative kalahar reach"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "reach_button"
+                        },
+                        {
+                            Name: "Step back",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "A digger of the Reach leans on the rocks here, sun-blasted and still. The heat haze runs over them the same way it runs over everything."
+                        },
+                        {
+                            Text: "Their shadow pools somewhere under their boots - or maybe that is just the noon light lying flat. The glare makes an honest check impossible."
+                        },
+                        {
+                            Text: "The desert copies anyone who stands still long enough. Stone or shimmer, there is one way to be sure - reach out."
+                        }
+                    ],
+                    Name: "the air bends",
+                    Label: "mirage"
+                },
                 {
                     Conditions: [
                         {
@@ -107,7 +155,7 @@
                                             }
                                         ]
                                     },
-                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:kalahar_trainer_1 onwin {1: ['tag @1 add defeated_kalahar_trainer_1', '@2 say The dune gives way. The path inward is yours.', 'tp @e[tag=ci_kal_boulder,limit=1] 1974.5 131 4090.5'], 2: ['@1 say The desert outwaited you today. It outwaits everyone. Come back heavier.']}"
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:kalahar_trainer_1 onwin {1: ['tag @1 add defeated_kalahar_trainer_1', '@2 say The dune gives way. The path inward is yours.', 'tag @1 add found_kalahar_trainer_1'], 2: ['@1 say The desert outwaited you today. It outwaits everyone. Come back heavier.']}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"

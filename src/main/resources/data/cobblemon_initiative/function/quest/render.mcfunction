@@ -398,21 +398,22 @@ execute if entity @s[tag=gaviota_manifest_check_active] unless entity @s[tag=gav
 
 # ===== Kalahar Reach =====
 # ── Kalahar Reach (gym 6) side quests (slots 42-43) ──
-# The Reach Remembers (Ossa's boundary stones): opens on her accept (boundary_stones_active),
-# retargets stone-1 dune line -> the guarded stone-3 road -> back to Ossa to file; off when filed.
+# The Reach Remembers (Ossa's boundary stones — a18: TWO stones; stone_3 re-roled into the
+# Crossroads farmer and the two-seal reveal moved to stone_2): opens on her accept
+# (boundary_stones_active), dune-line stones -> back to Ossa to file; off when filed.
 scoreboard players reset q.side_kalahar_stones ci_quest
 execute if entity @s[tag=boundary_stones_active,tag=!boundary_stones_done] run scoreboard players set q.side_kalahar_stones ci_quest 43
 execute if entity @s[tag=boundary_stones_active,tag=!boundary_stones_done] run scoreboard players display name q.side_kalahar_stones ci_quest [{"text":"• Unearth the survey stones along the dune line","color":"gray"}]
-execute if entity @s[tag=seal_stone_1,tag=seal_stone_2,tag=!seal_stone_3,tag=!boundary_stones_done] run scoreboard players display name q.side_kalahar_stones ci_quest [{"text":"• Read the guarded stone on the Old Caravan Road","color":"gray"}]
-execute if entity @s[tag=seal_stone_1,tag=seal_stone_2,tag=seal_stone_3,tag=!boundary_stones_done] run scoreboard players display name q.side_kalahar_stones ci_quest [{"text":"• File the counter-claim with Warden Ossa","color":"gray"}]
+execute if entity @s[tag=seal_stone_1,tag=seal_stone_2,tag=!boundary_stones_done] run scoreboard players display name q.side_kalahar_stones ci_quest [{"text":"• File the counter-claim with Warden Ossa","color":"gray"}]
 
-# Dry Season (Marisol's wells): opens on her accept (dry_season_active), retargets the Oasis
-# pump crew -> the manifold once both are down -> back to Marisol to report; off when restored.
+# Dry Season (a18: Leila's well — giver + turn-in moved off Marisol, playtest N17): opens on
+# Leila's accept (dry_season_active), retargets the Oasis survey crew -> the manifold once both
+# are down -> back to Leila at the refilled town well; off when restored.
 scoreboard players reset q.side_kalahar_water ci_quest
 execute if entity @s[tag=dry_season_active,tag=!dry_season_done] run scoreboard players set q.side_kalahar_water ci_quest 42
 execute if entity @s[tag=dry_season_active,tag=!dry_season_done] run scoreboard players display name q.side_kalahar_water ci_quest [{"text":"• Drive off the Company survey crew at the Oasis","color":"gray"}]
 execute if entity @s[tag=dry_season_active,tag=defeated_sq_pump_officer,tag=defeated_sq_pump_foreman,tag=!oasis_pump_off,tag=!dry_season_done] run scoreboard players display name q.side_kalahar_water ci_quest [{"text":"• Spike the Survey Bot samples at the Oasis","color":"gray"}]
-execute if entity @s[tag=oasis_pump_off,tag=!dry_season_done] run scoreboard players display name q.side_kalahar_water ci_quest [{"text":"• Report to Well-Keeper Marisol","color":"gray"}]
+execute if entity @s[tag=oasis_pump_off,tag=!dry_season_done] run scoreboard players display name q.side_kalahar_water ci_quest [{"text":"• Report to Leila Safiya at the town well","color":"gray"}]
 
 # ===== Cyber City (gym 7, Electric) =====
 # ── Cyber City (gym 7) side quests (slots 34-37) ──

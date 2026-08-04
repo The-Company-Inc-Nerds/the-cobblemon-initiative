@@ -38,8 +38,10 @@ public class KalaharConfig {
   public boolean enabled = true;
   public String dimension = "minecraft:overworld";
 
-  /** Gym-guide position — the hunt auto-starts once a player comes within {@link #guideTriggerRadius}. */
-  public Pos guidePos = new Pos(1978.0, 131.0, 4085.0);
+  /** Gym-guide position — the hunt auto-starts once a player comes within {@link #guideTriggerRadius}.
+   *  a18: the guide is Tarek Ramessu at his spice stall (playtest N10; the dedicated kalahar_guide
+   *  char was deleted, N22). CONFIG-LEAK reminder: an existing world's config JSON overrides this. */
+  public Pos guidePos = new Pos(2031.5, 136.0, 4091.5);
   /** Radius (blocks) around {@link #guidePos} that triggers the "on sight" scatter + intro. */
   public double guideTriggerRadius = 12.0;
 
@@ -62,17 +64,26 @@ public class KalaharConfig {
   /** Tag every scattered fake mirage carries. */
   public String fakeTag = "ci_mirage_fake";
 
-  /** Town scatter pool the manager draws fake positions from (shuffled per hunt). Showrunner-verify:
-   *  a spot off the surface only misplaces a harmless decoy. Needs >= total fakes (~14 by default). */
+  /** Scatter pool the manager draws fake positions from (shuffled per hunt) — the 31 in-world
+   *  "Gym Mirage Spot" pins from the 2026-08-03 playtest (P5–P35; replace the 16 desk-placed
+   *  defaults). Needs >= total fakes (~14 by default). */
   public List<Pos> scatterSpots = new ArrayList<>(Arrays.asList(
-    new Pos(2004.0, 136.0, 4098.0), new Pos(1992.0, 136.0, 4108.0),
-    new Pos(1982.0, 136.0, 4130.0), new Pos(1970.0, 136.0, 4140.0),
-    new Pos(2028.0, 127.0, 3980.0), new Pos(2016.0, 127.0, 3968.0),
-    new Pos(2143.0, 138.0, 3992.0), new Pos(2155.0, 138.0, 3980.0),
-    new Pos(1990.0, 136.0, 4050.0), new Pos(1978.0, 136.0, 4062.0),
-    new Pos(2082.0, 121.0, 3954.0), new Pos(2070.0, 121.0, 3942.0),
-    new Pos(2058.0, 126.0, 4075.0), new Pos(2088.0, 121.0, 3928.0),
-    new Pos(2050.0, 128.0, 4030.0), new Pos(2100.0, 125.0, 4100.0)
+    new Pos(2156.1, 126.0, 4199.6), new Pos(2152.1, 126.0, 4228.4),
+    new Pos(2221.6, 144.0, 4123.1), new Pos(2205.7, 142.0, 4122.4),
+    new Pos(2199.8, 154.0, 4100.1), new Pos(2139.4, 138.0, 4143.0),
+    new Pos(2062.3, 134.0, 4141.2), new Pos(2039.7, 139.0, 4098.0),
+    new Pos(2039.8, 139.0, 4077.7), new Pos(2012.3, 164.0, 4054.2),
+    new Pos(2008.4, 164.0, 4058.4), new Pos(1949.4, 164.0, 4058.3),
+    new Pos(1944.0, 164.0, 4053.5), new Pos(1949.5, 164.0, 4116.7),
+    new Pos(1943.4, 164.0, 4122.3), new Pos(2007.1, 164.0, 4116.5),
+    new Pos(2013.2, 164.0, 4122.4), new Pos(2000.3, 174.0, 4087.5),
+    new Pos(1978.7, 174.0, 4065.2), new Pos(1955.6, 174.0, 4087.5),
+    new Pos(1978.5, 174.0, 4110.2), new Pos(2019.0, 138.0, 4194.9),
+    new Pos(2015.3, 137.0, 4194.3), new Pos(2111.5, 129.0, 4050.3),
+    new Pos(2157.2, 129.0, 4051.0), new Pos(2086.0, 136.0, 4014.9),
+    new Pos(2042.9, 136.0, 3951.4), new Pos(2210.1, 137.0, 4197.6),
+    new Pos(2203.0, 137.0, 4212.4), new Pos(2178.8, 135.0, 4236.5),
+    new Pos(2163.2, 135.0, 4244.4)
   ));
 
   public static class Pos {

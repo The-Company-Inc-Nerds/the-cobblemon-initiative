@@ -57,23 +57,33 @@ public final class KalaharManager {
 
   private KalaharManager() {}
 
-  /** One gym student: its rctmod trainer id, the skin-matched fake preset, and whether it gates the leader. */
-  private record Student(String trainerId, String fakePreset, boolean apprentice) {}
+  /**
+   * One gym student (a18 rework, playtest N23): its rctmod trainer id, display name (actionbar), the
+   * per-student fake preset (SAME name + skin + text as the real — indistinguishable), whether it
+   * gates the leader, its {@code ci_kal_*} real-body tag, the gym-hollow spot it teleports to when
+   * FOUND, and the recorded found-cutscene id. {@code foundTag()} = the player tag that flips the
+   * real body's dialog from mirage-text to its battle ladder.
+   */
+  private record Student(String trainerId, String name, String fakePreset, boolean apprentice,
+                         String realTag, double hx, double hy, double hz, String cutscene,
+                         String foundTag) {}
 
-  private static final String P_APP    = "easy_npc:preset/humanoid/kalahar_mirage_apprentice.npc.snbt";
-  private static final String P_HIKER  = "easy_npc:preset/humanoid/kalahar_mirage_hiker.npc.snbt";
-  private static final String P_DIGGER = "easy_npc:preset/humanoid/kalahar_mirage_digger.npc.snbt";
+  private static String fake(String s) { return "easy_npc:preset/humanoid/kalahar_mirage_" + s + ".npc.snbt"; }
 
-  /** Skins: Dune + Terra share single/kalahar_apprentice; Boulder(t1) + Juno(t3) share trainer_1;
-   *  Dustin(t2) + Vince(t4) share trainer_2 — so three fake presets cover all six students. */
+  /** Hollow spots mirror the pre-a17 gym layout; Gaia stands at ~1978.5/131/4092.5 between them.
+   *  foundTag is the FULL literal (not derived) so dialog_lint's Java string-literal grant scan
+   *  sees the tag granted here — a constructed "found_" + id reads as granted-nowhere (ORPHAN). */
   private static final List<Student> STUDENTS = List.of(
-    new Student("kalahar_jr_apprentice", P_APP,    true),
-    new Student("kalahar_apprentice",    P_APP,    true),
-    new Student("kalahar_trainer_1",     P_HIKER,  false),
-    new Student("kalahar_trainer_2",     P_DIGGER, false),
-    new Student("kalahar_trainer_3",     P_HIKER,  false),
-    new Student("kalahar_trainer_4",     P_DIGGER, false)
+    new Student("kalahar_jr_apprentice", "Jr. Apprentice Dune", fake("dune"),    true,  "ci_kal_dune",    1976.5, 131, 4095.5, "kalahar_found_dune",    "found_kalahar_jr_apprentice"),
+    new Student("kalahar_apprentice",    "Apprentice Terra",    fake("terra"),   true,  "ci_kal_terra",   1980.5, 131, 4089.5, "kalahar_found_terra",   "found_kalahar_apprentice"),
+    new Student("kalahar_trainer_1",     "Hiker Boulder",       fake("boulder"), false, "ci_kal_boulder", 1974.5, 131, 4090.5, "kalahar_found_boulder", "found_kalahar_trainer_1"),
+    new Student("kalahar_trainer_2",     "Ruin Maniac Dustin",  fake("dustin"),  false, "ci_kal_dustin",  1982.5, 131, 4090.5, "kalahar_found_dustin",  "found_kalahar_trainer_2"),
+    new Student("kalahar_trainer_3",     "Archaeologist Juno",  fake("juno"),    false, "ci_kal_juno",    1974.5, 131, 4094.5, "kalahar_found_juno",    "found_kalahar_trainer_3"),
+    new Student("kalahar_trainer_4",     "Prospector Vince",    fake("vince"),   false, "ci_kal_vince",   1982.5, 131, 4094.5, "kalahar_found_vince",   "found_kalahar_trainer_4")
   );
+
+  /** Gaia's spot in the hollow — a found student teleports in FACING her. */
+  private static final double GAIA_X = 1978.5, GAIA_Z = 4092.5;
 
   private static final String DOPPLER_SCALED = "ci_doppler_scaled";
   /** Per-world "hunt has scattered" flag (scoreboard) so a reboot never re-scatters. */
@@ -129,7 +139,10 @@ public final class KalaharManager {
     var src = server.createCommandSourceStack().withLevel(level).withPermission(4).withSuppressedOutput();
     int idx = 0, spawned = 0;
     for (Student s : STUDENTS) {
-      if (trigger != null && trigger.getTags().contains("defeated_" + s.trainerId())) continue;
+      // Skip students the trigger player already beat OR already found (a found real is standing in
+      // the gym — its decoys would be unresolvable leftovers).
+      if (trigger != null && (trigger.getTags().contains("defeated_" + s.trainerId())
+          || trigger.getTags().contains(s.foundTag()))) continue;
       int fakes = (s.apprentice() ? cfg.getApprenticeMirageCount() : cfg.getTrainerMirageCount()) - 1;
       for (int k = 0; k < fakes && idx < pool.size(); k++, idx++) {
         KalaharConfig.Pos p = pool.get(idx);
@@ -140,44 +153,118 @@ public final class KalaharManager {
       }
     }
     if (trigger != null) {
+      // The recorded gym-hollow flyover (skippable, cosmetic — the scatter above already happened).
+      runAsPlayer(trigger, "cutscene play kalahar_hunt_intro");
       trigger.displayClientMessage(Component.literal(
-        "§eThe gym guide calls out: §7The Reach has scattered — Gaia's students hid among their own "
-        + "mirages. Reach out to find the true ones. A mirage casts no shadow."), false);
+        "§eTarek waves you down from his spice stall: §7The Reach has scattered — Gaia's students hid "
+        + "among their own mirages. Walk up to every familiar face and reach out; the desert only "
+        + "keeps the honest ones solid."), false);
     }
     return spawned;
   }
 
-  // ── reach out (fake dialog button → /... kalahar reach) ─────────────────────────
+  // ── reach out (mirage dialog button → /... kalahar reach, fakes AND reals) ──────
 
-  /** Resolve the fake the player is reaching for: 50/50 poof-or-Doppler. */
+  /**
+   * Resolve the figure the player is reaching for. A FAKE ({@code ci_mirage_fake}) rolls the classic
+   * 50/50 poof-or-Doppler. A REAL student ({@code ci_kal_*}, not yet found) is the a18 FOUND beat
+   * (playtest N23): firework + found tag + the body streams back to the gym hollow (facing Gaia) +
+   * the per-student recorded cutscene — the battle then happens IN THE GYM.
+   */
   public static int reach(ServerPlayer player) {
     if (player == null) return 0;
     KalaharConfig cfg = KalaharConfig.get();
     ServerLevel level = player.serverLevel();
     AABB box = player.getBoundingBox().inflate(3.0);
+
+    // Fakes take precedence (a real never stands on a scatter spot, but be deterministic).
     Entity nearest = null;
     double best = Double.MAX_VALUE;
     for (Entity e : level.getEntities(player, box, e -> e.getTags().contains(cfg.fakeTag))) {
       double d = e.distanceToSqr(player);
       if (d < best) { best = d; nearest = e; }
     }
-    if (nearest == null) return 0;
-
-    double x = nearest.getX(), y = nearest.getY(), z = nearest.getZ();
-    BlockPos bp = nearest.blockPosition();
-    if (RNG.nextDouble() < cfg.getDopplerChance()) {
-      nearest.discard(); // collapse the passive decoy
-      level.sendParticles(ParticleTypes.CLOUD, x, y + 1.0, z, 30, 0.3, 0.6, 0.3, 0.02);
-      level.sendParticles(ParticleTypes.LARGE_SMOKE, x, y + 0.5, z, 12, 0.25, 0.4, 0.25, 0.01);
-      level.playSound(null, bp, SoundEvents.HUSK_CONVERTED_TO_ZOMBIE, SoundSource.HOSTILE, 1.0f, 0.7f);
-      spawnDoppler(level.getServer(), level, x, y, z);
-      player.displayClientMessage(
-        Component.literal("§cThe mirage twists into something that lunges at you!"), true);
-    } else {
-      nearest.addTag(POPPED_TAG); // ambient/tick sweeps the poof FX + kill next tick
-      player.displayClientMessage(Component.literal("§7The figure dissolves into drifting sand."), true);
+    if (nearest != null) {
+      double x = nearest.getX(), y = nearest.getY(), z = nearest.getZ();
+      BlockPos bp = nearest.blockPosition();
+      if (RNG.nextDouble() < cfg.getDopplerChance()) {
+        nearest.discard(); // collapse the passive decoy
+        level.sendParticles(ParticleTypes.CLOUD, x, y + 1.0, z, 30, 0.3, 0.6, 0.3, 0.02);
+        level.sendParticles(ParticleTypes.LARGE_SMOKE, x, y + 0.5, z, 12, 0.25, 0.4, 0.25, 0.01);
+        level.playSound(null, bp, SoundEvents.HUSK_CONVERTED_TO_ZOMBIE, SoundSource.HOSTILE, 1.0f, 0.7f);
+        spawnDoppler(level.getServer(), level, x, y, z);
+        player.displayClientMessage(
+          Component.literal("§cThe mirage twists into something that lunges at you!"), true);
+      } else {
+        nearest.addTag(POPPED_TAG); // ambient/tick sweeps the poof FX + kill next tick
+        player.displayClientMessage(Component.literal("§7The figure dissolves into drifting sand."), true);
+      }
+      return 1;
     }
+
+    // No fake in range — is the player reaching for a REAL student?
+    Student found = null;
+    Entity realBody = null;
+    best = Double.MAX_VALUE;
+    for (Student s : STUDENTS) {
+      if (player.getTags().contains(s.foundTag())) continue;
+      for (Entity e : level.getEntities(player, box, e -> e.getTags().contains(s.realTag()))) {
+        double d = e.distanceToSqr(player);
+        if (d < best) { best = d; found = s; realBody = e; }
+      }
+    }
+    if (found == null || realBody == null) return 0;
+
+    if (!huntStarted(level.getServer())) {
+      // Pre-hunt nudge: the beat belongs to the guide — send the player to Tarek first.
+      player.displayClientMessage(Component.literal(
+        "§7The figure wavers under your hand but holds. Something is wrong across the Reach — "
+        + "the spice-seller by the gym has been shouting about it."), true);
+      return 0;
+    }
+
+    player.addTag(found.foundTag());
+    double x = realBody.getX(), y = realBody.getY(), z = realBody.getZ();
+    // The FOUND beat: a firework over the true one, a sand-burst, and the body streams home.
+    launchFirework(level, x, y + 1.5, z);
+    level.sendParticles(new net.minecraft.core.particles.BlockParticleOption(
+        ParticleTypes.FALLING_DUST, net.minecraft.world.level.block.Blocks.SAND.defaultBlockState()),
+      x, y + 1.0, z, 40, 0.4, 0.8, 0.4, 0.02);
+    level.playSound(null, realBody.blockPosition(), SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 1.0f, 1.2f);
+
+    // Teleport the real body to its gym-hollow spot, facing Gaia (chunk-load first — the hollow is
+    // likely unloaded while the player hunts in town; the loaded chunk also persists the move).
+    level.getChunk(((int) Math.floor(found.hx())) >> 4, ((int) Math.floor(found.hz())) >> 4);
+    float yaw = (float) (Math.toDegrees(Math.atan2(GAIA_Z - found.hz(), GAIA_X - found.hx())) - 90.0);
+    realBody.teleportTo(level, found.hx(), found.hy(), found.hz(),
+      java.util.Set.of(), yaw, 0.0f);
+
+    // The recorded found-dive (cosmetic — the tp above already happened, so a skip loses nothing).
+    runAsPlayer(player, "cutscene play " + found.cutscene());
+    player.displayClientMessage(Component.literal(
+      "§6Real! §e" + found.name() + "§7 streams back to the Reach — face them in the gym."), false);
     return 1;
+  }
+
+  /** Gold desert firework over a found real (LARGE_BALL, trail + twinkle, short fuse). */
+  private static void launchFirework(ServerLevel level, double x, double y, double z) {
+    net.minecraft.world.item.ItemStack rocket =
+      new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.FIREWORK_ROCKET);
+    rocket.set(net.minecraft.core.component.DataComponents.FIREWORKS,
+      new net.minecraft.world.item.component.Fireworks(1, List.of(
+        new net.minecraft.world.item.component.FireworkExplosion(
+          net.minecraft.world.item.component.FireworkExplosion.Shape.LARGE_BALL,
+          it.unimi.dsi.fastutil.ints.IntList.of(0xE9A13B, 0xC9A227),
+          it.unimi.dsi.fastutil.ints.IntList.of(0xFFF3C9),
+          true, true))));
+    level.addFreshEntity(new net.minecraft.world.entity.projectile.FireworkRocketEntity(level, x, y, z, rocket));
+  }
+
+  private static void runAsPlayer(ServerPlayer player, String command) {
+    MinecraftServer server = player.getServer();
+    if (server == null) return;
+    server.getCommands().performPrefixedCommand(
+      player.createCommandSourceStack().withPermission(2).withSuppressedOutput(), command);
   }
 
   private static void spawnDoppler(MinecraftServer server, ServerLevel level, double x, double y, double z) {
@@ -204,9 +291,19 @@ public final class KalaharManager {
   }
 
   /** Kill every scattered fake + Doppler (no flag reset). Shared by {@link #clear} and the
-   *  post-victory dissipation in {@link #tick}. */
+   *  post-victory dissipation in {@link #tick}. Chunk-loads the scatter pool first (review-found):
+   *  the leader falls in the gym hollow while pool spots sit 200+ blocks out — {@code kill @e}
+   *  only reaches LOADED entities, and tick(C) latches #cleaned after ONE pass, so an unloaded
+   *  fake would otherwise survive forever. Dopplers spawn at fake positions, so the same pass
+   *  covers them. */
   private static void cleanupDecoys(MinecraftServer server) {
     KalaharConfig cfg = KalaharConfig.get();
+    ServerLevel level = levelFor(server, cfg);
+    if (level != null && cfg.scatterSpots != null) {
+      for (KalaharConfig.Pos p : cfg.scatterSpots) {
+        level.getChunk(((int) Math.floor(p.x)) >> 4, ((int) Math.floor(p.z)) >> 4);
+      }
+    }
     var src = server.createCommandSourceStack().withPermission(4).withSuppressedOutput();
     server.getCommands().performPrefixedCommand(src, "kill @e[tag=" + cfg.fakeTag + "]");
     server.getCommands().performPrefixedCommand(src, "kill @e[tag=" + cfg.dopplerTag + "]");

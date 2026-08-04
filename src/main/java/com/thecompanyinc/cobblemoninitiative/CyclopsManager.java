@@ -83,6 +83,14 @@ public final class CyclopsManager {
    *  world reset). Each spawn-point chunk is loaded first so a far mushroom-island body still lands and
    *  is saved even though those chunks are outside the startup spawn radius. */
   private static void seedOnServerStarted(MinecraftServer server) {
+    seedIfUnseeded(server);
+  }
+
+  /** Seed once per world, keyed on the {@code #spawned} flag. ALSO polled from {@link #tick}
+   *  (every ~200t) so a mid-session flag reset — repairs_a30 clears it after killing the old
+   *  bodies — reseeds the same session instead of leaving the island empty until the next boot
+   *  (review-found: on a fresh install the boot-seed ran BEFORE AutoInstall's repairs kill). */
+  private static void seedIfUnseeded(MinecraftServer server) {
     CyclopsConfig cfg = CyclopsConfig.get();
     if (!cfg.enabled || cfg.spawnPoints == null || cfg.spawnPoints.isEmpty()) return;
     Scoreboard sb = server.getScoreboard();
@@ -144,6 +152,9 @@ public final class CyclopsManager {
 
   private static void tick(MinecraftServer server) {
     CyclopsConfig cfg = CyclopsConfig.get();
+
+    // (0) Low-frequency reseed poll — covers a mid-session #spawned reset (repairs_a30).
+    if (server.getTickCount() % 200 == 0) seedIfUnseeded(server);
 
     // (A) Two-phase scale apply — one tick after load, so the preset attributes are in.
     if (!ready.isEmpty()) {

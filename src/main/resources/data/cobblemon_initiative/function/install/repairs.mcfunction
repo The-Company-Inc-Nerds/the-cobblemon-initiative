@@ -133,3 +133,10 @@ execute unless score #repair_a28 ci_ambient matches 1 run function cobblemon_ini
 #    beach (trident tide-ring race host), Syla to the Deepcore gallery landing (ore trader),
 #    Curator Kenji beside the museum resurrection platform ──
 execute unless score #repair_a29 ci_ambient matches 1 run function cobblemon_initiative:install/repairs_a29_arm
+
+# ── wave a30 (0.7.0-alpha.18): playtest wave — Kalahar mirage-hunt rework migration (reals to the
+#    new town spots + Tarek as guide + fake/Doppler sweep + hunt-flag reset), cyclops reseed
+#    (nameless + long throw), farm_5 gold-pattern re-latches (Suhail farmer / Nao / Aki-to-P3),
+#    Manaphy into the monument treasure room, Rashid Anwar uuid move, Sun-Dried Sentinel y nudge,
+#    and the town-well drain (dry until the Oasis survey is spiked) ──
+execute unless score #repair_a30 ci_ambient matches 1 run function cobblemon_initiative:install/repairs_a30_arm

@@ -53,9 +53,9 @@ public class CyclopsConfig {
   /** Ticks between squeeze pulses. */
   private int squeezeIntervalTicks = 15;
   /** Horizontal throw velocity. */
-  private double throwHorizontal = 1.9;
+  private double throwHorizontal = 4.0;
   /** Upward throw velocity. */
-  private double throwVertical = 0.9;
+  private double throwVertical = 1.6;
   /** Impact damage applied at the moment of the throw (fall damage comes on landing). */
   private float throwImpactDamage = 3.0f;
   /** Ticks the cyclops cannot re-grab after a throw. */
@@ -109,8 +109,8 @@ public class CyclopsConfig {
   public int getGrabDurationTicks() { return Math.max(10, Math.min(200, grabDurationTicks)); }
   public float getSqueezeDamage() { return clampF(squeezeDamage, 0.0f, 20.0f); }
   public int getSqueezeIntervalTicks() { return Math.max(1, Math.min(60, squeezeIntervalTicks)); }
-  public double getThrowHorizontal() { return clampD(throwHorizontal, 0.0, 5.0); }
-  public double getThrowVertical() { return clampD(throwVertical, 0.0, 3.0); }
+  public double getThrowHorizontal() { return clampD(throwHorizontal, 0.0, 12.0); }
+  public double getThrowVertical() { return clampD(throwVertical, 0.0, 6.0); }
   public float getThrowImpactDamage() { return clampF(throwImpactDamage, 0.0f, 20.0f); }
   public int getGrabCooldownTicks() { return Math.max(0, Math.min(400, grabCooldownTicks)); }
 
@@ -120,8 +120,8 @@ public class CyclopsConfig {
   public void setGrabDurationTicks(int v) { this.grabDurationTicks = Math.max(10, Math.min(200, v)); }
   public void setSqueezeDamage(float v) { this.squeezeDamage = clampF(v, 0.0f, 20.0f); }
   public void setSqueezeIntervalTicks(int v) { this.squeezeIntervalTicks = Math.max(1, Math.min(60, v)); }
-  public void setThrowHorizontal(double v) { this.throwHorizontal = clampD(v, 0.0, 5.0); }
-  public void setThrowVertical(double v) { this.throwVertical = clampD(v, 0.0, 3.0); }
+  public void setThrowHorizontal(double v) { this.throwHorizontal = clampD(v, 0.0, 12.0); }
+  public void setThrowVertical(double v) { this.throwVertical = clampD(v, 0.0, 6.0); }
   public void setThrowImpactDamage(float v) { this.throwImpactDamage = clampF(v, 0.0f, 20.0f); }
   public void setGrabCooldownTicks(int v) { this.grabCooldownTicks = Math.max(0, Math.min(400, v)); }
 
