@@ -10,10 +10,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Company fee tuning (showrunner 2026-08-03: "it needs to hurt every time you have to pay it").
- * One multiplier scales BOTH recurring Company fees — the Pokécenter heal
- * ({@code economy/heal_paid}: 200 + 100×badges + 2×instability) and the flat town utility
- * fee ({@code UtilityFeeManager}: 2000 CD per station use). 100 = the tuned defaults;
+ * Recurring-fee tuning (showrunner 2026-08-03: "it needs to hurt every time you have to pay it").
+ * One multiplier scales BOTH recurring fees — the Pokécenter heal
+ * ({@code economy/heal_paid}: 200 + 100×badges + 2×instability) and the per-station town
+ * workstation owner's rate ({@code UtilityFeeManager.FEE_BY_BLOCK}: crafting 100 … enchanting
+ * 2500 — paid to the townsfolk who own the gear, not the Company). 100 = the tuned defaults;
  * 200 doubles the pain; 50 halves it. The heal side reads the value from the
  * {@code #cfg_fee_mult cd_const} scoreboard holder, which {@code UtilityFeeManager.tick}
  * re-asserts every ~10s (the config→scoreboard bridge, orc-spoils precedent) — so a ModMenu

@@ -1744,16 +1744,18 @@ public class InitiativeConfigScreen {
     // ─── Economy: the Company fee multiplier (showrunner 2026-08-03) ─────────────────
     EconomyConfig economyConfig = EconomyConfig.load();
     EconomyConfig economyDefaults = new EconomyConfig();
-    var economySub = entryBuilder.startSubCategory(Component.literal("Company Fees")).setExpanded(true);
+    var economySub = entryBuilder.startSubCategory(Component.literal("Recurring Fees")).setExpanded(true);
     economySub.add(
       entryBuilder
-        .startIntSlider(Component.literal("Company Fee Multiplier (%)"),
+        .startIntSlider(Component.literal("Fee Multiplier (%)"),
           economyConfig.getFeeMultiplierPercent(), 10, 1000)
         .setDefaultValue(economyDefaults.getFeeMultiplierPercent())
         .setTooltip(Component.literal(
-          "Scales BOTH recurring Company fees: the Pokecenter heal (200 + 100 per badge + instability) "
-          + "and the flat 2000 CD town workstation fee. 100 = tuned defaults, 200 = double the pain, "
-          + "50 = half. Reaches the running world within ~10 seconds."))
+          "Scales BOTH recurring fees: the Pokecenter heal (200 + 100 per badge + instability) and "
+          + "the per-station owner's rate for town workstations (crafting 100 / furnace 150 / "
+          + "utility 200 / anvil+smithing 600 / brewing 900 / enchanting 2500 — paid to the "
+          + "townsfolk, not the Company). 100 = tuned defaults, 200 = double, 50 = half. Reaches "
+          + "the running world within ~10s."))
         .setSaveConsumer(economyConfig::setFeeMultiplierPercent)
         .build()
     );

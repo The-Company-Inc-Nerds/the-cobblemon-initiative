@@ -35,13 +35,16 @@ import net.minecraft.world.scores.criteria.ObjectiveCriteria;
  *
  * <ul>
  *   <li>The six gym students (Jr. Apprentice Dune, Apprentice Terra, and the four dune trainers)
- *       are ordinary placement-latched talkable bodies — their existing battle blocks + weakening
- *       ladder are untouched; each carries a per-student {@code ci_kal_*} tag and an {@code on_win}
- *       that teleports it back to the gym hollow when beaten ("returns to the gym").</li>
- *   <li>When a player nears the gym guide ({@link KalaharConfig#guidePos}) the hunt "starts": for
- *       every student not yet defeated, {@code count - 1} heat-shimmer FAKE decoys ({@code ci_mirage_fake})
- *       are import_new'd across the town scatter pool. Fakes share the students' skins, so the player
- *       cannot tell a decoy from the real trainer without reaching out.</li>
+ *       are SUMMON-ONLY (a19): {@link #start} deals each real onto a random spot of the SAME
+ *       31-pin scatter pool as its mirages, so neither text, name, skin, nor POSITION tells them
+ *       apart, and nothing stands in town before Tarek's button fires the scatter. Each carries a
+ *       per-student {@code ci_kal_*} tag; being FOUND teleports it to its fixed gym station where
+ *       its untouched battle ladder plays out.</li>
+ *   <li>The hunt "starts" from Tarek Ramessu's dialog button ({@code kalahar start} — a19, playtest
+ *       2026-08-04 N1; the old proximity auto-start is gone): for every student not yet defeated or
+ *       found, {@code count - 1} FAKE decoys ({@code ci_mirage_fake}) are import_new'd across the
+ *       town scatter pool — each fake carries its real's NAME, skin, and dialog text, so nothing
+ *       tells a decoy from the real trainer without reaching out.</li>
  *   <li>Reaching out to a fake (its dialog runs {@code /cobblemon-initiative kalahar reach}) rolls
  *       {@link KalaharConfig#getDopplerChance()}: it either POOFS (tagged {@code ci_mirage_popped},
  *       swept by ambient/tick FX) or collapses into a hostile low-HP DOPPLER that attacks the player
@@ -70,16 +73,20 @@ public final class KalaharManager {
 
   private static String fake(String s) { return "easy_npc:preset/humanoid/kalahar_mirage_" + s + ".npc.snbt"; }
 
-  /** Hollow spots mirror the pre-a17 gym layout; Gaia stands at ~1978.5/131/4092.5 between them.
-   *  foundTag is the FULL literal (not derived) so dialog_lint's Java string-literal grant scan
-   *  sees the tag granted here — a constructed "found_" + id reads as granted-nowhere (ORPHAN). */
+  /** GYM STATIONS = the in-world pins from the 2026-08-03 playtest — CORRECTED 2026-08-04 note 1:
+   *  those N11–N16 coords are the positions the reals TELEPORT TO after being found (the recorded
+   *  kalahar_found_* cutscenes each end looking at exactly one of them), NOT their town hiding
+   *  spots (the char placements revert to the a17 town coords). Gaia stands at ~1978.5/131/4092.5
+   *  in the hollow below; found students face her from their stations. foundTag is the FULL
+   *  literal (not derived) so dialog_lint's Java string-literal grant scan sees the tag granted
+   *  here — a constructed "found_" + id reads as granted-nowhere (ORPHAN). */
   private static final List<Student> STUDENTS = List.of(
-    new Student("kalahar_jr_apprentice", "Jr. Apprentice Dune", fake("dune"),    true,  "ci_kal_dune",    1976.5, 131, 4095.5, "kalahar_found_dune",    "found_kalahar_jr_apprentice"),
-    new Student("kalahar_apprentice",    "Apprentice Terra",    fake("terra"),   true,  "ci_kal_terra",   1980.5, 131, 4089.5, "kalahar_found_terra",   "found_kalahar_apprentice"),
-    new Student("kalahar_trainer_1",     "Hiker Boulder",       fake("boulder"), false, "ci_kal_boulder", 1974.5, 131, 4090.5, "kalahar_found_boulder", "found_kalahar_trainer_1"),
-    new Student("kalahar_trainer_2",     "Ruin Maniac Dustin",  fake("dustin"),  false, "ci_kal_dustin",  1982.5, 131, 4090.5, "kalahar_found_dustin",  "found_kalahar_trainer_2"),
-    new Student("kalahar_trainer_3",     "Archaeologist Juno",  fake("juno"),    false, "ci_kal_juno",    1974.5, 131, 4094.5, "kalahar_found_juno",    "found_kalahar_trainer_3"),
-    new Student("kalahar_trainer_4",     "Prospector Vince",    fake("vince"),   false, "ci_kal_vince",   1982.5, 131, 4094.5, "kalahar_found_vince",   "found_kalahar_trainer_4")
+    new Student("kalahar_jr_apprentice", "Jr. Apprentice Dune", fake("dune"),    true,  "ci_kal_dune",    1978.5, 136, 4142.5, "kalahar_found_dune",    "found_kalahar_jr_apprentice"),
+    new Student("kalahar_apprentice",    "Apprentice Terra",    fake("terra"),   true,  "ci_kal_terra",   1978.5, 136, 4032.5, "kalahar_found_terra",   "found_kalahar_apprentice"),
+    new Student("kalahar_trainer_1",     "Hiker Boulder",       fake("boulder"), false, "ci_kal_boulder", 1934.5, 136, 4043.5, "kalahar_found_boulder", "found_kalahar_trainer_1"),
+    new Student("kalahar_trainer_2",     "Ruin Maniac Dustin",  fake("dustin"),  false, "ci_kal_dustin",  2022.5, 136, 4043.5, "kalahar_found_dustin",  "found_kalahar_trainer_2"),
+    new Student("kalahar_trainer_3",     "Archaeologist Juno",  fake("juno"),    false, "ci_kal_juno",    1934.5, 136, 4131.5, "kalahar_found_juno",    "found_kalahar_trainer_3"),
+    new Student("kalahar_trainer_4",     "Prospector Vince",    fake("vince"),   false, "ci_kal_vince",   2022.5, 136, 4131.5, "kalahar_found_vince",   "found_kalahar_trainer_4")
   );
 
   /** Gaia's spot in the hollow — a found student teleports in FACING her. */
@@ -139,26 +146,34 @@ public final class KalaharManager {
     var src = server.createCommandSourceStack().withLevel(level).withPermission(4).withSuppressedOutput();
     int idx = 0, spawned = 0;
     for (Student s : STUDENTS) {
-      // Skip students the trigger player already beat OR already found (a found real is standing in
-      // the gym — its decoys would be unresolvable leftovers).
+      // Skip students the trigger player already beat OR already found (a found real is standing at
+      // its gym station — its decoys would be unresolvable leftovers).
       if (trigger != null && (trigger.getTags().contains("defeated_" + s.trainerId())
           || trigger.getTags().contains(s.foundTag()))) continue;
-      int fakes = (s.apprentice() ? cfg.getApprenticeMirageCount() : cfg.getTrainerMirageCount()) - 1;
-      for (int k = 0; k < fakes && idx < pool.size(); k++, idx++) {
+      // a19 (playtest 2026-08-04 follow-up): the REAL is dealt onto the SAME shuffled pool as its
+      // mirages — reals are summon-only now (no placement latch), so NOTHING stands in town until
+      // Tarek's button fires this scatter, and position gives nothing away. Belt: sweep any loose
+      // unfound real of this student first (a dev clear+restart would otherwise double-spawn it).
+      server.getCommands().performPrefixedCommand(src, "kill @e[tag=" + s.realTag() + "]");
+      int copies = s.apprentice() ? cfg.getApprenticeMirageCount() : cfg.getTrainerMirageCount();
+      for (int k = 0; k < copies && idx < pool.size(); k++, idx++) {
         KalaharConfig.Pos p = pool.get(idx);
         level.getChunk(((int) Math.floor(p.x)) >> 4, ((int) Math.floor(p.z)) >> 4); // load + persist target chunk
+        String preset = (k == 0)
+          ? "easy_npc:preset/humanoid/" + s.trainerId() + ".npc.snbt" // the real (k=0 of a SHUFFLED pool = a random spot)
+          : s.fakePreset();
         server.getCommands().performPrefixedCommand(src, String.format(Locale.ROOT,
-          "easy_npc preset import_new data %s %.2f %.2f %.2f", s.fakePreset(), p.x, p.y, p.z));
+          "easy_npc preset import_new data %s %.2f %.2f %.2f", preset, p.x, p.y, p.z));
         spawned++;
       }
     }
     if (trigger != null) {
-      // The recorded gym-hollow flyover (skippable, cosmetic — the scatter above already happened).
-      runAsPlayer(trigger, "cutscene play kalahar_hunt_intro");
+      // a19: the hunt fires from Tarek's dialog button (playtest 2026-08-04 N1) — no cutscene here
+      // (the GYM6introcutscene recording turned out to be Gaia's leader intro, note 4).
       trigger.displayClientMessage(Component.literal(
-        "§eTarek waves you down from his spice stall: §7The Reach has scattered — Gaia's students hid "
-        + "among their own mirages. Walk up to every familiar face and reach out; the desert only "
-        + "keeps the honest ones solid."), false);
+        "§eTarek leans over the empty spice trays: §7There — feel it? The Reach just scattered. "
+        + "Gaia's students hid among their own mirages. Walk up to every familiar face and reach "
+        + "out; the desert only keeps the honest ones solid."), false);
     }
     return spawned;
   }
@@ -277,9 +292,16 @@ public final class KalaharManager {
 
   // ── clear / dev ─────────────────────────────────────────────────────────────────
 
-  /** {@code /cobblemon-initiative kalahar clear} — remove every fake + Doppler and re-arm the hunt. */
+  /** {@code /cobblemon-initiative kalahar clear} — remove every fake, Doppler AND real body, then
+   *  re-arm the hunt (a19: reals are summon-only, so a full reset must sweep them too; the next
+   *  Tarek-button start re-deals everything — beaten students stay beaten via their tags, only
+   *  their cosmetic station bodies vacate). */
   public static int clear(MinecraftServer server) {
     cleanupDecoys(server);
+    var src = server.createCommandSourceStack().withPermission(4).withSuppressedOutput();
+    for (Student s : STUDENTS) {
+      server.getCommands().performPrefixedCommand(src, "kill @e[tag=" + s.realTag() + "]");
+    }
     Objective obj = server.getScoreboard().getObjective(FLAG_OBJ);
     if (obj != null) {
       server.getScoreboard().getOrCreatePlayerScore(ScoreHolder.forNameOnly("#started"), obj).set(0);
@@ -327,18 +349,10 @@ public final class KalaharManager {
     }
     if (!incoming.isEmpty()) { ready.addAll(incoming); incoming.clear(); }
 
-    // (B) Guide "on sight" — scatter once when a player comes within range of the gym guide.
-    if (cfg.enabled && !huntStarted(server)) {
-      ServerLevel level = levelFor(server, cfg);
-      if (level != null) {
-        double r2 = cfg.guideTriggerRadius * cfg.guideTriggerRadius;
-        for (ServerPlayer p : server.getPlayerList().getPlayers()) {
-          if (p.level() != level || p.isSpectator()) continue;
-          double dx = p.getX() - cfg.guidePos.x, dy = p.getY() - cfg.guidePos.y, dz = p.getZ() - cfg.guidePos.z;
-          if (dx * dx + dy * dy + dz * dz <= r2) { start(server, p); break; }
-        }
-      }
-    }
+    // (B) — REMOVED a19 (playtest 2026-08-04 N1): the hunt no longer auto-starts on guide
+    // proximity; it fires from Tarek Ramessu's dialog button (`kalahar start`, idempotent via
+    // the #started flag). KalaharConfig.guidePos/guideTriggerRadius are retained for config-file
+    // compatibility but nothing reads them anymore.
 
     // (C) Once Leader Gaia falls, the illusion dissipates — clear any leftover fakes/Dopplers once.
     if (huntStarted(server) && !cleaned(server)) {

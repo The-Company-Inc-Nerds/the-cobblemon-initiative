@@ -33,19 +33,33 @@
         CanPickUpLoot: 0b,
         CustomNameVisible: 1b,
         DialogData: {
-            Type: "BASIC",
+            Type: "STANDARD",
             DialogDataSet: [
                 {
                     Priority: 10,
                     Buttons: [
                         {
-                            Name: "Goodbye",
+                            Name: "Ask him about the scattered students",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative kalahar start"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "begin_button"
+                        },
+                        {
+                            Name: "Another time",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "goodbye_button"
+                            Label: "leave_button"
                         }
                     ],
                     Texts: [

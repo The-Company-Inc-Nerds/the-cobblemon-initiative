@@ -96,12 +96,6 @@ execute unless score #amb_gaviota_trainer_1 ci_ambient matches 0.. run scoreboar
 execute unless score #amb_gaviota_trainer_2 ci_ambient matches 0.. run scoreboard players set #amb_gaviota_trainer_2 ci_ambient 0
 execute unless score #amb_gaviota_trainer_3 ci_ambient matches 0.. run scoreboard players set #amb_gaviota_trainer_3 ci_ambient 0
 execute unless score #amb_gaviota_trainer_4 ci_ambient matches 0.. run scoreboard players set #amb_gaviota_trainer_4 ci_ambient 0
-execute unless score #amb_kalahar_apprentice ci_ambient matches 0.. run scoreboard players set #amb_kalahar_apprentice ci_ambient 0
-execute unless score #amb_kalahar_jr_apprentice ci_ambient matches 0.. run scoreboard players set #amb_kalahar_jr_apprentice ci_ambient 0
-execute unless score #amb_kalahar_trainer_1 ci_ambient matches 0.. run scoreboard players set #amb_kalahar_trainer_1 ci_ambient 0
-execute unless score #amb_kalahar_trainer_2 ci_ambient matches 0.. run scoreboard players set #amb_kalahar_trainer_2 ci_ambient 0
-execute unless score #amb_kalahar_trainer_3 ci_ambient matches 0.. run scoreboard players set #amb_kalahar_trainer_3 ci_ambient 0
-execute unless score #amb_kalahar_trainer_4 ci_ambient matches 0.. run scoreboard players set #amb_kalahar_trainer_4 ci_ambient 0
 execute unless score #amb_mystic_apprentice ci_ambient matches 0.. run scoreboard players set #amb_mystic_apprentice ci_ambient 0
 execute unless score #amb_mystic_jr_apprentice ci_ambient matches 0.. run scoreboard players set #amb_mystic_jr_apprentice ci_ambient 0
 execute unless score #amb_mystic_trainer_1 ci_ambient matches 0.. run scoreboard players set #amb_mystic_trainer_1 ci_ambient 0
@@ -166,8 +160,6 @@ execute unless score #amb_grain_factor_kalahar ci_ambient matches 0.. run scoreb
 execute unless score #amb_kalahar_husk ci_ambient matches 0.. run scoreboard players set #amb_kalahar_husk ci_ambient 0
 execute unless score #amb_kalahar_nurse ci_ambient matches 0.. run scoreboard players set #amb_kalahar_nurse ci_ambient 0
 execute unless score #amb_kalahar_rumor_marisol ci_ambient matches 0.. run scoreboard players set #amb_kalahar_rumor_marisol ci_ambient 0
-execute unless score #amb_kalahar_survey_stone_1 ci_ambient matches 0.. run scoreboard players set #amb_kalahar_survey_stone_1 ci_ambient 0
-execute unless score #amb_kalahar_survey_stone_2 ci_ambient matches 0.. run scoreboard players set #amb_kalahar_survey_stone_2 ci_ambient 0
 execute unless score #amb_oasis_pump_manifold ci_ambient matches 0.. run scoreboard players set #amb_oasis_pump_manifold ci_ambient 0
 execute unless score #amb_warden_ossa ci_ambient matches 0.. run scoreboard players set #amb_warden_ossa ci_ambient 0
 execute unless score #amb_manaphy_giver ci_ambient matches 0.. run scoreboard players set #amb_manaphy_giver ci_ambient 0

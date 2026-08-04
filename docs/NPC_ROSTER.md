@@ -8,7 +8,7 @@
 >
 > DEV DOCUMENT - full spoilers. The player-facing wiki lives in `wiki/`.
 
-**788 characters** - 359 persisted world bodies, 347 latch-spawned, 82 unplaced (no body, no latch - phone callers, script-spawned bodies like the transformed Hua Zhan leader, dead content, act-2/3 casting).
+**786 characters** - 359 persisted world bodies, 339 latch-spawned, 88 unplaced (no body, no latch - phone callers, script-spawned bodies like the transformed Hua Zhan leader, dead content, act-2/3 casting).
 
 **Reading the tables:** *(body)* = persisted world entity (moves only via repairs tp);
 *(latch)* = spawned at the authored coords when a player first comes within 40 blocks;
@@ -364,7 +364,7 @@
 
 ## Kalahar Reach — Gym 6 (Ground, cap 56)
 
-`characters/kalahar/` - 36 NPCs
+`characters/kalahar/` - 34 NPCs
 
 | NPC | Where | Does | Looks |
 |---|---|---|---|
@@ -381,27 +381,25 @@
 | **Dalia Sefet** `dalia_sefet` | Kalahar Reach - 2178 132 4144 (body) | flavor / lore dialog | world-body look |
 | **Farid Sobek** `farid_sobek` | Kalahar Reach - 1982 136 4058 (body) | flavor / lore dialog | world-body look |
 | **Grain Factor** `grain_factor_kalahar` | Kalahar Reach - Old Caravan Road - 1972.5 117 3945.5 (latch) | battles `wheat_trader_ambush_kalahar` (4x lv50-51: bouffalant, miltank, mudsdale, tauros), prize 500; native trade window (trade_wheat_trader); native trade window (trade_wheat_trader) | skin `single/wheat_factor` |
-| **Martkeeper Hassan Qadir** `hassan_qadir` | Kalahar Reach - Poke-Mart - 2152 138 3984 (body) | native trade window (trade_pokemart); sells (4): tm_earthquake, tm_stoneedge, tm_drillrun, tm_sandstorm | world-body look |
+| **Martkeeper Hassan Qadir** `hassan_qadir` | Kalahar Reach - Poke-Mart - 2152 138 3984 (body) | sells (4): tm_earthquake, tm_stoneedge, tm_drillrun, tm_sandstorm | world-body look |
 | **Inaya Tahar** `inaya_tahar` | Kalahar Reach - 2046 129 4092 (body) | flavor / lore dialog | world-body look |
 | **The Sun-Dried Sentinel** `kalahar_husk` | Kalahar Reach - high dune (gym5 -> gym6 approach) - 1861.4 172.75 4381.4 (latch) | gift: one_time `husk_quiz_wings` | husk (HUSK) |
 | **Sabine** `kalahar_nurse` | Kalahar Reach - Pokemon Center - 2058.5 126 4075.5 (latch) | flavor / lore dialog | skin `single/town_shopkeeper` |
-| **Well-Keeper Marisol** `kalahar_rumor_marisol` | Kalahar Reach - The Dry Well - 2040.5 136 4100.5 (latch) | flavor / lore dialog | skin `single/kalahar_trainer_1` |
-| **Basalt Survey Stone** `kalahar_survey_stone_1` | Kalahar Reach - Dune Line - 1980.5 120 3960.5 (latch) | flavor / lore dialog | skin `single/prop_stone_marker` |
-| **Basalt Survey Stone** `kalahar_survey_stone_2` | Kalahar Reach - Dune Line - 2140.5 132 3900.5 (latch) | flavor / lore dialog | skin `single/prop_stone_marker` |
+| **Well-Keeper Marisol** `kalahar_rumor_marisol` | Kalahar Reach - The Dry Well - 2068.5 125 4055.5 (latch) | flavor / lore dialog | skin `single/kalahar_trainer_1` |
 | **Karim Zahur** `karim_zahur` | Kalahar Reach - 2164 127 4244 (body) | flavor / lore dialog | world-body look |
 | **Well-Keeper Layla Meret** `layla_meret` | Kalahar Reach - the dry well - 2078 121 3946 (body) | mon trade: your sandshrew -> whiscash | world-body look |
 | **Leila Safiya** `leila_safiya` | Kalahar Reach - the town well - 2074 125 4044 (body) | runs: sidequest/kalahar/water_reward | world-body look |
 | **Malik Horus** `malik_horus` | Kalahar Reach - 2156 126 4210 (body) | flavor / lore dialog | world-body look |
 | **Nadia Khepra** `nadia_khepra` | Kalahar Reach - the kiln quarter - 2204 137 4202 (body) | flavor / lore dialog | world-body look |
 | **Nefira Zahra** `nefira_zahra` | Kalahar Reach - 1946 114 3936 (body) | gift: one_time `nefira_cactus_strip` | world-body look |
-| **Noura Ma-at** `noura_maat` | Kalahar Reach - 1940 136 4048 (body) | flavor / lore dialog | world-body look |
+| **Noura Ma-at** `noura_maat` | Kalahar Reach - 1965.5 136 4060.5 (body, moved by repairs) | flavor / lore dialog | world-body look |
 | **Survey Bot** `oasis_pump_manifold` | Kalahar Reach - The Oasis - 1740.5 116 4190.5 (latch) | runs: sidequest/kalahar/shut_pump | skin `single/prop_screen` |
 | **Yield Liaison Omar Duneh** `omar_duneh` | Kalahar Reach - Company field office - 2116 140 4132 (body) | flavor / lore dialog | skin `single/thecompany_admin_1` |
 | **Rami Seti** `rami_seti` | Kalahar Reach - 2206 129 4210 (body) | fetch: 1x bone -> `rami_relic_done` | world-body look |
 | **Nurse Sahir Anuket** `sahir_anuket` | Kalahar Reach - Pokemon Center - 2088 121 3928 (body) | runs: economy/heal_paid, pc/open, sidequest/rumors/shrine_ground | skin `single/nurse_center` |
 | **Samira Nefer** `samira_nefer` | Kalahar Reach - 2148 138 3974 (body) | flavor / lore dialog | world-body look |
-| **Tarek Ramessu** `tarek_ramessu` | Kalahar Reach - 2032 136 4092 (body) | flavor / lore dialog | world-body look |
-| **Warden Ossa** `warden_ossa` | Kalahar Reach - Old Records Post - 2050.5 129 4085.5 (latch) | runs: sidequest/kalahar/file_claim | skin `single/kalahar_trainer_2` |
+| **Tarek Ramessu** `tarek_ramessu` | Kalahar Reach - 2032 136 4092 (body) | cmd: kalahar start | world-body look |
+| **Warden Ossa** `warden_ossa` | Kalahar Reach - Old Records Post - 2050.5 129 4085.5 (latch) | runs: sidequest/reach_cache/turnin, sidequest/reach_cache/resurvey, sidequest/reach_cache/accept | skin `single/kalahar_trainer_2` |
 | **Yasmin Aset** `yasmin_aset` | Kalahar Reach - 2172 135 4242 (body) | flavor / lore dialog | world-body look |
 | **Zaid Khonsu** `zaid_khonsu` | Kalahar Reach - 1978 136 4136 (body) | flavor / lore dialog | world-body look |
 
@@ -886,9 +884,9 @@
 | **Groundskeeper Aya** `groundskeeper_aya` | Hua Zhan City - West Stair - 1382 93 2060 (body) | battles `groundskeeper_aya` (2x lv21-22: sudowoodo, tangela), prize 300 | skin `single/groundskeeper_aya` |
 | **Lanying** `hua_zhan_guide` | Hua Zhan City - Gym Gate Square - 1492 86 2050 (body) | flavor / lore dialog | world-body look |
 | **Leader Blossom** `hua_zhan_leader` | Hua Zhan City - UNPLACED | battles `hua_zhan_leader` (6x lv22-25: sunflora, leafeon, tropius, roserade, vileplume, venusaur), prize 1800; cutscene: hua_zhan_leader_intro | skin `single/hua_zhan_leader` |
-| **Apprentice Terra** `kalahar_apprentice` | Kalahar Reach - scattered into town (mirage hunt); fights in the gym hollow once found - 1978.5 136 4032.5 (latch) | battles `kalahar_apprentice` (3x lv47-48: sandslash, marowak, donphan); cmd: kalahar reach | skin `single/kalahar_apprentice` |
+| **Apprentice Terra** `kalahar_apprentice` | Kalahar Reach - dealt onto the mirage pool at hunt start; teleports to its gym station once found - UNPLACED | battles `kalahar_apprentice` (3x lv47-48: sandslash, marowak, donphan); cmd: kalahar reach | skin `single/kalahar_apprentice` |
 | **Doppler** `kalahar_doppler` | Kalahar Reach - town, wherever a mirage was reached out to - UNPLACED | flavor / lore dialog | doppler (DOPPLER) |
-| **Jr. Apprentice Dune** `kalahar_jr_apprentice` | Kalahar Reach - scattered into town (mirage hunt); fights in the gym hollow once found - 1978.5 136 4142.5 (latch) | battles `kalahar_jr_apprentice` (2x lv45-46: sandslash, marowak); cmd: kalahar reach | skin `single/kalahar_apprentice` |
+| **Jr. Apprentice Dune** `kalahar_jr_apprentice` | Kalahar Reach - dealt onto the mirage pool at hunt start; teleports to its gym station once found - UNPLACED | battles `kalahar_jr_apprentice` (2x lv45-46: sandslash, marowak); cmd: kalahar reach | skin `single/kalahar_apprentice` |
 | **Leader Gaia** `kalahar_leader` | Kalahar Reach - 1978 131 4092 (body) | battles `kalahar_leader` (4x lv50-52: flygon, hippowdon, garchomp, excadrill), prize 3700; cutscene: kalahar_leader_intro | skin `single/kalahar_leader` |
 | **Hiker Boulder** `kalahar_mirage_boulder` | Kalahar Reach - town, a shimmering double - UNPLACED | cmd: kalahar reach | skin `single/kalahar_trainer_1` |
 | **Jr. Apprentice Dune** `kalahar_mirage_dune` | Kalahar Reach - town, a shimmering double - UNPLACED | cmd: kalahar reach | skin `single/kalahar_apprentice` |
@@ -896,10 +894,10 @@
 | **Archaeologist Juno** `kalahar_mirage_juno` | Kalahar Reach - town, a shimmering double - UNPLACED | cmd: kalahar reach | skin `single/kalahar_trainer_1` |
 | **Apprentice Terra** `kalahar_mirage_terra` | Kalahar Reach - town, a shimmering double - UNPLACED | cmd: kalahar reach | skin `single/kalahar_apprentice` |
 | **Prospector Vince** `kalahar_mirage_vince` | Kalahar Reach - town, a shimmering double - UNPLACED | cmd: kalahar reach | skin `single/kalahar_trainer_2` |
-| **Hiker Boulder** `kalahar_trainer_1` | Kalahar Reach - scattered into town (mirage hunt); fights in the gym hollow once found - 1934.5 136 4043.5 (latch) | battles `kalahar_trainer_1` (2x lv45-45: cubone, phanpy); cmd: kalahar reach | skin `single/kalahar_trainer_1` |
-| **Ruin Maniac Dustin** `kalahar_trainer_2` | Kalahar Reach - scattered into town (mirage hunt); fights in the gym hollow once found - 2022.5 136 4043.5 (latch) | battles `kalahar_trainer_2` (2x lv44-45: sandshrew, trapinch); cmd: kalahar reach | skin `single/kalahar_trainer_2` |
-| **Archaeologist Juno** `kalahar_trainer_3` | Kalahar Reach - scattered into town (mirage hunt); fights in the gym hollow once found - 1934.5 136 4131.5 (latch) | battles `kalahar_trainer_3` (2x lv44-45: cubone, baltoy); cmd: kalahar reach | skin `single/kalahar_trainer_1` |
-| **Prospector Vince** `kalahar_trainer_4` | Kalahar Reach - scattered into town (mirage hunt); fights in the gym hollow once found - 2022.5 136 4131.5 (latch) | battles `kalahar_trainer_4` (2x lv44-45: trapinch, stunfisk); cmd: kalahar reach | skin `single/kalahar_trainer_2` |
+| **Hiker Boulder** `kalahar_trainer_1` | Kalahar Reach - dealt onto the mirage pool at hunt start; teleports to its gym station once found - UNPLACED | battles `kalahar_trainer_1` (2x lv45-45: cubone, phanpy); cmd: kalahar reach | skin `single/kalahar_trainer_1` |
+| **Ruin Maniac Dustin** `kalahar_trainer_2` | Kalahar Reach - dealt onto the mirage pool at hunt start; teleports to its gym station once found - UNPLACED | battles `kalahar_trainer_2` (2x lv44-45: sandshrew, trapinch); cmd: kalahar reach | skin `single/kalahar_trainer_2` |
+| **Archaeologist Juno** `kalahar_trainer_3` | Kalahar Reach - dealt onto the mirage pool at hunt start; teleports to its gym station once found - UNPLACED | battles `kalahar_trainer_3` (2x lv44-45: cubone, baltoy); cmd: kalahar reach | skin `single/kalahar_trainer_1` |
+| **Prospector Vince** `kalahar_trainer_4` | Kalahar Reach - dealt onto the mirage pool at hunt start; teleports to its gym station once found - UNPLACED | battles `kalahar_trainer_4` (2x lv44-45: trapinch, stunfisk); cmd: kalahar reach | skin `single/kalahar_trainer_2` |
 | **Apprentice Faye** `mystic_apprentice` | Mystic Marsh - Gym, the still pool - 921.5 92 2439.5 (latch) | battles `mystic_apprentice` (3x lv27-28: kirlia, granbull, togetic) | skin `single/mystic_apprentice` |
 | **Veyric Ashenmark** `mystic_guide` | Mystic Marsh - West Gym Approach - 974 70 2442 (body) | gym-guide info pages | world-body look |
 | **Jr. Apprentice Nixie** `mystic_jr_apprentice` | Mystic Marsh - Gym, the apprentice pool - 965.5 92 2439.5 (latch) | battles `mystic_jr_apprentice` (2x lv26-26: kirlia, granbull) | skin `single/mystic_apprentice` |

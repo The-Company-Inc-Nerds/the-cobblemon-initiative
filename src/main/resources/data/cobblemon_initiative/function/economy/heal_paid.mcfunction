@@ -6,7 +6,7 @@
 #         x #cfg_fee_mult / 100
 # At the default 100% multiplier: 200 pre-badge-1, ~300 after gym 1, ~850-900 after
 # Kalahar, ~1250+ in the endgame — with visible relief when liberations claw the index
-# back. #cfg_fee_mult is the ModMenu "Company Fee Multiplier (%)" (Economy & Services tab),
+# back. #cfg_fee_mult is the ModMenu "Fee Multiplier (%)" (Economy & Services tab, Recurring Fees),
 # mirrored into cd_const by UtilityFeeManager.tick every ~10s (config->scoreboard bridge);
 # the unless-guard below defaults it to 100 if the mirror has not run yet. NOT a random
 # price: every driver is deterministic (randomness invariants, ENGINE_FINDINGS §3). The

@@ -40,128 +40,82 @@
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
-                            Name: "boundary_stones_done"
+                            Name: "reach_cache_active"
                         }
                     ],
                     Priority: 40,
                     Buttons: [
                         {
-                            Name: "Goodbye",
+                            Name: "Hand over the recovered deed",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:sidequest/reach_cache/turnin"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "report_button"
+                        },
+                        {
+                            Name: "Ask her to re-mark the cache",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:sidequest/reach_cache/resurvey"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "remark_button"
+                        },
+                        {
+                            Name: "Still searching",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "goodbye_button"
+                            Label: "leave_button"
                         }
                     ],
                     Texts: [
                         {
-                            Text: "Two stones, two rubbings, one counter-claim filed in ink older than the Company. The northern fields were common land. Paper says so now, and paper is testimony."
+                            Text: "The bearing is on the board and the sand does not move house. Follow my chalk line and watch for the dust-shimmer standing over the dig - the desert marks its own, if you know to look."
                         },
                         {
-                            Text: "If you find yourself out by the Crossroads Granary - it was never theirs to hold. Someone should go take it back. I filed the reason; you can be the argument. Suhail out at the crossing will thank you personally."
+                            Text: "Brush, never shovel. A shovel scatters what the sand spent a lifetime keeping, and then neither of us gets paid."
                         }
                     ],
-                    Name: "Ossa - the claim stands",
-                    Label: "filed"
+                    Name: "Ossa - the bearing stands",
+                    Label: "active"
                 },
                 {
                     Conditions: [
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
-                            Name: "seal_stone_1"
-                        },
-                        {
-                            Type: "PLAYER_TAG",
-                            Operation: "EQUALS",
-                            Name: "seal_stone_2"
-                        },
-                        {
-                            Type: "PLAYER_TAG",
-                            Operation: "EQUALS",
-                            Name: "no_boundary_stones_done"
+                            Name: "reach_cache_first_done"
                         }
                     ],
-                    Priority: 30,
+                    Priority: 25,
                     Buttons: [
                         {
-                            Name: "File the counter-claim with Ossa",
+                            Name: "Take another cache bearing",
                             Actions: [
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "function cobblemon_initiative:sidequest/kalahar/file_claim"
+                                    Cmd: "tag @s add reach_cache_active"
                                 },
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "file_button"
-                        }
-                    ],
-                    Texts: [
-                        {
-                            Text: "Both rubbings - common land, marked and dated. But the second stone carries a second seal, a cut I have seen on one charter in my life. (she looks from the rubbing to your face, then away) Bad light. File the claim and never mind me."
-                        },
-                        {
-                            Text: "This second stone bears two seals. The Company mark, and under it the founders own hand - the same stroke, I would swear, as the way you just signed my log. No. I am an old woman reading marks in bad light. Let it lie. Take your reward and my thanks."
-                        },
-                        {
-                            Text: "Two stones, two rubbings, one seal too many on the last. The desert keeps what people bury, and it has kept a name under that Company mark I am not fool enough to say aloud. Some finds you file. Some you leave in the ground."
-                        }
-                    ],
-                    Name: "Ossa - the second seal",
-                    Label: "return_ready"
-                },
-                {
-                    Conditions: [
-                        {
-                            Type: "PLAYER_TAG",
-                            Operation: "EQUALS",
-                            Name: "seal_stone_1"
-                        },
-                        {
-                            Type: "PLAYER_TAG",
-                            Operation: "EQUALS",
-                            Name: "no_seal_stone_2"
-                        }
-                    ],
-                    Priority: 21,
-                    Buttons: [
-                        {
-                            Name: "Goodbye",
-                            Actions: [
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "goodbye_button"
-                        }
-                    ],
-                    Texts: [
-                        {
-                            Text: "One stone read. The next sits half-buried at the dune edge east of here - follow the shimmer, not the map. The map lies out here; the stones do not."
-                        }
-                    ],
-                    Name: "Ossa - two stones left",
-                    Label: "resume_stone2"
-                },
-                {
-                    Priority: 10,
-                    Buttons: [
-                        {
-                            Name: "I will dig up the stones",
-                            Actions: [
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "tag @s add boundary_stones_active"
-                                },
-                                {
-                                    Type: "COMMAND",
-                                    Cmd: "title @initiator actionbar [{\"text\":\"The Reach Remembers: unearth both survey stones along the dune line.\",\"color\":\"gold\"}]"
+                                    Cmd: "function cobblemon_initiative:sidequest/reach_cache/accept"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -181,10 +135,59 @@
                     ],
                     Texts: [
                         {
-                            Text: "Ossa. I keep the old land records - what the dunes have not eaten. The Company holds title to the northern fields. Their title is paper."
+                            Text: "That first deed you brought in carried a second seal, a cut I have seen on one charter in my life. (she looks from the drawer to your face, then away) Bad light. The records pay the same either way - shall I mark you another?"
                         },
                         {
-                            Text: "The real boundary was cut into two basalt survey stones a lifetime ago - common land, all of it - then the sand took them. Unearth them both and I can file a counter-claim that the granary they seized was never theirs to sell. Walk the dune line. The stones remember."
+                            Text: "The desert keeps what people bury, and it has kept a name under that Company mark I am not fool enough to say aloud. Some finds you file. Some you file face down. There are more caches out there either way."
+                        },
+                        {
+                            Text: "If you find yourself out by the Crossroads Granary - it was never theirs to hold. Someone should go take it back. My drawer full of your deeds is the reason; you can be the argument."
+                        }
+                    ],
+                    Name: "Ossa - some finds you file face down",
+                    Label: "epilogue"
+                },
+                {
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "Take a cache bearing",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add reach_cache_active"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:sidequest/reach_cache/accept"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "accept_button"
+                        },
+                        {
+                            Name: "Later",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "later_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Ossa. I keep the old land records - what the dunes have not eaten. Half my ledger is caches the old Reach buried against bad seasons and never came back for."
+                        },
+                        {
+                            Text: "The records name where. The sand still holds what. Bring me back a cache deed and the records pay a flat rate, every time - the Company would call that inefficient sentiment, which is how I know it is right."
+                        },
+                        {
+                            Text: "I will chalk you the bearing and lend the brush. The desert does the rest - watch for the shimmer standing over the sand."
                         }
                     ],
                     Name: "Warden Ossa",

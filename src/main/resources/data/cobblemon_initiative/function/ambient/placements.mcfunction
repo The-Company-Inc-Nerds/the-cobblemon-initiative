@@ -95,12 +95,6 @@ execute if score #amb_gaviota_trainer_1 ci_ambient matches 0 if entity @a[x=590.
 execute if score #amb_gaviota_trainer_2 ci_ambient matches 0 if entity @a[x=552.5,y=103,z=3641.5,distance=..40] run function cobblemon_initiative:ambient/place/gaviota_trainer_2
 execute if score #amb_gaviota_trainer_3 ci_ambient matches 0 if entity @a[x=590.5,y=92,z=3628.5,distance=..40] run function cobblemon_initiative:ambient/place/gaviota_trainer_3
 execute if score #amb_gaviota_trainer_4 ci_ambient matches 0 if entity @a[x=628.5,y=103,z=3651.5,distance=..40] run function cobblemon_initiative:ambient/place/gaviota_trainer_4
-execute if score #amb_kalahar_apprentice ci_ambient matches 0 if entity @a[x=1978.5,y=136,z=4032.5,distance=..40] run function cobblemon_initiative:ambient/place/kalahar_apprentice
-execute if score #amb_kalahar_jr_apprentice ci_ambient matches 0 if entity @a[x=1978.5,y=136,z=4142.5,distance=..40] run function cobblemon_initiative:ambient/place/kalahar_jr_apprentice
-execute if score #amb_kalahar_trainer_1 ci_ambient matches 0 if entity @a[x=1934.5,y=136,z=4043.5,distance=..40] run function cobblemon_initiative:ambient/place/kalahar_trainer_1
-execute if score #amb_kalahar_trainer_2 ci_ambient matches 0 if entity @a[x=2022.5,y=136,z=4043.5,distance=..40] run function cobblemon_initiative:ambient/place/kalahar_trainer_2
-execute if score #amb_kalahar_trainer_3 ci_ambient matches 0 if entity @a[x=1934.5,y=136,z=4131.5,distance=..40] run function cobblemon_initiative:ambient/place/kalahar_trainer_3
-execute if score #amb_kalahar_trainer_4 ci_ambient matches 0 if entity @a[x=2022.5,y=136,z=4131.5,distance=..40] run function cobblemon_initiative:ambient/place/kalahar_trainer_4
 execute if score #amb_mystic_apprentice ci_ambient matches 0 if entity @a[x=921.5,y=92,z=2439.5,distance=..40] run function cobblemon_initiative:ambient/place/mystic_apprentice
 execute if score #amb_mystic_jr_apprentice ci_ambient matches 0 if entity @a[x=965.5,y=92,z=2439.5,distance=..40] run function cobblemon_initiative:ambient/place/mystic_jr_apprentice
 execute if score #amb_mystic_trainer_1 ci_ambient matches 0 if entity @a[x=912.5,y=70,z=2407.6,distance=..40] run function cobblemon_initiative:ambient/place/mystic_trainer_1
@@ -164,9 +158,7 @@ execute if score #amb_kalahar_sandshrew ci_ambient matches 0 unless entity @e[ta
 execute if score #amb_grain_factor_kalahar ci_ambient matches 0 if entity @a[x=1972.5,y=117,z=3945.5,distance=..40] run function cobblemon_initiative:ambient/place/grain_factor_kalahar
 execute if score #amb_kalahar_husk ci_ambient matches 0 if entity @a[x=1861.4,y=172.75,z=4381.4,distance=..40] run function cobblemon_initiative:ambient/place/kalahar_husk
 execute if score #amb_kalahar_nurse ci_ambient matches 0 if entity @a[x=2058.5,y=126,z=4075.5,distance=..40] run function cobblemon_initiative:ambient/place/kalahar_nurse
-execute if score #amb_kalahar_rumor_marisol ci_ambient matches 0 if entity @a[x=2040.5,y=136,z=4100.5,distance=..40] run function cobblemon_initiative:ambient/place/kalahar_rumor_marisol
-execute if score #amb_kalahar_survey_stone_1 ci_ambient matches 0 if entity @a[x=1980.5,y=120,z=3960.5,distance=..40] run function cobblemon_initiative:ambient/place/kalahar_survey_stone_1
-execute if score #amb_kalahar_survey_stone_2 ci_ambient matches 0 if entity @a[x=2140.5,y=132,z=3900.5,distance=..40] run function cobblemon_initiative:ambient/place/kalahar_survey_stone_2
+execute if score #amb_kalahar_rumor_marisol ci_ambient matches 0 if entity @a[x=2068.5,y=125,z=4055.5,distance=..40] run function cobblemon_initiative:ambient/place/kalahar_rumor_marisol
 execute if score #amb_oasis_pump_manifold ci_ambient matches 0 if entity @a[x=1740.5,y=116,z=4190.5,distance=..40] run function cobblemon_initiative:ambient/place/oasis_pump_manifold
 execute if score #amb_warden_ossa ci_ambient matches 0 if entity @a[x=2050.5,y=129,z=4085.5,distance=..40] run function cobblemon_initiative:ambient/place/warden_ossa
 execute if score #amb_manaphy_giver ci_ambient matches 0 unless entity @e[tag=ci_amb_manaphy_giver] if entity @a[x=2767.9,y=33,z=3490.5,distance=..40] run function cobblemon_initiative:ambient/place/manaphy_giver

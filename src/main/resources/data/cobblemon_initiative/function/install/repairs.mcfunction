@@ -140,3 +140,9 @@ execute unless score #repair_a29 ci_ambient matches 1 run function cobblemon_ini
 #    Manaphy into the monument treasure room, Rashid Anwar uuid move, Sun-Dried Sentinel y nudge,
 #    and the town-well drain (dry until the Oasis survey is spiked) ──
 execute unless score #repair_a30 ci_ambient matches 1 run function cobblemon_initiative:install/repairs_a30_arm
+
+# ── wave a31 (0.7.0-alpha.19): corrections wave — Kalahar geometry fix (the playtest pins are
+#    FOUND-teleport destinations, reals re-latch at the a17 town hiding spots; talk-to-Tarek start;
+#    un-find undefeated students), Marisol out of the blocks -> the town-well rim, Noura Ma-at
+#    corner move (uuid tp + wander Home) ──
+execute unless score #repair_a31 ci_ambient matches 1 run function cobblemon_initiative:install/repairs_a31_arm

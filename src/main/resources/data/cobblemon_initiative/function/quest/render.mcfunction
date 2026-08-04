@@ -398,13 +398,13 @@ execute if entity @s[tag=gaviota_manifest_check_active] unless entity @s[tag=gav
 
 # ===== Kalahar Reach =====
 # ── Kalahar Reach (gym 6) side quests (slots 42-43) ──
-# The Reach Remembers (Ossa's boundary stones — a18: TWO stones; stone_3 re-roled into the
-# Crossroads farmer and the two-seal reveal moved to stone_2): opens on her accept
-# (boundary_stones_active), dune-line stones -> back to Ossa to file; off when filed.
+# The Reach Remembers (a19: REPEATABLE cache recoveries — the boundary stones are retired;
+# Ossa chalks a bearing to a random buried cache S/W of town): the line shows while a bearing
+# is taken (reach_cache_active) and clears on turn-in / re-mark. No waypoint — the roll is
+# random; the chalk bearing + the dust-shimmer column over the site are the finders.
 scoreboard players reset q.side_kalahar_stones ci_quest
-execute if entity @s[tag=boundary_stones_active,tag=!boundary_stones_done] run scoreboard players set q.side_kalahar_stones ci_quest 43
-execute if entity @s[tag=boundary_stones_active,tag=!boundary_stones_done] run scoreboard players display name q.side_kalahar_stones ci_quest [{"text":"• Unearth the survey stones along the dune line","color":"gray"}]
-execute if entity @s[tag=seal_stone_1,tag=seal_stone_2,tag=!boundary_stones_done] run scoreboard players display name q.side_kalahar_stones ci_quest [{"text":"• File the counter-claim with Warden Ossa","color":"gray"}]
+execute if entity @s[tag=reach_cache_active] run scoreboard players set q.side_kalahar_stones ci_quest 43
+execute if entity @s[tag=reach_cache_active] run scoreboard players display name q.side_kalahar_stones ci_quest [{"text":"• Recover the marked cache for Warden Ossa","color":"gray"}]
 
 # Dry Season (a18: Leila's well — giver + turn-in moved off Marisol, playtest N17): opens on
 # Leila's accept (dry_season_active), retargets the Oasis survey crew -> the manifold once both

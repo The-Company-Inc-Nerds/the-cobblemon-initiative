@@ -22,10 +22,14 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
 /**
- * The Company charges to use its PUBLIC town workstations — brewing stands, enchanting tables,
- * furnaces, crafting tables, anvils, and the rest — a steep FLAT fee that bites hardest in the
- * early game, to push the player into building (and powering) their own base outside town early.
- * Storage and passage blocks (chests, barrels, doors, buttons, beds, …) stay free.
+ * Town workstations belong to the TOWNSFOLK — using somebody's furnace, crafting table, or
+ * enchanting table means paying the OWNER for the privilege (showrunner 2026-08-04: it is NOT
+ * the Company metering these; the receipt goes to the craftsperson whose gear it is). Prices
+ * vary by station: everyday tools (crafting table, furnace) are cheap; specialist gear (anvils,
+ * brewing) costs real money; an enchanting table is the town's crown jewel and priced like it.
+ * The pressure to build your own powered base still lands early — the cheap tiers are courtesy,
+ * the expensive ones are the point. Storage and passage blocks (chests, barrels, doors, buttons,
+ * beds, …) stay free.
  *
  * <p>Playtest 2026-08-03 note 1: the fee is now HIGH and the station no longer opens on the first
  * click — the click is cancelled and a chat receipt asks for explicit consent ("[Pay N CD]" click →
@@ -41,23 +45,27 @@ public final class UtilityFeeManager {
 
   private UtilityFeeManager() {}
 
-  /** Chargeable public workstations. Storage/passage/redstone blocks are deliberately excluded. */
-  private static final java.util.Set<Block> UTILITY_BLOCKS = java.util.Set.of(
-    Blocks.BREWING_STAND, Blocks.ENCHANTING_TABLE,
-    Blocks.FURNACE, Blocks.BLAST_FURNACE, Blocks.SMOKER,
-    Blocks.CRAFTING_TABLE, Blocks.ANVIL, Blocks.CHIPPED_ANVIL, Blocks.DAMAGED_ANVIL,
-    Blocks.GRINDSTONE, Blocks.STONECUTTER, Blocks.LOOM,
-    Blocks.CARTOGRAPHY_TABLE, Blocks.SMITHING_TABLE
+  /** Owner's rate per station type (showrunner 2026-08-04: varying prices — everyday tools
+   *  cheap, the enchanting table "quite expensive"). Values are the 100%-multiplier bases;
+   *  everything rides the ModMenu Economy multiplier ({@link #scaledFee}). Deliberately does
+   *  NOT scale with badges — that role belongs to the Center heal fee (economy/heal_paid,
+   *  200 + 100×badges + 2×instability). Storage/passage/redstone blocks are absent = free. */
+  private static final Map<Block, Integer> FEE_BY_BLOCK = Map.ofEntries(
+    Map.entry(Blocks.CRAFTING_TABLE, 100),
+    Map.entry(Blocks.FURNACE, 150),
+    Map.entry(Blocks.BLAST_FURNACE, 150),
+    Map.entry(Blocks.SMOKER, 150),
+    Map.entry(Blocks.GRINDSTONE, 200),
+    Map.entry(Blocks.STONECUTTER, 200),
+    Map.entry(Blocks.LOOM, 200),
+    Map.entry(Blocks.CARTOGRAPHY_TABLE, 200),
+    Map.entry(Blocks.ANVIL, 600),
+    Map.entry(Blocks.CHIPPED_ANVIL, 600),
+    Map.entry(Blocks.DAMAGED_ANVIL, 600),
+    Map.entry(Blocks.SMITHING_TABLE, 600),
+    Map.entry(Blocks.BREWING_STAND, 900),
+    Map.entry(Blocks.ENCHANTING_TABLE, 2500)
   );
-
-  /** FLAT and FRONT-LOADED (showrunner 2026-08-03, retuned to "it needs to hurt every time"):
-   *  2000 CD is multiple quest payouts before badge 3 — near-prohibitive early, which is the
-   *  design: the pressure to build your own powered base lands EARLY, and even late it stings.
-   *  Deliberately does NOT scale with badges — that role belongs to the Center heal fee
-   *  (economy/heal_paid, 200 + 100×badges + 2×instability). Both fees ride the ModMenu
-   *  Economy multiplier ({@link com.thecompanyinc.cobblemoninitiative.config.EconomyConfig},
-   *  percent — see {@link #scaledFee()}). */
-  private static final int FEE = 2000;
   /** After a confirmed payment, re-opening the same station within this window is free. */
   private static final long COOLDOWN_TICKS = 1200L;
   /** The confirm click must still be near the station (blocks). */
@@ -75,7 +83,7 @@ public final class UtilityFeeManager {
 
     BlockPos pos = hit.getBlockPos();
     BlockState state = level.getBlockState(pos);
-    if (!UTILITY_BLOCKS.contains(state.getBlock())) return InteractionResult.PASS;
+    if (!FEE_BY_BLOCK.containsKey(state.getBlock())) return InteractionResult.PASS;
 
     // Sneaking with an item = the player is placing/using that item on the block, not opening it.
     if (sp.isSecondaryUseActive() && !sp.getItemInHand(hand).isEmpty()) return InteractionResult.PASS;
@@ -90,20 +98,20 @@ public final class UtilityFeeManager {
     if (last != null && now - last < COOLDOWN_TICKS) return InteractionResult.PASS; // still paid up
 
     // Not paid — cancel the open and ask. The [Pay] click routes back through utility confirm.
-    int fee = scaledFee();
+    int fee = scaledFee(state.getBlock());
     String cmd = "/cobblemon-initiative utility confirm "
       + pos.getX() + " " + pos.getY() + " " + pos.getZ();
     Component pay = Component.literal("§a§l[Pay " + fee + " CD]")
       .withStyle(s -> s
         .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, cmd))
         .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-          Component.literal("§7Charge " + fee + " CD and open the "
+          Component.literal("§7Pay the owner " + fee + " CD and open the "
             + state.getBlock().getName().getString()))));
-    sp.sendSystemMessage(Component.literal("§6The Company meters its public ")
+    sp.sendSystemMessage(Component.literal("§6This ")
       .append(state.getBlock().getName().copy().withStyle(s -> s.withColor(0xFFE9A13B)))
-      .append(Component.literal("§6 — §e" + fee + " CD§6 per use. "))
+      .append(Component.literal("§6 belongs to one of the townsfolk — §e" + fee + " CD§6 for the use of it. "))
       .append(pay)
-      .append(Component.literal(" §8or walk away. §7Build your own to skip the fee.")));
+      .append(Component.literal(" §8or walk away. §7Build your own and pay nobody.")));
     return InteractionResult.FAIL;
   }
 
@@ -125,7 +133,7 @@ public final class UtilityFeeManager {
   public static int confirmAndOpen(ServerPlayer sp, BlockPos pos) {
     Level level = sp.level();
     BlockState state = level.getBlockState(pos);
-    if (!UTILITY_BLOCKS.contains(state.getBlock())) {
+    if (!FEE_BY_BLOCK.containsKey(state.getBlock())) {
       sp.displayClientMessage(Component.literal("§7The equipment is gone."), true);
       return 0;
     }
@@ -161,13 +169,13 @@ public final class UtilityFeeManager {
     NuzlockeConfig cfg = NuzlockeInit.getConfig();
     Level level = sp.level();
     BlockState state = level.getBlockState(pos);
-    if (!UTILITY_BLOCKS.contains(state.getBlock())) return;
+    if (!FEE_BY_BLOCK.containsKey(state.getBlock())) return;
     if (pos.getCenter().distanceTo(sp.position()) > CONFIRM_RANGE + 4.0) return;
 
     long now = level.getGameTime();
     Long last = LAST_CHARGED.get(key(sp, pos));
     if (last == null || now - last >= COOLDOWN_TICKS) {
-      int fee = scaledFee();
+      int fee = scaledFee(state.getBlock());
       // Affordability probe: `cobbledollars pay @s <fee>` as the player is a net-zero self-pay whose
       // RESULT is the amount when affordable and 0 (soft-fail) when broke — `store success` would
       // read 1 either way, so we capture the result via withCallback. Valid ONLY because this runs
@@ -179,7 +187,7 @@ public final class UtilityFeeManager {
       server.getCommands().performPrefixedCommand(probe, "cobbledollars pay @s " + fee);
       if (paid[0] < 1) {
         sp.displayClientMessage(Component.literal(
-          "§cPayment declined. §7The Company keeps no tabs. (" + fee + " CD required)"), true);
+          "§cYou cannot cover the owner\u0027s rate. §7(" + fee + " CD required)"), true);
         return;
       }
       server.getCommands().performPrefixedCommand(
@@ -187,16 +195,17 @@ public final class UtilityFeeManager {
         "cobbledollars remove " + sp.getScoreboardName() + " " + fee);
       LAST_CHARGED.put(key(sp, pos), now);
       sp.displayClientMessage(Component.literal(
-        "§6The Company bills you §e" + fee + " CD§6. §7Metered access granted — for a minute."), true);
+        "§6You leave §e" + fee + " CD§6 for the owner. §7The tools are yours for a minute."), true);
     }
 
     MenuProvider provider = state.getMenuProvider(level, pos);
     if (provider != null) sp.openMenu(provider);
   }
 
-  /** The flat station fee scaled by the ModMenu Economy multiplier (percent). */
-  private static int scaledFee() {
-    return Math.max(1, FEE * com.thecompanyinc.cobblemoninitiative.config.EconomyConfig
+  /** The owner's rate for this station type, scaled by the ModMenu Economy multiplier. */
+  private static int scaledFee(Block block) {
+    int base = FEE_BY_BLOCK.getOrDefault(block, 200);
+    return Math.max(1, base * com.thecompanyinc.cobblemoninitiative.config.EconomyConfig
       .get().getFeeMultiplierPercent() / 100);
   }
 

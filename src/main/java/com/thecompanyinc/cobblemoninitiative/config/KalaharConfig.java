@@ -38,11 +38,10 @@ public class KalaharConfig {
   public boolean enabled = true;
   public String dimension = "minecraft:overworld";
 
-  /** Gym-guide position — the hunt auto-starts once a player comes within {@link #guideTriggerRadius}.
-   *  a18: the guide is Tarek Ramessu at his spice stall (playtest N10; the dedicated kalahar_guide
-   *  char was deleted, N22). CONFIG-LEAK reminder: an existing world's config JSON overrides this. */
+  /** UNUSED since a19 (playtest 2026-08-04 N1): the hunt starts from Tarek Ramessu's dialog
+   *  button, not proximity. Fields retained so existing config JSONs keep parsing. */
   public Pos guidePos = new Pos(2031.5, 136.0, 4091.5);
-  /** Radius (blocks) around {@link #guidePos} that triggers the "on sight" scatter + intro. */
+  /** UNUSED since a19 — see {@link #guidePos}. */
   public double guideTriggerRadius = 12.0;
 
   /** Total copies (1 real + fakes) per dune trainer — the manager spawns (count - 1) fakes. */

@@ -1,27 +1,21 @@
 {
-  "_comment": "GAIA — Kalahar Reach (gym 6, Ground) leader intro. A per-leader copy of leader_intro.json (the shared scene cannot carry a name title), reusing Cicada's takehara_leader_intro geometry VERBATIM — the same relative+facingFrame+endBack:7 chaining so gym/engage_kalahar_leader still opens the battle from the endBack stage. Camera: pull up over the challenger's shoulder framing Gaia, a TIGHT ZOOM-IN dolly to her face (the z:-8.5 -> z:-6.8 close hold), a high side profile, then drop home. Theme is Ground/earthworks: gravel/sand break + a ravager-step tremor into rooted-dirt, with a sand-block dust burst then crit sparkle anchored ON the leader (uuid-anchored `execute at <uuid>`, so particles land on her regardless of camera). Keyframes + endBack:7 are unchanged from Cicada and MUST stay. IN-WORLD TUNING NEEDED: air-verify the framing/particle height at the real Kalahar Reach arena and nudge the particle ~y offset if the leader silhouette hovers; endBack 7 MUST match leader_intro so the post-scene battle opens correctly.",
-  "relative": true,
-  "facingFrame": true,
+  "_comment": "GAIA — Kalahar Reach (gym 6, Ground) leader intro. RE-RECORDED IN-WORLD 2026-08-04 (playtest notes 4+5: the GYM6introcutscene recording is the LEADER intro, promoted here with every keyframe y LOWERED BY 1 per note 5 — an ABSOLUTE walk up the hollow toward Gaia, replacing the old relative+facingFrame Cicada-geometry copy; the Gaviota a14 precedent says absolute keyframes are fine as long as endBack stays). endBack 7 MUST stay 7 — gym/engage_kalahar_leader opens the battle from the endBack stage-back, same chaining as leader_intro. Sound/particle cues re-timed into the new 70t length from the old scene (Ground theme: gravel/sand break, ravager-step tremor, uuid-anchored sand burst + crit sparkle ON Gaia so they land regardless of camera).",
+  "relative": false,
   "skippable": true,
   "endBack": 7.0,
   "startTitle": "§6Leader Gaia",
   "startSubtitle": "§eStoneshaper of Kalahar §8— §6Ground",
   "keyframes": [
-    { "x": 0.0, "y": 2.5, "z": -4.0, "yaw": 0.0, "pitch": 12.0, "ticks": 30 },
-    { "x": -1.2, "y": 2.2, "z": -8.5, "yaw": 0.0, "pitch": 6.0, "ticks": 45 },
-    { "x": -1.2, "y": 2.2, "z": -8.5, "yaw": 0.0, "pitch": 6.0, "ticks": 20 },
-    { "x": -0.4, "y": 2.6, "z": -6.8, "yaw": 0.0, "pitch": 8.0, "ticks": 18 },
-    { "x": -0.4, "y": 2.6, "z": -6.8, "yaw": 0.0, "pitch": 8.0, "ticks": 30 },
-    { "x": 6.5, "y": 4.5, "z": 1.5, "yaw": -55.0, "pitch": 22.0, "ticks": 50 },
-    { "x": 0.0, "y": 1.0, "z": -6.5, "yaw": 0.0, "pitch": 4.0, "ticks": 40 }
+    { "x": 1978.8, "y": 130.5, "z": 4079.4, "yaw": -1.1, "pitch": -2.0, "ticks": 30 },
+    { "x": 1978.5, "y": 130.9, "z": 4088.9, "yaw": 0.3, "pitch": 4.3, "ticks": 20 },
+    { "x": 1979.9, "y": 130.9, "z": 4094.2, "yaw": 144.9, "pitch": 6.0, "ticks": 20 }
   ],
   "cues": [
     { "tick": 8, "sound": "minecraft:block.gravel.break", "volume": 0.9, "pitch": 0.8 },
     { "tick": 10, "sound": "minecraft:block.sand.break", "volume": 0.5, "pitch": 0.8 },
-    { "tick": 70, "sound": "minecraft:entity.ravager.step", "volume": 0.8, "pitch": 0.8 },
-    { "tick": 78, "command": "execute at e0fd76d6-c1d2-4101-9169-88a5f2aa59e2 run particle block minecraft:sand ~ ~1 ~ 0.6 0.8 0.6 0.02 32 force" },
-    { "tick": 96, "command": "execute at e0fd76d6-c1d2-4101-9169-88a5f2aa59e2 run particle minecraft:crit ~ ~1 ~ 0.6 0.8 0.6 0.02 32 force" },
-    { "tick": 100, "sound": "minecraft:block.rooted_dirt.break", "volume": 0.6, "pitch": 0.9 },
-    { "tick": 190, "sound": "minecraft:entity.player.levelup", "volume": 0.6, "pitch": 0.5 }
+    { "tick": 34, "sound": "minecraft:entity.ravager.step", "volume": 0.8, "pitch": 0.8 },
+    { "tick": 40, "command": "execute at e0fd76d6-c1d2-4101-9169-88a5f2aa59e2 run particle block minecraft:sand ~ ~1 ~ 0.6 0.8 0.6 0.02 32 force" },
+    { "tick": 52, "command": "execute at e0fd76d6-c1d2-4101-9169-88a5f2aa59e2 run particle minecraft:crit ~ ~1 ~ 0.6 0.8 0.6 0.02 32 force" },
+    { "tick": 56, "sound": "minecraft:block.rooted_dirt.break", "volume": 0.6, "pitch": 0.9 }
   ]
 }
