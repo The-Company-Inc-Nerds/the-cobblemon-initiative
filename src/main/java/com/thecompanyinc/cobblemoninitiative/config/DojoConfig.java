@@ -45,6 +45,18 @@ public class DojoConfig {
   /** CobbleDollars taken from the player on a dojo knockout. */
   private int knockoutCost = 100;
 
+  /** If true (and knockout mode is on), a player knockout also EJECTS them to the quarry-side
+   *  clinic and fully resets the dojo run — latches re-armed, floor/pit defeat tags stripped,
+   *  passive bodies back on their posts (Bruno's own badge credit is untouched). */
+  private boolean resetOnKnockout = true;
+
+  /** Where a knocked-out player wakes: outside Rilka's quarry-side clinic, facing her post.
+   *  JSON-editable; must stay >48 blocks from every dojo post so re-raised fighters cannot
+   *  reach the half-heart player. */
+  private double dojoEjectX = 1092.5;
+  private double dojoEjectY = 114.0;
+  private double dojoEjectZ = 3206.5;
+
   // ── Singleton / lifecycle ─────────────────────────────────────────────────────
 
   public static DojoConfig get() {
@@ -95,9 +107,15 @@ public class DojoConfig {
   public float getKnockoutPlayerHealth() { return clamp(knockoutPlayerHealth, 0.5f, 20.0f); }
   public int getKnockoutCost() { return Math.max(0, knockoutCost); }
 
+  public boolean isResetOnKnockout() { return resetOnKnockout; }
+  public double getDojoEjectX() { return dojoEjectX; }
+  public double getDojoEjectY() { return dojoEjectY; }
+  public double getDojoEjectZ() { return dojoEjectZ; }
+
   public void setKnockoutMode(boolean v) { this.knockoutMode = v; }
   public void setKnockoutPlayerHealth(float v) { this.knockoutPlayerHealth = clamp(v, 0.5f, 20.0f); }
   public void setKnockoutCost(int v) { this.knockoutCost = Math.max(0, v); }
+  public void setResetOnKnockout(boolean v) { this.resetOnKnockout = v; }
 
   private static float clamp(float v, float min, float max) { return Math.max(min, Math.min(max, v)); }
 }

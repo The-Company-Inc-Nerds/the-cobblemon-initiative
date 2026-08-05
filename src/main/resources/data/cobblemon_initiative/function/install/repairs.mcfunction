@@ -157,3 +157,8 @@ execute unless score #repair_a32 ci_ambient matches 1 run function cobblemon_ini
 #    ci_phone_caller bodies (the retired Easy-NPC dialog delivery's per-call hosts; their
 #    orphan sweep left phone/tick with the system) ──
 execute unless score #repair_a33 ci_ambient matches 1 run function cobblemon_initiative:install/repairs_a33_arm
+
+# ── wave a34 (0.7.0-alpha.22): playtest 2026-08-05 — dojo generic-corpse sweep, Cyber
+#    gym circuit spread + nurse re-cast (Orion) + Vera move, HQ lobby props street-side +
+#    Victor Node to the penthouse lift landing ──
+execute unless score #repair_a34 ci_ambient matches 1 run function cobblemon_initiative:install/repairs_a34_arm

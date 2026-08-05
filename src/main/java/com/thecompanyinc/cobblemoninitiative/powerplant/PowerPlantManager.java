@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+import java.util.UUID;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
@@ -24,6 +25,10 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -85,6 +90,13 @@ import net.minecraft.world.scores.criteria.ObjectiveCriteria;
  *       SERVER_STARTED, write-through on every change + SERVER_STOPPING (safari pattern).
  *       Auto-scramble at SERVER_STARTED when active and never scrambled — "random every run"
  *       means every fresh world; a re-run mid-world keeps its state.</li>
+ *   <li>GUARDS: bulb-index contract idx 0-2 = generator 1 trio, 3-5 = generator 2 trio, 6-8 =
+ *       console (documented in the bundled JSON {@code _comment} keys). A PLAYER press that
+ *       knocks a full trio all-dark (edge-detected in {@link #applySwitch}) dispatches one
+ *       hostile "Generator Security" iron golem per generator ({@code ci_pp_guard} tag) at the
+ *       config spawn pad, angry at the presser. Guards discard on solve/scramble; UUIDs are
+ *       session-memory only, so an orphan sweep runs at SERVER_STARTED and inside the 20t
+ *       maintenance (CyclopsManager liveness-sweep precedent).</li>
  * </ul>
  */
 public class PowerPlantManager {
@@ -99,6 +111,22 @@ public class PowerPlantManager {
   /** Datapack-visible mirror: objective {@code ci_powerplant}, holder {@code #restored} (1=solved). */
   private static final String OBJ = "ci_powerplant";
   private static final String H_RESTORED = "#restored";
+
+  /** Entity tag on every dispatched security golem. FULL string literal (dialog_lint / typed-kill
+   *  house law); the constant is the only spawn/sweep key — never build it by concatenation. */
+  private static final String GUARD_TAG = "ci_pp_guard";
+
+  /** Bulb-index CONTRACT (mirrored in the bundled JSON {@code _comment} keys): idx
+   *  {@code g*3 .. g*3+2} = generator {@code g}'s trio (0-2 gen 1, 3-5 gen 2); 6-8 = console
+   *  (never guarded). Reordering the bulbs list rewires the security response. */
+  private static final int GENERATOR_COUNT = 2;
+  private static final int TRIO_SIZE = 3;
+
+  /** Persistent-anger window granted on dispatch/re-target (~30s; NeutralMob ticks it down). */
+  private static final int GUARD_ANGER_TICKS = 600;
+
+  /** The 20t re-assert only adopts a new target within this many blocks of the guard. */
+  private static final double GUARD_RETARGET_RANGE = 24.0;
 
   /** Bounded scramble re-rolls before keeping the last result regardless (see class javadoc). */
   private static final int SCRAMBLE_ATTEMPTS = 20;
@@ -129,6 +157,9 @@ public class PowerPlantManager {
   /** Solve-beat sound cascade: −1 idle, else the next bulb index to chime (2t apart, rising pitch). */
   private int cascadeStep = -1;
   private long nextCascadeTick = 0;
+  /** Live security golem per generator (session-memory only, never persisted — restart orphans
+   *  are reaped by tag sweep). null = no guard; a dead slot re-arms that generator's dispatch. */
+  private final UUID[] guardUuids = new UUID[GENERATOR_COUNT];
 
   // ── wiring ─────────────────────────────────────────────────────────────────────
 
@@ -144,6 +175,9 @@ public class PowerPlantManager {
   public void onServerStarted(MinecraftServer server) {
     this.server = server;
     loadState(server);
+    // Orphan sweep: guard UUIDs are session-memory only, so any tagged golem from a previous
+    // session is a stray. Loaded chunks only — the 20t maintenance sweep reaps late loaders.
+    sweepOrphanGuards(server.overworld());
     // Auto-scramble ONCE per world when the geometry is latched: "random every run" = every fresh
     // world rolls its own pattern; a re-run mid-world keeps its saved state (scrambled latch).
     if (config.isActive() && !scrambled && !solved) {
@@ -155,6 +189,9 @@ public class PowerPlantManager {
 
   public void onServerStopping(MinecraftServer server) {
     saveState(server); // belt-and-braces — every change already write-through saves
+    // Drop the reference: ModMenu's reloadConfig can fire from the TITLE screen after a world
+    // closes — the guard-discard path must never touch a stopped server's levels.
+    this.server = null;
   }
 
   public PowerPlantConfig getConfig() {
@@ -197,6 +234,7 @@ public class PowerPlantManager {
     scrambled = true;
     solved = false;
     cascadeStep = -1;
+    discardGuards(server); // a fresh board never inherits an angry golem
     saveState(server);
     pushAllBulbStates(server);
     return 1;
@@ -242,6 +280,10 @@ public class PowerPlantManager {
   /** Shared toggle path (lever click AND the dev {@code flip} command drive this). */
   private void applySwitch(MinecraftServer server, PowerPlantConfig.Switch s, ServerPlayer who) {
     if (server == null) return;
+    // Snapshot the generator trios BEFORE the flip: guard dispatch is EDGE-triggered (a trio
+    // must GO all-dark on this press), so pressing near an already-dark trio never stacks.
+    boolean[] trioDarkBefore = new boolean[GENERATOR_COUNT];
+    for (int g = 0; g < GENERATOR_COUNT; g++) trioDarkBefore[g] = isGeneratorDark(g);
     bulbs[s.a] = !bulbs[s.a];
     bulbs[s.b] = !bulbs[s.b];
     saveState(server); // write-through on every change (safari pattern)
@@ -255,6 +297,14 @@ public class PowerPlantManager {
       level.sendParticles(ParticleTypes.ELECTRIC_SPARK,
         p.x + 0.5, p.y + 0.5, p.z + 0.5, 8, 0.3, 0.3, 0.3, 0.05);
     }
+    // Security dispatch: PLAYER presses only (who is null from the console dev `flip`).
+    if (who != null) {
+      for (int g = 0; g < GENERATOR_COUNT; g++) {
+        if (!trioDarkBefore[g] && isGeneratorDark(g)) {
+          spawnGuard(server, g, who);
+        }
+      }
+    }
     if (unlitCount() == 0) {
       onSolved(server, who);
     } else if (who != null) {
@@ -264,11 +314,21 @@ public class PowerPlantManager {
     }
   }
 
+  /** True when every bulb of generator {@code g}'s trio (index contract, see GENERATOR_COUNT)
+   *  is unlit. */
+  private boolean isGeneratorDark(int g) {
+    for (int i = g * TRIO_SIZE; i < (g + 1) * TRIO_SIZE; i++) {
+      if (i >= bulbs.length || bulbs[i]) return false;
+    }
+    return true;
+  }
+
   /** All nine lit — the one-shot restoration beat. Persists solved=true; the 20t gate sweep
    *  grants {@code cyber_power_restored} within a second. */
   private void onSolved(MinecraftServer server, ServerPlayer who) {
     solved = true;
     saveState(server);
+    discardGuards(server); // grid online — site security stands down
     ServerLevel level = server.overworld();
     // Title beat, corporate-cyber voice (amnesiac era — the grid knows the Company; so might you).
     for (ServerPlayer p : server.getPlayerList().getPlayers()) {
@@ -327,6 +387,11 @@ public class PowerPlantManager {
 
     if (!config.isActive()) return;
     ServerLevel level = server.overworld();
+
+    // (1b) Guard maintenance every 20t: reap dead/orphaned golems, re-assert lost targets.
+    if (now % 20 == 0) {
+      maintainGuards(level);
+    }
 
     // (2) Solve cascade: chime each bulb in order at rising pitch, 2t apart.
     if (cascadeStep >= 0 && now >= nextCascadeTick) {
@@ -429,6 +494,116 @@ public class PowerPlantManager {
     }
   }
 
+  // ── generator security guards (trio-dark dispatch, see class javadoc) ──────────
+
+  /**
+   * Dispatch generator {@code g}'s security golem at {@code guardSpawns[min(g, size-1)]}
+   * (fewer pads than generators clamps to the last — the bundled default is ONE shared pad),
+   * hostile toward {@code who} via persistent anger (NeutralMob). Deduped: a live guard on the
+   * slot skips the dispatch; a dead one re-arms it. NobleEncounterManager Phase-2 spawn recipe.
+   */
+  private boolean spawnGuard(MinecraftServer server, int g, ServerPlayer who) {
+    if (server == null || !config.generatorGuards) return false;
+    List<PowerPlantConfig.Pos> spawns = config.guardSpawns;
+    if (spawns == null || spawns.isEmpty()) return false;
+    ServerLevel level = server.overworld();
+    if (guardUuids[g] != null) {
+      Entity live = level.getEntity(guardUuids[g]);
+      if (live != null && live.isAlive()) return false; // one guard per generator
+      guardUuids[g] = null;
+    }
+    PowerPlantConfig.Pos pad = spawns.get(Math.min(g, spawns.size() - 1));
+    IronGolem golem = EntityType.IRON_GOLEM.create(level);
+    if (golem == null) return false;
+    double x = pad.x + 0.5, y = pad.y, z = pad.z + 0.5;
+    float yaw = who != null
+      ? (float) (Math.toDegrees(Math.atan2(who.getZ() - z, who.getX() - x)) - 90.0)
+      : 0f;
+    golem.moveTo(x, y, z, yaw, 0f);
+    golem.setCustomName(Component.literal("§4Generator Security"));
+    golem.addTag(GUARD_TAG);
+    golem.setPersistenceRequired();
+    if (who != null) {
+      golem.setTarget(who);
+      golem.setPersistentAngerTarget(who.getUUID());
+      golem.setRemainingPersistentAngerTime(GUARD_ANGER_TICKS);
+    }
+    level.addFreshEntity(golem);
+    guardUuids[g] = golem.getUUID();
+    level.playSound(null, golem.blockPosition(), SoundEvents.IRON_GOLEM_ATTACK,
+      SoundSource.HOSTILE, 1.0f, 0.8f);
+    if (who != null) {
+      level.playSound(null, who.blockPosition(), SoundEvents.BELL_BLOCK,
+        SoundSource.BLOCKS, 1.0f, 0.5f);
+      who.displayClientMessage(Component.literal(
+        "§4⚠ GENERATOR OFFLINE §7— site security dispatched."), true);
+    }
+    InitiativeInit.LOGGER.info("[PowerPlant] Generator {} went dark — security golem dispatched{}.",
+      g + 1, who != null ? " on " + who.getName().getString() : "");
+    return true;
+  }
+
+  /**
+   * 20t maintenance: reap dead guards (slot re-arms), re-assert a lost/dead target to the
+   * nearest survival-mode player within {@value #GUARD_RETARGET_RANGE} blocks (else leave the
+   * golem idling), and sweep tagged orphans that late-loaded after the SERVER_STARTED pass.
+   */
+  private void maintainGuards(ServerLevel level) {
+    for (int g = 0; g < GENERATOR_COUNT; g++) {
+      if (guardUuids[g] == null) continue;
+      Entity e = level.getEntity(guardUuids[g]);
+      if (!(e instanceof IronGolem golem) || !golem.isAlive()) {
+        guardUuids[g] = null; // felled — the trio going dark again re-dispatches
+        continue;
+      }
+      LivingEntity target = golem.getTarget();
+      if (target != null && target.isAlive()
+          && !(target instanceof ServerPlayer tp && tp.isSpectator())) {
+        continue;
+      }
+      ServerPlayer nearest = null;
+      double best = GUARD_RETARGET_RANGE * GUARD_RETARGET_RANGE;
+      for (ServerPlayer p : level.getServer().getPlayerList().getPlayers()) {
+        if (!p.isAlive() || p.isSpectator() || p.isCreative()) continue;
+        double d = golem.distanceToSqr(p);
+        if (d <= best) { best = d; nearest = p; }
+      }
+      if (nearest != null) {
+        golem.setTarget(nearest);
+        golem.setPersistentAngerTarget(nearest.getUUID());
+        golem.setRemainingPersistentAngerTime(GUARD_ANGER_TICKS);
+      }
+    }
+    sweepOrphanGuards(level);
+  }
+
+  /** Discard any tagged golem not held by a live slot (typed scan — house kill-selector law;
+   *  loaded chunks only, callers re-run this so late-loading strays still get reaped). */
+  private void sweepOrphanGuards(ServerLevel level) {
+    for (IronGolem stray : level.getEntities(EntityType.IRON_GOLEM,
+        e -> e.getTags().contains(GUARD_TAG))) {
+      boolean tracked = false;
+      for (UUID u : guardUuids) {
+        if (stray.getUUID().equals(u)) { tracked = true; break; }
+      }
+      if (!tracked) stray.discard();
+    }
+  }
+
+  /** Stand every guard down (solve, fresh scramble, guard-toggle reload, dev {@code guard clear}). */
+  private void discardGuards(MinecraftServer server) {
+    if (server == null) return;
+    ServerLevel level = server.overworld();
+    if (level == null) return;
+    for (int g = 0; g < GENERATOR_COUNT; g++) {
+      if (guardUuids[g] == null) continue;
+      Entity e = level.getEntity(guardUuids[g]);
+      if (e != null) e.discard();
+      guardUuids[g] = null;
+    }
+    sweepOrphanGuards(level); // belt-and-braces: tagged strays in loaded chunks
+  }
+
   // ── dev/showrunner commands (see CobblemonInitiativeCommands `powerplant`) ─────
 
   /** {@code powerplant solve} — dev force: all-lit through the SAME solve path (title beat + gate). */
@@ -454,6 +629,23 @@ public class PowerPlantManager {
     return 1;
   }
 
+  /**
+   * {@code powerplant guard spawn <generator>} — dev hook driving the SAME dispatch path as a
+   * trio going dark (dedupe and pad clamp included); the command-source player, when present,
+   * becomes the anger target. Ignores the trio state on purpose — it tests the golem, not the
+   * puzzle.
+   */
+  public int devGuardSpawn(MinecraftServer server, int generator, ServerPlayer who) {
+    if (generator < 0 || generator >= GENERATOR_COUNT) return 0;
+    return spawnGuard(server, generator, who) ? 1 : 0;
+  }
+
+  /** {@code powerplant guard clear} — dev stand-down: discard live guards + tagged strays. */
+  public int devGuardClear(MinecraftServer server) {
+    discardGuards(server);
+    return 1;
+  }
+
   /** {@code powerplant status} — bits, unlit count, flags, switch count + live coverage warns. */
   public String statusReport() {
     StringBuilder sb = new StringBuilder();
@@ -465,6 +657,10 @@ public class PowerPlantManager {
       .append(config.switches != null && config.switches.size() != config.validSwitches().size()
         ? " §c(" + (config.switches.size() - config.validSwitches().size()) + " invalid)"
         : "");
+    int liveGuards = 0;
+    for (UUID u : guardUuids) if (u != null) liveGuards++;
+    sb.append(" guards=").append(config.generatorGuards
+      ? liveGuards + "/" + GENERATOR_COUNT : "§8off§7");
     sb.append("\n§7board: ");
     for (int i = 0; i < bulbs.length; i++) {
       sb.append(bulbs[i] ? "§e" : "§8").append(i).append(bulbs[i] ? "●" : "○").append(' ');
@@ -476,9 +672,14 @@ public class PowerPlantManager {
     return sb.toString();
   }
 
-  /** {@code powerplant reload} — config hot reload + revalidate (state untouched). */
+  /** {@code powerplant reload} — config hot reload + revalidate (puzzle state untouched).
+   *  Guards discard when the reload turns them off or de-latches the engine, so a ModMenu
+   *  toggle never strands a live golem. */
   public void reloadConfig() {
     load();
+    if (server != null && (!config.generatorGuards || !config.isActive())) {
+      discardGuards(server);
+    }
   }
 
   public int unlitCount() {

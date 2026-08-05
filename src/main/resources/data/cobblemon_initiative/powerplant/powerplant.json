@@ -1,12 +1,36 @@
 {
-  "_comment": "Cyber City POWER PLANT lights puzzle (gym-7 leader gate). The engine is INACTIVE until 'bulbs' holds EXACTLY 9 copper-bulb positions — until then everyone carries cyber_power_restored and the gate stays open (the plant does not physically exist yet). Showrunner: fill the coords below, then `/cobblemon-initiative powerplant reload` + `scramble`. The writable override config/cobblemon-initiative-powerplant.json wins over this file.",
-  "_comment_bulbs": "Exactly 9 entries of {x,y,z}. Each position holds ANY block of the copper-bulb family (any oxidation / waxed variant) — the engine flips only its LIT state and preserves the rest.",
-  "bulbs": [],
-  "_comment_switches": "Entries of {x,y,z,a,b}: the LEVER position plus the TWO bulb indices (0-8, distinct) it toggles on<->off together. Cover all 9 bulbs via the pairs — 8+ switches; e.g. a ring 0-1, 1-2, 2-3, 3-4, 4-5, 5-6, 6-7, 7-8, 8-0 (9 levers) gives full coverage and a clean circuit fiction. Place levers AWAY from the bulbs so real redstone never fights the engine (the vanilla lever still flips visually; its orientation is cosmetic). Uncovered bulbs are WARNED at load: they can never change and simply stay lit.",
-  "switches": [],
+  "_comment": "Cyber City POWER PLANT lights puzzle (gym-7 leader gate). The engine is INACTIVE until 'bulbs' holds EXACTLY 9 copper-bulb positions — until then everyone carries cyber_power_restored and the gate stays open. Coords are LATCHED (playtest marks M1-M13 + P1, 2026-08-05). Live instance pickup: `/cobblemon-initiative powerplant reload` + `scramble` — and delete any stale config/cobblemon-initiative-powerplant.json override first, it wins over this file.",
+  "_comment_bulbs": "Exactly 9 entries of {x,y,z}. Each position holds ANY block of the copper-bulb family (any oxidation / waxed variant) — the engine flips only its LIT state and preserves the rest. INDEX ORDER IS CONTRACT: idx 0-2 = GENERATOR 1 trio (x=1414 column), idx 3-5 = GENERATOR 2 trio (x=1434 column), idx 6-8 = CONSOLE (z=928 wall, 8 = the raised top bulb). The generator-guard trio checks read 0-2 and 3-5 BY INDEX — reordering this list rewires the security response.",
+  "bulbs": [
+    {"x": 1414, "y": 92, "z": 940},
+    {"x": 1414, "y": 92, "z": 941},
+    {"x": 1414, "y": 92, "z": 942},
+    {"x": 1434, "y": 92, "z": 940},
+    {"x": 1434, "y": 92, "z": 941},
+    {"x": 1434, "y": 92, "z": 942},
+    {"x": 1423, "y": 92, "z": 928},
+    {"x": 1425, "y": 92, "z": 928},
+    {"x": 1424, "y": 93, "z": 928}
+  ],
+  "_comment_switches": "Entries of {x,y,z,a,b}: the LEVER position plus the TWO bulb indices (0-8, distinct) it toggles on<->off together. Layout: each generator's three levers work its own trio with ONE cross-link into the console (switch 2 ties bulb 2 to console 6, switch 5 ties bulb 5 to console 7); the two console levers tie 6 and 7 to the top bulb 8. All 9 bulbs covered, single connected component (validated at load). The vanilla lever still flips visually; its orientation is cosmetic — the engine's bool[9] is truth.",
+  "switches": [
+    {"x": 1416, "y": 91, "z": 940, "a": 0, "b": 1},
+    {"x": 1416, "y": 90, "z": 941, "a": 1, "b": 2},
+    {"x": 1416, "y": 91, "z": 942, "a": 2, "b": 6},
+    {"x": 1432, "y": 91, "z": 940, "a": 3, "b": 4},
+    {"x": 1432, "y": 90, "z": 941, "a": 4, "b": 5},
+    {"x": 1432, "y": 91, "z": 942, "a": 5, "b": 7},
+    {"x": 1423, "y": 90, "z": 929, "a": 6, "b": 8},
+    {"x": 1425, "y": 90, "z": 929, "a": 7, "b": 8}
+  ],
   "_comment_scramble": "The puzzle pattern is built by applying scrambleMoves uniform-random switch presses to the all-lit board (never a raw random pattern — pair-toggles preserve unlit-count parity, so raw patterns are often unsolvable). The roll re-rolls (~20 attempts, keeps the last regardless) until at least minUnlit bulbs are unlit; the unlit count is always EVEN from an all-lit start. Every scramble is reachable-from-solved, hence solvable, and no player move sequence can ever leave that solvable set.",
   "scrambleMoves": 12,
   "minUnlit": 4,
   "_comment_syncRange": "The 40-tick visual re-assert (self-heals drift, paints late-loading chunks) only runs while a player is within this many blocks of any bulb.",
-  "syncRange": 32
+  "syncRange": 32,
+  "_comment_guards": "Generator security: when a PLAYER press knocks a full generator trio (bulb idx 0-2 or 3-5) all-dark, a hostile 'Generator Security' iron golem spawns at guardSpawns[min(generator, size-1)] targeting the presser. Edge-triggered (the trio must GO dark on that press — a dark trio never stacks guards), one live guard per generator; guards stand down (discard) on solve and on scramble. Playtest P1 = ONE shared pad at 1424 90 936, between the generators.",
+  "generatorGuards": true,
+  "guardSpawns": [
+    {"x": 1424, "y": 90, "z": 936}
+  ]
 }

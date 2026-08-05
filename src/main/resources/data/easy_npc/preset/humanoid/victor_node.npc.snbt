@@ -3,7 +3,7 @@
         author: "TheCompanyInc",
         category: "Civilian",
         created: 0L,
-        description: "civilian at Cyber City - Skybridge (act 1). Compiled from dialog-src.",
+        description: "civilian at Company HQ - Penthouse Lift Landing (act 2). Compiled from dialog-src.",
         entityTypeId: "easy_npc:humanoid",
         modified: 0L,
         name: "Victor Node",
@@ -36,6 +36,13 @@
             Type: "BASIC",
             DialogDataSet: [
                 {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "no_hq_basement_cleared"
+                        }
+                    ],
                     Priority: 10,
                     Buttons: [
                         {
@@ -50,14 +57,51 @@
                     ],
                     Texts: [
                         {
-                            Text: "I run a backbone node — a good chunk of the town routes through this rack. The Company keeps offering to buy it. I keep saying no. The day they own the pipes is the day they own the water, and I have seen what they do to water."
+                            Text: "The penthouse is sealed. The lower floors are still... contested. Clear the basement. Then we can discuss the lift."
                         },
                         {
-                            Text: "Traffic to the tower spiked hard this week and then went almost silent. You know what a building does right before it evacuates? It backs everything up, then it goes quiet."
+                            Text: "I used to run a backbone node downtown. The Company made an offer shaped like a uniform. The rack still routes traffic. Today, everything up here routes through me."
+                        },
+                        {
+                            Text: "Nothing personal. The building has one rule left it is sure of, and I am standing on it. The trouble underneath us is not cleared, so the floors above us do not open."
                         }
                     ],
                     Name: "Victor Node",
                     Label: "default"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "hq_basement_cleared"
+                        }
+                    ],
+                    Priority: 20,
+                    Buttons: [
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The Acting CEO will see you now. He has been... rehearsing."
+                        },
+                        {
+                            Text: "(He steps aside. The lift accepts your floor without being asked, which is not something lifts do.)"
+                        },
+                        {
+                            Text: "The basement went quiet an hour before you arrived. In this building, quiet is the loudest thing there is. Go up."
+                        }
+                    ],
+                    Name: "Victor Node",
+                    Label: "cleared"
                 }
             ]
         },

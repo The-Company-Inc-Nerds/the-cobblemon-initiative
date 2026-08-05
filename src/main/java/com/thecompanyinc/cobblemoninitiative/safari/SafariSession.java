@@ -66,6 +66,11 @@ public class SafariSession {
     public int alert;
     /** >0 = spooked and fleeing; poofs when it reaches 0. */
     public int fleeTicksLeft;
+    /**
+     * Snowball staggers landed (0..staggerMax) — the push-your-luck dial: each stack
+     * buys catch rate but raises the odds of a bolt and thins the alert threshold.
+     */
+    public int stagger;
 
     public ActiveLure(
       UUID entityUuid,
@@ -113,6 +118,8 @@ public class SafariSession {
 
   private int ticksRemaining;
   private ServerBossEvent bossBar;
+  /** Catch-chance readout for the nearest lure (GREEN, under the round clock); null while no target. */
+  private ServerBossEvent catchBar;
 
   private final List<PendingScatter> pendingScatters = new ArrayList<>();
   private final List<ActiveLure> lures = new ArrayList<>();
@@ -201,6 +208,14 @@ public class SafariSession {
 
   public void setBossBar(ServerBossEvent bossBar) {
     this.bossBar = bossBar;
+  }
+
+  public ServerBossEvent getCatchBar() {
+    return catchBar;
+  }
+
+  public void setCatchBar(ServerBossEvent catchBar) {
+    this.catchBar = catchBar;
   }
 
   public List<PendingScatter> getPendingScatters() {

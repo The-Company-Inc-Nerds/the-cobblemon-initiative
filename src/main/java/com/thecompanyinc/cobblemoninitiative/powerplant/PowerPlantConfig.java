@@ -17,8 +17,9 @@ import java.util.List;
  * Tunables + geometry for the Cyber City power-plant lights puzzle (gym 7 gate) — loaded from the
  * jar resource {@code data/cobblemon_initiative/powerplant/powerplant.json} with a writable
  * override at {@code config/cobblemon-initiative-powerplant.json} (override wins; ModMenu saves
- * there — the SafariConfig shape). Coordinates are showrunner latches filled in later: the engine
- * is INACTIVE until {@link #bulbs} holds exactly {@link #BULB_COUNT} entries.
+ * there — the SafariConfig shape). Coordinates are showrunner latches — LATCHED for the Cyber
+ * City plant in the bundled resource (playtest M1-M13 + P1, 2026-08-05); the engine is INACTIVE
+ * unless {@link #bulbs} holds exactly {@link #BULB_COUNT} entries.
  *
  * <p>Geometry contract (mirrored in the bundled resource's {@code _comment} keys): exactly 9
  * copper-bulb positions; each switch is a LEVER position plus the two bulb indices (0-8) it
@@ -62,6 +63,14 @@ public class PowerPlantConfig {
   /** Lever positions + their bulb pairs. */
   public List<Switch> switches = new ArrayList<>();
 
+  /** Dispatch a hostile "Generator Security" iron golem when a PLAYER press knocks a full
+   *  generator trio all-dark (bulb idx 0-2 / 3-5 — the bundled-JSON index-order contract). */
+  public boolean generatorGuards = true;
+
+  /** Guard spawn pads indexed by generator; fewer pads than generators clamps to the LAST
+   *  (the bundled default ships ONE shared pad between the generators — playtest P1). */
+  public List<Pos> guardSpawns = new ArrayList<>();
+
   /** Uniform-random switch presses applied to the all-lit state to build a puzzle. */
   public int scrambleMoves = 12;
 
@@ -94,6 +103,11 @@ public class PowerPlantConfig {
     List<String> warns = new ArrayList<>();
     if (bulbs == null) bulbs = new ArrayList<>();
     if (switches == null) switches = new ArrayList<>();
+    if (guardSpawns == null) guardSpawns = new ArrayList<>();
+    if (generatorGuards && guardSpawns.isEmpty() && isActive()) {
+      warns.add("generatorGuards is ON but guardSpawns is empty — the trio-dark security "
+        + "dispatch will no-op until a spawn pad is latched.");
+    }
     if (!bulbs.isEmpty() && bulbs.size() != BULB_COUNT) {
       warns.add("bulbs: " + bulbs.size() + " listed — the engine needs exactly "
         + BULB_COUNT + " (INACTIVE until then).");

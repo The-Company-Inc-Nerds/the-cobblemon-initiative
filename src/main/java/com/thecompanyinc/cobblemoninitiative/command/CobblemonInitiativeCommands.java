@@ -598,8 +598,10 @@ public class CobblemonInitiativeCommands {
         // ALL perm-2: scramble/solve are showrunner/dev set-and-reset; `flip <switchIndex>` is the
         // headless-harness stand-in driving the SAME toggle path as a lever click (Carpet bots
         // cannot click levers — the safari `scatter` rationale); status prints the board bits +
-        // coverage warns; reload re-reads + revalidates the config (coords latch later, Gaviota
-        // precedent). Players never need these — the puzzle is levers-in-world only.
+        // coverage warns; reload re-reads + revalidates the config (coords latched a22);
+        // `guard spawn <0|1>` / `guard clear` force-dispatch / stand down the generator security
+        // golems through the live paths. Players never need these — the puzzle is levers-in-world
+        // only.
         .then(
           Commands.literal("powerplant")
             .requires(source -> source.hasPermission(2))
@@ -644,6 +646,27 @@ public class CobblemonInitiativeCommands {
                 false);
               return 1;
             }))
+            .then(Commands.literal("guard")
+              .then(Commands.literal("spawn")
+                .then(Commands.argument("generator", IntegerArgumentType.integer(0, 1))
+                  .executes(ctx -> {
+                    int ok = InitiativeInit.getPowerPlantManager().devGuardSpawn(
+                      ctx.getSource().getServer(),
+                      IntegerArgumentType.getInteger(ctx, "generator"),
+                      ctx.getSource().getPlayer());
+                    ctx.getSource().sendSuccess(() -> Component.literal(ok == 1
+                      ? "§a[PowerPlant] Security golem dispatched."
+                      : "§c[PowerPlant] Dispatch refused (guards off, no spawn pad, or a live "
+                        + "guard already holds that generator)."),
+                      false);
+                    return ok;
+                  })))
+              .then(Commands.literal("clear").executes(ctx -> {
+                InitiativeInit.getPowerPlantManager().devGuardClear(ctx.getSource().getServer());
+                ctx.getSource().sendSuccess(
+                  () -> Component.literal("§a[PowerPlant] Security guards stood down."), false);
+                return 1;
+              })))
         )
         // PokePhone call screen (0.7.0-alpha.20) — our own client smartphone, replacing the
         // invisible-caller Easy NPC dialog delivery. ALL perm-2: `ring <id>` is the content

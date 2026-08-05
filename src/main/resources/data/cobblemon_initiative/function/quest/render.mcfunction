@@ -42,9 +42,11 @@ execute if score @s memory_fragment matches 0 if entity @s[tag=got_pokedex] unle
 # (1) HQ RAID — after gym 7 AND 6 of the 10 liberated fields (the hard gate, showrunner
 #     ruling 2026-07-13: starve the monopoly before storming it; DJ refuses the meeting
 #     while the fields still feed the Company), until Acting CEO DJ falls (climax outranks
-#     gyms 8-10). The raid DESCENDS to DJ at the basement bottom [1590 51 1028].
+#     gyms 8-10). CANON 2026-08-05: the raid enters the built tower at the door line
+#     [1619 92 1116], clears the basement (COO Noir), and CLIMBS to DJ in the penthouse
+#     (y197) — supersedes the basement-bottom placeholder [1590 51 1028].
 execute if score @s memory_fragment matches 7.. unless entity @s[tag=defeated_villain_boss] unless score @s fields_liberated matches 6.. run scoreboard players display name q.main ci_quest [{"text":"▶ Liberate wheat fields, then raid HQ","color":"gold"}]
-execute if score @s memory_fragment matches 7.. unless entity @s[tag=defeated_villain_boss] if score @s fields_liberated matches 6.. run scoreboard players display name q.main ci_quest [{"text":"▶ Raid Company HQ  [1590 51 1028]","color":"red"}]
+execute if score @s memory_fragment matches 7.. unless entity @s[tag=defeated_villain_boss] if score @s fields_liberated matches 6.. run scoreboard players display name q.main ci_quest [{"text":"▶ Raid Company HQ  [1619 92 1116]","color":"red"}]
 
 # (2) ROYAL LEAGUE — all 10 badges, DJ down, champion still standing.
 #     NOTE: the champion's defeat_tag override is royal_league_champion (NOT the

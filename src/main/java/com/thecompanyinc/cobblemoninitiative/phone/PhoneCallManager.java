@@ -20,7 +20,8 @@ import net.minecraft.sounds.SoundSource;
 /**
  * PokePhone ring-then-accept flow (0.7.0-alpha.20). Replaces the invisible-caller Easy NPC
  * dialog delivery: {@code /cobblemon-initiative phone ring <id>} starts a ring window
- * (ringtone + flashing actionbar); the player answers via keybind and the client screen
+ * (server drives the ringtone; the client renders the flashing actionbar, so the prompt
+ * shows the live answer keybind); the player answers via keybind and the client screen
  * carries the call. The OWED-CALL contract: a missed, declined, aborted, or relogged-out
  * call is requeued and rings again after {@link PhoneCallConfig#reRingSeconds} — normal
  * COMPLETION is the only consume, so no story beat is ever lost. Content-side tick
@@ -198,17 +199,8 @@ public class PhoneCallManager {
         SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.PLAYERS, 0.7f, 1.275f);
     }
 
-    // Flashing gold actionbar, alternating bright/dim every half second. [P] is the
-    // shipped default binding for "Answer PokePhone" (the client owns any rebind).
-    boolean bright = (session.ringTick / 10) % 2 == 0;
-    String caller = session.script.caller();
-    player.displayClientMessage(
-      Component.literal(bright
-        ? "§6§l☎ Incoming — " + caller + "  §r§e[P] to answer"
-        : "§7☎ Incoming — " + caller + "  §8[P] to answer"),
-      true);
-
     if (session.ringTick >= ringWindowTicks()) {
+      String caller = session.script.caller();
       state.active = null;
       requeue(state, session.script.id(), session.preview);
       player.displayClientMessage(

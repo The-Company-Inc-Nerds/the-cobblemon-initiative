@@ -8,6 +8,75 @@ done, Claude removes it **and** any release-removal it unblocks.
 
 ---
 
+## 2026-08-05 — 0.7.0-alpha.22: power plant latch + dojo KO + HQ act-2 playtest wave
+
+All 3 notes + 13 markers + 13 NPC notes + 9 position marks implemented; compile errors:0
+(792 presets), gradle green, lint at the 87-error family baseline, roster 788 NPCs.
+**repairs_a34** wired (dojo corpse sweep, cyber gym spread + nurse re-cast + Orion/Vera
+tps, HQ props street-side + Victor to the lift landing). Highlights: power plant engine
+LATCHED (9 bulbs / 8 levers per M1-M13) + generator security golem (P1); gym-4 KO body =
+the fighter you just dropped (sleep pose) and a player KO ejects to the quarry clinic +
+full dojo reset; Cyber cast re-seated (Dex Volt = mart clerk, Dr. Orion Synapse = Center
+nurse via uuid re-cast, six gym trainers spread across the circuit); HQ act-2 canon moved
+to the BUILT tower (door guards Voss/Kessler bounce pre-eligibility, penthouse gated on
+the basement clear, DJ fought in the penthouse P7-P9, 4 lopunny + Chairman placed); safari
+stagger raises catch AND flee odds with a live catch-chance bar; phone ring prompt names
+the bound key; Helga → Preservationist Maya; DH preload now the full ~2.4 GB pregen.
+- [ ] 🧱 `gradle build` done — `build-mrpack` + install run (repairs_a34 +
+      update_npc_presets + register_sight ride the version bump), then client relog.
+      NOTE the .mrpack grows ~2.4 GB (DH full pregen); also copy the staged
+      `mrpack/maps/<map>/data/DistantHorizons.sqlite` into your play instance's save so
+      future "refresh from instance" runs don't regress coverage (mrpack/maps/README.md).
+- [ ] 🔍 POWER PLANT first latch: on the live instance, if `config/
+      cobblemon-initiative-powerplant.json` exists it STILL has empty bulbs and wins over
+      the jar — delete it (or re-save from ModMenu after reload), then `/cobblemon-initiative
+      powerplant reload` + `status` (active=true bulbs=9 switches=8, no coverage warns) +
+      `scramble`. Verify: all 9 marks hold copper bulbs + 8 marks hold levers; each lever
+      flips its pair (gen levers cross-link into the console); all-9-lit fires GRID ONLINE
+      + unlocks Volt; no lever mashing wedges it (by construction).
+- [ ] 🔍 POWER PLANT golem: drive one generator trio all-dark → "GENERATOR OFFLINE"
+      actionbar + hostile "Generator Security" iron golem at 1424 90 936 chasing you; no
+      second golem while one lives; solve/scramble despawns it; `powerplant guard
+      spawn|clear` dev hooks; ModMenu "Generator Guards" toggle.
+- [ ] 🔍 DOJO both directions: drop Battle Girl Mika → the mat sleeper IS Mika (name +
+      skin, prone, talk-only); get KO'd → no death screen, wake by the quarry-side clinic
+      (1092 114 3206) at the configured half-heart −100 CD, dojo fully reset (corpses
+      gone, passives back, floors + pit re-armed, six defeat tags stripped; Bruno badge
+      credit + chosen track kept); Bruno's straight-to-the-pit button now actually fires.
+- [ ] 🔍 CYBER cast: Dex Volt sells at the mart counter (default CobbleDollars shop at
+      the register); Dr. Orion Synapse at the Center desk (his own look, stationary) —
+      heal + PC + rumor tips + the second-visit side-line light-up all still work; old
+      nurse/orion/vera spots empty; six trainers at the new posts (Voltz 1305/98/1229,
+      Surge 1305/98/1141, Amp 1255/116/1185, Watt 1305/116/1138, Static 1274/100/1185,
+      Gigabyte 1307/116/1213) and the circuit ladder still gates via cyber_tower.
+- [ ] 🔍 HQ act-2: pre-eligibility (fields<6 or badges<7) the lobby box escorts you out
+      (10 s cooldown, creative exempt); Voss + Kessler flank the door and switch to
+      stand-down at eligibility; BOTH prop screens clickable from the street (Exchange
+      Rate / Signal Integrity still completable pre-raid); Victor Node at the lift
+      landing gates the penthouse on the basement clear (TEMP: eligibility auto-grants
+      `hq_basement_cleared` until COO Noir is pinned); DJ at his desk P7 → battle walks
+      him to P8 + stages you at P9; victory = 8000 CD + hq_stabilize + despawn; raid
+      sidebar/waypoint now reads [1619 92 1116]; 4 lopunny + Chairman place on approach.
+- [ ] 🔍 SAFARI stagger: green catch-chance bar tracks the nearest lure within 16;
+      snowball staggers raise the % (and the flee gamble — ~12%/24%/36%/48% at ×1-4, plus
+      fewer seen-checks before a spook); ×3-4 staggers make safari-ball throws land
+      visibly easier; non-safari wild catches unchanged; both bars gone at round end;
+      three new ModMenu knobs under Safari Zone.
+- [ ] 🔍 PHONE: ring prompt reads "[Enter] to answer" on the pack (live-follows rebinds);
+      cadence/miss/requeue unchanged.
+- [ ] 🔍 MAYA: nameplate + prose say Preservationist Maya everywhere (preserve keeps the
+      Ridgewatch name); safari_yards scenario needs the NEW jar (its wait_chat matches
+      the Maya line).
+- [ ] 🧱 COO Noir (villain_admin_commander) basement pin — the basement clear-out boss
+      per N13's "clear the basement" canon. When placed: remove the loudly-marked TEMP
+      eligibility grant in `function/villain/hq_tick.mcfunction`.
+- [ ] 💻 Deferred: the Founder mirror stage still anchors [1590 51 1028] in
+      quest_targets.json (act-3 wave decides whether the mirror arena is the penthouse
+      per hq_penthouse_mirror); dojo sleeper pose is the a-era best-effort prone — tune
+      in-world if it clips.
+
+---
+
 ## 2026-08-04 — 0.7.0-alpha.20: Safari Zone redesign + gym6→7 route playtest wave
 
 All 10 notes + 15 NPC notes + P1 implemented; compile errors:0 (--prune), gradle green,
@@ -25,7 +94,7 @@ guide; /gfx High now equals the shipped BSL HIGH profile (configVersion 2 migrat
       befriend, snowball weaken, crouch-stealth vs spook-flee, ball-exhaust end,
       timer end + eject, contest round scoring, death-mid-round custody restore.
 - [ ] 🔍 Clear-out quest loop: Nova button → sidebar line 41 → Rurik → Silva (blocked
-      button first) → Nova turn-in cards/payout → Darik/Varek/Helga unlock.
+      button first) → Nova turn-in cards/payout → Darik/Varek/Maya unlock.
 - [ ] 🔍 Marek both paths: Heracross/Pinsir gift → portrait + pack-out sweep; battle →
       despawn. Fenceline: Kade hail (new sight tag), Mira gate, Imara fence_down
       ceremony (expect FENCELINE ACRES card, not THE PARCEL).
@@ -40,24 +109,16 @@ guide; /gfx High now equals the shipped BSL HIGH profile (configVersion 2 migrat
       Honey Smear TREE rule: smearing on grass refuses in-voice, smearing on a trunk/
       canopy drops the lures at the tree base. ModMenu "Safari-Exclusive Species"
       toggle walks exclusivity back per-save if wanted.
-- [ ] 🧱 POWER PLANT (gym-7 trial, engine SHIPPED a20 — awaiting coords): provide the
-      9 copper-bulb positions + the lever positions with their bulb pairs, then fill
-      data/cobblemon_initiative/powerplant/powerplant.json (bulbs [{x,y,z}×9] +
-      switches [{x,y,z,a,b}] — cover all 9 bulbs via pairs, ring 0-1…8-0 = 9 levers
-      full coverage; place levers away from bulbs so redstone never fights the
-      engine). Build the room with any copper-bulb variant at the 9 spots. Engine
-      auto-scrambles per fresh world; mid-world latch = `powerplant reload` +
-      `powerplant scramble`. Until latched, gym 7 stays open (inactive = restored).
-- [ ] 🔍 Power plant once latched: scramble pattern differs per world, levers toggle
-      their pairs (vanilla lever flips too), all-9-lit fires GRID ONLINE + unlocks
-      Volt (power_out page gone), `powerplant status`/`flip` dev hooks work, and no
-      lever mashing can ever wedge it (by-construction guarantee — spot check).
+- [x] 🧱 POWER PLANT coords — DONE 2026-08-05: the a22 wave latched the 9 bulbs + 8
+      levers from the dev-log markers (see the 2026-08-05 section for the live-instance
+      override gotcha + the full verify list, incl. the new generator security golem).
 - [ ] 🔍 PokéPhone call screen (new client UI): trigger a call in-world (`/ca-dev
       phone mom` = side-effect-free preview; a real ring via badge/dex triggers) —
-      check the ring actionbar + chime, [P] answer, splash → conversation typewriter
+      check the ring actionbar + chime — the prompt must name the bound answer key
+      (pack default: Enter) and update live on rebind — splash → conversation typewriter
       feel, choice buttons, NUMBER WITHHELD glitch on a villain call (dj_threat),
       missed-call re-ring after ~90s, and that answering mid-battle is impossible
-      (ring defers). Confirm [P] doesn't collide with another pack keybind on the
+      (ring defers). Confirm the answer key doesn't collide with another pack keybind on the
       live instance (rebindable under Options → Controls → Cobblemon Initiative).
 - [ ] 🔍 Quest Log (Shift+T): open it with quests active — sidebar-identical lines +
       the tracked ▶, memory pips match badge count, scroll works when the list is
@@ -80,11 +141,12 @@ guide; /gfx High now equals the shipped BSL HIGH profile (configVersion 2 migrat
       at rest, pops on quest credit, on ]/[, and on closing the Quest Log. In YOUR
       live instance set autohud.json5 scoreboard.scoreboard.active=false (the shipped
       pack default already has it) or the two hiders fight over the sidebar.
-- [ ] 🧱 DH LOD refresh before each release build: quit the world, then re-copy
-      saves/<map>/data/DistantHorizons.sqlite into mrpack/maps/<map>/data/ (workflow
-      in mrpack/maps/README.md) — coverage grows as you fly the map with Distant
-      Generation on. Also eyeball BSL + DH sky/fog seam on first boot (DH shader
-      integration needs Iris' DH path; if it looks wrong, DH's own fog/clouds
+- [ ] 🧱 DH LOD refresh before each release build — CHANGED 2026-08-05: the staged
+      preload is now a full ~2.4 GB offline pregen that is NEWER than the instance
+      saves. Do NOT re-copy from the instance until the instance save itself carries
+      the big DB (copy staged → instance first; workflow + warning in
+      mrpack/maps/README.md). Also eyeball BSL + DH sky/fog seam on first boot (DH
+      shader integration needs Iris' DH path; if it looks wrong, DH's own fog/clouds
       settings are the knobs — DH clouds are already off in the shipped config).
 - [ ] 🔍 Render-ready hold (first boot, THE cold-open check): fresh world = black
       branded overlay → install provisioning bar → terrain % climbs → reveal lands
@@ -1315,7 +1377,7 @@ deletable.
 - [x] 💻 **Safari Zone BUILT (0.5.0-alpha.14) — "The Baiting Yards"** — ⚠️ SUPERSEDED by
   the **0.7.0-alpha.20 round-based redesign** (see the 2026-08-04 wave section at the top
   + the STATUS header in docs/SAFARI_ZONE_CONCEPTS.md): Day Permit → 180s custody round
-  (capture/contest), concierge CUT → Nova clear-out quest + Helga's employees, tables
+  (capture/contest), concierge CUT → Nova clear-out quest + Maya's employees, tables
   retuned lv 40-50, zone polygon suppresses natural Cobblemon spawns. The description
   below is the historical alpha.14 shape. (concept menu in
   docs/SAFARI_ZONE_CONCEPTS.md; showrunner selected the lure-game direction, badge-3

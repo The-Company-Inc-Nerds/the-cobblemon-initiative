@@ -45,7 +45,7 @@ public class SafariConfig {
   /** How long lured Pokémon linger before wandering off, in seconds. */
   public int windowSeconds = 75;
 
-  /** Gym badges required before Helga starts a round (post-gym-6 leg, lure band 40-50). */
+  /** Gym badges required before Maya starts a round (post-gym-6 leg, lure band 40-50). */
   public int gateBadges = 6;
 
   /**
@@ -82,6 +82,21 @@ public class SafariConfig {
 
   /** Fraction of max HP a Preserve snowball shaves off (floors at 1 HP). */
   public double weakenFraction = 0.25;
+
+  /**
+   * Catch-rate bonus per snowball stagger: the real throw (POKEMON_CATCH_RATE hook)
+   * and the catch-chance bar both apply rate × (1 + bonus × staggers).
+   */
+  public double staggerCatchBonus = 0.35;
+
+  /**
+   * Bolt roll on each snowball hit that lands a stagger: flee chance = this × the
+   * NEW stagger count (the push-your-luck cost of stacking staggers).
+   */
+  public double staggerFleeChance = 0.12;
+
+  /** Staggers that stack (further snowballs still weaken HP but add no more). */
+  public int staggerMax = 4;
 
   /** Catch-window extension for a befriended lure, in seconds. */
   public int friendlyBonusSeconds = 30;

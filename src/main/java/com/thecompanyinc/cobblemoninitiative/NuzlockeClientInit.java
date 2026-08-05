@@ -62,8 +62,8 @@ public class NuzlockeClientInit implements ClientModInitializer {
     // detects the FancyMenu main-menu pack swap and syncs shaders + video settings to it.
     com.thecompanyinc.cobblemoninitiative.graphics.GraphicsPresetManager.init();
 
-    // PokePhone — the "Answer PokePhone" keybind (default P) + the offer/open receivers
-    // behind the client call screen.
+    // PokePhone — the "Answer PokePhone" keybind (pack rebinds default P to Enter) + the
+    // offer/open receivers behind the client call screen.
     com.thecompanyinc.cobblemoninitiative.phone.PhoneCallClient.init();
 
     // Join-hold: the branded render-ready overlay covering world joins until the terrain

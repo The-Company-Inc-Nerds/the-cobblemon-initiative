@@ -1,9 +1,9 @@
 {
     PresetMetadata: {
         author: "TheCompanyInc",
-        category: "Civilian",
+        category: "Merchant",
         created: 0L,
-        description: "civilian at Cyber City - Battery Row (act 1). Compiled from dialog-src.",
+        description: "merchant at Cyber City - Pokemart (act 1). Compiled from dialog-src.",
         entityTypeId: "easy_npc:humanoid",
         modified: 0L,
         name: "Dex Volt",
@@ -33,22 +33,38 @@
         CanPickUpLoot: 0b,
         CustomNameVisible: 1b,
         DialogData: {
-            Type: "BASIC",
+            Type: "STANDARD",
             DialogDataSet: [
                 {
                     Priority: 10,
                     Buttons: [
                         {
-                            Name: "Goodbye",
+                            Name: "Browse the shelf",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "tellraw @initiator [{\"text\":\"The Pokemart register is on the counter - the stock follows your badge count. Trade at the CobbleMerchant.\",\"color\":\"gray\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "browse_button"
+                        },
+                        {
+                            Name: "Just looking",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "goodbye_button"
+                            Label: "leave_button"
                         }
                     ],
                     Texts: [
+                        {
+                            Text: "Cyber City Pokemart — balls, potions, and anything with a socket, all Company-verified. The shelf follows your badge count. Set your basket down and browse."
+                        },
                         {
                             Text: "Charged cells, fresh off the grid — when the grid holds. Half my stock is flat this week because the eastern block keeps browning out. Ask the warden, not me."
                         },
@@ -56,7 +72,7 @@
                             Text: "You a trainer? Electric mons love it up here, the whole town hums. Bad news if you brought a Ground team to Gym Seven, mind. Volt does not slow down for anyone."
                         },
                         {
-                            Text: "Free advice: rubber soles. Paralysis cannot climb through rubber, that is just science. I have never been paralysed and I have never taken these boots off."
+                            Text: "Free advice with every purchase: rubber soles. Paralysis cannot climb through rubber, that is just science. I have never been paralysed and I have never taken these boots off."
                         }
                     ],
                     Name: "Dex Volt",

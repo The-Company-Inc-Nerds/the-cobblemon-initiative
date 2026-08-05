@@ -82,10 +82,12 @@ public class GymMarkCommand {
     SLOTS.put("stage_nifl", new String[] {"point", "Boreas challenger stage spot (nifl_leader battle.stage_pos)"});
     SLOTS.put("stage_scorchspire", new String[] {"point", "Vulcan challenger stage spot (scorchspire_leader battle.stage_pos)"});
 
-    // Company HQ vertical geometry (showrunner ruling 2026-07-13): the raid DESCENDS to the
-    // BASEMENT (Acting CEO DJ at the bottom); the player's old PENTHOUSE is the TOP floor —
-    // lore + a Master Ball pickup, and the arena where the POST-GAME Founder mirror is fought.
-    SLOTS.put("hq_basement_dj", new String[] {"point", "Acting CEO DJ — bottom of the basement raid (acting_ceo_dj placement; canon [1590 51 1028])"});
+    // Company HQ vertical geometry (CANON 2026-08-05, supersedes the 2026-07-13 descent):
+    // the HQ is the built tower x1608-1636 z1086-1118 — door line z1116 (y92 lobby), the
+    // basement is the CLEAR-OUT prerequisite (COO Noir), and the raid CLIMBS to Acting CEO
+    // DJ in the penthouse office (y197, P7-P9). The penthouse also keeps its lore beats +
+    // Master Ball pickup, and stays the arena where the POST-GAME Founder mirror is fought.
+    SLOTS.put("hq_basement_dj", new String[] {"point", "Basement clear-out boss — COO Noir (villain_admin_commander placement, pin pending); DJ moved to the penthouse per 2026-08-05, old canon [1590 51 1028]"});
     SLOTS.put("hq_penthouse_lore", new String[] {"point", "Penthouse lore prop — the founder's old top-floor office (DocProp/loot)"});
     SLOTS.put("hq_penthouse_masterball", new String[] {"point", "ITEM: Penthouse MASTER BALL pickup — mark the top-floor loot chest / DocProp block spot"});
     SLOTS.put("hq_penthouse_mirror", new String[] {"point", "Penthouse mirror arena — POST-GAME Founder fight spot (villain_final_boss placement, top floor)"});

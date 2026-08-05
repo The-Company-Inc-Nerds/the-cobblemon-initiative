@@ -6,7 +6,7 @@
         description: "healer at Cyber City - Pokemon Center (act 2). Compiled from dialog-src.",
         entityTypeId: "easy_npc:humanoid",
         modified: 0L,
-        name: "Nurse Ampere",
+        name: "Dr. Orion Synapse",
         variantType: "STEVE",
         version: "1.0.0"
     },
@@ -20,7 +20,7 @@
                 ]
             }
         },
-        ArmorDropChances: [0.085f, 0.085f, 0.085f, 0.085f],
+        ArmorDropChances: [0.08500000089406967f, 0.08500000089406967f, 0.08500000089406967f, 0.08500000089406967f],
         ArmorItems: [
             {},
             {},
@@ -92,9 +92,15 @@
                         },
                         {
                             Text: "Half my regulars come in just to sit where the lights do not flicker. Nobody at the Company will say why the boards outside keep glitching."
+                        },
+                        {
+                            Text: "Have we met? No. No, I would remember. ...Hm. That came out as a joke about my field, and I did not intend it, which is itself rather a joke about my field."
+                        },
+                        {
+                            Text: "Memory is just a signal that keeps re-firing until you believe it. Interesting failure mode: a signal so thoroughly deleted that only the empty socket remains, itching. Purely theoretical, of course. Now - your team?"
                         }
                     ],
-                    Name: "Nurse Ampere",
+                    Name: "Dr. Orion Synapse",
                     Label: "default"
                 },
                 {
@@ -105,7 +111,7 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "tellraw @initiator [{\"text\":\"Nurse Ampere: The teller at the kiosk is beside himself. He needs somebody to re-verify the reserve tags the Company stopped checking. Three of them, posted downtown.\",\"color\":\"gray\"}]"
+                                    Cmd: "tellraw @initiator [{\"text\":\"Dr. Orion Synapse: The teller at the kiosk is beside himself. He needs somebody to re-verify the reserve tags the Company stopped checking. Three of them, posted downtown.\",\"color\":\"gray\"}]"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -125,7 +131,7 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "tellraw @initiator [{\"text\":\"Nurse Ampere: Signal Tech Rell is chasing the fault. Three boards are broadcasting scrubbed memos in the clear. He wants them scrubbed before management notices they are readable.\",\"color\":\"gray\"}]"
+                                    Cmd: "tellraw @initiator [{\"text\":\"Dr. Orion Synapse: Signal Tech Rell is chasing the fault. Three boards are broadcasting scrubbed memos in the clear. He wants them scrubbed before management notices they are readable.\",\"color\":\"gray\"}]"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -145,7 +151,7 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "tellraw @initiator [{\"text\":\"Nurse Ampere: Maren. She quit access control the day they boxed the archives. She has been asking after you by a description, not a name. Best you hear it from her.\",\"color\":\"gray\"}]"
+                                    Cmd: "tellraw @initiator [{\"text\":\"Dr. Orion Synapse: Maren. She quit access control the day they boxed the archives. She has been asking after you by a description, not a name. Best you hear it from her.\",\"color\":\"gray\"}]"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -170,7 +176,7 @@
                             Actions: [
                                 {
                                     Type: "COMMAND",
-                                    Cmd: "tellraw @initiator [{\"text\":\"Nurse Ampere: Ohmond works the stall by the seam and reads the field ledgers for sport. If you mean to walk into that tower, he can tell you the number that opens the door.\",\"color\":\"gray\"}]"
+                                    Cmd: "tellraw @initiator [{\"text\":\"Dr. Orion Synapse: Ohmond works the stall by the seam and reads the field ledgers for sport. If you mean to walk into that tower, he can tell you the number that opens the door.\",\"color\":\"gray\"}]"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -217,73 +223,73 @@
                             Text: "First good number I have seen in a season came in with you - the exchange board twitched down half a point. Somebody has been liberating fields. Keep it up and maybe the coin stops lying."
                         }
                     ],
-                    Name: "Nurse Ampere - the word downtown",
+                    Name: "Dr. Orion Synapse - the word downtown",
                     Label: "rumors"
                 }
             ]
         },
         DisplayAttribute: [
             {
-                Bool: 1b,
-                Type: "VISIBLE"
+                Type: "VISIBLE",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_AT_DAY"
+                Type: "VISIBLE_AT_DAY",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_AT_NIGHT"
+                Type: "VISIBLE_AT_NIGHT",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_IN_CREATIVE"
+                Type: "VISIBLE_IN_CREATIVE",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_IN_SPECTATOR"
+                Type: "VISIBLE_IN_SPECTATOR",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_IN_STANDARD"
+                Type: "VISIBLE_IN_STANDARD",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_TO_OWNER"
+                Type: "VISIBLE_TO_OWNER",
+                Bool: 1b
             },
             {
-                Bool: 1b,
-                Type: "VISIBLE_TO_TEAM"
+                Type: "VISIBLE_TO_TEAM",
+                Bool: 1b
             },
             {
-                Int: 7,
-                Type: "LIGHT_LEVEL"
+                Type: "LIGHT_LEVEL",
+                Int: 7
             },
             {
-                Text: "ALWAYS",
-                Type: "NAME_VISIBILITY"
+                Type: "NAME_VISIBILITY",
+                Text: "ALWAYS"
             }
         ],
         EasyNPCVersion: 3,
         EntityAttribute: {
-            CanBeHitByProjectile: 0b,
-            CanBeLeashed: 0b,
-            CanBreatheUnderwater: 0b,
-            CanCloseDoor: 0b,
-            CanFloat: 0b,
-            CanOpenDoor: 0b,
-            CanPassDoor: 0b,
-            CanUseNetherPortal: 0b,
-            Freefall: 0b,
-            HealthRegeneration: 0.0d,
             IsAttackableByMonsters: 0b,
-            IsAttackableByPlayers: 0b,
+            CanCloseDoor: 0b,
+            Freefall: 0b,
+            CanUseNetherPortal: 0b,
             IsInvulnerable: 1b,
-            IsPushable: 0b,
+            HealthRegeneration: 0.0d,
             NoGravity: 0b,
-            PushEntities: 0b
+            CanPassDoor: 0b,
+            PushEntities: 0b,
+            CanFloat: 0b,
+            CanBreatheUnderwater: 0b,
+            CanBeLeashed: 0b,
+            CanBeHitByProjectile: 0b,
+            IsPushable: 0b,
+            IsAttackableByPlayers: 0b,
+            CanOpenDoor: 0b
         },
-        HandDropChances: [0.085f, 0.085f],
+        HandDropChances: [0.08500000089406967f, 0.08500000089406967f],
         HandItems: [
             {},
             {}
@@ -293,18 +299,16 @@
         ModelData: {
             DefaultPose: "STANDING",
             Pose: "VANILLA",
-            Position: {},
+            Visible: {},
             Rotation: {},
-            Scale: {},
-            Visible: {
-                Boots: 1b
-            }
+            Position: {},
+            Scale: {}
         },
         Navigation: {
             Home: {
-                X: 0,
-                Y: 0,
-                Z: 0
+                Y: 91,
+                Z: 1053,
+                X: 1473
             }
         },
         ObjectiveData: {
@@ -340,23 +344,39 @@
         },
         RenderData: {},
         SkinData: {
-            Content: "",
-            DisableLayers: 0b,
+            Type: "SECURE_REMOTE_URL",
+            URL: "https://www.minecraftskins.com/uploads/skins/2026/01/18/spike-witwicky--tf-g1-s3--23801962.png?v945",
+            UUID: [I; -478149367, -424660569, -2032725238, -1198403456],
             Name: "",
-            Timestamp: 0L,
-            Type: "CUSTOM",
-            URL: "",
-            UUID: [I; -425646351, -1213243482, -1199358484, 336678084]
+            Content: "",
+            Timestamp: 1772870514352L,
+            DisableLayers: 0b
         },
         SoundData: {
             SoundDataSet: [
                 {
-                    Name: "minecraft:entity.player.death",
-                    Type: "DEATH"
+                    Type: "DEATH",
+                    Name: "minecraft:entity.player.death"
                 },
                 {
-                    Name: "minecraft:entity.player.hurt",
-                    Type: "HURT"
+                    Type: "EAT",
+                    Name: "minecraft:entity.generic.eat"
+                },
+                {
+                    Type: "HURT",
+                    Name: "minecraft:entity.player.hurt"
+                },
+                {
+                    Type: "TRADE",
+                    Name: "minecraft:entity.villager.trade"
+                },
+                {
+                    Type: "TRADE_YES",
+                    Name: "minecraft:entity.villager.yes"
+                },
+                {
+                    Type: "TRADE_NO",
+                    Name: "minecraft:entity.villager.no"
                 }
             ]
         },
@@ -377,6 +397,6 @@
             }
         ],
         id: "easy_npc:humanoid",
-        CustomName: '{"text": "Nurse Ampere", "color": "#FFFFFF"}'
+        CustomName: '{"text": "Dr. Orion Synapse", "color": "#00FFFF"}'
     }
 }

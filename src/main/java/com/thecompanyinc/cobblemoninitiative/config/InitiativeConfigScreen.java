@@ -1074,6 +1074,18 @@ public class InitiativeConfigScreen {
         .setSaveConsumer(v -> powerPlantConfig.minUnlit = v)
         .build()
     );
+    powerPlantSub.add(
+      entryBuilder
+        .startBooleanToggle(Component.literal("Generator Guards"), powerPlantConfig.generatorGuards)
+        .setDefaultValue(powerPlantDefaults.generatorGuards)
+        .setTooltip(Component.literal(
+          "Dispatch a hostile \"Generator Security\" iron golem when a player knocks a full "
+          + "generator trio dark. One guard per generator; guards stand down when the grid is "
+          + "restored or rescrambled. Spawn pads live in the config JSON, not here — the safari "
+          + "eject-pad rule."))
+        .setSaveConsumer(v -> powerPlantConfig.generatorGuards = v)
+        .build()
+    );
 
     // -------------------------------------------------------------------------
     // Noble Encounters
@@ -1341,7 +1353,7 @@ public class InitiativeConfigScreen {
     safariSub.add(
       entryBuilder.startIntSlider(Component.literal("Badges required"), safariConfig.gateBadges, 0, 10)
         .setDefaultValue(safariDefaults.gateBadges)
-        .setTooltip(Component.literal("Gym badges needed before Helga will run a round."))
+        .setTooltip(Component.literal("Gym badges needed before Maya will run a round."))
         .setSaveConsumer(v -> safariConfig.gateBadges = v).build());
     safariSub.add(
       entryBuilder.startIntField(Component.literal("Suspense min (seconds)"), safariConfig.suspenseMinSeconds)
@@ -1385,6 +1397,23 @@ public class InitiativeConfigScreen {
         .setDefaultValue(safariDefaults.weakenFraction)
         .setTooltip(Component.literal("Fraction of max HP a Preserve snowball shaves off (floors at 1 HP)."))
         .setSaveConsumer(v -> safariConfig.weakenFraction = v).build());
+    safariSub.add(
+      entryBuilder.startDoubleField(Component.literal("Stagger catch bonus"), safariConfig.staggerCatchBonus)
+        .setMin(0.0)
+        .setDefaultValue(safariDefaults.staggerCatchBonus)
+        .setTooltip(Component.literal("Catch-rate bonus per snowball stagger: rate × (1 + bonus × staggers)."))
+        .setSaveConsumer(v -> safariConfig.staggerCatchBonus = v).build());
+    safariSub.add(
+      entryBuilder.startDoubleField(Component.literal("Stagger flee chance"), safariConfig.staggerFleeChance)
+        .setMin(0.0)
+        .setDefaultValue(safariDefaults.staggerFleeChance)
+        .setTooltip(Component.literal("Bolt roll on each snowball hit: chance = this × the new stagger count."))
+        .setSaveConsumer(v -> safariConfig.staggerFleeChance = v).build());
+    safariSub.add(
+      entryBuilder.startIntSlider(Component.literal("Stagger cap"), safariConfig.staggerMax, 1, 10)
+        .setDefaultValue(safariDefaults.staggerMax)
+        .setTooltip(Component.literal("Staggers that stack — further snowballs still weaken HP but add no more."))
+        .setSaveConsumer(v -> safariConfig.staggerMax = v).build());
     safariSub.add(
       entryBuilder.startIntField(Component.literal("Befriend bonus (seconds)"), safariConfig.friendlyBonusSeconds)
         .setMin(0)
@@ -1672,6 +1701,18 @@ public class InitiativeConfigScreen {
         .setTooltip(Component.literal(
           "CobbleDollars taken from the player each time the dojo knocks them out."))
         .setSaveConsumer(dojoConfig::setKnockoutCost)
+        .build()
+    );
+    dojoSub.add(
+      entryBuilder
+        .startBooleanToggle(Component.literal("Knockout Ejects + Resets the Dojo"), dojoConfig.isResetOnKnockout())
+        .setDefaultValue(dojoDefaults.isResetOnKnockout())
+        .setTooltip(Component.literal(
+          "ON: a knocked-out player wakes by the quarry-side clinic and the whole dojo run resets "
+          + "(fighters back up, floor/pit progress cleared — Bruno's badge credit is kept). "
+          + "OFF: they are left on the mat where they fell. The wake-up spot is JSON-editable "
+          + "(dojoEjectX/Y/Z)."))
+        .setSaveConsumer(dojoConfig::setResetOnKnockout)
         .build()
     );
 

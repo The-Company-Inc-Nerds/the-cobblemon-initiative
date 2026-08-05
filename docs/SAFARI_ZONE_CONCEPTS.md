@@ -9,8 +9,8 @@ behind-cover stealth vs lure aggro-flee, and TWO MODES — capture (keep) vs con
 (scored appraisal, specimen released; personal best persisted). The zone polygon now
 suppresses natural Cobblemon spawns always-on (bait spawns bypass by construction) and
 bounds the round. The Company-run intake concierge was CUT: the Company squatters are a
-clear-out quest (ranger Nova Circuit; safari_liberated), after which owner Helga
-Ridgewatch's employees Darik + Varek run intake. The lure loop, warmth, typed tables
+clear-out quest (ranger Nova Circuit; safari_liberated), after which the keeper
+Preservationist Maya's employees Darik + Varek run intake. The lure loop, warmth, typed tables
 (retuned lv 40-50), battle-cancel guard, and pay-probe idiom below all survive inside
 the new round chassis.
 

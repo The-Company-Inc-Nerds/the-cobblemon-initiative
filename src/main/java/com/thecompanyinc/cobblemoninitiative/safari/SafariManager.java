@@ -88,8 +88,9 @@ import net.minecraft.world.scores.criteria.ObjectiveCriteria;
  * fixed kit (marked Safari Balls, bait for every standard table, snowballs) while the
  * player's ENTIRE party and inventory sit in Preserve custody. Bait lures wild Pokémon
  * to the spot; stealth (crouch in grass/leaves cover) keeps them from spooking;
- * snowballs weaken; a bait offering befriends. CAPTURE rounds keep the catches;
- * CONTEST rounds appraise them for rarity points and release them.
+ * snowballs weaken AND stagger (push-your-luck: catch rate up, bolt risk up — a green
+ * catch-chance bar reads the nearest lure); a bait offering befriends. CAPTURE rounds
+ * keep the catches; CONTEST rounds appraise them for rarity points and release them.
  *
  * <p>Pure CobbleDollars sink: the round fee rides the shipped pay-probe idiom
  * ({@code safari/permit_fee.mcfunction}, gate on {@code store result} — CobbleDollars
@@ -162,6 +163,17 @@ public class SafariManager {
 
   /** During active rounds, re-run the hostile discard sweep this often. */
   private static final int HOSTILE_SWEEP_INTERVAL_TICKS = 100;
+
+  /** Catch-chance bar target radius (blocks) — matches the dev-befriend reach. */
+  private static final double CATCH_BAR_RANGE = 16.0;
+
+  /**
+   * Kit ball bonus for the catch-chance bar. Jar-verified (1.7.3): the safari ball's
+   * CatchRateModifiers.SAFARI is a WorldStateModifier returning a flat 1.5 when the
+   * target is NOT battling — always true in a round (BATTLE_STARTED_PRE is cancelled),
+   * so this constant is exact, not an approximation.
+   */
+  private static final float SAFARI_BALL_BONUS = 1.5f;
 
   private static final int MILESTONE_FIRST = 10;
   private static final int MILESTONE_SECOND = 25;
@@ -263,7 +275,7 @@ public class SafariManager {
             Component.literal("Preserve rule: no battles on the grounds.")
           );
           player.displayClientMessage(
-            Component.literal("§c[Preserve] §7Helga's rule: no battles on the grounds — balls and bait only."),
+            Component.literal("§c[Preserve] §7Maya's rule: no battles on the grounds — balls and bait only."),
             true
           );
           InitiativeInit.LOGGER.info(
@@ -283,6 +295,24 @@ public class SafariManager {
       if (session != null) {
         onSafariCapture(player, session, event.getPokemon());
       }
+      return Unit.INSTANCE;
+    });
+
+    // Stagger catch buff. POKEMON_CATCH_RATE fires inside CaptureCalculator.getCatchRate
+    // for EVERY wild throw in the world (any calculator), so the gate is load-bearing:
+    // active session + lure tag + tracked-lure hit — without it, staggers would buff
+    // catches everywhere. The bar's estimate applies this exact same multiplier.
+    CobblemonEvents.POKEMON_CATCH_RATE.subscribe(Priority.NORMAL, event -> {
+      if (!(event.getThrower() instanceof ServerPlayer player)) return Unit.INSTANCE;
+      SafariSession session = sessions.get(player.getUUID());
+      if (session == null) return Unit.INSTANCE;
+      PokemonEntity target = event.getPokemonEntity();
+      if (!target.getTags().contains(LURE_TAG)) return Unit.INSTANCE;
+      SafariSession.ActiveLure lure = findLureByEntity(session, target.getUUID());
+      if (lure == null || lure.stagger <= 0) return Unit.INSTANCE;
+      event.setCatchRate(
+        event.getCatchRate() * (1f + (float) (config.staggerCatchBonus * lure.stagger))
+      );
       return Unit.INSTANCE;
     });
 
@@ -372,7 +402,7 @@ public class SafariManager {
     }
     if (pendingPermits.containsKey(player.getUUID())) {
       player.sendSystemMessage(
-        Component.literal("§e[Preserve] §7Helga is still ringing up your last round.")
+        Component.literal("§e[Preserve] §7Maya is still ringing up your last round.")
       );
       return false;
     }
@@ -382,7 +412,7 @@ public class SafariManager {
       // round on top of it. A RESTORED record is only awaiting store durability and
       // is superseded by this round's own write-through.
       player.sendSystemMessage(
-        Component.literal("§e[Preserve] §7Helga is still sorting your effects from last time — one moment.")
+        Component.literal("§e[Preserve] §7Maya is still sorting your effects from last time — one moment.")
       );
       return false;
     }
@@ -398,7 +428,7 @@ public class SafariManager {
     if (badges < config.gateBadges) {
       player.sendSystemMessage(
         Component.literal(
-          "§c[Preserve] §7Helga asks for §e" + config.gateBadges +
+          "§c[Preserve] §7Maya asks for §e" + config.gateBadges +
           "§7 gym badges before she'll run you a round (you hold §e" + badges + "§7)."
         )
       );
@@ -447,7 +477,7 @@ public class SafariManager {
       // The mcfunction already printed the branded actionbar decline; chat gets the receipt.
       player.sendSystemMessage(
         Component.literal(
-          "§c[Preserve] §7Helga shakes her head — the fee didn't clear. (§e" +
+          "§c[Preserve] §7Maya shakes her head — the fee didn't clear. (§e" +
           config.permitFee + " CD§7 required)"
         )
       );
@@ -469,7 +499,7 @@ public class SafariManager {
       refundFee(server, player, config.permitFee);
       player.sendSystemMessage(
         Component.literal(
-          "§e[Preserve] §7Helga waves the round off — the moment passed. Your fee comes straight back."
+          "§e[Preserve] §7Maya waves the round off — the moment passed. Your fee comes straight back."
         )
       );
       return;
@@ -508,7 +538,7 @@ public class SafariManager {
       refundFee(server, player, config.permitFee);
       player.sendSystemMessage(
         Component.literal(
-          "§c[Preserve] §7Helga cannot file your paperwork — no round runs without the ledger. Your fee comes straight back."
+          "§c[Preserve] §7Maya cannot file your paperwork — no round runs without the ledger. Your fee comes straight back."
         )
       );
       return;
@@ -572,7 +602,7 @@ public class SafariManager {
     );
     if (mode == SafariSession.Mode.CONTEST) {
       player.sendSystemMessage(
-        Component.literal("§7Contest round: Helga appraises your catches at the bell, then releases them home.")
+        Component.literal("§7Contest round: Maya appraises your catches at the bell, then releases them home.")
       );
     }
     InitiativeInit.LOGGER.info(
@@ -993,7 +1023,7 @@ public class SafariManager {
     // failed load keeps the record on disk (daycare rule: never delete, never guess).
     if (!ensurePartyLoaded(record)) {
       player.sendSystemMessage(
-        Component.literal("§e[Preserve] §7Helga is having trouble with your paperwork — your effects stay safe at the gate.")
+        Component.literal("§e[Preserve] §7Maya is having trouble with your paperwork — your effects stay safe at the gate.")
       );
       return;
     }
@@ -1086,7 +1116,7 @@ public class SafariManager {
     if (healed > 0) {
       player.sendSystemMessage(
         Component.literal(
-          "§6[Preserve] §7Helga re-checks her ledger — §e" + healed +
+          "§6[Preserve] §7Maya re-checks her ledger — §e" + healed +
           "§7 of yours come back over the counter."
         )
       );
@@ -1097,12 +1127,17 @@ public class SafariManager {
     }
   }
 
-  /** Idempotent cleanup: boss bar + every tracked lure body. */
+  /** Idempotent cleanup: both boss bars + every tracked lure body. */
   private void teardown(MinecraftServer server, SafariSession session) {
     ServerBossEvent bar = session.getBossBar();
     if (bar != null) {
       bar.removeAllPlayers();
       session.setBossBar(null);
+    }
+    ServerBossEvent catchBar = session.getCatchBar();
+    if (catchBar != null) {
+      catchBar.removeAllPlayers();
+      session.setCatchBar(null);
     }
     if (server == null) return;
     ServerLevel level = resolveLevel(server, session.getDimension());
@@ -1122,7 +1157,7 @@ public class SafariManager {
     if (catches.isEmpty()) {
       player.sendSystemMessage(
         Component.literal(
-          "§6§l[Preserve] §r§7Round ledger: nothing this time. Helga waves — the Preserve will be here."
+          "§6§l[Preserve] §r§7Round ledger: nothing this time. Maya waves — the Preserve will be here."
         )
       );
     } else {
@@ -1635,8 +1670,12 @@ public class SafariManager {
 
   /**
    * A round player's snowball hit on a tracked lure: shave {@code weakenFraction} of
-   * max HP (floors at 1 — a snowball can never KO). Weakening does NOT raise alert —
-   * stealth only reads sight-lines.
+   * max HP (floors at 1 — a snowball can never KO) and land a STAGGER stack (capped
+   * at {@code staggerMax}). Stagger is the push-your-luck dial: each stack multiplies
+   * catch rate (the POKEMON_CATCH_RATE hook + the catch-chance bar), rolls an
+   * IMMEDIATE bolt ({@code staggerFleeChance} × the new count), and thins the stealth
+   * alert threshold — sight-lines still drive detection, but a rattled mon spooks on
+   * fewer looks.
    */
   public boolean onSnowballWeaken(ServerPlayer thrower, PokemonEntity target) {
     SafariSession session = sessions.get(thrower.getUUID());
@@ -1647,6 +1686,22 @@ public class SafariManager {
     pokemon.setCurrentHealth(Math.max(1, pokemon.getCurrentHealth() - cut));
 
     ServerLevel level = thrower.serverLevel();
+
+    // Stagger only accrues on TRACKED lures (a stray tagged body still gets weakened).
+    SafariSession.ActiveLure lure = findLureByEntity(session, target.getUUID());
+    boolean bolted = false;
+    if (lure != null) {
+      lure.stagger = Math.min(Math.max(1, config.staggerMax), lure.stagger + 1);
+      // Bolt roll scales with the NEW count. Skip if already fleeing (a re-startFlee
+      // would only stretch the run); startFlee itself is mid-shake-safe — the flee
+      // tick never moves or vaporizes a busy (ball-shaking) entity.
+      if (lure.fleeTicksLeft <= 0
+        && level.getRandom().nextDouble() < config.staggerFleeChance * lure.stagger) {
+        startFlee(thrower, session, lure);
+        bolted = true;
+      }
+    }
+
     level.sendParticles(
       ParticleTypes.CRIT,
       target.getX(), target.getY() + target.getBbHeight() * 0.6, target.getZ(),
@@ -1656,10 +1711,17 @@ public class SafariManager {
       null, target.getX(), target.getY(), target.getZ(),
       SoundEvents.PLAYER_ATTACK_CRIT, SoundSource.NEUTRAL, 0.7f, 1.0f
     );
-    thrower.displayClientMessage(
-      Component.literal("§eThe " + pokemon.getSpecies().getName() + " staggers!"),
-      true
-    );
+    String species = pokemon.getSpecies().getName();
+    String line;
+    if (bolted) {
+      line = "§cThe " + species + " staggers §6×" + lure.stagger + "§c — and bolts!";
+    } else if (lure != null && lure.stagger > 1) {
+      line = "§eThe " + species + " staggers §6×" + lure.stagger +
+        "§e §7— worn down, but twitchy…";
+    } else {
+      line = "§eThe " + species + " staggers!";
+    }
+    thrower.displayClientMessage(Component.literal(line), true);
     return true;
   }
 
@@ -1743,7 +1805,7 @@ public class SafariManager {
       if (!session.isWarned10() && remaining <= 10 * 20) {
         session.setWarned10(true);
         player.sendSystemMessage(
-          Component.literal("§c[Preserve] §7Ten seconds — Helga's ringing the bell.")
+          Component.literal("§c[Preserve] §7Ten seconds — Maya's ringing the bell.")
         );
       }
 
@@ -1758,6 +1820,7 @@ public class SafariManager {
 
       tickScatters(player, session);
       tickLures(player, session, remaining);
+      tickCatchBar(player, session, remaining);
 
       // Rounds keep the grounds clear of hostiles (spec §9) — sweep on a slow cadence.
       if (remaining % HOSTILE_SWEEP_INTERVAL_TICKS == 0) {
@@ -1774,7 +1837,7 @@ public class SafariManager {
       SafariSession session = sessions.get(player.getUUID());
       if (session != null) {
         player.sendSystemMessage(
-          Component.literal("§6§l[Preserve] §r§eThe bell! Helga walks you back to the gate.")
+          Component.literal("§6§l[Preserve] §r§eThe bell! Maya walks you back to the gate.")
         );
         endRound(server, player, session, true, "clock expiry");
       }
@@ -2051,7 +2114,8 @@ public class SafariManager {
    * crouching in cover (feet or eye block in the concealment set); otherwise a COLLIDER
    * raycast lure-eye → player-eye decides (leaves are full collider blocks, so "behind
    * a bush" blocks the line naturally; grass does not — hence the crouch rule).
-   * Seen → alert+1; unseen → decay 1 (floor 0); alert ≥ alertChecks → flee.
+   * Seen → alert+1; unseen → decay 1 (floor 0); alert ≥ (alertChecks − stagger,
+   * floor 1) → flee — snowball staggers make a mon spook on fewer looks.
    */
   private void tickDetection(
     ServerPlayer player,
@@ -2082,7 +2146,10 @@ public class SafariManager {
 
     if (seen) {
       lure.alert++;
-      if (lure.alert >= Math.max(1, config.alertChecks)) {
+      // Stagger thins the nerve: each snowball stagger removes one "seen" check from
+      // the spook threshold (floor 1) — a battered mon breaks on the first clear look.
+      // This is the stealth half of the push-your-luck cost of stacking staggers.
+      if (lure.alert >= Math.max(1, Math.max(1, config.alertChecks) - lure.stagger)) {
         startFlee(player, session, lure);
       }
     } else {
@@ -2116,6 +2183,76 @@ public class SafariManager {
     if (entity instanceof PokemonEntity pe) {
       pe.cry();
     }
+  }
+
+  /**
+   * Catch-chance readout (every 10t): a GREEN bar under the round clock tracking the
+   * nearest live lure within {@link #CATCH_BAR_RANGE}. Lazily created on first target,
+   * torn down when no lure is in reach (and in {@link #teardown}).
+   */
+  private void tickCatchBar(ServerPlayer player, SafariSession session, int remaining) {
+    if (remaining % 10 != 0) return;
+    SafariSession.ActiveLure lure = nearestLure(player, session, CATCH_BAR_RANGE);
+    Entity entity = lure == null
+      ? null
+      : player.serverLevel().getEntity(lure.entityUuid);
+    if (!(entity instanceof PokemonEntity mon)) {
+      ServerBossEvent bar = session.getCatchBar();
+      if (bar != null) {
+        bar.removeAllPlayers();
+        session.setCatchBar(null);
+      }
+      return;
+    }
+    float chance = Math.max(0f, Math.min(1f,
+      estimateCatchChance(mon.getPokemon(), lure.stagger)));
+    ServerBossEvent bar = session.getCatchBar();
+    if (bar == null) {
+      bar = new ServerBossEvent(
+        catchBarName(chance, lure.stagger),
+        BossEvent.BossBarColor.GREEN,
+        BossEvent.BossBarOverlay.PROGRESS
+      );
+      bar.addPlayer(player);
+      session.setCatchBar(bar);
+    } else {
+      bar.setName(catchBarName(chance, lure.stagger));
+    }
+    bar.setProgress(chance);
+  }
+
+  private Component catchBarName(float chance, int stagger) {
+    int pct = Math.round(chance * 100f);
+    return Component.literal(
+      "§aCatch chance §7— §e" + pct + "%" +
+      (stagger > 0 ? "§7 (staggered ×" + stagger + ")" : "")
+    );
+  }
+
+  /**
+   * DISPLAY-ONLY estimate — the real roll is Cobblemon's capture calculator; only the
+   * stagger multiplier (the POKEMON_CATCH_RATE hook) is ours, and the bar applies the
+   * identical factor. Mirrors CobblemonCaptureCalculator.processCapture (jar-verified
+   * 1.7.3) for the out-of-battle case:
+   *   modified = (3·maxHP − 2·curHP) · rate · ballBonus · 0.5 / (3·maxHP)
+   *   shake    = 65536 / (255 / modified)^0.1875
+   *   P(catch) = (shake / 65537)^4
+   * Dropped terms and why: status bonus (no status source in a round — battles are
+   * cancelled and snowballs only shave HP), the sub-13 level bonus (lure band sits
+   * well above it), the Gen8 level penalty (needs a battleId; never set out of
+   * battle). NEVER read the party here — it sits in Preserve custody all round.
+   */
+  private float estimateCatchChance(Pokemon pokemon, int stagger) {
+    float rate = pokemon.getForm().getCatchRate()
+      * (1f + (float) (config.staggerCatchBonus * stagger));
+    float maxHp = pokemon.getMaxHealth();
+    float curHp = pokemon.getCurrentHealth();
+    if (maxHp <= 0f) return 0f;
+    float modified =
+      ((3f * maxHp - 2f * curHp) * rate * SAFARI_BALL_BONUS * 0.5f) / (3f * maxHp);
+    if (modified <= 0f) return 0f;
+    double shakeProb = 65536.0 / Math.pow(255.0 / modified, 0.1875);
+    return (float) Math.pow(Math.min(shakeProb, 65537.0) / 65537.0, 4.0);
   }
 
   // ── Catch bookkeeping ───────────────────────────────────────────────────────────
@@ -2200,7 +2337,7 @@ public class SafariManager {
     );
     player.sendSystemMessage(
       Component.literal(
-        "§6§l[Preserve] §r§eHelga beams — §6" + threshold +
+        "§6§l[Preserve] §r§eMaya beams — §6" + threshold +
         "§e lifetime Preserve catches. She presses a care package into your hands."
       )
     );

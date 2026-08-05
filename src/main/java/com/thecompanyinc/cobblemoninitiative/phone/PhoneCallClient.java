@@ -8,13 +8,16 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
 import org.lwjgl.glfw.GLFW;
 
 /**
- * Client half of the PokePhone: the "Answer PokePhone" keybind (default P) plus the
- * offer/open receivers. Pressing the key while a ring offer is live opens the SPLASH
- * locally from the offer data — ANSWER is only sent when ACCEPT is clicked, so a decline
- * never round-trips the full script (QuestTrackClient is the keybind precedent).
+ * Client half of the PokePhone: the "Answer PokePhone" keybind (registered default P; the
+ * shipped pack rebinds it to Enter via options.txt) plus the offer/open receivers. While
+ * an offer is live the client renders the flashing ring actionbar itself, so the prompt
+ * always names the LIVE binding. Pressing the key opens the SPLASH locally from the offer
+ * data — ANSWER is only sent when ACCEPT is clicked, so a decline never round-trips the
+ * full script (QuestTrackClient is the keybind precedent).
  */
 public final class PhoneCallClient {
 
@@ -74,6 +77,20 @@ public final class PhoneCallClient {
       // must go quiet again (the server-side requeue owns the re-ring).
       if (liveOffer != null && --offerTicksLeft <= 0) {
         liveOffer = null;
+      }
+      PhonePayloads.PhoneOfferPayload ring = liveOffer;
+      if (ring != null) {
+        // Flashing gold actionbar, alternating bright/dim every half second, phased from
+        // the server's ring window so the cadence matches the chime. Rendered here (not
+        // server-side) so the prompt names the live binding after any rebind. Not gated
+        // on client.screen == null — the old server-sent prompt showed over screens too.
+        boolean bright = ((ring.ringTicks() - offerTicksLeft) / 10) % 2 == 0;
+        String key = answerKey.getTranslatedKeyMessage().getString();
+        client.gui.setOverlayMessage(
+          Component.literal(bright
+            ? "§6§l☎ Incoming — " + ring.caller() + "  §r§e[" + key + "] to answer"
+            : "§7☎ Incoming — " + ring.caller() + "  §8[" + key + "] to answer"),
+          false);
       }
       while (answerKey.consumeClick()) {
         PhonePayloads.PhoneOfferPayload offer = liveOffer;

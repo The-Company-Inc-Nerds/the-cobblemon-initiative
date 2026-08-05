@@ -46,11 +46,12 @@ itself while you travel.
 
 ## The Safari — the Ridgewatch Preserve
 
-The map calls it the **Safari Zone**; the family that runs it calls it the **Ridgewatch
-Preserve**. When you first arrive (any time after **Badge 3**) the Company is squatting the
-grounds. **Ranger Nova Circuit** at the east fence runs the **clear-out**: deal with the
-Company guns on the fence line, report back, and the Preserve reopens under its owner,
-**Helga Ridgewatch** — **Darik** on the intake kiosk, **Varek** briefing the rules.
+The map calls it the **Safari Zone**; the founding family named it the **Ridgewatch
+Preserve**, and the name stayed. When you first arrive (any time after **Badge 3**) the
+Company is squatting the grounds. **Ranger Nova Circuit** at the east fence runs the
+**clear-out**: deal with the Company guns on the fence line, report back, and the Preserve
+reopens under its keeper, **Preservationist Maya** — **Darik** on the intake kiosk,
+**Varek** briefing the rules.
 
 - **Rounds, not visits.** A round is **500 CD** at the posted rate. At the gate the Preserve
   takes **custody of your items *and* your party** — inside you carry only the round kit:

@@ -2,6 +2,20 @@
 
 `slug: 10_hq_raid`
 
+> **CANON UPDATE 2026-08-05 (playtest N11-N13 + P2-P9)** — supersedes this doc's HQ
+> geometry wherever they disagree. The HQ is the **built tower at x1608-1636 z1086-1118**
+> (door line z1116, ground/lobby y~92; Victor's lift landing y171; penthouse floors y179 +
+> y197), NOT the `[1590 51 1028]` basement-bottom placeholder. **Acting CEO DJ is fought
+> in the PENTHOUSE**: desk at P7 `[1634.7 197 1106.5]`, battle staging walks him to P8
+> `[1633.5 197 1101.5]` and the challenger to P9 `[1633.4 197 1111.5]`
+> (`villain/dj_battle_stage`). The **basement is the clear-out prerequisite** — COO Noir
+> (`villain_admin_commander`, placement pending) grants `hq_basement_cleared`; until his
+> pin lands, `villain/hq_tick` carries a loudly-commented TEMP grant at raid eligibility so
+> the penthouse cannot brick. Door guards Voss + Kessler (`ci_hq_guard`, z1116.5) front the
+> ground-box escort (`villain/hq_bounce`, non-eligible players walked to the street);
+> Victor Node holds the penthouse lift landing. Raid waypoint is now the tower door
+> `[1619 92 1116]`.
+
 > Implementation-ready plan. This is a **design doc**, not code. Nothing here has been
 > written into `dialog-src/`, `src/`, or the datapack — copy the JSON blocks out of here
 > when building. Read alongside `dialog-src/schema/README.md` and `docs/LORE_BIBLE.md §4`.

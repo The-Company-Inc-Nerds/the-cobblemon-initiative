@@ -70,13 +70,19 @@ populates the cache; later builds reuse it (only changed deps re-download).
 `<map>/data/DistantHorizons.sqlite` is the pre-generated LOD database — bundling it
 means a fresh install sees full-distance terrain immediately instead of watching DH
 rebuild it over hours. The world-copy strip list leaves generic `data/` files alone,
-so whatever sits there ships as-is. **Before a release build, refresh it from the
-play instance** (quit the world first so there is no `-wal` sidecar):
+so whatever sits there ships as-is.
 
-    cp "<instance>/minecraft/saves/<map>/data/DistantHorizons.sqlite" \
-       "mrpack/maps/<map>/data/"
+Current snapshot: 2026-08-05 (a22 wave), **~2.4 GB — a full offline pregen** the
+showrunner generated separately (the previous ~109 MB snapshot was only what the
+play instance had built organically). Two consequences:
 
-Coverage grows as the showrunner plays/flies with DH's Distant Generation on — the
-snapshot is whatever the instance has built so far (vanilla chunks for the whole map
-already ship in `region/`; DH LODs beyond the map edge generate at runtime from the
-seed). Current snapshot: 2026-08-05, ~109 MB.
+- **Do NOT "refresh from the play instance" unless the instance itself holds the
+  full DB** — the instance saves still carry the small snapshot, so the old refresh
+  command below would REGRESS coverage. Either copy this staged file INTO the
+  instance save first (world quit, no `-wal` sidecar), or skip the refresh.
+
+      cp "<instance>/minecraft/saves/<map>/data/DistantHorizons.sqlite" \
+         "mrpack/maps/<map>/data/"          # only when the instance DB is the newer/fuller one
+
+- **Pack size**: the .mrpack and installed footprint grow by ~2.4 GB (SQLite
+  compresses only modestly), and `dev_sync --world` now moves that much per sync.

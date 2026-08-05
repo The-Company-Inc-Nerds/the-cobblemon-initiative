@@ -8,7 +8,7 @@
 >
 > DEV DOCUMENT - full spoilers. The player-facing wiki lives in `wiki/`.
 
-**780 characters** - 362 persisted world bodies, 338 latch-spawned, 80 unplaced (no body, no latch - phone callers, script-spawned bodies like the transformed Hua Zhan leader, dead content, act-2/3 casting).
+**788 characters** - 362 persisted world bodies, 345 latch-spawned, 81 unplaced (no body, no latch - phone callers, script-spawned bodies like the transformed Hua Zhan leader, dead content, act-2/3 casting).
 
 **Reading the tables:** *(body)* = persisted world entity (moves only via repairs tp);
 *(latch)* = spawned at the authored coords when a player first comes within 40 blocks;
@@ -230,7 +230,7 @@
 
 ## Deepcore City — Gym 4 (Fighting, cap 44)
 
-`characters/deepcore/` - 34 NPCs
+`characters/deepcore/` - 40 NPCs
 
 | NPC | Where | Does | Looks |
 |---|---|---|---|
@@ -249,6 +249,12 @@
 | **Miner Rill** `deepcore_miner_rill` | Deepcore City - Pit-Head - 1110.5 109 3230.5 (latch) | flavor / lore dialog | skin `single/deepcore_trainer_2` |
 | **Rilka** `deepcore_nurse` | Deepcore City - Pit-Head Quarry Side - 1092.5 114 3208.5 (latch) | flavor / lore dialog | skin `single/deepcore_trainer_2` |
 | **Knocked-Out Fighter** `dojo_knocked` | Deepcore City - Dojo - UNPLACED | flavor / lore dialog | skin `single/deepcore_trainer_1` |
+| **Black Belt Ryu** `dojo_knocked_1` | Deepcore City - Dojo - UNPLACED | flavor / lore dialog | skin `single/deepcore_trainer_1` |
+| **Battle Girl Mika** `dojo_knocked_2` | Deepcore City - Dojo - UNPLACED | flavor / lore dialog | skin `single/deepcore_trainer_2` |
+| **Martial Artist Kenji** `dojo_knocked_3` | Deepcore City - Dojo - UNPLACED | flavor / lore dialog | skin `single/deepcore_trainer_1` |
+| **Capoeira Rio** `dojo_knocked_4` | Deepcore City - Dojo - UNPLACED | flavor / lore dialog | skin `single/deepcore_trainer_2` |
+| **Apprentice Ken** `dojo_knocked_ken` | Deepcore City - Dojo - UNPLACED | flavor / lore dialog | skin `single/deepcore_apprentice` |
+| **Jr. Apprentice Striker** `dojo_knocked_striker` | Deepcore City - Dojo - UNPLACED | flavor / lore dialog | skin `single/deepcore_apprentice` |
 | **Dorga Flintpick** `dorga_flintpick` | Deepcore City — Lower Gallery - 1154 109 3154 (body) | gifts mon: drilbur level=33; fetch: 12x gunpowder -> `dorga_powder_in` | skin `single/kalahar_trainer_2` |
 | **Durn Heavyload** `durn_heavyload` | Deepcore City — Ore Hoist - 1112 97 3200 (body) | fetch: 8x bread -> `durn_meal_done`; runs: economy/payout, economy/reward/minor | skin `single/deepcore_trainer_1` |
 | **Elda Gatepick** `elda_gatepick` | Deepcore City — South Gate - 1082 122 3100 (body) | flavor / lore dialog | world-body look |
@@ -422,7 +428,7 @@
 
 ## Cyber City — Gym 7 (Electric, cap 62)
 
-`characters/cyber/` - 82 NPCs
+`characters/cyber/` - 83 NPCs
 
 | NPC | Where | Does | Looks |
 |---|---|---|---|
@@ -447,24 +453,25 @@
 | **Archive Drop** `cyber_archive_3` | Cyber City - Records Annex - 1512.5 89 1092.5 (latch) | runs: sidequest/off_records/recover_3 | skin `single/prop_screen` |
 | **Glitching Billboard** `cyber_board_1` | Cyber City - Downtown - 1490.5 90 1132.5 (latch) | runs: sidequest/signal/scrub_1 | skin `single/prop_screen` |
 | **Glitching Billboard** `cyber_board_2` | Cyber City - Downtown - 1560.5 91 1090.5 (latch) | runs: sidequest/signal/scrub_2 | skin `single/prop_screen` |
-| **Glitching Billboard** `cyber_board_3` | Cyber City - Downtown - 1610.5 92 1110.5 (latch) | runs: sidequest/signal/scrub_3 | skin `single/prop_screen` |
+| **Glitching Billboard** `cyber_board_3` | Cyber City - Downtown - 1624.5 92 1119.5 (latch) | runs: sidequest/signal/scrub_3 | skin `single/prop_screen` |
 | **Off-Records Clerk Maren** `cyber_defector_maren` | Cyber City - Records Annex - 1520.5 89 1100.5 (latch) | runs: sidequest/off_records/turn_in, sidequest/off_records/start | skin `groups/cyber` |
 | **Verified Value Teller** `cyber_exchange_teller` | Cyber City - Exchange Kiosk - 1500.5 91 1120.5 (latch) | runs: sidequest/exchange/turn_in, sidequest/exchange/start | skin `groups/cyber` |
 | **Grid Broker Ohmond** `cyber_grid_broker` | Cyber City - Downtown Seam - 1555.5 92 1108.5 (latch) | battles `sq_cyber_broker_wager` (3x lv64-65: raichu, magnezone, electivire), prize 1500; runs: sidequest/door/decline_wager | skin `groups/cyber` |
-| **Nurse Ampere** `cyber_nurse_rumor` | Cyber City - Pokemon Center - 1478.5 89 1150.5 (latch) | heals your party; runs: pc/open | skin `single/nurse_center` |
+| **Dr. Orion Synapse** `cyber_nurse_rumor` | Cyber City - Pokemon Center - 1473.5 91 1053.5 (body, moved by repairs) | heals your party; runs: pc/open | world-body look |
 | **Reserve Tag** `cyber_reserve_1` | Cyber City - Downtown - 1490.5 91 1128.5 (latch) | runs: sidequest/exchange/note_1 | skin `single/prop_screen` |
 | **Reserve Tag** `cyber_reserve_2` | Cyber City - Downtown - 1560.5 93 1092.5 (latch) | runs: sidequest/exchange/note_2 | skin `single/prop_screen` |
-| **Reserve Tag** `cyber_reserve_3` | Cyber City - Downtown - 1610.5 92 1112.5 (latch) | runs: sidequest/exchange/note_3 | skin `single/prop_screen` |
+| **Reserve Tag** `cyber_reserve_3` | Cyber City - Downtown - 1614.5 92 1119.5 (latch) | runs: sidequest/exchange/note_3 | skin `single/prop_screen` |
 | **Signal Tech Rell** `cyber_signal_tech` | Cyber City - Comms Van - 1470.5 89 1140.5 (latch) | runs: sidequest/signal/turn_in, sidequest/signal/start | skin `groups/cyber` |
 | **Damon Byte** `damon_byte` | Cyber City - Skybridge - 1610 144 1094 (body) | flavor / lore dialog | world-body look |
 | **Dax Neon** `dax_neon` | Cyber City - Upper Terraces - 1480 158 1120 (body) | flavor / lore dialog | world-body look |
 | **Dex Gridrunner** `dex_gridrunner` | Cyber City - West Downtown - 1436 90 1044 (body) | flavor / lore dialog | world-body look |
 | **Dex Quantum** `dex_quantum` | Cyber City - East Downtown - 1584 129 1266 (body) | flavor / lore dialog | world-body look |
-| **Dex Volt** `dex_volt` | Cyber City - Battery Row - 1478 91 1318 (body) | flavor / lore dialog | world-body look |
+| **Dex Volt** `dex_volt` | Cyber City - Pokemart - 1478 91 1318 (body) | opens the Pokemart shop | world-body look |
 | **Doss** `doss` | Cyber City - Back Alleys - 1386 92 1144 (body) | flavor / lore dialog | world-body look |
 | **Dr. Helix Core** `dr_helix_core` | Cyber City - Research Annex - 1456 92 1272 (body) | flavor / lore dialog | world-body look |
-| **Dr. Orion Synapse** `dr_orion_synapse` | Cyber City - West Downtown - 1474 91 1054 (body) | flavor / lore dialog | world-body look |
 | **Hex Firewall** `hex_firewall` | Cyber City - West Alleys - 1364 98 1190 (body) | flavor / lore dialog | world-body look |
+| **Security Associate Kessler** `hq_security_kessler` | Company HQ - Tower Door - 1621.5 92 1116.5 (latch) | flavor / lore dialog | skin `single/thecompany_grunt_3` |
+| **Security Associate Voss** `hq_security_voss` | Company HQ - Tower Door - 1617.5 92 1116.5 (latch) | flavor / lore dialog | skin `single/thecompany_grunt_2` |
 | **Iris Gearshift** `iris_gearshift` | Cyber City - Upper Terraces - 1460 142 1264 (body) | flavor / lore dialog | world-body look |
 | **Juno Pixel** `juno_pixel` | Cyber City - Arcade Strip - 1596 92 1260 (body) | fetch: 3x gold_nugget -> `ci_juno_tokens_done` | world-body look |
 | **Kai Datadrift** `kai_datadrift` | Cyber City - Central Plaza - 1520 90 1084 (body) | flavor / lore dialog | world-body look |
@@ -499,8 +506,8 @@
 | **Talon Sparks** `talon_sparks` | Cyber City - West Downtown - 1364 91 1260 (body) | flavor / lore dialog | world-body look |
 | **Tara Keylock** `tara_keylock` | Cyber City - Central Terraces - 1536 134 1260 (body) | flavor / lore dialog | world-body look |
 | **Troy Beta** `troy_beta` | Cyber City - Central Plaza - 1536 120 1100 (body) | flavor / lore dialog | world-body look |
-| **Vera Bitstorm** `vera_bitstorm` | Cyber City - Far West Downtown - 1306 98 1226 (body) | flavor / lore dialog | world-body look |
-| **Victor Node** `victor_node` | Cyber City - Skybridge - 1612 179 1094 (body) | flavor / lore dialog | world-body look |
+| **Vera Bitstorm** `vera_bitstorm` | Cyber City - Far West Downtown - 1317.5 98 1211.5 (body, moved by repairs) | flavor / lore dialog | world-body look |
+| **Victor Node** `victor_node` | Company HQ - Penthouse Lift Landing - 1611.5 171 1098.5 (body, moved by repairs) | flavor / lore dialog | world-body look |
 | **Viktor Launchpad** `viktor_launchpad` | Cyber City - Central Plaza - 1560 106 1108 (body) | flavor / lore dialog | world-body look |
 | **Vira Softpulse** `vira_softpulse` | Cyber City - Upper Terraces - 1602 156 1268 (body) | flavor / lore dialog | world-body look |
 | **Vonn Steelbyte** `vonn_steelbyte` | Cyber City - Rooftop Rigs - 1470 106 1268 (body) | flavor / lore dialog | world-body look |
@@ -851,14 +858,14 @@
 
 | NPC | Where | Does | Looks |
 |---|---|---|---|
-| **Apprentice Surge** `cyber_apprentice` | Cyber City - Gym, the mains line - 1306.5 100 1187.5 (latch) | battles `cyber_apprentice` (3x lv53-54: raichu, magneton, manectric) | skin `single/cyber_apprentice` |
+| **Apprentice Surge** `cyber_apprentice` | Cyber City - Gym, the mains line - 1305.5 98 1141.5 (latch) | battles `cyber_apprentice` (3x lv53-54: raichu, magneton, manectric) | skin `single/cyber_apprentice` |
 | **Cyber City Gym Guide** `cyber_guide` | Cyber City - UNPLACED | gym-guide info pages | STEVE default |
-| **Jr. Apprentice Voltz** `cyber_jr_apprentice` | Cyber City - Gym, the relay floor - 1306.5 100 1193.5 (latch) | battles `cyber_jr_apprentice` (2x lv52-52: electrode, luxray) | skin `single/cyber_apprentice` |
+| **Jr. Apprentice Voltz** `cyber_jr_apprentice` | Cyber City - Gym, the relay floor - 1305.5 98 1229.5 (latch) | battles `cyber_jr_apprentice` (2x lv52-52: electrode, luxray) | skin `single/cyber_apprentice` |
 | **Leader Volt** `cyber_leader` | Cyber City - 1306 100 1190 (body) | battles `cyber_leader` (4x lv56-58: magnezone, luxray, electivire, jolteon), prize 4300; cutscene: cyber_leader_intro | skin `single/cyber_leader` |
-| **Guitarist Amp** `cyber_trainer_1` | Cyber City - Gym, the lower deck - 1303.5 100 1188.5 (latch) | battles `cyber_trainer_1` (2x lv50-51: pikachu, voltorb) | skin `groups/cyber` |
-| **Engineer Watt** `cyber_trainer_2` | Cyber City - Gym, the lower deck - 1309.5 100 1188.5 (latch) | battles `cyber_trainer_2` (2x lv51-51: magnemite, electrike) | skin `groups/cyber` |
-| **Rocker Static** `cyber_trainer_3` | Cyber City - Gym, the upper deck - 1303.5 100 1192.5 (latch) | battles `cyber_trainer_3` (2x lv50-51: elekid, pachirisu) | skin `groups/cyber` |
-| **Mechanic Gigabyte** `cyber_trainer_4` | Cyber City - Gym, the upper deck - 1309.5 100 1192.5 (latch) | battles `cyber_trainer_4` (2x lv51-51: emolga, luxio) | skin `groups/cyber` |
+| **Guitarist Amp** `cyber_trainer_1` | Cyber City - Gym, the lower deck - 1255.5 116 1185.5 (latch) | battles `cyber_trainer_1` (2x lv50-51: pikachu, voltorb) | skin `groups/cyber` |
+| **Engineer Watt** `cyber_trainer_2` | Cyber City - Gym, the lower deck - 1305.5 116 1138.5 (latch) | battles `cyber_trainer_2` (2x lv51-51: magnemite, electrike) | skin `groups/cyber` |
+| **Rocker Static** `cyber_trainer_3` | Cyber City - Gym, the upper deck - 1274.5 100 1185.5 (latch) | battles `cyber_trainer_3` (2x lv50-51: elekid, pachirisu) | skin `groups/cyber` |
+| **Mechanic Gigabyte** `cyber_trainer_4` | Cyber City - Gym, the upper deck - 1307.5 116 1213.5 (latch) | battles `cyber_trainer_4` (2x lv51-51: emolga, luxio) | skin `groups/cyber` |
 | **Apprentice Ken** `deepcore_apprentice` | Deepcore City - Gym, the deep pit - 984.3 129 3173.2 (latch) | flavor / lore dialog | skin `single/deepcore_apprentice` |
 | **Black Belt Ryu** `deepcore_duelist_1` | Deepcore City - Gym, the training floor - UNPLACED | flavor / lore dialog | skin `single/deepcore_trainer_1` |
 | **Battle Girl Mika** `deepcore_duelist_2` | Deepcore City - Gym, the training floor - UNPLACED | flavor / lore dialog | skin `single/deepcore_trainer_2` |
@@ -972,7 +979,7 @@
 | **Eldon Basewatch** `eldon_basewatch` | Eastern Cliff Route - 4006 119 3048 (body) | flavor / lore dialog | world-body look |
 | **Eldric Stonegaze** `eldric_stonegaze` | Eastern Cliff Route - 4282 81 2982 (body) | flavor / lore dialog | world-body look |
 | **Haru Scaleguard** `haru_scaleguard` | Dragon Overlook, Spire Road - 2376 202 888 (body) | flavor / lore dialog | world-body look |
-| **Helga Ridgewatch** `helga_ridgewatch` | The Preserve - owner's overlook (Safari Zone) - 1486 82 1680 (body) | flavor / lore dialog | world-body look |
+| **Preservationist Maya** `helga_ridgewatch` | The Preserve - owner's overlook (Safari Zone) - 1486 82 1680 (body) | flavor / lore dialog | world-body look |
 | **Jax Databet** `jax_databet` | Cyber Approach Road - 1718 90 1198 (body) | flavor / lore dialog | world-body look |
 | **Kaede Emberwind** `kaede_emberwind` | Dragon Overlook, Spire Road - 2390 202 890 (body) | flavor / lore dialog | world-body look |
 | **Kael Embermark** `kael_embermark` | Eastern Cliff Route - 4108 88 2990 (body) | flavor / lore dialog | world-body look |
@@ -1000,19 +1007,20 @@
 
 ## The Company, Inc. (SPOILERS)
 
-`characters/villain/` - 31 NPCs
+`characters/villain/` - 32 NPCs
 
 | NPC | Where | Does | Looks |
 |---|---|---|---|
-| **Acting CEO DJ** `acting_ceo_dj` | The Boardroom - UNPLACED | battles `villain_boss` (6x lv59-64: persian, golem, nidoking, rhyperior, tyranitar, entei), prize 8000 | skin `single/phone_dj` |
+| **Acting CEO DJ** `acting_ceo_dj` | The Boardroom - 1634.7 197 1106.5 (latch) | battles `villain_boss` (6x lv59-64: persian, golem, nidoking, rhyperior, tyranitar, entei), prize 8000; runs: villain/dj_battle_stage | skin `single/phone_dj` |
 | **L§kaaaaa** `board_lauren` | The Boardroom - UNPLACED | battles `board_lauren` (6x lv81-86: chansey, florges, clefable, snorlax, togekiss, porygonz), prize 9000 | STEVE default |
 | **M§kaaaaaaaaa** `board_madeline` | The Boardroom - UNPLACED | battles `board_madeline` (6x lv82-87: alakazam, espeon, sylveon, hatterene, togekiss, gardevoir), prize 9000 | STEVE default |
 | **M§kaaa** `board_matt` | The Boardroom - UNPLACED | battles `board_matt` (6x lv81-86: machamp, lucario, rhyperior, heracross, annihilape, conkeldurr), prize 9000 | STEVE default |
 | **M§kaaaa** `board_micah` | The Boardroom - UNPLACED | battles `board_micah` (6x lv82-87: jolteon, electivire, klinklang, eelektross, magnezone, metagross), prize 9000 | STEVE default |
-| **Chairman** `companion_incineroar_bed` | Company HQ Penthouse - UNPLACED | flavor / lore dialog | Cobblemon model: incineroar |
-| **Agenda** `companion_lopunny_concierge` | Company HQ Penthouse - UNPLACED | flavor / lore dialog | Cobblemon model: lopunny |
-| **Merger** `companion_lopunny_left` | Company HQ Penthouse - UNPLACED | flavor / lore dialog | Cobblemon model: lopunny |
-| **Acquisition** `companion_lopunny_right` | Company HQ Penthouse - UNPLACED | flavor / lore dialog | Cobblemon model: lopunny |
+| **Chairman** `companion_incineroar_bed` | Company HQ Penthouse - 1628.2 197 1116.2 (latch) | flavor / lore dialog | Cobblemon model: incineroar |
+| **Agenda** `companion_lopunny_concierge` | Company HQ Penthouse - 1615.4 179 1088.3 (latch) | flavor / lore dialog | Cobblemon model: lopunny |
+| **Merger** `companion_lopunny_left` | Company HQ Penthouse - 1625.5 179 1112.3 (latch) | flavor / lore dialog | Cobblemon model: lopunny |
+| **Acquisition** `companion_lopunny_right` | Company HQ Penthouse - 1612.9 197.1 1101.6 (latch) | flavor / lore dialog | Cobblemon model: lopunny |
+| **Retention** `companion_lopunny_turndown` | Company HQ Penthouse - 1615.9 197.5 1099.8 (latch) | flavor / lore dialog | Cobblemon model: lopunny |
 | **Feng** `granary_keeper` | Hua Zhan City - 1526 84 2030 (body) | native trade window (trade_granary); native trade window (trade_granary); native trade window (trade_granary) | world-body look |
 | **Survey Wagon** `survey_wagon` | Harvest Road — Mid Straightaway - 1560.5 88 2380.5 (latch) | flavor / lore dialog | skin `single/prop_wood_post` |
 | **Regional Manager Shade** `villain_admin` | Company Regional Office - UNPLACED | battles `villain_admin` (4x lv25-30: golbat, weezing, muk, honchkrow), prize 3000 | skin `single/thecompany_admin_1` |
