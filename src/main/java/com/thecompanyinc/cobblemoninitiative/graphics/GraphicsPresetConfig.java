@@ -104,7 +104,9 @@ public class GraphicsPresetConfig {
   }
 
   private static Preset defaultHigh() {
-    Preset p = new Preset(true, "fancy", 16, 12, true, "all", "fancy", 3.0, 5, 4);
+    // clouds "off" (v3): BSL renders its own clouds; vanilla fancy clouds double up
+    // and fight the shipped options.txt default (renderClouds:"false", harvested a20).
+    Preset p = new Preset(true, "fancy", 16, 12, true, "all", "off", 3.0, 5, 4);
     p.shaderOptions = bslHigh();
     return p;
   }
@@ -116,12 +118,13 @@ public class GraphicsPresetConfig {
     return p;
   }
 
-  private static final int CONFIG_VERSION = 2;
+  private static final int CONFIG_VERSION = 3;
 
   /**
    * Bumped when {@link #load()} must one-shot-migrate stale on-disk values (v2: HIGH shadow
-   * values ULTRA→HIGH). No field initializer — Gson keeps the default for absent JSON fields,
-   * so a pre-versioning file must parse as 0 to be seen as migratable.
+   * values ULTRA→HIGH; v3: HIGH vanilla clouds fancy→off — BSL supplies clouds). No field
+   * initializer — Gson keeps the default for absent JSON fields, so a pre-versioning file
+   * must parse as 0 to be seen as migratable.
    */
   public int configVersion;
 
@@ -189,11 +192,18 @@ public class GraphicsPresetConfig {
    */
   private static void migrate(GraphicsPresetConfig cfg) {
     if (cfg.configVersion >= CONFIG_VERSION) return;
-    if ("3072".equals(cfg.high.shaderOptions.get("shadowMapResolution"))) {
-      cfg.high.shaderOptions.put("shadowMapResolution", "2048");
+    if (cfg.configVersion < 2) {
+      if ("3072".equals(cfg.high.shaderOptions.get("shadowMapResolution"))) {
+        cfg.high.shaderOptions.put("shadowMapResolution", "2048");
+      }
+      if ("512.0".equals(cfg.high.shaderOptions.get("shadowDistance"))) {
+        cfg.high.shaderOptions.put("shadowDistance", "256.0");
+      }
     }
-    if ("512.0".equals(cfg.high.shaderOptions.get("shadowDistance"))) {
-      cfg.high.shaderOptions.put("shadowDistance", "256.0");
+    // v3: vanilla clouds off on HIGH (BSL renders its own; a20 harvested default).
+    // Exact-value-guarded like v2, so a deliberate hand-edit back to fancy sticks at v3+.
+    if (cfg.configVersion < 3 && "fancy".equals(cfg.high.clouds)) {
+      cfg.high.clouds = "off";
     }
     cfg.configVersion = CONFIG_VERSION;
     cfg.save();

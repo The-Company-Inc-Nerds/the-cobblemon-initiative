@@ -15,7 +15,7 @@ plugins {
 }
 
 group = "com.thecompanyinc"
-version = "0.7.0-alpha.20"
+version = "0.7.0-alpha.21"
 
 architectury {
     platformSetupLoomIde()
@@ -79,6 +79,12 @@ dependencies {
     // Same pinned artifact as the modRuntimeOnly line below — compile-only here so the
     // published scope stays unchanged; names are un-obfuscated, mixin uses remap=false.
     modCompileOnly("maven.modrinth:Epm6R3P2:pxt6JAIU") { isTransitive = false }
+    // CobbleDollars compile visibility for CobbleDollarsHudMixin + the balance watcher
+    // (only-on-change HUD flash) — the Easy NPC pattern above: same pinned artifact as
+    // the modRuntimeOnly line below, compile-only so the published scope stays
+    // unchanged; the mod's own names are un-obfuscated (mixin remap=false) and the
+    // mixin plugin skips the mixin when the mod is absent (bare-mod dev).
+    modCompileOnly("curse.maven:cobbledollars-859232:6604561") { isTransitive = false }
     modImplementation("com.cobblemon:mod:1.7.3+1.21.1") { isTransitive = false }
     modImplementation("com.cobblemon:fabric:1.7.3+1.21.1")
     implementation("com.google.code.gson:gson:2.10.1")

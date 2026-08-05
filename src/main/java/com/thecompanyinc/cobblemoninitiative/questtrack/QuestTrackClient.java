@@ -64,6 +64,10 @@ public final class QuestTrackClient {
   private static void sendTrackCommand(Minecraft client, String direction) {
     if (client.player != null) {
       client.player.connection.sendCommand("cobblemon-initiative track " + direction);
+      // Pop the auto-hidden sidebar NOW — a track cycle that lands on identical sidebar
+      // text (single tracked quest) never trips the change-hash, and the ▶ move that
+      // does is a server round-trip away.
+      QuestSidebarAutoHide.show();
     }
   }
 

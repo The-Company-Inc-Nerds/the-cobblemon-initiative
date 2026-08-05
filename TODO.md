@@ -75,6 +75,24 @@ guide; /gfx High now equals the shipped BSL HIGH profile (configVersion 2 migrat
       (its own volume slider in its config button); Gentler Weather Sounds audible
       in the first rainstorm; Hold My Items animations + the Hold My Pokeballs
       addon pairing in first person.
+- [ ] 🔍 Stream HUD (first boot): CobbleDollars overlay hidden at rest, flashes on a
+      shop buy / prize money / decline fee then hides after ~4s; quest sidebar hidden
+      at rest, pops on quest credit, on ]/[, and on closing the Quest Log. In YOUR
+      live instance set autohud.json5 scoreboard.scoreboard.active=false (the shipped
+      pack default already has it) or the two hiders fight over the sidebar.
+- [ ] 🧱 DH LOD refresh before each release build: quit the world, then re-copy
+      saves/<map>/data/DistantHorizons.sqlite into mrpack/maps/<map>/data/ (workflow
+      in mrpack/maps/README.md) — coverage grows as you fly the map with Distant
+      Generation on. Also eyeball BSL + DH sky/fog seam on first boot (DH shader
+      integration needs Iris' DH path; if it looks wrong, DH's own fog/clouds
+      settings are the knobs — DH clouds are already off in the shipped config).
+- [ ] 🔍 Render-ready hold (first boot, THE cold-open check): fresh world = black
+      branded overlay → install provisioning bar → terrain % climbs → reveal lands
+      directly in the opening cutscene with ZERO pop-in; plain rejoin = overlay
+      covers pop-in then self-fades; ESC after 10s shows SKIP and clicking it
+      reveals immediately. If the overlay ever wedges past ~60s the server reveals
+      anyway (logged) — that firing on a normal boot means the readiness gates need
+      retuning (readyRadiusChunks down, or overlayMaxSeconds up, Stream HUD tab).
 - [ ] 💻 Deferred from this wave: Chike's cut orphaned the frag_7 charter-plate
       telegraph (cd_instability ≥ 56) — re-home it if the beat is wanted; Aki
       (villain_yield_officer_5) still carries the dead no-tag sight block class.

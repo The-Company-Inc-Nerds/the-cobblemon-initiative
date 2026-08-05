@@ -1891,12 +1891,70 @@ public class InitiativeConfigScreen {
           "How long after a missed/declined call the phone rings again — story calls repeat until completed."))
         .setSaveConsumer(v -> phoneConfig.reRingSeconds = v).build());
 
+    // -------------------------------------------------------------------------
+    // Stream HUD (client-side: CobbleDollars only-on-change + quest-sidebar auto-hide)
+    // -------------------------------------------------------------------------
+    HudConfig hudConfig = HudConfig.load();
+    HudConfig hudDefaults = new HudConfig();
+
+    var streamHudSub = entryBuilder.startSubCategory(Component.literal("Stream HUD")).setExpanded(false);
+
+    streamHudSub.add(
+      entryBuilder.startBooleanToggle(Component.literal("CobbleDollars HUD only on change"), hudConfig.cobbledollarsOnChange)
+        .setDefaultValue(hudDefaults.cobbledollarsOnChange)
+        .setTooltip(Component.literal("Hide the CobbleDollars balance HUD except briefly on join and whenever the balance changes."))
+        .setSaveConsumer(v -> hudConfig.cobbledollarsOnChange = v).build());
+    streamHudSub.add(
+      entryBuilder.startIntField(Component.literal("Balance show (seconds)"), hudConfig.cobbledollarsShowSeconds)
+        .setMin(1)
+        .setDefaultValue(hudDefaults.cobbledollarsShowSeconds)
+        .setTooltip(Component.literal("How long the balance HUD stays up after a change."))
+        .setSaveConsumer(v -> hudConfig.cobbledollarsShowSeconds = v).build());
+    streamHudSub.add(
+      entryBuilder.startBooleanToggle(Component.literal("Auto-hide quest sidebar"), hudConfig.autoHideQuestSidebar)
+        .setDefaultValue(hudDefaults.autoHideQuestSidebar)
+        .setTooltip(Component.literal("Hide the quest sidebar except when a quest line updates, on the track keybinds, and after closing the Quest Log."))
+        .setSaveConsumer(v -> hudConfig.autoHideQuestSidebar = v).build());
+    streamHudSub.add(
+      entryBuilder.startIntField(Component.literal("Sidebar show (seconds)"), hudConfig.sidebarShowSeconds)
+        .setMin(1)
+        .setDefaultValue(hudDefaults.sidebarShowSeconds)
+        .setTooltip(Component.literal("How long the quest sidebar stays up after a trigger."))
+        .setSaveConsumer(v -> hudConfig.sidebarShowSeconds = v).build());
+    streamHudSub.add(
+      entryBuilder.startBooleanToggle(Component.literal("Hold branded overlay on join"), hudConfig.holdOverlayOnJoin)
+        .setDefaultValue(hudDefaults.holdOverlayOnJoin)
+        .setTooltip(Component.literal(
+          "Cover every world join with the Company overlay until the terrain around the camera "
+          + "has finished compiling (hides shader/chunk pop-in on stream; the fresh-world opening "
+          + "cutscene also waits for the release). ESC or a click after 10s reveals a Skip button."))
+        .setSaveConsumer(v -> hudConfig.holdOverlayOnJoin = v).build());
+    streamHudSub.add(
+      entryBuilder.startIntField(Component.literal("Overlay max hold (seconds)"), hudConfig.overlayMaxSeconds)
+        .setMin(5)
+        .setMax(120)
+        .setDefaultValue(hudDefaults.overlayMaxSeconds)
+        .setTooltip(Component.literal(
+          "Hard cap on the join hold — the overlay releases (and reports ready) even if the "
+          + "renderer never settles."))
+        .setSaveConsumer(v -> hudConfig.overlayMaxSeconds = v).build());
+    streamHudSub.add(
+      entryBuilder.startIntField(Component.literal("Ready radius (chunks)"), hudConfig.readyRadiusChunks)
+        .setMin(2)
+        .setMax(16)
+        .setDefaultValue(hudDefaults.readyRadiusChunks)
+        .setTooltip(Component.literal(
+          "How many chunks around the player must be streamed in (and the compile queue idle) "
+          + "before the join hold releases — 8 covers the opening cutscene's near field."))
+        .setSaveConsumer(v -> hudConfig.readyRadiusChunks = v).build());
+
     // ─── Tab layout: 25 legacy categories regrouped into 6 tabs of collapsible ───────
     // sections (ModMenu cleanup, showrunner 2026-08-03). Section content is unchanged —
     // only the parenting moved; tab order = creation order (General was created first).
     general.addEntry(progressionSub.build());
     general.addEntry(flavorSub.build());
     general.addEntry(streamSyncSub.build());
+    general.addEntry(streamHudSub.build());
 
     ConfigCategory nuzlockeTab = builder.getOrCreateCategory(Component.literal("Nuzlocke & Battle"));
     nuzlockeTab.addEntry(nuzlockeSub.build());
@@ -1955,6 +2013,8 @@ public class InitiativeConfigScreen {
       momConfig.save();
       streamSyncConfig.save();
       flavorScreenConfig.save();
+      hudConfig.save();
+      HudConfig.reload();
       NuzlockeInit.reloadConfig();
       EconomyConfig.reload();
       NpcSightInit.reloadConfig();

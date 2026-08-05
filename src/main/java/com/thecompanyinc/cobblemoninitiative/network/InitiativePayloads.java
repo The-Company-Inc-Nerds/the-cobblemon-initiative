@@ -189,6 +189,27 @@ public final class InitiativePayloads {
     }
   }
 
+  /**
+   * C2S: the client's join-hold overlay reports the terrain around the camera has compiled
+   * (or its cap/skip released it) — see {@code renderready/RenderReadyClient}. On a fresh pack
+   * world AutoInstall's opening-cutscene reveal waits on this; every other session it is a
+   * silent no-op (the flag is simply never consumed). Content-free by design: a forged payload
+   * can only ever release a wait a real client would release seconds later anyway.
+   */
+  public record RenderReadyPayload() implements CustomPacketPayload {
+
+    public static final Type<RenderReadyPayload> TYPE = new Type<>(
+      ResourceLocation.fromNamespaceAndPath(InitiativeInit.MOD_ID, "render_ready"));
+
+    public static final StreamCodec<FriendlyByteBuf, RenderReadyPayload> CODEC =
+      StreamCodec.unit(new RenderReadyPayload());
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+      return TYPE;
+    }
+  }
+
   /** C2S: the client's battle GUI has closed — play the queued victory-watcher scene now. */
   public record VictoryWatcherReadyPayload(String scene) implements CustomPacketPayload {
 
@@ -218,6 +239,7 @@ public final class InitiativePayloads {
     PayloadTypeRegistry.playS2C().register(InstallOverlayPayload.TYPE, InstallOverlayPayload.CODEC);
     PayloadTypeRegistry.playS2C().register(VictoryWatcherPayload.TYPE, VictoryWatcherPayload.CODEC);
     PayloadTypeRegistry.playC2S().register(VictoryWatcherReadyPayload.TYPE, VictoryWatcherReadyPayload.CODEC);
+    PayloadTypeRegistry.playC2S().register(RenderReadyPayload.TYPE, RenderReadyPayload.CODEC);
 
     // Fabric 1.21 play receivers run on the server thread; the managers re-validate the
     // whole request, so a stale/forged payload degrades to a polite refusal.
@@ -242,6 +264,11 @@ public final class InitiativePayloads {
     // the scene, plays it, and latches the one-shot tag only on a successful start.
     ServerPlayNetworking.registerGlobalReceiver(VictoryWatcherReadyPayload.TYPE, (payload, context) ->
       InitiativeInit.playVictoryWatcherConfirmed(context.player(), payload.scene()));
+
+    // Join-hold render-ready report — AutoInstall consumes it only while its opening reveal
+    // is waiting; every other session it is a recorded no-op.
+    ServerPlayNetworking.registerGlobalReceiver(RenderReadyPayload.TYPE, (payload, context) ->
+      com.thecompanyinc.cobblemoninitiative.install.AutoInstall.onClientRenderReady(context.player()));
   }
 
   /** Server→client: open the picker (replaces the static-flag bridge). */

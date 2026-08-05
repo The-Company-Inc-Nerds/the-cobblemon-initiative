@@ -64,3 +64,19 @@ current `entities/`, `easy_npc/`, `data/`, `serverconfig/`. (Ask Claude to add a
 (content-addressed, gitignored) and **bundles** them into the pack, so installing a
 freshly built pack re-downloads nothing but our own mod. The first `--cache` build
 populates the cache; later builds reuse it (only changed deps re-download).
+
+## Distant Horizons LODs ship with the map (a20)
+
+`<map>/data/DistantHorizons.sqlite` is the pre-generated LOD database — bundling it
+means a fresh install sees full-distance terrain immediately instead of watching DH
+rebuild it over hours. The world-copy strip list leaves generic `data/` files alone,
+so whatever sits there ships as-is. **Before a release build, refresh it from the
+play instance** (quit the world first so there is no `-wal` sidecar):
+
+    cp "<instance>/minecraft/saves/<map>/data/DistantHorizons.sqlite" \
+       "mrpack/maps/<map>/data/"
+
+Coverage grows as the showrunner plays/flies with DH's Distant Generation on — the
+snapshot is whatever the instance has built so far (vanilla chunks for the whole map
+already ship in `region/`; DH LODs beyond the map edge generate at runtime from the
+seed). Current snapshot: 2026-08-05, ~109 MB.

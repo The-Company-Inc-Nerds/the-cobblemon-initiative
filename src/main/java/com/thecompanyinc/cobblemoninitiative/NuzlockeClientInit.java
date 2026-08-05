@@ -49,6 +49,15 @@ public class NuzlockeClientInit implements ClientModInitializer {
     // capture itself is GuiTitleRecordMixin); init only wires the disconnect clear.
     com.thecompanyinc.cobblemoninitiative.questtrack.EventRecordLog.init();
 
+    // Stream HUD: quest-sidebar auto-hide timer (GuiSidebarMixin reads it) …
+    com.thecompanyinc.cobblemoninitiative.questtrack.QuestSidebarAutoHide.init();
+    // … and the CobbleDollars only-on-change balance flash. The isModLoaded guard is
+    // load-bearing: the watcher imports CobbleDollars types, so touching the class in
+    // a bare-mod dev runtime without the jar would NoClassDefFoundError.
+    if (net.fabricmc.loader.api.FabricLoader.getInstance().isModLoaded("cobbledollars")) {
+      com.thecompanyinc.cobblemoninitiative.compat.cobbledollars.CobbleDollarsHudWatcher.init();
+    }
+
     // High/Low graphics toggle — /gfx command, an (unbound) keybind, and the tick that
     // detects the FancyMenu main-menu pack swap and syncs shaders + video settings to it.
     com.thecompanyinc.cobblemoninitiative.graphics.GraphicsPresetManager.init();
@@ -56,6 +65,10 @@ public class NuzlockeClientInit implements ClientModInitializer {
     // PokePhone — the "Answer PokePhone" keybind (default P) + the offer/open receivers
     // behind the client call screen.
     com.thecompanyinc.cobblemoninitiative.phone.PhoneCallClient.init();
+
+    // Join-hold: the branded render-ready overlay covering world joins until the terrain
+    // around the camera has compiled (JOIN arm + tick probe + C2S render-ready report).
+    com.thecompanyinc.cobblemoninitiative.renderready.RenderReadyClient.init();
 
     // Server-driven picker opens. Not opened here directly: the tick poll below waits
     // for screen == null so it sequences AFTER Easy NPC's deferred CLOSE_DIALOG — a
@@ -90,6 +103,13 @@ public class NuzlockeClientInit implements ClientModInitializer {
       (payload, context) -> {
         Minecraft mc = Minecraft.getInstance();
         mc.execute(() -> {
+          // Join-hold integration: when the branded render-ready overlay owns the cold open
+          // it consumes the install phases (one overlay covers both waits) — the legacy
+          // screen below only serves sessions with the join hold disabled. Never stack both.
+          if (com.thecompanyinc.cobblemoninitiative.renderready.RenderReadyClient
+              .handleInstallPhase(payload.phase())) {
+            return;
+          }
           switch (payload.phase()) {
             case InitiativePayloads.InstallOverlayPayload.PHASE_OPEN -> {
               if (!(mc.screen instanceof LoadingOverlayScreen)) {

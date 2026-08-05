@@ -68,6 +68,15 @@ public final class AutoInstall {
    * the fill reads as "done", and a moment for install-spawned bodies to settle off-camera. */
   private static final int POST_INSTALL_HOLD = 16;
 
+  /** Timeout on the client render-ready wait (0.7.0-alpha.21): after the install completes the
+   * reveal holds in {@link Stage#AWAIT_RENDER} until the client's join-hold overlay reports the
+   * terrain around the camera compiled ({@code RenderReadyPayload}), so the opening cutscene
+   * never plays over Sodium/BSL chunk pop-in. SETTLE_TICKS stays as the minimum floor (it also
+   * outlasts the MapFrontiers region title); this cap only exists so a client that never
+   * reports (crashed overlay, bare-mod client) cannot hang the opening forever. The client's
+   * own cap (overlayMaxSeconds, default 45s) fires first in any healthy session. */
+  private static final int RENDER_WAIT_TIMEOUT_TICKS = 20 * 60;
+
   /** A never-installed world → dispatch the full install. */
   private static boolean armed;
   /** An installed world at an older content version → dispatch the content-only refresh. */
@@ -78,11 +87,18 @@ public final class AutoInstall {
   private static boolean debug;
   private static int ticksWithPlayer;
 
-  /** Fresh-install hand-off stage: after the silent provisioning we hold the full bar for a beat
-   * ({@link #POST_INSTALL_HOLD}) before closing the overlay and playing the opening cutscene. */
-  private enum Stage { IDLE, POST_INSTALL }
+  /** Fresh-install hand-off stages: after the silent provisioning we hold the full bar for a
+   * beat ({@link #POST_INSTALL_HOLD}), then wait in AWAIT_RENDER for the client's render-ready
+   * report (or {@link #RENDER_WAIT_TIMEOUT_TICKS}) before closing the overlay and playing the
+   * opening cutscene. */
+  private enum Stage { IDLE, POST_INSTALL, AWAIT_RENDER }
   private static Stage stage = Stage.IDLE;
   private static int postInstallTicks;
+  private static int awaitRenderTicks;
+  /** Latched by {@link #onClientRenderReady} — kept latched (not consumed) because the client
+   * may report ready BEFORE the install/hold finishes; AWAIT_RENDER reads it whenever it gets
+   * there. Single-player only (project contract), so one flag, not a per-player set. */
+  private static boolean clientRenderReady;
 
   private AutoInstall() {}
 
@@ -98,6 +114,8 @@ public final class AutoInstall {
     ticksWithPlayer = 0;
     stage = Stage.IDLE;
     postInstallTicks = 0;
+    awaitRenderTicks = 0;
+    clientRenderReady = false;
 
     Path marker = FabricLoader.getInstance().getConfigDir().resolve(MARKER_FILE);
     if (!Files.exists(marker)) {
@@ -133,10 +151,30 @@ public final class AutoInstall {
   }
 
   private static void onTick(MinecraftServer server) {
-    // Fresh-install hand-off: bar has filled, hold a beat, then reveal.
+    // Fresh-install hand-off: bar has filled, hold a beat, then wait for the client renderer.
     if (stage == Stage.POST_INSTALL) {
       if (++postInstallTicks >= POST_INSTALL_HOLD) {
+        stage = Stage.AWAIT_RENDER;
+        awaitRenderTicks = 0;
+        if (!clientRenderReady) {
+          LOGGER.info("[Auto-Install] Install complete — holding the reveal for the client's render-ready report.");
+        }
+      }
+      return;
+    }
+
+    // Reveal gate: the client's join-hold overlay reports the near-field terrain compiled
+    // (RenderReadyPayload), or the server-side timeout releases the opening regardless.
+    if (stage == Stage.AWAIT_RENDER) {
+      awaitRenderTicks++;
+      if (clientRenderReady) {
         stage = Stage.IDLE;
+        LOGGER.info("[Auto-Install] Client render-ready after {}t — revealing the opening.", awaitRenderTicks);
+        closeOverlayAndReveal(server);
+      } else if (awaitRenderTicks >= RENDER_WAIT_TIMEOUT_TICKS) {
+        stage = Stage.IDLE;
+        LOGGER.info("[Auto-Install] No render-ready report within {}s — revealing the opening anyway.",
+          RENDER_WAIT_TIMEOUT_TICKS / 20);
         closeOverlayAndReveal(server);
       }
       return;
@@ -172,6 +210,16 @@ public final class AutoInstall {
     refreshArmed = false;
     ensureDebugScore(server);
     dispatchContentRefresh(server);
+  }
+
+  /** The client's join-hold overlay reports its near-field terrain compiled (or its cap/skip
+   * released it). Latched, never consumed: on sessions with no pending reveal this is the
+   * documented no-op. Called from the {@code RenderReadyPayload} receiver (server thread). */
+  public static void onClientRenderReady(ServerPlayer player) {
+    if (!clientRenderReady && stage != Stage.IDLE) {
+      LOGGER.info("[Auto-Install] {} reports render-ready.", player.getName().getString());
+    }
+    clientRenderReady = true;
   }
 
   /** Fresh world: the full one-time provisioning, run silently behind the loading overlay. */
