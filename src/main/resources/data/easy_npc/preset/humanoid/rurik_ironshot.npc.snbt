@@ -1,9 +1,9 @@
 {
     PresetMetadata: {
         author: "TheCompanyInc",
-        category: "Civilian",
+        category: "Villain",
         created: 0L,
-        description: "civilian at Cyber Approach Road (Company Survey Line) (act 2). Compiled from dialog-src.",
+        description: "villain_grunt at The Preserve - intake gate post (Safari Zone) (act 2). Compiled from dialog-src.",
         entityTypeId: "easy_npc:humanoid",
         modified: 0L,
         name: "Rurik Ironshot",
@@ -33,39 +33,285 @@
         CanPickUpLoot: 0b,
         CustomNameVisible: 1b,
         DialogData: {
-            Type: "BASIC",
+            Type: "STANDARD",
             DialogDataSet: [
                 {
-                    Priority: 10,
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "badges_gte_7"
+                        }
+                    ],
+                    Priority: 30,
                     Buttons: [
                         {
-                            Name: "Goodbye",
+                            Name: "Face them",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_rurik_ironshot"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "say The gate is yours. The Preserve is not. The Acting Manager is up the fence line, and Silva Longscope does not lose paperwork."
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_rurik_ironshot"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:rurik_ironshot @s"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_rurik_ironshot"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:rurik_ironshot onwin {1: ['cobbledollars give @1 350', 'tag @1 add defeated_rurik_ironshot', '@2 say Perimeter integrity: compromised. Fine. The Acting Manager signs for everything past this gate anyway - up the fence line, tripod and clipboard. Tell Silva Longscope I logged an incident.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 120', '@1 say Inventory protected. The Company thanks you for stress-testing the intake gate.']}"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "yes_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "It is you. The founder, this deep in a Company acquisition and still walking. Half the floor thinks you are a rumor payroll made up to keep us honest."
+                        },
+                        {
+                            Text: "I have orders. I have a family paid in Company scrip. Do not make me do this. But I am going to."
+                        }
+                    ],
+                    Name: "Officer - late recognition",
+                    Label: "late"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "badges_gte_3"
+                        }
+                    ],
+                    Priority: 20,
+                    Buttons: [
+                        {
+                            Name: "Fight",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_rurik_ironshot"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "say The gate is yours. The Preserve is not. The Acting Manager is up the fence line, and Silva Longscope does not lose paperwork."
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_rurik_ironshot"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:rurik_ironshot @s"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_rurik_ironshot"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:rurik_ironshot onwin {1: ['cobbledollars give @1 350', 'tag @1 add defeated_rurik_ironshot', '@2 say Perimeter integrity: compromised. Fine. The Acting Manager signs for everything past this gate anyway - up the fence line, tripod and clipboard. Tell Silva Longscope I logged an incident.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 120', '@1 say Inventory protected. The Company thanks you for stress-testing the intake gate.']}"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "yes_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Your face is on a memo. The kind with a black bar over the name and the words do not engage, report immediately."
+                        },
+                        {
+                            Text: "You are supposed to be a closed file. Closed files do not get to walk up to the intake gate."
+                        }
+                    ],
+                    Name: "Officer - mid recognition",
+                    Label: "mid"
+                },
+                {
+                    Priority: 15,
+                    Buttons: [
+                        {
+                            Name: "Clear the gate - face the Officer",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_rurik_ironshot"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "say The gate is yours. The Preserve is not. The Acting Manager is up the fence line, and Silva Longscope does not lose paperwork."
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_rurik_ironshot"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:rurik_ironshot @s"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_rurik_ironshot"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:rurik_ironshot onwin {1: ['cobbledollars give @1 350', 'tag @1 add defeated_rurik_ironshot', '@2 say Perimeter integrity: compromised. Fine. The Acting Manager signs for everything past this gate anyway - up the fence line, tripod and clipboard. Tell Silva Longscope I logged an incident.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 120', '@1 say Inventory protected. The Company thanks you for stress-testing the intake gate.']}"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "fight_button"
+                        },
+                        {
+                            Name: "Step back from the fence",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "goodbye_button"
+                            Label: "leave_button"
                         }
                     ],
                     Texts: [
                         {
-                            Text: "Contracted, not employed, so do not ask me what any of it is for. I set the cones, I move the cones, I get paid in scrip that buys less each week."
+                            Text: "Hold at the gate, resident. This preserve is a Company specimen acquisition site. Everything past the fence is inventory under appraisal, and foot traffic through live inventory is unlicensed handling. Unlicensed handling is a conversation with me."
                         },
                         {
-                            Text: "Whole crew signed the same contract and not one of us read past page one. That is the Company way. You sign, you find out later."
-                        },
-                        {
-                            Text: "Road is open, just do not step past the survey stakes. Above my pay grade to explain why, and trust me, I have asked."
-                        },
-                        {
-                            Text: "Foreman says we get a completion insensitive if the road opens early. A bonus, like. It has said insensitive on three memos now, so I figure that is just what the word is."
-                        },
-                        {
-                            Text: "We had a safety briefing about the thing past the stakes we are not allowed to ask about. The briefing was short. The part where we signed for the briefing was not."
+                            Text: "The family that used to run this preserve has been transitioned. The specimens belong to the Company now, and the Company does not do trespass. It does engagements. Would you like one?"
                         }
                     ],
-                    Name: "Rurik Ironshot",
+                    Name: "Officer - the gate post",
+                    Label: "gate_hail"
+                },
+                {
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "Fight",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_rurik_ironshot"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "say The gate is yours. The Preserve is not. The Acting Manager is up the fence line, and Silva Longscope does not lose paperwork."
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_rurik_ironshot"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:rurik_ironshot @s"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_rurik_ironshot"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:rurik_ironshot onwin {1: ['cobbledollars give @1 350', 'tag @1 add defeated_rurik_ironshot', '@2 say Perimeter integrity: compromised. Fine. The Acting Manager signs for everything past this gate anyway - up the fence line, tripod and clipboard. Tell Silva Longscope I logged an incident.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 120', '@1 say Inventory protected. The Company thanks you for stress-testing the intake gate.']}"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "yes_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Company business. This preserve is closed for specimen intake, and there is no walking through it."
+                        },
+                        {
+                            Text: "We settle this the old way. Wait. Do I know you from somewhere?"
+                        }
+                    ],
+                    Name: "Officer - early (no recognition)",
                     Label: "default"
                 }
             ]
@@ -157,18 +403,6 @@
             HasObjectives: 1b,
             HasTravelTarget: 0b,
             ObjectiveDataSet: [
-                {
-                    Type: "RANDOM_STROLL_AROUND_HOME",
-                    Prio: 2,
-                    Id: "ambient_stroll_home",
-                    SpeedModifier: 0.8d
-                },
-                {
-                    Type: "MOVE_BACK_TO_HOME",
-                    Prio: 3,
-                    Id: "ambient_back_home",
-                    SpeedModifier: 1.0d
-                },
                 {
                     Type: "LOOK_AT_PLAYER",
                     Prio: 9,

@@ -1,9 +1,9 @@
 {
     PresetMetadata: {
         author: "TheCompanyInc",
-        category: "Merchant",
+        category: "Duelist",
         created: 0L,
-        description: "merchant at Cyber Approach Road (Company Survey Line) (act 2). Compiled from dialog-src.",
+        description: "duelist at The Preserve - north fence (Safari Zone) (act 2). Compiled from dialog-src.",
         entityTypeId: "easy_npc:humanoid",
         modified: 0L,
         name: "Marek Blacknet",
@@ -40,11 +40,143 @@
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
+                            Name: "marek_gifted"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "no_marek_left"
+                        }
+                    ],
+                    Priority: 45,
+                    Buttons: [
+                        {
+                            Name: "Take the scrubbed portrait",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "loot give @s loot cobblemon_initiative:npc_gift/scrubbed_portrait"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add marek_left"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "portrait_button"
+                        },
+                        {
+                            Name: "Not yet",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "A horned champion, alive and in its prime, and it walked up on its own six feet. That is the collection finished - the memory of it, anyway. The cart is packed, the snares are down, and the Preserve has seen the last of me. A deal is a deal: take your payment."
+                        },
+                        {
+                            Text: "You brought me the one head money never could, and I did not even have to hang it. I am done here. The portrait comes off the cart the moment you reach for it, and I am gone by dark."
+                        }
+                    ],
+                    Name: "Marek Blacknet - packing the cart",
+                    Label: "farewell"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
                             Name: "badges_gte_3"
                         }
                     ],
                     Priority: 20,
                     Buttons: [
+                        {
+                            Name: "Offer a Heracross",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative monturnin heracross marek_gifted"
+                                },
+                                {
+                                    Type: "OPEN_DEFAULT_DIALOG"
+                                }
+                            ],
+                            Label: "offer_heracross_button"
+                        },
+                        {
+                            Name: "Offer a Pinsir",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative monturnin pinsir marek_gifted"
+                                },
+                                {
+                                    Type: "OPEN_DEFAULT_DIALOG"
+                                }
+                            ],
+                            Label: "offer_pinsir_button"
+                        },
+                        {
+                            Name: "Run him off the Preserve",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_marek_blacknet"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "say The cart is packed. The Preserve keeps its champions."
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_marek_blacknet"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:marek_blacknet @s"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_marek_blacknet"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:marek_blacknet onwin {1: ['cobbledollars give @1 700', 'tag @1 add defeated_marek_blacknet', '@2 say Run off by the quarry itself. Hah. The wall does not get this one - the story will have to do. The Preserve keeps its champions, and I keep walking.', 'tag @1 add marek_left', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 180', '@1 say Down you go. Do not take it hard - everything on my wall was better than you too.']}"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "fight_button"
+                        },
                         {
                             Name: "Keep it safe",
                             Actions: [
@@ -57,18 +189,95 @@
                     ],
                     Texts: [
                         {
-                            Text: "I deal in the things the Company sands off the record. Old memos, dead charters, a portrait or two they wanted burned. Funny — I have a portrait in the cart whose face I could swear I am looking at right now."
+                            Text: "I deal in the things the Company sands off the record. Old memos, dead charters, a portrait or two they wanted burned. Funny - the portrait in my cart has a face I could swear I am looking at right now."
                         },
                         {
-                            Text: "Do not worry, I never sell a name I cannot verify, and yours is not for sale. It is not even for saying. But I will keep the picture safe. Feels like the kind of thing that comes looking for its owner eventually."
+                            Text: "I never sell a name I cannot verify, and yours is not even for saying. But the picture could ride out of here in your pack instead of mine. Bring me the horned champion I am after - alive - and the portrait is yours. Fair trade for the last piece of my wall."
                         }
                     ],
-                    Name: "Marek Blacknet — the off-grid fence",
+                    Name: "Marek Blacknet - the off-ledger hunter",
                     Label: "mid"
                 },
                 {
                     Priority: 10,
                     Buttons: [
+                        {
+                            Name: "Offer a Heracross",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative monturnin heracross marek_gifted"
+                                },
+                                {
+                                    Type: "OPEN_DEFAULT_DIALOG"
+                                }
+                            ],
+                            Label: "offer_heracross_button"
+                        },
+                        {
+                            Name: "Offer a Pinsir",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative monturnin pinsir marek_gifted"
+                                },
+                                {
+                                    Type: "OPEN_DEFAULT_DIALOG"
+                                }
+                            ],
+                            Label: "offer_pinsir_button"
+                        },
+                        {
+                            Name: "Run him off the Preserve",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_marek_blacknet"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "say The cart is packed. The Preserve keeps its champions."
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_marek_blacknet"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:marek_blacknet @s"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_marek_blacknet"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:marek_blacknet onwin {1: ['cobbledollars give @1 700', 'tag @1 add defeated_marek_blacknet', '@2 say Run off by the quarry itself. Hah. The wall does not get this one - the story will have to do. The Preserve keeps its champions, and I keep walking.', 'tag @1 add marek_left', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 180', '@1 say Down you go. Do not take it hard - everything on my wall was better than you too.']}"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "fight_button"
+                        },
                         {
                             Name: "Just browsing",
                             Actions: [
@@ -81,13 +290,16 @@
                     ],
                     Texts: [
                         {
-                            Text: "Everything on this cart fell off a Company lorry, allegedly. I move goods the towers pretend do not exist. Cash only, no ledgers, no signatures — that is the whole appeal."
+                            Text: "Off-ledger goods, friend. Everything on this cart the Company scrubbed, sanded, or swore never existed. Cash only, no signatures - and one standing want: a horned champion for my wall. Alive. A dead trophy is a Company trophy, and I am better than them."
                         },
                         {
-                            Text: "You want it verified, go up the road and let them verify it into nothing. You want it real, you talk to me. Out here, off the grid, a thing is just worth what it is worth."
+                            Text: "Heracross or Pinsir, in its prime, walking on its own six feet - that is the last piece my collection wants. I do not net champions and I do not buy them broken. Bring me one alive and we both walk away rich."
+                        },
+                        {
+                            Text: "The clipboards at the gate call every living thing in there an asset with a lot number. I hunt for a living and even I know a creature is not a number. Do not tell them I said that. Do not tell anyone I said anything."
                         }
                     ],
-                    Name: "Marek Blacknet — the off-grid fence",
+                    Name: "Marek Blacknet - the trophy cart",
                     Label: "default"
                 }
             ]
@@ -261,6 +473,7 @@
             }
         ],
         id: "easy_npc:humanoid",
+        Tags: ["ci_marek_hunter"],
         CustomName: '{"text": "Marek Blacknet", "color": "#0000FF"}'
     }
 }

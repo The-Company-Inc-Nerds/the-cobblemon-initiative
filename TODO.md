@@ -8,6 +8,79 @@ done, Claude removes it **and** any release-removal it unblocks.
 
 ---
 
+## 2026-08-04 — 0.7.0-alpha.20: Safari Zone redesign + gym6→7 route playtest wave
+
+All 10 notes + 15 NPC notes + P1 implemented; compile errors:0 (--prune), gradle green,
+8 team files validated 0/0, lint at family-baseline classes only. **repairs_a32** wired
+(Rho + Chike cut kills, Volta relatch to the ridge, Byte Razer uuid tp, Rurik/Varek
+anchor tps, cut-tag hygiene). Highlights: safari = round-based custody game (capture vs
+contest, issued balls/bait/snowballs, stealth vs lure aggro, crash-safe custody file);
+Company clear-out quest opens it (ranger Nova Circuit slot 41, squatters Rurik→Silva,
+Marek trophy-hunter monturnin/battle side beat); farm_6 gold retrofit (Imara farmer at
+P1 owns the liberation); Byte Razer + Axel Datastream sight trainers; Tarek = full gym-6
+guide; /gfx High now equals the shipped BSL HIGH profile (configVersion 2 migration).
+- [ ] 🧱 `gradle build` done — `build-mrpack` + install run (repairs_a32 +
+      update_npc_presets + register_sight ride the version bump), then client relog.
+- [ ] 🔍 Safari full round in-world: enter capture at Darik (custody + kit), scatter,
+      befriend, snowball weaken, crouch-stealth vs spook-flee, ball-exhaust end,
+      timer end + eject, contest round scoring, death-mid-round custody restore.
+- [ ] 🔍 Clear-out quest loop: Nova button → sidebar line 41 → Rurik → Silva (blocked
+      button first) → Nova turn-in cards/payout → Darik/Varek/Helga unlock.
+- [ ] 🔍 Marek both paths: Heracross/Pinsir gift → portrait + pack-out sweep; battle →
+      despawn. Fenceline: Kade hail (new sight tag), Mira gate, Imara fence_down
+      ceremony (expect FENCELINE ACRES card, not THE PARCEL).
+- [ ] 🔍 Byte Razer at his NEW pylon-bend post (repairs tp) + Axel Datastream pursue;
+      Volta at the ridge (was buried), his hail now fires (first tag-keyed profile use).
+- [ ] 🔍 /gfx toggle: fresh install shows no shadow jump on first High↔Low↔High cycle;
+      live instance config self-heals to 2048/256 (configVersion 2).
+- [ ] 🔍 Safari-exclusive species (final roster = 14, no water table): confirm none of
+      the table species spawn wild (onix/aron caves, houndour/vulpix routes, combee
+      near trees), fishing is untouched (no rod species in the tables — jar-verified
+      fishing rides the same guarded spawn event, which is why they stay out), and the
+      Honey Smear TREE rule: smearing on grass refuses in-voice, smearing on a trunk/
+      canopy drops the lures at the tree base. ModMenu "Safari-Exclusive Species"
+      toggle walks exclusivity back per-save if wanted.
+- [ ] 🧱 POWER PLANT (gym-7 trial, engine SHIPPED a20 — awaiting coords): provide the
+      9 copper-bulb positions + the lever positions with their bulb pairs, then fill
+      data/cobblemon_initiative/powerplant/powerplant.json (bulbs [{x,y,z}×9] +
+      switches [{x,y,z,a,b}] — cover all 9 bulbs via pairs, ring 0-1…8-0 = 9 levers
+      full coverage; place levers away from bulbs so redstone never fights the
+      engine). Build the room with any copper-bulb variant at the 9 spots. Engine
+      auto-scrambles per fresh world; mid-world latch = `powerplant reload` +
+      `powerplant scramble`. Until latched, gym 7 stays open (inactive = restored).
+- [ ] 🔍 Power plant once latched: scramble pattern differs per world, levers toggle
+      their pairs (vanilla lever flips too), all-9-lit fires GRID ONLINE + unlocks
+      Volt (power_out page gone), `powerplant status`/`flip` dev hooks work, and no
+      lever mashing can ever wedge it (by-construction guarantee — spot check).
+- [ ] 🔍 PokéPhone call screen (new client UI): trigger a call in-world (`/ca-dev
+      phone mom` = side-effect-free preview; a real ring via badge/dex triggers) —
+      check the ring actionbar + chime, [P] answer, splash → conversation typewriter
+      feel, choice buttons, NUMBER WITHHELD glitch on a villain call (dj_threat),
+      missed-call re-ring after ~90s, and that answering mid-battle is impossible
+      (ring defers). Confirm [P] doesn't collide with another pack keybind on the
+      live instance (rebindable under Options → Controls → Cobblemon Initiative).
+- [ ] 🔍 Quest Log (Shift+T): open it with quests active — sidebar-identical lines +
+      the tracked ▶, memory pips match badge count, scroll works when the list is
+      long, Shift+T/ESC closes, and PLAIN T still opens chat normally (the T-key
+      click routing is engine roulette — the handler covers both outcomes, but
+      eyeball chat on the installed pack; rebindable under Controls if T misbehaves).
+      RECORD tab: fire a ceremony/title card, confirm it lands with its subtitle +
+      Day stamp; check a multi-stage cutscene doesn't over-collapse into one xN row.
+- [ ] 🔍 New pack mods (a20 additions — first boot after build-mrpack): AutoHUD must
+      NOT hide the ci_quest sidebar or the safari/phone bossbars (its config has
+      per-element toggles — disable scoreboard/bossbar hiding if it grabs them);
+      Camera Overhaul during a spectator cutscene (rig camera should be exempt —
+      if it sways, disable its effects or exempt spectator); Replay Mod + Iris/BSL
+      render sanity + a short test recording; AmbientSounds volume vs stream mix
+      (its own volume slider in its config button); Gentler Weather Sounds audible
+      in the first rainstorm; Hold My Items animations + the Hold My Pokeballs
+      addon pairing in first person.
+- [ ] 💻 Deferred from this wave: Chike's cut orphaned the frag_7 charter-plate
+      telegraph (cd_instability ≥ 56) — re-home it if the beat is wanted; Aki
+      (villain_yield_officer_5) still carries the dead no-tag sight block class.
+
+---
+
 ## 2026-07-27 — 0.7.0-alpha.1: Hua Zhan → Mystic Marsh → fairy shrine playtest wave
 
 All 38 playtest notes (N1-N30, P1-P8 + gym3 re-record) implemented; compile 760 errors:0;
@@ -1221,7 +1294,12 @@ deletable.
     mirror advancement set (self-triggering `inventory_changed` + reward functions) not extended
     here — the derived-state arcs were the meat.
 
-- [x] 💻 **Safari Zone BUILT (0.5.0-alpha.14) — "The Baiting Yards"** (concept menu in
+- [x] 💻 **Safari Zone BUILT (0.5.0-alpha.14) — "The Baiting Yards"** — ⚠️ SUPERSEDED by
+  the **0.7.0-alpha.20 round-based redesign** (see the 2026-08-04 wave section at the top
+  + the STATUS header in docs/SAFARI_ZONE_CONCEPTS.md): Day Permit → 180s custody round
+  (capture/contest), concierge CUT → Nova clear-out quest + Helga's employees, tables
+  retuned lv 40-50, zone polygon suppresses natural Cobblemon spawns. The description
+  below is the historical alpha.14 shape. (concept menu in
   docs/SAFARI_ZONE_CONCEPTS.md; showrunner selected the lure-game direction, badge-3
   opening, Acquisition = end-of-visit chat vote, NO death-lifeline ever). `safari/`
   package: 1,500 CD Day Permit (pay-probe) → 20 marked Preserve-issue balls + 15:00

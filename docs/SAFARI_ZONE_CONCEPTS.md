@@ -1,3 +1,19 @@
+# STATUS (2026-08-04, 0.7.0-alpha.20): REDESIGNED — "The Ridgewatch Preserve"
+
+The Baiting Yards design below SHIPPED (0.5.0-alpha.14) and was then REDESIGNED per the
+2026-08-04 playtest log: the Day Permit became a short ROUND (default 180s) with full
+ITEM + PARTY CUSTODY at the gate (crash-safe restore file), an issued kit (10 marked
+balls / 8 bait / 16 snowballs — using all balls ends the round), bait dual-use (ground
+scatter = lure spawn, offered to a lure = befriend), snowball weaken, crouch-in-grass /
+behind-cover stealth vs lure aggro-flee, and TWO MODES — capture (keep) vs contest
+(scored appraisal, specimen released; personal best persisted). The zone polygon now
+suppresses natural Cobblemon spawns always-on (bait spawns bypass by construction) and
+bounds the round. The Company-run intake concierge was CUT: the Company squatters are a
+clear-out quest (ranger Nova Circuit; safari_liberated), after which owner Helga
+Ridgewatch's employees Darik + Varek run intake. The lure loop, warmth, typed tables
+(retuned lv 40-50), battle-cancel guard, and pay-probe idiom below all survive inside
+the new round chassis.
+
 # SELECTED DIRECTION (showrunner, 2026-07-12) — "The Baiting Yards"
 
 **Ruling:** the Preserve chassis ships (Concept 1 wrapper: permit, safari balls, clock,

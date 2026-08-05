@@ -71,6 +71,40 @@
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
+                            Name: "no_cyber_power_restored"
+                        }
+                    ],
+                    Priority: 19,
+                    Buttons: [
+                        {
+                            Name: "I'll restore the power",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "You hear that? Nothing. That is the problem. The plant that feeds this gym has gone dark — nine dead lights on the board and my arena running on backup. I do not battle on backup. Get the generators back online and I will show you what a full grid can do."
+                        },
+                        {
+                            Text: "Every light in this gym draws from the power plant, and right now the plant is drawing zero. Somebody crossed the breakers and walked away — very tidy work, very grey-suit. Bring the grid back to nine-for-nine and the current between us goes live."
+                        },
+                        {
+                            Text: "No power, no match. The plant's board reads like a bad audit — half the lights dark and the switching all wrong. Sort the breakers until every bulb burns, then come back. Lightning waits for no one, but tonight it is waiting on you."
+                        }
+                    ],
+                    Name: "Volt — the grid is down",
+                    Label: "power_out"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
                             Name: "defeated_cyber_apprentice"
                         },
                         {

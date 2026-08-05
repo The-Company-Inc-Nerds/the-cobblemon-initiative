@@ -1,5 +1,3 @@
-# ☎ Professor Acacia — second starter waiting (15 dex). Video call. One-shot. @s.
-tag @s add call_acacia_second_done
-title @s actionbar {"text":"☎ Incoming call — Professor Acacia","color":"aqua"}
-playsound minecraft:block.note_block.bell master @s ~ ~ ~ 1 1
-function cobblemon_initiative:phone/deliver {caller:"phone_acacia",tag:"ci_phone_acacia",label:"call_second"}
+# ☎ Professor Acacia — second starter waiting (15 dex). Call screen (phone_calls/acacia_second.json);
+# one-shot via done_tag call_acacia_second_done on completion. Run AS @s.
+cobblemon-initiative phone ring acacia_second

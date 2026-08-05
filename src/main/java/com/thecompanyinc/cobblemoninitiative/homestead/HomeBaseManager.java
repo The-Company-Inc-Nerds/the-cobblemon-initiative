@@ -72,7 +72,9 @@ public final class HomeBaseManager {
       "easy_npc preset import_new data " + LATIOS_PRESET
         + " " + LATIOS_POS.getX() + " " + LATIOS_POS.getY() + " " + LATIOS_POS.getZ());
 
-    // Mom calls about it (text call).
+    // Mom calls about it (a20 call screen). This is only the IMMEDIATE ring — the
+    // owed-call heal lives in phone/tick (home_base_built + !call_mom_latios_done),
+    // because the manager's pending queue is in-memory and this trigger never re-fires.
     server.getCommands().performPrefixedCommand(
       sp.createCommandSourceStack().withPermission(2).withSuppressedOutput(),
       "function cobblemon_initiative:phone/ring_mom_latios");

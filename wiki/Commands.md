@@ -1,6 +1,6 @@
 # Commands
 
-Complete command reference for **The Cobblemon Initiative**. Every command below is verified against the mod source (incl. the alpha.14 player-facing `daycare` / `stadium` / `safari` trees and `/cutscene-skip`). For how these commands fit into the wider mod, see [Architecture Overview](https://github.com/The-Company-Inc-Nerds/the-cobblemon-initiative/blob/main/docs/ARCHITECTURE_OVERVIEW.md). To return to the landing page, see [[Home]].
+Complete command reference for **The Cobblemon Initiative**. Every command below is verified against the mod source (incl. the player-facing `daycare` / `stadium` / `safari` trees and `/cutscene-skip`). For how these commands fit into the wider mod, see [Architecture Overview](https://github.com/The-Company-Inc-Nerds/the-cobblemon-initiative/blob/main/docs/ARCHITECTURE_OVERVIEW.md). To return to the landing page, see [[Home]].
 
 > [!NOTE]
 > This is a **single-player** mod built for UPM 2. "Admin" simply means the command requires operator privileges (permission level 2+), which the host player has in their own world. "Player-facing" commands need no permission.
@@ -14,7 +14,7 @@ Minecraft permission levels run 0–4. This mod uses three of them:
 | Level | Meaning | Used by |
 |-------|---------|---------|
 | **0** | Anyone (no OP) | `/shrine-abort`, `/noble-abort`, `/cutscene-skip`, and the `/cobblemon-initiative` player subtrees: `track …`, `daycare …`, `stadium …`, `safari enter\|exit\|status` |
-| **2** | Operator | Every admin subtree under `/cobblemon-initiative` (incl. `safari bait\|scatter\|info`), plus `/noble`, `/nuzlocke` (all of it — `deathscreen`/`sacrifice`/`reload`), `/cutscene`, `/safezone`, most of `/npcsight` |
+| **2** | Operator | Every admin subtree under `/cobblemon-initiative` (incl. the safari kiosk/test hooks), plus `/noble`, `/nuzlocke` (all of it — `deathscreen`/`sacrifice`/`reload`), `/cutscene`, `/safezone`, most of `/npcsight` |
 | **3** | Operator+ | `/npcsight reload` only |
 
 > [!IMPORTANT]
@@ -30,7 +30,7 @@ flowchart TD
   ROOT --> TRK["track next|prev|clear|status  — perm 0, player-only"]
   ROOT --> DAY["daycare deposit|withdraw &lt;1-2&gt;|status  — perm 0"]
   ROOT --> STAD["stadium start 25|50|75|100 · abort · status  — perm 0"]
-  ROOT --> SAF["safari enter|exit|status (0) · bait|scatter|info (2)"]
+  ROOT --> SAF["safari enter &lt;capture|contest&gt; · exit · status  — perm 0<br/>(kiosk/test hooks OP 2)"]
   ROOT --> PROG["progress  — OP 2"]
   ROOT --> LCAP["levelcap  — OP 2"]
   ROOT --> RST["reset  — OP 2"]
@@ -100,19 +100,17 @@ custody slots; a boarded Pokémon trains itself with a cap-clamped XP drip. See 
 | `/cobblemon-initiative stadium status` | Current wave / bracket state. |
 | `/cobblemon-initiative stadium abort` | Ends the run cleanly (no purse). |
 
-## `/cobblemon-initiative safari` — the Baiting Yards (a Company Preserve)
+## `/cobblemon-initiative safari` — the Ridgewatch Preserve (Safari Zone)
 
-**`enter` / `exit` / `status` are permission 0**; `bait` / `scatter` / `info` are OP-2 (the kiosk NPC
-and the bait right-click drive `bait` for you in normal play). Opens after Badge 3. See
-[[Guidebook Facilities]].
+**Permission 0, player-facing** (dialog-button-ready — Varek at the briefing post runs these for
+you). Rounds open after Badge 3, once the ranger's clear-out has put the Preserve back in
+Ridgewatch hands; the bait kiosk is Darik's counter in play. See [[Guidebook Facilities]].
 
-| Command | Description | Permission |
-|---------|-------------|------------|
-| `/cobblemon-initiative safari enter` | Starts a visit where you stand (buys the Day Permit, issues balls + the clock). | 0 |
-| `/cobblemon-initiative safari status` | Time left, balls left, current catches. | 0 |
-| `/cobblemon-initiative safari exit` | Ends the visit early — clawback + catch ledger. | 0 |
-| `/cobblemon-initiative safari bait <type>` | Scatters a typed bait to draw species (kiosk-driven in play). | 2 |
-| `/cobblemon-initiative safari scatter` / `info` | Dev/test hooks for the scatter path and session inspection. | 2 |
+| Command | Description |
+|---------|-------------|
+| `/cobblemon-initiative safari enter capture\|contest` | Starts a round where you stand — pays the posted round rate, takes your items and party into gate custody, and issues the round kit + the clock. |
+| `/cobblemon-initiative safari status` | Round type, time left, balls left, catches so far (running score in a contest round). |
+| `/cobblemon-initiative safari exit` | Ends the round early — kit surrendered, custody returned, catch ledger printed. |
 
 ## `/cutscene-skip`
 

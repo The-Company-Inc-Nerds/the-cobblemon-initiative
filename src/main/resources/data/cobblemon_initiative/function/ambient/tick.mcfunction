@@ -93,3 +93,10 @@ execute as @a[tag=aya_transformed] at @e[tag=aya_groundskeeper,type=!minecraft:p
 # joined player exists. Also self-heals the double-recruit case: if repairs_a22 re-latches a
 # body for an already-joined player, this removes it before it can be recruited twice.
 execute as @e[type=easy_npc:cobblemon_npc,tag=zwiggo_body] at @s if entity @a[tag=zwiggo_joined] run function cobblemon_initiative:gaviota/zwiggo_pop
+# ── Marek the trophy hunter — pack-out sweep (a20, Safari Zone) ──
+# Marek leaves the Preserve two ways: the portrait trade (his farewell button tags the player
+# marek_left) or losing the run-him-off battle (on_win `tag @1 add marek_left`; despawn_on_win
+# usually beats this sweep to the body). ExecAsUser kill is SILENTLY dropped (not an allowlisted
+# root), which is why the trade-path body dies HERE, one tick after the tag lands. Body-tag
+# guard first so a long-gone Marek costs one cheap `if entity` miss per tick, not a kill scan.
+execute if entity @e[tag=ci_marek_hunter] if entity @a[tag=marek_left] run kill @e[tag=ci_marek_hunter,limit=1]

@@ -12,9 +12,9 @@ import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 
 /**
- * Tunables for the Biodiversity Asset Preserve ("the Baiting Yards") — loaded from the
- * jar resource {@code data/cobblemon_initiative/safari/safari.json} (noble/quest-track
- * pattern: showrunner numbers live in data, code carries the defaults as a fallback).
+ * Tunables for the Ridgewatch Preserve safari rounds — loaded from the jar resource
+ * {@code data/cobblemon_initiative/safari/safari.json} (noble/quest-track pattern:
+ * showrunner numbers live in data, code carries the defaults as a fallback).
  *
  * <p>All fees are FLAT and printed before commitment (randomness invariant: committed
  * amounts are never rolled).
@@ -27,22 +27,35 @@ public class SafariConfig {
   private static final File CONFIG_FILE = new File("config/cobblemon-initiative-safari.json");
   private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
-  /** Day Permit price in CobbleDollars — the pay-probe amount. */
-  public int permitFee = 1500;
+  /** Round fee in CobbleDollars — the pay-probe amount. */
+  public int permitFee = 500;
 
-  /** Company-issue Safari Balls granted per permit (clawed back at exit). */
-  public int balls = 20;
+  /** Preserve Safari Balls issued per round (marked; handed back at the gate). */
+  public int balls = 10;
 
-  /** Site clock, in seconds (tick-based — the ESC pause freezes it; say so on stream). */
-  public int clockSeconds = 900;
+  /** Marked snowballs issued per round (the weaken tool). */
+  public int snowballs = 16;
+
+  /** Units of EACH standard bait table issued per round (executive_blend excluded). */
+  public int baitPerTable = 2;
+
+  /** Round clock, in seconds (tick-based — the ESC pause freezes it; say so on stream). */
+  public int roundSeconds = 180;
 
   /** How long lured Pokémon linger before wandering off, in seconds. */
   public int windowSeconds = 75;
 
-  /** Gym badges required before Intake will sell a permit. */
-  public int gateBadges = 3;
+  /** Gym badges required before Helga starts a round (post-gym-6 leg, lure band 40-50). */
+  public int gateBadges = 6;
 
-  /** Kiosk bait price per unit for the four common tables (0 = free issue). */
+  /**
+   * Safari-exclusive roster: table species never spawn naturally anywhere — the Preserve
+   * is their only wild source; bait lures bypass the guard by construction (addFreshEntity
+   * never emits ENTITY_SPAWN). Enforced worldwide by NaturalSpawnGuard.
+   */
+  public boolean exclusiveSpecies = true;
+
+  /** Kiosk bait price per unit for the standard tables (0 = free issue). */
   public int baitFee = 60;
 
   /** Kiosk bait price per unit for the premium executive_blend table. */
@@ -58,9 +71,37 @@ public class SafariConfig {
 
   public int spawnsMax = 3;
 
+  /** Stealth: how close a lure must be to a player to run a detection check (blocks). */
+  public double detectRange = 10.0;
+
+  /** Consecutive "seen" detection checks (one per 10t) before a lure spooks. */
+  public int alertChecks = 3;
+
+  /** Ticks a spooked lure flees directly away before it poofs. */
+  public int fleeTicks = 30;
+
+  /** Fraction of max HP a Preserve snowball shaves off (floors at 1 HP). */
+  public double weakenFraction = 0.25;
+
+  /** Catch-window extension for a befriended lure, in seconds. */
+  public int friendlyBonusSeconds = 30;
+
+  /** Seconds to step back inside the Preserve after a boundary warning. */
+  public int boundaryGraceSeconds = 10;
+
+  /** Contest appraisal points per catch, by lure-table rarity. */
+  public int pointsCommon = 1;
+
+  public int pointsUncommon = 3;
+
+  public int pointsRare = 6;
+
+  /** Contest bonus point for a catch whose lure was befriended first. */
+  public int friendlyPoint = 1;
+
   /**
-   * Eject pad. All-zero = unset → the timer escort returns the player to the exact
-   * position where they entered (recorded at permit purchase — verified-safe ground by
+   * Eject pad. All-zero = unset → the round-clock escort returns the player to the exact
+   * position where they entered (recorded at round start — verified-safe ground by
    * construction: they stood on it).
    */
   public int ejectX = 0;

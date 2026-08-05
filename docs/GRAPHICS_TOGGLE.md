@@ -5,7 +5,7 @@ A one-click **HIGH ⇄ LOW** graphics switch for low-end machines. It swaps thre
 | Axis | HIGH | LOW |
 |------|------|-----|
 | Textures | `Prime's HD Textures [256x]` (local file) | `Prime's HD Textures (32x)` (Modrinth `primes-hd-textures` 35.2) |
-| Shaders (Iris/BSL) | **BSL on, ULTRA tier** — full shadows (3072 @ 512 dist) + colored/soft shadows + AO + light shafts + TAA | **BSL stays on, LOW tier** — shadows kept but 1024, no colored/soft shadows, no AO, no light shafts, no TAA |
+| Shaders (Iris/BSL) | **BSL on, HIGH tier** — full shadows (2048 @ 256 dist) + colored/soft shadows + AO + light shafts + TAA — the same built-in `profile.HIGH` the shipped pack defaults to | **BSL stays on, LOW tier** — shadows kept but 1024, no colored/soft shadows, no AO, no light shafts, no TAA |
 | Video settings | Fancy / RD 16 / sim 12 / AO on / all particles / fancy clouds / entity ×3 / biome blend 5 / mipmap 4 | Fast / RD 8 / sim 5 / AO off / minimal particles / clouds off / entity ×0.5 / biome blend 0 / mipmap 0 |
 
 > Both modes apply only the BSL keys listed above (via option merge), so **any other BSL options you've enabled — e.g. `ADVANCED_MATERIALS` — are preserved**, not reset.
@@ -18,7 +18,7 @@ FancyMenu's `manage_resource_pack` action can swap resource packs from the **tit
 
 - **`graphics/GraphicsPresetManager`** (client) is the engine. It applies all three axes from `config/cobblemon-initiative-graphics.json`.
 - **The active resource pack is the source of truth for the mode.** A throttled client tick (~1 s) watches `PackRepository.getSelectedIds()`. When it sees the 256x or 32x pack become active — whether from the FancyMenu menu button, the pack screen, or `/gfx` — it syncs shaders + video to match. Works on the **title screen and in-world**.
-- **Shaders** go through `graphics/IrisBridge` (reflection, soft-dep — no compile-time Iris dependency, same pattern as the JourneyMap bridge). BSL stays enabled in both modes; the bridge applies the mode's BSL option values live via `net.irisshaders.iris.Iris.queueShaderPackOptionsFromProperties(Properties)` + `Iris.reload()` — the same runtime path Iris's own shader screen uses — which also persists them to `shaderpacks/BSL_v10.1.3.zip.txt`. The tier keys (`SHADOW`, `SHADOW_COLOR`, `SHADOW_FILTER`, `AO`, `LIGHT_SHAFT`, `TAA`, `shadowMapResolution`, `shadowDistance`) are exactly what BSL's `profile.LOW` / `profile.ULTRA` set, verified against the BSL v10.1.3 zip. (`iris.properties` still ships `enableShaders=true` + BSL selected; Iris can't pick a pack by name via API.)
+- **Shaders** go through `graphics/IrisBridge` (reflection, soft-dep — no compile-time Iris dependency, same pattern as the JourneyMap bridge). BSL stays enabled in both modes; the bridge applies the mode's BSL option values live via `net.irisshaders.iris.Iris.queueShaderPackOptionsFromProperties(Properties)` + `Iris.reload()` — the same runtime path Iris's own shader screen uses — which also persists them to `shaderpacks/BSL_v10.1.3.zip.txt`. The tier keys (`SHADOW`, `SHADOW_COLOR`, `SHADOW_FILTER`, `AO`, `LIGHT_SHAFT`, `TAA`, `shadowMapResolution`, `shadowDistance`) are exactly what BSL's `profile.LOW` / `profile.HIGH` set, verified against the BSL v10.1.3 zip. (`iris.properties` still ships `enableShaders=true` + BSL selected; Iris can't pick a pack by name via API.)
   - **Preserving your other BSL options:** a queued reload resets any option *not* in the queue toward the pack defaults — which silently dropped `ADVANCED_MATERIALS=true`. So the bridge first reads the current `shaderpacks/BSL_v10.1.3.zip.txt`, seeds the queue with *all* of it, then overlays the tier keys — nothing else you've toggled is disturbed. (If your local settings file already lost a setting from the earlier behaviour, re-enable it once in the Iris screen and it'll stick from then on.)
 
 ### Entry points
@@ -35,6 +35,8 @@ Ships in `mrpack/overrides/config/`. Auto-generated on first run if absent. The 
 - **`hdPackId`** = `"file/Prime's HD Textures [256x].zip"` — the local 256x pack.
 
 Each preset also carries a **`shaderOptions`** map — BSL option overrides applied live (booleans `"true"`/`"false"`, sliders like `shadowMapResolution`/`shadowDistance`). Defaults mirror BSL's HIGH and LOW tiers; edit freely, or add more BSL keys (e.g. `BLOOM`, `MOTION_BLUR`) to push LOW further. An empty map leaves BSL untouched.
+
+**`configVersion`** (currently `2`) enables one-shot migrations of stale on-disk configs. v2: `/gfx high` used to apply BSL's ULTRA shadow values (`shadowMapResolution` 3072 / `shadowDistance` 512.0) while the pack ships BSL's built-in HIGH profile (2048 / 256.0) — the preset now matches the shipped defaults, and on load a pre-v2 file still carrying the exact old ULTRA values is rewritten once and stamped `configVersion: 2`. A file at v2+ is never touched again, so hand-editing the values back up to ULTRA afterwards sticks.
 
 `applyVideoSettings: false` makes the toggle swap only textures + shaders and leave the video sliders alone.
 

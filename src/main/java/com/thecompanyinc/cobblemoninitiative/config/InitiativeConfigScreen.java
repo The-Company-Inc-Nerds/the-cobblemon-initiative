@@ -7,6 +7,7 @@ import com.thecompanyinc.cobblemoninitiative.homestead.HomesteadConfig;
 import com.thecompanyinc.cobblemoninitiative.momcare.MomCareConfig;
 import com.thecompanyinc.cobblemoninitiative.npcsight.NpcSightConfig;
 import com.thecompanyinc.cobblemoninitiative.npcsight.NpcSightInit;
+import com.thecompanyinc.cobblemoninitiative.powerplant.PowerPlantConfig;
 import com.thecompanyinc.cobblemoninitiative.safari.SafariConfig;
 import com.thecompanyinc.cobblemoninitiative.stadium.StadiumConfig;
 import com.thecompanyinc.cobblemoninitiative.stadium.StadiumManager;
@@ -1044,6 +1045,37 @@ public class InitiativeConfigScreen {
     );
 
     // -------------------------------------------------------------------------
+    // Power Plant (Cyber City gym-7 gate — 9 copper-bulb lights, lever pair-toggles)
+    // -------------------------------------------------------------------------
+    PowerPlantConfig powerPlantConfig = PowerPlantConfig.load();
+    PowerPlantConfig powerPlantDefaults = new PowerPlantConfig();
+
+    var powerPlantSub = entryBuilder.startSubCategory(Component.literal("Power Plant")).setExpanded(false);
+
+    powerPlantSub.add(
+      entryBuilder
+        .startIntSlider(Component.literal("Scramble moves"), powerPlantConfig.scrambleMoves, 4, 64)
+        .setDefaultValue(powerPlantDefaults.scrambleMoves)
+        .setTooltip(Component.literal(
+          "Random lever presses applied to the all-lit board to build a puzzle. Scrambling "
+          + "from solved is what makes every pattern provably solvable — more moves = a more "
+          + "tangled board. Bulb/lever coordinates live in the config JSON "
+          + "(config/cobblemon-initiative-powerplant.json), not here — the safari eject-pad rule."))
+        .setSaveConsumer(v -> powerPlantConfig.scrambleMoves = v)
+        .build()
+    );
+    powerPlantSub.add(
+      entryBuilder
+        .startIntSlider(Component.literal("Minimum unlit bulbs"), powerPlantConfig.minUnlit, 2, 8)
+        .setDefaultValue(powerPlantDefaults.minUnlit)
+        .setTooltip(Component.literal(
+          "A scramble re-rolls (bounded) until at least this many bulbs are dark, so a lucky "
+          + "roll never hands out a trivial board. The unlit count is always even."))
+        .setSaveConsumer(v -> powerPlantConfig.minUnlit = v)
+        .build()
+    );
+
+    // -------------------------------------------------------------------------
     // Noble Encounters
     // -------------------------------------------------------------------------
     NobleConfig nobleConfig = NobleConfig.load();
@@ -1258,7 +1290,7 @@ public class InitiativeConfigScreen {
         .setSaveConsumer(daycareConfig::setFeePerLevel).build());
 
     // -------------------------------------------------------------------------
-    // Safari Zone (The Baiting Yards)
+    // Safari Zone (The Ridgewatch Preserve)
     // -------------------------------------------------------------------------
     SafariConfig safariConfig = SafariConfig.load();
     SafariConfig safariDefaults = new SafariConfig();
@@ -1266,23 +1298,35 @@ public class InitiativeConfigScreen {
     var safariSub = entryBuilder.startSubCategory(Component.literal("Safari Zone")).setExpanded(false);
 
     safariSub.add(
-      entryBuilder.startIntField(Component.literal("Day Permit fee (CD)"), safariConfig.permitFee)
+      entryBuilder.startIntField(Component.literal("Round fee (CD)"), safariConfig.permitFee)
         .setMin(0)
         .setDefaultValue(safariDefaults.permitFee)
-        .setTooltip(Component.literal("Cost of a Day Permit (the pay-probe amount)."))
+        .setTooltip(Component.literal("Cost of one safari round (the pay-probe amount)."))
         .setSaveConsumer(v -> safariConfig.permitFee = v).build());
     safariSub.add(
-      entryBuilder.startIntField(Component.literal("Safari Balls per permit"), safariConfig.balls)
+      entryBuilder.startIntField(Component.literal("Safari Balls per round"), safariConfig.balls)
         .setMin(1)
         .setDefaultValue(safariDefaults.balls)
-        .setTooltip(Component.literal("Marked Safari Balls issued per permit (clawed back at exit)."))
+        .setTooltip(Component.literal("Marked Preserve Safari Balls in the round kit (handed back at the gate)."))
         .setSaveConsumer(v -> safariConfig.balls = v).build());
     safariSub.add(
-      entryBuilder.startIntField(Component.literal("Site clock (seconds)"), safariConfig.clockSeconds)
+      entryBuilder.startIntField(Component.literal("Snowballs per round"), safariConfig.snowballs)
+        .setMin(0)
+        .setDefaultValue(safariDefaults.snowballs)
+        .setTooltip(Component.literal("Marked snowballs in the round kit (the weaken tool)."))
+        .setSaveConsumer(v -> safariConfig.snowballs = v).build());
+    safariSub.add(
+      entryBuilder.startIntField(Component.literal("Bait per table"), safariConfig.baitPerTable)
+        .setMin(0)
+        .setDefaultValue(safariDefaults.baitPerTable)
+        .setTooltip(Component.literal("Units of EACH standard bait table in the round kit."))
+        .setSaveConsumer(v -> safariConfig.baitPerTable = v).build());
+    safariSub.add(
+      entryBuilder.startIntField(Component.literal("Round clock (seconds)"), safariConfig.roundSeconds)
         .setMin(1)
-        .setDefaultValue(safariDefaults.clockSeconds)
-        .setTooltip(Component.literal("How long a permit lasts. 900 = 15 minutes."))
-        .setSaveConsumer(v -> safariConfig.clockSeconds = v).build());
+        .setDefaultValue(safariDefaults.roundSeconds)
+        .setTooltip(Component.literal("How long a round lasts. 180 = 3 minutes."))
+        .setSaveConsumer(v -> safariConfig.roundSeconds = v).build());
     safariSub.add(
       entryBuilder.startIntField(Component.literal("Lure catch window (seconds)"), safariConfig.windowSeconds)
         .setMin(1)
@@ -1290,9 +1334,14 @@ public class InitiativeConfigScreen {
         .setTooltip(Component.literal("How long lured Pokémon linger before wandering off."))
         .setSaveConsumer(v -> safariConfig.windowSeconds = v).build());
     safariSub.add(
+      entryBuilder.startBooleanToggle(Component.literal("Safari-Exclusive Species"), safariConfig.exclusiveSpecies)
+        .setDefaultValue(safariDefaults.exclusiveSpecies)
+        .setTooltip(Component.literal("Lure-table species never spawn naturally anywhere — the Preserve is their only wild source (bait lures are unaffected)."))
+        .setSaveConsumer(v -> safariConfig.exclusiveSpecies = v).build());
+    safariSub.add(
       entryBuilder.startIntSlider(Component.literal("Badges required"), safariConfig.gateBadges, 0, 10)
         .setDefaultValue(safariDefaults.gateBadges)
-        .setTooltip(Component.literal("Gym badges needed before Intake will sell a permit."))
+        .setTooltip(Component.literal("Gym badges needed before Helga will run a round."))
         .setSaveConsumer(v -> safariConfig.gateBadges = v).build());
     safariSub.add(
       entryBuilder.startIntField(Component.literal("Suspense min (seconds)"), safariConfig.suspenseMinSeconds)
@@ -1313,6 +1362,62 @@ public class InitiativeConfigScreen {
       entryBuilder.startIntSlider(Component.literal("Spawns per scatter — max"), safariConfig.spawnsMax, 1, 6)
         .setDefaultValue(safariDefaults.spawnsMax)
         .setSaveConsumer(v -> safariConfig.spawnsMax = v).build());
+    safariSub.add(
+      entryBuilder.startDoubleField(Component.literal("Stealth detect range (blocks)"), safariConfig.detectRange)
+        .setMin(0.0)
+        .setDefaultValue(safariDefaults.detectRange)
+        .setTooltip(Component.literal("How close a lure must be before it starts detection checks."))
+        .setSaveConsumer(v -> safariConfig.detectRange = v).build());
+    safariSub.add(
+      entryBuilder.startIntSlider(Component.literal("Alert checks before spook"), safariConfig.alertChecks, 1, 10)
+        .setDefaultValue(safariDefaults.alertChecks)
+        .setTooltip(Component.literal("Consecutive 'seen' checks (one per half second) before a lure bolts."))
+        .setSaveConsumer(v -> safariConfig.alertChecks = v).build());
+    safariSub.add(
+      entryBuilder.startIntField(Component.literal("Flee ticks"), safariConfig.fleeTicks)
+        .setMin(1)
+        .setDefaultValue(safariDefaults.fleeTicks)
+        .setTooltip(Component.literal("How long a spooked lure runs before it poofs."))
+        .setSaveConsumer(v -> safariConfig.fleeTicks = v).build());
+    safariSub.add(
+      entryBuilder.startDoubleField(Component.literal("Snowball weaken fraction"), safariConfig.weakenFraction)
+        .setMin(0.0)
+        .setDefaultValue(safariDefaults.weakenFraction)
+        .setTooltip(Component.literal("Fraction of max HP a Preserve snowball shaves off (floors at 1 HP)."))
+        .setSaveConsumer(v -> safariConfig.weakenFraction = v).build());
+    safariSub.add(
+      entryBuilder.startIntField(Component.literal("Befriend bonus (seconds)"), safariConfig.friendlyBonusSeconds)
+        .setMin(0)
+        .setDefaultValue(safariDefaults.friendlyBonusSeconds)
+        .setTooltip(Component.literal("Catch-window extension for a befriended lure."))
+        .setSaveConsumer(v -> safariConfig.friendlyBonusSeconds = v).build());
+    safariSub.add(
+      entryBuilder.startIntField(Component.literal("Boundary grace (seconds)"), safariConfig.boundaryGraceSeconds)
+        .setMin(1)
+        .setDefaultValue(safariDefaults.boundaryGraceSeconds)
+        .setTooltip(Component.literal("Time to step back inside the Preserve after the boundary warning."))
+        .setSaveConsumer(v -> safariConfig.boundaryGraceSeconds = v).build());
+    safariSub.add(
+      entryBuilder.startIntField(Component.literal("Contest points — common"), safariConfig.pointsCommon)
+        .setMin(0)
+        .setDefaultValue(safariDefaults.pointsCommon)
+        .setSaveConsumer(v -> safariConfig.pointsCommon = v).build());
+    safariSub.add(
+      entryBuilder.startIntField(Component.literal("Contest points — uncommon"), safariConfig.pointsUncommon)
+        .setMin(0)
+        .setDefaultValue(safariDefaults.pointsUncommon)
+        .setSaveConsumer(v -> safariConfig.pointsUncommon = v).build());
+    safariSub.add(
+      entryBuilder.startIntField(Component.literal("Contest points — rare"), safariConfig.pointsRare)
+        .setMin(0)
+        .setDefaultValue(safariDefaults.pointsRare)
+        .setSaveConsumer(v -> safariConfig.pointsRare = v).build());
+    safariSub.add(
+      entryBuilder.startIntField(Component.literal("Contest bonus — befriended"), safariConfig.friendlyPoint)
+        .setMin(0)
+        .setDefaultValue(safariDefaults.friendlyPoint)
+        .setTooltip(Component.literal("Extra appraisal point for a catch whose lure was befriended first."))
+        .setSaveConsumer(v -> safariConfig.friendlyPoint = v).build());
     // Eject-pad coordinates live in the safari config JSON, not here — ModMenu is toggles/sliders only.
 
     // -------------------------------------------------------------------------
@@ -1760,6 +1865,32 @@ public class InitiativeConfigScreen {
         .build()
     );
 
+    // -------------------------------------------------------------------------
+    // PokePhone (ring-then-accept call screen) — timing knobs only; the call
+    // scripts are content (data/*/phone_calls/).
+    // -------------------------------------------------------------------------
+    com.thecompanyinc.cobblemoninitiative.phone.PhoneCallConfig phoneConfig =
+      com.thecompanyinc.cobblemoninitiative.phone.PhoneCallConfig.load();
+    com.thecompanyinc.cobblemoninitiative.phone.PhoneCallConfig phoneDefaults =
+      new com.thecompanyinc.cobblemoninitiative.phone.PhoneCallConfig();
+
+    var phoneSub = entryBuilder.startSubCategory(Component.literal("PokePhone")).setExpanded(false);
+
+    phoneSub.add(
+      entryBuilder.startIntField(Component.literal("Ring window (seconds)"), phoneConfig.ringSeconds)
+        .setMin(1)
+        .setDefaultValue(phoneDefaults.ringSeconds)
+        .setTooltip(Component.literal(
+          "How long an incoming call rings (ringtone + flashing actionbar) before it counts as missed."))
+        .setSaveConsumer(v -> phoneConfig.ringSeconds = v).build());
+    phoneSub.add(
+      entryBuilder.startIntField(Component.literal("Re-ring delay (seconds)"), phoneConfig.reRingSeconds)
+        .setMin(1)
+        .setDefaultValue(phoneDefaults.reRingSeconds)
+        .setTooltip(Component.literal(
+          "How long after a missed/declined call the phone rings again — story calls repeat until completed."))
+        .setSaveConsumer(v -> phoneConfig.reRingSeconds = v).build());
+
     // ─── Tab layout: 25 legacy categories regrouped into 6 tabs of collapsible ───────
     // sections (ModMenu cleanup, showrunner 2026-08-03). Section content is unchanged —
     // only the parenting moved; tab order = creation order (General was created first).
@@ -1794,10 +1925,12 @@ public class InitiativeConfigScreen {
     trialsTab.addEntry(iceTrialSub.build());
     trialsTab.addEntry(trialTimersSub.build());
     trialsTab.addEntry(groundShrineSub.build());
+    trialsTab.addEntry(powerPlantSub.build());
 
     ConfigCategory worldTab = builder.getOrCreateCategory(Component.literal("World & NPCs"));
     worldTab.addEntry(npcSightSub.build());
     worldTab.addEntry(lootChestsSub.build());
+    worldTab.addEntry(phoneSub.build());
 
     builder.setSavingRunnable(() -> {
       config.save();
@@ -1816,6 +1949,7 @@ public class InitiativeConfigScreen {
       progressionConfig.save();
       daycareConfig.save();
       safariConfig.save();
+      powerPlantConfig.save();
       stadiumConfig.save();
       homesteadConfig.save();
       momConfig.save();
@@ -1841,6 +1975,9 @@ public class InitiativeConfigScreen {
       StreamSyncConfig.reload();
       if (InitiativeInit.getDaycareManager() != null) InitiativeInit.getDaycareManager().reloadConfig();
       if (InitiativeInit.getSafariManager() != null) InitiativeInit.getSafariManager().load();
+      if (InitiativeInit.getPowerPlantManager() != null) InitiativeInit.getPowerPlantManager().reloadConfig();
+      phoneConfig.save();
+      if (InitiativeInit.getPhoneCallManager() != null) InitiativeInit.getPhoneCallManager().reloadConfig();
       StadiumManager.reloadConfig();
       if (InitiativeInit.getHomesteadManager() != null) InitiativeInit.getHomesteadManager().reloadConfig();
       if (InitiativeInit.getMomCareManager() != null) InitiativeInit.getMomCareManager().reloadConfig();

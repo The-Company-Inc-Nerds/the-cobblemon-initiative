@@ -43,6 +43,13 @@ SIMULATION MODEL:
   from the missing grant (otherwise every orphan gate would double-report as
   DEAD).
 
+  GRANT SURFACES scanned: datapack functions / JSON / SNBT command strings,
+  `npcsight meettag`, the quest helper commands, Java string literals, and —
+  since 0.7.0-a20 — PokéPhone call scripts (data/*/phone_calls/*.json): their
+  choice `commands` + `on_complete` strings pass through the same command
+  regexes, and `done_tag` itself counts as a grant (PhoneCallManager grants it
+  on normal call completion).
+
   For each auto-eligible entry E we enumerate states over the variables of E
   plus every higher-precedence entry (exact — variables outside that set
   cannot affect whether E wins). If the scoped state space exceeds
@@ -131,10 +138,11 @@ PRIORITY_DEFAULT = {"default": 10, "start": 10, "main": 10,
 TAG_ADD_RE = re.compile(r"\btag\s+\S+(?:\[[^\]]*\])?\s+add\s+([A-Za-z0-9_.\-]+)")
 # Quest helper commands grant their trailing success-tag argument at runtime
 # (CobblemonInitiativeCommands: turnin <item> <count> [tag],
-#  trade <take> <give> [level [tag]])
+#  trade <take> <give> [level [tag]], monturnin <species> <tag> — a20)
 HELPER_GRANT_RES = [
     re.compile(r"\bcobblemon-initiative turnin \S+ \d+ ([A-Za-z0-9_.\-]+)"),
     re.compile(r"\bcobblemon-initiative trade \S+ \S+ \d+ ([A-Za-z0-9_.\-]+)"),
+    re.compile(r"\bcobblemon-initiative monturnin \S+ ([A-Za-z0-9_.\-]+)"),
 ]
 JAVA_STR_RE = re.compile(r'"([A-Za-z0-9_.\-]+)"')
 LABEL_CHARS_RE = re.compile(r"^[a-z0-9_]+$")
@@ -221,8 +229,10 @@ def parse_band_tags(path):
 def scan_grants():
     """Collect tag -> [source, ...] for every `tag ... add <X>` in the data
     tree (functions + preset command strings + config JSONs), plus npcsight
-    meettag grants. band_tags.mcfunction is EXCLUDED (its adds are the derived
-    families modeled separately)."""
+    meettag grants, plus PokéPhone call scripts (data/*/phone_calls/*.json,
+    0.7.0-a20 — choice commands/on_complete run AS the player and done_tag is
+    granted by PhoneCallManager on normal completion). band_tags.mcfunction is
+    EXCLUDED (its adds are the derived families modeled separately)."""
     grants = defaultdict(list)
 
     for root, _dirs, files in os.walk(DATA_ROOT):
@@ -239,6 +249,31 @@ def scan_grants():
             except OSError:
                 continue
             rel = os.path.relpath(path, REPO)
+            # PokéPhone call scripts are scanned STRUCTURALLY (commands +
+            # on_complete strings through the command regexes, done_tag as a
+            # direct grant) instead of the raw-text pass below, so a tag name
+            # appearing only in page prose never reads as granted.
+            if os.path.basename(root) == "phone_calls" and fn.endswith(".json"):
+                try:
+                    call = json.loads(text)
+                except ValueError:
+                    call = None
+                if isinstance(call, dict):
+                    cmds = [c for c in (call.get("on_complete") or [])]
+                    for choice in (call.get("choices") or []):
+                        if isinstance(choice, dict):
+                            cmds.extend(choice.get("commands") or [])
+                    for cmd in cmds:
+                        if not isinstance(cmd, str):
+                            continue
+                        for m in TAG_ADD_RE.finditer(cmd):
+                            grants[m.group(1)].append(rel + " (phone call cmd)")
+                        for hre in HELPER_GRANT_RES:
+                            for m in hre.finditer(cmd):
+                                grants[m.group(1)].append(rel + " (phone call cmd)")
+                    if call.get("done_tag"):
+                        grants[call["done_tag"]].append(rel + " (phone call done_tag)")
+                continue
             for m in TAG_ADD_RE.finditer(text):
                 grants[m.group(1)].append(rel)
             # npcsight meettag <uuid> <tag> grants the tag when sight fires

@@ -153,6 +153,26 @@ public class CobblemonInitiativeCommands {
                 )
             )
         )
+        // Pokémon turn-in helper (the party-side sibling of turnin): permanently removes
+        // the FIRST party Pokémon whose species resource id path equals <species> (bare
+        // id, e.g. "magikarp") and adds <success_tag>. Friendly no-op when the player
+        // has none. OP-2 so only NPC dialogs / functions can call it, never a player
+        // releasing for free tags. /cobblemon-initiative monturnin <species> <success_tag>
+        .then(
+          Commands.literal("monturnin")
+            .requires(source -> source.hasPermission(2))
+            .then(
+              Commands.argument("species", StringArgumentType.word())
+                .then(
+                  Commands.argument("success_tag", StringArgumentType.word())
+                    .executes(ctx -> monturnin(
+                      ctx,
+                      StringArgumentType.getString(ctx, "species"),
+                      StringArgumentType.getString(ctx, "success_tag")
+                    ))
+                )
+            )
+        )
         // Verified party give (Cobblemon API): parses a FULL PokemonProperties string and adds
         // the result to the party, resolving the player from the command SOURCE so it works in
         // both dialog-button and function contexts. Unifies every Pokémon gift here instead of
@@ -453,14 +473,29 @@ public class CobblemonInitiativeCommands {
               )
             )
         )
-        // Safari Zone — the Baiting Yards. enter/exit/status are PLAYER-FACING (perm 0,
-        // runtime player resolution like `track` — no parse-time requires so kiosk
-        // dialog buttons and functions can dispatch them as the player). bait is the
-        // perm-2 kiosk give (ExecAsUser dialog buttons run elevated, source = player).
+        // Safari Zone — the Ridgewatch Preserve rounds. enter/exit/status are
+        // PLAYER-FACING (perm 0, runtime player resolution like `track` — no parse-time
+        // requires so kiosk dialog buttons and functions can dispatch them as the
+        // player). bait is the perm-2 kiosk give (ExecAsUser dialog buttons run
+        // elevated, source = player). dev spook/befriend are the headless-harness
+        // stand-ins (Carpet bots cannot throw snowballs or use items on entities).
         .then(
           Commands.literal("safari")
             .then(
-              Commands.literal("enter").executes(CobblemonInitiativeCommands::safariEnter)
+              Commands.literal("enter")
+                .then(
+                  Commands.argument("mode", StringArgumentType.word())
+                    .suggests((context, builder) ->
+                      SharedSuggestionProvider.suggest(
+                        List.of("capture", "contest"),
+                        builder
+                      )
+                    )
+                    .executes(ctx -> safariEnter(
+                      ctx,
+                      StringArgumentType.getString(ctx, "mode")
+                    ))
+                )
             )
             .then(
               Commands.literal("exit").executes(CobblemonInitiativeCommands::safariExit)
@@ -497,6 +532,8 @@ public class CobblemonInitiativeCommands {
             .then(
               // Dev/test hook: drives the same scatter path as the bait right-click
               // (Carpet bots can't fire UseBlockCallback — headless verification).
+              // DELIBERATELY bypasses per-table placement rules (honey_smear's
+              // "tree" gate needs a real click on logs/leaves; bots can't click).
               Commands.literal("scatter")
                 .requires(source -> source.hasPermission(2))
                 .then(
@@ -522,6 +559,178 @@ public class CobblemonInitiativeCommands {
                     })
                 )
             )
+            .then(
+              // Dev/test hooks on the nearest tracked lure within 16 blocks — the
+              // harness stand-ins for the snowball/stealth and bait-offering paths.
+              Commands.literal("dev")
+                .requires(source -> source.hasPermission(2))
+                .then(
+                  Commands.literal("spook").executes(ctx -> {
+                    ServerPlayer player = ctx.getSource().getPlayer();
+                    if (player == null) return 0;
+                    boolean ok = InitiativeInit.getSafariManager().devSpook(player);
+                    ctx.getSource().sendSuccess(
+                      () -> Component.literal(ok
+                        ? "[Safari] nearest lure spooked."
+                        : "[Safari] no tracked lure within 16 blocks (or no session)."),
+                      false
+                    );
+                    return ok ? 1 : 0;
+                  })
+                )
+                .then(
+                  Commands.literal("befriend").executes(ctx -> {
+                    ServerPlayer player = ctx.getSource().getPlayer();
+                    if (player == null) return 0;
+                    boolean ok = InitiativeInit.getSafariManager().devBefriend(player);
+                    ctx.getSource().sendSuccess(
+                      () -> Component.literal(ok
+                        ? "[Safari] nearest lure befriended."
+                        : "[Safari] no tracked lure within 16 blocks (or no session)."),
+                      false
+                    );
+                    return ok ? 1 : 0;
+                  })
+                )
+            )
+        )
+        // Cyber City power plant (gym-7 leader gate) — 9 copper-bulb lights + lever pair-toggles.
+        // ALL perm-2: scramble/solve are showrunner/dev set-and-reset; `flip <switchIndex>` is the
+        // headless-harness stand-in driving the SAME toggle path as a lever click (Carpet bots
+        // cannot click levers — the safari `scatter` rationale); status prints the board bits +
+        // coverage warns; reload re-reads + revalidates the config (coords latch later, Gaviota
+        // precedent). Players never need these — the puzzle is levers-in-world only.
+        .then(
+          Commands.literal("powerplant")
+            .requires(source -> source.hasPermission(2))
+            .then(Commands.literal("scramble").executes(ctx -> {
+              int ok = InitiativeInit.getPowerPlantManager().scramble(ctx.getSource().getServer());
+              ctx.getSource().sendSuccess(() -> Component.literal(ok == 1
+                ? "§a[PowerPlant] Fresh scramble rolled (solved cleared)."
+                : "§c[PowerPlant] Scramble refused — engine inactive (latch 9 bulbs + switches first)."),
+                false);
+              return ok;
+            }))
+            .then(Commands.literal("solve").executes(ctx -> {
+              int ok = InitiativeInit.getPowerPlantManager().forceSolve(ctx.getSource().getServer());
+              ctx.getSource().sendSuccess(() -> Component.literal(ok == 1
+                ? "§a[PowerPlant] Forced all-lit through the solve path."
+                : "§c[PowerPlant] Solve refused — engine inactive."), false);
+              return ok;
+            }))
+            .then(Commands.literal("flip")
+              .then(Commands.argument("switchIndex", IntegerArgumentType.integer(0))
+                .executes(ctx -> {
+                  int ok = InitiativeInit.getPowerPlantManager().flip(
+                    ctx.getSource().getServer(),
+                    IntegerArgumentType.getInteger(ctx, "switchIndex"),
+                    ctx.getSource().getPlayer());
+                  ctx.getSource().sendSuccess(() -> Component.literal(ok == 1
+                    ? "§a[PowerPlant] Switch flipped."
+                    : "§c[PowerPlant] Flip refused (inactive/unscrambled/solved or bad index)."),
+                    false);
+                  return ok;
+                })))
+            .then(Commands.literal("status").executes(ctx -> {
+              ctx.getSource().sendSuccess(
+                () -> Component.literal(InitiativeInit.getPowerPlantManager().statusReport()),
+                false);
+              return 1;
+            }))
+            .then(Commands.literal("reload").executes(ctx -> {
+              InitiativeInit.getPowerPlantManager().reloadConfig();
+              ctx.getSource().sendSuccess(
+                () -> Component.literal("§aPower plant config reloaded (see log for coverage warns)."),
+                false);
+              return 1;
+            }))
+        )
+        // PokePhone call screen (0.7.0-alpha.20) — our own client smartphone, replacing the
+        // invisible-caller Easy NPC dialog delivery. ALL perm-2: `ring <id>` is the content
+        // entry point (rings the SOURCE player, so datapack tick functions running as a
+        // player ring that player; idempotent per pending id, safe in a tick loop);
+        // answer/decline/choose/hangup are harness hooks driving the SAME server paths as
+        // the client keybind/buttons — Carpet bots cannot press keybinds (the safari
+        // `scatter` / powerplant `flip` rationale). list/reload are showrunner tools.
+        .then(
+          Commands.literal("phone")
+            .requires(source -> source.hasPermission(2))
+            .then(Commands.literal("ring")
+              .then(Commands.argument("id", StringArgumentType.word())
+                .suggests((context, builder) ->
+                  SharedSuggestionProvider.suggest(
+                    InitiativeInit.getPhoneCallManager().scriptIds(), builder))
+                .executes(ctx -> {
+                  ServerPlayer player = ctx.getSource().getPlayer();
+                  if (player == null) return 0;
+                  String id = StringArgumentType.getString(ctx, "id");
+                  var result = InitiativeInit.getPhoneCallManager().ring(player, id);
+                  ctx.getSource().sendSuccess(() -> Component.literal(switch (result) {
+                    case QUEUED -> "§a[Phone] '" + id + "' queued to ring.";
+                    case ALREADY_PENDING -> "§7[Phone] '" + id + "' is already ringing/queued.";
+                    case UNKNOWN_ID -> "§c[Phone] No call script '" + id + "' loaded.";
+                  }), false);
+                  return result == com.thecompanyinc.cobblemoninitiative.phone
+                    .PhoneCallManager.RingResult.QUEUED ? 1 : 0;
+                })))
+            .then(Commands.literal("answer").executes(ctx -> {
+              ServerPlayer player = ctx.getSource().getPlayer();
+              if (player == null) return 0;
+              boolean ok = InitiativeInit.getPhoneCallManager().answer(player, null);
+              ctx.getSource().sendSuccess(() -> Component.literal(ok
+                ? "§a[Phone] Answered — the call screen opens client-side."
+                : "§c[Phone] Nothing is ringing."), false);
+              return ok ? 1 : 0;
+            }))
+            .then(Commands.literal("decline").executes(ctx -> {
+              ServerPlayer player = ctx.getSource().getPlayer();
+              if (player == null) return 0;
+              boolean ok = InitiativeInit.getPhoneCallManager().decline(player, null);
+              ctx.getSource().sendSuccess(() -> Component.literal(ok
+                ? "§a[Phone] Declined — the call will ring again."
+                : "§c[Phone] Nothing is ringing."), false);
+              return ok ? 1 : 0;
+            }))
+            .then(Commands.literal("choose")
+              // 1-based on the command line (reads as "the nth option"); the client
+              // payload and the manager API are 0-based indices.
+              .then(Commands.argument("n", IntegerArgumentType.integer(1))
+                .executes(ctx -> {
+                  ServerPlayer player = ctx.getSource().getPlayer();
+                  if (player == null) return 0;
+                  int n = IntegerArgumentType.getInteger(ctx, "n");
+                  boolean ok = InitiativeInit.getPhoneCallManager()
+                    .choose(player, null, n - 1);
+                  ctx.getSource().sendSuccess(() -> Component.literal(ok
+                    ? "§a[Phone] Chose option " + n + " — call completed."
+                    : "§c[Phone] Refused (no answered call, or no such option)."), false);
+                  return ok ? 1 : 0;
+                })))
+            .then(Commands.literal("hangup").executes(ctx -> {
+              ServerPlayer player = ctx.getSource().getPlayer();
+              if (player == null) return 0;
+              boolean ok = InitiativeInit.getPhoneCallManager().complete(player, null);
+              ctx.getSource().sendSuccess(() -> Component.literal(ok
+                ? "§a[Phone] Call completed."
+                : "§c[Phone] Refused (no answered call — a choice call must `choose <n>`)."),
+                false);
+              return ok ? 1 : 0;
+            }))
+            .then(Commands.literal("list").executes(ctx -> {
+              var ids = InitiativeInit.getPhoneCallManager().scriptIds();
+              ctx.getSource().sendSuccess(() -> Component.literal(
+                "§6[Phone] " + ids.size() + " call script(s): §f" + String.join(", ", ids)),
+                false);
+              return ids.size();
+            }))
+            .then(Commands.literal("reload").executes(ctx -> {
+              InitiativeInit.getPhoneCallManager().reload(ctx.getSource().getServer());
+              ctx.getSource().sendSuccess(() -> Component.literal(
+                "§a[Phone] Rescanned phone_calls/ scripts + config ("
+                  + InitiativeInit.getPhoneCallManager().scriptIds().size() + " loaded)."),
+                false);
+              return 1;
+            }))
         )
         .then(
           Commands.literal("info")
@@ -701,19 +910,19 @@ public class CobblemonInitiativeCommands {
     return questDispatch(context, "refresh");
   }
 
-  // ── Safari Zone (the Baiting Yards) ───────────────────────────────────────────
+  // ── Safari Zone (the Ridgewatch Preserve) ─────────────────────────────────────
 
-  /** /cobblemon-initiative safari enter — badge gate → pay-probe → session start. */
-  private static int safariEnter(CommandContext<CommandSourceStack> context) {
+  /** /cobblemon-initiative safari enter <capture|contest> — gates → pay-probe → round. */
+  private static int safariEnter(CommandContext<CommandSourceStack> context, String mode) {
     ServerPlayer player = context.getSource().getPlayer();
     if (player == null) {
       context.getSource().sendFailure(Component.literal("Must be run by a player."));
       return 0;
     }
-    return InitiativeInit.getSafariManager().enter(player) ? 1 : 0;
+    return InitiativeInit.getSafariManager().enter(player, mode) ? 1 : 0;
   }
 
-  /** /cobblemon-initiative safari exit — voluntary end: clawback + visit ledger. */
+  /** /cobblemon-initiative safari exit — voluntary round end in place. */
   private static int safariExit(CommandContext<CommandSourceStack> context) {
     ServerPlayer player = context.getSource().getPlayer();
     if (player == null) {
@@ -723,7 +932,7 @@ public class CobblemonInitiativeCommands {
     return InitiativeInit.getSafariManager().exitVoluntary(player) ? 1 : 0;
   }
 
-  /** /cobblemon-initiative safari status — clock, issued balls, ledger, warm spots. */
+  /** /cobblemon-initiative safari status — mode, clock, balls left, catches (+score). */
   private static int safariStatus(CommandContext<CommandSourceStack> context) {
     ServerPlayer player = context.getSource().getPlayer();
     if (player == null) {
@@ -1260,6 +1469,74 @@ public class CobblemonInitiativeCommands {
       player.addTag(successTag);
     }
     player.sendSystemMessage(Component.literal("§aHanded in " + count + " " + pretty + "."));
+    return 1;
+  }
+
+  /**
+   * Pokémon turn-in helper. Finds the FIRST party Pokémon whose species resource id
+   * path equals {@code species} (bare id — the same identifier NaturalSpawnGuard keys
+   * on), permanently removes it from the party, and adds {@code successTag}. Safe
+   * no-op with a friendly message when the player has none — so a dialog can gate its
+   * reward entry on the tag, all-or-nothing. Refuses the player's last party member
+   * (the removal is permanent, unlike daycare boarding) and refuses during a safari
+   * round (the party is Preserve custody stock mid-round). Resolves the player from
+   * the source like {@code turnin} (works from dialog buttons and functions).
+   */
+  private static int monturnin(
+    CommandContext<CommandSourceStack> context,
+    String species,
+    String successTag
+  ) {
+    ServerPlayer player;
+    try {
+      player = context.getSource().getPlayerOrException();
+    } catch (Exception e) {
+      return 0;
+    }
+
+    // Mid-round the party is round catches in Preserve custody, not the player's
+    // own mons — a turn-in would hand over Preserve stock behind the bookkeeping.
+    if (InitiativeInit.getSafariManager().hasSession(player.getUUID())) {
+      player.sendSystemMessage(
+        Component.literal("§c[Preserve] §7Your hands are full mid-round — settle up at the gate first.")
+      );
+      return 0;
+    }
+
+    String wanted = species.toLowerCase(java.util.Locale.ROOT);
+    PlayerPartyStore party = Cobblemon.INSTANCE.getStorage().getParty(player);
+    Pokemon match = null;
+    int partySize = 0;
+    for (Pokemon p : party) {
+      if (p == null) continue;
+      partySize++;
+      if (match == null && p.getSpecies().getResourceIdentifier().getPath().equals(wanted)) {
+        match = p;
+      }
+    }
+
+    String pretty = species.replace('_', ' ');
+    if (match == null) {
+      player.sendSystemMessage(
+        Component.literal("§cYou do not have a " + pretty + " to offer.")
+      );
+      return 0;
+    }
+    // Daycare precedent: a removal that would leave a zero-Pokémon party is refused —
+    // and unlike boarding, this removal is permanent.
+    if (partySize <= 1) {
+      player.sendSystemMessage(
+        Component.literal("§cYou cannot hand over your last partner.")
+      );
+      return 0;
+    }
+
+    String name = match.getSpecies().getName();
+    party.remove(match);
+    if (successTag != null && !successTag.isBlank()) {
+      player.addTag(successTag);
+    }
+    player.sendSystemMessage(Component.literal("§aYou hand over your " + name + "."));
     return 1;
   }
 

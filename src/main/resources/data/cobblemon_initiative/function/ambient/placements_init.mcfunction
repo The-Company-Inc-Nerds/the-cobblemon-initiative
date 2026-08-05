@@ -200,9 +200,8 @@ execute unless score #amb_r10_spotter_caravan ci_ambient matches 0.. run scorebo
 execute unless score #amb_villain_route_agent_10 ci_ambient matches 0.. run scoreboard players set #amb_villain_route_agent_10 ci_ambient 0
 execute unless score #amb_villain_site_manager_5 ci_ambient matches 0.. run scoreboard players set #amb_villain_site_manager_5 ci_ambient 0
 execute unless score #amb_villain_yield_officer_5 ci_ambient matches 0.. run scoreboard players set #amb_villain_yield_officer_5 ci_ambient 0
-execute unless score #amb_r12_lorekeeper_pylon ci_ambient matches 0.. run scoreboard players set #amb_r12_lorekeeper_pylon ci_ambient 0
+execute unless score #amb_fenceline_farmer ci_ambient matches 0.. run scoreboard players set #amb_fenceline_farmer ci_ambient 0
 execute unless score #amb_r12_spotter_pylon ci_ambient matches 0.. run scoreboard players set #amb_r12_spotter_pylon ci_ambient 0
-execute unless score #amb_villain_route_agent_12 ci_ambient matches 0.. run scoreboard players set #amb_villain_route_agent_12 ci_ambient 0
 execute unless score #amb_villain_site_manager_6 ci_ambient matches 0.. run scoreboard players set #amb_villain_site_manager_6 ci_ambient 0
 execute unless score #amb_villain_yield_officer_6 ci_ambient matches 0.. run scoreboard players set #amb_villain_yield_officer_6 ci_ambient 0
 execute unless score #amb_r13_trainer_spine ci_ambient matches 0.. run scoreboard players set #amb_r13_trainer_spine ci_ambient 0

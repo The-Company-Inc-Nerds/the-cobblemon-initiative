@@ -71,11 +71,12 @@ public class GraphicsPresetConfig {
   }
 
   /**
-   * BSL's ULTRA tier (profile.ULTRA, resolved) — used by the HIGH graphics mode: full
-   * shadows/lighting like HIGH, but a 3072 shadow map at 512 distance. Only these keys are
-   * applied, so any other BSL options you've enabled (e.g. ADVANCED_MATERIALS) are preserved.
+   * BSL's HIGH tier (profile.HIGH, resolved) — used by the HIGH graphics mode: full
+   * shadows/lighting with a 2048 shadow map at 256 distance, matching the built-in profile the
+   * shipped pack actually runs. Only these keys are applied, so any other BSL options you've
+   * enabled (e.g. ADVANCED_MATERIALS) are preserved.
    */
-  private static Map<String, String> bslUltra() {
+  private static Map<String, String> bslHigh() {
     Map<String, String> m = new LinkedHashMap<>();
     m.put("SHADOW", "true");
     m.put("SHADOW_COLOR", "true");
@@ -83,8 +84,8 @@ public class GraphicsPresetConfig {
     m.put("AO", "true");
     m.put("LIGHT_SHAFT", "true");
     m.put("TAA", "true");
-    m.put("shadowMapResolution", "3072");
-    m.put("shadowDistance", "512.0");
+    m.put("shadowMapResolution", "2048");
+    m.put("shadowDistance", "256.0");
     return m;
   }
 
@@ -104,7 +105,7 @@ public class GraphicsPresetConfig {
 
   private static Preset defaultHigh() {
     Preset p = new Preset(true, "fancy", 16, 12, true, "all", "fancy", 3.0, 5, 4);
-    p.shaderOptions = bslUltra();
+    p.shaderOptions = bslHigh();
     return p;
   }
 
@@ -114,6 +115,15 @@ public class GraphicsPresetConfig {
     p.shaderOptions = bslLow();
     return p;
   }
+
+  private static final int CONFIG_VERSION = 2;
+
+  /**
+   * Bumped when {@link #load()} must one-shot-migrate stale on-disk values (v2: HIGH shadow
+   * values ULTRA→HIGH). No field initializer — Gson keeps the default for absent JSON fields,
+   * so a pre-versioning file must parse as 0 to be seen as migratable.
+   */
+  public int configVersion;
 
   /** Last-applied mode, so a fresh session restores the player's choice. "high" | "low". */
   public String mode = "high";
@@ -155,8 +165,9 @@ public class GraphicsPresetConfig {
           if (cfg != null) {
             if (cfg.high == null) cfg.high = defaultHigh();
             if (cfg.low == null) cfg.low = defaultLow();
-            if (cfg.high.shaderOptions == null) cfg.high.shaderOptions = bslUltra();
+            if (cfg.high.shaderOptions == null) cfg.high.shaderOptions = bslHigh();
             if (cfg.low.shaderOptions == null) cfg.low.shaderOptions = bslLow();
+            migrate(cfg);
             return cfg;
           }
         }
@@ -165,8 +176,27 @@ public class GraphicsPresetConfig {
       LOGGER.warn("[Graphics] Error loading config, using defaults: {}", e.getMessage());
     }
     GraphicsPresetConfig cfg = new GraphicsPresetConfig();
+    cfg.configVersion = CONFIG_VERSION;
     cfg.save();
     return cfg;
+  }
+
+  /**
+   * One-shot upgrade of stale on-disk configs. v2: the HIGH mode's shadow values dropped from
+   * BSL's ULTRA (3072 @ 512) to the shipped HIGH profile (2048 @ 256) — rewritten only while the
+   * file still carries the exact old ULTRA values and is pre-v2; a config at v2+ is never
+   * touched, so a later deliberate hand-edit back to ULTRA survives.
+   */
+  private static void migrate(GraphicsPresetConfig cfg) {
+    if (cfg.configVersion >= CONFIG_VERSION) return;
+    if ("3072".equals(cfg.high.shaderOptions.get("shadowMapResolution"))) {
+      cfg.high.shaderOptions.put("shadowMapResolution", "2048");
+    }
+    if ("512.0".equals(cfg.high.shaderOptions.get("shadowDistance"))) {
+      cfg.high.shaderOptions.put("shadowDistance", "256.0");
+    }
+    cfg.configVersion = CONFIG_VERSION;
+    cfg.save();
   }
 
   public void save() {

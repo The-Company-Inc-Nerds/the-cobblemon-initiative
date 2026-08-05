@@ -1,9 +1,9 @@
 {
     PresetMetadata: {
         author: "TheCompanyInc",
-        category: "Civilian",
+        category: "Villain",
         created: 0L,
-        description: "civilian at Cyber Approach Road (Company Survey Line) (act 2). Compiled from dialog-src.",
+        description: "villain_grunt at The Preserve - appraisal tripod (Safari Zone) (act 2). Compiled from dialog-src.",
         entityTypeId: "easy_npc:humanoid",
         modified: 0L,
         name: "Silva Longscope",
@@ -40,13 +40,278 @@
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
+                            Name: "badges_gte_7"
+                        }
+                    ],
+                    Priority: 30,
+                    Buttons: [
+                        {
+                            Name: "Face them",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_silva_longscope"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "say The Preserve is out of my portfolio. The ranger by the east fence has been waiting to say so out loud."
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_silva_longscope"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:silva_longscope @s"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_silva_longscope"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:silva_longscope onwin {1: ['cobbledollars give @1 800', 'tag @1 add defeated_silva_longscope', '@2 say Filed. The site is - the site was. The ranger by the east fence saw everything - go collect your gratitude. I will be at the tripod, drafting my transfer.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 220', '@1 say Inventory secured. Your visit has been logged as an attempted shrinkage event.']}"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "defeated_rurik_ironshot"
+                                }
+                            ],
+                            Label: "yes_button"
+                        },
+                        {
+                            Name: "About the officer at the gate",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "tellraw @initiator [{\"text\":\"The Manager does not look up from the tripod. Clear my requisition officer first, resident. I do not take unscheduled meetings.\",\"color\":\"gray\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_rurik_ironshot"
+                                }
+                            ],
+                            Label: "blocked_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "It is you. The founder, standing in a Company acquisition and still dressed like a resident. They swore you were a story told to scare new hires."
+                        },
+                        {
+                            Text: "I have orders. I have a family paid in Company scrip. Do not make me do this. But I am going to."
+                        }
+                    ],
+                    Name: "Manager - late recognition",
+                    Label: "late"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
                             Name: "badges_gte_3"
                         }
                     ],
                     Priority: 20,
                     Buttons: [
                         {
-                            Name: "Nothing to report",
+                            Name: "Fight",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_silva_longscope"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "say The Preserve is out of my portfolio. The ranger by the east fence has been waiting to say so out loud."
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_silva_longscope"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:silva_longscope @s"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_silva_longscope"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:silva_longscope onwin {1: ['cobbledollars give @1 800', 'tag @1 add defeated_silva_longscope', '@2 say Filed. The site is - the site was. The ranger by the east fence saw everything - go collect your gratitude. I will be at the tripod, drafting my transfer.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 220', '@1 say Inventory secured. Your visit has been logged as an attempted shrinkage event.']}"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "defeated_rurik_ironshot"
+                                }
+                            ],
+                            Label: "yes_button"
+                        },
+                        {
+                            Name: "About the officer at the gate",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "tellraw @initiator [{\"text\":\"The Manager does not look up from the tripod. Clear my requisition officer first, resident. I do not take unscheduled meetings.\",\"color\":\"gray\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_rurik_ironshot"
+                                }
+                            ],
+                            Label: "blocked_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Your face is on a memo. The kind with a black bar over the name and the words do not engage, report immediately."
+                        },
+                        {
+                            Text: "You are supposed to be a closed file. Closed files do not get to walk into an active acquisition."
+                        }
+                    ],
+                    Name: "Manager - mid recognition",
+                    Label: "mid"
+                },
+                {
+                    Priority: 15,
+                    Buttons: [
+                        {
+                            Name: "Take the Preserve back - face the Manager",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_silva_longscope"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "say The Preserve is out of my portfolio. The ranger by the east fence has been waiting to say so out loud."
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_silva_longscope"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:silva_longscope @s"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_silva_longscope"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:silva_longscope onwin {1: ['cobbledollars give @1 800', 'tag @1 add defeated_silva_longscope', '@2 say Filed. The site is - the site was. The ranger by the east fence saw everything - go collect your gratitude. I will be at the tripod, drafting my transfer.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 220', '@1 say Inventory secured. Your visit has been logged as an attempted shrinkage event.']}"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "defeated_rurik_ironshot"
+                                }
+                            ],
+                            Label: "fight_button"
+                        },
+                        {
+                            Name: "About the officer at the gate",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "tellraw @initiator [{\"text\":\"The Manager does not look up from the tripod. Clear my requisition officer first, resident. I do not take unscheduled meetings.\",\"color\":\"gray\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_rurik_ironshot"
+                                }
+                            ],
+                            Label: "blocked_button"
+                        },
+                        {
+                            Name: "Leave the Preserve",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -57,37 +322,104 @@
                     ],
                     Texts: [
                         {
-                            Text: "State your business on a survey line. — No. Do not. I have seen that face on an internal circular with a black bar where the name should be. I did not see you. You did not see me. My scope was pointed at the ridge the whole time."
+                            Text: "You are standing in an active specimen acquisition site. The family that mismanaged this preserve has been transitioned to alternative outcomes, and the parcel now performs. Pens. Counts. Every creature appraised, numbered, and filed."
                         },
                         {
-                            Text: "I measure roads for the Company and I have measured this one three times. It keeps coming out the wrong length. Some things do not want to be counted. You feel like one of them."
+                            Text: "I run a string of sites off one clipboard. The Preserve is the quiet one - inventory that feeds itself, breeds itself, and appreciates while I sleep. The Company likes an asset that multiplies without a payroll."
                         }
                     ],
-                    Name: "Silva Longscope — Company survey",
-                    Label: "mid"
+                    Name: "Manager - the appraisal",
+                    Label: "appraisal"
                 },
                 {
                     Priority: 10,
                     Buttons: [
                         {
-                            Name: "Move around",
+                            Name: "Fight",
                             Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_silva_longscope"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "say The Preserve is out of my portfolio. The ranger by the east fence has been waiting to say so out loud."
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_silva_longscope"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:silva_longscope @s"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_silva_longscope"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:silva_longscope onwin {1: ['cobbledollars give @1 800', 'tag @1 add defeated_silva_longscope', '@2 say Filed. The site is - the site was. The ranger by the east fence saw everything - go collect your gratitude. I will be at the tripod, drafting my transfer.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 220', '@1 say Inventory secured. Your visit has been logged as an attempted shrinkage event.']}"
+                                },
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "leave_button"
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "defeated_rurik_ironshot"
+                                }
+                            ],
+                            Label: "yes_button"
+                        },
+                        {
+                            Name: "About the officer at the gate",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "tellraw @initiator [{\"text\":\"The Manager does not look up from the tripod. Clear my requisition officer first, resident. I do not take unscheduled meetings.\",\"color\":\"gray\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_rurik_ironshot"
+                                }
+                            ],
+                            Label: "blocked_button"
                         }
                     ],
                     Texts: [
                         {
-                            Text: "Survey line. Move around the tripod, not through it. Company property, verified frontage, do not touch the markers."
+                            Text: "Company business. This preserve is closed for restructuring, and there is no walking away from it."
                         },
                         {
-                            Text: "I chart the approach roads so the acquisitions team knows what to buy next. Do not ask what. I only hold the scope. The buying is above my clearance."
+                            Text: "We settle this the old way. Wait. Do I know you from somewhere?"
                         }
                     ],
-                    Name: "Silva Longscope — Company survey",
+                    Name: "Manager - early (no recognition)",
                     Label: "default"
                 }
             ]

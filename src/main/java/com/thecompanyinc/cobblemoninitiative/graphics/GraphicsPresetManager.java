@@ -242,7 +242,7 @@ public final class GraphicsPresetManager {
   private static String shaderLabel(GraphicsMode mode) {
     GraphicsPresetConfig.Preset p = GraphicsPresetConfig.get().preset(mode);
     if (!p.shaders) return "shaders off";
-    return mode == GraphicsMode.HIGH ? "BSL ultra" : "BSL performance";
+    return mode == GraphicsMode.HIGH ? "BSL high" : "BSL performance";
   }
 
   private static GraphicsStatus parseGraphics(String s) {

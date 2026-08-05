@@ -1,0 +1,12 @@
+{
+  "_comment": "Cyber City POWER PLANT lights puzzle (gym-7 leader gate). The engine is INACTIVE until 'bulbs' holds EXACTLY 9 copper-bulb positions — until then everyone carries cyber_power_restored and the gate stays open (the plant does not physically exist yet). Showrunner: fill the coords below, then `/cobblemon-initiative powerplant reload` + `scramble`. The writable override config/cobblemon-initiative-powerplant.json wins over this file.",
+  "_comment_bulbs": "Exactly 9 entries of {x,y,z}. Each position holds ANY block of the copper-bulb family (any oxidation / waxed variant) — the engine flips only its LIT state and preserves the rest.",
+  "bulbs": [],
+  "_comment_switches": "Entries of {x,y,z,a,b}: the LEVER position plus the TWO bulb indices (0-8, distinct) it toggles on<->off together. Cover all 9 bulbs via the pairs — 8+ switches; e.g. a ring 0-1, 1-2, 2-3, 3-4, 4-5, 5-6, 6-7, 7-8, 8-0 (9 levers) gives full coverage and a clean circuit fiction. Place levers AWAY from the bulbs so real redstone never fights the engine (the vanilla lever still flips visually; its orientation is cosmetic). Uncovered bulbs are WARNED at load: they can never change and simply stay lit.",
+  "switches": [],
+  "_comment_scramble": "The puzzle pattern is built by applying scrambleMoves uniform-random switch presses to the all-lit board (never a raw random pattern — pair-toggles preserve unlit-count parity, so raw patterns are often unsolvable). The roll re-rolls (~20 attempts, keeps the last regardless) until at least minUnlit bulbs are unlit; the unlit count is always EVEN from an all-lit start. Every scramble is reachable-from-solved, hence solvable, and no player move sequence can ever leave that solvable set.",
+  "scrambleMoves": 12,
+  "minUnlit": 4,
+  "_comment_syncRange": "The 40-tick visual re-assert (self-heals drift, paints late-loading chunks) only runs while a player is within this many blocks of any bulb.",
+  "syncRange": 32
+}

@@ -70,11 +70,13 @@ public final class DevCommands {
                     devGlow(ctx, !"off".equalsIgnoreCase(StringArgumentType.getString(ctx, "state"))))
               )
           )
-          // Preview any PokéPhone call on demand (non-consuming — leaves the real story trigger intact).
+          // Preview any PokePhone call-screen script on demand (preview ring — full UX,
+          // completion skips side effects, so the real story trigger stays intact).
           .then(
             Commands.literal("phone").then(
               Commands.argument("call", StringArgumentType.word())
-                .suggests((c, b) -> SharedSuggestionProvider.suggest(PHONE_DONE_TAG.keySet(), b))
+                .suggests((c, b) -> SharedSuggestionProvider.suggest(
+                  InitiativeInit.getPhoneCallManager().scriptIds(), b))
                 .executes(ctx ->
                   withPlayer(ctx, p -> devPhone(p, StringArgumentType.getString(ctx, "call"))))
             )
@@ -337,46 +339,31 @@ public final class DevCommands {
   }
 
   /**
-   * PokéPhone dev preview map: call id -> the {@code call_<id>_done} tag its {@code ring_<id>}
-   * function stamps (one-shot guard). Note the tag doesn't always mirror the id (mom ->
-   * call_mom_watch_done, beacon -> call_beacon_stock_done), so this is an explicit table.
-   */
-  private static final java.util.Map<String, String> PHONE_DONE_TAG = java.util.Map.ofEntries(
-    java.util.Map.entry("mom", "call_mom_watch_done"),
-    java.util.Map.entry("mom_proud", "call_mom_proud_done"),
-    java.util.Map.entry("mom_worry", "call_mom_worry_done"),
-    java.util.Map.entry("company_watch", "call_company_watch_done"),
-    java.util.Map.entry("dj_threat", "call_dj_threat_done"),
-    java.util.Map.entry("board_gloat", "call_board_gloat_done"),
-    java.util.Map.entry("acacia_second", "call_acacia_second_done"),
-    java.util.Map.entry("acacia_third", "call_acacia_third_done"),
-    java.util.Map.entry("acacia_dex", "call_acacia_dex_done"),
-    java.util.Map.entry("beacon", "call_beacon_stock_done"),
-    java.util.Map.entry("first_beacon", "call_first_beacon_done"),
-    java.util.Map.entry("founder", "call_founder_done"));
-
-  /**
-   * /ca-dev phone &lt;call&gt; — preview a PokéPhone call (the datapack
-   * {@code phone/ring_<call>} function: ☎ actionbar + chime + tellraw lines) on demand.
-   * NON-CONSUMING: clears the call's done tag, fires it, then clears the tag again so the real
-   * condition-driven call still rings later in normal play.
+   * /ca-dev phone &lt;call&gt; — preview a PokePhone call-screen script (0.7.0-alpha.20)
+   * on demand: {@code PhoneCallManager.ringPreview} runs the full ring/answer/pages/choices
+   * UX, but completion skips choice commands, on_complete, and the done_tag grant, so the
+   * real condition-driven call still rings later in normal play.
    */
   private static int devPhone(ServerPlayer player, String call) {
-    String doneTag = PHONE_DONE_TAG.get(call);
-    if (doneTag == null) {
-      player.sendSystemMessage(Component.literal(
-        "§cUnknown call '" + call + "'. Options: " + String.join(", ", PHONE_DONE_TAG.keySet())));
-      return 0;
-    }
-    var server = player.getServer();
-    if (server == null) return 0;
-    var src = player.createCommandSourceStack().withPermission(4).withSuppressedOutput();
-    player.removeTag(doneTag);
-    server.getCommands().performPrefixedCommand(
-      src, "function cobblemon_initiative:phone/ring_" + call);
-    player.removeTag(doneTag);
-    player.sendSystemMessage(Component.literal("§a☎ Previewed call §e" + call + "§a (non-consuming)."));
-    return 1;
+    var manager = InitiativeInit.getPhoneCallManager();
+    return switch (manager.ringPreview(player, call)) {
+      case QUEUED -> {
+        player.sendSystemMessage(Component.literal(
+          "§a☎ Preview of §e" + call + "§a queued to ring — side effects will be skipped."));
+        yield 1;
+      }
+      case ALREADY_PENDING -> {
+        player.sendSystemMessage(Component.literal(
+          "§7☎ '" + call + "' is already ringing/queued for you."));
+        yield 0;
+      }
+      case UNKNOWN_ID -> {
+        player.sendSystemMessage(Component.literal(
+          "§cUnknown call '" + call + "'. Options: "
+            + String.join(", ", manager.scriptIds())));
+        yield 0;
+      }
+    };
   }
 
   // ---------------------------------------------------------------------------

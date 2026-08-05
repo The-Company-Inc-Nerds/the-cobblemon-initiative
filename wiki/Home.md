@@ -40,7 +40,7 @@ war is not a backdrop, it is a questline you can push back on, farm by farm.
 
 **Facilities.** A **Stadium** running level-bracketed exhibition circuits with cloned,
 attrition-free teams; a **Daycare** that boards and levels your Pokémon (capped, like
-everything else); a **Safari preserve** with timed permits, issued balls, and typed bait
+everything else); a **Safari preserve** with timed rounds, issued balls, and typed bait
 lures; and a post-League **Battle Frontier** of seven halls for the endgame window.
 
 **Boss encounters.** Five optional **elemental shrine trials** — timed parkour, dark

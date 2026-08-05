@@ -18,11 +18,15 @@ any phase FAILs):
             rctmod:stadium_wave_1 — PASS if no refusal ("is not attached",
             "Failed to validate") comes back
   sweep     scripts/npc_live_sweep.py subprocess (hard embeds gate)
-  safari    badges 3 → cobbledollars set fee+900 → safari enter (fee via the
-            console-visible `cobbledollars query`; query abbreviates ≥1000, so
-            the post-fee remainder is kept in the exact range) → scatter/lure
-            probe → exit → ball confiscation via
-            `clear <bot> cobblemon:safari_ball 0` ("Found N")
+  safari    badges 6 + safari_liberated tag (a20 gates: post-gym-6 leg + the
+            clear-out story gate) → cobbledollars set fee+900 → safari enter
+            capture (a20 round rework; fee via the console-visible
+            `cobbledollars query`; query abbreviates ≥1000, so the post-fee
+            remainder is kept in the exact range) → scatter → lure POLL (the
+            a20 stealth engine spooks an exposed bot's lure ~3s after it
+            spawns, so a single late probe would find a corpse window) → exit
+            → ball confiscation via `clear <bot> cobblemon:safari_ball 0`
+            ("Found N")
   stadium   stadium start 25 → battle-appeared probe (pokemon entity near bot)
             → stopbattle voids the run
   logsweep  forbidden-pattern diff over the server log (self-inflicted
@@ -403,13 +407,14 @@ def _balance(con):
 
 
 def _permit_fee():
-    """The authoritative fee from the repo's safari config (fallback 1500)."""
+    """The authoritative fee from the repo's safari config (fallback 500 — the
+    a20 round-fee default; the old Day Permit's 1500 is gone)."""
     try:
         cfg = json.load(open(os.path.join(
             ROOT, 'src/main/resources/data/cobblemon_initiative/safari/safari.json')))
-        return int(cfg.get('permitFee', 1500))
+        return int(cfg.get('permitFee', 500))
     except (OSError, json.JSONDecodeError, ValueError):
-        return 1500
+        return 500
 
 
 def _ball_count(con, ph, tag):
@@ -425,9 +430,17 @@ def phase_safari(ph, con, args):
         return ph.skip(f'server down: {con.err}')
     if not con.ensure_bot():
         return ph.skip(f'could not spawn Carpet bot {con.bot!r}')
-    resp = con.as_bot('cobblemon-initiative dev badges 3')  # gateBadges=3
-    ph.ev(f'badges 3 -> {resp[:120]}')
+    resp = con.as_bot('cobblemon-initiative dev badges 6')  # gateBadges=6 (post-gym-6 leg)
+    ph.ev(f'badges 6 -> {resp[:120]}')
+    # a20 liberation gate: enter also requires the safari_liberated story tag
+    # (Nova's turn-in is the single writer in play; the bot fakes it).
+    con.cmd(f'tag {con.bot} add safari_liberated')
     con.as_bot('cobblemon-initiative safari exit', probe=True)  # clear stale session
+    # a20 zone gate: enter now requires standing INSIDE the "Safari Zone" polygon
+    # (a freshly spawned Carpet bot sits at world spawn — the gate would refuse and
+    # the fee-mismatch check would misfire). Site = safari_yards' live-verified
+    # clearing; the round's own hostile sweep clears the grounds at start.
+    con.cmd(f'tp {con.bot} 1300.5 89 1450.5')
     time.sleep(2)
 
     # Deterministic fee math: query is lossy above $1000 (K/M abbreviation), so SET
@@ -441,8 +454,8 @@ def phase_safari(ph, con, args):
     bal1, raw1 = _balance(con)
     ph.ev(f'funded via cobbledollars set: {funded} (query reads {bal1}: {raw1[:60]})')
 
-    resp = con.as_bot('cobblemon-initiative safari enter')
-    ph.ev(f'safari enter dispatched ({resp[:80] or "player-directed output only"})')
+    resp = con.as_bot('cobblemon-initiative safari enter capture')  # a20: mode word REQUIRED
+    ph.ev(f'safari enter capture dispatched ({resp[:80] or "player-directed output only"})')
     time.sleep(3)  # pay-probe resolves NEXT tick (SafariManager pendingPermits)
     bal2, _ = _balance(con)
     fee = (funded - bal2) if bal2 is not None else None
@@ -455,23 +468,43 @@ def phase_safari(ph, con, args):
         ph.fail('fee charged but no Preserve-issue safari balls found')
 
     # Scatter: prefer the dev hook; fall back to bait-give + Carpet right-click.
+    # (a20: `safari bait` charges the kiosk fee via a deferred pay-probe and only
+    # issues the item ONE TICK after payment resolves — hence the sleep.)
+    # Table choice: the hook runs honey_smear ON PURPOSE — it deliberately bypasses
+    # the a20 tree-placement gate (bots can't click a trunk) and proves the honey
+    # table still rolls; the real-click fallback must use a GROUND table instead
+    # (a ground click on honey_smear now refuses with 'goes on bark' and consumes
+    # nothing). The tree click itself stays an in-world verify item.
     scatter = con.as_bot('cobblemon-initiative safari scatter honey_smear', probe=True)
     hook = not is_unknown_command(scatter)
     if hook:
         ph.ev(f'scatter hook -> {scatter[:120] or "(dispatched)"}')
     else:
         ph.ev('scatter dev hook absent — falling back to bait + Carpet use (best-effort)')
-        con.as_bot('cobblemon-initiative safari bait honey_smear')
+        con.as_bot('cobblemon-initiative safari bait dried_skewer')
+        time.sleep(2)  # deferred #sfb_ok read + issue
         con.cmd(f'player {con.bot} look down', probe=True)
         con.cmd(f'player {con.bot} use once', probe=True)
-    time.sleep(18)  # suspense window is 5-15s
-    lure = con.cmd('execute as @e[tag=ci_safari_lure,limit=1] run '
-                   'data get entity @s Pokemon.Species')
-    seen = 'has the following entity data' in lure
-    ph.ev(f'lure probe -> {"LURE PRESENT: " + lure[:100] if seen else "no ci_safari_lure entity"}')
+    # Lure POLL, not a single late probe: suspense is 5-15s, but the a20 stealth
+    # engine SPOOKS a lure that can see an exposed standing player in ~1.5s (3
+    # seen-checks on a 10t cadence) and the 30t bolt discards it ~3s after spawn.
+    # The Carpet bot can't crouch into concealment, so the lure's whole life is a
+    # ~3s window somewhere in 5-18s — poll every 2s and remember ANY sighting.
+    seen = False
+    for elapsed in range(2, 22, 2):
+        time.sleep(2)
+        lure = con.cmd('execute as @e[tag=ci_safari_lure,limit=1] run '
+                       'data get entity @s Pokemon.Species')
+        if 'has the following entity data' in lure:
+            seen = True
+            ph.ev(f'lure probe (+{elapsed}s) -> LURE PRESENT: {lure[:100]}')
+            break
+    if not seen:
+        ph.ev('lure probe -> no ci_safari_lure entity in any 2s poll through +20s')
     if hook and not seen:
-        ph.ev('WARN: scatter hook ran but no lure spawned in 18s (roll is 1-3 mons in a '
-              '5-15s window; terrain/indoors can suppress) — not gating')
+        ph.ev('WARN: scatter hook ran but no lure was ever observed (roll is 1-3 mons '
+              'in a 5-15s window and an exposed bot spooks them in ~3s; a poll can '
+              'still miss the window on a laggy tick) — not gating')
 
     con.as_bot('cobblemon-initiative safari exit')
     time.sleep(2)
@@ -480,6 +513,7 @@ def phase_safari(ph, con, args):
         ph.fail(f'confiscation failed: {left} safari ball(s) survived egress')
     elif issued > 0:
         ph.ev('confiscation verified: all Preserve-issue balls removed at egress')
+    con.cmd(f'tag {con.bot} remove safari_liberated')  # leave no faked story tag behind
     ph.ok()
 
 

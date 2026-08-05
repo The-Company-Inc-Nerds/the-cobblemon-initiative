@@ -113,7 +113,7 @@ Certain NPCs actually *see* you — a per-tick line-of-sight check determines wh
 Every gym is a fight *and* a set-piece: a floating leader, vine walls, a tide clock, a mirror match, an overworld Ender Dragon, a stealth corridor, a heat gauge, and more. Each gym's rank-and-file trainers are spread through the room, and **beating them softens the leader**. All ten gimmicks (and the ladder-soften rule) are on **[[Guidebook Gym Mechanics]]**.
 
 ### Facilities
-Three optional Company-run facilities: the **Stadium** (level-locked exhibition wagers — the one place Nuzlocke stakes are suspended), the **Daycare** (two custody slots, cap-clamped XP drip), and the **Safari** "Baiting Yards" (a lure-and-catch minigame where your party stays holstered). See **[[Guidebook Facilities]]**.
+Three optional facilities: the **Stadium** (level-locked exhibition wagers — the one place Nuzlocke stakes are suspended), the **Daycare** (two custody slots, cap-clamped XP drip), and the **Ridgewatch Preserve** safari (clear the Company off the grounds, then run timed bait-and-catch rounds with your party held safe at the gate). See **[[Guidebook Facilities]]**.
 
 ### Battle Frontier
 The post-Champion endgame: **eight halls, eight Frontier Brains**, all level 100 — the Tower's greed climb, the Castle's real-money ledger, the Factory's borrowed teams, the Arcade's random Wheel, the Cave's sculk descent to Giratina, the Pyramid's shifting maze, the Market's con, and the Port's storm doubles. Each tests a different skill, and the design keeps the danger but drops the permadeath (you wager the stake, not your party). See **[[Guidebook Battle Frontier]]**.

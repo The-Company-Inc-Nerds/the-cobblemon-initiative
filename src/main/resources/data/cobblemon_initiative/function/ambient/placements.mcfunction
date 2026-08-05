@@ -199,9 +199,8 @@ execute if score #amb_r10_spotter_caravan ci_ambient matches 0 if entity @a[x=22
 execute if score #amb_villain_route_agent_10 ci_ambient matches 0 if entity @a[x=2210.5,y=110,z=3490.5,distance=..40] run function cobblemon_initiative:ambient/place/villain_route_agent_10
 execute if score #amb_villain_site_manager_5 ci_ambient matches 0 if entity @a[x=2309.5,y=83,z=3540.5,distance=..40] run function cobblemon_initiative:ambient/place/villain_site_manager_5
 execute if score #amb_villain_yield_officer_5 ci_ambient matches 0 if entity @a[x=2316.2,y=83,z=3519.6,distance=..40] run function cobblemon_initiative:ambient/place/villain_yield_officer_5
-execute if score #amb_r12_lorekeeper_pylon ci_ambient matches 0 if entity @a[x=1525.5,y=64,z=1698.5,distance=..40] run function cobblemon_initiative:ambient/place/r12_lorekeeper_pylon
-execute if score #amb_r12_spotter_pylon ci_ambient matches 0 if entity @a[x=1520.5,y=64,z=1710.5,distance=..40] run function cobblemon_initiative:ambient/place/r12_spotter_pylon
-execute if score #amb_villain_route_agent_12 ci_ambient matches 0 if entity @a[x=1512.5,y=77,z=1722.5,distance=..40] run function cobblemon_initiative:ambient/place/villain_route_agent_12
+execute if score #amb_fenceline_farmer ci_ambient matches 0 if entity @a[x=1549.5,y=76,z=1738.5,distance=..40] run function cobblemon_initiative:ambient/place/fenceline_farmer
+execute if score #amb_r12_spotter_pylon ci_ambient matches 0 if entity @a[x=1564.5,y=76,z=1656.5,distance=..40] run function cobblemon_initiative:ambient/place/r12_spotter_pylon
 execute if score #amb_villain_site_manager_6 ci_ambient matches 0 if entity @a[x=1565.5,y=75,z=1732.5,distance=..40] run function cobblemon_initiative:ambient/place/villain_site_manager_6
 execute if score #amb_villain_yield_officer_6 ci_ambient matches 0 if entity @a[x=1548.5,y=76,z=1748.5,distance=..40] run function cobblemon_initiative:ambient/place/villain_yield_officer_6
 execute if score #amb_r13_trainer_spine ci_ambient matches 0 if entity @a[x=1975.5,y=64,z=1036.5,distance=..40] run function cobblemon_initiative:ambient/place/r13_trainer_spine

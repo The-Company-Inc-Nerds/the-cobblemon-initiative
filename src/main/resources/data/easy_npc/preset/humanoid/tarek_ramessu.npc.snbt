@@ -1,9 +1,9 @@
 {
     PresetMetadata: {
         author: "TheCompanyInc",
-        category: "Civilian",
+        category: "Gym Guide",
         created: 0L,
-        description: "civilian at Kalahar Reach (act 1). Compiled from dialog-src.",
+        description: "gym_guide at Kalahar Reach (act 1). Compiled from dialog-src.",
         entityTypeId: "easy_npc:humanoid",
         modified: 0L,
         name: "Tarek Ramessu",
@@ -36,6 +36,50 @@
             Type: "STANDARD",
             DialogDataSet: [
                 {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "defeated_kalahar_leader"
+                        }
+                    ],
+                    Priority: 40,
+                    Buttons: [
+                        {
+                            Name: "Any gossip?",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "guide_gossip"
+                                }
+                            ],
+                            Label: "gossip_button"
+                        },
+                        {
+                            Name: "Thank you, Tarek",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The Strata Badge. You brought Gaia's students home and then you moved the man himself, and nobody moves Gaia. Four generations this stall has faced the gym, and I have never chalked a prouder line on the shutter."
+                        },
+                        {
+                            Text: "Every face in the Reach is its own again — no more of the desert wearing my neighbours. I do not forget who reached out and checked, one by one. Neither will they."
+                        },
+                        {
+                            Text: "Cyber City is your next rung. Take the pylon path and keep the towers on your shoulder — the line walks you straight to their gates. Mind the Company linemen under the wires; they log every silhouette that passes, and lately the memos follow the logs."
+                        }
+                    ],
+                    Name: "Tarek Ramessu — after the badge",
+                    Label: "badge_won"
+                },
+                {
                     Priority: 10,
                     Buttons: [
                         {
@@ -50,7 +94,44 @@
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_kalahar_leader"
+                                }
+                            ],
                             Label: "begin_button"
+                        },
+                        {
+                            Name: "How do gyms work here?",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "explain"
+                                }
+                            ],
+                            Label: "explain_button"
+                        },
+                        {
+                            Name: "What am I walking into with Gaia?",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "gaia_counsel"
+                                }
+                            ],
+                            Label: "counsel_button"
+                        },
+                        {
+                            Name: "Any gossip?",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "guide_gossip"
+                                }
+                            ],
+                            Label: "gossip_button"
                         },
                         {
                             Name: "Another time",
@@ -84,6 +165,128 @@
                     ],
                     Name: "Tarek Ramessu",
                     Label: "default"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Got it",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "default"
+                                }
+                            ],
+                            Label: "back_button"
+                        },
+                        {
+                            Name: "Thanks",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The League runs on a ladder, same as a spice ledger. Beat a leader, earn the badge, and the ceiling your partners can train to rises. Try to skip a rung and you hit a wall no amount of training climbs — the badge has not signed for those levels, and not even I can haggle you past it."
+                        },
+                        {
+                            Text: "Every leader keeps to one type, so bring answers to it — and hear an old seller on stock you cannot re-order. Out here a fainted partner does not come back. Choose your battles like they are permanent, because for you they are, and heal at the center before you knock on any gym door. My family lost this stall slowly. Do not lose your team fast."
+                        },
+                        {
+                            Text: "The badges are not just for show, challenger. The whole region runs on one currency now, and one name behind it — and my chalk says the memo count climbs a little every time a challenger climbs the ladder. Somebody in some office is watching climbers like you. When you find out which office, come tell me. I will chart it."
+                        }
+                    ],
+                    Name: "How Gyms Work",
+                    Label: "explain"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Back",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "default"
+                                }
+                            ],
+                            Label: "back_button"
+                        },
+                        {
+                            Name: "Thanks",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Every one of Gaia's four runs Earthquake — the dragonfly, the hippo, the mole, the land-shark, all of them. When the floor itself is the weapon, keep something off the floor: a flier, a floater, anything the ground cannot reach. That is the first line on my Gaia chart, and it is underlined."
+                        },
+                        {
+                            Text: "That hippo of his walks in wearing its own weather — a sandstorm that never lifts while it stands. Worse, it seeds the sand with buried stones, and every partner you send out afterward pays on the way in. Deal with the hippo early, or bring partners who do not mind bleeding at the door."
+                        },
+                        {
+                            Text: "The dragonfly is the trick in his deck — it floats. His own quakes roll underneath it and touch nothing, and yours will do the same. Do not build your whole answer out of Ground; the dragonfly laughs at Ground from a hand-span above it."
+                        },
+                        {
+                            Text: "You will walk in at fifty — that is the ceiling the League allows you — and his ace fights at fifty-two. You will be underleveled. Every challenger is. Gaia says the lean builds character. I say it sells potions, but nobody charts my opinion."
+                        },
+                        {
+                            Text: "Do not knock on Gaia's door without a block of obsidian mined by your own hand. He will not badge a soft one — no obsidian, no Strata Badge, and in four generations of watching that door I have never seen him bend on it. Down where the lava runs, hardest ground there is."
+                        },
+                        {
+                            Text: "Quiet all four dune trainers out on the sand before you climb the tower. Gaia's herd spends the whole day chasing after them, and a herd that spent the day chasing fights the evening tired. His students will scowl at me for saying so. I am protective of climbers too."
+                        },
+                        {
+                            Text: "If Ground still reads like a foreign ledger to you, walk back out to the flats and find Sandreader Mafu on route eight. Teaching the matchup is his stall, not mine — I sell directions, and I used to sell cumin. He will make Earthquake make sense before Gaia makes it personal."
+                        }
+                    ],
+                    Name: "Tarek Ramessu — on Gaia",
+                    Label: "gaia_counsel"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Good to know",
+                            Actions: [
+                                {
+                                    Type: "OPEN_DEFAULT_DIALOG"
+                                }
+                            ],
+                            Label: "gossip_back_button"
+                        },
+                        {
+                            Name: "My lips are sealed",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "gossip_leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "There are ten of us gym guides, one per gym — and now that I have taken up the Kalahar post, that is finally arithmetic instead of optimism. We share a newsletter. This month it is a dispute over who invented saying — you got this. I voted for myself. Four generations of salesmanship has to count for something."
+                        },
+                        {
+                            Text: "One of the coast guides swears the healing machine runs on a Chansey in the back room. Ours runs on whatever Nurse Sahir says it runs on, and you do not audit a man who spent his life finding water under this desert. I tried once. I now buy my bandages at full price."
+                        },
+                        {
+                            Text: "A guide remembers every challenger. Even the ones whose parties walk out of the Reach smaller than they walked in. Especially those. I chalk a small mark on the shutter for each — the one chart I keep that I hope stops climbing."
+                        }
+                    ],
+                    Name: "Guide Gossip",
+                    Label: "guide_gossip"
                 }
             ]
         },

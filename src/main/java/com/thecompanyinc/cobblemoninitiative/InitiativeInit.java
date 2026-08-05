@@ -63,6 +63,8 @@ public class InitiativeInit implements ModInitializer {
   private static HomesteadManager homesteadManager;
   private static MomCareManager momCareManager;
   private static AchievementManager achievementManager;
+  private static com.thecompanyinc.cobblemoninitiative.powerplant.PowerPlantManager powerPlantManager;
+  private static com.thecompanyinc.cobblemoninitiative.phone.PhoneCallManager phoneCallManager;
 
   @Override
   public void onInitialize() {
@@ -121,8 +123,9 @@ public class InitiativeInit implements ModInitializer {
     // the earned state is mirrored into PlayerProgress, which loads/saves with the rest.
     achievementManager = new AchievementManager();
 
-    // Safari Zone — the Baiting Yards (badge-3 paid catch-only preserve). Owns its own
-    // Cobblemon subscriptions (battle-cancel guard + session-gated capture ledger).
+    // Safari Zone — the Ridgewatch Preserve rounds (badge-3 paid custody catch game).
+    // Owns its own subscriptions (battle-cancel guard, session-gated capture ledger,
+    // and the join/respawn custody self-heal).
     safariManager = new SafariManager();
     safariManager.load();
     safariManager.registerEvents();
@@ -131,6 +134,19 @@ public class InitiativeInit implements ModInitializer {
     // opponents, crew battles, the no-heal gauntlet, the streak climb (2026-07-19).
     frontierManager = new com.thecompanyinc.cobblemoninitiative.frontier.FrontierManager();
     frontierManager.registerEvents();
+
+    // Cyber City power plant (gym-7 leader gate): 9 copper-bulb lights, lever pair-toggles,
+    // scramble-from-solved = provably always solvable (see PowerPlantManager javadoc).
+    // Coords latch later via config (Gaviota precedent); inactive = gate open so gym 7
+    // is never bricked before the plant physically exists.
+    powerPlantManager = new com.thecompanyinc.cobblemoninitiative.powerplant.PowerPlantManager();
+    powerPlantManager.load();
+
+    // PokePhone (0.7.0-alpha.20): our own client call screen replaces the invisible-caller
+    // Easy NPC dialog delivery. Ring-then-accept with the owed-call requeue; scripts scan
+    // at SERVER_STARTED (resource-manager driven, datapack-extensible).
+    phoneCallManager = new com.thecompanyinc.cobblemoninitiative.phone.PhoneCallManager();
+    phoneCallManager.registerEvents();
 
     // Map Frontiers integration is applied lazily at /cobblemon-initiative install run
     // (see MapFrontiersBridge); no init-time registration is needed.
@@ -184,7 +200,7 @@ public class InitiativeInit implements ModInitializer {
       momCareManager.tick(server)
     );
 
-    // Safari sessions — site clock, suspense windows, lure lifecycles, ejects.
+    // Safari rounds — clock, suspense windows, lure stealth/flee, boundary + wrap-up.
     ServerTickEvents.END_SERVER_TICK.register(server ->
       safariManager.tick(server)
     );
@@ -194,10 +210,22 @@ public class InitiativeInit implements ModInitializer {
       frontierManager.tick(server)
     );
 
+    // Power plant — 20t gym-7 gate-tag sweep, 40t bulb visual sync + unlit-bulb ambience,
+    // and the solve sound cascade.
+    ServerTickEvents.END_SERVER_TICK.register(server ->
+      powerPlantManager.tick(server)
+    );
+
     // Achievements — periodic live re-evaluation (every 2s) catches scoreboard/Pokédex-derived
     // milestone crossings (dex count, fields liberated, frontier halls) that have no event site.
     ServerTickEvents.END_SERVER_TICK.register(server ->
       achievementManager.tick(server)
+    );
+
+    // PokePhone — ring windows (ringtone + flashing actionbar), in-battle deferrals, and
+    // missed-call requeues.
+    ServerTickEvents.END_SERVER_TICK.register(server ->
+      phoneCallManager.tick(server)
     );
 
     // Wisp-Lantern lead: while a player holds the lantern at night in the marsh, a bright guide
@@ -220,6 +248,12 @@ public class InitiativeInit implements ModInitializer {
     // for anything else, so ordering after docprop/lootchest is safe.
     UseBlockCallback.EVENT.register(safariManager::onUseBlock);
 
+    // Safari bait's second use: offered by hand to a tracked lure it BEFRIENDS it
+    // (window extended, stealth off, contest bonus point). Fast PASS otherwise.
+    net.fabricmc.fabric.api.event.player.UseEntityCallback.EVENT.register(
+      safariManager::onUseEntity
+    );
+
     // Homestead: feed a nether star to a claimed beacon to unlock its top tier. Fast PASS
     // unless the held item is a nether star AND the block is a registered homestead beacon.
     UseBlockCallback.EVENT.register((player, level, hand, hit) ->
@@ -231,6 +265,10 @@ public class InitiativeInit implements ModInitializer {
     UseBlockCallback.EVENT.register(
       com.thecompanyinc.cobblemoninitiative.wisp.WispLanternManager::onUseBlock
     );
+
+    // Power plant levers: fast PASS unless the clicked pos is a registered switch pos; the
+    // pair-toggle then PASSES so the vanilla lever still flips (orientation is cosmetic).
+    UseBlockCallback.EVENT.register(powerPlantManager::onUseBlock);
 
     // Town utility fee: using a public workstation (furnace, crafting table, brewing stand, …)
     // inside a town costs CobbleDollars, scaled by badges. Fast PASS outside towns / for storage.
@@ -315,8 +353,10 @@ public class InitiativeInit implements ModInitializer {
       shrineChallengeManager.loadPaths(server);
       lootChestManager.load(server);
       questTrackManager.load(server);
-      safariManager.onServerStarted(server); // lifetime stats + stray-lure sweep
+      safariManager.onServerStarted(server); // stats + pending custody + stray-lure sweep
       frontierManager.onServerStarted(server); // factory custody load
+      powerPlantManager.onServerStarted(server); // state load + fresh-world auto-scramble
+      phoneCallManager.onServerStarted(server); // phone_calls/ script scan + config read
       daycareManager.load(server);
       homesteadManager.load(server);
       momCareManager.load(server);
@@ -332,6 +372,9 @@ public class InitiativeInit implements ModInitializer {
 
     // S2C/C2S payloads (party-picker flow) — types must register before any join.
     com.thecompanyinc.cobblemoninitiative.network.InitiativePayloads.register();
+
+    // PokePhone S2C/C2S trio (offer/open/action) — same registration window.
+    com.thecompanyinc.cobblemoninitiative.phone.PhonePayloads.register();
 
     // Nickname ritual: capture-side hook (LOWEST — after the dupes clause settles).
     // The gift/trade side rides the giveProperties choke point in the command class.
@@ -370,8 +413,9 @@ public class InitiativeInit implements ModInitializer {
       progressManager.saveProgress(server);
       shrineChallengeManager.savePaths();
       lootChestManager.save();
-      safariManager.onServerStopping(server); // forfeit live sessions + save stats
+      safariManager.onServerStopping(server); // restore live-round custody + save stats
       frontierManager.onServerStopping(server); // factory custody save
+      powerPlantManager.onServerStopping(server); // belt-and-braces — changes write-through
       questTrackManager.save(server); // also hands the ▶-highlighted lines back
       daycareManager.save(); // belt-and-braces — custody already write-through saves
       homesteadManager.save();
@@ -746,5 +790,13 @@ public class InitiativeInit implements ModInitializer {
 
   public static AchievementManager getAchievementManager() {
     return achievementManager;
+  }
+
+  public static com.thecompanyinc.cobblemoninitiative.powerplant.PowerPlantManager getPowerPlantManager() {
+    return powerPlantManager;
+  }
+
+  public static com.thecompanyinc.cobblemoninitiative.phone.PhoneCallManager getPhoneCallManager() {
+    return phoneCallManager;
   }
 }

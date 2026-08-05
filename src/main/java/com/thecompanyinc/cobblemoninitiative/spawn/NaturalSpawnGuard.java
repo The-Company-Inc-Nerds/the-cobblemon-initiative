@@ -39,7 +39,30 @@ public final class NaturalSpawnGuard {
         return Unit.INSTANCE;
       }
 
-      // 2. Wild-level scaling: re-level the survivor to the player's progression.
+      // 2. Safari-exclusive roster: any lure-table species is Preserve-only stock —
+      //    cancelled WORLDWIDE, not just inside the fence, so booking a round is
+      //    their only wild source. Bait lures spawn via addFreshEntity and bypass
+      //    this event by construction (see class javadoc). Null-safe: no manager
+      //    (init-order drift) skips the check; togglable via the safari config.
+      if (isSafariExclusive(species)) {
+        event.cancel();
+        if (InitiativeInit.LOGGER.isDebugEnabled()) {
+          InitiativeInit.LOGGER.debug("[SpecialSpawn] blocked natural spawn of safari-exclusive {}", species);
+        }
+        return Unit.INSTANCE;
+      }
+
+      // 3. Ridgewatch Preserve: no natural spawns inside the "Safari Zone" polygon —
+      //    every round catch must come off a bait table (the exclusivity rule above
+      //    covers table species; this keeps the OFF-table locals out of rounds too).
+      //    Name-keyed SafeZone lookup, null-safe: a bare-mod world without the zone
+      //    skips the check. Always-on, not round-gated.
+      if (isInsideSafariZone(mon)) {
+        event.cancel();
+        return Unit.INSTANCE;
+      }
+
+      // 4. Wild-level scaling: re-level the survivor to the player's progression.
       applyWildLevel(mon);
       return Unit.INSTANCE;
     });
@@ -48,6 +71,31 @@ public final class NaturalSpawnGuard {
       SpecialSpawnConfig.get().getBlacklistedSpecies().size(),
       SpecialSpawnConfig.get().isPreventNaturalSpawns()
     );
+  }
+
+  /**
+   * True when safari exclusivity is on and the species (resource-id path, lowercase) rides a
+   * Preserve lure table. Reads live manager state so a ModMenu save/reload applies immediately.
+   */
+  private static boolean isSafariExclusive(String species) {
+    com.thecompanyinc.cobblemoninitiative.safari.SafariManager safari =
+      InitiativeInit.getSafariManager();
+    if (safari == null) return false;
+    return safari.getConfig().exclusiveSpecies && safari.getLureSpeciesIds().contains(species);
+  }
+
+  /** True when the entity stands inside the "Safari Zone" SafeZone (polygon-exact). */
+  private static boolean isInsideSafariZone(PokemonEntity mon) {
+    com.thecompanyinc.cobblemoninitiative.config.NuzlockeConfig cfg =
+      com.thecompanyinc.cobblemoninitiative.NuzlockeInit.getConfig();
+    if (cfg == null || cfg.getSafeZones() == null) return false;
+    String dim = mon.level().dimension().location().toString();
+    for (com.thecompanyinc.cobblemoninitiative.config.NuzlockeConfig.SafeZone zone : cfg.getSafeZones()) {
+      if ("Safari Zone".equals(zone.name)) {
+        return zone.contains(dim, mon.getBlockX(), mon.getBlockY(), mon.getBlockZ());
+      }
+    }
+    return false;
   }
 
   /**

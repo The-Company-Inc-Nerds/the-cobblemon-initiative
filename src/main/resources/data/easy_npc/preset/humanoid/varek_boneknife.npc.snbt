@@ -3,7 +3,7 @@
         author: "TheCompanyInc",
         category: "Civilian",
         created: 0L,
-        description: "civilian at Cyber Approach Road (act 1). Compiled from dialog-src.",
+        description: "civilian at The Preserve - briefing post (Safari Zone) (act 2). Compiled from dialog-src.",
         entityTypeId: "easy_npc:humanoid",
         modified: 0L,
         name: "Varek Boneknife",
@@ -33,33 +33,115 @@
         CanPickUpLoot: 0b,
         CustomNameVisible: 1b,
         DialogData: {
-            Type: "BASIC",
+            Type: "STANDARD",
             DialogDataSet: [
                 {
-                    Priority: 10,
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "no_safari_liberated"
+                        }
+                    ],
+                    Priority: 30,
                     Buttons: [
                         {
-                            Name: "Goodbye",
+                            Name: "Find the ranger",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "goodbye_button"
+                            Label: "leave_button"
                         }
                     ],
                     Texts: [
                         {
-                            Text: "Company drops more than it hauls. I walk the road behind the lorries and pick up what bounces off. Copper, wire, the odd crate that fell and split. Finders keepers, verified by nobody."
+                            Text: "Nothing to brief. The Preserve is a Company site now and the briefing they gave me is one laminated card that says COMPLY. The ranger by the east fence, Nova Circuit - she is the one with a plan. I would start there."
                         },
                         {
-                            Text: "You would be amazed what a tower throws out. Whole reams of paper, half of it stamped, half of it burned at the edges. I do not read it. Reading it is how you end up on a list."
-                        },
-                        {
-                            Text: "Careful down at the low bend, the road floods when the tower dumps its runoff. Good fishing for scrap. Bad fishing for anything alive."
+                            Text: "I keep the rules for the rounds, and there are no rounds while the clipboards hold the gate. The ranger Nova Circuit at the east fence is working on that. If you can help her, every rule I know is waiting on the other side."
                         }
                     ],
-                    Name: "Varek Boneknife",
+                    Name: "Varek Boneknife - no rounds today",
+                    Label: "locked"
+                },
+                {
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "Start a Capture Round",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative safari enter capture"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "capture_button"
+                        },
+                        {
+                            Name: "Start a Contest Round",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative safari enter contest"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "contest_button"
+                        },
+                        {
+                            Name: "End my round early",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative safari exit"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "exit_button"
+                        },
+                        {
+                            Name: "Let me think it over",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Rule of the gate: it holds everything. Your items and your team wait in custody until the round ends, and inside you carry only what the Preserve issues - Preserve Balls, bait, snowballs. Your gear and your partners come back at the bell, plus whatever chose you. Bait does not - bait is Preserve property, spent in the round or surrendered at the gate."
+                        },
+                        {
+                            Text: "Two ways a round ends: the clock runs out or the balls do. You get a couple of minutes and a full pouch, and the round is over the moment either one hits empty. Spend both like you mean it."
+                        },
+                        {
+                            Text: "Bait works two ways. Scattered, it lures them out to investigate - and placement is the rule: skewer and grit go on open ground, the honey smear goes on tree bark, and what the honey calls comes down the trunk to you. Offered to the one in front of you, it calms it - and a calm creature forgives a wobbly throw."
+                        },
+                        {
+                            Text: "A snowball is a tool, not an insult. One soft hit takes the fight out of them and the next ball sits truer. You are softening a catch, not winning an argument."
+                        },
+                        {
+                            Text: "They bolt the second they see you. Crouch in the grass, keep something between you and them, and move only when the head goes down. The Preserve rewards patience and punishes footsteps."
+                        },
+                        {
+                            Text: "Capture round, what you catch is yours to keep. Contest round, the judges appraise your best specimen and it goes home to the Preserve after - you are borrowing its glory, not its life. Helga insists, and Helga is right."
+                        }
+                    ],
+                    Name: "Varek Boneknife - the rules",
                     Label: "default"
                 }
             ]
@@ -151,18 +233,6 @@
             HasObjectives: 1b,
             HasTravelTarget: 0b,
             ObjectiveDataSet: [
-                {
-                    Type: "RANDOM_STROLL_AROUND_HOME",
-                    Prio: 2,
-                    Id: "ambient_stroll_home",
-                    SpeedModifier: 0.8d
-                },
-                {
-                    Type: "MOVE_BACK_TO_HOME",
-                    Prio: 3,
-                    Id: "ambient_back_home",
-                    SpeedModifier: 1.0d
-                },
                 {
                     Type: "LOOK_AT_PLAYER",
                     Prio: 9,

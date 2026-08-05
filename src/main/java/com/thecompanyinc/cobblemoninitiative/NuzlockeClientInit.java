@@ -41,9 +41,21 @@ public class NuzlockeClientInit implements ClientModInitializer {
     // Quest tracking — ] / [ keybinds + the in-process waypoint poller.
     QuestTrackClient.init();
 
+    // Quest Log — the Shift+T viewer-review overlay (client-only: it re-renders the
+    // vanilla-synced ci_quest scoreboard, no packets, no server half).
+    com.thecompanyinc.cobblemoninitiative.questtrack.QuestLogClient.init();
+
+    // Quest Log RECORD tab feed — session ring of every title/subtitle card (the
+    // capture itself is GuiTitleRecordMixin); init only wires the disconnect clear.
+    com.thecompanyinc.cobblemoninitiative.questtrack.EventRecordLog.init();
+
     // High/Low graphics toggle — /gfx command, an (unbound) keybind, and the tick that
     // detects the FancyMenu main-menu pack swap and syncs shaders + video settings to it.
     com.thecompanyinc.cobblemoninitiative.graphics.GraphicsPresetManager.init();
+
+    // PokePhone — the "Answer PokePhone" keybind (default P) + the offer/open receivers
+    // behind the client call screen.
+    com.thecompanyinc.cobblemoninitiative.phone.PhoneCallClient.init();
 
     // Server-driven picker opens. Not opened here directly: the tick poll below waits
     // for screen == null so it sequences AFTER Easy NPC's deferred CLOSE_DIALOG — a

@@ -1,18 +1,18 @@
 {
   "name": "safari_yards",
-  "description": "Safari Zone regression \u2014 the Biodiversity Asset Preserve ('the Baiting Yards'). Full permit loop at the in-zone mew-wisp clearing [1303 64 1451]: badge-3 gate refuses a 0-badge player with the balance and inventory untouched, then badges 3 + 2060 CD -> enter charges the 1500 CD Day Permit via the deferred pay-probe (balance 560 after), issues exactly 20 marked Preserve-issue Safari Balls, kiosk bait PURCHASE (honey_smear, 60 CD via the safari/bait_fee pay-probe since 0.6.0-alpha.6, issue deferred one tick behind payment) + perm-2 scatter dev hook draws a tagged lure within the 5-15s suspense window, and voluntary exit claws every issued ball back, prints the empty ledger + confiscation receipt, sweeps the lures, and does NOT teleport the player. Session gating is by session state, not zone geometry, but the run sits inside the shipped 'Safari Zone' landmark polygon for honest evidence. Badges are restored to 0 at the end (wheat_war_first_farm assumes badges<3); CobbleDollars ride at 500 after a run — 2060 - 1500 permit - 60 bait (the fee rail has no reset, miller_walk precedent).",
+  "description": "Safari Zone regression, 0.7.0-alpha.20 ROUND rework (the Ridgewatch Preserve custody game — supersedes the Day Permit design AND absorbs the deleted safari_bait_fee.json, since the intake-concierge preset was pruned with the a20 re-cast and `safari bait` is now the only kiosk surface). Full round loop at the in-zone mew-wisp clearing [1300.5 89 1450.5]: badge gate (a20 adjudication: gateBadges 6, post-gym-6 leg) refuses untouched below 6, the NEW liberation gate (safari_liberated — Nova's turn-in is the single writer) refuses a badge-6 player inside the fence, the polygon gate refuses from outside the fence (Sango pond, verified stadium_wave/pay_probes ground) BEFORE any fee dispatch, a broke enter declines via the deferred #sf_ok pay-probe with custody untouched, then a funded `enter capture` charges the 500 CD round fee, takes the ENTIRE party + inventory into Preserve custody (sentinels: a givemon magikarp + a feebas last-partner guard + 3 diamonds vanish), and issues the marked kit — 10 Preserve Safari Balls + 16 snowballs + 6 bait (2 per standard table; the a20 lure retune runs THREE standard tables — honey_smear/dried_skewer/glimmer_grit — still_water_chum is deleted, the zone has no water). Stealth is REAL now: an exposed player spooks a lure in ~3s (3 seen-checks at 10t + 30t flee), so the lure beats run CONCEALED — a short_grass setblock at the feet + the client driver holding sneak (input.key) keeps alert at 0 for the whole window. dev scatter -> tagged ci_safari_lure -> dev befriend (friendly latch) -> dev spook (flee + 'spooked and bolted'). Kiosk rail folded in: `safari bait executive_blend` charges 250 CD via #sfb_ok one tick behind payment (funded: receipt + 1 marked gold_nugget; broke: branded actionbar + 'kiosk order didn't clear' + no issue). Voluntary exit ends in place (NO teleport — only the clock escort moves the player), sweeps every marked/bait item ('Round gear handed back'), restores custody exactly (diamonds return, monturnin proves the magikarp is back and removes it — the feebas guard keeps it off the a20 last-partner refusal), and sweeps the lures. The mid-round monturnin now asserts the NEW session-guard refusal ('hands are full mid-round') — it proves the safari session guard, not the emptied party; no other cheap rcon probe can see Cobblemon party emptiness, so custody-taking is proven by the diamond vanish + the post-exit hand-over instead. A compact CONTEST round then pins the second mode word + the 0-point appraisal + a second clean custody cycle. NO BATTLE BEAT BY DESIGN (BATTLE_STARTED_PRE cancelled at HIGHEST during rounds). NEEDLE RULE: Preserve lines are Component.literal with embedded § codes and HudLog stores getString() RAW — needles sit inside ONE color run or bridge runs with regex .*; parenthesised tails are trimmed off needles (wait_chat is regex). Post-state: badges 0 (wheat_war assumes badges<3), balance parked at 500 (safari-family ride-out), sentinel magikarp REMOVED by the restore-probe monturnin, diamonds cleared, safari_liberated + probe tags removed; residue: one short_grass block stays at [1300 89 1450] (cosmetic, in-theme, idempotent on re-runs) and the feebas guard stays ONLY on an empty-party driver (its cleanup monturnin refuses the last partner there — unasserted, in-theme, matches the house givemon precedent).",
   "steps": [
     {
-      "comment": "-- SITE + DESIGN NOTES: concierge NPC is authored but UNPLACED (TODO 'awaiting placement coords'), so every safari command is rcon-dispatched via 'execute as {player}' (enter/exit/status are perm 0; bait/scatter are perm 2 and MUST come from the console side). NO BATTLE BEAT BY DESIGN: BATTLE_STARTED_PRE is cancelled at Priority.HIGHEST while a session is active \u2014 do not add one (this also means no party prep, no autobattle, and the known TBCS battle-init stall caveat never applies to this scenario). NEEDLE RULE for this file: Preserve messages are Component.literal strings with embedded \u00a7 codes and HudLog stores getString() RAW, so every wait_chat needle sits inside ONE color run (never spanning a \u00a7-code boundary \u2014 e.g. 'Issued balls: \u00a7620' means the count can't be in the needle; the exact figures are asserted by the adjacent clear-probes instead) \u2014 or bridges runs with a regex .* (daycare_board precedent, used for the bait receipt). --"
+      "comment": "-- SITE + DESIGN NOTES: every safari command is rcon-dispatched via 'execute as {player}' (enter/exit/status are perm 0; bait/scatter/dev are perm 2 and come from the console side — execute-as keeps console perms AND source-visible sendSuccess, the dev-badges precedent). The dev hooks (scatter/dev befriend/dev spook) are the engine's OWN harness stand-ins: Carpet/driver players cannot fire UseBlockCallback bait clicks, offer bait via UseEntityCallback, or throw snowballs. KNOWN UNCOVERABLE HEADLESSLY: snowball weaken (projectile throw), the 180s clock-expiry escort (too slow for the suite), the boundary-grace countdown (no verified ground just outside the fence), the natural detection raycast as a POSITIVE spook (covered implicitly: any extra lure from the 1-3 roll bolts on its own once sneak releases), crash-file custody heal (needs a relog; the JOIN handler owns it), and the honey_smear TREE-PLACEMENT gate (a20: a real UseBlockCallback click on logs/leaves is required — wrong ground refuses with 'goes on bark' and consumes nothing; the dev scatter hook DELIBERATELY bypasses placement, so beat 5 only proves the honey table still scatters — the tree click itself is an IN-WORLD VERIFY item). --"
     },
     {
-      "comment": "-- preamble: tp BEFORE any entity ops (kill silently no-ops in unloaded chunks). Site = 3b from the noble_giver_mew_wisp latch at 1300.5 64 1450.5 (compiled placement, live-swept grounded) inside the Safari Zone polygon x~1212-1552 / z~1344-1785, centerY 64. --"
+      "comment": "-- STUCK-CUSTODY CAVEAT: a pending custody record with NO live session (scenario killed between fee-resolve and exit) makes enter refuse with 'Helga is still sorting your effects' — rcon CANNOT clear it; relog the driver client (the JOIN heal restores and unblocks). The preamble's safari exit only clears LIVE sessions. --"
+    },
+    {
+      "comment": "-- preamble: tp BEFORE any entity ops (kill silently no-ops in unloaded chunks). Site = 3b from the noble_giver_mew_wisp latch at 1300.5 64 1450.5 (compiled placement, live-swept grounded surface y89) inside the Safari Zone polygon x~1212-1552 / z~1344-1785 (install.json zones[60], 2D column test — any Y). Day + regen keep the hardcore run survivable; day-set also blocks a homestead-income rollover mid-run (exact-balance asserts). Zone flags now suppress hostiles AND NaturalSpawnGuard suppresses wild cobblemon inside the fence (a20) — the tag-keyed lure poll is doubly immune. --"
     },
     {
       "rcon": "tp {player} 1300.5 89 1450.5"
-    },
-    {
-      "comment": "-- hardcore protection: the clearing is OUTSIDE any safe zone (full mob spawns; two live deaths here \u2014 one fall-finish, one night mob). Day + regen keeps the run survivable; day-set also makes a homestead-income rollover mid-scenario impossible, protecting the exact-balance asserts. --"
     },
     {
       "rcon": "time set day"
@@ -27,7 +27,17 @@
       "sleep": 2.0
     },
     {
-      "comment": "-- reset (idempotent re-runs): stale session exit (claws back leftover issue balls; 'No active Day Permit' on clean runs is fine), stray lures from an aborted run (they would false-positive the lure poll), marked balls + bait items from a prior pass --"
+      "comment": "-- stale-sneak defense: a prior aborted run can leave the driver's sneak key held (this file holds it through the lure beats); harmless no-op when already up --"
+    },
+    {
+      "client": "input.key",
+      "args": { "name": "sneak", "down": false }
+    },
+    {
+      "comment": "-- reset (idempotent re-runs): stale battle (custody refuses mid-battle entries; stopbattle fires no event), stale session exit ('No round running' on clean runs is fine), stray lures, every item id this run counts (kit ids: safari_ball/snowball/honeycomb/bone/glowstone_dust + the exec-blend gold_nugget + the diamond sentinel — clearing them BEFORE the custody snapshot keeps every post-restore count exact; prismarine_crystals left the kit with still_water_chum), and the restore-probe tag --"
+    },
+    {
+      "rcon": "stopbattle {player}"
     },
     {
       "rcon": "execute as {player} run cobblemon-initiative safari exit"
@@ -39,29 +49,70 @@
       "rcon": "clear {player} cobblemon:safari_ball"
     },
     {
+      "rcon": "clear {player} minecraft:snowball"
+    },
+    {
       "rcon": "clear {player} minecraft:honeycomb"
     },
     {
-      "rcon": "time set day"
+      "rcon": "clear {player} minecraft:bone"
+    },
+    {
+      "rcon": "clear {player} minecraft:glowstone_dust"
+    },
+    {
+      "rcon": "clear {player} minecraft:gold_nugget"
+    },
+    {
+      "rcon": "clear {player} minecraft:diamond"
+    },
+    {
+      "rcon": "tag {player} remove sf_restore_probe"
+    },
+    {
+      "rcon": "tag {player} remove sf_guard_cleanup"
+    },
+    {
+      "rcon": "tag {player} remove safari_liberated"
     },
     {
       "rcon": "weather clear"
     },
     {
-      "comment": "-- beat 1: the badge-3 gate HOLDS. 0 badges + a 900 CD balance (kept under 1000 \u2014 cobbledollars query abbreviates >=1000, exact below): enter must refuse BEFORE the pay dispatch, so the balance and inventory stay untouched --"
+      "comment": "-- custody sentinels: two party mons (givemon — e2e_run's per-scenario ci_harness tag suppresses the nickname modal) + 3 diamonds. The magikarp is the party-restore witness: the post-exit 'hand over' proves it came back and removes it. The feebas is the a20 LAST-PARTNER GUARD: monturnin now refuses the sole party member, so the magikarp hand-over needs a second mon standing behind it whatever the driver's own party holds --"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon magikarp level=5"
+    },
+    {
+      "wait_chat": "Magikarp joined your team",
+      "timeout": 10
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative givemon feebas level=5"
+    },
+    {
+      "wait_chat": "Feebas joined your team",
+      "timeout": 10
+    },
+    {
+      "rcon": "give {player} minecraft:diamond 3"
+    },
+    {
+      "comment": "-- beat 1: the badge gate HOLDS (a20: gateBadges 6). 0 badges + 900 CD (kept under 1000 — cobbledollars query abbreviates >=1000, exact below): enter must refuse BEFORE the pay dispatch, balance and inventory untouched. Needle stops before the parenthesised '(you hold …)' tail — the count sits in its own §e run AND wait_chat is regex --"
     },
     {
       "rcon": "execute as {player} run cobblemon-initiative dev badges 0",
-      "expect": "level cap now \u00a7e15"
+      "expect": "level cap now §e15"
     },
     {
       "rcon": "cobbledollars set {player} 900"
     },
     {
-      "rcon": "execute as {player} run cobblemon-initiative safari enter"
+      "rcon": "execute as {player} run cobblemon-initiative safari enter capture"
     },
     {
-      "wait_chat": "verified gym badges",
+      "wait_chat": "gym badges before she'll run you a round",
       "timeout": 10
     },
     {
@@ -73,63 +124,166 @@
       "expect": "No items were found"
     },
     {
-      "comment": "-- beat 2: the permit. badges 3 (cap 37 pins the ladder), fund 2060 (kept under the 1000-abbreviation ceiling AFTER the fee: 60-CD honey headroom + the 500 ride-out margin) -> fee 1500 resolves ONE TICK after dispatch (SafariManager pendingPermits pay-probe defer), balance 560 after, exactly 20 marked balls issued --"
+      "comment": "-- beat 1b: the NEW liberation gate (a20 adjudication). Badges 6 (cap 56 — the post-gym-6 leg the gate now matches) but NO safari_liberated tag, standing INSIDE the fence: enter must refuse on the story gate BEFORE the fee dispatch. Then the tag goes on — from here the player passes badge+liberation and only geometry/fee gates remain --"
     },
     {
-      "rcon": "execute as {player} run cobblemon-initiative dev badges 3",
-      "expect": "level cap now \u00a7e37"
+      "rcon": "execute as {player} run cobblemon-initiative dev badges 6",
+      "expect": "level cap now §e56"
     },
     {
-      "rcon": "cobbledollars set {player} 2060"
+      "rcon": "execute as {player} run cobblemon-initiative safari enter capture"
     },
     {
-      "rcon": "execute as {player} run cobblemon-initiative safari enter"
+      "wait_chat": "clipboards still hold the gate",
+      "timeout": 10
     },
     {
-      "wait_chat": "Day Permit approved",
+      "rcon": "cobbledollars query {player}",
+      "expect": "$ 900"
+    },
+    {
+      "rcon": "tag {player} add safari_liberated"
+    },
+    {
+      "comment": "-- beat 2: the polygon gate. Enter from the Sango pond [2570 111 2856] — a live-verified scenario site (stadium_wave/pay_probes precedent, town safe zone, far outside the fence) with badge+liberation gates already passing. The zone check precedes the fee dispatch, so the balance stays exact. tp back + fresh regen after --"
+    },
+    {
+      "rcon": "tp {player} 2570 111 2856"
+    },
+    {
+      "sleep": 1.0
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative safari enter capture"
+    },
+    {
+      "wait_chat": "head inside the fence first",
+      "timeout": 10
+    },
+    {
+      "rcon": "cobbledollars query {player}",
+      "expect": "$ 900"
+    },
+    {
+      "rcon": "tp {player} 1300.5 89 1450.5"
+    },
+    {
+      "rcon": "effect give {player} minecraft:regeneration 240 2"
+    },
+    {
+      "comment": "-- beat 3: broke enter. 10 CD < 500: the fee pay-probe dispatches but #sf_ok reads 0 NEXT tick (SafariManager pendingPermits defer) — the mcfunction's branded actionbar lands on the dispatch tick, the Java chat receipt one tick later (overlay wait MUST come first or its cursor skips the earlier line). Custody is only taken after a cleared fee: sentinels untouched --"
+    },
+    {
+      "rcon": "cobbledollars set {player} 10"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative safari enter capture"
+    },
+    {
+      "wait_chat": "The Preserve does not extend credit",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "wait_chat": "the fee didn't clear",
+      "timeout": 10
+    },
+    {
+      "rcon": "execute if score #sf_ok cd_calc matches 0",
+      "expect": "passed"
+    },
+    {
+      "rcon": "cobbledollars query {player}",
+      "expect": "$ 10"
+    },
+    {
+      "rcon": "clear {player} cobblemon:safari_ball 0",
+      "expect": "No items were found"
+    },
+    {
+      "rcon": "clear {player} minecraft:diamond 0",
+      "expect": "Found 3"
+    },
+    {
+      "comment": "-- beat 4: the funded CAPTURE round. 990 CD -> fee 500 resolves one tick after dispatch, balance 490. CUSTODY: inventory vanishes (diamond gone), kit issued: exactly 10 marked balls, 16 snowballs, and the FULL 6 kit bait — 2x honeycomb + 2x bone + 2x glowstone_dust (baitPerTable of every loaded table except the kiosk-only executive_blend; the a20 data-driven kit). The mid-round monturnin now proves the a20 SESSION GUARD ('hands are full mid-round' — refused before any party scan); party emptiness itself has no other cheap rcon probe, so custody-taking rides the diamond vanish here + the magikarp hand-over after exit. Status pins the mode word in its own §6 run --"
+    },
+    {
+      "rcon": "cobbledollars set {player} 990"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative safari enter capture"
+    },
+    {
+      "wait_chat": "Round fee settled",
       "timeout": 15
     },
     {
       "sleep": 1.0
     },
     {
+      "rcon": "execute if score #sf_ok cd_calc matches 1..",
+      "expect": "passed"
+    },
+    {
       "rcon": "cobbledollars query {player}",
-      "expect": "$ 560"
+      "expect": "$ 490"
+    },
+    {
+      "rcon": "clear {player} minecraft:diamond 0",
+      "expect": "No items were found"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative monturnin magikarp sf_probe"
+    },
+    {
+      "wait_chat": "hands are full mid-round",
+      "timeout": 10
     },
     {
       "rcon": "clear {player} cobblemon:safari_ball 0",
-      "expect": "Found 20"
+      "expect": "Found 10"
+    },
+    {
+      "rcon": "clear {player} minecraft:snowball 0",
+      "expect": "Found 16"
+    },
+    {
+      "rcon": "clear {player} minecraft:honeycomb 0",
+      "expect": "Found 2"
+    },
+    {
+      "rcon": "clear {player} minecraft:bone 0",
+      "expect": "Found 2"
+    },
+    {
+      "rcon": "clear {player} minecraft:glowstone_dust 0",
+      "expect": "Found 2"
     },
     {
       "rcon": "execute as {player} run cobblemon-initiative safari status"
     },
     {
-      "wait_chat": "Issued balls:",
+      "wait_chat": "Round: §6capture",
       "timeout": 10
     },
     {
-      "screenshot": "permit_active"
+      "screenshot": "round_active"
     },
     {
-      "comment": "-- beat 3: kiosk bait PURCHASE (60 CD, safari/bait_fee pay-probe \u2014 the bait is issued ONE TICK after payment resolves, so the receipt wait gates the clear-probe), then the perm-2 scatter dev hook. The REAL consumption path is a held-item right-click (UseBlockCallback) which the headless driver cannot select deterministically (placeItemBackInInventory picks an arbitrary slot); the hook drives the same enqueueScatter and is the proven smoke_auto path. It does NOT consume the bait item \u2014 cleaned up at the end. --"
+      "comment": "-- beat 5: CONCEALMENT then scatter. The a20 stealth engine spooks an exposed player's lure in ~3s (3 seen-checks / 10t, then a 30t bolt) — the old poll-at-+21s cadence would find a corpse window. Concealment = crouch + feet-or-eye block in the concealment set: setblock ONE short_grass at the feet [1300 89 1450] (non-colliding; replaces air on the verified surface; left in place — cosmetic, in-theme, idempotent) and hold sneak via the driver. Scatter lands at blockPosition().below() = the ground under the grass. The table is DELIBERATELY honey_smear THROUGH THE DEV HOOK: the hook bypasses the a20 tree-placement gate (a real click needs logs/leaves), so this beat asserts the honey table still rolls and spawns; the a20 ground-snap (walk down <=8 to air-above-solid) is a no-op on this flat clearing. The tree click itself = in-world verify (see design notes). Suspense 5-15s, then 1-3 spawns that linger 75s while alert stays 0 --"
     },
     {
-      "rcon": "execute as {player} run cobblemon-initiative safari bait honey_smear"
+      "rcon": "setblock 1300 89 1450 minecraft:short_grass"
     },
     {
-      "wait_chat": "Bait charged to your account.*60 CD",
-      "timeout": 10
+      "client": "input.key",
+      "args": { "name": "sneak", "down": true }
     },
     {
-      "rcon": "clear {player} minecraft:honeycomb 0",
-      "expect": "Found 1"
-    },
-    {
-      "rcon": "cobbledollars query {player}",
-      "expect": "$ 500"
-    },
-    {
-      "rcon": "execute as {player} run cobblemon-initiative safari scatter honey_smear"
+      "rcon": "execute as {player} run cobblemon-initiative safari scatter honey_smear",
+      "expect": "scatter queued"
     },
     {
       "wait_chat": "The grass stirs",
@@ -139,22 +293,14 @@
       "timeout": 10
     },
     {
-      "comment": "-- lure poll: suspense is 5-15s, then 1-3 spawns that linger ~75s. The +8s and +15s probes are evidence-only retries (NO expect \u2014 a miss mid-suspense must not abort); the +21s probe is the gate. tag=ci_safari_lure keeps the poll immune to ordinary wild spawns in range. --"
+      "wait_chat": "answers the bait|draws a crowd",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 25
     },
     {
-      "sleep": 8
-    },
-    {
-      "rcon": "execute as {player} at @s if entity @e[type=cobblemon:pokemon,tag=ci_safari_lure,distance=..40]"
-    },
-    {
-      "sleep": 7
-    },
-    {
-      "rcon": "execute as {player} at @s if entity @e[type=cobblemon:pokemon,tag=ci_safari_lure,distance=..40]"
-    },
-    {
-      "sleep": 6
+      "sleep": 1.0
     },
     {
       "rcon": "execute as {player} at @s if entity @e[type=cobblemon:pokemon,tag=ci_safari_lure,distance=..40]",
@@ -164,22 +310,124 @@
       "screenshot": "lure_spawned"
     },
     {
-      "comment": "-- beat 4: voluntary exit. Clawback to zero, empty ledger (nothing was caught \u2014 no ball can be thrown headless), lure sweep, and NO escort teleport: voluntary exit never moves the player, only the clock-expiry eject does \u2014 the position assert pins that contract --"
+      "comment": "-- beat 6: the dev hooks on the nearest tracked lure (<=16b — we stand at the scatter spot). befriend latches friendly (hearts + window bonus, detection off); spook targets the NEAREST lure — possibly the just-befriended one (devSpook clears friendly first), either way the flee path runs: 30t bolt then the poof line. Sneak releases after; any OTHER lure from the 1-3 roll then bolts on its own — harmless extra evidence of the natural detection path --"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative safari dev befriend",
+      "expect": "nearest lure befriended"
+    },
+    {
+      "wait_chat": "it likes you",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative safari dev spook",
+      "expect": "nearest lure spooked"
+    },
+    {
+      "wait_chat": "spooked and bolted",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "client": "input.key",
+      "args": { "name": "sneak", "down": false }
+    },
+    {
+      "comment": "-- beat 7: the kiosk bait rail (folded from the deleted safari_bait_fee.json — the concierge preset was pruned in the a20 re-cast; `safari bait` is the whole kiosk now). executive_blend = the 250 CD premium branch of baitFeeFor + the marked gold_nugget issue, one tick behind #sfb_ok. Then broke: 10 CD -> same-tick branded actionbar (overlay FIRST, cursor rule), next-tick chat receipt, no item, probe 0 --"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative safari bait executive_blend"
+    },
+    {
+      "wait_chat": "Bait charged to your account.*250 CD",
+      "timeout": 10
+    },
+    {
+      "rcon": "execute if score #sfb_ok cd_calc matches 1..",
+      "expect": "passed"
+    },
+    {
+      "rcon": "clear {player} minecraft:gold_nugget 0",
+      "expect": "Found 1"
+    },
+    {
+      "rcon": "cobbledollars query {player}",
+      "expect": "$ 240"
+    },
+    {
+      "rcon": "cobbledollars set {player} 10"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative safari bait executive_blend"
+    },
+    {
+      "wait_chat": "kiosk does not extend credit",
+      "kinds": [
+        "overlay"
+      ],
+      "timeout": 10
+    },
+    {
+      "wait_chat": "kiosk order didn't clear",
+      "timeout": 10
+    },
+    {
+      "rcon": "execute if score #sfb_ok cd_calc matches 0",
+      "expect": "passed"
+    },
+    {
+      "rcon": "clear {player} minecraft:gold_nugget 0",
+      "expect": "Found 1"
+    },
+    {
+      "comment": "-- beat 8: voluntary exit ends IN PLACE (never a teleport — only the clock escort moves the player; the position assert pins that contract). Strict custody ordering on the way out: lure sweep, marked-kit sweep (balls + snowballs + kit bait + the kiosk gold_nugget all carry markers -> 'Round gear handed back'), empty ledger (nothing was caught — no ball can be thrown headless), then party + inventory restore EXACTLY (diamonds back in-slot, magikarp back in the party — the monturnin doubles as sentinel removal) --"
     },
     {
       "rcon": "execute as {player} run cobblemon-initiative safari exit"
     },
     {
-      "wait_chat": "no assets acquired",
+      "wait_chat": "Round closed at the gate",
       "timeout": 10
     },
     {
-      "wait_chat": "Unspent munitions confiscated at egress:",
+      "wait_chat": "Round ledger: nothing this time",
       "timeout": 10
+    },
+    {
+      "wait_chat": "Round gear handed back at the gate",
+      "timeout": 10
+    },
+    {
+      "sleep": 1.0
     },
     {
       "rcon": "clear {player} cobblemon:safari_ball 0",
       "expect": "No items were found"
+    },
+    {
+      "rcon": "clear {player} minecraft:snowball 0",
+      "expect": "No items were found"
+    },
+    {
+      "rcon": "clear {player} minecraft:gold_nugget 0",
+      "expect": "No items were found"
+    },
+    {
+      "rcon": "clear {player} minecraft:diamond 0",
+      "expect": "Found 3"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative monturnin magikarp sf_restore_probe"
+    },
+    {
+      "wait_chat": "You hand over your Magikarp",
+      "timeout": 10
     },
     {
       "rcon": "execute unless entity @e[tag=ci_safari_lure]",
@@ -190,17 +438,91 @@
       "expect": "passed"
     },
     {
-      "screenshot": "safari_yards_done"
+      "screenshot": "capture_done"
     },
     {
-      "comment": "-- cleanup: the un-consumed bait item, and the badge restore \u2014 later scenarios assume a low-badge player (wheat_war_first_farm's early-recognition entries need badges<3). Balance rides at 500 (the fee rail has no reset). --"
+      "comment": "-- beat 9: compact CONTEST round — the second mode word, the appraise-and-release brief on entry, the 0-point appraisal at the gate (no catches headless; 'Appraisal:' sits in its own §e run, the score in §6), and a second clean custody cycle back-to-back (a20: endRound now MARKS the record restored instead of deleting it — the durability fallback — and enter treats a restored record as clear, so an immediate re-enter must not hit the 'still sorting' guard) --"
     },
     {
-      "rcon": "clear {player} minecraft:honeycomb"
+      "rcon": "cobbledollars set {player} 700"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative safari enter contest"
+    },
+    {
+      "wait_chat": "Round fee settled",
+      "timeout": 15
+    },
+    {
+      "wait_chat": "Helga appraises your catches at the bell",
+      "timeout": 10
+    },
+    {
+      "sleep": 1.0
+    },
+    {
+      "rcon": "cobbledollars query {player}",
+      "expect": "$ 200"
+    },
+    {
+      "rcon": "clear {player} minecraft:diamond 0",
+      "expect": "No items were found"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative safari exit"
+    },
+    {
+      "wait_chat": "Appraisal:",
+      "timeout": 10
+    },
+    {
+      "sleep": 1.0
+    },
+    {
+      "rcon": "clear {player} minecraft:diamond 0",
+      "expect": "Found 3"
+    },
+    {
+      "rcon": "clear {player} cobblemon:safari_ball 0",
+      "expect": "No items were found"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative safari status"
+    },
+    {
+      "wait_chat": "No round running",
+      "timeout": 10
+    },
+    {
+      "screenshot": "contest_done"
+    },
+    {
+      "comment": "-- cleanup: feebas guard out (best-effort, NO assert: on a populated driver it hands over; on an empty-party driver it is now the LAST partner and the a20 guard refuses — it then stays as in-theme residue, the house givemon precedent), diamond sentinel out, probe + liberation tags off, badges back to 0 (wheat_war_first_farm's early-recognition entries need badges<3), balance parked at the safari-family 500 CD ride-out --"
+    },
+    {
+      "rcon": "execute as {player} run cobblemon-initiative monturnin feebas sf_guard_cleanup"
+    },
+    {
+      "rcon": "clear {player} minecraft:diamond"
+    },
+    {
+      "rcon": "tag {player} remove sf_restore_probe"
+    },
+    {
+      "rcon": "tag {player} remove sf_guard_cleanup"
+    },
+    {
+      "rcon": "tag {player} remove safari_liberated"
     },
     {
       "rcon": "execute as {player} run cobblemon-initiative dev badges 0",
-      "expect": "level cap now \u00a7e15"
+      "expect": "level cap now §e15"
+    },
+    {
+      "rcon": "cobbledollars set {player} 500"
+    },
+    {
+      "screenshot": "safari_yards_done"
     }
   ]
 }

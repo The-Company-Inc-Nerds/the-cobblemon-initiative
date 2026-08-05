@@ -1,6 +1,5 @@
-# ☎ Professor Acacia — 50-dex research grant. Video call. One-shot. @s. Grants 5 Great Balls.
-tag @s add call_acacia_dex_done
-title @s actionbar {"text":"☎ Incoming call — Professor Acacia","color":"aqua"}
-playsound minecraft:block.note_block.bell master @s ~ ~ ~ 1 1
-give @s cobblemon:great_ball 5
-function cobblemon_initiative:phone/deliver {caller:"phone_acacia",tag:"ci_phone_acacia",label:"call_dex"}
+# ☎ Professor Acacia — 50-dex research grant. Call screen (phone_calls/acacia_dex.json); one-shot
+# via done_tag call_acacia_dex_done on completion. The 5 Great Balls moved into the script's
+# on_complete — the grant lands when she says it, not at ring time (a missed call re-rings, so
+# the reward is never lost). Run AS @s.
+cobblemon-initiative phone ring acacia_dex

@@ -3,7 +3,7 @@
         author: "TheCompanyInc",
         category: "Civilian",
         created: 0L,
-        description: "civilian at Cyber Approach Road (act 1). Compiled from dialog-src.",
+        description: "civilian at The Preserve - intake counter (Safari Zone) (act 2). Compiled from dialog-src.",
         entityTypeId: "easy_npc:humanoid",
         modified: 0L,
         name: "Darik Trapmaster",
@@ -33,82 +33,121 @@
         CanPickUpLoot: 0b,
         CustomNameVisible: 1b,
         DialogData: {
-            Type: "BASIC",
+            Type: "STANDARD",
             DialogDataSet: [
-                {
-                    Priority: 10,
-                    Buttons: [
-                        {
-                            Name: "Hand over 2 apples for the bait crates",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "cobblemon-initiative turnin minecraft:apple 2 darik_apples_done"
-                                }
-                            ],
-                            Label: "apples_button"
-                        },
-                        {
-                            Name: "Goodbye",
-                            Actions: [
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "goodbye_button"
-                        }
-                    ],
-                    Texts: [
-                        {
-                            Text: "Live traps, all of them. I catch the Rattata off the road and carry them to the treeline. The survey crew wanted them poisoned. I told the survey crew where to go."
-                        },
-                        {
-                            Text: "You get a feel for what belongs on a road and what does not. The Joltik belong. The men with clipboards, I am still deciding."
-                        },
-                        {
-                            Text: "Watch your step past the third stake. Not for a trap of mine. That is a Company marker, and I do not know what they are marking, and that is exactly why I watch it."
-                        },
-                        {
-                            Text: "Courier lads will tell you Joltik hatch out of dead batteries. They hatch from eggs, son, same as anything else. They just like a dead battery the way I like a hot dinner."
-                        },
-                        {
-                            Text: "I keep apples for baiting the relocation crates. Keep is a strong word — a certain Rattata holds opinions about my stock levels. A couple of spares would not go amiss."
-                        }
-                    ],
-                    Name: "Darik Trapmaster",
-                    Label: "default"
-                },
                 {
                     Conditions: [
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
-                            Name: "darik_apples_done"
+                            Name: "no_safari_liberated"
                         }
                     ],
-                    Priority: 15,
+                    Priority: 30,
                     Buttons: [
                         {
-                            Name: "Goodbye",
+                            Name: "Find the ranger",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "goodbye_button"
+                            Label: "leave_button"
                         }
                     ],
                     Texts: [
                         {
-                            Text: "Bait crates are stocked, and the freeloader has been informed the apples are for work purposes. She has filed no objection she is willing to repeat."
+                            Text: "Gate is shut, friend. Not by me. The clipboard people annexed the whole Preserve - specimen acquisition site, they call it now - and I hold this counter and say the words they wrote for me. There is a ranger by the east fence, Nova Circuit, who is still saying her own. Talk to her."
                         },
                         {
-                            Text: "Good bait, those apples of yours. The Rattata ride to the treeline like it is a coach service, and one of them always walks straight back. I respect it."
+                            Text: "Do not ask me to open the gate. Asking me gets both of us transitioned, and I have a family. The ranger at the east fence is past caring about that - Nova Circuit. Whatever she is planning, it is more than I have managed."
+                        },
+                        {
+                            Text: "I used to run the intake here. Live traps, gentle hands, everything back where it belongs by dusk. Now I count crates for people who count creatures. If you want that to change, the ranger Nova Circuit by the east fence is where change is standing."
                         }
                     ],
-                    Name: "Darik Trapmaster",
-                    Label: "thanks"
+                    Name: "Darik Trapmaster - under new management",
+                    Label: "locked"
+                },
+                {
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "Start a Capture Round",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative safari enter capture"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "capture_button"
+                        },
+                        {
+                            Name: "Start a Contest Round",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative safari enter contest"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "contest_button"
+                        },
+                        {
+                            Name: "Buy Executive Blend bait",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative safari bait executive_blend 2"
+                                }
+                            ],
+                            Label: "bait_button"
+                        },
+                        {
+                            Name: "How did my round go?",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative safari status"
+                                }
+                            ],
+                            Label: "status_button"
+                        },
+                        {
+                            Name: "Just looking",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Intake is open, and the snares are staying in the shed. My trapping days taught me the one thing worth knowing: a creature comes quietest when it chooses to. That is the whole Preserve idea. In you go."
+                        },
+                        {
+                            Text: "House rules at this counter: your kit and your team wait in custody with me, and you walk in with what the Preserve issues - Preserve Balls, bait, snowballs. Everything comes back out when your round ends, plus whatever chose to stay with you."
+                        },
+                        {
+                            Text: "Capture round, you keep what you catch. Contest round, the judges score your best find and it goes home to the grass after appraisal. That last part is the rule Helga wrote, and it is the best rule we have."
+                        },
+                        {
+                            Text: "Entry is the posted rate at the counter, same for everyone - Helga does not do favorites, only birthdays. The Executive Blend bait runs extra, posted rate again, and the rare ones cannot leave it alone. I have stopped asking what is in it."
+                        }
+                    ],
+                    Name: "Darik Trapmaster - the intake counter",
+                    Label: "default"
                 }
             ]
         },

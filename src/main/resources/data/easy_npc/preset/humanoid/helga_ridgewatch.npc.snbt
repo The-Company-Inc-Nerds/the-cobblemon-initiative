@@ -3,7 +3,7 @@
         author: "TheCompanyInc",
         category: "Civilian",
         created: 0L,
-        description: "civilian at Cyber Approach Road (act 1). Compiled from dialog-src.",
+        description: "civilian at The Preserve - owner's overlook (Safari Zone) (act 2). Compiled from dialog-src.",
         entityTypeId: "easy_npc:humanoid",
         modified: 0L,
         name: "Helga Ridgewatch",
@@ -33,39 +33,70 @@
         CanPickUpLoot: 0b,
         CustomNameVisible: 1b,
         DialogData: {
-            Type: "BASIC",
+            Type: "STANDARD",
             DialogDataSet: [
                 {
-                    Priority: 10,
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "no_safari_liberated"
+                        }
+                    ],
+                    Priority: 30,
                     Buttons: [
                         {
-                            Name: "Goodbye",
+                            Name: "Find the ranger",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "goodbye_button"
+                            Label: "leave_button"
                         }
                     ],
                     Texts: [
                         {
-                            Text: "Come for the Pidgey, stayed for the view. From this ridge you can watch the whole approach road and, if you have the patience, one very busy building nobody talks about."
+                            Text: "My grandmother cut the first fence posts here so the flocks would have somewhere nobody could touch them. The Company walked in with a clipboard, and now every living thing behind that fence is an asset with a number filed to it. Not a name. A number."
                         },
                         {
-                            Text: "The flocks used to roost on the tower ledges. Now they will not go near it. Birds know a thing is wrong before people admit it out loud."
+                            Text: "They stood in my own office and said the word acquisition like it was a kindness they were doing me. There is a ranger by the east fence - Nova Circuit - who would not sign what they put in front of her. Help her. I cannot ask twice without crying, so go."
                         },
                         {
-                            Text: "Lorry after lorry down that road, all night, all hauling the same grey crates uphill. I stopped counting. It only upsets me."
-                        },
-                        {
-                            Text: "A Pidgey remembers every face it ever sees. Fact. That is why I wave at them. You want to be on record as friendly."
-                        },
-                        {
-                            Text: "A hiker swore to me that Leader Volt battles with his eyes shut, so the flash cannot spoil his aim. I wrote it in the bird log. It is that kind of log now."
+                            Text: "I know every creature in that grass by name. The Kricketune by the pond is Ferdinand. The clipboard people know him as a lot number. If you have any fight in you at all, the ranger Nova Circuit at the east fence knows exactly where to point it."
                         }
                     ],
-                    Name: "Helga Ridgewatch",
+                    Name: "Helga Ridgewatch - the annexed preserve",
+                    Label: "locked"
+                },
+                {
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "Into the grass",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Welcome to the Preserve - the real one, the one with names instead of numbers. Sit with me long enough and you will learn them all. The Kricketune by the pond is Ferdinand. He is a tenor, and he knows it."
+                        },
+                        {
+                            Text: "The contest is my idea and I will defend it to anyone: bring me back something wonderful - then let it go home. You keep the memory and the ribbon, the Preserve keeps its heart, and nobody ends up on a wall."
+                        },
+                        {
+                            Text: "I was a birdwatcher before I was an owner, and I will die one. The flocks came back the very week the clipboards left. Birds know when a place belongs to itself again - they knew it before I let myself believe it."
+                        },
+                        {
+                            Text: "Darik runs the intake and Varek keeps the rules - mind them both, they suffered worse than I did and stayed anyway. The Preserve is gentle with people who are gentle with it."
+                        }
+                    ],
+                    Name: "Helga Ridgewatch - the Preserve, the real one",
                     Label: "default"
                 }
             ]

@@ -38,6 +38,14 @@ npcsight stoptag d939ab8b-4cec-47fd-9016-389e4da7422a defeated_rashid_anwar
 npcsight add bd96b93e-66b7-4e18-97ff-384289bd2a0a 9
 npcsight mode bd96b93e-66b7-4e18-97ff-384289bd2a0a pursue
 npcsight stoptag bd96b93e-66b7-4e18-97ff-384289bd2a0a defeated_soraya_neith
+# Axel Datastream (axel_datastream)
+npcsight add fc3c747f-801e-4685-a25c-f38faa754361 9
+npcsight mode fc3c747f-801e-4685-a25c-f38faa754361 pursue
+npcsight stoptag fc3c747f-801e-4685-a25c-f38faa754361 defeated_axel_datastream
+# Byte Razer (byte_razer)
+npcsight add 69dc379e-4050-45aa-b2cf-5deac79cb508 9
+npcsight mode 69dc379e-4050-45aa-b2cf-5deac79cb508 pursue
+npcsight stoptag 69dc379e-4050-45aa-b2cf-5deac79cb508 defeated_byte_razer
 # Sporeherd Maslen (mirek)
 npcsight add ae9aa285-8251-46db-a520-ab00dab02a21 8
 npcsight mode ae9aa285-8251-46db-a520-ab00dab02a21 pursue

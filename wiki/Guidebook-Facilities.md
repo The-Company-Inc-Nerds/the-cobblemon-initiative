@@ -1,8 +1,9 @@
 # Guidebook: Facilities
 
-Three optional, single-player facilities run by The Company, Inc. — each a self-contained
-loop you opt into. None of them can end your run by themselves (see the per-facility notes),
-but they all charge **CobbleDollars**, and the Company voice is exactly as warm as you'd expect.
+Three optional, single-player facilities — each a self-contained loop you opt into. None of
+them can end your run by themselves (see the per-facility notes), but they all charge
+**CobbleDollars**. The Stadium and Daycare are run by The Company, Inc., with the Company
+voice exactly as warm as you'd expect; the Preserve starts out Company-occupied — see below.
 
 > [!NOTE]
 > All three are commands as well as NPCs — the clerk at each site just runs them for you. The
@@ -43,21 +44,36 @@ itself while you travel.
   if the party is full.
 - Custody survives relog. `/cobblemon-initiative daycare deposit | withdraw <slot> | status`.
 
-## The Safari — "The Baiting Yards" (a Company Preserve)
+## The Safari — the Ridgewatch Preserve
 
-A lure-and-catch minigame that opens after **Badge 3**. Buy a **Day Permit** (1,500 CD) from the
-**Preserve Intake Concierge** and you're issued **20 Preserve-Issue Safari Balls** and a **15-minute
-clock**.
+The map calls it the **Safari Zone**; the family that runs it calls it the **Ridgewatch
+Preserve**. When you first arrive (any time after **Badge 3**) the Company is squatting the
+grounds. **Ranger Nova Circuit** at the east fence runs the **clear-out**: deal with the
+Company guns on the fence line, report back, and the Preserve reopens under its owner,
+**Helga Ridgewatch** — **Darik** on the intake kiosk, **Varek** briefing the rules.
 
-- **You don't battle here.** Scatter typed **bait** to draw species, wait through the suspense, and
-  **throw balls** at what appears — your party stays holstered the whole visit. (This makes the
-  Safari **hardcore-safe by construction**: nothing in the Yards can faint your team.)
-- Bait comes in five types from the kiosk, each pulling a different typed table (roughly Lv 25–35).
-  Warm spots build where you've had luck.
-- **Exit** returns your unused balls (clawback) and prints a **catch ledger** — on a stream, the
-  end-of-visit "which one do we keep?" chat vote is the whole point. Lifetime 10/25-catch milestones
-  pay out packs.
-- `/cobblemon-initiative safari enter | status | exit`, plus `safari bait <type>`.
+- **Rounds, not visits.** A round is **500 CD** at the posted rate. At the gate the Preserve
+  takes **custody of your items *and* your party** — inside you carry only the round kit:
+  **10 Preserve Balls, 6 bait, 16 snowballs** — against a **clock of about three minutes**.
+  Your gear and your partners come back at the bell, plus whatever you caught; the kit does
+  not, and **bait is Preserve property** — spent in the round or surrendered at the gate.
+- **You don't battle here.** **Crouch** and work through the **grass** — they bolt the moment
+  they spot you. **Scatter bait** to lure them out to investigate (warm spots build where
+  you've had luck), **offer bait** to the one in front of you to calm it into forgiving a
+  wobbly throw, and a soft **snowball** hit takes the fight out of a catch without starting
+  one. (Party in custody + no battles = **hardcore-safe by construction**.)
+- **Placement matters.** Skewers and grit go on **open ground** — but the **honey smear is
+  smeared on tree bark**, and the bug prizes come down the trunk for it. And the Preserve is
+  **dry ground**: there's no water inside the fence and **no fishing** — every catch here
+  comes to bait.
+- **Some of them live nowhere else.** Several kinds keep to the Preserve — you won't run into
+  them in the wild anywhere outside the fence. If one's on your list, book a round.
+- **A round ends when the clock runs out or the last ball flies.** Two round types at the gate:
+  - **Capture round** — what you catch is yours to keep.
+  - **Contest round** — your catches are appraised at the bell and released home to the
+    Preserve; you're playing for the score, not the keeps.
+- Lifetime catch milestones still pay out packs — the ledger survives between rounds.
+- `/cobblemon-initiative safari enter capture|contest`, `status`, `exit` — see [[Commands]].
 
-> The Preserve-Issue balls are **"Company property. Non-transferable."** — they don't leave the
-> Yards, and neither does anything you *don't* catch before the clock runs out.
+> The kit is stamped **"Property of the Ridgewatch Preserve."** — it doesn't leave the
+> grounds, and neither does anything you *don't* catch before the clock runs out.

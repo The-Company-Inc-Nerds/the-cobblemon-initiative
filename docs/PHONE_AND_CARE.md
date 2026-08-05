@@ -4,6 +4,15 @@
 > the phone's first use). All three systems verified feasible against the current code (see notes).
 
 ## §1 — The PokéPhone (remote story-beat delivery) ★
+
+> **UPDATE 0.7.0-a20:** the delivery mechanism below (invisible Easy-NPC caller + remote
+> `easy_npc dialog open`) is RETIRED. Calls now ride the mod's own full-screen smartphone UI
+> (ring-then-accept: ringtone + flashing actionbar, answer keybind, missed-call re-ring), driven
+> by call scripts under `data/cobblemon_initiative/phone_calls/<id>.json` and
+> `/cobblemon-initiative phone ring <id>`. The trigger conditions, `call_<id>_done` guard tags,
+> and `phone/ring_<id>` function names are unchanged; the done tag is now granted on call
+> COMPLETION (not at ring time), so an ignored call re-rings until taken. §1 below is kept as
+> the original design record.
 **Concept:** a PokéGear-style phone (Gold/Silver). NPCs **call you** when you're nowhere near them —
 Mom checks in, the Mayor says a beacon came in, a grunt taunts, the villain gloats. It's the delivery
 system for beats that shouldn't wait until you happen to walk up to someone.

@@ -2,18 +2,23 @@ package com.thecompanyinc.cobblemoninitiative.safari;
 
 import com.google.gson.Gson;
 import com.thecompanyinc.cobblemoninitiative.InitiativeInit;
+import com.thecompanyinc.cobblemoninitiative.config.SpecialSpawnConfig;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import net.minecraft.util.RandomSource;
 
 /**
- * Bait → species tables for the Baiting Yards, loaded from the jar resource
+ * Bait → species tables for the Ridgewatch Preserve, loaded from the jar resource
  * {@code data/cobblemon_initiative/safari/lure_tables.json}.
  *
  * <p>Every species id is validated at authoring time against the Cobblemon 1.7.3 jar
@@ -60,18 +65,33 @@ public class SafariLureTables {
     public String displayName;
     /** Vanilla item id this bait rides on (renamed via components). */
     public String item;
+    /**
+     * Optional placement rule for the scatter click. {@code null} = anywhere;
+     * {@code "tree"} (the only defined value) = the clicked block must be part of a
+     * tree (logs or leaves) — SafariManager enforces it in onUseBlock.
+     */
+    public String placement;
     public List<Entry> entries = new ArrayList<>();
   }
 
-  /** Root JSON shape. */
+  /** Root JSON shape. Band defaults track the bundled data (gym-6 leg, cap 56). */
   private static class Root {
 
-    int levelMin = 25;
-    int levelMax = 35;
+    int levelMin = 40;
+    int levelMax = 50;
     Map<String, Table> tables = new LinkedHashMap<>();
   }
 
+  /** One resolved roll: the full PokemonProperties string + the entry's rarity. */
+  public record Roll(String properties, String rarity) {}
+
   private Root root = new Root();
+
+  /**
+   * Every species id carried on any table, lowercased — the safari-exclusive roster
+   * NaturalSpawnGuard cancels worldwide. Immutable; rebuilt on every load/reload.
+   */
+  private Set<String> speciesIds = Set.of();
 
   public static SafariLureTables load() {
     SafariLureTables tables = new SafariLureTables();
@@ -95,6 +115,25 @@ public class SafariLureTables {
     } catch (Exception e) {
       InitiativeInit.LOGGER.error("Failed to load safari lure tables.", e);
     }
+    // One walk over the tables: collect the safari-exclusive roster AND run the
+    // authoring-time tripwire — bait spawns ride addFreshEntity and bypass
+    // NaturalSpawnGuard by construction, so a SpecialSpawnConfig-blacklisted
+    // (curated-only) species on a table would quietly become a repeatable catch.
+    Set<String> ids = new LinkedHashSet<>();
+    for (Map.Entry<String, Table> tableEntry : tables.root.tables.entrySet()) {
+      if (tableEntry.getValue().entries == null) continue;
+      for (Entry entry : tableEntry.getValue().entries) {
+        if (entry.species == null) continue;
+        ids.add(entry.species.toLowerCase(Locale.ROOT));
+        if (SpecialSpawnConfig.get().isBlacklisted(entry.species)) {
+          InitiativeInit.LOGGER.warn(
+            "Safari lure table '{}' carries SpecialSpawnConfig-blacklisted species '{}' — curated-only lines must not ride a repeatable bait table.",
+            tableEntry.getKey(), entry.species
+          );
+        }
+      }
+    }
+    tables.speciesIds = Collections.unmodifiableSet(ids);
     InitiativeInit.LOGGER.info(
       "Loaded {} safari lure table(s).",
       tables.root.tables.size()
@@ -115,11 +154,27 @@ public class SafariLureTables {
   }
 
   /**
-   * Roll one species from the bait's table at the given warmth (0..2). Returns a full
-   * PokemonProperties string ({@code <species> level=<n>}), or null for an unknown bait
-   * or an empty table.
+   * The table's placement rule — {@code null} for an unknown table or a
+   * place-anywhere one; {@code "tree"} means the scatter click must land on a tree
+   * block (logs/leaves).
    */
-  public String roll(String baitType, int warmth, RandomSource random) {
+  public String placementFor(String baitType) {
+    Table table = root.tables.get(baitType);
+    return table == null ? null : table.placement;
+  }
+
+  /** The safari-exclusive roster: every table species id, lowercased. Immutable. */
+  public Set<String> speciesIds() {
+    return speciesIds;
+  }
+
+  /**
+   * Roll one species from the bait's table at the given warmth (0..2). Returns the full
+   * PokemonProperties string ({@code <species> level=<n>}) plus the entry's rarity
+   * (contest scoring records it on the lure), or null for an unknown bait or an empty
+   * table.
+   */
+  public Roll roll(String baitType, int warmth, RandomSource random) {
     Table table = root.tables.get(baitType);
     if (table == null || table.entries.isEmpty()) return null;
 
@@ -148,6 +203,9 @@ public class SafariLureTables {
     int max = chosen.maxLevel > 0 ? chosen.maxLevel : root.levelMax;
     if (max < min) max = min;
     int level = min + random.nextInt(max - min + 1);
-    return chosen.species + " level=" + level;
+    return new Roll(
+      chosen.species + " level=" + level,
+      chosen.rarity == null ? "common" : chosen.rarity
+    );
   }
 }

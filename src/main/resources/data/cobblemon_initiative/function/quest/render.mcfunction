@@ -337,6 +337,15 @@ execute if entity @s[tag=corvin_quest_started,tag=!corvin_fish_done] run scorebo
 execute if entity @s[tag=corvin_fish_done,tag=!corvin_fish_paid] run scoreboard players set q.side_nets ci_quest 60
 execute if entity @s[tag=corvin_fish_done,tag=!corvin_fish_paid] run scoreboard players display name q.side_nets ci_quest [{"text":"• Collect the catch bounty from Corvin","color":"gold"}]
 
+# The Ridgewatch Preserve (Safari Zone clear-out, slot 41, a20 redesign): button-start on ranger
+# Nova Circuit (safari_quest_started); the Silva perimeter gate rides Rurik so the display gate
+# stays two-condition; off once Nova's turn_in writes safari_liberated (single writer).
+scoreboard players reset q.side_safari ci_quest
+execute if entity @s[tag=safari_quest_started,tag=!defeated_silva_longscope] run scoreboard players set q.side_safari ci_quest 41
+execute if entity @s[tag=safari_quest_started,tag=!defeated_silva_longscope] run scoreboard players display name q.side_safari ci_quest [{"text":"• Drive the Company out of the Safari Zone","color":"gray"}]
+execute if entity @s[tag=defeated_silva_longscope,tag=!safari_liberated] run scoreboard players set q.side_safari ci_quest 41
+execute if entity @s[tag=defeated_silva_longscope,tag=!safari_liberated] run scoreboard players display name q.side_safari ci_quest [{"text":"• Report the cleared Preserve to Nova Circuit","color":"gray"}]
+
 # The Lamplighters Round (Lysira's glowstone fetch, slot 62, alpha.26 N26): same shape; the
 # payout beat itself points the player at the south dock (the fairy-shrine breadcrumb).
 scoreboard players reset q.side_lamps ci_quest

@@ -146,3 +146,14 @@ execute unless score #repair_a30 ci_ambient matches 1 run function cobblemon_ini
 #    un-find undefeated students), Marisol out of the blocks -> the town-well rim, Noura Ma-at
 #    corner move (uuid tp + wander Home) ──
 execute unless score #repair_a31 ci_ambient matches 1 run function cobblemon_initiative:install/repairs_a31_arm
+
+# ── wave a32 (0.7.0-alpha.20): playtest wave — gym6→7 route rework (Rho + Grid-Reader Chike cut,
+#    Line Tech Volta latch move to the ridge, Byte Razer uuid tp to the pylon bend) and Safari
+#    cast anchor TPs (Rurik + Varek onto their dev-log posts — a20 presets are stationary), plus
+#    cut-content tag hygiene (Rho defeat tag, Darik apple turn-in) ──
+execute unless score #repair_a32 ci_ambient matches 1 run function cobblemon_initiative:install/repairs_a32_arm
+
+# ── wave a33 (0.7.0-alpha.20): PokéPhone call-screen rework — purge stray invisible
+#    ci_phone_caller bodies (the retired Easy-NPC dialog delivery's per-call hosts; their
+#    orphan sweep left phone/tick with the system) ──
+execute unless score #repair_a33 ci_ambient matches 1 run function cobblemon_initiative:install/repairs_a33_arm

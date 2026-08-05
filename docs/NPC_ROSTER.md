@@ -8,7 +8,7 @@
 >
 > DEV DOCUMENT - full spoilers. The player-facing wiki lives in `wiki/`.
 
-**786 characters** - 359 persisted world bodies, 339 latch-spawned, 88 unplaced (no body, no latch - phone callers, script-spawned bodies like the transformed Hua Zhan leader, dead content, act-2/3 casting).
+**780 characters** - 362 persisted world bodies, 338 latch-spawned, 80 unplaced (no body, no latch - phone callers, script-spawned bodies like the transformed Hua Zhan leader, dead content, act-2/3 casting).
 
 **Reading the tables:** *(body)* = persisted world entity (moves only via repairs tp);
 *(latch)* = spawned at the authored coords when a player first comes within 40 blocks;
@@ -398,7 +398,7 @@
 | **Rami Seti** `rami_seti` | Kalahar Reach - 2206 129 4210 (body) | fetch: 1x bone -> `rami_relic_done` | world-body look |
 | **Nurse Sahir Anuket** `sahir_anuket` | Kalahar Reach - Pokemon Center - 2088 121 3928 (body) | runs: economy/heal_paid, pc/open, sidequest/rumors/shrine_ground | skin `single/nurse_center` |
 | **Samira Nefer** `samira_nefer` | Kalahar Reach - 2148 138 3974 (body) | flavor / lore dialog | world-body look |
-| **Tarek Ramessu** `tarek_ramessu` | Kalahar Reach - 2032 136 4092 (body) | cmd: kalahar start | world-body look |
+| **Tarek Ramessu** `tarek_ramessu` | Kalahar Reach - 2032 136 4092 (body) | gym-guide info pages; cmd: kalahar start | world-body look |
 | **Warden Ossa** `warden_ossa` | Kalahar Reach - Old Records Post - 2050.5 129 4085.5 (latch) | runs: sidequest/reach_cache/turnin, sidequest/reach_cache/resurvey, sidequest/reach_cache/accept | skin `single/kalahar_trainer_2` |
 | **Yasmin Aset** `yasmin_aset` | Kalahar Reach - 2172 135 4242 (body) | flavor / lore dialog | world-body look |
 | **Zaid Khonsu** `zaid_khonsu` | Kalahar Reach - 1978 136 4136 (body) | flavor / lore dialog | world-body look |
@@ -550,15 +550,16 @@
 
 ## Route 12
 
-`characters/route12/` - 5 NPCs
+`characters/route12/` - 6 NPCs
 
 | NPC | Where | Does | Looks |
 |---|---|---|---|
-| **Grid-Reader Chike** `r12_lorekeeper_pylon` | Pylon Path - substation shadow - 1525.5 64 1698.5 (latch) | flavor / lore dialog | skin `groups/cyber` |
-| **Line Tech Volta** `r12_spotter_pylon` | Pylon Path - 1520.5 64 1710.5 (latch) | battles `r12_spotter_pylon` (2x lv58-60: manectric, magnezone), prize 700, pursues on sight r8, forced at close range | skin `groups/cyber` |
-| **Rho** `villain_route_agent_12` | Pylon Path - checkpoint - 1512.5 77 1722.5 (latch) | battles `villain_grunt_5` (2x lv32-34: murkrow, krokorok), prize 720 | skin `single/thecompany_grunt_3` |
-| **Mira** `villain_site_manager_6` | Fenceline Acres - The Transformer Shed (R12) - 1565.5 75 1732.5 (latch) | battles `villain_site_manager_6` (2x lv61-62: krookodile, obstagoon), prize 1250 | skin `single/thecompany_grunt_1` |
-| **Kade** `villain_yield_officer_6` | Fenceline Acres - Pylon Fence (R12) - 1548.5 76 1748.5 (latch) | battles `villain_yield_officer_6` (2x lv58-59: watchog, bisharp), prize 720 | skin `single/thecompany_grunt_4` |
+| **Axel Datastream** `axel_datastream` | Pylon Path - the north wire (1432.5 82 1520.5, gym6 -> gym7 leg) - 1432 82 1520 (body) | battles `axel_datastream` (2x lv52-54: porygon2, eelektross), prize 620, pursues on sight r9, forced at close range | world-body look |
+| **Byte Razer** `byte_razer` | Pylon Path - the pylon bend (1569.5 73 1796.5, gym6 -> gym7 leg) - 1569.5 73 1796.5 (body, moved by repairs) | battles `byte_razer` (2x lv53-55: heliolisk, galvantula), prize 620, pursues on sight r9, forced at close range | world-body look |
+| **Imara** `fenceline_farmer` | Fenceline Acres (R12) - 1549.5 76 1738.5 (latch) | runs: liberation/free_field | skin `single/wheat_factor` |
+| **Line Tech Volta** `r12_spotter_pylon` | Pylon Path - substation ridge - 1564.5 76 1656.5 (latch) | battles `r12_spotter_pylon` (2x lv53-55: manectric, magnezone), prize 700, pursues on sight r8, forced at close range | skin `groups/cyber` |
+| **Mira** `villain_site_manager_6` | Fenceline Acres - The Transformer Shed (R12) - 1565.5 75 1732.5 (latch) | battles `villain_site_manager_6` (2x lv55-56: krookodile, obstagoon), prize 1250 | skin `single/thecompany_grunt_1` |
+| **Kade** `villain_yield_officer_6` | Fenceline Acres - Pylon Fence (R12) - 1548.5 76 1748.5 (latch) | battles `villain_yield_officer_6` (2x lv53-54: watchog, bisharp), prize 720 | skin `single/thecompany_grunt_4` |
 
 ## Ryujin Keep — Gym 8 (Dragon, cap 68)
 
@@ -810,7 +811,7 @@
 
 | NPC | Where | Does | Looks |
 |---|---|---|---|
-| **Preserve Intake Concierge** `safari_concierge` | The Biodiversity Asset Preserve - intake gate (Safari Zone, ~x1212-1552 / z1344-1785) - UNPLACED | cmd: safari enter; safari status; safari exit; safari bait honey_smear; safari bait dried_skewer; safari bait glimmer_grit; safari bait still_water_chum; safari bait executive_blend | skin `single/thecompany_admin_1` |
+| **Nova Circuit** `safari_ranger_nova` | The Preserve - east fence (Safari Zone) - 1522 77 1636 (body) | runs: economy/payout | world-body look |
 
 ## Legendary encounters
 
@@ -966,12 +967,12 @@
 | **Cirrus** `companion_routes_swablu` | Dragon Overlook, Spire Road - 2391.5 202 890.5 (latch) | flavor / lore dialog | Cobblemon model: swablu |
 | **Poultice** `companion_routes_wooper` | Eastern Cliff Route - 4043.5 91 2953.5 (latch) | flavor / lore dialog | Cobblemon model: wooper |
 | **Daisuke Ironwing** `daisuke_ironwing` | Spire Road to Ryujin Keep - 2284 211 1086 (body) | flavor / lore dialog | world-body look |
-| **Darik Trapmaster** `darik_trapmaster` | Cyber Approach Road - 1456 86 1682 (body) | fetch: 2x apple -> `darik_apples_done` | world-body look |
+| **Darik Trapmaster** `darik_trapmaster` | The Preserve - intake counter (Safari Zone) - 1456 86 1682 (body) | cmd: safari enter capture; safari enter contest; safari bait executive_blend; safari status | world-body look |
 | **Dr. Vex Labforge** `dr_vex_labforge` | Eastern Rift Field Camp - 4066 81 2784 (body) | flavor / lore dialog | world-body look |
 | **Eldon Basewatch** `eldon_basewatch` | Eastern Cliff Route - 4006 119 3048 (body) | flavor / lore dialog | world-body look |
 | **Eldric Stonegaze** `eldric_stonegaze` | Eastern Cliff Route - 4282 81 2982 (body) | flavor / lore dialog | world-body look |
 | **Haru Scaleguard** `haru_scaleguard` | Dragon Overlook, Spire Road - 2376 202 888 (body) | flavor / lore dialog | world-body look |
-| **Helga Ridgewatch** `helga_ridgewatch` | Cyber Approach Road - 1486 82 1680 (body) | flavor / lore dialog | world-body look |
+| **Helga Ridgewatch** `helga_ridgewatch` | The Preserve - owner's overlook (Safari Zone) - 1486 82 1680 (body) | flavor / lore dialog | world-body look |
 | **Jax Databet** `jax_databet` | Cyber Approach Road - 1718 90 1198 (body) | flavor / lore dialog | world-body look |
 | **Kaede Emberwind** `kaede_emberwind` | Dragon Overlook, Spire Road - 2390 202 890 (body) | flavor / lore dialog | world-body look |
 | **Kael Embermark** `kael_embermark` | Eastern Cliff Route - 4108 88 2990 (body) | flavor / lore dialog | world-body look |
@@ -980,19 +981,19 @@
 | **Korbyn Switchcode** `korbyn_switchcode` | Eastern Rift Field Camp - 4046 81 2766 (body) | flavor / lore dialog | world-body look |
 | **Liora Heroheart** `liora_heroheart` | Eastern Cliff Route - 4043 91 2952 (body) | gift: one_time `liora_route_kit` | world-body look |
 | **Luna Chanceveil** `luna_chanceveil` | Eastern Cliff Route - 4174 99 3037 (body) | flavor / lore dialog | world-body look |
-| **Marek Blacknet** `marek_blacknet` | Cyber Approach Road (Company Survey Line) - 1502 84 1704 (body) | flavor / lore dialog | world-body look |
+| **Marek Blacknet** `marek_blacknet` | The Preserve - north fence (Safari Zone) - 1502 84 1704 (body) | battles `marek_blacknet` (3x lv53-55: scyther, absol, pinsir), prize 700; cmd: monturnin heracross marek_gifted; monturnin pinsir marek_gifted | world-body look |
 | **Maris Tidewhisper** `maris_tidewhisper` | Eastern Cliff Route - 4028 119 3050 (body) | flavor / lore dialog | world-body look |
 | **Nira Gearshift** `nira_gearshift` | Eastern Quarry Route - 4082 81 2768 (body) | flavor / lore dialog | world-body look |
-| **Nova Circuit** `nova_circuit` | Cyber Approach Road - 1780 90 1192 (body) | flavor / lore dialog | world-body look |
+| **Ray Circuit** `nova_circuit` | Cyber Approach Road - 1780 90 1192 (body) | flavor / lore dialog | world-body look |
 | **Orion Deepvoyage** `orion_deepvoyage` | Eastern Tidewater Route - 4272 68 2784 (body) | flavor / lore dialog | world-body look |
 | **Ren Stormwing** `ren_stormwing` | Spire Road to Ryujin Keep - 2268 211 1112 (body) | flavor / lore dialog | world-body look |
 | **Rex Broadcast** `rex_broadcast` | Cyber Approach Road - 1654 90 1182 (body) | flavor / lore dialog | world-body look |
-| **Rurik Ironshot** `rurik_ironshot` | Cyber Approach Road (Company Survey Line) - 1476 84 1626 (body) | flavor / lore dialog | skin `single/thecompany_grunt_4` |
+| **Rurik Ironshot** `rurik_ironshot` | The Preserve - intake gate post (Safari Zone) - 1470.5 84 1623.5 (body, moved by repairs) | battles `rurik_ironshot` (2x lv52-53: mightyena, skuntank), prize 350 | skin `single/thecompany_grunt_4` |
 | **Selina Wavecrest** `selina_wavecrest` | Eastern Tidewater Route - 4258 72 2796 (body) | gift: one_time `selina_tide_haul` | world-body look |
-| **Silva Longscope** `silva_longscope` | Cyber Approach Road (Company Survey Line) - 1454 84 1654 (body) | flavor / lore dialog | skin `single/thecompany_grunt_2` |
+| **Silva Longscope** `silva_longscope` | The Preserve - appraisal tripod (Safari Zone) - 1454 84 1654 (body) | battles `silva_longscope` (3x lv54-56: liepard, honchkrow, krookodile), prize 800 | skin `single/thecompany_grunt_2` |
 | **Talon Gridguard** `talon_gridguard` | Cyber Approach Road - 1702 95 1218 (body) | flavor / lore dialog | world-body look |
 | **Taro Fangblade** `taro_fangblade` | Lower Spire Road to Ryujin Keep - 2376 199 1008 (body) | flavor / lore dialog | world-body look |
-| **Varek Boneknife** `varek_boneknife` | Cyber Approach Road - 1486 80 1650 (body) | flavor / lore dialog | world-body look |
+| **Varek Boneknife** `varek_boneknife` | The Preserve - briefing post (Safari Zone) - 1486.5 80 1644.5 (body, moved by repairs) | cmd: safari enter capture; safari enter contest; safari exit | world-body look |
 | **Vera Pulse** `vera_pulse` | Cyber Approach Road - 1424 90 950 (body) | flavor / lore dialog | world-body look |
 | **Vivi Neonfan** `vivi_neonfan` | Cyber Approach Road - 1698 90 1160 (body) | flavor / lore dialog | world-body look |
 | **Yuna Drakespirit** `yuna_drakespirit` | High Spire Road to Ryujin Keep - 2282 228 1098 (body) | flavor / lore dialog | world-body look |
@@ -1034,20 +1035,6 @@
 | **Ming** `villain_yield_officer` | Firstfurrow Farm — North Fence - 1586.5 90 2487.5 (latch) | battles `villain_yield_officer` (2x lv19-19: herdier, koffing), prize 280 | skin `single/thecompany_grunt_4` |
 | **Ping** `wheat_trader_1` | Hua Zhan City - 1538 86 2002 (body) | battles `wheat_trader_ambush` (2x lv38-39: miltank, tauros), prize 400; native trade window (trade_wheat_trader); native trade window (trade_wheat_trader) | world-body look |
 | **Tau** `wheat_trader_2` | Kalahar Reach - 1526 84 2080 (body) | battles `wheat_trader_ambush_kalahar` (4x lv50-51: bouffalant, miltank, mudsdale, tauros), prize 500; native trade window (trade_wheat_trader); native trade window (trade_wheat_trader) | world-body look |
-
-## PokePhone callers (no body)
-
-`characters/phone/` - 7 NPCs
-
-| NPC | Where | Does | Looks |
-|---|---|---|---|
-| **Phone Call from Professor Acacia** `phone_acacia` | PokéPhone (spawned on-call) - UNPLACED | flavor / lore dialog | skin `single/phone_acacia` |
-| **Phone Call from the Board** `phone_board` | PokéPhone (spawned on-call) - UNPLACED | flavor / lore dialog | skin `single/phone_silhouette` |
-| **Phone Call from Acting CEO DJ** `phone_dj` | PokéPhone (spawned on-call) - UNPLACED | flavor / lore dialog | skin `single/phone_dj` |
-| **Phone Call from the Founder** `phone_founder` | PokéPhone (spawned on-call) - UNPLACED | flavor / lore dialog | skin `single/phone_silhouette` |
-| **Phone Call from Mayor Liang** `phone_liang` | PokéPhone (spawned on-call) - UNPLACED | cmd: homestead buy | skin `single/phone_liang` |
-| **Phone Call from Mom** `phone_mom` | PokéPhone (spawned on-call) - UNPLACED | flavor / lore dialog | skin `single/phone_mom` |
-| **Phone Call from Unknown Number** `phone_unknown` | PokéPhone (spawned on-call) - UNPLACED | flavor / lore dialog | skin `single/phone_silhouette` |
 
 ## Orc
 
