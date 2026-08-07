@@ -87,10 +87,13 @@ import net.minecraft.world.scores.criteria.ObjectiveCriteria;
  * "Day Permit" design). A paid, timed, CATCH-ONLY custody game: the round fee buys a
  * fixed kit (marked Safari Balls, bait for every standard table, snowballs) while the
  * player's ENTIRE party and inventory sit in Preserve custody. Bait lures wild Pokémon
- * to the spot; stealth (crouch in grass/leaves cover) keeps them from spooking;
- * snowballs weaken AND stagger (push-your-luck: catch rate up, bolt risk up — a green
- * catch-chance bar reads the nearest lure); a bait offering befriends. CAPTURE rounds
- * keep the catches; CONTEST rounds appraise them for rarity points and release them.
+ * to the spot; stealth (crouch in grass/leaves cover) keeps them from spooking. Two catch
+ * paths: snowballs weaken AND stagger (the rough push-your-luck path — catch rate up, bolt
+ * risk up), or feed bait by hand as TREATS to build a lure's TRUST until it's befriended
+ * (the humane path — never spooks, extended window, its own catch-rate bonus, and the
+ * caught Pokémon keeps high friendship). A green catch-chance bar reads the nearest lure
+ * and reflects whichever path is in play. CAPTURE rounds keep the catches; CONTEST rounds
+ * appraise them for rarity points (a befriended catch scores a premium) and release them.
  *
  * <p>Pure CobbleDollars sink: the round fee rides the shipped pay-probe idiom
  * ({@code safari/permit_fee.mcfunction}, gate on {@code store result} — CobbleDollars
@@ -298,10 +301,13 @@ public class SafariManager {
       return Unit.INSTANCE;
     });
 
-    // Stagger catch buff. POKEMON_CATCH_RATE fires inside CaptureCalculator.getCatchRate
-    // for EVERY wild throw in the world (any calculator), so the gate is load-bearing:
-    // active session + lure tag + tracked-lure hit — without it, staggers would buff
-    // catches everywhere. The bar's estimate applies this exact same multiplier.
+    // Catch buff — the two Preserve catch levers. POKEMON_CATCH_RATE fires inside
+    // CaptureCalculator.getCatchRate for EVERY wild throw in the world (any calculator),
+    // so the gate is load-bearing: active session + lure tag + tracked-lure hit — without
+    // it, the bonuses would buff catches everywhere. STAGGER (snowballs, the rough path)
+    // and FRIENDLY (trust from treats, the humane path) both raise the rate, additively,
+    // so a fully-befriended mon catches as readily as a staggered one without ever being
+    // spooked. The bar's estimate applies this exact same multiplier.
     CobblemonEvents.POKEMON_CATCH_RATE.subscribe(Priority.NORMAL, event -> {
       if (!(event.getThrower() instanceof ServerPlayer player)) return Unit.INSTANCE;
       SafariSession session = sessions.get(player.getUUID());
@@ -309,10 +315,10 @@ public class SafariManager {
       PokemonEntity target = event.getPokemonEntity();
       if (!target.getTags().contains(LURE_TAG)) return Unit.INSTANCE;
       SafariSession.ActiveLure lure = findLureByEntity(session, target.getUUID());
-      if (lure == null || lure.stagger <= 0) return Unit.INSTANCE;
-      event.setCatchRate(
-        event.getCatchRate() * (1f + (float) (config.staggerCatchBonus * lure.stagger))
-      );
+      if (lure == null) return Unit.INSTANCE;
+      float mult = catchRateMultiplier(lure);
+      if (mult == 1f) return Unit.INSTANCE;
+      event.setCatchRate(event.getCatchRate() * mult);
       return Unit.INSTANCE;
     });
 
@@ -597,7 +603,8 @@ public class SafariManager {
     player.sendSystemMessage(
       Component.literal(
         "§7Your party and packs wait safely at the gate. Crouch in cover — spooked ones bolt. " +
-        "A gentle bait offering makes a friend."
+        "Offer bait by hand as a treat: keep it up and a Pokémon comes to trust you — " +
+        "it won't flee, it's easier to catch, and it stays fond of you for good."
       )
     );
     if (mode == SafariSession.Mode.CONTEST) {
@@ -1409,8 +1416,9 @@ public class SafariManager {
       DataComponents.LORE,
       new ItemLore(List.of(
         Component.literal("tree".equals(table.placement)
-          ? "§8Smear on tree bark, or offer it by hand."
-          : "§8Scatter on open ground, or offer it by hand."),
+          ? "§8Smear on tree bark to lure — or offer it by hand as a treat."
+          : "§8Scatter on open ground to lure — or offer it by hand as a treat."),
+        Component.literal("§8Treats build trust: a trusting Pokémon won't bolt and catches easy."),
         Component.literal("§8Preserve property — surrendered at the bell.")
       ))
     );
@@ -1482,8 +1490,11 @@ public class SafariManager {
   }
 
   /**
-   * UseEntityCallback handler — the bait's SECOND use: offered by hand to a tracked
-   * lure it BEFRIENDS it (window extended, detection off, contest bonus point).
+   * UseEntityCallback handler — the bait's SECOND use: offered by hand to a tracked lure
+   * it is a TREAT that raises the lure's trust meter. Offering the SAME bait that lured it
+   * (its favourite) gives {@code trustPerTreat}; a mismatched bait still earns +1. At
+   * {@code trustThreshold} the lure is BEFRIENDED — the humane catch path (detection off,
+   * window extended, easier capture, high friendship on catch, contest bonus).
    * Fast PASS unless main-hand ci_bait on a tagged lure.
    */
   public InteractionResult onUseEntity(
@@ -1514,12 +1525,69 @@ public class SafariManager {
       return InteractionResult.SUCCESS;
     }
 
+    // The treat: matching its favourite bait builds trust faster than a mismatched one.
+    String offered = held.get(DataComponents.CUSTOM_DATA).copyTag().getString(BAIT_MARKER);
+    boolean favourite = lure.baitType != null && lure.baitType.equals(offered);
+    int gain = favourite ? Math.max(1, config.trustPerTreat) : 1;
+
     held.shrink(1);
-    befriendLure(serverPlayer, session, lure, mon);
+    offerTreat(serverPlayer, session, lure, mon, gain, favourite);
     return InteractionResult.SUCCESS;
   }
 
-  /** Shared befriend body (hand-offering + the dev hook). */
+  /**
+   * Raise a lure's trust by {@code gain}; flip it {@code friendly} once trust crosses
+   * {@code trustThreshold}. Heart feedback scales with progress; the settle message +
+   * chime fire on the crossing tick.
+   */
+  private void offerTreat(
+    ServerPlayer player,
+    SafariSession session,
+    SafariSession.ActiveLure lure,
+    PokemonEntity mon,
+    int gain,
+    boolean favourite
+  ) {
+    int threshold = Math.max(1, config.trustThreshold);
+    boolean wasFriendly = lure.friendly;
+    lure.trust = Math.min(threshold, lure.trust + gain);
+    if (lure.trust >= threshold) {
+      lure.friendly = true;
+    }
+
+    ServerLevel level = player.serverLevel();
+    // Heart burst grows as trust builds (2 → threshold+2 particles).
+    int hearts = Math.min(threshold, lure.trust) + 2;
+    level.sendParticles(
+      ParticleTypes.HEART,
+      mon.getX(), mon.getY() + mon.getBbHeight() + 0.3, mon.getZ(),
+      hearts, 0.35, 0.25, 0.35, 0.01
+    );
+
+    if (lure.friendly && !wasFriendly) {
+      befriendLure(player, session, lure, mon);
+      return;
+    }
+
+    // Still building trust — gentle nudge feedback.
+    level.playSound(
+      null, mon.getX(), mon.getY(), mon.getZ(),
+      SoundEvents.AMETHYST_BLOCK_HIT, SoundSource.NEUTRAL, 0.7f, 1.4f
+    );
+    player.displayClientMessage(
+      Component.literal(
+        "§dThe " + mon.getPokemon().getSpecies().getName() +
+        (favourite ? " loves that — " : " nibbles — ") +
+        "§7trust §d" + lure.trust + "§7/§d" + threshold
+      ),
+      true
+    );
+  }
+
+  /**
+   * The lure is now befriended: turn detection off, extend its window, and celebrate.
+   * Shared by the treat crossing and the dev hook (which snaps trust to the threshold).
+   */
   private void befriendLure(
     ServerPlayer player,
     SafariSession session,
@@ -1527,6 +1595,7 @@ public class SafariManager {
     PokemonEntity mon
   ) {
     lure.friendly = true;
+    lure.trust = Math.max(lure.trust, Math.max(1, config.trustThreshold));
     lure.alert = 0;
     lure.fleeTicksLeft = 0;
     lure.ticksRemaining += Math.max(0, config.friendlyBonusSeconds) * 20;
@@ -1535,7 +1604,7 @@ public class SafariManager {
     level.sendParticles(
       ParticleTypes.HEART,
       mon.getX(), mon.getY() + mon.getBbHeight() + 0.3, mon.getZ(),
-      6, 0.35, 0.25, 0.35, 0.01
+      10, 0.4, 0.3, 0.4, 0.01
     );
     level.playSound(
       null, mon.getX(), mon.getY(), mon.getZ(),
@@ -1543,7 +1612,8 @@ public class SafariManager {
     );
     player.displayClientMessage(
       Component.literal(
-        "§dThe " + mon.getPokemon().getSpecies().getName() + " settles — it likes you."
+        "§dThe " + mon.getPokemon().getSpecies().getName() +
+        " trusts you now — it won't bolt, and a gentle catch will hold."
       ),
       true
     );
@@ -1984,6 +2054,7 @@ public class SafariManager {
             entity.getPokemon().getUuid(),
             scatter.spotKey,
             roll.rarity(),
+            scatter.baitType,
             config.windowSeconds * 20
           )
         );
@@ -2205,35 +2276,49 @@ public class SafariManager {
       return;
     }
     float chance = Math.max(0f, Math.min(1f,
-      estimateCatchChance(mon.getPokemon(), lure.stagger)));
+      estimateCatchChance(mon.getPokemon(), lure)));
     ServerBossEvent bar = session.getCatchBar();
     if (bar == null) {
       bar = new ServerBossEvent(
-        catchBarName(chance, lure.stagger),
+        catchBarName(chance, lure),
         BossEvent.BossBarColor.GREEN,
         BossEvent.BossBarOverlay.PROGRESS
       );
       bar.addPlayer(player);
       session.setCatchBar(bar);
     } else {
-      bar.setName(catchBarName(chance, lure.stagger));
+      bar.setName(catchBarName(chance, lure));
     }
     bar.setProgress(chance);
   }
 
-  private Component catchBarName(float chance, int stagger) {
+  private Component catchBarName(float chance, SafariSession.ActiveLure lure) {
     int pct = Math.round(chance * 100f);
-    return Component.literal(
-      "§aCatch chance §7— §e" + pct + "%" +
-      (stagger > 0 ? "§7 (staggered ×" + stagger + ")" : "")
-    );
+    String tag =
+      lure.friendly ? "§7 (§dbefriended§7)"
+      : lure.stagger > 0 ? "§7 (staggered ×" + lure.stagger + ")"
+      : "";
+    return Component.literal("§aCatch chance §7— §e" + pct + "%" + tag);
   }
 
   /**
-   * DISPLAY-ONLY estimate — the real roll is Cobblemon's capture calculator; only the
-   * stagger multiplier (the POKEMON_CATCH_RATE hook) is ours, and the bar applies the
-   * identical factor. Mirrors CobblemonCaptureCalculator.processCapture (jar-verified
-   * 1.7.3) for the out-of-battle case:
+   * The Preserve's own catch-rate multiplier for a tracked lure: the rough path
+   * (snowball staggers) and the humane path (a befriended lure) stack additively. Applied
+   * identically by the real POKEMON_CATCH_RATE hook and the on-screen catch bar — keep
+   * them in lockstep or the green bar lies.
+   */
+  private float catchRateMultiplier(SafariSession.ActiveLure lure) {
+    float bonus = (float) (config.staggerCatchBonus * lure.stagger);
+    if (lure.friendly) bonus += (float) config.friendlyCatchBonus;
+    return 1f + bonus;
+  }
+
+  /**
+   * DISPLAY-ONLY estimate — the real roll is Cobblemon's capture calculator; only our
+   * catch-rate multiplier (the POKEMON_CATCH_RATE hook) is ours, and the bar applies the
+   * identical factor via {@link #catchRateMultiplier}. Mirrors
+   * CobblemonCaptureCalculator.processCapture (jar-verified 1.7.3) for the out-of-battle
+   * case:
    *   modified = (3·maxHP − 2·curHP) · rate · ballBonus · 0.5 / (3·maxHP)
    *   shake    = 65536 / (255 / modified)^0.1875
    *   P(catch) = (shake / 65537)^4
@@ -2242,9 +2327,8 @@ public class SafariManager {
    * well above it), the Gen8 level penalty (needs a battleId; never set out of
    * battle). NEVER read the party here — it sits in Preserve custody all round.
    */
-  private float estimateCatchChance(Pokemon pokemon, int stagger) {
-    float rate = pokemon.getForm().getCatchRate()
-      * (1f + (float) (config.staggerCatchBonus * stagger));
+  private float estimateCatchChance(Pokemon pokemon, SafariSession.ActiveLure lure) {
+    float rate = pokemon.getForm().getCatchRate() * catchRateMultiplier(lure);
     float maxHp = pokemon.getMaxHealth();
     float curHp = pokemon.getCurrentHealth();
     if (maxHp <= 0f) return 0f;
@@ -2290,6 +2374,21 @@ public class SafariManager {
         species, level, pokemon.getUuid(), matched.rarity, matched.friendly
       )
     );
+
+    // Humane payoff: a befriended catch keeps the bond it built — stamp it with high
+    // friendship (setFriendship coerces to Cobblemon's max friendship). The Pokémon is
+    // already in the player's store here, so the mutation persists via Cobblemon's save.
+    if (matched.friendly && config.befriendedFriendship > 0
+        && pokemon.getFriendship() < config.befriendedFriendship) {
+      try {
+        pokemon.setFriendship(config.befriendedFriendship, true);
+      } catch (Exception e) {
+        InitiativeInit.LOGGER.error(
+          "Safari: failed to set befriended friendship on {} for {}",
+          species, player.getName().getString(), e
+        );
+      }
+    }
 
     // Warm-spot bump: a catch of a lure heats ITS scatter spot (+1 tier, cap 2).
     session.bumpWarmth(matched.spotKey);

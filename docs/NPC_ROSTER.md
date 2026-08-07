@@ -8,7 +8,7 @@
 >
 > DEV DOCUMENT - full spoilers. The player-facing wiki lives in `wiki/`.
 
-**788 characters** - 362 persisted world bodies, 345 latch-spawned, 81 unplaced (no body, no latch - phone callers, script-spawned bodies like the transformed Hua Zhan leader, dead content, act-2/3 casting).
+**793 characters** - 376 persisted world bodies, 338 latch-spawned, 79 unplaced (no body, no latch - phone callers, script-spawned bodies like the transformed Hua Zhan leader, dead content, act-2/3 casting).
 
 **Reading the tables:** *(body)* = persisted world entity (moves only via repairs tp);
 *(latch)* = spawned at the authored coords when a player first comes within 40 blocks;
@@ -384,7 +384,7 @@
 | **Auger** `companion_kalahar_drilbur` | Kalahar Reach - 2021.5 127 3976.5 (latch) | flavor / lore dialog | Cobblemon model: drilbur |
 | **Dune** `companion_kalahar_hippopotas` | Kalahar Reach - 2078.5 121 3947.5 (latch) | flavor / lore dialog | Cobblemon model: hippopotas |
 | **Coin-Roll** `companion_kalahar_sandshrew` | Kalahar Reach - 2152.5 138 3985.5 (latch) | flavor / lore dialog | Cobblemon model: sandshrew |
-| **Dalia Sefet** `dalia_sefet` | Kalahar Reach - 2178 132 4144 (body) | flavor / lore dialog | world-body look |
+| **Dalia Sefet** `dalia_sefet` | Kalahar Reach - 2178 132 4144 (body) | fetch: 2x mystic_water -> `dalia_fetch_in`; runs: sidequest/dalia/reward | world-body look |
 | **Farid Sobek** `farid_sobek` | Kalahar Reach - 1982 136 4058 (body) | flavor / lore dialog | world-body look |
 | **Grain Factor** `grain_factor_kalahar` | Kalahar Reach - Old Caravan Road - 1972.5 117 3945.5 (latch) | battles `wheat_trader_ambush_kalahar` (4x lv50-51: bouffalant, miltank, mudsdale, tauros), prize 500; native trade window (trade_wheat_trader); native trade window (trade_wheat_trader) | skin `single/wheat_factor` |
 | **Martkeeper Hassan Qadir** `hassan_qadir` | Kalahar Reach - Poke-Mart - 2152 138 3984 (body) | sells (4): tm_earthquake, tm_stoneedge, tm_drillrun, tm_sandstorm | world-body look |
@@ -392,21 +392,21 @@
 | **The Sun-Dried Sentinel** `kalahar_husk` | Kalahar Reach - high dune (gym5 -> gym6 approach) - 1861.4 172.75 4381.4 (latch) | gift: one_time `husk_quiz_wings` | husk (HUSK) |
 | **Sabine** `kalahar_nurse` | Kalahar Reach - Pokemon Center - 2058.5 126 4075.5 (latch) | flavor / lore dialog | skin `single/town_shopkeeper` |
 | **Well-Keeper Marisol** `kalahar_rumor_marisol` | Kalahar Reach - The Dry Well - 2068.5 125 4055.5 (latch) | flavor / lore dialog | skin `single/kalahar_trainer_1` |
-| **Karim Zahur** `karim_zahur` | Kalahar Reach - 2164 127 4244 (body) | flavor / lore dialog | world-body look |
+| **Karim Zahur** `karim_zahur` | Kalahar Reach - 2164 127 4244 (body) | runs: sidequest/karim/fossil_trade | world-body look |
 | **Well-Keeper Layla Meret** `layla_meret` | Kalahar Reach - the dry well - 2078 121 3946 (body) | mon trade: your sandshrew -> whiscash | world-body look |
 | **Leila Safiya** `leila_safiya` | Kalahar Reach - the town well - 2074 125 4044 (body) | runs: sidequest/kalahar/water_reward | world-body look |
 | **Malik Horus** `malik_horus` | Kalahar Reach - 2156 126 4210 (body) | flavor / lore dialog | world-body look |
-| **Nadia Khepra** `nadia_khepra` | Kalahar Reach - the kiln quarter - 2204 137 4202 (body) | flavor / lore dialog | world-body look |
+| **Nadia Khepra** `nadia_khepra` | Kalahar Reach - the kiln quarter - 2204 137 4202 (body) | runs: sidequest/kalahar_hunt/arm_kiln | world-body look |
 | **Nefira Zahra** `nefira_zahra` | Kalahar Reach - 1946 114 3936 (body) | gift: one_time `nefira_cactus_strip` | world-body look |
 | **Noura Ma-at** `noura_maat` | Kalahar Reach - 1965.5 136 4060.5 (body, moved by repairs) | flavor / lore dialog | world-body look |
 | **Survey Bot** `oasis_pump_manifold` | Kalahar Reach - The Oasis - 1740.5 116 4190.5 (latch) | runs: sidequest/kalahar/shut_pump | skin `single/prop_screen` |
-| **Yield Liaison Omar Duneh** `omar_duneh` | Kalahar Reach - Company field office - 2116 140 4132 (body) | flavor / lore dialog | skin `single/thecompany_admin_1` |
+| **Yield Liaison Omar Duneh** `omar_duneh` | Kalahar Reach - Company field office - 2116 140 4132 (body) | battles `omar_duneh` (3x lv48-50: krokorok, sandslash, hippowdon), prize 500 | skin `single/thecompany_admin_1` |
 | **Rami Seti** `rami_seti` | Kalahar Reach - 2206 129 4210 (body) | fetch: 1x bone -> `rami_relic_done` | world-body look |
 | **Nurse Sahir Anuket** `sahir_anuket` | Kalahar Reach - Pokemon Center - 2088 121 3928 (body) | runs: economy/heal_paid, pc/open, sidequest/rumors/shrine_ground | skin `single/nurse_center` |
 | **Samira Nefer** `samira_nefer` | Kalahar Reach - 2148 138 3974 (body) | flavor / lore dialog | world-body look |
 | **Tarek Ramessu** `tarek_ramessu` | Kalahar Reach - 2032 136 4092 (body) | gym-guide info pages; cmd: kalahar start | world-body look |
-| **Warden Ossa** `warden_ossa` | Kalahar Reach - Old Records Post - 2050.5 129 4085.5 (latch) | runs: sidequest/reach_cache/turnin, sidequest/reach_cache/resurvey, sidequest/reach_cache/accept | skin `single/kalahar_trainer_2` |
-| **Yasmin Aset** `yasmin_aset` | Kalahar Reach - 2172 135 4242 (body) | flavor / lore dialog | world-body look |
+| **Warden Ossa** `warden_ossa` | Kalahar Reach - Old Records Post - 2050.5 129 4085.5 (latch) | runs: sidequest/warden_ossa/deposit, sidequest/kalahar_hunt/arm_warden | skin `single/kalahar_trainer_2` |
+| **Yasmin Aset** `yasmin_aset` | Kalahar Reach - 2172 135 4242 (body) | sells (5): rare_candy, hyper_potion, full_heal, heal_powder, super_potion | world-body look |
 | **Zaid Khonsu** `zaid_khonsu` | Kalahar Reach - 1978 136 4136 (body) | flavor / lore dialog | world-body look |
 
 ## Route 8
@@ -428,7 +428,7 @@
 
 ## Cyber City — Gym 7 (Electric, cap 62)
 
-`characters/cyber/` - 83 NPCs
+`characters/cyber/` - 70 NPCs
 
 | NPC | Where | Does | Looks |
 |---|---|---|---|
@@ -439,7 +439,7 @@
 | **Agent Volt** `agent_volt` | Cyber City - Plaza - 1590 82 1096 (body) | flavor / lore dialog | skin `single/thecompany_grunt_1` |
 | **Aria Datacoin** `aria_datacoin` | Cyber City - Upper Downtown - 1468 91 1312 (body) | flavor / lore dialog | world-body look |
 | **Aria Neon** `aria_neon` | Cyber City - Neon Strip - 1424 90 1200 (body) | flavor / lore dialog | world-body look |
-| **Arlo Datagear** `arlo_datagear` | Cyber City - Rooftop Rigs - 1446 178 1268 (body) | flavor / lore dialog | world-body look |
+| **Arlo Datagear** `arlo_datagear` | Cyber City - Rooftop Rigs - 1446 178 1268 (body) | runs: sidequest/augmented_race/start | world-body look |
 | **Clara Datapulse** `clara_datapulse` | Cyber City - Data Market - 1538 92 1112 (body) | flavor / lore dialog | world-body look |
 | **Clover** `clover` | Cyber City - Downtown - 1502 92 1182 (body) | fetch: 3x redstone -> `ci_clover_lamp_done` | world-body look |
 | **Lumen** `companion_cyber_chinchou` | Cyber City - Central Plaza - 1485.5 91 1122.5 (latch) | flavor / lore dialog | Cobblemon model: chinchou |
@@ -448,20 +448,8 @@
 | **Torque** `companion_cyber_klink` | Cyber City - Rooftop Rigs - 1449.5 160 1270.5 (latch) | flavor / lore dialog | Cobblemon model: klink |
 | **Sparkplug** `companion_cyber_magnemite` | Cyber City - Battery Row - 1479.5 91 1318.5 (latch) | flavor / lore dialog | Cobblemon model: magnemite |
 | **Bumper** `companion_cyber_voltorb` | Cyber City - Arcade Strip - 1597.5 92 1260.5 (latch) | flavor / lore dialog | Cobblemon model: voltorb |
-| **Archive Drop** `cyber_archive_1` | Cyber City - Records Annex - 1518.5 89 1096.5 (latch) | runs: sidequest/off_records/recover_1 | skin `single/prop_screen` |
-| **Archive Drop** `cyber_archive_2` | Cyber City - Records Annex - 1524.5 90 1104.5 (latch) | runs: sidequest/off_records/recover_2 | skin `single/prop_screen` |
-| **Archive Drop** `cyber_archive_3` | Cyber City - Records Annex - 1512.5 89 1092.5 (latch) | runs: sidequest/off_records/recover_3 | skin `single/prop_screen` |
-| **Glitching Billboard** `cyber_board_1` | Cyber City - Downtown - 1490.5 90 1132.5 (latch) | runs: sidequest/signal/scrub_1 | skin `single/prop_screen` |
-| **Glitching Billboard** `cyber_board_2` | Cyber City - Downtown - 1560.5 91 1090.5 (latch) | runs: sidequest/signal/scrub_2 | skin `single/prop_screen` |
-| **Glitching Billboard** `cyber_board_3` | Cyber City - Downtown - 1624.5 92 1119.5 (latch) | runs: sidequest/signal/scrub_3 | skin `single/prop_screen` |
-| **Off-Records Clerk Maren** `cyber_defector_maren` | Cyber City - Records Annex - 1520.5 89 1100.5 (latch) | runs: sidequest/off_records/turn_in, sidequest/off_records/start | skin `groups/cyber` |
-| **Verified Value Teller** `cyber_exchange_teller` | Cyber City - Exchange Kiosk - 1500.5 91 1120.5 (latch) | runs: sidequest/exchange/turn_in, sidequest/exchange/start | skin `groups/cyber` |
 | **Grid Broker Ohmond** `cyber_grid_broker` | Cyber City - Downtown Seam - 1555.5 92 1108.5 (latch) | battles `sq_cyber_broker_wager` (3x lv64-65: raichu, magnezone, electivire), prize 1500; runs: sidequest/door/decline_wager | skin `groups/cyber` |
 | **Dr. Orion Synapse** `cyber_nurse_rumor` | Cyber City - Pokemon Center - 1473.5 91 1053.5 (body, moved by repairs) | heals your party; runs: pc/open | world-body look |
-| **Reserve Tag** `cyber_reserve_1` | Cyber City - Downtown - 1490.5 91 1128.5 (latch) | runs: sidequest/exchange/note_1 | skin `single/prop_screen` |
-| **Reserve Tag** `cyber_reserve_2` | Cyber City - Downtown - 1560.5 93 1092.5 (latch) | runs: sidequest/exchange/note_2 | skin `single/prop_screen` |
-| **Reserve Tag** `cyber_reserve_3` | Cyber City - Downtown - 1614.5 92 1119.5 (latch) | runs: sidequest/exchange/note_3 | skin `single/prop_screen` |
-| **Signal Tech Rell** `cyber_signal_tech` | Cyber City - Comms Van - 1470.5 89 1140.5 (latch) | runs: sidequest/signal/turn_in, sidequest/signal/start | skin `groups/cyber` |
 | **Damon Byte** `damon_byte` | Cyber City - Skybridge - 1610 144 1094 (body) | flavor / lore dialog | world-body look |
 | **Dax Neon** `dax_neon` | Cyber City - Upper Terraces - 1480 158 1120 (body) | flavor / lore dialog | world-body look |
 | **Dex Gridrunner** `dex_gridrunner` | Cyber City - West Downtown - 1436 90 1044 (body) | flavor / lore dialog | world-body look |
@@ -469,7 +457,7 @@
 | **Dex Volt** `dex_volt` | Cyber City - Pokemart - 1478 91 1318 (body) | opens the Pokemart shop | world-body look |
 | **Doss** `doss` | Cyber City - Back Alleys - 1386 92 1144 (body) | flavor / lore dialog | world-body look |
 | **Dr. Helix Core** `dr_helix_core` | Cyber City - Research Annex - 1456 92 1272 (body) | flavor / lore dialog | world-body look |
-| **Hex Firewall** `hex_firewall` | Cyber City - West Alleys - 1364 98 1190 (body) | flavor / lore dialog | world-body look |
+| **Hex Firewall** `hex_firewall` | Cyber City - West Alleys - 1364 98 1190 (body) | gym-guide info pages | world-body look |
 | **Security Associate Kessler** `hq_security_kessler` | Company HQ - Tower Door - 1621.5 92 1116.5 (latch) | flavor / lore dialog | skin `single/thecompany_grunt_3` |
 | **Security Associate Voss** `hq_security_voss` | Company HQ - Tower Door - 1617.5 92 1116.5 (latch) | flavor / lore dialog | skin `single/thecompany_grunt_2` |
 | **Iris Gearshift** `iris_gearshift` | Cyber City - Upper Terraces - 1460 142 1264 (body) | flavor / lore dialog | world-body look |
@@ -496,12 +484,11 @@
 | **Nova Skylink** `nova_skylink` | Cyber City - West Downtown - 1396 92 1192 (body) | flavor / lore dialog | world-body look |
 | **Orin Pulsewave** `orin_pulsewave` | Cyber City - Central Plaza - 1490 111 1120 (body) | flavor / lore dialog | world-body look |
 | **Pell** `pell` | Cyber City - Central Plaza - 1550 102 1192 (body) | fetch: 3x iron_nugget -> `pell_tokens_done` | world-body look |
-| **Prism** `prism` | Cyber City - West Alleys - 1336 100 1184 (body) | flavor / lore dialog | world-body look |
+| **Prism** `prism` | Cyber City - West Alleys - 1342.5 98 1177.5 (body, moved by repairs) | flavor / lore dialog | world-body look |
 | **Rex Upload** `rex_upload` | Cyber City - Summit Deck - 1528 202 1258 (body) | flavor / lore dialog | world-body look |
 | **Rico Ledger** `rico_ledger` | Cyber City - Exchange District - 1604 92 1104 (body) | flavor / lore dialog | world-body look |
 | **Sera Byte** `sera_byte` | Cyber City - Central Terraces - 1548 142 1218 (body) | flavor / lore dialog | world-body look |
 | **Sera Holo** `sera_holo` | Cyber City - Upper Terraces - 1482 172 1120 (body) | flavor / lore dialog | world-body look |
-| **Exhibition Registrar** `stadium_clerk` | Cyber City - the Company Exhibition Circuit (arena TBD) - UNPLACED | cmd: stadium start 25; stadium start 50; stadium start 75; stadium start 100; stadium status; stadium abort | skin `single/thecompany_admin_1` |
 | **Talon Circuitforge** `talon_circuitforge` | Cyber City - Rooftop Rigs - 1448 160 1270 (body) | flavor / lore dialog | world-body look |
 | **Talon Sparks** `talon_sparks` | Cyber City - West Downtown - 1364 91 1260 (body) | flavor / lore dialog | world-body look |
 | **Tara Keylock** `tara_keylock` | Cyber City - Central Terraces - 1536 134 1260 (body) | flavor / lore dialog | world-body look |
@@ -603,10 +590,14 @@
 
 ## Route 13
 
-`characters/route13/` - 5 NPCs
+`characters/route13/` - 9 NPCs
 
 | NPC | Where | Does | Looks |
 |---|---|---|---|
+| **Bran** `coldfurrow_farmer` | Coldfurrow Farm - The Fence Line (R13) - 1925.6 114 967.6 (latch) | runs: liberation/free_field | skin `single/wheat_factor` |
+| **Arden Drakepath** `r13_sight_arden` | Dragonspine approach - lower switchbacks (gym7 -> gym8 road) - 1820 103 1168 (body) | battles `r13_sight_arden` (3x lv62-64: swablu, gabite, shelgon), prize 780, pursues on sight r9, forced at close range | skin `groups/ryujin` |
+| **Korin Flameclaw** `r13_sight_korin` | Dragonspine approach - the last pitch before the Keep gate (gym7 -> gym8 road) - 2144 166 994 (body) | battles `r13_sight_korin` (3x lv64-66: skarmory, pupitar, gabite), prize 840, pursues on sight r9, forced at close range | skin `groups/ryujin` |
+| **Lyra Stormflight** `r13_sight_lyra` | Dragonspine approach - windward shelf (gym7 -> gym8 road) - 1886 122 990 (body) | battles `r13_sight_lyra` (3x lv63-65: noibat, vibrava, altaria), prize 800, pursues on sight r9, forced at close range | skin `groups/ryujin` |
 | **Dragonrider Kaen** `r13_trainer_spine` | Dragonspine ridge - 1975.5 64 1036.5 (latch) | battles `r13_trainer_spine` (3x lv64-66: altaria, flygon, salamence), prize 850 | skin `groups/ryujin` |
 | **Ashen Pilgrim Uzo** `r13_traveler_pilgrim` | Dragonspine - HQ turnoff - 1968.5 64 1044.5 (latch) | gift: one_time `uzo_pilgrim_cord` | skin `groups/ryujin` |
 | **Ige** `villain_route_agent_13` | Dragonspine - HQ turnoff - 1982.5 132 1028.5 (latch) | battles `villain_grunt_6` (2x lv39-41: raticate, houndoom), prize 780 | skin `single/thecompany_grunt_4` |
@@ -664,11 +655,15 @@
 
 ## Route 14
 
-`characters/route14/` - 5 NPCs
+`characters/route14/` - 9 NPCs
 
 | NPC | Where | Does | Looks |
 |---|---|---|---|
+| **Sena** `frostfallow_farmer` | Frostfallow Farm - The Frozen Silo (R14) - 3079.8 106 2473.2 (latch) | runs: liberation/free_field | skin `single/wheat_factor` |
 | **Snowline Hermit Bran** `r14_flavor_hermit` | Frostveil - snowline - 3049.5 64 2480.5 (latch) | fetch: 1x apple -> `bran_apple_done` | skin `groups/nifl` |
+| **Brynja Frostarrow** `r14_sight_brynja` | Nifl approach - the frozen tarn (gym8 -> gym9 road) - 3192 113 2340 (body) | battles `r14_sight_brynja` (3x lv68-71: cubchoo, sneasel, vanillite), prize 900, pursues on sight r9, forced at close range | skin `groups/nifl` |
+| **Sten Glacierguard** `r14_sight_sten` | Nifl approach - the glacier gate below town (gym8 -> gym9 road) - 3418 92 2232 (body) | battles `r14_sight_sten` (3x lv69-72: spheal, glalie, walrein), prize 940, pursues on sight r9, forced at close range | skin `groups/nifl` |
+| **Torvald Snowrunner** `r14_sight_torvald` | Nifl approach - the first snowfield (gym8 -> gym9 road) - 2896 159 2568 (body) | battles `r14_sight_torvald` (3x lv68-70: snover, sealeo, piloswine), prize 880, pursues on sight r9, forced at close range | skin `groups/nifl` |
 | **Frostwarden Neve** `r14_spotter_frost` | Frostveil pass - 3042.5 64 2490.5 (latch) | battles `r14_spotter_frost` (3x lv70-72: froslass, weavile, mamoswine), prize 850, pursues on sight r8, forced at close range | skin `groups/nifl` |
 | **Sable** `villain_route_agent_14` | Frostveil - waypost - 3035.5 113 2498.5 (latch) | battles `villain_grunt_7` (2x lv45-47: tentacruel, crobat), prize 800 | skin `single/thecompany_grunt_1` |
 | **Rei** `villain_site_manager_8` | Frostfallow Farm - The Frozen Silo (R14) - 3066.5 107 2478.5 (latch) | battles `villain_site_manager_8` (2x lv73-74: weavile, kingambit), prize 1400 | skin `single/thecompany_grunt_3` |
@@ -676,16 +671,19 @@
 
 ## Route 15
 
-`characters/route15/` - 7 NPCs
+`characters/route15/` - 10 NPCs
 
 | NPC | Where | Does | Looks |
 |---|---|---|---|
+| **Renna** `ashloam_farmer` | Ashloam Fields - The Ash-Silo (R15) - 3271.8 107 4016.5 (latch) | runs: liberation/free_field | skin `single/wheat_factor` |
+| **Marn** `ashloam_road_tenant` | The Cinderfall Road - Above Ashloam (R15) - 3290.3 104.6 3930.7 (latch) | flavor / lore dialog | skin `single/wheat_factor` |
+| **Odd** `highfield_farmer` | Highfield Estate - The Terraces (R15) - 3310.8 114 3348.7 (latch) | runs: liberation/free_field | skin `single/wheat_factor` |
 | **Emberwalker Tavi** `r15_trainer_ember` | Cinderfall Descent - ash road to Scorchspire - 3370.5 64 3630.5 (latch) | battles `r15_trainer_ember` (6x lv76-79: talonflame, houndoom, magmortar, torkoal, ninetales, arcanine), prize 1000 | skin `groups/scorchspire` |
 | **Ash-Walker Odita** `r15_traveler_ashwalker` | Cinderfall - ash flats - 3370.5 64 3630.5 (latch) | flavor / lore dialog | skin `groups/scorchspire` |
 | **Vane** `villain_route_agent_15` | Cinderfall - ash road - 3370.5 120 3630.5 (latch) | battles `villain_grunt_8` (3x lv51-53: dugtrio, sandslash, krookodile), prize 900 | skin `single/thecompany_grunt_2` |
-| **Ember** `villain_site_manager_10` | Ashloam Fields - The Ash-Silo (R15) - 3304.5 108 4004.5 (latch) | battles `villain_site_manager_10` (2x lv79-80: weavile, kingambit), prize 2200 | skin `single/thecompany_grunt_1` |
-| **Doran** `villain_site_manager_9` | Highfield Estate - The Terraces (R15/16) - 3299.5 116 3353.5 (latch) | battles `villain_site_manager_9` (2x lv79-80: kingambit, hydreigon), prize 2100 | skin `single/thecompany_grunt_2` |
-| **Cinder** `villain_yield_officer_10` | Ashloam Fields - Cinderfall Fence (R15) - 3300.5 108 4008.5 (latch) | battles `villain_yield_officer_10` (2x lv76-77: obstagoon, krookodile), prize 1400 | skin `single/thecompany_grunt_1` |
+| **Ember** `villain_site_manager_10` | Ashloam Fields - The Ash-Silo (R15) - 3317.5 109 4004.5 (latch) | battles `villain_site_manager_10` (2x lv79-80: weavile, kingambit), prize 2200 | skin `single/thecompany_grunt_1` |
+| **Doran** `villain_site_manager_9` | Highfield Estate - The Terraces (R15/16) - 3302.5 116 3344.5 (latch) | battles `villain_site_manager_9` (2x lv79-80: kingambit, hydreigon), prize 2100 | skin `single/thecompany_grunt_2` |
+| **Cinder** `villain_yield_officer_10` | Ashloam Fields - Cinderfall Fence (R15) - 3281.5 107 4016.5 (latch) | battles `villain_yield_officer_10` (2x lv76-77: obstagoon, krookodile), prize 1400 | skin `single/thecompany_grunt_1` |
 | **Cael** `villain_yield_officer_9` | Highfield Estate - Ridge Fence (R15/16) - 3305.5 115 3353.5 (latch) | battles `villain_yield_officer_9` (2x lv77-78: mandibuzz, weavile), prize 1180 | skin `single/thecompany_grunt_2` |
 
 ## Scorchspire — Gym 10 (Fire, cap 80)
@@ -733,11 +731,15 @@
 
 ## Route 16
 
-`characters/route16/` - 2 NPCs
+`characters/route16/` - 6 NPCs
 
 | NPC | Where | Does | Looks |
 |---|---|---|---|
 | **Causeway Chronicler Set** `r16_lorekeeper_causeway` | Frontier Causeway - the arch - 3681.5 64 3003.5 (latch) | flavor / lore dialog | skin `groups/frontier` |
+| **Cassia Stormrider** `r16_sight_cassia` | Victory Road - the wind bridge (gym9 -> gym10 road) - 3560 53 2424 (body) | battles `r16_sight_cassia` (3x lv74-77: altaria, noivern, salamence), prize 1000, pursues on sight r9, forced at close range | skin `groups/frontier` |
+| **Drake Ironclaw** `r16_sight_drake` | Victory Road - the high shelf (gym9 -> gym10 road) - 3550 101 2544 (body) | battles `r16_sight_drake` (3x lv76-79: mamoswine, tyranitar, garchomp), prize 1040, pursues on sight r9, forced at close range | skin `groups/frontier` |
+| **Lysandra Skyflare** `r16_sight_lysandra` | Victory Road - the summit arch (gym9 -> gym10 road) - 3580 122 2614 (body) | battles `r16_sight_lysandra` (3x lv77-79: kingdra, braviary, hydreigon), prize 1080, pursues on sight r9, forced at close range | skin `groups/frontier` |
+| **Ronan Peakguard** `r16_sight_ronan` | Victory Road - the low canyon (gym9 -> gym10 road) - 3500 41 2336 (body) | battles `r16_sight_ronan` (3x lv74-76: gliscor, druddigon, flygon), prize 980, pursues on sight r9, forced at close range | skin `groups/frontier` |
 | **Frontier Scout Rhea** `r16_spotter_causeway` | Frontier Causeway - 3681.5 64 3003.5 (latch) | battles `r16_spotter_causeway` (4x lv82-85: talonflame, noctowl, corviknight, staraptor), prize 1100, pursues on sight r8, forced at close range | skin `groups/frontier` |
 
 ## Royal Road
@@ -854,12 +856,11 @@
 
 ## Gym staff — leaders, guides & gym trainers (all towns)
 
-`characters/gym/` - 89 NPCs
+`characters/gym/` - 88 NPCs
 
 | NPC | Where | Does | Looks |
 |---|---|---|---|
 | **Apprentice Surge** `cyber_apprentice` | Cyber City - Gym, the mains line - 1305.5 98 1141.5 (latch) | battles `cyber_apprentice` (3x lv53-54: raichu, magneton, manectric) | skin `single/cyber_apprentice` |
-| **Cyber City Gym Guide** `cyber_guide` | Cyber City - UNPLACED | gym-guide info pages | STEVE default |
 | **Jr. Apprentice Voltz** `cyber_jr_apprentice` | Cyber City - Gym, the relay floor - 1305.5 98 1229.5 (latch) | battles `cyber_jr_apprentice` (2x lv52-52: electrode, luxray) | skin `single/cyber_apprentice` |
 | **Leader Volt** `cyber_leader` | Cyber City - 1306 100 1190 (body) | battles `cyber_leader` (4x lv56-58: magnezone, luxray, electivire, jolteon), prize 4300; cutscene: cyber_leader_intro | skin `single/cyber_leader` |
 | **Guitarist Amp** `cyber_trainer_1` | Cyber City - Gym, the lower deck - 1255.5 116 1185.5 (latch) | battles `cyber_trainer_1` (2x lv50-51: pikachu, voltorb) | skin `groups/cyber` |
@@ -974,13 +975,13 @@
 | **Cirrus** `companion_routes_swablu` | Dragon Overlook, Spire Road - 2391.5 202 890.5 (latch) | flavor / lore dialog | Cobblemon model: swablu |
 | **Poultice** `companion_routes_wooper` | Eastern Cliff Route - 4043.5 91 2953.5 (latch) | flavor / lore dialog | Cobblemon model: wooper |
 | **Daisuke Ironwing** `daisuke_ironwing` | Spire Road to Ryujin Keep - 2284 211 1086 (body) | flavor / lore dialog | world-body look |
-| **Darik Trapmaster** `darik_trapmaster` | The Preserve - intake counter (Safari Zone) - 1456 86 1682 (body) | cmd: safari enter capture; safari enter contest; safari bait executive_blend; safari status | world-body look |
+| **Steward Chandler** `darik_trapmaster` | The Preserve - intake counter (Safari Zone) - 1456 86 1682 (body) | cmd: safari enter capture; safari enter contest; safari bait executive_blend; safari status | world-body look |
 | **Dr. Vex Labforge** `dr_vex_labforge` | Eastern Rift Field Camp - 4066 81 2784 (body) | flavor / lore dialog | world-body look |
 | **Eldon Basewatch** `eldon_basewatch` | Eastern Cliff Route - 4006 119 3048 (body) | flavor / lore dialog | world-body look |
 | **Eldric Stonegaze** `eldric_stonegaze` | Eastern Cliff Route - 4282 81 2982 (body) | flavor / lore dialog | world-body look |
 | **Haru Scaleguard** `haru_scaleguard` | Dragon Overlook, Spire Road - 2376 202 888 (body) | flavor / lore dialog | world-body look |
 | **Preservationist Maya** `helga_ridgewatch` | The Preserve - owner's overlook (Safari Zone) - 1486 82 1680 (body) | flavor / lore dialog | world-body look |
-| **Jax Databet** `jax_databet` | Cyber Approach Road - 1718 90 1198 (body) | flavor / lore dialog | world-body look |
+| **Jax Databet** `jax_databet` | Cyber Approach Road - 1718.5 90 1189.5 (body, moved by repairs) | flavor / lore dialog | world-body look |
 | **Kaede Emberwind** `kaede_emberwind` | Dragon Overlook, Spire Road - 2390 202 890 (body) | flavor / lore dialog | world-body look |
 | **Kael Embermark** `kael_embermark` | Eastern Cliff Route - 4108 88 2990 (body) | flavor / lore dialog | world-body look |
 | **Kaito Flamefang** `kaito_flamefang` | High Spire Road to Ryujin Keep - 2250 228 1092 (body) | flavor / lore dialog | world-body look |
@@ -994,7 +995,7 @@
 | **Ray Circuit** `nova_circuit` | Cyber Approach Road - 1780 90 1192 (body) | flavor / lore dialog | world-body look |
 | **Orion Deepvoyage** `orion_deepvoyage` | Eastern Tidewater Route - 4272 68 2784 (body) | flavor / lore dialog | world-body look |
 | **Ren Stormwing** `ren_stormwing` | Spire Road to Ryujin Keep - 2268 211 1112 (body) | flavor / lore dialog | world-body look |
-| **Rex Broadcast** `rex_broadcast` | Cyber Approach Road - 1654 90 1182 (body) | flavor / lore dialog | world-body look |
+| **Rex Broadcast** `rex_broadcast` | Cyber Approach Road - 1654 90 1182 (body) | cmd: stadium start 25; stadium start 50; stadium start 75; stadium start 100; stadium status; stadium abort | world-body look |
 | **Rurik Ironshot** `rurik_ironshot` | The Preserve - intake gate post (Safari Zone) - 1470.5 84 1623.5 (body, moved by repairs) | battles `rurik_ironshot` (2x lv52-53: mightyena, skuntank), prize 350 | skin `single/thecompany_grunt_4` |
 | **Selina Wavecrest** `selina_wavecrest` | Eastern Tidewater Route - 4258 72 2796 (body) | gift: one_time `selina_tide_haul` | world-body look |
 | **Silva Longscope** `silva_longscope` | The Preserve - appraisal tripod (Safari Zone) - 1454 84 1654 (body) | battles `silva_longscope` (3x lv54-56: liepard, honchkrow, krookodile), prize 800 | skin `single/thecompany_grunt_2` |
@@ -1054,4 +1055,15 @@
 | **Orc Marksman** `orc_crossbow` | Wilderness ridges (rotating orc camp) - UNPLACED | flavor / lore dialog | orc (ORC) |
 | **Orc Raider** `orc_raider` | Wilderness ridges (rotating orc camp) - UNPLACED | flavor / lore dialog | orc (ORC) |
 | **Orc Warrior** `orc_warrior` | Wilderness ridges (rotating orc camp) - UNPLACED | flavor / lore dialog | orc_warrior (ORC_WARRIOR) |
+
+## Route Cinderfall
+
+`characters/route_cinderfall/` - 4 NPCs
+
+| NPC | Where | Does | Looks |
+|---|---|---|---|
+| **Drakar Cinderstrike** `cinderfall_drakar` | Cinderfall Descent - the obsidian stair (gym9 -> gym10, above Scorchspire) - 3388 120 4154 (body) | battles `cinderfall_drakar` (3x lv79-80: coalossal, centiskorch, turtonator), prize 1160, pursues on sight r9, forced at close range | skin `groups/scorchspire` |
+| **Ignar Lavawalker** `cinderfall_ignar` | Cinderfall Descent - the upper ash road (gym9 -> gym10, above Scorchspire) - 3306 111 3302 (body) | battles `cinderfall_ignar` (3x lv78-80: torkoal, camerupt, arcanine), prize 1120, pursues on sight r9, forced at close range | skin `groups/scorchspire` |
+| **Karn Pyroclast** `cinderfall_karn` | Cinderfall Descent - the caldera gate below (gym9 -> gym10, at the Scorchspire mouth) - 3616 107 4302 (body) | battles `cinderfall_karn` (3x lv79-80: rapidash, magmortar, darmanitan), prize 1200, pursues on sight r9, forced at close range | skin `groups/scorchspire` |
+| **Vexa Ashclaw** `cinderfall_vexa` | Cinderfall Descent - the sulfur terraces (gym9 -> gym10, above Scorchspire) - 3272 111 3684 (body) | battles `cinderfall_vexa` (3x lv78-80: salazzle, houndoom, chandelure), prize 1140, pursues on sight r9, forced at close range | skin `groups/scorchspire` |
 

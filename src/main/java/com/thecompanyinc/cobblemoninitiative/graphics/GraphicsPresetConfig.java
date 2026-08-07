@@ -71,10 +71,11 @@ public class GraphicsPresetConfig {
   }
 
   /**
-   * BSL's HIGH tier (profile.HIGH, resolved) — used by the HIGH graphics mode: full
-   * shadows/lighting with a 2048 shadow map at 256 distance, matching the built-in profile the
-   * shipped pack actually runs. Only these keys are applied, so any other BSL options you've
-   * enabled (e.g. ADVANCED_MATERIALS) are preserved.
+   * BSL's ULTRA tier (profile.ULTRA, resolved) — used by the HIGH graphics mode: full
+   * shadows/lighting with a 3072 shadow map at 512 distance (ULTRA = HIGH + those two shadow
+   * bumps, verified against the BSL v10.1.3 zip). Trivially affordable on the target 5090; the
+   * pack now ships ULTRA as its default HIGH tier. Only these keys are applied, so any other BSL
+   * options you've enabled (e.g. ADVANCED_MATERIALS, DOF) are preserved.
    */
   private static Map<String, String> bslHigh() {
     Map<String, String> m = new LinkedHashMap<>();
@@ -84,8 +85,8 @@ public class GraphicsPresetConfig {
     m.put("AO", "true");
     m.put("LIGHT_SHAFT", "true");
     m.put("TAA", "true");
-    m.put("shadowMapResolution", "2048");
-    m.put("shadowDistance", "256.0");
+    m.put("shadowMapResolution", "3072");
+    m.put("shadowDistance", "512.0");
     return m;
   }
 
@@ -118,11 +119,12 @@ public class GraphicsPresetConfig {
     return p;
   }
 
-  private static final int CONFIG_VERSION = 3;
+  private static final int CONFIG_VERSION = 4;
 
   /**
    * Bumped when {@link #load()} must one-shot-migrate stale on-disk values (v2: HIGH shadow
-   * values ULTRA→HIGH; v3: HIGH vanilla clouds fancy→off — BSL supplies clouds). No field
+   * values ULTRA→HIGH; v3: HIGH vanilla clouds fancy→off — BSL supplies clouds; v4: HIGH shadow
+   * values HIGH→ULTRA, 2048/256 → 3072/512, now that ULTRA is the shipped default). No field
    * initializer — Gson keeps the default for absent JSON fields, so a pre-versioning file
    * must parse as 0 to be seen as migratable.
    */
@@ -186,9 +188,11 @@ public class GraphicsPresetConfig {
 
   /**
    * One-shot upgrade of stale on-disk configs. v2: the HIGH mode's shadow values dropped from
-   * BSL's ULTRA (3072 @ 512) to the shipped HIGH profile (2048 @ 256) — rewritten only while the
-   * file still carries the exact old ULTRA values and is pre-v2; a config at v2+ is never
-   * touched, so a later deliberate hand-edit back to ULTRA survives.
+   * BSL's ULTRA (3072 @ 512) to the then-shipped HIGH profile (2048 @ 256). v3: HIGH vanilla
+   * clouds fancy→off. v4: HIGH shadow values raised back up to ULTRA (2048/256 → 3072/512), now
+   * that ULTRA is the shipped default (playtest 2026-08-06 — leader wanted ULTRA not HIGH on the
+   * 5090). Each step is exact-value-guarded, so a deliberate hand-edit is never clobbered and a
+   * config at CONFIG_VERSION+ is never touched.
    */
   private static void migrate(GraphicsPresetConfig cfg) {
     if (cfg.configVersion >= CONFIG_VERSION) return;
@@ -204,6 +208,16 @@ public class GraphicsPresetConfig {
     // Exact-value-guarded like v2, so a deliberate hand-edit back to fancy sticks at v3+.
     if (cfg.configVersion < 3 && "fancy".equals(cfg.high.clouds)) {
       cfg.high.clouds = "off";
+    }
+    // v4: HIGH tier = ULTRA. Bump a config still carrying the old HIGH shadow defaults up to
+    // ULTRA; leaves a hand-customised value alone (exact-value-guarded, same pattern as v2).
+    if (cfg.configVersion < 4) {
+      if ("2048".equals(cfg.high.shaderOptions.get("shadowMapResolution"))) {
+        cfg.high.shaderOptions.put("shadowMapResolution", "3072");
+      }
+      if ("256.0".equals(cfg.high.shaderOptions.get("shadowDistance"))) {
+        cfg.high.shaderOptions.put("shadowDistance", "512.0");
+      }
     }
     cfg.configVersion = CONFIG_VERSION;
     cfg.save();

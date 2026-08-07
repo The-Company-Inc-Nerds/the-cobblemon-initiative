@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:chest",
+  "_comment": "Warden Ossa's WARDEN hunt buried-cache loot (playtest 2026-08-06 -> REPEATABLE carry-it-back hunt). The player digs the buried chest at the warden dig site and opens it; it holds EXACTLY one marked chest item -- the 'Warden's Cache' (custom_data ci_warden_cache:1b). No other loot: the payout is Ossa's fixed reward on turn-in. The player carries this chest item back to Ossa; sidequest/kalahar_hunt/deposit_warden consume-probes + clears it and pays.",
+  "pools": [
+    {
+      "name": "cache",
+      "rolls": 1,
+      "bonus_rolls": 0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:chest",
+          "functions": [
+            {
+              "function": "minecraft:set_name",
+              "name": { "text": "Warden's Cache", "color": "gold", "italic": false }
+            },
+            {
+              "function": "minecraft:set_lore",
+              "lore": [
+                { "text": "Sealed and sand-worn. File it with Warden Ossa.", "color": "gray", "italic": true }
+              ]
+            },
+            {
+              "function": "minecraft:set_custom_data",
+              "tag": "{ci_warden_cache:1b}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

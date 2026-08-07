@@ -1,0 +1,75 @@
+{
+  "type": "minecraft:chest",
+  "_comment": "Nadia's KILN hunt buried-cache loot (playtest 2026-08-06 rework -> REPEATABLE grab-and-keep hunt). The player digs the buried chest at the clay-run bend, opens it, and keeps the contents right there -- NO turn-in, no deed. Desert/kiln relics + modest consumables ONLY: NO rare candy / exp candy / vitamins (repeatable in hardcore Nuzlocke = no farmable training economy). Pottery + brick are the flavor keepers; potions/heal-powder/pokeballs are the minor consumables.",
+  "pools": [
+    {
+      "name": "relic",
+      "rolls": 1,
+      "bonus_rolls": 0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:decorated_pot",
+          "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:sheaf_pottery_sherd",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:prize_pottery_sherd",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:brick",
+          "weight": 3,
+          "functions": [
+            { "function": "minecraft:set_count", "count": { "min": 2, "max": 6 } }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "kiln_stock",
+      "rolls": 2,
+      "bonus_rolls": 0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "cobblemon:super_potion",
+          "weight": 5,
+          "functions": [
+            { "function": "minecraft:set_count", "count": { "min": 1, "max": 3 } }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "cobblemon:heal_powder",
+          "weight": 5,
+          "functions": [
+            { "function": "minecraft:set_count", "count": { "min": 1, "max": 2 } }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "cobblemon:poke_ball",
+          "weight": 4,
+          "functions": [
+            { "function": "minecraft:set_count", "count": { "min": 2, "max": 5 } }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:gold_nugget",
+          "weight": 3,
+          "functions": [
+            { "function": "minecraft:set_count", "count": { "min": 2, "max": 5 } }
+          ]
+        }
+      ]
+    }
+  ]
+}

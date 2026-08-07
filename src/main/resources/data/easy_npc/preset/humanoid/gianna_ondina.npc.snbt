@@ -40,66 +40,42 @@
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
-                            Name: "gaviota_open_champion"
-                        }
-                    ],
-                    Priority: 30,
-                    Buttons: [
-                        {
-                            Name: "Take the trident - run the tide-rings",
-                            Actions: [
-                                {
-                                    Type: "COMMAND",
-                                    ExecAsUser: 1b,
-                                    Cmd: "function cobblemon_initiative:sidequest/trident_race/start {ticks:600}"
-                                },
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "race_button"
-                        },
-                        {
-                            Name: "The end of the pier",
-                            Actions: [
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "leave_button"
-                        }
-                    ],
-                    Texts: [
-                        {
-                            Text: "So you won the Open. Good. That was never the test, whatever the banner says. The test was whether you can read water — and I watched you read it. That is rarer than a full purse and worth more."
-                        },
-                        {
-                            Text: "Walk to the end of the north pier when you are ready. There is a buoy there, and a warning painted on it, and past the warning the sea has been giving things back lately. Faces. Old debts. We do not fish what is down there. We thank it. But it may want a word with you."
-                        },
-                        {
-                            Text: "And when you want to feel the tide instead of dread it — take my trident and run the rings it leaves past the shallows. Ring to ring, before the water pulls them under. You have earned the right to ride it."
-                        }
-                    ],
-                    Name: "Tide-Caller Gianna — you can read water",
-                    Label: "champion"
-                },
-                {
-                    Conditions: [
-                        {
-                            Type: "PLAYER_TAG",
-                            Operation: "EQUALS",
-                            Name: "defeated_gaviota_leader"
+                            Name: "sq_trident_race_done"
                         }
                     ],
                     Priority: 20,
                     Buttons: [
                         {
+                            Name: "Thank you, Tide-Caller",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "You rode the rings clean, and the sea kept its word — that trident is yours now. It does not call the same run twice, child. Once is how the tide gives things back."
+                        },
+                        {
+                            Text: "I watched you keep the tide's pace. Rarer than a full purse, that. The rings are under now; the sea only leaves them for someone it has not yet measured, and it has measured you."
+                        }
+                    ],
+                    Name: "Tide-Caller Gianna — you rode it clean",
+                    Label: "done"
+                },
+                {
+                    Priority: 10,
+                    Buttons: [
+                        {
                             Name: "Take the trident - run the tide-rings",
                             Actions: [
                                 {
                                     Type: "COMMAND",
                                     ExecAsUser: 1b,
-                                    Cmd: "function cobblemon_initiative:sidequest/trident_race/start {ticks:600}"
+                                    Cmd: "function cobblemon_initiative:sidequest/trident_race/start {ticks:1200}"
                                 },
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -108,7 +84,7 @@
                             Label: "race_button"
                         },
                         {
-                            Name: "I will not flinch",
+                            Name: "Not today",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
@@ -119,37 +95,13 @@
                     ],
                     Texts: [
                         {
-                            Text: "You beat Neptune, so the port is yours to walk. Then walk carefully. The deep tide has been restless since you arrived, and I have called tides in this harbour for forty years — I know when the water is looking at someone."
+                            Text: "I read the tide for this harbour, child, and lately it leaves a run of fifteen rings out past the shallows — ring to ring, before the water pulls them under. Take my old trident and ride them. You do not need a badge for the sea; you only need to keep its pace."
                         },
                         {
-                            Text: "It brought you back too, whatever you are. Do not ask me what I mean. I do not fully know. But win the Open first. The sea only opens for someone who has proven they can stand on a pier and not flinch when it moves."
+                            Text: "The Company hangs its banners and calls the sea a resource. The sea has not been told. Ride the rings if you like — but ride them clean the first time, for the tide does not call the same run twice."
                         },
                         {
-                            Text: "In the meantime — the tide leaves a run of rings out past the shallows when it is in this mood. Take my old trident and ride them, ring to ring, before the water pulls them under. The sea gives things back to whoever can keep its pace."
-                        }
-                    ],
-                    Name: "Tide-Caller Gianna — the tide brought you back",
-                    Label: "badged"
-                },
-                {
-                    Priority: 10,
-                    Buttons: [
-                        {
-                            Name: "I will mind the water",
-                            Actions: [
-                                {
-                                    Type: "CLOSE_DIALOG"
-                                }
-                            ],
-                            Label: "leave_button"
-                        }
-                    ],
-                    Texts: [
-                        {
-                            Text: "I read the tide for this harbour, child, and today it reads uneasy. Not the weather — the deep. Something down past the last pier turns over in its sleep more than it used to."
-                        },
-                        {
-                            Text: "The Company hangs its banners and calls the sea a resource. The sea has not been told. Go earn your badge from Neptune, and mind the water while you do it. It is minding you."
+                            Text: "Riptide only fires in the water, so stay under the surface and let the trident throw you ring to ring. Miss the clock and the sea takes its trident back; ride it clean and it is yours to keep."
                         }
                     ],
                     Name: "Tide-Caller Gianna — the harbour woman",

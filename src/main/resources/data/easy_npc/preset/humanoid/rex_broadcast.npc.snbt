@@ -55,6 +55,26 @@
                             Label: "listen_button"
                         },
                         {
+                            Name: "Put me on the card",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "brackets"
+                                }
+                            ],
+                            Label: "card_button"
+                        },
+                        {
+                            Name: "Standing & withdrawal",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "desk"
+                                }
+                            ],
+                            Label: "desk_button"
+                        },
+                        {
                             Name: "Leave the signal",
                             Actions: [
                                 {
@@ -66,10 +86,10 @@
                     ],
                     Texts: [
                         {
-                            Text: "I pull dead frequencies out of the static all day. Old company channels nobody killed properly. There is a name that keeps almost coming through, and then a hand reaches in and scrubs it mid-word. You would not happen to know whose."
+                            Text: "I pull dead frequencies out of the static all day. Old Company channels nobody killed properly. There is a name that keeps almost coming through, and then a hand reaches in and scrubs it mid-word. You would not happen to know whose. — But the live signal, that I can give you clean: the Exhibition Circuit card is broadcasting a fight schedule right now."
                         },
                         {
-                            Text: "You walk up and my rig hisses like it recognises you. Machines are honest that way. They remember what people got paid to forget."
+                            Text: "You walk up and my rig hisses like it recognises you. Machines are honest that way — they remember what people got paid to forget. Speaking of paid: the towers are running an insured fight card off the airwaves. Insured copies, no injuries carry off the floor. Want me to put you on it?"
                         }
                     ],
                     Name: "Rex Broadcast — the pirate signal",
@@ -78,6 +98,72 @@
                 {
                     Priority: 10,
                     Buttons: [
+                        {
+                            Name: "Enter the Level 25 bracket",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative stadium start 25"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "bracket25_button"
+                        },
+                        {
+                            Name: "Enter the Level 50 bracket",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative stadium start 50"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "bracket50_button"
+                        },
+                        {
+                            Name: "Enter the Level 75 bracket",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative stadium start 75"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "bracket75_button"
+                        },
+                        {
+                            Name: "Enter the Level 100 bracket",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative stadium start 100"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "bracket100_button"
+                        },
+                        {
+                            Name: "Standing & withdrawal",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "desk"
+                                }
+                            ],
+                            Label: "desk_button"
+                        },
                         {
                             Name: "Tune out",
                             Actions: [
@@ -90,14 +176,152 @@
                     ],
                     Texts: [
                         {
-                            Text: "Free radio, out here past the tower reach, where nobody verifies what I say. The city stations all read the same script now. I read whatever the static hands me."
+                            Text: "Free radio, out here past the tower reach, where nobody verifies what I say. The city stations all read the same script now. I read whatever the static hands me — and today the static handed me a fight card. The Company Exhibition Circuit: five sponsored rosters, all normalized to your level, no injuries carry off the floor. Pick a bracket and I will announce you in."
                         },
                         {
-                            Text: "You hear that hum under everything near the towers? That is the exchange board recalculating, over and over, never landing on a number. I broadcast the sound of it. People find it soothing. I find it terrifying."
+                            Text: "You hear that hum under everything near the towers? That is the exchange board recalculating, never landing on a number. I broadcast the sound of it. And between transmissions I run the Exhibition card off the same rig — insured copies of your team, one bracket, one purse per wave. Pick your level and you are on the air."
                         }
                     ],
                     Name: "Rex Broadcast — the pirate signal",
                     Label: "default"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Enter the Level 25 bracket",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative stadium start 25"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "bracket25_button"
+                        },
+                        {
+                            Name: "Enter the Level 50 bracket",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative stadium start 50"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "bracket50_button"
+                        },
+                        {
+                            Name: "Enter the Level 75 bracket",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative stadium start 75"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "bracket75_button"
+                        },
+                        {
+                            Name: "Enter the Level 100 bracket",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative stadium start 100"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "bracket100_button"
+                        },
+                        {
+                            Name: "Back to the signal",
+                            Actions: [
+                                {
+                                    Type: "OPEN_DEFAULT_DIALOG"
+                                }
+                            ],
+                            Label: "back_button"
+                        },
+                        {
+                            Name: "Tune out",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The card, straight off the wire: five sponsored rosters, one bracket, all combatants flattened to your chosen level — your team fights as insured copies, so nothing carries off the floor. Win a wave, take the purse; clear all five for the completion bonus. Pick a level and I announce you in."
+                        }
+                    ],
+                    Name: "Rex Broadcast — the fight card",
+                    Label: "brackets"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Check my circuit standing",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative stadium status"
+                                }
+                            ],
+                            Label: "status_button"
+                        },
+                        {
+                            Name: "Withdraw from the circuit",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative stadium abort"
+                                }
+                            ],
+                            Label: "abort_button"
+                        },
+                        {
+                            Name: "Back to the signal",
+                            Actions: [
+                                {
+                                    Type: "OPEN_DEFAULT_DIALOG"
+                                }
+                            ],
+                            Label: "back_button"
+                        },
+                        {
+                            Name: "Tune out",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Between us and the tower stations, I keep the honest log: your standing on the circuit, and withdrawals — which the manager refuses mid-bout, so time your paperwork like you time your switches. The static does not lie about scores. People do."
+                        }
+                    ],
+                    Name: "Rex Broadcast — the log",
+                    Label: "desk"
                 }
             ]
         },

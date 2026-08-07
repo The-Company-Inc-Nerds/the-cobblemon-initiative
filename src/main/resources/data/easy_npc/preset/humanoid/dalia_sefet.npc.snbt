@@ -33,10 +33,55 @@
         CanPickUpLoot: 0b,
         CustomNameVisible: 1b,
         DialogData: {
-            Type: "BASIC",
+            Type: "STANDARD",
             DialogDataSet: [
                 {
-                    Priority: 10,
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "dalia_fetch_in"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "no_dalia_fetch_done"
+                        }
+                    ],
+                    Priority: 25,
+                    Buttons: [
+                        {
+                            Name: "Pour it around the roots",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:sidequest/dalia/reward"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "claim_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Two flasks of mystic water. Where does a traveller even find such a thing dry-season? No — do not tell me. Give it here before the crowns give up on us. Hold the ladder and watch my grandmother's trees remember what green was."
+                        }
+                    ],
+                    Name: "Dalia — the palms drink",
+                    Label: "claim"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "dalia_fetch_done"
+                        }
+                    ],
+                    Priority: 24,
                     Buttons: [
                         {
                             Name: "Goodbye",
@@ -46,6 +91,102 @@
                                 }
                             ],
                             Label: "goodbye_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The palms took your water like they had been waiting for it their whole lives. There is fruit setting on the west row already. My children will taste a date this season because a stranger carried water into a dying town. Do not let anyone tell you that is a small thing."
+                        },
+                        {
+                            Text: "I cannot pay you what that was worth — nobody could — but the coin was real and so is my thanks. The well is still a hole full of dust, mind. Water a tree and you save a tree. Kill the pump out on the Oasis and you save the whole Reach."
+                        }
+                    ],
+                    Name: "Dalia — the crop holds",
+                    Label: "done"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "dalia_fetch_started"
+                        },
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "no_dalia_fetch_in"
+                        }
+                    ],
+                    Priority: 15,
+                    Buttons: [
+                        {
+                            Name: "Hand over 2 mystic water",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative turnin cobblemon:mystic_water 2 dalia_fetch_in"
+                                },
+                                {
+                                    Type: "OPEN_DEFAULT_DIALOG"
+                                }
+                            ],
+                            Label: "turnin_button"
+                        },
+                        {
+                            Name: "I will find the water",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "You came back. My palms are past what a bucket from the puddle can fix — the roots are salt-burned and stubborn. What they want is mystic water, the living kind, and two flasks would soak the whole grove down to the taproot. Bring me two and I will find the coin to thank you."
+                        },
+                        {
+                            Text: "Two flasks of mystic water, that is all. I know it is a strange ask from a farmer, but ordinary water runs straight through burned roots. The mystic sort holds. Anglers pull it from the deep pools — ask the ones who fish where the water still runs."
+                        }
+                    ],
+                    Name: "Dalia — the dying grove",
+                    Label: "ask"
+                },
+                {
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "Is there anything I can do for the grove?",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add dalia_fetch_started"
+                                },
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "ask"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_dalia_fetch_done"
+                                }
+                            ],
+                            Label: "help_button"
+                        },
+                        {
+                            Name: "Stay strong",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
                         }
                     ],
                     Texts: [

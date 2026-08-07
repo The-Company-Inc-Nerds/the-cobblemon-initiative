@@ -33,8 +33,8 @@ public class SafariConfig {
   /** Preserve Safari Balls issued per round (marked; handed back at the gate). */
   public int balls = 10;
 
-  /** Marked snowballs issued per round (the weaken tool). */
-  public int snowballs = 16;
+  /** Marked snowballs issued per round (the weaken tool — the un-humane path, kept generous). */
+  public int snowballs = 32;
 
   /** Units of EACH standard bait table issued per round (executive_blend excluded). */
   public int baitPerTable = 2;
@@ -72,10 +72,10 @@ public class SafariConfig {
   public int spawnsMax = 3;
 
   /** Stealth: how close a lure must be to a player to run a detection check (blocks). */
-  public double detectRange = 10.0;
+  public double detectRange = 7.0;
 
   /** Consecutive "seen" detection checks (one per 10t) before a lure spooks. */
-  public int alertChecks = 3;
+  public int alertChecks = 5;
 
   /** Ticks a spooked lure flees directly away before it poofs. */
   public int fleeTicks = 30;
@@ -93,10 +93,42 @@ public class SafariConfig {
    * Bolt roll on each snowball hit that lands a stagger: flee chance = this × the
    * NEW stagger count (the push-your-luck cost of stacking staggers).
    */
-  public double staggerFleeChance = 0.12;
+  public double staggerFleeChance = 0.07;
 
   /** Staggers that stack (further snowballs still weaken HP but add no more). */
   public int staggerMax = 4;
+
+  // ── Trust meter (the HUMANE catch path) ─────────────────────────────────────────
+
+  /**
+   * Trust needed before a lure is befriended. Each treat (a bait offered by hand to a
+   * present lure) raises trust; at this threshold the lure flips {@code friendly}:
+   * it never spooks, its window extends, its capture is easier, and a befriended catch
+   * comes out at {@link #befriendedFriendship}. Per-round — trust lives on the in-round
+   * lure (never persisted).
+   */
+  public int trustThreshold = 3;
+
+  /**
+   * Trust gained per treat when the offered bait MATCHES the table that lured the mon
+   * (its favourite). A mismatched bait still earns +1 (see SafariManager.onUseEntity).
+   */
+  public int trustPerTreat = 1;
+
+  /**
+   * Catch-rate bonus for a fully-befriended (friendly) lure: the real throw
+   * (POKEMON_CATCH_RATE hook) and the catch-chance bar both apply
+   * rate × (1 + friendlyCatchBonus). Stacks additively with the stagger bonus, so the
+   * gentle path reaches the same odds as staggering without spooking the mon.
+   */
+  public double friendlyCatchBonus = 0.6;
+
+  /**
+   * Friendship stamped on a Pokémon caught after it was befriended (the humane payoff —
+   * a bond it keeps). Clamped to Cobblemon's max friendship on apply. 0 = leave friendship
+   * as caught.
+   */
+  public int befriendedFriendship = 220;
 
   /** Catch-window extension for a befriended lure, in seconds. */
   public int friendlyBonusSeconds = 30;
@@ -111,8 +143,8 @@ public class SafariConfig {
 
   public int pointsRare = 6;
 
-  /** Contest bonus point for a catch whose lure was befriended first. */
-  public int friendlyPoint = 1;
+  /** Contest bonus points for a catch whose lure was befriended first (the humane premium). */
+  public int friendlyPoint = 3;
 
   /**
    * Eject pad. All-zero = unset → the round-clock escort returns the player to the exact

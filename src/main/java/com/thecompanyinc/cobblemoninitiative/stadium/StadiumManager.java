@@ -8,6 +8,7 @@ import com.cobblemon.mod.common.api.battles.model.actor.BattleActor;
 import com.cobblemon.mod.common.api.events.CobblemonEvents;
 import com.cobblemon.mod.common.api.events.battles.BattleFledEvent;
 import com.cobblemon.mod.common.api.events.battles.BattleVictoryEvent;
+import com.cobblemon.mod.common.api.storage.party.PartyPosition;
 import com.cobblemon.mod.common.api.storage.party.PlayerPartyStore;
 import com.cobblemon.mod.common.battles.BattleFormat;
 import com.cobblemon.mod.common.battles.BattleRegistry;
@@ -59,6 +60,13 @@ public final class StadiumManager {
 
   public static final String OBJECTIVE = "stadium_challenged";
   public static final int[] BRACKETS = { 25, 50, 75, 100 };
+
+  /**
+   * The exhibition is a three-Pokémon format: registration needs at least this many, and
+   * the player's FIRST three party slots represent them (party order = the selection —
+   * reorder with {@code stadium team}). See {@link #selectTeam} and the NOTE-1 design flag.
+   */
+  public static final int STADIUM_TEAM_SIZE = 3;
 
   /** Ticks before wave 1 after `stadium start` (breathing room to read the schedule). */
   private static final int FIRST_WAVE_DELAY_TICKS = 60;
@@ -132,15 +140,27 @@ public final class StadiumManager {
         "§c[Stadium] Finish your current battle first."));
       return;
     }
-    if (!hasBattleReadyPokemon(player)) {
+    // NOTE 1 (playtest + follow-up): the exhibition is a THREE-Pokémon format. Neither TBCS nor
+    // Cobblemon exposes a team-size cap to the command layer, so the SELECTION is "bring exactly
+    // three" — registration is REFUSED unless the party holds exactly three; the player picks
+    // which three at a PC. occupied() = filterNotNull().size() (jar-verified), gaps excluded.
+    int partyCount = partyCount(player);
+    if (partyCount != STADIUM_TEAM_SIZE) {
       player.sendSystemMessage(Component.literal(
-        "§c[Stadium] You need at least one healthy Pokémon to register."));
+        "§c[Stadium] The exhibition is a three-Pokémon format. You have §e" + partyCount
+          + "§c — go to a PC and set your party to exactly §e" + STADIUM_TEAM_SIZE
+          + "§c (the three you want to field), then come back."));
       return;
     }
 
-    activeRuns.put(
-      player.getUUID(),
-      new StadiumRunState(player.getUUID(), bracket, FIRST_WAVE_DELAY_TICKS));
+    StadiumRunState run =
+      new StadiumRunState(player.getUUID(), bracket, FIRST_WAVE_DELAY_TICKS);
+    // FIXED ARENA: remember where the player registered so the arena tp is undone when the
+    // run ends (captured whether or not an arena is configured — cheap, and future-proof).
+    run.setReturn(
+      player.getX(), player.getY(), player.getZ(),
+      player.getYRot(), player.getXRot());
+    activeRuns.put(player.getUUID(), run);
 
     // Full purse schedule up front — committed amounts are always printed before the
     // player fights for them (never rolled).
@@ -159,6 +179,10 @@ public final class StadiumManager {
     player.sendSystemMessage(Component.literal(
       "§6[Stadium] §8Exhibition rules: your Pokémon fight as insured copies. "
         + "No injuries occur on Company property."));
+
+    // NOTE 1: your first three party Pokémon represent you. Print them and how to reorder,
+    // while there is still time before the first wave dispatches (COUNTDOWN only).
+    sendTeamPreview(player);
 
     InitiativeInit.LOGGER.info(
       "[Stadium] {} started a bracket-{} run.", player.getName().getString(), bracket);
@@ -203,6 +227,83 @@ public final class StadiumManager {
         + (run.getWaveIndex() + 1) + "§7/§e" + total + "§7 (" + phase + ")."));
   }
 
+  /**
+   * /cobblemon-initiative stadium team &lt;a&gt; &lt;b&gt; &lt;c&gt; — pick which three Pokémon
+   * represent you by moving those party slots (1-based) into positions 1-3. The battle
+   * fields your party in order, so this IS the selection (see the NOTE-1 design flag: a
+   * hard three-only cap / in-battle picker needs TBCS or a Cobblemon battle rule and is
+   * NOT implemented here — the exhibition currently fields your whole party led by these
+   * three). Only permitted before the first wave dispatches.
+   */
+  public static void selectTeam(ServerPlayer player, int a, int b, int c) {
+    StadiumRunState run = activeRuns.get(player.getUUID());
+    if (run == null) {
+      player.sendSystemMessage(Component.literal(
+        "§7[Stadium] No active run. §8Start one, then pick your three."));
+      return;
+    }
+    if (run.getPhase() != StadiumRunState.Phase.COUNTDOWN || run.getWaveIndex() > 0
+        || run.hasMovedToArena()) {
+      player.sendSystemMessage(Component.literal(
+        "§c[Stadium] Team is locked once the circuit is underway. Set it before wave 1."));
+      return;
+    }
+    int[] picks = { a, b, c };
+    // Validate: 1-based, in range, distinct, and each slot actually holds a Pokémon.
+    PlayerPartyStore party = Cobblemon.INSTANCE.getStorage().getParty(player);
+    java.util.Set<Integer> seen = new java.util.HashSet<>();
+    for (int p : picks) {
+      if (p < 1 || p > 6 || !seen.add(p)) {
+        player.sendSystemMessage(Component.literal(
+          "§c[Stadium] Pick three DISTINCT party slots (1-6), e.g. §e/cobblemon-initiative "
+            + "stadium team 1 2 3§c."));
+        return;
+      }
+      if (party.get(p - 1) == null) {
+        player.sendSystemMessage(Component.literal(
+          "§c[Stadium] Party slot §e" + p + "§c is empty."));
+        return;
+      }
+    }
+    // Move each pick into positions 1-3 by swapping. Do it left-to-right: after swapping
+    // pick i into slot i, later picks that referenced slot i now live where pick i was —
+    // so re-resolve each pick's CURRENT slot by identity before swapping.
+    Pokemon[] chosen = { party.get(picks[0] - 1), party.get(picks[1] - 1), party.get(picks[2] - 1) };
+    for (int target = 0; target < chosen.length; target++) {
+      int current = currentSlotOf(party, chosen[target]);
+      if (current < 0 || current == target) continue;
+      party.swap(new PartyPosition(target), new PartyPosition(current));
+    }
+    player.sendSystemMessage(Component.literal(
+      "§6[Stadium] §aTeam set. §7These lead your exhibition roster:"));
+    sendTeamPreview(player);
+  }
+
+  /** Current 0-based slot of a specific Pokémon instance in the party, or -1. */
+  private static int currentSlotOf(PlayerPartyStore party, Pokemon target) {
+    if (target == null) return -1;
+    for (int i = 0; i < 6; i++) {
+      if (party.get(i) == target) return i;
+    }
+    return -1;
+  }
+
+  /** Print the party's first {@link #STADIUM_TEAM_SIZE} Pokémon + the reorder hint. */
+  private static void sendTeamPreview(ServerPlayer player) {
+    PlayerPartyStore party = Cobblemon.INSTANCE.getStorage().getParty(player);
+    StringBuilder line = new StringBuilder("§6[Stadium] §7Your three: ");
+    for (int i = 0; i < STADIUM_TEAM_SIZE; i++) {
+      Pokemon p = party.get(i);
+      if (i > 0) line.append("§7, ");
+      line.append("§b").append(i + 1).append(".§f")
+        .append(p != null ? p.getSpecies().getName() : "—");
+    }
+    player.sendSystemMessage(Component.literal(line.toString()));
+    player.sendSystemMessage(Component.literal(
+      "§6[Stadium] §8Reorder before wave 1 with §7/cobblemon-initiative stadium team <a> <b> <c>§8 "
+        + "(party slots 1-6)."));
+  }
+
   // ── Tick (registered from InitiativeInit, like the shrine manager) ────────────
 
   public static void tick(MinecraftServer server) {
@@ -219,6 +320,7 @@ public final class StadiumManager {
       if (player == null) {
         it.remove();
         resetAdjustLevel();
+        sweepBody(server, entry.getKey());
         InitiativeInit.LOGGER.info(
           "[Stadium] Cleared run for offline player {}.", entry.getKey());
         continue;
@@ -275,20 +377,83 @@ public final class StadiumManager {
       "§6[Stadium] §7Wave §e" + (run.getWaveIndex() + 1) + "§7/§e" + total + "§7 — §f"
         + wave.displayName + "§7 — purse §e" + wave.purse + " §7CobbleDollars."));
 
+    // FIXED ARENA (2026-08-06): when both spots are configured, teleport the player to the
+    // player battle spot (P1) facing the arena and spawn the opponent body at the npc spot
+    // (P2). Otherwise keep the legacy fight-where-you-stand placement. The
+    // player is moved before the FIRST wave only (subsequent waves keep them at P1); the
+    // pre-run position is restored on every run-end path (endRun / completeRun).
+    StadiumConfig.Spot playerSpot = config.getPlayerSpot();
+    StadiumConfig.Spot npcSpot = config.getNpcSpot();
+    boolean fixedArena = config.hasFixedArena();
+    if (fixedArena && !run.hasMovedToArena()) {
+      float pyaw = playerSpot.yaw != null ? playerSpot.yaw : player.getYRot();
+      server.getCommands().performPrefixedCommand(
+        player.createCommandSourceStack().withSuppressedOutput().withPermission(2),
+        "tp @s " + playerSpot.x + " " + playerSpot.y + " " + playerSpot.z
+          + " " + pyaw + " 0");
+      run.setMovedToArena(true);
+    }
+
     // TBCS refuses "vs rctmod:<id>" unless the trainer is ATTACHED to a live world
-    // entity ("X is not attached to an entity" — runtime-found 2026-07-12). Waves have
-    // no NPC bodies, so summon an invisible armor-stand anchor at the player, attach
-    // the wave trainer to it, and sweep it again on every endRun path.
+    // entity ("X is not attached to an entity" — runtime-found 2026-07-12). Waves had no
+    // NPC bodies, so early builds summoned an INVISIBLE armor stand — which showed nothing
+    // (playtest: "Stadium easy npc not appearing"). Now spawn a VISIBLE, themed Easy NPC
+    // opponent body via `import_new` (a real easy_npc:humanoid, TBCS-attachable exactly
+    // like the dojo duel bodies — ENGINE_FINDINGS: tbcs attach = TrainerNPC.setEntity), and
+    // sweep it on every endRun path. The preset ships a shared finder Tag
+    // (ci_stadium_opponent) and carries NO dialog, so a right-click can never launch a
+    // rogue battle — the wave battle is dispatched from Java below.
     var src = server.createCommandSourceStack().withSuppressedOutput();
-    String anchorTag = "ci_stadium_anchor_" + player.getUUID();
+    String bodyTag = "ci_stadium_body_" + player.getUUID();
+    // Kill any body left from the previous wave (per-player tag) before spawning the next.
+    sweepBody(server, player.getUUID());
+
+    String preset = config.bodyPresetForWave(run.getWaveIndex());
+    double bx, by, bz;
+    float byaw;
+    if (fixedArena) {
+      bx = npcSpot.x; by = npcSpot.y; bz = npcSpot.z;
+      byaw = npcSpot.yaw != null ? npcSpot.yaw : 0.0f;
+    } else {
+      // Legacy fight-where-you-stand: 2 blocks in front of the player, facing them.
+      double rad = Math.toRadians(player.getYRot());
+      bx = player.getX() - Math.sin(rad) * 2.0;
+      by = player.getY();
+      bz = player.getZ() + Math.cos(rad) * 2.0;
+      byaw = player.getYRot() + 180.0f; // face back toward the player
+    }
+
+    // import_new spawns from the FULL preset NBT — including the baked finder Tag
+    // (ENGINE_FINDINGS: only import_new gets vanilla Tags; the uuid-import path drops
+    // them). Anchor the source at the arena level+pos so the body never lands in the
+    // wrong dimension (mirrors NobleEncounterManager.spawnBody).
+    var spawnSrc = server.createCommandSourceStack().withPermission(4).withSuppressedOutput()
+      .withLevel(player.serverLevel())
+      .withPosition(new net.minecraft.world.phys.Vec3(bx, by, bz));
+    server.getCommands().performPrefixedCommand(spawnSrc, String.format(java.util.Locale.ROOT,
+      "easy_npc preset import_new data %s %.2f %.2f %.2f", preset, bx, by, bz));
+
+    // Tag the just-spawned body with this run's per-player kill tag, face it, and freeze
+    // its exact position (the import can land it a fraction off on uneven ground).
+    // import_new is synchronous server-side (ENGINE_FINDINGS: addFreshEntity before the
+    // command returns), so the body is in getAllEntities() this tick.
+    net.minecraft.world.entity.Entity body =
+      findBodyByTag(player.serverLevel(), "ci_stadium_opponent", bodyTag);
+    if (body == null) {
+      // Spawn failed — void the wave cleanly rather than dispatch a battle that TBCS will
+      // refuse ("not attached to an entity"). endRun sweeps any partial body + resets state.
+      InitiativeInit.LOGGER.warn(
+        "[Stadium] Wave {} opponent body ({}) failed to spawn for {} — voiding run.",
+        run.getWaveIndex() + 1, preset, player.getName().getString());
+      endRun(player, run,
+        "§c[Stadium] The exhibition team failed to take the field. The run has been voided.");
+      return;
+    }
+    body.addTag(bodyTag);
+    body.moveTo(bx, by, bz, byaw, 0.0f);
+    body.setYHeadRot(byaw);
     server.getCommands().performPrefixedCommand(src,
-      "kill @e[tag=" + anchorTag + "]");
-    server.getCommands().performPrefixedCommand(src,
-      "execute at " + player.getGameProfile().getName()
-        + " run summon minecraft:armor_stand ~2 ~ ~ {Invisible:1b,NoGravity:1b,Tags:[\""
-        + anchorTag + "\"]}");
-    server.getCommands().performPrefixedCommand(src,
-      "tbcs attach rctmod:" + wave.trainerId + " @e[tag=" + anchorTag + ",limit=1]");
+      "tbcs attach rctmod:" + wave.trainerId + " @e[tag=" + bodyTag + ",limit=1]");
 
     // Level lock (bytecode-verified mechanism): the GEN_9_SINGLES format singleton has a
     // mutable adjustLevel; with it set, Cobblemon clones + flattens the player's party
@@ -377,6 +542,10 @@ public final class StadiumManager {
       "§6[Stadium] §aWave " + (run.getWaveIndex() + 1) + " cleared. §e" + wave.purse
         + " §aCobbleDollars credited."));
 
+    // Sweep the beaten body now so it doesn't linger through the between-wave countdown;
+    // the next dispatchWave spawns a fresh, correctly-themed body.
+    sweepBody(server, run.getPlayerId());
+
     int nextWave = run.getWaveIndex() + 1;
     if (nextWave >= config.getWaves().size()) {
       completeRun(server, player, run);
@@ -403,6 +572,10 @@ public final class StadiumManager {
 
     activeRuns.remove(run.getPlayerId());
     resetAdjustLevel();
+    // Sweep the last wave's opponent body — a circuit completes on a win, so a body is
+    // always live at this point (see dispatchWave / onWaveWon).
+    if (server != null) sweepBody(server, run.getPlayerId());
+    restoreReturnPosition(player, run);
   }
 
   private static void endRun(ServerPlayer player, StadiumRunState run, String message) {
@@ -410,20 +583,36 @@ public final class StadiumManager {
     // disable Nuzlocke everywhere; a leaked adjustLevel would flatten gym battles.
     activeRuns.remove(run.getPlayerId());
     resetAdjustLevel();
-    // Sweep this run's battle anchor (see dispatchWave) — harmless if none exists.
+    // Sweep this run's opponent body (see dispatchWave) — harmless if none exists.
     MinecraftServer server = player != null ? player.getServer() : null;
     if (server != null) {
-      server.getCommands().performPrefixedCommand(
-        server.createCommandSourceStack().withSuppressedOutput(),
-        "kill @e[tag=ci_stadium_anchor_" + run.getPlayerId() + "]");
+      sweepBody(server, run.getPlayerId());
     }
     if (player != null && message != null) {
       player.sendSystemMessage(Component.literal(message));
     }
+    restoreReturnPosition(player, run);
     InitiativeInit.LOGGER.info(
       "[Stadium] Run ended for {} at wave {} (bracket {}).",
       player != null ? player.getName().getString() : run.getPlayerId(),
       run.getWaveIndex() + 1, run.getBracket());
+  }
+
+  /**
+   * FIXED ARENA: put the player back where they registered, if they were ever tp'd into
+   * the arena this run. No-op for legacy fight-where-you-stand runs (movedToArena never
+   * set) and for an offline player (their next battle simply resolves in place). Uses the
+   * command tp for parity with the rest of the class; the player stays in the overworld.
+   */
+  private static void restoreReturnPosition(ServerPlayer player, StadiumRunState run) {
+    if (player == null || !run.hasMovedToArena() || run.getReturnPos() == null) return;
+    double[] pos = run.getReturnPos();
+    MinecraftServer server = player.getServer();
+    if (server == null) return;
+    server.getCommands().performPrefixedCommand(
+      player.createCommandSourceStack().withSuppressedOutput().withPermission(2),
+      "tp @s " + pos[0] + " " + pos[1] + " " + pos[2]
+        + " " + run.getReturnYaw() + " " + run.getReturnPitch());
   }
 
   // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -435,12 +624,9 @@ public final class StadiumManager {
     return false;
   }
 
-  private static boolean hasBattleReadyPokemon(ServerPlayer player) {
-    PlayerPartyStore party = Cobblemon.INSTANCE.getStorage().getParty(player);
-    for (Pokemon pokemon : party) {
-      if (pokemon != null && !pokemon.isFainted()) return true;
-    }
-    return false;
+  /** Number of real Pokémon in the player's party (gaps excluded — occupied()). */
+  private static int partyCount(ServerPlayer player) {
+    return Cobblemon.INSTANCE.getStorage().getParty(player).occupied();
   }
 
   private static boolean hasNpcActor(PokemonBattle battle) {
@@ -448,6 +634,39 @@ public final class StadiumManager {
       if (actor.getType() == ActorType.NPC) return true;
     }
     return false;
+  }
+
+  /**
+   * Find a freshly-spawned opponent body: the FIRST live entity carrying the shared
+   * finder tag {@code sharedTag} that has NOT yet been claimed by a per-player kill tag
+   * {@code claimedTag}. Single-player + one body-per-player means this is unambiguous
+   * (mirrors NobleEncounterManager.findBodyByTag).
+   */
+  private static net.minecraft.world.entity.Entity findBodyByTag(
+      net.minecraft.server.level.ServerLevel level, String sharedTag, String claimedTag) {
+    if (level == null) return null;
+    for (net.minecraft.world.entity.Entity e : level.getAllEntities()) {
+      if (e.isAlive() && e.getTags().contains(sharedTag) && !e.getTags().contains(claimedTag)) {
+        return e;
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Remove a player's stadium opponent body. Uses Easy NPC's clean deregister first, then
+   * a hard kill as belt-and-braces — a lingering body would spoof a beaten opponent still
+   * standing in the arena. Safe to call when no body exists.
+   */
+  private static void sweepBody(MinecraftServer server, UUID playerId) {
+    if (server == null) return;
+    var src = server.createCommandSourceStack().withPermission(4).withSuppressedOutput();
+    String bodyTag = "ci_stadium_body_" + playerId;
+    // easy_npc delete takes an EasyNPC entity-selector argument (getEntitiesWithAccess,
+    // jar-verified) — a tag selector resolves cleanly and "Nothing to delete!" no-ops when
+    // absent. The hard kill is belt-and-braces in case the body was already deregistered.
+    server.getCommands().performPrefixedCommand(src, "easy_npc delete @e[tag=" + bodyTag + "]");
+    server.getCommands().performPrefixedCommand(src, "kill @e[tag=" + bodyTag + "]");
   }
 
   /**

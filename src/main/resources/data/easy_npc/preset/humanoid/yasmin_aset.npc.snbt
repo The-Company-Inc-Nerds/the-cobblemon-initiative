@@ -1,9 +1,9 @@
 {
     PresetMetadata: {
         author: "TheCompanyInc",
-        category: "Civilian",
+        category: "Merchant",
         created: 0L,
-        description: "civilian at Kalahar Reach (act 1). Compiled from dialog-src.",
+        description: "merchant at Kalahar Reach (act 1). Compiled from dialog-src.",
         entityTypeId: "easy_npc:humanoid",
         modified: 0L,
         name: "Yasmin Aset",
@@ -33,11 +33,103 @@
         CanPickUpLoot: 0b,
         CustomNameVisible: 1b,
         DialogData: {
-            Type: "BASIC",
+            Type: "STANDARD",
             DialogDataSet: [
                 {
                     Priority: 10,
                     Buttons: [
+                        {
+                            Name: "See the nomad's survival kit",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "wares"
+                                }
+                            ],
+                            Label: "wares_button"
+                        },
+                        {
+                            Name: "Just passing through",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "My people read the dunes the way townsfolk read a ledger. The sand tells me a storm is three days out and the Oasis to the southwest has strangers camped on it. Machines, too. The desert does not lie the way paper does."
+                        },
+                        {
+                            Text: "You townsfolk fight over a well as if the desert owed you one place to drink. We follow the water instead of chaining it. Chain water and it turns on you — mark an old nomad on that."
+                        },
+                        {
+                            Text: "You are crossing the deep sand, I can tell — you have the look of someone the desert has not finished with. I carry what the desert takes. Candy for the long climb, cures for the scald and the sleep. No CobbleDollar rots in a nomad's pack; I turn it into things that keep you alive out there."
+                        },
+                        {
+                            Text: "Walk light and take only what you can carry. The Reach forgot that lesson, and look what it cost them."
+                        }
+                    ],
+                    Name: "Yasmin Aset",
+                    Label: "default"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Rare Candy — 4000 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/market/buy_rare_candy"
+                                }
+                            ],
+                            Label: "buy_rare_candy_button"
+                        },
+                        {
+                            Name: "Hyper Potion — 1200 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/market/buy_hyper_potion"
+                                }
+                            ],
+                            Label: "buy_hyper_potion_button"
+                        },
+                        {
+                            Name: "Full Heal — 600 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/market/buy_full_heal"
+                                }
+                            ],
+                            Label: "buy_full_heal_button"
+                        },
+                        {
+                            Name: "More wares",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "wares2"
+                                }
+                            ],
+                            Label: "more_button"
+                        },
+                        {
+                            Name: "Back",
+                            Actions: [
+                                {
+                                    Type: "OPEN_DEFAULT_DIALOG"
+                                }
+                            ],
+                            Label: "back_button"
+                        },
                         {
                             Name: "Goodbye",
                             Actions: [
@@ -50,17 +142,63 @@
                     ],
                     Texts: [
                         {
-                            Text: "My people read the dunes the way townsfolk read a ledger. The sand tells me a storm is three days out and the Oasis to the southwest has strangers camped on it. Machines, too. The desert does not lie the way paper does."
-                        },
-                        {
-                            Text: "You townsfolk fight over a well as if the desert owed you one place to drink. We follow the water instead of chaining it. Chain water and it turns on you — mark an old nomad on that."
-                        },
-                        {
-                            Text: "Walk light and take only what you can carry. The Reach forgot that lesson, and look what it cost them."
+                            Text: "What the deep sand asks for, and what I ask for it. Coin only — I have no use for barter out here, and the price is the price. Storm's coming; do not dither."
                         }
                     ],
-                    Name: "Yasmin Aset",
-                    Label: "default"
+                    Name: "Yasmin — the survival kit",
+                    Label: "wares"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Heal Powder — 450 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/market/buy_heal_powder"
+                                }
+                            ],
+                            Label: "buy_heal_powder_button"
+                        },
+                        {
+                            Name: "Super Potion — 700 CD",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:economy/market/buy_super_potion"
+                                }
+                            ],
+                            Label: "buy_super_potion_button"
+                        },
+                        {
+                            Name: "Back",
+                            Actions: [
+                                {
+                                    Type: "OPEN_DEFAULT_DIALOG"
+                                }
+                            ],
+                            Label: "back_button"
+                        },
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The rest of what keeps you upright out here. Same rule — coin only, and the price is the price."
+                        }
+                    ],
+                    Name: "Yasmin — the survival kit",
+                    Label: "wares2"
                 }
             ]
         },

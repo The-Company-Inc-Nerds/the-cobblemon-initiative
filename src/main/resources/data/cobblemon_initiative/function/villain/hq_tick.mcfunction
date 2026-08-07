@@ -1,11 +1,15 @@
 # Company HQ access enforcement — tick (playtest 2026-08-05 N11-N13/P2-P9). Registered in
 # data/minecraft/tags/function/tick.json. Grant first, then two escort boxes on the built
 # tower, then cooldown decay:
-#   (a) GROUND BOX x1608..1633 y88..100 z1090..1115 — a player who is not raid-eligible
+#   (a) GROUND BOX x1608..1633 y88..100 z1090..1120 — a player who is not raid-eligible
 #       (fields_liberated < 6 OR memory_fragment < 7; memory_fragment IS badge count) is
 #       walked out by security (villain/hq_bounce). The door-guard pair (ci_hq_guard,
 #       hq_security_voss/kessler at z1116.5) is the fiction; this box is the mechanic.
 #       Lobby agents (cipher/flux/grid/pulse) become reachable exactly at eligibility.
+#       a37 (playtest 2026-08-06): dz 25->30 so the box's north edge (now z1120) covers the
+#       ENTRANCE/DOOR line (z1116.5 guards, z1117 threshold) — a player crossing the door is
+#       caught now. The escort-out spot z1120.5 stays 0.5 OUTSIDE the box (no tp ping-pong);
+#       do NOT raise dz past 30 or the bounce destination re-enters the box.
 #   (b) PENTHOUSE BOX x1608..1636 y168..200 z1086..1118 — sealed until hq_basement_cleared
 #       (villain/hq_bounce_penthouse walks the player back to the ground-floor lift).
 #       Victor Node holds the lift landing (y171) as the spoken half of the same gate.
@@ -26,8 +30,8 @@ tag @a[tag=!hq_basement_cleared,tag=defeated_villain_admin_commander] add hq_bas
 execute as @a[tag=!hq_basement_cleared] if score @s fields_liberated matches 6.. if score @s memory_fragment matches 7.. run tag @s add hq_basement_cleared
 
 # (a) ground box: not raid-eligible -> escorted out.
-execute as @a[x=1608,y=88,z=1090,dx=25,dy=12,dz=25,gamemode=!creative,gamemode=!spectator] at @s unless score @s ci_hq_kick_cd matches 1.. unless score @s fields_liberated matches 6.. run function cobblemon_initiative:villain/hq_bounce
-execute as @a[x=1608,y=88,z=1090,dx=25,dy=12,dz=25,gamemode=!creative,gamemode=!spectator] at @s unless score @s ci_hq_kick_cd matches 1.. unless score @s memory_fragment matches 7.. run function cobblemon_initiative:villain/hq_bounce
+execute as @a[x=1608,y=88,z=1090,dx=25,dy=12,dz=30,gamemode=!creative,gamemode=!spectator] at @s unless score @s ci_hq_kick_cd matches 1.. unless score @s fields_liberated matches 6.. run function cobblemon_initiative:villain/hq_bounce
+execute as @a[x=1608,y=88,z=1090,dx=25,dy=12,dz=30,gamemode=!creative,gamemode=!spectator] at @s unless score @s ci_hq_kick_cd matches 1.. unless score @s memory_fragment matches 7.. run function cobblemon_initiative:villain/hq_bounce
 
 # (b) penthouse box: basement not cleared -> walked back to the lift, then the street.
 execute as @a[x=1608,y=168,z=1086,dx=28,dy=32,dz=32,tag=!hq_basement_cleared,gamemode=!creative,gamemode=!spectator] at @s unless score @s ci_hq_kick_cd matches 1.. run function cobblemon_initiative:villain/hq_bounce_penthouse

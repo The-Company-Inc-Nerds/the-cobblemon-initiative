@@ -9,6 +9,9 @@ bossbar set cobblemon_initiative:trident_race color blue
 bossbar set cobblemon_initiative:trident_race style notched_10
 bossbar set cobblemon_initiative:trident_race visible false
 # A relog mid-run abandons the attempt cleanly (tags persist; timer state resets).
+# Abandoning = failing: the loaner Tide-Caller's Trident is taken back (kept only on a clean run).
+clear @a[tag=ci_trident_racing] minecraft:trident[minecraft:custom_data~{ci_tide_trident:1b}]
+scoreboard players reset @a[tag=ci_trident_racing] ci_trace_cp
 tag @a remove ci_trident_racing
 # Per-player ordered-ring counter (0 = none passed, advances 1..5 through the 5 rings).
 scoreboard objectives add ci_trace_cp dummy

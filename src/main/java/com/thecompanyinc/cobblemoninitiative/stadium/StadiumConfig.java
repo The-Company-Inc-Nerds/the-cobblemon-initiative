@@ -48,11 +48,41 @@ public class StadiumConfig {
     public String trainerId;
     public String displayName;
     public int purse;
+    /**
+     * Optional Easy NPC preset (namespaced, e.g. {@code easy_npc:preset/humanoid/
+     * stadium_opponent_1.npc.snbt}) spawned as this wave's VISIBLE opponent body. When
+     * null, {@link StadiumConfig#bodyPresetForWave} falls back to the themed default set
+     * {@code stadium_opponent_<n>} (1-based wave number, clamped to the shipped 5). The
+     * body is spawned via {@code import_new}, TBCS-attached, and swept on every run-end.
+     */
+    public String bodyPreset;
+  }
+
+  /**
+   * A fixed battle position — {@code [x, y, z]} plus an optional {@code yaw}. Set the two
+   * spots ({@link #playerSpot} / {@link #npcSpot}) to pin a real arena; leave them null to
+   * keep the legacy fight-where-you-stand behaviour (anchor summoned at {@code ~2 ~ ~}).
+   */
+  public static class Spot {
+    public double x;
+    public double y;
+    public double z;
+    public Float yaw;
   }
 
   private int ticksBetweenWaves = 100;
   private int completionPurse = 1500;
   private List<Wave> waves = new ArrayList<>();
+  /**
+   * FIXED ARENA (2026-08-06): where the player stands (P1) and where the invisible
+   * wave-trainer anchor is summoned (P2). When BOTH are present, {@link
+   * com.thecompanyinc.cobblemoninitiative.stadium.StadiumManager#dispatchWave} teleports
+   * the player to {@code playerSpot} facing the arena and summons the anchor at {@code
+   * npcSpot} instead of {@code ~2 ~ ~}; the player's pre-run position is restored on every
+   * run-end path. When either is null the engine keeps fighting where the player stands.
+   */
+  private Spot playerSpot;
+  private Spot npcSpot;
 
   public static StadiumConfig load() {
     try (
@@ -119,6 +149,30 @@ public class StadiumConfig {
   public int getTicksBetweenWaves() { return Math.max(1, ticksBetweenWaves); }
   public int getCompletionPurse() { return completionPurse; }
   public List<Wave> getWaves() { return waves; }
+
+  public Spot getPlayerSpot() { return playerSpot; }
+  public Spot getNpcSpot() { return npcSpot; }
+
+  /** How many themed default opponent presets ship (stadium_opponent_1..N). */
+  private static final int SHIPPED_OPPONENT_PRESETS = 5;
+
+  /**
+   * The Easy NPC preset for this wave's VISIBLE opponent body: an explicit per-wave
+   * {@link Wave#bodyPreset} if set, else the themed default {@code stadium_opponent_<n>}
+   * (1-based wave number, clamped to the shipped set so extra waves reuse the last body).
+   */
+  public String bodyPresetForWave(int waveIndex) {
+    if (waveIndex >= 0 && waveIndex < waves.size()) {
+      Wave w = waves.get(waveIndex);
+      if (w.bodyPreset != null && !w.bodyPreset.isBlank()) return w.bodyPreset;
+    }
+    int n = Math.min(waveIndex + 1, SHIPPED_OPPONENT_PRESETS);
+    if (n < 1) n = 1;
+    return "easy_npc:preset/humanoid/stadium_opponent_" + n + ".npc.snbt";
+  }
+
+  /** True when a real arena is pinned (both spots set) — see {@link #playerSpot}. */
+  public boolean hasFixedArena() { return playerSpot != null && npcSpot != null; }
 
   public void setTicksBetweenWaves(int v) { this.ticksBetweenWaves = v; }
   public void setCompletionPurse(int v) { this.completionPurse = v; }

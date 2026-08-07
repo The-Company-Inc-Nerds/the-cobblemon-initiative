@@ -1,0 +1,40 @@
+# Augmented Ring Run — the "ring to fly through" marker at the CURRENT target ring only.
+# Run as/at the racing runner (called from tick_run). Gated on ci_augrace_cp so exactly one hoop
+# is lit: cp 0 -> Ring 1, cp 1 -> Ring 2 ... cp 36 -> Ring 37. Coords match tick_run's boxes.
+execute if score @s ci_augrace_cp matches 0 positioned 1459 178 1270.5 run function cobblemon_initiative:sidequest/augmented_race/ring_at
+execute if score @s ci_augrace_cp matches 1 positioned 1465.5 173.6 1275.1 run function cobblemon_initiative:sidequest/augmented_race/ring_at
+execute if score @s ci_augrace_cp matches 2 positioned 1467 156.4 1275.8 run function cobblemon_initiative:sidequest/augmented_race/ring_at
+execute if score @s ci_augrace_cp matches 3 positioned 1468.8 139.1 1276.8 run function cobblemon_initiative:sidequest/augmented_race/ring_at
+execute if score @s ci_augrace_cp matches 4 positioned 1470.7 114.4 1277.8 run function cobblemon_initiative:sidequest/augmented_race/ring_at
+execute if score @s ci_augrace_cp matches 5 positioned 1454 91 1283 run function cobblemon_initiative:sidequest/augmented_race/ring_at
+execute if score @s ci_augrace_cp matches 6 positioned 1434 89 1271 run function cobblemon_initiative:sidequest/augmented_race/ring_at
+execute if score @s ci_augrace_cp matches 7 positioned 1424.5 88 1243 run function cobblemon_initiative:sidequest/augmented_race/ring_at
+execute if score @s ci_augrace_cp matches 8 positioned 1471 88 1222 run function cobblemon_initiative:sidequest/augmented_race/ring_at
+execute if score @s ci_augrace_cp matches 9 positioned 1608.5 88 1222 run function cobblemon_initiative:sidequest/augmented_race/ring_at
+execute if score @s ci_augrace_cp matches 10 positioned 1632.5 88 1182.5 run function cobblemon_initiative:sidequest/augmented_race/ring_at
+execute if score @s ci_augrace_cp matches 11 positioned 1596 88 1153.5 run function cobblemon_initiative:sidequest/augmented_race/ring_at
+execute if score @s ci_augrace_cp matches 12 positioned 1552 97 1170 run function cobblemon_initiative:sidequest/augmented_race/ring_at
+execute if score @s ci_augrace_cp matches 13 positioned 1544 111 1221.5 run function cobblemon_initiative:sidequest/augmented_race/ring_at
+execute if score @s ci_augrace_cp matches 14 positioned 1501 121 1223 run function cobblemon_initiative:sidequest/augmented_race/ring_at
+execute if score @s ci_augrace_cp matches 15 positioned 1495 132 1195 run function cobblemon_initiative:sidequest/augmented_race/ring_at
+execute if score @s ci_augrace_cp matches 16 positioned 1554 141 1195 run function cobblemon_initiative:sidequest/augmented_race/ring_at
+execute if score @s ci_augrace_cp matches 17 positioned 1582 141 1179 run function cobblemon_initiative:sidequest/augmented_race/ring_at
+execute if score @s ci_augrace_cp matches 18 positioned 1578 141 1083.5 run function cobblemon_initiative:sidequest/augmented_race/ring_at
+execute if score @s ci_augrace_cp matches 19 positioned 1529 141 1076.5 run function cobblemon_initiative:sidequest/augmented_race/ring_at
+execute if score @s ci_augrace_cp matches 20 positioned 1499.5 142 1097 run function cobblemon_initiative:sidequest/augmented_race/ring_at
+execute if score @s ci_augrace_cp matches 21 positioned 1504 132.5 1118 run function cobblemon_initiative:sidequest/augmented_race/ring_at
+execute if score @s ci_augrace_cp matches 22 positioned 1499.5 88 1143 run function cobblemon_initiative:sidequest/augmented_race/ring_at
+execute if score @s ci_augrace_cp matches 23 positioned 1488 90 1189.5 run function cobblemon_initiative:sidequest/augmented_race/ring_at
+execute if score @s ci_augrace_cp matches 24 positioned 1474.5 90 1208 run function cobblemon_initiative:sidequest/augmented_race/ring_at
+execute if score @s ci_augrace_cp matches 25 positioned 1461 92.5 1249 run function cobblemon_initiative:sidequest/augmented_race/ring_at
+execute if score @s ci_augrace_cp matches 26 positioned 1462 91 1269 run function cobblemon_initiative:sidequest/augmented_race/ring_at
+execute if score @s ci_augrace_cp matches 27 positioned 1457.5 94.5 1283 run function cobblemon_initiative:sidequest/augmented_race/ring_at
+execute if score @s ci_augrace_cp matches 28 positioned 1467 105 1258 run function cobblemon_initiative:sidequest/augmented_race/ring_at
+execute if score @s ci_augrace_cp matches 29 positioned 1467 114 1258 run function cobblemon_initiative:sidequest/augmented_race/ring_at
+execute if score @s ci_augrace_cp matches 30 positioned 1467 123 1259 run function cobblemon_initiative:sidequest/augmented_race/ring_at
+execute if score @s ci_augrace_cp matches 31 positioned 1467 132 1259 run function cobblemon_initiative:sidequest/augmented_race/ring_at
+execute if score @s ci_augrace_cp matches 32 positioned 1467 141 1259 run function cobblemon_initiative:sidequest/augmented_race/ring_at
+execute if score @s ci_augrace_cp matches 33 positioned 1467 150 1259 run function cobblemon_initiative:sidequest/augmented_race/ring_at
+execute if score @s ci_augrace_cp matches 34 positioned 1467 159 1259 run function cobblemon_initiative:sidequest/augmented_race/ring_at
+execute if score @s ci_augrace_cp matches 35 positioned 1467 168 1259 run function cobblemon_initiative:sidequest/augmented_race/ring_at
+execute if score @s ci_augrace_cp matches 36 positioned 1451 177 1268 run function cobblemon_initiative:sidequest/augmented_race/ring_at

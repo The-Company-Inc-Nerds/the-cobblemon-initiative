@@ -472,6 +472,14 @@ public class CobblemonInitiativeCommands {
                 CobblemonInitiativeCommands::stadiumStatus
               )
             )
+            // Pick which three party Pokémon lead your exhibition roster (party slots 1-6).
+            .then(
+              Commands.literal("team")
+                .then(Commands.argument("a", IntegerArgumentType.integer(1, 6))
+                  .then(Commands.argument("b", IntegerArgumentType.integer(1, 6))
+                    .then(Commands.argument("c", IntegerArgumentType.integer(1, 6))
+                      .executes(CobblemonInitiativeCommands::stadiumTeam))))
+            )
         )
         // Safari Zone — the Ridgewatch Preserve rounds. enter/exit/status are
         // PLAYER-FACING (perm 0, runtime player resolution like `track` — no parse-time
@@ -1306,6 +1314,17 @@ public class CobblemonInitiativeCommands {
     ServerPlayer player = stadiumPlayer(context);
     if (player == null) return 0;
     StadiumManager.sendStatus(player);
+    return 1;
+  }
+
+  /** /cobblemon-initiative stadium team &lt;a&gt; &lt;b&gt; &lt;c&gt; — pick the leading three. */
+  private static int stadiumTeam(CommandContext<CommandSourceStack> context) {
+    ServerPlayer player = stadiumPlayer(context);
+    if (player == null) return 0;
+    StadiumManager.selectTeam(player,
+      IntegerArgumentType.getInteger(context, "a"),
+      IntegerArgumentType.getInteger(context, "b"),
+      IntegerArgumentType.getInteger(context, "c"));
     return 1;
   }
 

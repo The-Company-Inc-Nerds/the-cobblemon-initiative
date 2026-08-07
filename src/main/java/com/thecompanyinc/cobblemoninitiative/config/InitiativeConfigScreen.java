@@ -1415,6 +1415,28 @@ public class InitiativeConfigScreen {
         .setTooltip(Component.literal("Staggers that stack — further snowballs still weaken HP but add no more."))
         .setSaveConsumer(v -> safariConfig.staggerMax = v).build());
     safariSub.add(
+      entryBuilder.startIntSlider(Component.literal("Trust to befriend"), safariConfig.trustThreshold, 1, 10)
+        .setDefaultValue(safariDefaults.trustThreshold)
+        .setTooltip(Component.literal("Treats (bait offered by hand) needed before a lure is befriended."))
+        .setSaveConsumer(v -> safariConfig.trustThreshold = v).build());
+    safariSub.add(
+      entryBuilder.startIntSlider(Component.literal("Trust per treat (favourite)"), safariConfig.trustPerTreat, 1, 5)
+        .setDefaultValue(safariDefaults.trustPerTreat)
+        .setTooltip(Component.literal("Trust gained per treat when the bait matches the lure's table (a mismatch always gives +1)."))
+        .setSaveConsumer(v -> safariConfig.trustPerTreat = v).build());
+    safariSub.add(
+      entryBuilder.startDoubleField(Component.literal("Befriend catch bonus"), safariConfig.friendlyCatchBonus)
+        .setMin(0.0)
+        .setDefaultValue(safariDefaults.friendlyCatchBonus)
+        .setTooltip(Component.literal("Catch-rate multiplier for a befriended lure: rate × (1 + this). Stacks with stagger."))
+        .setSaveConsumer(v -> safariConfig.friendlyCatchBonus = v).build());
+    safariSub.add(
+      entryBuilder.startIntField(Component.literal("Befriended friendship"), safariConfig.befriendedFriendship)
+        .setMin(0)
+        .setDefaultValue(safariDefaults.befriendedFriendship)
+        .setTooltip(Component.literal("Friendship stamped on a befriended catch (0 = leave as caught; clamped to Cobblemon's max)."))
+        .setSaveConsumer(v -> safariConfig.befriendedFriendship = v).build());
+    safariSub.add(
       entryBuilder.startIntField(Component.literal("Befriend bonus (seconds)"), safariConfig.friendlyBonusSeconds)
         .setMin(0)
         .setDefaultValue(safariDefaults.friendlyBonusSeconds)

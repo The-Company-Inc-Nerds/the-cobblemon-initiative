@@ -8,6 +8,9 @@ execute if score #idx cd_instability matches ..-1 run scoreboard players set #id
 # a18 (playtest M1): the moment the survey dies, the TOWN WELL refills — forceload + scheduled
 # setblocks (the well is ~350 blocks away, unloaded). Idempotent, so no oasis_pump_off guard needed.
 function cobblemon_initiative:oasis/well_restore_arm
+# a38 (playtest M35): the SECOND well (empty at rest) fills on the same beat — same forceload+
+# schedule idiom. Its rescue tick self-disables once oasis_pump_off is set below.
+function cobblemon_initiative:oasis/second_well_fill_arm
 tag @s add oasis_pump_off
 title @s title [{"text":"SAMPLES SPIKED","color":"aqua"}]
 title @s subtitle [{"text":"The Company numbers come back worthless. Far away, a town well remembers how to fill.","color":"gray"}]

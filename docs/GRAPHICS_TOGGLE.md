@@ -5,7 +5,7 @@ A one-click **HIGH ⇄ LOW** graphics switch for low-end machines. It swaps thre
 | Axis | HIGH | LOW |
 |------|------|-----|
 | Textures | `Prime's HD Textures [256x]` (local file) | `Prime's HD Textures (32x)` (Modrinth `primes-hd-textures` 35.2) |
-| Shaders (Iris/BSL) | **BSL on, HIGH tier** — full shadows (2048 @ 256 dist) + colored/soft shadows + AO + light shafts + TAA — the same built-in `profile.HIGH` the shipped pack defaults to | **BSL stays on, LOW tier** — shadows kept but 1024, no colored/soft shadows, no AO, no light shafts, no TAA |
+| Shaders (Iris/BSL) | **BSL on, ULTRA tier** — full shadows (3072 @ 512 dist) + colored/soft shadows + AO + light shafts + TAA — BSL's built-in `profile.ULTRA` (= HIGH + the two shadow bumps), the shipped default since a23 | **BSL stays on, LOW tier** — shadows kept but 1024, no colored/soft shadows, no AO, no light shafts, no TAA |
 | Video settings | Fancy / RD 16 / sim 12 / AO on / all particles / fancy clouds / entity ×3 / biome blend 5 / mipmap 4 | Fast / RD 8 / sim 5 / AO off / minimal particles / clouds off / entity ×0.5 / biome blend 0 / mipmap 0 |
 
 > Both modes apply only the BSL keys listed above (via option merge), so **any other BSL options you've enabled — e.g. `ADVANCED_MATERIALS` — are preserved**, not reset.
@@ -36,7 +36,7 @@ Ships in `mrpack/overrides/config/`. Auto-generated on first run if absent. The 
 
 Each preset also carries a **`shaderOptions`** map — BSL option overrides applied live (booleans `"true"`/`"false"`, sliders like `shadowMapResolution`/`shadowDistance`). Defaults mirror BSL's HIGH and LOW tiers; edit freely, or add more BSL keys (e.g. `BLOOM`, `MOTION_BLUR`) to push LOW further. An empty map leaves BSL untouched.
 
-**`configVersion`** (currently `2`) enables one-shot migrations of stale on-disk configs. v2: `/gfx high` used to apply BSL's ULTRA shadow values (`shadowMapResolution` 3072 / `shadowDistance` 512.0) while the pack ships BSL's built-in HIGH profile (2048 / 256.0) — the preset now matches the shipped defaults, and on load a pre-v2 file still carrying the exact old ULTRA values is rewritten once and stamped `configVersion: 2`. A file at v2+ is never touched again, so hand-editing the values back up to ULTRA afterwards sticks.
+**`configVersion`** (currently `4`) enables one-shot migrations of stale on-disk configs, each exact-value-guarded so a deliberate hand-edit is never clobbered and a file at the current version is never touched again. v2: dropped `/gfx high` from ULTRA (3072/512) to HIGH (2048/256). v3: HIGH vanilla clouds `fancy`→`off` (BSL renders its own). **v4 (a23): HIGH tier IS ULTRA again — a config still carrying the old HIGH shadow defaults (2048/256) is bumped to 3072/512.** BSL depth-of-field (`DOF=true`, `DOF_STRENGTH=0.50`) is set separately in `shaderpacks/BSL_v10.1.3.zip.txt` (a non-`/gfx` key, preserved across toggles like `ADVANCED_MATERIALS`).
 
 `applyVideoSettings: false` makes the toggle swap only textures + shaders and leave the video sliders alone.
 

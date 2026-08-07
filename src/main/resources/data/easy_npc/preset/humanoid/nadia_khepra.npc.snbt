@@ -1,9 +1,9 @@
 {
     PresetMetadata: {
         author: "TheCompanyInc",
-        category: "Civilian",
+        category: "Quest",
         created: 0L,
-        description: "civilian at Kalahar Reach - the kiln quarter (act 1). Compiled from dialog-src.",
+        description: "quest_giver at Kalahar Reach - the kiln quarter (act 1). Compiled from dialog-src.",
         entityTypeId: "easy_npc:humanoid",
         modified: 0L,
         name: "Nadia Khepra",
@@ -33,19 +33,69 @@
         CanPickUpLoot: 0b,
         CustomNameVisible: 1b,
         DialogData: {
-            Type: "BASIC",
+            Type: "STANDARD",
             DialogDataSet: [
                 {
-                    Priority: 10,
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "kiln_hunt_active"
+                        }
+                    ],
+                    Priority: 20,
                     Buttons: [
                         {
-                            Name: "Goodbye",
+                            Name: "To the clay-run, then",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "goodbye_button"
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "You have the bearing already. Follow the old clay-run to where it bends back on itself — the kiln-master set a slab flush there so the sand would not read it. Watch for the dust-shimmer standing over the drift; that is where he sank the box. Brush it clear and dig. What is inside is yours."
+                        },
+                        {
+                            Text: "Still out there, then. Marrow watches the smoke-side door for you every time you leave. Go on — the desert keeps the box, not the finding of it. Come back and I will chalk you another bearing when this one is dug."
+                        }
+                    ],
+                    Name: "Nadia — the dust stands over it",
+                    Label: "active"
+                },
+                {
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "Chalk me a bearing to a cache",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "tag @s add kiln_hunt_active"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:sidequest/kalahar_hunt/arm_kiln"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "clue_button"
+                        },
+                        {
+                            Name: "Fire well, keeper",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
                         }
                     ],
                     Texts: [
@@ -59,7 +109,7 @@
                             Text: "The Cubone sleeping by the kiln is Marrow. The dry season took his mother out on the dunes, and the kiln is the warmest spot in the Reach, so he stays. I do not ask him to be all right, and he does not ask me. We manage."
                         },
                         {
-                            Text: "Desert clay wants a slow fire and a patient hand. Gaia says the same thing about training Ground-types, which is why half his students end up in here holding a teacup like it is a lesson. Maybe it is."
+                            Text: "You have the look of someone who digs where others only walk. The old kiln-master before me buried caches all along the clay-run against the bad seasons — iron boxes, one to a bend. I hold his bearings, and there is always another. Say the word and I will chalk you the way to the next one."
                         }
                     ],
                     Name: "Nadia Khepra",

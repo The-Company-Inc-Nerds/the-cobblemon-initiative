@@ -1,9 +1,9 @@
 {
     PresetMetadata: {
         author: "TheCompanyInc",
-        category: "Civilian",
+        category: "Gym Guide",
         created: 0L,
-        description: "civilian at Cyber City - West Alleys (act 1). Compiled from dialog-src.",
+        description: "gym_guide at Cyber City - West Alleys (act 1). Compiled from dialog-src.",
         entityTypeId: "easy_npc:humanoid",
         modified: 0L,
         name: "Hex Firewall",
@@ -33,34 +33,191 @@
         CanPickUpLoot: 0b,
         CustomNameVisible: 1b,
         DialogData: {
-            Type: "BASIC",
+            Type: "CUSTOM",
             DialogDataSet: [
                 {
                     Priority: 10,
                     Buttons: [
                         {
-                            Name: "Goodbye",
+                            Name: "Explain the gym",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "explain"
+                                }
+                            ],
+                            Label: "explain_button"
+                        },
+                        {
+                            Name: "How do I reach Volt?",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "volt_counsel"
+                                }
+                            ],
+                            Label: "volt_counsel_button"
+                        },
+                        {
+                            Name: "Heard anything interesting?",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "guide_gossip"
+                                }
+                            ],
+                            Label: "gossip_button"
+                        },
+                        {
+                            Name: "I know what I am doing",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "goodbye_button"
+                            Label: "leave_button"
                         }
                     ],
                     Texts: [
                         {
-                            Text: "I sell walls. Not the brick kind — the kind that keep the Company out of your ledger for about a week before they patch around it. Renewable business, that."
+                            Text: "Welcome to Cyber City, challenger. I sell walls — not the brick kind, the kind that keep the Company out of your ledger for about a week. But the gym is free advice, and free is my favourite exploit. Ask."
                         },
                         {
-                            Text: "You are being logged right now. So am I. So is the fern. Wave at the third camera, it makes the day go faster."
+                            Text: "You are being logged right now. So am I. So is the fern. Wave at the third camera and then let me tell you how to beat Volt, because that camera cannot stop me."
                         },
                         {
-                            Text: "Gym Leader Volt was Company once — grid maintenance, until they escorted him out for refusing to brown out the strip on a quota day. Security walked him down every floor. I count that as a reference."
+                            Text: "The League classifies me as signage. I classify myself as a man who has watched every challenger take the same wrong turn at the dead power plant. Do not be the next one. Ask."
+                        },
+                        {
+                            Text: "Gym Leader Volt was Company once — grid maintenance, until they walked him out for refusing to brown out the strip on quota day. I count that as a reference. Want to know how to fight the man they could not keep bought?"
                         }
                     ],
-                    Name: "Hex Firewall",
+                    Name: "Hex Firewall — the alley guide",
                     Label: "default"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Got it",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "default"
+                                }
+                            ],
+                            Label: "back_button"
+                        },
+                        {
+                            Name: "Thanks",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "Beat the leader and you earn the badge. Each badge you collect raises your level cap, so your team can keep pace with the road ahead. Skip a gym and you will hit a wall you cannot train through — I have watched that wall, it does not negotiate."
+                        },
+                        {
+                            Text: "Volt runs Electric, so build a team that grounds it out. Heal at the center before you challenge — and remember, out here a fainted partner does not come back. Choose your battles like they are permanent. Because for you, they are. No undo, no rollback, no restore point."
+                        },
+                        {
+                            Text: "One thing the new ones never hear. The badges are not just for show. The whole region runs on a single currency now, and a single name behind it. The higher you climb, the more that name leans your way. In my line that is called a backdoor. I would keep my eyes open if I were you."
+                        }
+                    ],
+                    Name: "How Gyms Work",
+                    Label: "explain"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Understood",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "default"
+                                }
+                            ],
+                            Label: "back_button"
+                        },
+                        {
+                            Name: "I will handle it",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The mains ladder first. You clear the floor trainers, then Voltz, then his apprentice Surge on the mains line — the current does not skip a rung and neither will he. Only after Surge yields does the gym even look at you."
+                        },
+                        {
+                            Text: "Then catch some lightning to prove you belong in his half-second. Go plant a lightning rod out in the open and let a storm land a strike on it. Do that and the door stops treating you like a tourist."
+                        },
+                        {
+                            Text: "But the real block is the plant. It went dark — nine dead bulbs on the board and the arena running on backup, which Volt refuses to fight on. Get in there and cross the levers: the switches toggle the copper bulbs in pairs, so it is a puzzle, not a lightswitch. Light all nine and the grid comes live. That is what wakes the arena."
+                        },
+                        {
+                            Text: "Optional, but it is the smartest move in the alley: the tower wardens above the strip. Quiet enough of them — four, by my count — and Volt's team spends the day covering shifts instead of resting. The current between you and him runs thinner every one you take down."
+                        },
+                        {
+                            Text: "When you do stand across from him — you fight at cap sixty-two and his ace comes in at sixty-four. Underleveled, same as every rung of this climb. That is the design, not an accident. Bring type coverage, not levels you do not have."
+                        }
+                    ],
+                    Name: "Hex Firewall — the way to Volt",
+                    Label: "volt_counsel"
+                },
+                {
+                    Priority: -1,
+                    Buttons: [
+                        {
+                            Name: "Good to know",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "default"
+                                }
+                            ],
+                            Label: "gossip_back_button"
+                        },
+                        {
+                            Name: "My lips are sealed",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    Cmd: "title @initiator actionbar [{\"text\":\"Hex taps the side of his nose — off the record, and off the grid.\"}]"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "gossip_leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "There are ten of us guides, one per gym, and we share a newsletter. I am the only one who encrypts my submissions. The others think I am difficult. I think they are unpatched."
+                        },
+                        {
+                            Text: "Prize money used to come straight from the League. Now every payout routes through one office, right here in these towers. I traced the route once. Then a grey suit asked me to stop tracing routes. Politely. Once."
+                        },
+                        {
+                            Text: "One of the other guides swears the healing machine runs on a Chansey in the back room. Ours runs on the same grid the plant feeds. When the plant dies, so does the machine. Ask yourself why nobody fixed the plant before now."
+                        },
+                        {
+                            Text: "A guide remembers every challenger — especially the ones whose parties walk out smaller than they walked in. I keep that log offline. Some records the Company should not get to scrub."
+                        }
+                    ],
+                    Name: "Guide Gossip",
+                    Label: "guide_gossip"
                 }
             ]
         },

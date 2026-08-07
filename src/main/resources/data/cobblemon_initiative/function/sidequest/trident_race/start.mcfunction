@@ -2,6 +2,8 @@
 #   function cobblemon_initiative:sidequest/trident_race/start {ticks:600}   (30 s clock)
 # Guard: ignore re-clicks while a run is live (no timer-reset exploit).
 execute if entity @s[tag=ci_trident_racing] run return 0
+# One-time race (playtest 2026-08-06 N1): once cleared, it never runs again.
+execute if entity @s[tag=sq_trident_race_done] run return 0
 # Grant the Tide-Caller's Trident (Riptide III, unbreakable) and arm the ring counter. Riptide needs
 # the player to be IN water/rain to fire — the whole course is submerged so the dash keeps launching.
 loot give @s loot cobblemon_initiative:npc_gift/riptide_trident

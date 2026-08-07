@@ -33,10 +33,17 @@
         CanPickUpLoot: 0b,
         CustomNameVisible: 1b,
         DialogData: {
-            Type: "BASIC",
+            Type: "STANDARD",
             DialogDataSet: [
                 {
-                    Priority: 10,
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "karim_traded"
+                        }
+                    ],
+                    Priority: 25,
                     Buttons: [
                         {
                             Name: "Goodbye",
@@ -50,10 +57,58 @@
                     ],
                     Texts: [
                         {
+                            Text: "How is the little antlion? Digging where you point, I hope. It reads ground the way I read a maker's-mark — by feel, by the shape a thing left behind. You two will get on."
+                        },
+                        {
+                            Text: "One stone, one desert one. That was the trade, and a stonemason keeps his word in rock. Bring me a rubbing off a boundary marker instead and I will read the hand that cut it — that one I will do for free."
+                        }
+                    ],
+                    Name: "Karim — the trade is done",
+                    Label: "traded"
+                },
+                {
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "Trade a fossil for what the desert keeps",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:sidequest/karim/fossil_trade"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_karim_traded"
+                                }
+                            ],
+                            Label: "trade_button"
+                        },
+                        {
+                            Name: "Keep well, mason",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
                             Text: "I cut stone. Markers, lintels, the odd headstone when the desert wins. So I know a seal when I see one, and the mark on that boundary basalt is a founding cut — the kind you do not press into rock for a mere land deed."
                         },
                         {
                             Text: "Paper burns, paper blows away, paper gets edited in an office. Stone stays. That is why the Company hates the boundary markers so much. You cannot bribe a rock."
+                        },
+                        {
+                            Text: "You carry fossils, and you look at them like they are money. They are not money. They are a stone that remembers a creature. I have use for that memory — and I keep something alive that would rather have it than you would. Show me a fossil and I will trade you fair."
                         },
                         {
                             Text: "Bring me a rubbing off one of those buried stones and I will tell you which hand cut it. Some hands, once you learn them, you never mistake."

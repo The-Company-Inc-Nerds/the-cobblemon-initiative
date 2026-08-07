@@ -40,11 +40,98 @@
                         {
                             Type: "PLAYER_TAG",
                             Operation: "EQUALS",
+                            Name: "defeated_omar_duneh"
+                        }
+                    ],
+                    Priority: 40,
+                    Buttons: [
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "You are talking to a box of files. I am filed. I am transferring myself to a posting with fewer... you. The Oasis crew can keep the water war — I optimize yield, and there is no yield in a town that has met its founder."
+                        },
+                        {
+                            Text: "The manifold is out on the Oasis, southwest, where the strangers camp. Kill the survey and the numbers come home. I am not saying you should. I am saying I no longer care, because I do not work here anymore. Good day."
+                        }
+                    ],
+                    Name: "Duneh — packing the desk",
+                    Label: "beaten"
+                },
+                {
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
                             Name: "badges_gte_7"
                         }
                     ],
                     Priority: 30,
                     Buttons: [
+                        {
+                            Name: "Make him leave — the hard way",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_omar_duneh"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "say You already closed this desk. There is nothing left here but dust and a forwarding address."
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_omar_duneh"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:omar_duneh @s"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_omar_duneh"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:omar_duneh onwin {1: ['cobbledollars give @1 500', 'tag @1 add defeated_omar_duneh', '@2 say The memo said route AROUND you. I filed an exception. I am the exception now — I am leaving. The manifold is out on the Oasis, if you want the numbers to stop lying.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 200', '@1 say Yield protected. The Reach stays scheduled to lose. Do come back when you can afford the water.']}"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_omar_duneh"
+                                }
+                            ],
+                            Label: "fight_button"
+                        },
                         {
                             Name: "Log whatever you like",
                             Actions: [
@@ -76,6 +163,62 @@
                     ],
                     Priority: 20,
                     Buttons: [
+                        {
+                            Name: "Close his desk for good — battle",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "defeated_omar_duneh"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "say You already closed this desk. There is nothing left here but dust and a forwarding address."
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_omar_duneh"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs attach rctmod:omar_duneh @s"
+                                },
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    ConditionDataSet: {
+                                        ConditionDataSet: [
+                                            {
+                                                Type: "PLAYER_TAG",
+                                                Operation: "EQUALS",
+                                                Name: "no_defeated_omar_duneh"
+                                            }
+                                        ]
+                                    },
+                                    Cmd: "tbcs battle GEN_9_SINGLES @s vs rctmod:omar_duneh onwin {1: ['cobbledollars give @1 500', 'tag @1 add defeated_omar_duneh', '@2 say The memo said route AROUND you. I filed an exception. I am the exception now — I am leaving. The manifold is out on the Oasis, if you want the numbers to stop lying.', 'easy_npc delete @2'], 2: ['cobbledollars remove @2 200', '@1 say Yield protected. The Reach stays scheduled to lose. Do come back when you can afford the water.']}"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Conditions: [
+                                {
+                                    Type: "PLAYER_TAG",
+                                    Operation: "EQUALS",
+                                    Name: "no_defeated_omar_duneh"
+                                }
+                            ],
+                            Label: "fight_button"
+                        },
                         {
                             Name: "Enjoy the paperwork",
                             Actions: [

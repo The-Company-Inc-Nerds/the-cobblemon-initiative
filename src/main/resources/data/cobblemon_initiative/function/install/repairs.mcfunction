@@ -162,3 +162,28 @@ execute unless score #repair_a33 ci_ambient matches 1 run function cobblemon_ini
 #    gym circuit spread + nurse re-cast (Orion) + Vera move, HQ lobby props street-side +
 #    Victor Node to the penthouse lift landing ──
 execute unless score #repair_a34 ci_ambient matches 1 run function cobblemon_initiative:install/repairs_a34_arm
+
+# ── wave a35 (0.7.0-alpha.23): playtest 2026-08-06 — Cyber City power-plant PHYSICAL blocks.
+#    The engine loads the 9 bulb + 8 lever coords from the bundled powerplant.json and toggles
+#    LIT / intercepts clicks, but only on blocks that EXIST; the finished map never carried the
+#    copper bulbs + levers, so the puzzle had nothing to light. Places them at install (world is
+#    built — all world setup rides the run) ──
+execute unless score #repair_a35 ci_ambient matches 1 run function cobblemon_initiative:install/repairs_a35_arm
+
+# ── wave a36 (0.7.0-alpha.23): playtest 2026-08-06 — Cyber reseats: Prism + Jax nudge moves ──
+execute unless score #repair_a36 ci_ambient matches 1 run function cobblemon_initiative:install/repairs_a36_arm
+
+# ── wave a37 (0.7.0-alpha.23): playtest 2026-08-06 — HQ act-2 cleanup: cut the 12 retired Cyber
+#    prop/quest bodies (Off the Records / Signal Integrity / Exchange Rate quests retired entirely)
+#    + extend the hq_tick entrance kick box across the door line ──
+execute unless score #repair_a37 ci_ambient matches 1 run function cobblemon_initiative:install/repairs_a37_arm
+
+# ── wave a38 (0.7.0-alpha.23): playtest 2026-08-06 — Kalahar desert: place the two treasure-hunt
+#    chests (Nadia's findable cache + Warden Ossa's turn-in Deposit) ──
+execute unless score #repair_a38 ci_ambient matches 1 run function cobblemon_initiative:install/repairs_a38_arm
+
+# ── wave a39 (0.7.1-alpha.1): playtest 2026-08-07 — Sindra Blazewing (builder uuid body) tp'd to
+#    her Cinderfall approach post (3291.5/104/3929.5) + Home pin. The 14 late-route sight trainers
+#    were reworked to uuid-keyed adoptions of the existing physical bodies (refresh in place, no
+#    repairs); Doran/Ember/Cinder villain nudges are placement-field edits (re-place on install) ──
+execute unless score #repair_a39 ci_ambient matches 1 run function cobblemon_initiative:install/repairs_a39_arm

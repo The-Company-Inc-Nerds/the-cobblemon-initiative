@@ -47,3 +47,29 @@ Always bundled automatically: this mod's own jar → `overrides/mods/`.
 
 To add another staging subfolder, mirror the `.gitignore` pattern
 (`/mrpack/<sub>/*` + `!/mrpack/<sub>/.gitkeep`).
+
+## Recommended launcher JVM args (set per-instance, NOT shipped in the pack)
+
+The `.mrpack` format can't carry JVM args, so set these in your launcher's instance
+Java settings after import — **Prism**: Instance → Edit → Settings → Java → check
+"Override Java arguments"; **Modrinth App**: profile → Options → Java arguments.
+
+Distant Horizons recommends the low-pause **generational ZGC** collector: DH keeps a
+large heap plus off-heap LOD buffers, and the default G1 collector's pauses show up as
+frametime stutter — exactly what a stream can't have. On Java 21 (MC 1.21.1's runtime):
+
+    -XX:+UseZGC -XX:+ZGenerational -Xms8G -Xmx8G -XX:+AlwaysPreTouch -XX:+PerfDisableSharedMem
+
+- `-XX:+UseZGC -XX:+ZGenerational` — generational ZGC (opt-in on Java 21). If you ever
+  run this on Java 23+, DROP `+ZGenerational` (generational is the default there and the
+  flag is removed/deprecated).
+- `-Xms8G -Xmx8G` — fixed 8 GB heap (equal Xms/Xmx avoids resize pauses; pairs with
+  AlwaysPreTouch). Bump to 10–12 GB if you have RAM headroom, but DH's LOD data is mostly
+  off-heap / in VRAM, so a giant heap isn't needed just for the 512-chunk view distance —
+  leave plenty of system RAM free for the OS and the game's direct/off-heap memory.
+- `-XX:+AlwaysPreTouch` — commits + pre-faults the heap at launch for steady frametimes
+  (no lazy page-fault stutter mid-stream); costs a slightly slower boot.
+- `-XX:+PerfDisableSharedMem` — avoids JVM perf-data file I/O stalls.
+
+Do **NOT** add `-XX:+DisableExplicitGC` (it ships in Aikar's flags): Distant Horizons
+calls explicit GC to free native LOD buffers, so disabling it can leak native memory.

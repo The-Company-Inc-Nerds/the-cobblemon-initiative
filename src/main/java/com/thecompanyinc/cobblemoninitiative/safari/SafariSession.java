@@ -59,8 +59,15 @@ public class SafariSession {
     public final long spotKey;
     /** Lure-table rarity at roll time (common | uncommon | rare) — contest scoring reads it. */
     public final String rarity;
+    /** Bait table that lured this mon — offering the SAME bait by hand is its favourite treat. */
+    public final String baitType;
     public int ticksRemaining;
-    /** Befriended via a bait offering — never runs detection, never spooks. */
+    /**
+     * Trust accrued from treats (bait offered by hand). At config.trustThreshold the
+     * lure flips {@link #friendly}. Per-round: lives only on this in-round lure.
+     */
+    public int trust;
+    /** Befriended via building trust with treats — never runs detection, never spooks. */
     public boolean friendly;
     /** Stealth alert level (0..alertChecks); decays while unseen. */
     public int alert;
@@ -77,12 +84,14 @@ public class SafariSession {
       UUID pokemonUuid,
       long spotKey,
       String rarity,
+      String baitType,
       int ticksRemaining
     ) {
       this.entityUuid = entityUuid;
       this.pokemonUuid = pokemonUuid;
       this.spotKey = spotKey;
       this.rarity = rarity;
+      this.baitType = baitType;
       this.ticksRemaining = ticksRemaining;
     }
   }

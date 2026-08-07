@@ -131,8 +131,9 @@ guide; /gfx High now equals the shipped BSL HIGH profile (configVersion 2 migrat
       NOT hide the ci_quest sidebar or the safari/phone bossbars (its config has
       per-element toggles — disable scoreboard/bossbar hiding if it grabs them);
       Camera Overhaul during a spectator cutscene (rig camera should be exempt —
-      if it sways, disable its effects or exempt spectator); Replay Mod + Iris/BSL
-      render sanity + a short test recording; AmbientSounds volume vs stream mix
+      if it sways, disable its effects or exempt spectator); Camera Utils freecam +
+      keyframe path vs Iris/BSL render sanity (rebind its keys under Controls — it
+      ships unbound); AmbientSounds volume vs stream mix
       (its own volume slider in its config button); Gentler Weather Sounds audible
       in the first rainstorm; Hold My Items animations + the Hold My Pokeballs
       addon pairing in first person.

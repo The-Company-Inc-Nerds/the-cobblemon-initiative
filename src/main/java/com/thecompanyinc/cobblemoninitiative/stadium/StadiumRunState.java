@@ -37,6 +37,18 @@ public class StadiumRunState {
   /** Battle id of the run's own dispatched battle (null outside IN_BATTLE). */
   private UUID battleId;
 
+  /**
+   * FIXED ARENA (2026-08-06): the player's position/rotation when the run began, restored
+   * on every run-end path. Null when the run uses the legacy fight-where-you-stand mode
+   * (no arena configured). Captured once at run start so the between-wave arena tp never
+   * loses the player's real return spot.
+   */
+  private double[] returnPos;
+  private float returnYaw;
+  private float returnPitch;
+  /** True once the player has been tp'd into the fixed arena at least once. */
+  private boolean movedToArena;
+
   public StadiumRunState(UUID playerId, int bracket, int firstWaveDelayTicks) {
     this.playerId = playerId;
     this.bracket = bracket;
@@ -62,4 +74,18 @@ public class StadiumRunState {
 
   public UUID getBattleId() { return battleId; }
   public void setBattleId(UUID battleId) { this.battleId = battleId; }
+
+  public double[] getReturnPos() { return returnPos; }
+  public float getReturnYaw() { return returnYaw; }
+  public float getReturnPitch() { return returnPitch; }
+
+  /** Record the pre-run position so the fixed-arena tp can be undone on run end. */
+  public void setReturn(double x, double y, double z, float yaw, float pitch) {
+    this.returnPos = new double[] { x, y, z };
+    this.returnYaw = yaw;
+    this.returnPitch = pitch;
+  }
+
+  public boolean hasMovedToArena() { return movedToArena; }
+  public void setMovedToArena(boolean moved) { this.movedToArena = moved; }
 }

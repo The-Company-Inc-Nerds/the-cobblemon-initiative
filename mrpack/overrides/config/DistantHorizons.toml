@@ -283,9 +283,12 @@ _version = 4
 		#
 		# Should Distant Horizons slowly generate LODs 
 		#  outside the vanilla render distance? 
-		# Depending on the generator mode, this will import existing chunks 
+		# Depending on the generator mode, this will import existing chunks
 		# and/or generating missing chunks.
-		enableDistantGeneration = true
+		# CURATED FIXED MAP: OFF so DH replays only the shipped full pregen and
+		# never seed-generates non-canon wilderness past the map edge (generationMaxChunkRadius=0
+		# means UNBOUNDED, so with generation ON it would fabricate terrain out to the full 512 radius).
+		enableDistantGeneration = false
 		#
 		# The center X chunk position that the world gen max radius is centered around.
 		generationCenterChunkX = 0
@@ -771,7 +774,7 @@ _version = 4
 				# Note: this is a best effort number. 
 				# The actual render distance may be above or below this number 
 				# depending on your other graphic settings.
-				lodChunkRenderDistanceRadius = 256
+				lodChunkRenderDistanceRadius = 512
 				#
 				# How should the sides and bottom of grass block LODs render? 
 				# 

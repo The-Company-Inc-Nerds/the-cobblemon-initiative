@@ -137,6 +137,12 @@ scoreboard players reset q.side_ascent ci_quest
 execute if entity @s[tag=ci_ascending,tag=!sq_cascade_done] run scoreboard players set q.side_ascent ci_quest 73
 execute if entity @s[tag=ci_ascending,tag=!sq_cascade_done] run scoreboard players display name q.side_ascent ci_quest [{"text":"• Base to crest before the clock dies","color":"gray"}]
 
+# Augmented Ring Run (Arlo Datagear's rig deck, Cyber City): live-run pointer only — free retries,
+# so the line rides the ci_aug_racing run tag until the first clean clear (sq_augmented_race_done).
+scoreboard players reset q.side_augrace ci_quest
+execute if entity @s[tag=ci_aug_racing,tag=!sq_augmented_race_done] run scoreboard players set q.side_augrace ci_quest 71
+execute if entity @s[tag=ci_aug_racing,tag=!sq_augmented_race_done] run scoreboard players display name q.side_augrace ci_quest [{"text":"• Ring to ring before the rig winds down","color":"gray"}]
+
 # Sango Classic (Deka's record quarter): lights only while a quarter is LIVE (classic_active);
 # off at champion. NOT on classic_rod_given — that latch is permanent, so lighting on it made
 # the derby read as "started" forever after taking the loaner rod (showrunner 2026-07-07).
@@ -436,20 +442,10 @@ execute if entity @s[tag=defeated_cyber_leader,tag=!hq_pointer_done] run scorebo
 execute if entity @s[tag=hq_pointer_done,tag=!hq_keycard] run scoreboard players set q.side_door ci_quest 37
 execute if entity @s[tag=hq_pointer_done,tag=!hq_keycard] run scoreboard players display name q.side_door ci_quest [{"text":"• Liberate the last fields, then find the tower door","color":"gold"}]
 
-# Off the Records (Maren whistleblower): post-Volt; from the accept latch (ci_file_active) to the file recovery (ci_file_done).
-scoreboard players reset q.side_offrecords ci_quest
-execute if entity @s[tag=ci_file_active,tag=!ci_file_done] run scoreboard players set q.side_offrecords ci_quest 36
-execute if entity @s[tag=ci_file_active,tag=!ci_file_done] run scoreboard players display name q.side_offrecords ci_quest [{"text":"• Recover 3 file pages from the archive drops","color":"gray"}]
-
-# Signal Integrity (Rell surveillance): from the accept latch (ci_signal_active) to the last board (ci_signal_done).
-scoreboard players reset q.side_signal ci_quest
-execute if entity @s[tag=ci_signal_active,tag=!ci_signal_done] run scoreboard players set q.side_signal ci_quest 35
-execute if entity @s[tag=ci_signal_active,tag=!ci_signal_done] run scoreboard players display name q.side_signal ci_quest [{"text":"• Scrub 3 glitching billboards downtown","color":"gray"}]
-
-# Exchange Rate (teller data quest): from the accept latch (ci_reserves_active) to the count turn-in (ci_reserves_done).
-scoreboard players reset q.side_exchange ci_quest
-execute if entity @s[tag=ci_reserves_active,tag=!ci_reserves_done] run scoreboard players set q.side_exchange ci_quest 34
-execute if entity @s[tag=ci_reserves_active,tag=!ci_reserves_done] run scoreboard players display name q.side_exchange ci_quest [{"text":"• Re-verify 3 reserve tags downtown","color":"gray"}]
+# a37 (playtest 2026-08-06): the three now-propless Cyber sidequests were RETIRED entirely —
+# Off the Records (q.side_offrecords slot 36), Signal Integrity (q.side_signal slot 35), and
+# Exchange Rate (q.side_exchange slot 34). Their props/givers were cut (repairs_a37) and the
+# quest functions deleted; the sidebar blocks are removed here. Slots 34/35/36 are now vacant.
 
 # ═══════════ Town quest packs (gyms 8-10) ═══════════
 # ===== Ryujin Keep (gym 8, Dragon) (generated from quest_targets) =====

@@ -57,7 +57,12 @@ public class SpecialSpawnConfig {
     // story gifts / events
     "victini", "manaphy", "entei", "latios",
     // boss aces (battle-only, but kept out of the wild for good measure)
-    "mewtwo", "darkrai", "heatran"
+    "mewtwo", "darkrai", "heatran",
+    // starters — gift-only, must never appear as a wild spawn (playtest 2026-08-06: a wild
+    // Skiddo leaked). Base-species ids, so this covers the starter form itself. NOTE: the
+    // Hisuian Growlithe starter's base id "growlithe" is intentionally NOT here — blocking it
+    // would also kill regular Growlithe wild spawns (see wave notes; awaiting a ruling).
+    "skiddo", "totodile"
   );
 
   private static SpecialSpawnConfig instance;

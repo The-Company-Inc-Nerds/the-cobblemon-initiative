@@ -50,12 +50,12 @@ public class DojoConfig {
    *  passive bodies back on their posts (Bruno's own badge credit is untouched). */
   private boolean resetOnKnockout = true;
 
-  /** Where a knocked-out player wakes: outside Rilka's quarry-side clinic, facing her post.
+  /** Where a knocked-out player wakes ("Dojo Gym Knockout Loc", playtest marker P22 2026-08-06).
    *  JSON-editable; must stay >48 blocks from every dojo post so re-raised fighters cannot
    *  reach the half-heart player. */
-  private double dojoEjectX = 1092.5;
-  private double dojoEjectY = 114.0;
-  private double dojoEjectZ = 3206.5;
+  private double dojoEjectX = 1058.9;
+  private double dojoEjectY = 119.0;
+  private double dojoEjectZ = 3186.3;
 
   // ── Singleton / lifecycle ─────────────────────────────────────────────────────
 

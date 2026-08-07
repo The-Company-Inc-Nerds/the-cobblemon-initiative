@@ -330,6 +330,10 @@ public class InitiativeInit implements ModInitializer {
     // gym cast on sight; reaching out to a fake poofs it or collapses it into a hostile Doppler.
     KalaharManager.init();
 
+    // Cyber City augmented ring run: re-assert Speed II + Jump Boost II for racers and grant the
+    // crouch-on-land roll (fall-damage cancel + fall-distance reset) that a datapack can't do.
+    AugmentedRaceManager.init();
+
     CommandRegistrationCallback.EVENT.register(
       (dispatcher, registryAccess, environment) -> {
         CobblemonInitiativeCommands.register(dispatcher);

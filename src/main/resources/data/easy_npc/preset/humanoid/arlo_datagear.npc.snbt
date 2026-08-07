@@ -33,33 +33,95 @@
         CanPickUpLoot: 0b,
         CustomNameVisible: 1b,
         DialogData: {
-            Type: "BASIC",
+            Type: "STANDARD",
             DialogDataSet: [
                 {
-                    Priority: 10,
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "sq_augmented_race_done"
+                        }
+                    ],
+                    Priority: 20,
                     Buttons: [
                         {
-                            Name: "Goodbye",
+                            Name: "Jack in — run the rings again",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:sidequest/augmented_race/start {ticks:900}"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "start_button"
+                        },
+                        {
+                            Name: "Later",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "goodbye_button"
+                            Label: "leave_button"
                         }
                     ],
                     Texts: [
                         {
-                            Text: "Up here on the rig deck you can see the whole grid breathe. Lately it stutters. Whole eastern block browns out and nobody at the utility will say why."
+                            Text: "There they are. The one who cleared the whole ring stack in one breath. The rig logged your run and I have been showing it to everyone who climbs up here. Nobody believes me. Run it again and I will have proof."
                         },
                         {
-                            Text: "Careful on the ladder down. It is a long way to the plaza and the safety rails were value-engineered by someone who has never stood on a roof."
+                            Text: "You ran the augment clean. That is the whole grid, thirty-seven hoops, top of my antennas to the plaza floor and back up. Anyone can fall off a roof. Falling off a roof on PURPOSE and landing right — that is the trick, and you have it."
                         },
                         {
-                            Text: "That fifty-six on the exchange board? Grid load. It counts brownouts, not money. I am up here with the antennas all day, so you can take that to the bank."
+                            Text: "The rig is charged whenever you want another lap. No wager, no reward the second time — just the run and the clock. Some people come up here just to feel it."
                         }
                     ],
-                    Name: "Arlo Datagear",
+                    Name: "Arlo Datagear — you ran the rings",
+                    Label: "done"
+                },
+                {
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "Jack in — run the rings",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "function cobblemon_initiative:sidequest/augmented_race/start {ticks:900}"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "start_button"
+                        },
+                        {
+                            Name: "Not today",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "You move like someone who has been falling off things all your life and getting up. Good — I have a rig for anyone who wants it, no badge required. Speed in the legs, spring in the knees, and a course of light-rings threaded down the whole tower stack. Crouch as you hit a roof and you roll instead of splatting. Run the rings, ring to ring, before the rig winds down."
+                        },
+                        {
+                            Text: "This is my augment rig. It juices your legs and your jump so you can chase a run of light-hoops from my antenna deck all the way to the plaza and back up. The catch is the fall — so remember: crouch the instant you land and you roll it off instead of breaking your legs. Ready when you are."
+                        },
+                        {
+                            Text: "Everyone else up here browns out worrying about the grid. I built a game out of it. Thirty-seven rings, all the way down the towers and back to me. The rig makes you fast and lets you jump — hold crouch as you touch down and the fall never touches you. Ring to ring, beat the clock."
+                        }
+                    ],
+                    Name: "Arlo Datagear — the augment rig",
                     Label: "default"
                 }
             ]
