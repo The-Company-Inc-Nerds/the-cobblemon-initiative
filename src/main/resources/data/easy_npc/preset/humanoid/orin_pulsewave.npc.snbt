@@ -33,11 +33,30 @@
         CanPickUpLoot: 0b,
         CustomNameVisible: 1b,
         DialogData: {
-            Type: "BASIC",
+            Type: "STANDARD",
             DialogDataSet: [
                 {
-                    Priority: 10,
+                    Priority: 5,
                     Buttons: [
+                        {
+                            Name: "Any tips?",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "tips"
+                                }
+                            ],
+                            Label: "tips_button"
+                        },
+                        {
+                            Name: "Back",
+                            Actions: [
+                                {
+                                    Type: "OPEN_DEFAULT_DIALOG"
+                                }
+                            ],
+                            Label: "back_button"
+                        },
                         {
                             Name: "Goodbye",
                             Actions: [
@@ -50,10 +69,100 @@
                     ],
                     Texts: [
                         {
-                            Text: "Volt paralysed my whole team in under a minute. Under a minute. I have watched the replay forty times looking for the half-second I could have moved. There was no half-second. That is his whole thing."
+                            Text: "Simple. A hunt-runner lights up a row of holo-mon and hides one real Ditto among them in disguise. Walk up to any of them and it plays its cry. Listen to every one, decide which cry is the fake, then stand right next to that one and call it out. Right pick, the disguise drops. Wrong pick, the round is lost and they show you which was real."
                         },
                         {
-                            Text: "Bring a Ground type. Bring two. Bring one that resists Ice Punch, because the Raichu carries it and it will find your answer and delete it. Ask me how I know."
+                            Text: "Three runners, three sizes. Mara on the central terrace lights three — that is the warm-up. Dax's rooftop set runs five. Sera up top runs seven, and hers are brutal."
+                        }
+                    ],
+                    Name: "Orin Pulsewave - how it works",
+                    Label: "how"
+                },
+                {
+                    Priority: 5,
+                    Buttons: [
+                        {
+                            Name: "How does it work again?",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "how"
+                                }
+                            ],
+                            Label: "how_button"
+                        },
+                        {
+                            Name: "Back",
+                            Actions: [
+                                {
+                                    Type: "OPEN_DEFAULT_DIALOG"
+                                }
+                            ],
+                            Label: "back_button"
+                        },
+                        {
+                            Name: "Goodbye",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "goodbye_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "The tell is in the sound. A real cry rings true; the Ditto's plays the same cry a shade too high — off-pitch, like it half-remembers the tune. Listen to two you trust first so your ear has a baseline, then the wrong one jumps out."
+                        },
+                        {
+                            Text: "Do not rush the call. You can listen to all of them as many times as you like before you accuse. And get in close — the call lands on whichever holo-mon you are standing next to, so plant yourself right at the liar's feet."
+                        },
+                        {
+                            Text: "Start on Mara's easy rig to train the ear. Do not walk up to Sera's seven cold."
+                        }
+                    ],
+                    Name: "Orin Pulsewave - tips",
+                    Label: "tips"
+                },
+                {
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "How does it work?",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "how"
+                                }
+                            ],
+                            Label: "how_button"
+                        },
+                        {
+                            Name: "Any tips?",
+                            Actions: [
+                                {
+                                    Type: "OPEN_NAMED_DIALOG",
+                                    Cmd: "tips"
+                                }
+                            ],
+                            Label: "tips_button"
+                        },
+                        {
+                            Name: "Thanks",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "You here for the Ditto hunt? Half the plaza is. The glitching boards flushed a real Ditto out of hiding and now it plays dress-up in the hologram rigs up the terraces. Spotting it has become the local sport."
+                        },
+                        {
+                            Text: "I do not run a rig myself — I just point people up the hill and tell them how not to embarrass themselves. Mara runs the easy one on the central terrace, Dax the neon five on his roof, Sera the nasty seven at the top."
                         }
                     ],
                     Name: "Orin Pulsewave",

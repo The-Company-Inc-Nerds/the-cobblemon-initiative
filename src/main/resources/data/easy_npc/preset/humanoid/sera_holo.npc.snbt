@@ -33,27 +33,89 @@
         CanPickUpLoot: 0b,
         CustomNameVisible: 1b,
         DialogData: {
-            Type: "BASIC",
+            Type: "STANDARD",
             DialogDataSet: [
                 {
-                    Priority: 10,
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "ditto_final_won"
+                        }
+                    ],
+                    Priority: 20,
                     Buttons: [
                         {
-                            Name: "Goodbye",
+                            Name: "Re-seed the grid (7)",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative ditto start final"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "again_button"
+                        },
+                        {
+                            Name: "Not right now",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "goodbye_button"
+                            Label: "leave_button"
                         }
                     ],
                     Texts: [
                         {
-                            Text: "I used to design the big holo-boards. Beautiful work. Then the Company boards started glitching on their own and management decided that meant they did not need designers, they needed exorcists. I was let go with a scramble in my exit interview."
+                            Text: "You cleared the top grid. Nobody reads holograms that clean — you should have my old job. Want another pass? I can re-seed the liar."
                         },
                         {
-                            Text: "Nobody made the boards glitch. That is the part that keeps me up. The lie in them just got too heavy to render clean."
+                            Text: "The final grid, beaten. I still do not know where the real Ditto learned to hide in my art. Care to run it again?"
+                        }
+                    ],
+                    Name: "Sera Holo",
+                    Label: "cleared"
+                },
+                {
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "Start the final hunt (7)",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative ditto start final"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "start_button"
+                        },
+                        {
+                            Name: "Maybe later",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "I used to design the big holo-boards. Beautiful work — until the Company boards started glitching on their own and a real Ditto took it for an invitation. Now it hides in my displays, wearing whatever Pokemon it likes."
+                        },
+                        {
+                            Text: "My grid up here is the hardest in the city: seven holo-mon, one of them the Ditto in costume. Every hologram plays its cry when you listen — but the fake never gets the sound quite right. Read all seven, stand by the liar, and call it out."
+                        },
+                        {
+                            Text: "The disguise is flawless to the eye. It is the cry that slips. That is the whole game."
                         }
                     ],
                     Name: "Sera Holo",

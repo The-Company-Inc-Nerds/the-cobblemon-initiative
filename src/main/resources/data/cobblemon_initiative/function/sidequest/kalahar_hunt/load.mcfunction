@@ -15,9 +15,9 @@
 #   per-player script tags kiln_hunt_active / warden_hunt_active mirror the flags for
 #   dialog gating + the quest sidebar.
 scoreboard objectives add ci_hunt dummy
-execute unless score #hunt_kiln   ci_hunt matches 0.. run scoreboard players set #hunt_kiln   ci_hunt 0
+execute unless score #hunt_kiln ci_hunt matches 0.. run scoreboard players set #hunt_kiln ci_hunt 0
 execute unless score #hunt_warden ci_hunt matches 0.. run scoreboard players set #hunt_warden ci_hunt 0
-execute unless score #hunt_t      ci_hunt matches 0.. run scoreboard players set #hunt_t      ci_hunt 0
+execute unless score #hunt_t ci_hunt matches 0.. run scoreboard players set #hunt_t ci_hunt 0
 
 # FIXED dig sites (macro compounds). cx/cz = the site chunk (forceload during place/find).
 # chest x/y/z = the buried chest column; s1/s2 = the two sand blocks above it (dig-through).

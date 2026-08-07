@@ -33,27 +33,89 @@
         CanPickUpLoot: 0b,
         CustomNameVisible: 1b,
         DialogData: {
-            Type: "BASIC",
+            Type: "STANDARD",
             DialogDataSet: [
                 {
-                    Priority: 10,
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "ditto_easy_won"
+                        }
+                    ],
+                    Priority: 20,
                     Buttons: [
                         {
-                            Name: "Goodbye",
+                            Name: "Run the rig again (3)",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative ditto start easy"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "again_button"
+                        },
+                        {
+                            Name: "Later",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "goodbye_button"
+                            Label: "leave_button"
                         }
                     ],
                     Texts: [
                         {
-                            Text: "I film the propaganda boards when they glitch. Art, I call it. The Company calls it a maintenance backlog. We are both wrong — it is a confession, the building talking in its sleep."
+                            Text: "Caught it clean. That is the ear you want before you try Dax's neon lineup or Sera's grid up top. Want to run my rig again?"
                         },
                         {
-                            Text: "Watch that board. There. See how the letters scramble right before the exchange number updates? It knows the number is a lie a half-second before we do."
+                            Text: "Nice. My little rig is a warm-up — the real hunts are higher up the terraces. Another go?"
+                        }
+                    ],
+                    Name: "Mara Glitch",
+                    Label: "cleared"
+                },
+                {
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "Start the easy hunt (3)",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative ditto start easy"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "start_button"
+                        },
+                        {
+                            Name: "Maybe later",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "I film the propaganda boards when they glitch — art, I call it. Somewhere in all that broken light a real Ditto learned to hide, wearing the holo-mon like costumes. So I built a little rig to catch it."
+                        },
+                        {
+                            Text: "Three holo-mon on my rig, one of them the Ditto. Listen to each cry — the fake reads a shade wrong. Stand next to the liar and call it out. Easiest hunt in the city; good place to learn the ear."
+                        },
+                        {
+                            Text: "Get it here, then take the ear up the terraces. Dax runs five, Sera runs seven."
                         }
                     ],
                     Name: "Mara Glitch",

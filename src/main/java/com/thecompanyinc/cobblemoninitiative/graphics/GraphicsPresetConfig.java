@@ -107,7 +107,9 @@ public class GraphicsPresetConfig {
   private static Preset defaultHigh() {
     // clouds "off" (v3): BSL renders its own clouds; vanilla fancy clouds double up
     // and fight the shipped options.txt default (renderClouds:"false", harvested a20).
-    Preset p = new Preset(true, "fancy", 16, 12, true, "all", "off", 3.0, 5, 4);
+    // renderDistance/simulationDistance kept low (8) on HIGH: Distant Horizons (512) supplies the
+    // far terrain, so the GPU-bound BSL-ultra pass renders far fewer live chunks (playtest 2026-08-07).
+    Preset p = new Preset(true, "fancy", 8, 8, true, "all", "off", 3.0, 5, 4);
     p.shaderOptions = bslHigh();
     return p;
   }

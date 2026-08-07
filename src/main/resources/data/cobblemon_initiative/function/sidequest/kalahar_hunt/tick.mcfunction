@@ -13,5 +13,5 @@
 scoreboard players add #hunt_t ci_hunt 1
 execute if score #hunt_t ci_hunt matches ..14 run return 0
 scoreboard players set #hunt_t ci_hunt 0
-execute if score #hunt_kiln   ci_hunt matches 1 run function cobblemon_initiative:sidequest/kalahar_hunt/check_kiln
+execute if score #hunt_kiln ci_hunt matches 1 run function cobblemon_initiative:sidequest/kalahar_hunt/check_kiln
 execute if score #hunt_warden ci_hunt matches 1 run function cobblemon_initiative:sidequest/kalahar_hunt/check_warden

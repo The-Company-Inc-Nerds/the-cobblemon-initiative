@@ -7,4 +7,4 @@ tag @s add karim_traded
 cobblemon-initiative givemon trapinch level=40
 tellraw @s [{"text":"A Trapinch, out of a fossil? ","color":"gold"},{"text":"Karim turns the stone over, reads the maker's-mark, and sets it on his shelf like it settled a debt. Then he whistles low at the sand and something antlion-shaped churns up out of it and squints at you. \"Not from the stone,\" he says. \"From what the stone remembers. It reads the marks like I do. Take it — it will dig where you point.\"","color":"gray"}]
 playsound cobblemon:pc.on master @s ~ ~ ~ 0.8 1.2
-execute at @s run particle minecraft:falling_dust minecraft:sand ~ ~1 ~ 0.4 0.5 0.4 0.02 30
+execute at @s run particle minecraft:falling_dust{block_state:{Name:"minecraft:sand"}} ~ ~1 ~ 0.4 0.5 0.4 0.02 30

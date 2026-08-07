@@ -33,30 +33,89 @@
         CanPickUpLoot: 0b,
         CustomNameVisible: 1b,
         DialogData: {
-            Type: "BASIC",
+            Type: "STANDARD",
             DialogDataSet: [
                 {
-                    Priority: 10,
+                    Conditions: [
+                        {
+                            Type: "PLAYER_TAG",
+                            Operation: "EQUALS",
+                            Name: "ditto_medium_won"
+                        }
+                    ],
+                    Priority: 20,
                     Buttons: [
                         {
-                            Name: "Goodbye",
+                            Name: "Reshuffle the lineup (5)",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative ditto start medium"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "again_button"
+                        },
+                        {
+                            Name: "Later",
                             Actions: [
                                 {
                                     Type: "CLOSE_DIALOG"
                                 }
                             ],
-                            Label: "goodbye_button"
+                            Label: "leave_button"
                         }
                     ],
                     Texts: [
                         {
-                            Text: "I spin the rooftop set every night. The bass rattles the whole terrace. Keeps the phantoms confused, keeps the crowd upright — mostly."
+                            Text: "You called my forgery on the first mix. Respect. Want me to reshuffle the lineup and run it back?"
                         },
                         {
-                            Text: "There is another guy calling himself DJ downtown, some acting-executive somebody. Bad name to share. I was here first and I actually mix."
+                            Text: "Neon set, beaten. The Ditto is out there sulking. Drop the needle again?"
+                        }
+                    ],
+                    Name: "Dax Neon",
+                    Label: "cleared"
+                },
+                {
+                    Priority: 10,
+                    Buttons: [
+                        {
+                            Name: "Start the neon hunt (5)",
+                            Actions: [
+                                {
+                                    Type: "COMMAND",
+                                    ExecAsUser: 1b,
+                                    Cmd: "cobblemon-initiative ditto start medium"
+                                },
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "start_button"
                         },
                         {
-                            Text: "No requests. The set is a journey and the journey goes where I say. (a kid shouts a request; he plays it immediately)"
+                            Name: "Maybe later",
+                            Actions: [
+                                {
+                                    Type: "CLOSE_DIALOG"
+                                }
+                            ],
+                            Label: "leave_button"
+                        }
+                    ],
+                    Texts: [
+                        {
+                            Text: "I spin the rooftop set every night, and lately the light rig throws holo-mon between the beats. A real Ditto started crashing the show — mixing itself into the lineup, wearing a costume."
+                        },
+                        {
+                            Text: "Five in my neon lineup, one forgery. Listen to each cry: the fake carries a glitch under the pitch, like a track that never quite matches the BPM. Read all five, then stand by the one you are sure of and call it."
+                        },
+                        {
+                            Text: "No requests on the music. On the Ditto? Call it out any time you like."
                         }
                     ],
                     Name: "Dax Neon",
