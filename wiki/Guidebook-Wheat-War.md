@@ -18,6 +18,14 @@ guards liberates it** — one-way, permanent, relog-safe.
 You do **not** have to clear all ten. **Liberating any 6 of the 10 opens the HQ raid** (the seventh
 badge is the other half of that gate). The remaining four are optional completionist targets.
 
+### The late-game fields (gyms 7–10)
+
+The last stretch of the campaign is lined with the final fields, sitting out along the roads beside
+gyms 7 through 10: **Coldfurrow**, **Frostfallow**, **Highfield**, and **Ashloam** — the **final
+field** of the ten. They run the **same liberation loop** as every field before them: **beat that
+field's Company site-manager**, and the field's **farmer pulls the fence down** so the field runs
+free. Clearing these finishes the **ten-field campaign**.
+
 ## What a liberation does
 
 Each freed field pulls the **instability index** back **down** (the same index gyms 1–7 push *up*).

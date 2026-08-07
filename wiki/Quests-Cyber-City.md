@@ -7,9 +7,9 @@ opens. It's also home to the Stadium.
 **Status:** ✅ Done · 🚧 WIP (partial) · ❌ Not yet implemented — as of the 2026-07-21 audit.
 
 > [!NOTE]
-> **Content status:** the **gym** (Leader Volt), the [[Guidebook Facilities]] Stadium, and
-> Cyber's four **town side-quests** — the HQ on-ramp chain — are all shipped and trackable
-> (press `]` to track). Every giver is placed downtown.
+> **Content status:** the **gym** (Leader Volt), the [[Guidebook Facilities]] Stadium, the
+> rooftop **Augmented Ring Run**, and Cyber's two **town side-quests** — the HQ on-ramp chain —
+> are all shipped and trackable (press `]` to track). Every giver is placed downtown.
 
 ---
 
@@ -17,8 +17,9 @@ opens. It's also home to the Stadium.
 
 | Quest | Type | Giver / gate | Status |
 |-------|------|--------------|:------:|
-| **Gym 7 — Volt (Electric Badge)** | Gym | Downtown arena | ✅ shipped |
-| **Stadium — Exhibition Circuits** | Facility | Exhibition Registrar | ✅ shipped |
+| **Gym 7 — Volt (Electric Badge)** | Gym | Downtown arena · power-plant puzzle | ✅ shipped |
+| **Augmented Ring Run** | Minigame | Arlo Datagear · Cyber rooftop | ✅ shipped |
+| **Stadium — Exhibition Circuits** | Facility | Rex Broadcast · approach road | ✅ shipped |
 | Town side-quests (HQ on-ramp) | Side | see **Side Quests** below | ✅ shipped |
 
 ---
@@ -29,9 +30,18 @@ opens. It's also home to the Stadium.
 
 **Entry cap: 56** (from the Ground Badge). Volt's ace sits at **58**.
 
-### The gimmick — Stadium tease
+### The gimmick — the power-plant lights puzzle
 
-Cyber's set-piece is next door, not in the ring: Volt runs the **Exhibition Circuits** ([[Guidebook Facilities]]), and the gym itself is a straight, clean fight. Soften the ladder as usual.
+The leader is locked behind a dead grid: before Volt will fight you, **restore the power plant**.
+Nine copper-bulb lights are wired to a bank of levers, and each lever toggles the bulbs in **pairs** —
+flip one and two lights change together, so you can't just brute-force them one at a time. Work the
+pairings until **every bulb is lit**; the moment the last one comes on, power returns and the leader
+gate opens.
+
+> **Watch the generators.** The nine bulbs sit in generator trios. Knock a whole trio **all-dark**
+> and you trip a **Generator Security** iron golem that patrols in to stop you — so avoid blacking out
+> a full generator while you're solving the rest. Once the plant is fully lit, walk through and take
+> the ladder as usual.
 
 ### The ladder
 
@@ -56,36 +66,58 @@ starts being an accusation.
 
 ---
 
+## Augmented Ring Run
+
+> **Arlo Datagear** · Cyber rooftop · **no badge required**
+
+A tinkerer on the rooftop straps you into an **augment** — a temporary rig that gives you very high
+speed and jump — and starts a **vertical parkour race**: thread a chain of light-rings all the way
+**down** the tower stack and then back **up**, against the clock. It's completely **ungated** — you
+can run it the moment you reach Cyber, before the gym.
+
+> **Roll your landings.** With the augment on you fall far and fast. **Crouch the instant you land**
+> to tuck into a roll and take **no fall damage** — miss the timing and the fall will hurt. Learn the
+> rhythm on the way down and it becomes a flow state.
+
+**First clean clear** pays **~400 CD** and a **training pack**. After that it's **re-runnable against
+the clock** — come back any time to beat your own time.
+
+---
+
+## Stadium — Exhibition Circuits
+
+> **Rex Broadcast** · Cyber approach road · started off a rogue pirate-radio feed
+
+Cyber's set-piece facility is the **Stadium**, and it isn't run by the Company — it's started by
+**Rex Broadcast**, a rogue pirate-radio broadcaster hollering from the approach road into town. Tune
+in and he signs you up for a **three-Pokémon exhibition**.
+
+> **Set your party to exactly three first.** Before you join, go to a **PC and trim your party down to
+> three** — the exhibition **refuses to start otherwise**. The three you bring are the three you
+> field, so pick your bracket squad deliberately.
+
+The circuit is **level-adjusted** and **insured** — your Pokémon fight as **copies**, so there's **no
+attrition** and nothing you bring is ever at risk. You climb a **bracket** of waves, each with a
+**visible opponent** you can size up before the bell, earning a **purse per wave** plus a
+**completion bonus** at the top. Full facility rules live in [[Guidebook Facilities]].
+
+---
+
 ## Side Quests
 
 > [!NOTE]
-> **Shipped and trackable.** All four side-quests below are wired end-to-end (givers placed, reward functions live). Every side battle here is tuned to the **cap-62** window.
+> **Shipped and trackable.** Both side-quests below are wired end-to-end (givers placed, reward functions live). Every side battle here is tuned to the **cap-62** window.
 
 Cyber City is the Company's neon capital and its home turf — and it's where the mask slips. The propaganda boards downtown are glitching, the exchange rate is openly broken, and the grey suits are visibly packing the tower down rather than trading. Company staff around town react to you as if they half-know you — you don't know why yet. Every side quest here leans toward the same place: the tower on the north plaza, and the raid that resolves Act II ([[Quests Company HQ]], [[Guidebook Act II]]).
 
 | Quest | Status | Giver | What you do | Reward |
 |-------|:------:|-------|-------------|--------|
 | Rumor Hub | ✅ Done | Nurse Ampere | Heal, and get pointed at every open town quest | Full-party heal |
-| **Exchange Rate** | ✅ Done | Verified Value Teller | Re-verify 3 nether-star reserve tags downtown | 900 CD + training pack |
-| **Signal Integrity** | ✅ Done | Signal Tech Rell | Scrub 3 glitching propaganda billboards | 700 CD + training pack |
-| **Off the Records** | ✅ Done | Off-Records Clerk Maren | Recover 3 file pages before they're burned | 1200 CD + training pack |
 | **The Door Downtown** | ✅ Done | Grid Broker Ohmond | Learn the raid gate; get pointed at the last fields | The door math (free) + optional 1500 CD wager |
 
 ### Rumor Hub — Nurse Ampere
 
 The Center nurse heals your team and, from a menu, points you at every open quest in town. She's a civilian: she never recognizes anyone, she only feels the money breaking and the boards glitching. Her running commentary — *the grey suits are packing the tower down on the north plaza, not trading* — is your first nudge toward HQ, and she notices the exchange board twitch down every time a wheat field is freed.
-
-### Exchange Rate — ✅ Done
-
-At the downtown exchange kiosk, the **Verified Value Teller** (`@ 1500 91 1120`) is unravelling: the Company is supposed to verify the nether-star reserves that back every coin, and it stopped. He asks you to re-verify **three reserve tags** posted downtown — each one re-signed under a fresh name over a sanded-off older signature. Count them, report back, and he pays **900 CD** on a branded Company receipt (the shortfall is the point) plus a training pack. No fight, available before the gym.
-
-### Signal Integrity — ✅ Done
-
-**Signal Tech Rell** (`@ 1470 89 1140`), a municipal comms tech (not Company staff), finds three downtown billboards glitching and broadcasting scrubbed internal memos in the clear — the cover-up leaking through the Company's own feed. Scrub all **three** before management notices they're readable. Rell pays **700 CD** and a training pack, and tips you that the clean feed all routes through the north tower — one more finger pointed at HQ.
-
-### Off the Records — ✅ Done
-
-**Off-Records Clerk Maren** (`@ 1520 89 1100`) is a burned-out access-control clerk who recognizes your face — not your name — and won't say why beyond that she once carried a portrait to the incinerator and hasn't slept right since. She asks you to recover **three file pages** from archive boxes flagged for the furnace tonight. No fight: this is a Company person who simply won't raise a hand against you. Pays **1200 CD** and a training pack. **Gate:** after you beat Leader Volt — it's the town's heaviest recognition beat, circling the memory the badge just handed you.
 
 ### The Door Downtown — ✅ Done
 
@@ -96,7 +128,9 @@ At the downtown exchange kiosk, the **Verified Value Teller** (`@ 1500 91 1120`)
 ## The Act II pivot
 
 After the Electric Badge, the main-quest line switches: **"Liberate wheat fields, then raid HQ."**
-Free **6 of the 10 fields**, and **Company HQ `[1590 51 1028]`** becomes assailable — the raid that
-resolves Act II. See **[[Guidebook Act II]]** for the raid (spoilers) and **[[Guidebook Route Map]]**
-for how the field campaign runs alongside gyms 5–7. Next gym: **Ryujin Keep** (Dragon, gym 8).
-Gimmicks: **[[Guidebook Gym Mechanics]]**.
+Company HQ is the **tower on the north plaza** downtown — walk up early and its entrance simply
+**bounces you back out** until you're **raid-eligible**: **7 badges and 6 freed fields**. Meet the
+gate and the tower opens for the raid that resolves Act II. See **[[Quests Company HQ]]** and
+**[[Guidebook Act II]]** for the raid (spoilers), and **[[Guidebook Route Map]]** for how the field
+campaign runs alongside gyms 5–7. Next gym: **Ryujin Keep** (Dragon, gym 8). Gimmicks:
+**[[Guidebook Gym Mechanics]]**.

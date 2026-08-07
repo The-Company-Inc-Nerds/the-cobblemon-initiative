@@ -1,0 +1,242 @@
+#!/usr/bin/env python3
+"""generate_ditto_actors — emit the Easy NPC actor presets for the Ditto hide-and-seek game.
+
+For each pool species it writes TWO cobblemon_npc presets under
+  src/main/resources/data/easy_npc/preset/cobblemon/
+    ci_<id>.npc.snbt        -> a REAL Pokemon: dialog shows its crisp cry, tag ci_ditto_actor
+    ci_<id>_fake.npc.snbt    -> the disguised Ditto: SAME species render, but the hand-authored
+                                cry text believably "slips", and it also carries ci_ditto_fake.
+
+DittoHuntManager places `count` of these at a game's spots each round (one _fake), and the
+"Call it out as the fake!" dialog button runs `cobblemon-initiative ditto accuse`. The manager
+judges the nearest actor purely by the ci_ditto_fake tag, so the win logic never needs the cry
+text — the text is only the human tell.
+
+The SPECIES table below MUST stay in sync with DittoHuntConfig.speciesPool. To tune difficulty,
+edit a species' REAL/FAKE cry text here and re-run; the generated _fake presets are the only
+place the "off" cry lives.
+
+Run:  python3 scripts/generate_ditto_actors            # write all presets
+      python3 scripts/generate_ditto_actors --print    # dry-run: list ids only
+"""
+import os
+import sys
+
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+SNBT_DIR = f"{ROOT}/src/main/resources/data/easy_npc/preset/cobblemon"
+SPECIES_TXT = f"{ROOT}/dev/cobblemon_validation/species.txt"
+
+# id -> (display, REAL cry, FAKE cry). The REAL is the RECOGNISABLE written-out cry — mostly the
+# anime "says-its-name" form, plus documented specials (Meowth talks; Psyduck's "psy-yi-yi";
+# Jigglypuff sings; Clefairy "Pippi"; and the non-name-sayers Onix roars "Iwark", Staryu grunts
+# "Hyah", Gyarados roars, Snorlax snores, Cubone wails). There is NO official cry-TEXT database
+# (in-game cries are .ogg) — these are anime/fandom consensus, researched 2026-08. The FAKE is a
+# "Mandela-effect" misremember: QUITE SUBTLE — ONE small, plausible change you'd only catch if you
+# know the real cry. Patterns: a swapped word (Meowth "That's me"), a dropped signature suffix
+# (Poliwag loses "-wag"), a miscount (one fewer "pi"/"karp"), a crept-in evolution (Pidgey-"oh"),
+# a wrong descriptor (Onix "metallic" roar; Gyarados "*hiss*"). NO glitch/gloop and NO obvious
+# "says its name vs roars" flips. Audio adds only a slight pitch-up (DittoHuntConfig.fakeCryPitch).
+# Meant to be HARD — read all five aloud, argue with chat. Tune any line to taste.
+SPECIES = {
+    #             display        REAL cry (recognisable)               FAKE cry (subtle misremember)
+    "pikachu":    ("Pikachu",    "Pika-pika... Pika-CHUUU!",           "Pika-pika... Pika-PII!"),
+    "eevee":      ("Eevee",      "Vui! Bui-bui... Eee-vui!",           "Vui! Bui-bui... Bui-bui!"),
+    "snorlax":    ("Snorlax",    "Snooor... *deep rumbling snore*",    "Snooor... *deep rumbling snore*... lax?"),
+    "gengar":     ("Gengar",     "Geheheh... *raspy cackle*",          "Hehehe... *raspy cackle*"),
+    "jigglypuff": ("Jigglypuff", "Jiggly~ jiggly~ puff, puff~",        "Jiggly~ jiggly~ jiggly~ puff~"),
+    "meowth":     ("Meowth",     "Meowth! That's right!",              "Meowth! That's me!"),
+    "psyduck":    ("Psyduck",    "Psy... psy-yi-yi-yi!",               "Psy... psy-yi-yi!"),
+    "charmander": ("Charmander", "Char! Char-mander!",                 "Char! Char-mand!"),
+    "bulbasaur":  ("Bulbasaur",  "Bulba... Bulba-saur!",               "Bulba... Bulba-bulb!"),
+    "squirtle":   ("Squirtle",   "Squirtle! Squirt-squirtle!",         "Squirtle! Squirtle-squirt!"),
+    "magikarp":   ("Magikarp",   "Karp... karp... karp.",              "Karp... karp."),
+    "gyarados":   ("Gyarados",   "GRAAAOOOWR! *roar*",                 "GRAAAOOOWR! *hiss*"),
+    "machop":     ("Machop",     "Machop! Ma-chop!",                   "Machop! Ma-chomp!"),
+    "growlithe":  ("Growlithe",  "Grrr... Growl-lithe!",               "Grrr... Growl-ith!"),
+    "vulpix":     ("Vulpix",     "Vul! Vul-pix!",                      "Vul! Vul-picks!"),
+    "oddish":     ("Oddish",     "Oddish! Oddi-oddish!",               "Oddish! Odd-oddish!"),
+    "geodude":    ("Geodude",    "Geo! Geo-dude!",                     "Jee-oh! Jee-oh-dude!"),
+    "zubat":      ("Zubat",      "Zu! Zu-bat! *screech*",              "Zoo! Zoo-bat! *screech*"),
+    "poliwag":    ("Poliwag",    "Poli! Poli-wag!",                    "Poli! Poli!"),
+    "cubone":     ("Cubone",     "Cuuu... boooone... *lonely wail*",   "Cuuu... boooone... *lonely howl*"),
+    "clefairy":   ("Clefairy",   "Pippi... pi-pi-pi!",                 "Pippi... pi-pi!"),
+    "diglett":    ("Diglett",    "Diglett! Dig-dig!",                  "Diglett! Dug-dug!"),
+    "abra":       ("Abra",       "Aaa-bra...",                         "Aaa-bra-bra..."),
+    "onix":       ("Onix",       "IWAAAARK! *grinding roar*",          "IWAAAARK! *metallic roar*"),
+    "rattata":    ("Rattata",    "Ratta! Ratta-ta!",                   "Ratta! Ratta-ta-ta!"),
+    "pidgey":     ("Pidgey",     "Pidge! Pidgey-pidge!",               "Pidge! Pidgey-oh!"),
+    "ponyta":     ("Ponyta",     "Poni-poni! Ponyta! *neigh*",         "Pony-pony! Ponyta! *neigh*"),
+    "slowpoke":   ("Slowpoke",   "Slooooow... pooooke...",             "Slooooow... poke?"),
+    "koffing":    ("Koffing",    "Koff... *gassy wheeze* ...koffing.", "Koff... *gassy wheeze* ...koff-koff."),
+    "staryu":     ("Staryu",     "HYAH! ...HEE-YAH!",                  "HYAH! ...HAH-YAH!"),
+}
+
+
+def esc(s: str) -> str:
+    """Escape a python string for an SNBT double-quoted value."""
+    return s.replace("\\", "\\\\").replace('"', '\\"')
+
+
+def preset(species: str, display: str, cry: str, is_fake: bool) -> str:
+    tags = '"ci_ditto_actor","ci_ditto_fake"' if is_fake else '"ci_ditto_actor"'
+    kind = "disguised Ditto (Mandela-effect misremembered cry + slight pitch-up)" if is_fake else "real Pokemon"
+    dialog = f'You lean in close. The {display} stirs and lets out a cry:  "{cry}"'
+    return f'''{{
+  PresetMetadata:{{
+    author:"TheCompanyInc",
+    category:"General",
+    created:0L,
+    description:"Ditto hide-and-seek actor — {display} ({kind}). GENERATED by scripts/generate_ditto_actors. Static cobblemon_npc; DittoHuntManager places these and judges the accuse by the ci_ditto_fake tag.",
+    entityTypeId:"easy_npc:cobblemon_npc",
+    modified:0L,
+    name:"{display}",
+    variantType:"COBBLEMON_NPC",
+    version:"1.0.0"
+  }},
+  data:{{
+    CustomName:'{{"text":"{display}","color":"white"}}',
+    CustomNameVisible:0b,
+    PersistenceRequired:1b,
+    Tags:[{tags}],
+    ActionData:{{
+      ActionEventSet:{{
+        ON_INTERACTION:[{{
+          Type:"OPEN_DEFAULT_DIALOG"
+        }},{{
+          Type:"COMMAND",ExecAsUser:1b,Cmd:"cobblemon-initiative ditto listen"
+        }}]
+      }}
+    }},
+    DialogData:{{
+      Type:"BASIC",
+      DialogDataSet:[{{
+        Priority:10,
+        Buttons:[{{
+          Name:"Listen to its cry again",
+          Actions:[{{
+            Type:"COMMAND",ExecAsUser:1b,Cmd:"cobblemon-initiative ditto listen"
+          }}],
+          Label:"listen_button"
+        }},{{
+          Name:"Call it out as the fake!",
+          Actions:[{{
+            Type:"COMMAND",ExecAsUser:1b,Cmd:"cobblemon-initiative ditto accuse"
+          }},{{
+            Type:"CLOSE_DIALOG"
+          }}],
+          Label:"accuse_button"
+        }},{{
+          Name:"Step back",
+          Actions:[{{
+            Type:"CLOSE_DIALOG"
+          }}],
+          Label:"leave_button"
+        }}],
+        Texts:[{{
+          Text:"{esc(dialog)}"
+        }}],
+        Name:"{display}",
+        Label:"default"
+      }}]
+    }},
+    DisplayAttribute:[{{
+      Bool:1b,Type:"VISIBLE"
+    }},{{
+      Bool:1b,Type:"VISIBLE_AT_DAY"
+    }},{{
+      Bool:1b,Type:"VISIBLE_AT_NIGHT"
+    }},{{
+      Bool:1b,Type:"VISIBLE_IN_CREATIVE"
+    }},{{
+      Bool:1b,Type:"VISIBLE_IN_SPECTATOR"
+    }},{{
+      Bool:1b,Type:"VISIBLE_IN_STANDARD"
+    }},{{
+      Int:7,Type:"LIGHT_LEVEL"
+    }},{{
+      Text:"MOUSE_OVER",Type:"NAME_VISIBILITY"
+    }}],
+    EntityAttribute:{{
+      CanBeHitByProjectile:0b,
+      CanBeLeashed:0b,
+      CanBreatheUnderwater:0b,
+      CanCloseDoor:0b,
+      CanFloat:0b,
+      CanOpenDoor:0b,
+      CanPassDoor:0b,
+      CanUseNetherPortal:0b,
+      Freefall:0b,
+      HealthRegeneration:0.0d,
+      IsAttackableByMonsters:0b,
+      IsAttackableByPlayers:0b,
+      IsExplosionResistant:0b,
+      IsInvulnerable:1b,
+      IsKnockbackResistant:1b,
+      IsPushable:0b,
+      NoGravity:0b,
+      PushEntities:0b
+    }},
+    ModelData:{{
+      DefaultPose:"STANDING",
+      Pose:"VANILLA"
+    }},
+    ObjectiveData:{{
+      HasObjectives:1b,
+      ObjectiveDataSet:[{{
+        Type:"LOOK_AT_PLAYER",Prio:9,Id:"ditto_look"
+      }}]
+    }},
+    RenderData:{{
+      EntityModel:"cobblemon:{species}",
+      Type:"COBBLEMON_ENTITY"
+    }},
+    SkinData:{{
+      Content:"",
+      DisableLayers:0b,
+      Name:"",
+      Timestamp:0L,
+      Type:"DEFAULT",
+      URL:"",
+      UUID:[I;0,0,0,0]
+    }},
+    SoundData:{{
+      SoundDataSet:[]
+    }},
+    VariantType:"COBBLEMON_NPC",
+    attributes:[{{
+      base:0.0d,id:"minecraft:generic.movement_speed"
+    }},{{
+      base:16.0d,id:"minecraft:generic.follow_range"
+    }}],
+    id:"easy_npc:cobblemon_npc"
+  }}
+}}
+'''
+
+
+def main():
+    dry = "--print" in sys.argv
+    valid = set()
+    if os.path.exists(SPECIES_TXT):
+        valid = {l.strip() for l in open(SPECIES_TXT) if l.strip()}
+    os.makedirs(SNBT_DIR, exist_ok=True)
+    n = 0
+    for sid, (display, real, fake) in SPECIES.items():
+        if valid and sid not in valid:
+            print(f"  WARNING: {sid} not in species.txt — render may be a Steve", file=sys.stderr)
+        for is_fake in (False, True):
+            name = f"ci_ditto_{sid}{'_fake' if is_fake else ''}.npc.snbt"
+            text = preset(sid, display, fake if is_fake else real, is_fake)
+            if dry:
+                print(f"  {name}")
+            else:
+                with open(f"{SNBT_DIR}/{name}", "w") as f:
+                    f.write(text)
+            n += 1
+    print(f"{'Would write' if dry else 'Wrote'} {n} presets for {len(SPECIES)} species "
+          f"-> data/easy_npc/preset/cobblemon/ci_ditto_*.npc.snbt")
+    print("Pool ids:", ", ".join(SPECIES.keys()))
+
+
+if __name__ == "__main__":
+    main()

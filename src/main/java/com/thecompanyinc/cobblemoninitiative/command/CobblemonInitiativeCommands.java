@@ -358,6 +358,86 @@ public class CobblemonInitiativeCommands {
                 return 1;
               })))
         )
+        // Prop hunt quest mini-game. start/stop are dialog buttons (perm 0 — Easy NPC ExecAsUser
+        // reaches them, getPlayer() null-checked); reload/clear are op set-up.
+        .then(
+          Commands.literal("prophunt")
+            .then(Commands.literal("start")
+              .then(Commands.argument("arena", StringArgumentType.word())
+                .executes(ctx -> {
+                  ServerPlayer p = ctx.getSource().getPlayer();
+                  return p != null ? com.thecompanyinc.cobblemoninitiative.prophunt.PropHuntManager.start(
+                    p, StringArgumentType.getString(ctx, "arena")) : 0;
+                }))
+              .executes(ctx -> {
+                ServerPlayer p = ctx.getSource().getPlayer();
+                return p != null ? com.thecompanyinc.cobblemoninitiative.prophunt.PropHuntManager.start(p, null) : 0;
+              }))
+            .then(Commands.literal("stop").executes(ctx -> {
+              ServerPlayer p = ctx.getSource().getPlayer();
+              return p != null ? com.thecompanyinc.cobblemoninitiative.prophunt.PropHuntManager.stop(p) : 0;
+            }))
+            .then(Commands.literal("reload")
+              .requires(source -> source.hasPermission(2))
+              .executes(ctx -> {
+                com.thecompanyinc.cobblemoninitiative.prophunt.PropHuntConfig.reload();
+                ctx.getSource().sendSuccess(() -> Component.literal("§aProp Hunt config reloaded."), false);
+                return 1;
+              }))
+            .then(Commands.literal("clear")
+              .requires(source -> source.hasPermission(2))
+              .executes(ctx -> {
+                com.thecompanyinc.cobblemoninitiative.prophunt.PropHuntManager.clearAll(ctx.getSource().getServer());
+                ctx.getSource().sendSuccess(() -> Component.literal("§7Cleared all prop-hunt barrels."), false);
+                return 1;
+              }))
+        )
+        // Ditto hide-and-seek quest mini-game. start/accuse/stop are dialog buttons (perm 0);
+        // reload/clear are op set-up.
+        .then(
+          Commands.literal("ditto")
+            .then(Commands.literal("start")
+              .then(Commands.argument("game", StringArgumentType.word())
+                .executes(ctx -> {
+                  ServerPlayer p = ctx.getSource().getPlayer();
+                  return p != null ? com.thecompanyinc.cobblemoninitiative.dittohunt.DittoHuntManager.start(
+                    p, StringArgumentType.getString(ctx, "game")) : 0;
+                }))
+              .executes(ctx -> {
+                ServerPlayer p = ctx.getSource().getPlayer();
+                return p != null ? com.thecompanyinc.cobblemoninitiative.dittohunt.DittoHuntManager.start(p, null) : 0;
+              }))
+            // "Listen to its cry" — plays the nearest actor's real Cobblemon cry (the fake's is
+            // off-pitch + a faint ditto layer). Fired by the dialog button + on-talk interaction.
+            .then(Commands.literal("listen").executes(ctx -> {
+              ServerPlayer p = ctx.getSource().getPlayer();
+              return p != null ? com.thecompanyinc.cobblemoninitiative.dittohunt.DittoHuntManager.listen(p) : 0;
+            }))
+            // "Call it out as the fake" dialog button — run as @initiator; accuse resolves the
+            // actor the player is standing next to.
+            .then(Commands.literal("accuse").executes(ctx -> {
+              ServerPlayer p = ctx.getSource().getPlayer();
+              return p != null ? com.thecompanyinc.cobblemoninitiative.dittohunt.DittoHuntManager.accuse(p) : 0;
+            }))
+            .then(Commands.literal("stop").executes(ctx -> {
+              ServerPlayer p = ctx.getSource().getPlayer();
+              return p != null ? com.thecompanyinc.cobblemoninitiative.dittohunt.DittoHuntManager.stop(p) : 0;
+            }))
+            .then(Commands.literal("reload")
+              .requires(source -> source.hasPermission(2))
+              .executes(ctx -> {
+                com.thecompanyinc.cobblemoninitiative.dittohunt.DittoHuntConfig.reload();
+                ctx.getSource().sendSuccess(() -> Component.literal("§aDitto hunt config reloaded."), false);
+                return 1;
+              }))
+            .then(Commands.literal("clear")
+              .requires(source -> source.hasPermission(2))
+              .executes(ctx -> {
+                com.thecompanyinc.cobblemoninitiative.dittohunt.DittoHuntManager.clearAll(ctx.getSource().getServer());
+                ctx.getSource().sendSuccess(() -> Component.literal("§7Cleared all Ditto-hunt actors."), false);
+                return 1;
+              }))
+        )
         // Giant mushroom-island cyclops: bodies auto-seed ONCE per world on server start
         // (CyclopsManager.seedOnServerStarted) — there is no spawn command. clear = remove them;
         // reload = re-read config.

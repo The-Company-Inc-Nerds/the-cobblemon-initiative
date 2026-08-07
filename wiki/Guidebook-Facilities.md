@@ -15,20 +15,23 @@ voice exactly as warm as you'd expect; the Preserve starts out Company-occupied 
 
 ---
 
-## The Stadium — Exhibition Circuits (Cyber City)
+## The Stadium — Company Exhibition Circuits (Cyber City)
 
-A wager arena run out of **Cyber City**. Register with the **Exhibition Registrar** and pick a
-bracket; the Company fields five exhibition waves of its own trainers against you.
+A wager arena you sign up for on the **Cyber City** approach road: flag down **Rex Broadcast**,
+the Company's on-air host, and he registers you for a circuit. The Company then fields exhibition
+waves of its own trainers against you, one **visible opponent** stepping up each wave.
 
-- **Brackets:** 25 / 50 / 75 / 100 — the number is the **level every Pokémon is locked to** for
-  the run (yours *and* theirs), so a bracket is a clean, level-flat test regardless of where you
-  are in the campaign.
-- **No permadeath here.** Stadium battles fight **cloned copies** of your party and the Nuzlocke
-  faint/flee/whiteout rules are **suspended for the duration** — you can lose a wave without losing
-  a Pokémon or the run. This is the one place in the game you can spar without stakes.
-- **Purses:** each wave you clear pays a flat purse (≈200 → 1000 CD across the five), plus a
-  completion bonus for taking the whole circuit. A `stadium_challenged` counter tracks your runs.
-- `/cobblemon-initiative stadium start 25|50|75|100` · `status` · `abort`.
+- **Three-Pokémon format.** The circuit is a strict **three-mon** bracket. Set your party to
+  **exactly three** at a **PC before you sign up** — the registrar **refuses** to start you
+  otherwise.
+- **Level-adjusted.** Every Pokémon is scaled for the wave, so the circuit is a clean, level-flat
+  test regardless of where you are in the campaign.
+- **Insured — no attrition.** Stadium battles fight **cloned copies** of your team, so the
+  Nuzlocke faint/flee/whiteout rules **do not apply here** — you can lose a wave without losing a
+  Pokémon or the run. This is the one place in the game you can spar without stakes.
+- **Purses:** each bracket wave you clear pays a **wave purse**, plus a **completion bonus** for
+  taking the whole circuit. A `stadium_challenged` counter tracks your runs.
+- See **[[Commands]]** for the player-facing subcommands.
 
 ## The Daycare (Gaviota Port)
 
@@ -63,6 +66,13 @@ reopens under its keeper, **Preservationist Maya** — **Darik** on the intake k
   you've had luck), **offer bait** to the one in front of you to calm it into forgiving a
   wobbly throw, and a soft **snowball** hit takes the fight out of a catch without starting
   one. (Party in custody + no battles = **hardcore-safe by construction**.)
+- **Befriend, don't just catch (the humane rework).** Besides throwing a ball, you can win a
+  wild one over. **Offer it treats** — the same **bait** you'd use to lure it — and each treat
+  it takes builds **trust**. A Pokémon at **full trust** is **much easier to catch**, and when
+  you *do* catch it, it comes to you already at **high friendship** — you meet as friends, not
+  captor and prize. Trust is tracked **per round**, so a friendship you build this visit rides
+  with the catch. The Preserve is **calmer** now — the animals **spook and flee less** — and
+  the kiosk issues **more snowballs** to work with.
 - **Placement matters.** Skewers and grit go on **open ground** — but the **honey smear is
   smeared on tree bark**, and the bug prizes come down the trunk for it. And the Preserve is
   **dry ground**: there's no water inside the fence and **no fishing** — every catch here

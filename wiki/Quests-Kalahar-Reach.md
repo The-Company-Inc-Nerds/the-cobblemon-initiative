@@ -7,7 +7,10 @@ The Ground Shrine sits out in the sand nearby.
 > [!NOTE]
 > **Content status:** the **gym** (Leader Gaia + the mirage hunt) is shipped, and Kalahar's two
 > tracked **town side-quests** — *The Reach Remembers* and *Dry Season* — are now compiled and
-> playable end-to-end (givers, waypoints, and turn-in payouts all live).
+> playable end-to-end (givers, waypoints, and turn-in payouts all live). New in 0.7.1-alpha.1: the
+> repeatable **Desert Treasure Hunts** (Nadia Khepra, Warden Ossa) and a cluster of **desert traders
+> and errands** (Dalia Sefet, Karim Zahur, Yasmin Aset, Omar Duneh), plus the second well that
+> refills once the oasis is reclaimed.
 
 **Status:** ✅ Done · 🚧 WIP (partial) · ❌ Not yet implemented — as of the 2026-07-21 audit.
 
@@ -19,6 +22,8 @@ The Ground Shrine sits out in the sand nearby.
 |-------|------|--------------|:------:|
 | **Gym 6 — Gaia (Ground Badge)** | Gym | Dune arena | ✅ shipped |
 | **Ground Shrine** | Shrine (optional) | `[1910 83 4049]` | ✅ trial shipped |
+| **Desert Treasure Hunts** | Side (repeatable) | Nadia Khepra · Warden Ossa | ✅ shipped |
+| **Desert Traders & Errands** | Side | Dalia Sefet · Karim Zahur · Yasmin Aset · Omar Duneh | ✅ shipped |
 | Town side-quests | Side | see **Side Quests** below | ✅ shipped |
 
 ---
@@ -88,6 +93,56 @@ Picked up from **Well-Keeper Marisol** (@ 2040 136 4100). The wells didn't die o
 ### The Grain-Buyer Caravan
 
 No quest-giver — it finds you. Once you've liberated **four or more wheat fields** across the region, the Kalahar grain caravan stops selling and turns on you: a two-buyer **doubles ambush** on the Old Caravan Road (aces at Lv 51, still under the leader's ace). It's the loudest the Company's people get before the endgame — the buyers name your face outright, as something out of a memo they were warned about. Beat them for **500 CD**. You can stand down and walk it back; the ambush only arms once the field campaign is well underway.
+
+---
+
+## Desert Treasure Hunts (repeatable)
+
+Two dune-diggers run the same find-logic and you can run either as many times as you like. **Talk to the giver to start a hunt** — a **subtle pillar of smoke** rises over a buried dig site out in the sand. Follow the smoke, **dig down through the sand**, and open the **buried chest** at the bottom. Bring a shovel; the smoke is faint, so watch the horizon.
+
+| Hunt | Giver | What you do | Reward |
+|------|-------|-------------|--------|
+| **Kiln Hunt** | Nadia Khepra | Follow the smoke, dig out the buried chest, and **keep the loot on the spot** | Loot from the chest (kept where you find it) |
+| **Warden Hunt** | Warden Ossa @ 2050 129 4085 | Follow the smoke, dig out the chest — it holds a sealed **Warden's Cache**. Carry the cache **back to Warden Ossa** | ~300 CD |
+
+### Kiln Hunt
+
+**Nadia Khepra** fires clay out on the dunes and swears the sand keeps things safe better than any vault. Ask her to point you at a cache and a thread of smoke lifts over the nearest dig site. Trail it, shovel down, and pop the chest — whatever's inside is **yours the moment you crack it**, no return trip. She'll set you another the instant you're back, so it's a steady way to work the desert for supplies.
+
+### Warden Hunt
+
+**Warden Ossa** (@ 2050 129 4085) also keeps a ledger of things the sand swallowed — the ones she wants logged before they're kept. Start her hunt, follow the smoke, and dig out the chest; this one holds a sealed **Warden's Cache** you're meant to bring in rather than break open. Carry it **back to Ossa** for roughly **300 CD**. Repeatable — she always has one more site marked.
+
+## Desert Traders & Errands
+
+A handful of oasis-town locals run trades, errands, and one walk-away wager. None of these gate the gym; they're desert supply and colour.
+
+| NPC | Type | What you do | Reward |
+|-----|------|-------------|--------|
+| **Dalia Sefet** | Fetch | Bring water for her **dying date palms** | CobbleDollars |
+| **Karim Zahur** | Trade | Hand over **any fossil** for a desert Pokémon | A **Trapinch** |
+| **Yasmin Aset** | Trader (CD) | Buy a **nomad kit** of survival consumables (rare candy, potions, and the like) | Survival items for CobbleDollars |
+| **Yield Liaison Omar Duneh** | Talk / opt-in battle | Ask about the oasis; you can **battle him to send him off** | Sends Omar packing |
+
+### Dalia Sefet
+
+**Dalia Sefet** tends a row of **date palms** going brown for lack of water — the same dry season that killed the wells. Bring her water and she'll pay you in **CobbleDollars** for keeping the palms alive. A small, human errand against the drought.
+
+### Karim Zahur
+
+**Karim Zahur** deals in old bones and older stories. Bring him **any fossil** and he'll trade it straight for a hardy desert native — a **Trapinch** — the kind of Pokémon that actually likes it out here.
+
+### Yasmin Aset
+
+**Yasmin Aset** is a nomad running a **kit stall**: survival consumables for the long crossings — **rare candy, potions**, and other trail supplies, all for **CobbleDollars**. Stock up before you head out into the spawning country toward the Oasis.
+
+### Yield Liaison Omar Duneh
+
+**Yield Liaison Omar Duneh** is the Company's soft-spoken face for the oasis "yield" numbers — talk to him about the water and the survey and he'll give you the corporate line. You can **battle him to send him off**; it's optional, and he's happy to keep talking if you'd rather not.
+
+### The second well
+
+Kalahar's **second well** sits dry through the drought. **Drop into the shaft before the oasis is reclaimed and you're pulled back out** — *"rescued from the well"* — so there's nothing waiting at the bottom yet. Once the **oasis is reclaimed**, the second well **refills with water** and behaves like a well again.
 
 ---
 

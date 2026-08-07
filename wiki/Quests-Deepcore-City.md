@@ -36,6 +36,11 @@ and the leader beat ends in a **2-vs-1 double** — Bruno's pair against you *an
 partner fighting at your side. Play it as a doubles match, not a solo. As always, softening the
 rank-and-file drains the leader's team.
 
+> [!NOTE]
+> **The dojo is non-lethal.** Lose a dojo bout and you're **knocked out**, not killed — you wake
+> up at the **quarry-side clinic** and can step back in. The pit is the one place in town where a
+> loss won't end your run.
+
 ### The ladder
 
 | Rung | Who | Team |

@@ -11,7 +11,9 @@ polite. Home of the Daycare and the Water Gym.
 > [[Guidebook Facilities]], and Gaviota's three tracked **town side-quests** (Mending the
 > Deep Nets, The Tide Market, Adjusted Freight) are shipped and on the quest tracker
 > (slots 44–46). The non-tracked port beats (Wheat by Sea, the rumor hub, dock flavour) run
-> alongside them.
+> alongside them. New in 0.7.1-alpha.1: the **Trident Tide-Race** at Westwind beach
+> (Tide-Caller Gianna) is now **ungated** and a **one-time** run — clear it clean to keep the
+> Tide-Caller's Trident.
 
 ---
 
@@ -21,6 +23,7 @@ polite. Home of the Daycare and the Water Gym.
 |-------|------|--------------|:------:|
 | **Gym 5 — Neptune (Water Badge)** | Gym | Tide arena | ✅ shipped |
 | **Daycare** | Facility | Daycare Keeper | ✅ shipped |
+| **Trident Tide-Race** | Side (one-time) | Tide-Caller Gianna @ Westwind beach | ✅ shipped |
 | Town side-quests | Side | see **Side Quests** below | ✅ shipped |
 
 ---
@@ -75,6 +78,7 @@ The Company runs Gaviota's docks and its tariffs, and by gym 5 the CobbleDollar 
 | ✅ Done | **The Tide Market** | Fence Odessa **@ 552 81 3552** | Recover a seized crate off the customs float to unlock her black-market stock | Black-market shop access + 150 CD |
 | ✅ Done | **Adjusted Freight** (The Manifest Audit) | Dockmaster Kaito **@ 566 84 3560** | Cross-check three freight manifests against the real barrel counts | 400 CD union honorarium |
 | ✅ Done | **Wheat by Sea (Westwind)** | Tidewatch Sable **@ 700 103 3255** | Cut the grain barges at Westwind — trade turns to an ambush; the win frees the field | 500 CD + Westwind Fields liberated |
+| ✅ Done | **Trident Tide-Race** | Tide-Caller Gianna @ Westwind beach | Riptide through 15 ordered ocean rings before the tide turns — one-time, ungated | Keep the **Tide-Caller's Trident** (Riptide III) |
 | ✅ Done | Dock Hand Mattias | *(flavour)* | Talk to a restructured-pay dockhand — the human face of the tariff | None (flavour) |
 
 ### What's the Word on the Docks
@@ -96,6 +100,10 @@ Under the fish-market boardwalk, **Fence Odessa** fences the goods the Company's
 ### Wheat by Sea (Westwind)
 
 The monopoly now ships grain by hull, and **Westwind Fields** has a coastal loading dock east along the coast. **Tidewatch Sable** is the handler running the barges; she'll first sell you the alternative-currency pitch, but once you've freed enough fields across the region she places your face mid-trade (*"you're supposed to be filed, gone"*) and turns hostile. **Beating her ambush liberates Westwind Fields** — easing prices, flipping the zone banner, and firing the LIBERATED title card. The ambush is tuned cap-legal, and the trade is always walk-away-able; only the recognition fight is forced, and only once you're deep enough into the Wheat War for her to know the face.
+
+### Trident Tide-Race
+
+Out on the **Westwind beach**, **Tide-Caller Gianna** runs a **one-time** riptide race — **no badge required**, so you can take it the moment you find her. She lends you the **Tide-Caller's Trident** (Riptide III) and sets **fifteen ordered ocean rings** out across the water. **Riptide through all fifteen in order before the tide turns.** Clear the course clean and the **trident is yours to keep**; run out of time or bail and the **sea takes it back** — return to Gianna to try the run again. Rain or open water lets Riptide launch you between rings, so read the swell before you start.
 
 ### Dock Hand Mattias
 

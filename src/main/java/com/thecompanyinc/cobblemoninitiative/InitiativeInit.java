@@ -334,6 +334,14 @@ public class InitiativeInit implements ModInitializer {
     // crouch-on-land roll (fall-damage cancel + fall-distance reset) that a datapack can't do.
     AugmentedRaceManager.init();
 
+    // Quest mini-game: prop hunt — floats falling-block "barrel" props (one real, rest decoys) and
+    // catches the right-click on them (self-registers its UseEntity + disconnect-cleanup hooks).
+    com.thecompanyinc.cobblemoninitiative.prophunt.PropHuntManager.init();
+
+    // Quest mini-game: Ditto hide-and-seek — places N cobblemon_npc actors (one is a disguised
+    // Ditto whose cry text slips); the accuse dialog button judges the nearest one.
+    com.thecompanyinc.cobblemoninitiative.dittohunt.DittoHuntManager.init();
+
     CommandRegistrationCallback.EVENT.register(
       (dispatcher, registryAccess, environment) -> {
         CobblemonInitiativeCommands.register(dispatcher);
